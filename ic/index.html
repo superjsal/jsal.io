@@ -9,7 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="/shell.css?v=2026-10-28">
+<link rel="preconnect" href="https://kvdzluvhwxkrbatgskio.supabase.co" crossorigin>
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js">
+<link rel="stylesheet" href="/shell.css?v=2026-10-28b">
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <style>
 /* Layout: platforms down the left, one toolbar with every choice, and each item as a card; a compare grid below.
@@ -70,11 +72,10 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visi
 /* App: slim header, platform list on the left, toolbar and cards on the right */
 .app {
   max-width: 880px; margin: 0 auto;
-  padding: 18px max(16px, env(safe-area-inset-right, 0px)) 64px max(16px, env(safe-area-inset-left, 0px));
-  display: grid; grid-template-columns: 200px minmax(0, 1fr); grid-template-areas: "top top" "side main"; gap: 16px 28px;
+  padding: 0 max(20px, env(safe-area-inset-right, 0px)) 64px max(20px, env(safe-area-inset-left, 0px));
+  display: grid; grid-template-columns: 200px minmax(0, 1fr); grid-template-areas: "top top" "side main"; gap: 24px 28px;
 }
-header.top { grid-area: top; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
-header.top h1 { font-size: 21px; line-height: 1.2; }
+header.top { grid-area: top; }
 header.top .hl { color: var(--accent); }
 header.top p { flex: 1 1 360px; font-size: 14px; color: var(--muted); }
 
@@ -228,9 +229,6 @@ footer a { color: var(--accent); }
 @media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
 
 /* jsal.io mark */
-.brand { display: inline-flex; align-items: center; height: 28px; font-weight: 800; font-size: 15px; letter-spacing: -0.3px; color: var(--ink); text-decoration: none; }
-.brand span { color: var(--accent); }
-.brand:hover { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
 
 /* Guides: links under How-to, a list on the page, and a side panel that opens them */
 .guide-links { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; font-size: 13px; color: var(--muted); }
@@ -270,7 +268,8 @@ code, pre { font-variant-ligatures: none; }
 .snippet .btn { padding: 4px 10px; font-size: 12px; }
 .guide-body .unverified { font-size: 13px; color: var(--muted); font-style: italic; }
 
-@media (min-width: 1800px) { .app { max-width: 1000px; } }
+@media (min-width: 1280px) { .app { max-width: 1160px; } }
+@media (min-width: 1800px) { .app { max-width: 1280px; } }
 @media (max-width: 900px) {
   .app { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "main"; }
   .side { display: none; }
@@ -290,7 +289,6 @@ code, pre { font-variant-ligatures: none; }
 .gate-card h2 { font-size: 20px; }
 .btn.discord { display: inline-flex; gap: 10px; align-items: center; justify-content: center; background: #5865f2; color: #fff; font-size: 15px; padding: 11px 18px; }
 .btn.discord:hover { filter: brightness(1.08); }
-header.top { gap: 8px 18px; }
 .viewnav { margin-left: auto; }
 .viewnav .count { margin-left: 4px; }
 .account { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); padding-left: 14px; border-left: 1px solid var(--line); }
@@ -353,8 +351,8 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 
 <div class="app">
   <header class="top jsal-top">
-    <a class="brand" href="/" data-jsal-nav>jsal<span>.io</span></a>
-    <h1>IC <span class="hl">Defaults</span></h1>
+    <a class="brand jsal-brand" href="/" data-jsal-nav>jsal<span>.io</span></a>
+    <h1 class="jsal-title">IC <span class="hl">Defaults</span></h1>
     <nav class="seg viewnav" id="viewnav" aria-label="Views" hidden>
       <button type="button" data-view="answers" aria-pressed="true">Platforms</button>
       <button type="button" data-view="requests" id="req-btn" aria-pressed="false">Requests <span class="count" id="req-count"></span></button>
@@ -456,7 +454,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-28" defer></script>
+<script src="/nav.js?v=2026-10-28b" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 // ---------- Config ----------
@@ -1199,7 +1197,7 @@ $('#gate').addEventListener('click', async (e) => {
   if (act === 'recheck') boot();
   if (act === 'signout') signOut();
 });
-async function signOut() { await sb.auth.signOut(); location.replace(location.pathname); }
+async function signOut() { clearCache(); await sb.auth.signOut(); location.replace(location.pathname); }
 $('#signout').addEventListener('click', signOut);
 
 function identity(user) {
@@ -1209,23 +1207,40 @@ function identity(user) {
 
 // Team edits, requests, upvotes and names: everything members can read besides the content itself
 let lastLoad = 0, started = false;
-async function loadShared() {
-  const [edits, reqs, votes, members] = await Promise.all([
+function fetchShared() {
+  return Promise.all([
     sb.from('edits').select('*'),
     sb.from('requests').select('*').order('at', { ascending: false }).limit(1000),
     sb.from('votes').select('request_id,user_id').limit(5000),
     sb.from('members').select('user_id,name,avatar,role,discord_id,approved_at'),
-  ]);
-  const err = edits.error || reqs.error || votes.error || members.error;
-  if (err) throw err;
-  EDITS.clear();
-  edits.data.forEach((x) => EDITS.set(editKey(x.platform, x.sec, x.item), x));
-  R.reqs = new Map(reqs.data.map((r) => [r.id, r]));
-  R.votes = new Map();
-  votes.data.forEach((v) => addVote(v.request_id, v.user_id));
-  R.members = new Map(members.data.map((m) => [m.user_id, m]));
-  lastLoad = Date.now();
+  ]).then(([edits, reqs, votes, members]) => {
+    const err = edits.error || reqs.error || votes.error || members.error;
+    if (err) throw err;
+    return { edits: edits.data, reqs: reqs.data, votes: votes.data, members: members.data };
+  });
 }
+function applyShared(x) {
+  EDITS.clear();
+  x.edits.forEach((e) => EDITS.set(editKey(e.platform, e.sec, e.item), e));
+  R.reqs = new Map(x.reqs.map((r) => [r.id, r]));
+  R.votes = new Map();
+  x.votes.forEach((v) => addVote(v.request_id, v.user_id));
+  R.members = new Map(x.members.map((m) => [m.user_id, m]));
+}
+async function loadShared() { applyShared(await fetchShared()); lastLoad = Date.now(); }
+function useContent(d) {
+  ({ ITEMS, CONTENT_ITEMS, VERDICT, SCOPE, P, CONTENT, VARIANTS, HOW, WARN, H1_FIX, PTYPES, BY_TYPE, GUIDES, HOW_GUIDES } = d);
+  HOW_UNVERIFIED = new Set(d.HOW_UNVERIFIED || []);
+}
+
+// Last loaded copy, kept in this browser so the page opens instantly next time while fresh
+// data loads behind it. Only for signed-in members; cleared on sign-out or losing access.
+const CACHE_KEY = 'ic-defaults-cache';
+function readCache(uid) {
+  try { const c = JSON.parse(localStorage.getItem(CACHE_KEY)); return c && c.uid === uid ? c : null; } catch { return null; }
+}
+function writeCache(c) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(c)); } catch {} }
+function clearCache() { try { localStorage.removeItem(CACHE_KEY); } catch {} }
 
 async function boot() {
   if (!CONFIGURED) return gate('setup');
@@ -1233,24 +1248,40 @@ async function boot() {
   gate('loading');
   const { data: { session } } = await sb.auth.getSession();
   if (/[?&](code|error)=/.test(location.search)) history.replaceState(null, '', location.pathname + location.hash);
-  if (!session) return gate('signin');
+  if (!session) { clearCache(); return gate('signin'); }
   const user = session.user;
   const me = identity(user);
   R.me = user.id;
-  const mem = await sb.from('members').select('role').eq('user_id', user.id).maybeSingle();
-  if (mem.error) return gate('error', { user: me, message: 'Couldn’t check your access. Try again in a moment.' });
+  const cached = readCache(user.id);
+  if (cached) {
+    R.manage = canEditAnswers = cached.role === 'admin';
+    useContent(cached.data);
+    applyShared(cached.shared);
+    startApp(me);
+  }
+  // Access check, answers and team data all at once (one round trip instead of three)
+  const [mem, app, shared] = await Promise.all([
+    sb.from('members').select('role').eq('user_id', user.id).maybeSingle(),
+    sb.from('app_data').select('data').eq('id', 'defaults').maybeSingle(),
+    fetchShared().catch((error) => ({ error })),
+  ]);
+  if (mem.error) return cached ? toast('Couldn’t refresh. Showing the last loaded answers.') : gate('error', { user: me, message: 'Couldn’t check your access. Try again in a moment.' });
   if (!mem.data) {
+    if (cached) { clearCache(); return location.reload(); }
     // Not on the team: record (or keep) the access request so an admin can approve it.
     await sb.from('access_requests').upsert({ user_id: user.id }, { onConflict: 'user_id', ignoreDuplicates: true });
     return gate('pending', { user: me });
   }
+  if (app.error || !app.data || shared.error) {
+    if (cached) return toast('Couldn’t refresh. Showing the last loaded answers.');
+    if (shared.error && !app.error && app.data) return gate('error', { user: me, message: 'Couldn’t load the team’s data. Try again.' });
+    return gate('error', { user: me, message: app.error ? 'Couldn’t load the answers. Try again.' : 'The answers haven’t been loaded into the database yet (run seed.sql).' });
+  }
   R.manage = canEditAnswers = mem.data.role === 'admin';
-  const app = await sb.from('app_data').select('data').eq('id', 'defaults').maybeSingle();
-  if (app.error || !app.data) return gate('error', { user: me, message: app.error ? 'Couldn’t load the answers. Try again.' : 'The answers haven’t been loaded into the database yet (run seed.sql).' });
-  const d = app.data.data;
-  ({ ITEMS, CONTENT_ITEMS, VERDICT, SCOPE, P, CONTENT, VARIANTS, HOW, WARN, H1_FIX, PTYPES, BY_TYPE, GUIDES, HOW_GUIDES } = d);
-  HOW_UNVERIFIED = new Set(d.HOW_UNVERIFIED || []);
-  try { await loadShared(); } catch { return gate('error', { user: me, message: 'Couldn’t load the team’s data. Try again.' }); }
+  useContent(app.data.data);
+  applyShared(shared);
+  lastLoad = Date.now();
+  writeCache({ uid: user.id, role: mem.data.role, data: app.data.data, shared });
   startApp(me);
 }
 
@@ -1297,7 +1328,7 @@ function startApp(me) {
   });
 }
 
-if (sb) sb.auth.onAuthStateChange((event) => { if (event === 'SIGNED_OUT') location.replace(location.pathname); });
+if (sb) sb.auth.onAuthStateChange((event) => { if (event === 'SIGNED_OUT') { clearCache(); location.replace(location.pathname); } });
 boot();
 </script>
 </body>

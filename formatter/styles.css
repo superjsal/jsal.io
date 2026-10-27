@@ -78,11 +78,11 @@ body {
   max-width: 880px;   /* same as IC Defaults: lines up with the jsal.io home page column */
   display: flex;
   flex-direction: column;
-  padding: 18px 16px;
+  padding: 0 max(20px, env(safe-area-inset-left, 0px)) 18px;   /* same sides as the home page */
 }
 
 /* The top bar itself (.jsal-top) is styled by /shell.css */
-.app-header { margin-bottom: 16px; }
+.app-header { margin-bottom: 24px; }
 
 .section-label {
   font-size: 12px;

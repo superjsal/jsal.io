@@ -44,20 +44,32 @@
   color-scheme: dark;
 }
 
-/* Top bar: logo (app switcher) · app name · the app's own controls · theme button */
+/* Same column as the jsal.io home page (.col: 640 / 880 / 1000px with 20px sides), so the
+   top bar doesn't move when going between the home page and the apps. The apps' own content
+   can be wider than this. */
+:root { --jsal-col: 600px; }
+@media (min-width: 1280px) { :root { --jsal-col: 840px; } }
+@media (min-width: 1800px) { :root { --jsal-col: 960px; } }
+/* Reserve the scrollbar's space on every page, scrolling or not, so nothing shifts sideways */
+html { scrollbar-gutter: stable; }
+
+/* Top bar: logo (app switcher) · app name · the app's own controls · theme button.
+   The logo sits exactly where the home page's does: 40px down, 18px. Every row is 36px
+   tall (the tallest control), so the top padding is set to put its centre on the home
+   page logo's centre (40px + half of its 18px × 1.65 line). */
 .jsal-top {
+  width: min(100%, var(--jsal-col)); margin-inline: auto;
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
-  min-height: 51px;   /* same height in every app, whether its controls are 32 or 36px tall */
-  padding-bottom: 14px; border-bottom: 1px solid var(--jsal-line);
+  padding-top: calc(40px - (36px - 18px * 1.65) / 2);
   font-family: var(--jsal-font);
 }
 .jsal-brand {
-  display: inline-flex; align-items: center; height: 28px; flex-shrink: 0;
-  font-weight: 800; font-size: 15px; line-height: 1; letter-spacing: -0.3px;
+  display: inline-flex; align-items: center; height: 36px; flex-shrink: 0;
+  font-weight: 700; font-size: 18px; line-height: 1.65; letter-spacing: -0.02em;
   color: var(--jsal-ink); text-decoration: none; white-space: nowrap;
 }
 .jsal-brand span { color: var(--jsal-accent); }
-.jsal-title { margin: 0; font: 700 21px/1.2 var(--jsal-font); letter-spacing: -0.02em; color: var(--jsal-ink); }
+.jsal-title { margin: 0; font: 700 18px/1.2 var(--jsal-font); letter-spacing: -0.02em; color: var(--jsal-ink); }
 .jsal-title .hl { color: var(--jsal-accent); }
 .jsal-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .jsal-theme {

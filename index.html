@@ -19,7 +19,7 @@
   :root { --bg: #111318; --surface: #191c23; --ink: #ece6d6; --muted: #9a9688; --faint: #6f6c63; --line: #262a33; --accent: #e3b04b; --glow: rgb(227 176 75 / .10); --frame: #20242c; color-scheme: dark; }
 }
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }   /* no sideways shift vs the apps */
 body {
   margin: 0; color: var(--ink); font: 16px/1.65 "Inter", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
   background: radial-gradient(900px 500px at 15% -10%, var(--glow), transparent 70%) no-repeat, var(--bg);
