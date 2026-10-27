@@ -59,9 +59,9 @@ section { padding: 0 0 64px; }
 .meta h3::after { content: " ↗"; font: 400 15px "Inter", sans-serif; color: var(--faint); transition: color .15s; }
 .project:hover .meta h3::after { color: var(--accent); }
 .meta span { font-size: 13px; color: var(--faint); white-space: nowrap; }
-.project.soon { cursor: default; }
-.project.soon .meta h3::after { content: none; }
-.project.soon:hover .shot { transform: none; }
+.project.coming { cursor: default; }
+.project.coming .meta h3::after { content: none; }
+.project.coming:hover .shot { transform: none; }
 .project p { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
 
 /* IC Defaults preview: an abstract mock (the real app is sign-in only) */
@@ -215,7 +215,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--ink); }
         <p>Bulk resize, crop and convert images right in the browser. Nothing is uploaded.</p>
       </a>
       <!-- IC Defaults goes live at /ic/ once Supabase and Discord sign-in are set up: change this div back to <a class="project" href="/ic/"> -->
-      <div class="project soon">
+      <div class="project coming">
         <div class="shot">
           <div class="mock" aria-hidden="true">
             <div class="tabs"><u>Shopify</u><u>WordPress</u><u>Wix</u><u>Squarespace</u></div>
