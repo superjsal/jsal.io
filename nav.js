@@ -1,0 +1,124 @@
+// jsal.io app switcher. Each app marks its logo with data-jsal-nav (a link to jsal.io);
+// this turns it into a menu for moving between the apps. To add an app, add it to APPS.
+(() => {
+  const APPS = [
+    { href: '/image-resizer/', name: 'Image Resizer', desc: 'Resize, crop and convert images',
+      icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 9"/>' },
+    { href: '/formatter/', name: 'Content Formatter', desc: 'Clean up Word and Google Docs content',
+      icon: '<path d="M4 6h16M4 12h10M4 18h13"/>' },
+    { href: '/ic/', name: 'IC Defaults', desc: 'Platform answers for the IC form', tag: 'Team',
+      icon: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>' },
+  ];
+  const HOME = { href: '/', name: 'jsal.io home', icon: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>' };
+
+  const trigger = document.querySelector('[data-jsal-nav]');
+  if (!trigger) return;
+  const here = location.pathname;
+  const svg = (paths, size = 16) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+
+  document.head.insertAdjacentHTML('beforeend', `<style>
+    [data-jsal-nav], [data-jsal-nav]:hover { cursor: pointer; text-decoration: none; border-radius: 6px; }
+    [data-jsal-nav]:focus-visible { outline: 2px solid var(--jsal-accent, currentColor); outline-offset: 3px; }
+    .jsal-caret { display: inline-block; margin-left: 5px; opacity: .55; transition: transform .15s; vertical-align: middle; }
+    [data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
+    [data-jsal-nav]:hover .jsal-caret { opacity: .9; }
+    .jsal-menu { position: fixed; z-index: 2147483000; width: min(300px, calc(100vw - 24px)); padding: 6px; border-radius: 12px;
+      background: var(--jm-bg); color: var(--jm-ink); border: 1px solid var(--jm-line); box-shadow: 0 16px 40px rgb(0 0 0 / .28), 0 2px 6px rgb(0 0 0 / .12);
+      font: 14px/1.35 "Inter", "Segoe UI", system-ui, sans-serif; }
+    .jsal-menu[hidden] { display: none; }
+    .jsal-menu a { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 8px; color: inherit; text-decoration: none; outline: none; }
+    .jsal-menu a:hover, .jsal-menu a:focus-visible { background: var(--jm-hover); }
+    .jsal-menu a[aria-current="page"] { background: var(--jm-current); }
+    .jsal-menu .ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--jm-hover); color: var(--jsal-accent); }
+    .jsal-menu b { display: block; font-weight: 600; }
+    .jsal-menu small { display: block; font-size: 12px; color: var(--jm-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .jsal-menu .tag { font-size: 11px; font-weight: 700; color: var(--jsal-accent); border: 1px solid currentColor; border-radius: 99px; padding: 0 7px; }
+    .jsal-menu .here { font-size: 11px; color: var(--jm-muted); }
+    .jsal-menu hr { border: 0; border-top: 1px solid var(--jm-line); margin: 6px 4px; }
+    .jsal-menu .home { grid-template-columns: 32px minmax(0, 1fr); }
+    .jsal-menu .home .ico { background: none; color: var(--jm-muted); }
+    @media (prefers-reduced-motion: reduce) { .jsal-caret { transition: none; } }
+  </style>`);
+
+  const isHere = (href) => href !== '/' && here.startsWith(href);
+  const item = (a, home) => `<a href="${a.href}" role="menuitem"${isHere(a.href) ? ' aria-current="page"' : ''}${home ? ' class="home"' : ''}>
+      <span class="ico">${svg(a.icon)}</span>
+      <span><b>${a.name}</b>${a.desc ? `<small>${a.desc}</small>` : ''}</span>
+      ${home ? '' : isHere(a.href) ? '<span class="here">You’re here</span>' : a.tag ? `<span class="tag">${a.tag}</span>` : '<span></span>'}
+    </a>`;
+  const menu = document.createElement('div');
+  menu.className = 'jsal-menu';
+  menu.id = 'jsal-menu';
+  menu.setAttribute('role', 'menu');
+  menu.setAttribute('aria-label', 'jsal.io apps');
+  menu.hidden = true;
+  menu.innerHTML = APPS.map((a) => item(a)).join('') + '<hr>' + item(HOME, true);
+  document.body.append(menu);
+
+  trigger.insertAdjacentHTML('beforeend', `<span class="jsal-caret">${svg('<path d="m6 9 6 6 6-6"/>', 12)}</span>`);
+  trigger.setAttribute('aria-haspopup', 'menu');
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.setAttribute('aria-controls', 'jsal-menu');
+  trigger.removeAttribute('aria-hidden');
+  if (!trigger.getAttribute('aria-label')) trigger.setAttribute('aria-label', 'jsal.io apps');
+
+  // Match the app's current look: light or dark from the page background, accent from the logo's ".io"
+  function theme() {
+    let el = trigger, bg = 'rgba(0, 0, 0, 0)';
+    while (el && /rgba\(0, 0, 0, 0\)|transparent/.test(bg)) { bg = getComputedStyle(el).backgroundColor; el = el.parentElement; }
+    const [r, g, b] = (bg.match(/\d+(\.\d+)?/g) || [255, 255, 255]).map(Number);
+    const dark = (0.2126 * r + 0.7152 * g + 0.0722 * b) < 140;
+    const accent = getComputedStyle(trigger.querySelector('span') || trigger).color;
+    const s = menu.style;
+    s.setProperty('--jsal-accent', accent);
+    s.setProperty('--jm-bg', dark ? '#1d2027' : '#ffffff');
+    s.setProperty('--jm-ink', dark ? '#f1f2f4' : '#16181d');
+    s.setProperty('--jm-muted', dark ? '#9aa3af' : '#5b6472');
+    s.setProperty('--jm-line', dark ? 'rgb(255 255 255 / .1)' : 'rgb(0 0 0 / .1)');
+    s.setProperty('--jm-hover', dark ? 'rgb(255 255 255 / .07)' : 'rgb(0 0 0 / .05)');
+    s.setProperty('--jm-current', dark ? 'rgb(255 255 255 / .1)' : 'rgb(0 0 0 / .07)');
+  }
+  function place() {
+    const r = trigger.getBoundingClientRect();
+    const w = menu.offsetWidth;
+    menu.style.top = `${Math.round(r.bottom + 8)}px`;
+    menu.style.left = `${Math.round(Math.max(12, Math.min(r.left, innerWidth - w - 12)))}px`;
+  }
+  const links = () => [...menu.querySelectorAll('a')];
+  function open(focusFirst) {
+    theme();
+    menu.hidden = false;
+    place();
+    trigger.setAttribute('aria-expanded', 'true');
+    if (focusFirst) (menu.querySelector('[aria-current]') || links()[0]).focus();
+  }
+  function close(refocus) {
+    if (menu.hidden) return;
+    menu.hidden = true;
+    trigger.setAttribute('aria-expanded', 'false');
+    if (refocus) trigger.focus();
+  }
+
+  trigger.addEventListener('click', (e) => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;   // new tab: let the link work
+    e.preventDefault();
+    menu.hidden ? open(e.detail === 0) : close();
+  });
+  trigger.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || ((e.key === 'Enter' || e.key === ' ') && trigger.tagName !== 'A')) { e.preventDefault(); open(true); }
+  });
+  menu.addEventListener('keydown', (e) => {
+    const l = links(), i = l.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); l[(i + 1) % l.length].focus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); l[(i - 1 + l.length) % l.length].focus(); }
+    else if (e.key === 'Home') { e.preventDefault(); l[0].focus(); }
+    else if (e.key === 'End') { e.preventDefault(); l[l.length - 1].focus(); }
+    else if (e.key === 'Escape') { e.preventDefault(); close(true); }
+    else if (e.key === 'Tab') close();
+  });
+  // Esc also works after a mouse click, when focus is still on the logo
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden && !menu.contains(e.target)) close(true); });
+  document.addEventListener('pointerdown', (e) => { if (!menu.hidden && !menu.contains(e.target) && !trigger.contains(e.target)) close(); });
+  addEventListener('resize', () => { if (!menu.hidden) place(); });
+  addEventListener('scroll', () => { if (!menu.hidden) place(); }, { passive: true });
+})();

@@ -818,7 +818,7 @@ h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.2
 .app {
   --thumb-h: 84px;
   width: 100%;
-  max-width: 1400px;
+  max-width: 840px;   /* lines up with the jsal.io home page column (960px on very large screens, below) */
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -899,4 +899,9 @@ h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.2
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* Same width as the jsal.io home page column on very large screens */
+@media (min-width: 1800px) {
+  .app { max-width: 960px; }
 }

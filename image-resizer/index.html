@@ -57,15 +57,15 @@
     }
   </script>
   <script type="module" src="js/main.js?v=2026-10-27b"></script>
+  <!-- jsal.io app switcher (shared by all the apps) -->
+  <script src="/nav.js?v=2026-10-27" defer></script>
 </head>
 <body>
   <main class="app">
 
     <header class="app-header">
       <!-- Logo: "jsal.io" -->
-      <div class="logo" aria-hidden="true">
-        jsal<span class="logo-j">.io</span>
-      </div>
+      <a class="logo" href="/" data-jsal-nav>jsal<span class="logo-j">.io</span></a>
       <div class="header-text">
         <!-- Full title stays in the h1 for search engines; only "Image Resizer" is shown -->
         <h1><span class="sr-only">JScale by JSAL – Fast </span>Image Resizer<span class="sr-only"> Online</span></h1>
