@@ -3,8 +3,8 @@
 --
 -- Who can do what (enforced here, not just hidden in the page):
 --   anyone signed in with Discord   → can only ask for access (their own row in access_requests)
---   members (approved)              → read the answers, how-to steps and guides
---   admins                          → also edit answers and approve, remove or promote people
+--   members (approved)              → read everything, post requests, upvote, delete their own requests
+--   admins                          → also edit answers, set request status, approve, remove or promote people
 
 -- ---------- People ----------
 create table if not exists public.members (
@@ -116,17 +116,42 @@ alter table public.edits add column if not exists warn text;
 alter table public.edits drop constraint if exists edits_sec_check;
 alter table public.edits add constraint edits_sec_check check (sec ~ '^(tech|content|content\.(home|pages|category|product))$');
 
+-- ---------- Requests and upvotes ----------
+-- item: '<section>:<item id>' (section may include a page type, e.g. 'content.product:faq'), or '' for none.
+create table if not exists public.requests (
+  id        uuid primary key default gen_random_uuid(),
+  type      text not null check (type in ('correction', 'platform', 'feature', 'other')),
+  title     text not null check (char_length(btrim(title)) between 1 and 120),
+  details   text not null default '' check (char_length(details) <= 1000),
+  platform  text not null default '',
+  item      text not null default '',
+  author    uuid not null default auth.uid() references auth.users on delete cascade,
+  at        timestamptz not null default now(),
+  status    text not null default 'new' check (status in ('new', 'review', 'planned', 'done', 'declined')),
+  status_at timestamptz
+);
+
+-- One row per person per request: the primary key makes double upvotes impossible.
+create table if not exists public.votes (
+  request_id uuid not null references public.requests on delete cascade,
+  user_id    uuid not null default auth.uid() references auth.users on delete cascade,
+  at         timestamptz not null default now(),
+  primary key (request_id, user_id)
+);
+
 -- ---------- Access rules ----------
 alter table public.members         enable row level security;
 alter table public.access_requests enable row level security;
 alter table public.app_data        enable row level security;
 alter table public.edits           enable row level security;
+alter table public.requests        enable row level security;
+alter table public.votes           enable row level security;
 
 do $$
 declare t text;
 begin
   -- Start clean so re-running this file never leaves an old, looser policy behind.
-  foreach t in array array['members', 'access_requests', 'app_data', 'edits'] loop
+  foreach t in array array['members', 'access_requests', 'app_data', 'edits', 'requests', 'votes'] loop
     execute (select coalesce(string_agg(format('drop policy %I on public.%I;', policyname, t), ' '), '')
              from pg_policies where schemaname = 'public' and tablename = t);
   end loop;
@@ -147,7 +172,19 @@ create policy "admins write" on public.app_data for all to authenticated using (
 create policy "members read" on public.edits for select to authenticated using (public.is_member());
 create policy "admins write" on public.edits for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
+-- requests: members post as themselves (always starting "Not reviewed"); only admins change them; authors or admins delete.
+create policy "members read" on public.requests for select to authenticated using (public.is_member());
+create policy "members post" on public.requests for insert to authenticated
+  with check (public.is_member() and author = auth.uid() and status = 'new' and status_at is null);
+create policy "admins update" on public.requests for update to authenticated using (public.is_admin()) with check (public.is_admin());
+create policy "author or admin delete" on public.requests for delete to authenticated using (author = auth.uid() or public.is_admin());
+
+-- votes: members upvote and remove their upvote as themselves only.
+create policy "members read" on public.votes for select to authenticated using (public.is_member());
+create policy "vote" on public.votes for insert to authenticated with check (public.is_member() and user_id = auth.uid());
+create policy "unvote" on public.votes for delete to authenticated using (user_id = auth.uid());
+
 -- Signed-out visitors get nothing at all.
-revoke all on public.members, public.access_requests, public.app_data, public.edits from anon;
+revoke all on public.members, public.access_requests, public.app_data, public.edits, public.requests, public.votes from anon;
 revoke execute on function public.approve_member(uuid), public.remove_member(uuid), public.set_member_role(uuid, text) from public, anon;
 grant execute on function public.approve_member(uuid), public.remove_member(uuid), public.set_member_role(uuid, text) to authenticated;

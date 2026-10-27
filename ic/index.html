@@ -304,6 +304,33 @@ code, pre { font-variant-ligatures: none; }
 .role { font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 3px; padding: 1px 6px; margin-left: 4px; }
 .people .empty { border: 0; background: none; }
 .gate-person { padding: 0; border: 0; grid-template-columns: 36px minmax(0, 1fr); }
+.user-chip .link-btn[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 4px; }
+.req-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.req-form { gap: 12px; }
+.req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.req-list { display: grid; gap: 8px; }
+.req { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.vote { align-self: start; display: grid; justify-items: center; gap: 2px; padding: 8px 4px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--muted); cursor: pointer; }
+.vote b { font-size: 17px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.vote:hover { border-color: var(--accent); color: var(--accent); }
+.vote[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.vote[aria-pressed="true"] b { color: var(--accent); }
+.req-body { display: grid; gap: 6px; min-width: 0; }
+.req-body h3 { font-size: 15.5px; overflow-wrap: anywhere; }
+.req-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 99px; background: var(--sunk); color: var(--muted); }
+.st { font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 99px; }
+.st.new { background: var(--sunk); color: var(--muted); }
+.st.review { background: var(--unk-soft); color: var(--unk); }
+.st.planned { background: var(--mid-soft); color: var(--mid); }
+.st.done { background: var(--ok-soft); color: var(--ok); }
+.st.declined { background: var(--bad-soft); color: var(--bad); }
+.req-details { color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+.req-details ul, .req-details ol { margin: 4px 0; padding-left: 20px; }
+.req-foot { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 12.5px; color: var(--muted); }
+.req-foot select { font: 13px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; margin-left: 4px; }
+.suggest { font: 600 12px var(--body); color: var(--muted); background: none; border: 0; padding: 1px 4px; cursor: pointer; }
+.suggest:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 760px) {
   .person { grid-template-columns: 36px minmax(0, 1fr); }
   .person-actions { grid-column: 1 / -1; justify-content: start; }
@@ -317,7 +344,7 @@ code, pre { font-variant-ligatures: none; }
     <a class="brand" href="https://jsal.io/" title="jsal.io">jsal<span>.io</span></a>
     <h1>Implement Check <span class="hl">Defaults</span></h1>
     <p>What each platform allows for the Implement Check Form, whether it’s the same on every site, and how to make the change.</p>
-    <span class="user-chip" id="user-chip" hidden><img id="user-avatar" alt="" hidden referrerpolicy="no-referrer"><span id="user-name"></span><button type="button" class="link-btn" id="team-btn" hidden>Team <span class="count" id="team-count"></span></button><button type="button" class="link-btn" id="signout">Sign out</button></span>
+    <span class="user-chip" id="user-chip" hidden><img id="user-avatar" alt="" hidden referrerpolicy="no-referrer"><span id="user-name"></span><button type="button" class="link-btn" id="req-btn" aria-pressed="false">Requests <span class="count" id="req-count"></span></button><button type="button" class="link-btn" id="team-btn" hidden>Team <span class="count" id="team-count"></span></button><button type="button" class="link-btn" id="signout">Sign out</button></span>
   </header>
 
   <section class="gate" id="gate" aria-live="polite"><div class="gate-card"><p class="muted">Loading…</p></div></section>
@@ -359,6 +386,33 @@ code, pre { font-variant-ligatures: none; }
       <div class="people" id="pending-list"></div>
       <h3 class="team-h">Members</h3>
       <div class="people" id="member-list"></div>
+    </section>
+
+    <section class="team-view" id="req-view" hidden>
+      <div class="panel-head">
+        <div style="display:grid;gap:2px;min-width:0"><h2>Requests</h2><p class="about">Spotted a wrong answer, want a platform added, or have an idea? Post it, and upvote the ones you want most. Admins update the status.</p></div>
+        <div class="panel-meta">
+          <div class="seg" id="req-filter" role="group" aria-label="Show"><button type="button" data-filter="open">Open</button><button type="button" data-filter="done">Closed</button><button type="button" data-filter="all">All</button></div>
+          <span class="req-tools">
+            <label class="picksel"><span class="sr-only">Type</span><select id="req-type-filter"></select></label>
+            <label class="picksel"><span class="sr-only">Sort</span><select id="req-sort"><option value="top">Most upvotes</option><option value="new">Newest</option><option value="updated">Recently updated</option></select></label>
+            <button type="button" class="btn primary" id="req-new">New request</button>
+            <button type="button" class="btn" id="req-close">Back to answers</button>
+          </span>
+        </div>
+      </div>
+      <form class="card edit-form req-form" id="req-form" hidden>
+        <div class="seg" id="req-type" role="group" aria-label="Request type"><button type="button" data-type="correction">Correct an answer</button><button type="button" data-type="platform">Add a platform</button><button type="button" data-type="feature">Feature idea</button><button type="button" data-type="other">Other</button></div>
+        <label>Title<input name="title" maxlength="120" placeholder="Short summary"></label>
+        <div class="req-grid">
+          <label id="req-platform-wrap">Platform<select name="platform"></select></label>
+          <label id="req-item-wrap">Item<select name="item"></select></label>
+          <label id="req-ptype-wrap">Page type<select name="ptype"></select></label>
+        </div>
+        <label><span>Details <span style="font-weight:400">(optional; Markdown works)</span></span><textarea name="details" maxlength="1000" rows="4" placeholder="What’s wrong or what you’d like, plus anything that helps (links, client examples)"></textarea></label>
+        <div class="edit-actions"><button type="submit" class="btn primary">Post request</button><button type="button" class="btn" id="req-cancel">Cancel</button><span class="muted edit-hint">Posting counts as your upvote.</span></div>
+      </form>
+      <div class="req-list" id="req-list"></div>
     </section>
 
     <details class="fold" id="guides-fold">
@@ -620,7 +674,7 @@ function rowHtml(e) {
   const warn = warnFor(p, e.sec, e.it.id);
   // Settled with nothing to add: one compact, muted line so the cards that need a look stand out.
   const slim = !note && !warn && settled(e.cell) && !e.edit;
-  const tools = (canEditAnswers && !e.variant ? `<button type="button" class="edit-btn" data-edit="${e.key}" aria-label="Edit answer for ${esc(plain(e.it.label))}">Edit</button>` : '');
+  const tools = suggestLink(e) + (canEditAnswers && !e.variant ? `<button type="button" class="edit-btn" data-edit="${e.key}" aria-label="Edit answer for ${esc(plain(e.it.label))}">Edit</button>` : '');
   const howHtml = how.steps.length ? `<details class="how"${state.showHow ? ' open' : ''}><summary>How to</summary><ol>${how.steps.map((t) => `<li>${t}</li>`).join('')}</ol>${
     !how.edited && HOW_UNVERIFIED.has(p.id) ? '<p class="how-note">These steps haven’t been checked in a live admin yet. If one is off, fix it with Edit.</p>' : ''}${guideLinks(p, e.it.id)}</details>` : '';
   return `<article class="card${slim ? ' slim' : ''}">
@@ -883,16 +937,23 @@ async function loadTeam() {
   if (!mem.error) R.members = new Map(mem.data.map((m) => [m.user_id, m]));
   renderTeam();
 }
-// The team page takes the place of the answers (toolbar, cards, guides, compare) while it's open.
-function showTeam(on) {
-  on = on && R.manage;
-  ['#sticky', '#panel', '#guides-fold', '#compare'].forEach((id) => { $(id).hidden = on; });
-  $('#team-view').hidden = !on;
-  try { history.replaceState(null, '', on ? '#team' : `#${state.platform}`); } catch {}
-  if (on) { renderTeam(); loadTeam(); scrollTo(0, 0); }
+// Team and Requests take the place of the answers (toolbar, cards, guides, compare) while open.
+function showView(name) {
+  if (name === 'team' && !R.manage) name = 'answers';
+  const answers = name === 'answers';
+  ['#sticky', '#panel', '#guides-fold', '#compare'].forEach((id) => { $(id).hidden = !answers; });
+  $('#team-view').hidden = name !== 'team';
+  $('#req-view').hidden = name !== 'requests';
+  $('#team-btn').setAttribute('aria-pressed', String(name === 'team'));
+  $('#req-btn').setAttribute('aria-pressed', String(name === 'requests'));
+  try { history.replaceState(null, '', answers ? `#${state.platform}` : `#${name}`); } catch {}
+  if (name === 'team') { renderTeam(); loadTeam(); }
+  if (name === 'requests') renderRequests();
+  if (!answers) scrollTo(0, 0);
 }
-$('#team-btn').addEventListener('click', () => showTeam($('#team-view').hidden));
-$('#team-close').addEventListener('click', () => showTeam(false));
+$('#team-btn').addEventListener('click', () => showView($('#team-view').hidden ? 'team' : 'answers'));
+$('#req-btn').addEventListener('click', () => showView($('#req-view').hidden ? 'requests' : 'answers'));
+$('#team-close').addEventListener('click', () => showView('answers'));
 $('#team-view').addEventListener('click', async (e) => {
   const t = e.target.closest('button');
   if (!t) return;
@@ -909,6 +970,184 @@ $('#team-view').addEventListener('click', async (e) => {
   if (error) return toast(failText(error, 'That didn’t work'));
   await loadTeam();
   toast(done);
+});
+
+// ---------- Requests ----------
+// Members post requests and upvote; admins set the status. One upvote per person per request (the database enforces it).
+const REQ_TYPES = { correction: 'Correct an answer', platform: 'Add a platform', feature: 'Feature idea', other: 'Other' };
+const REQ_STATUS = { new: 'Not reviewed', review: 'Under review', planned: 'Planned', done: 'Done', declined: 'Declined' };
+Object.assign(R, { reqs: new Map(), votes: new Map(), filter: 'open', type: '', sort: 'top', formType: 'correction', busy: new Set() });
+const ts = (iso) => new Date(iso).getTime() || 0;
+const isOpen = (r) => r.status !== 'done' && r.status !== 'declined';
+// Short item name for requests: "FAQ" from "FAQ: widget or drag & drop?", "Page Headers" from "Page Headers (e.g., …)"
+const shortLabel = (it) => plain(it.label).replace(/\s*\(.*\)\s*$/, '').replace(/:.*$/, '').replace(/\?$/, '').trim();
+// "Shopify · FAQ (Product)" from a request's platform and item ('content.product:faq')
+function reqTarget(r) {
+  const p = P.find((x) => x.id === r.platform);
+  const [sec, id] = String(r.item || '').split(':');
+  const it = id && itemsFor(sec || '').find((x) => x.id === id);
+  const pt = ptypeOf(sec || '');
+  return [p && p.name, it && shortLabel(it) + (pt && PTYPES[pt] ? ` (${PTYPES[pt]})` : '')].filter(Boolean).join(' · ');
+}
+function reqList() {
+  return [...R.reqs.values()].map((r) => {
+    const v = R.votes.get(r.id);
+    return { ...r, votes: v ? v.size : 0, mine: !!(v && v.has(R.me)), updated: Math.max(ts(r.at), ts(r.status_at)) };
+  });
+}
+function personName(uid) {
+  if (uid === R.me) return 'you';
+  const m = R.members.get(uid);
+  return (m && m.name) || 'a former teammate';
+}
+function renderRequests() {
+  const all = reqList();
+  const open = all.filter(isOpen).length;
+  $('#req-count').textContent = open ? String(open) : '';
+  if ($('#req-view').hidden) return;
+  document.querySelectorAll('#req-filter [data-filter]').forEach((b) => {
+    const f = b.dataset.filter;
+    const n = f === 'all' ? all.length : all.filter((r) => (f === 'open' ? isOpen(r) : !isOpen(r))).length;
+    b.setAttribute('aria-pressed', String(f === R.filter));
+    b.textContent = `${{ open: 'Open', done: 'Closed', all: 'All' }[f]} ${n}`;
+  });
+  let list = all.filter((r) => (R.filter === 'all' ? true : R.filter === 'open' ? isOpen(r) : !isOpen(r)));
+  if (R.type) list = list.filter((r) => r.type === R.type);
+  list.sort({ top: (a, b) => b.votes - a.votes || ts(b.at) - ts(a.at), new: (a, b) => ts(b.at) - ts(a.at), updated: (a, b) => b.updated - a.updated }[R.sort]);
+  $('#req-list').innerHTML = list.length ? list.map(reqHtml).join('') :
+    `<p class="empty">${all.length ? 'No requests match these filters.' : 'No requests yet. Spotted a wrong answer or want a platform added? Post the first one.'}</p>`;
+}
+function reqHtml(r) {
+  const target = reqTarget(r);
+  const canDelete = R.manage || r.author === R.me;
+  return `<article class="req">
+      <button type="button" class="vote" data-vote="${esc(r.id)}" aria-pressed="${r.mine}"
+        aria-label="${r.mine ? 'Remove your upvote for' : 'Upvote'} ${esc(r.title)} (${r.votes} vote${r.votes === 1 ? '' : 's'})">
+        <svg viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><path d="M1 7l5-5 5 5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        <b>${r.votes}</b></button>
+      <div class="req-body">
+        <h3>${esc(r.title)}</h3>
+        <div class="req-meta"><span class="st ${esc(r.status)}">${REQ_STATUS[r.status] || ''}</span><span class="chip">${REQ_TYPES[r.type] || ''}</span>${target ? `<span class="chip">${esc(target)}</span>` : ''}</div>
+        ${r.details ? `<div class="req-details">${md(r.details)}</div>` : ''}
+        <div class="req-foot"><span>Posted by ${esc(personName(r.author))} · ${ago(r.at)}</span>
+          ${R.manage ? `<label>Status <select data-status="${esc(r.id)}">${Object.keys(REQ_STATUS).map((k) => `<option value="${k}"${k === r.status ? ' selected' : ''}>${REQ_STATUS[k]}</option>`).join('')}</select></label>` : ''}
+          ${canDelete ? `<button type="button" class="link-btn" data-del="${esc(r.id)}">Delete</button>` : ''}
+        </div>
+      </div>
+    </article>`;
+}
+
+// Form: platform, item and (for Content items on platforms with page types) page type
+function fillReqSelects() {
+  const f = $('#req-form');
+  f.platform.innerHTML = '<option value="">Any / not specific</option>' + P.map((p) => `<option value="${p.id}">${esc(p.name)}</option>`).join('');
+  f.item.innerHTML = '<option value="">Not specific</option>' + ['content', 'tech'].map((sec) =>
+    `<optgroup label="${SEC_LABEL[sec]}">${itemsFor(sec).map((it) => `<option value="${sec}:${it.id}">${esc(plain(it.label))}</option>`).join('')}</optgroup>`).join('');
+  f.ptype.innerHTML = '<option value="">All page types</option>' + Object.entries(PTYPES).map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join('');
+  $('#req-type-filter').innerHTML = '<option value="">All types</option>' + Object.entries(REQ_TYPES).map(([k, l]) => `<option value="${k}">${l}</option>`).join('');
+}
+function syncReqFields() {
+  const f = $('#req-form'), t = R.formType;
+  $('#req-platform-wrap').hidden = t === 'platform';
+  $('#req-item-wrap').hidden = t !== 'correction';
+  $('#req-ptype-wrap').hidden = !(t === 'correction' && f.item.value.startsWith('content:') && BY_TYPE[f.platform.value]);
+}
+function setReqType(t) {
+  R.formType = t;
+  document.querySelectorAll('#req-type [data-type]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.type === t)));
+  syncReqFields();
+}
+function openReqForm(pre = {}) {
+  const f = $('#req-form');
+  f.reset();
+  f.hidden = false;
+  f.platform.value = pre.platform || '';
+  const [sec, id] = String(pre.item || '').split(':');
+  f.item.value = id ? `${sec.startsWith('content') ? 'content' : 'tech'}:${id}` : '';
+  f.ptype.value = ptypeOf(sec || '');
+  setReqType(pre.type || 'correction');
+  if (pre.title) f.title.value = pre.title;
+  f.scrollIntoView({ block: 'nearest' });
+  f.title.focus();
+  f.title.setSelectionRange(f.title.value.length, f.title.value.length);
+}
+function closeReqForm() { const f = $('#req-form'); f.reset(); f.hidden = true; }
+
+async function postRequest(f) {
+  const t = R.formType;
+  let item = t === 'correction' ? f.item.value : '';
+  if (item.startsWith('content:') && !$('#req-ptype-wrap').hidden && f.ptype.value) item = item.replace('content:', `content.${f.ptype.value}:`);
+  const body = { type: t, title: f.title.value.trim(), details: f.details.value.trim(), platform: t === 'platform' ? '' : f.platform.value, item };
+  if (!body.title) { f.title.focus(); return toast('Add a title'); }
+  const btn = f.querySelector('[type="submit"]');
+  btn.disabled = true;
+  const { data, error } = await sb.from('requests').insert(body).select().single();
+  btn.disabled = false;
+  if (error) return toast(failText(error, 'Couldn’t post'));
+  R.reqs.set(data.id, data);
+  // Posting counts as your upvote.
+  const v = await sb.from('votes').insert({ request_id: data.id });
+  if (!v.error) addVote(data.id, R.me);
+  closeReqForm();
+  R.filter = 'open'; R.sort = 'new'; $('#req-sort').value = 'new';
+  renderRequests();
+  toast('Request posted');
+}
+function addVote(req, uid) { if (!R.votes.has(req)) R.votes.set(req, new Set()); R.votes.get(req).add(uid); }
+async function toggleVote(id) {
+  if (R.busy.has(id)) return;
+  R.busy.add(id);
+  const had = !!(R.votes.get(id) && R.votes.get(id).has(R.me));
+  const { error } = had
+    ? await sb.from('votes').delete().match({ request_id: id, user_id: R.me })
+    : await sb.from('votes').insert({ request_id: id });
+  R.busy.delete(id);
+  if (error && !/duplicate/i.test(error.message)) return toast(failText(error, 'Couldn’t save your upvote'));
+  if (had) R.votes.get(id).delete(R.me); else addVote(id, R.me);
+  renderRequests();
+}
+
+// "Suggest fix" on an answer card: a correction request for that platform, item and page type
+const suggestLink = (e) => `<button type="button" class="suggest" data-suggest="${e.key}" title="Suggest a correction to this answer">Suggest fix</button>`;
+$('#panel').addEventListener('click', (e) => {
+  const s = e.target.closest('[data-suggest]');
+  if (!s) return;
+  const p = P.find((x) => x.id === state.platform);
+  showView('requests');
+  openReqForm({ type: 'correction', platform: p.id, item: s.dataset.suggest, title: `${reqTarget({ platform: p.id, item: s.dataset.suggest })}: ` });
+});
+
+$('#req-new').addEventListener('click', () => openReqForm());
+$('#req-cancel').addEventListener('click', closeReqForm);
+$('#req-close').addEventListener('click', () => showView('answers'));
+$('#req-type').addEventListener('click', (e) => { const b = e.target.closest('[data-type]'); if (b) setReqType(b.dataset.type); });
+$('#req-form').addEventListener('change', (e) => { if (e.target.name === 'item' || e.target.name === 'platform') syncReqFields(); });
+$('#req-form').addEventListener('submit', (e) => { e.preventDefault(); postRequest(e.target); });
+$('#req-filter').addEventListener('click', (e) => { const b = e.target.closest('[data-filter]'); if (b) { R.filter = b.dataset.filter; renderRequests(); } });
+$('#req-type-filter').addEventListener('change', (e) => { R.type = e.target.value; renderRequests(); });
+$('#req-sort').addEventListener('change', (e) => { R.sort = e.target.value; renderRequests(); });
+$('#req-list').addEventListener('click', async (e) => {
+  const v = e.target.closest('[data-vote]');
+  if (v) return toggleVote(v.dataset.vote);
+  const d = e.target.closest('[data-del]');
+  if (d && confirm('Delete this request for everyone?')) {
+    const id = d.dataset.del;
+    const { error } = await sb.from('requests').delete().eq('id', id);
+    if (error) return toast(failText(error, 'Couldn’t delete'));
+    R.reqs.delete(id); R.votes.delete(id); renderRequests(); toast('Request deleted');
+  }
+});
+$('#req-list').addEventListener('change', async (e) => {
+  const s = e.target.closest('[data-status]');
+  if (!s) return;
+  const id = s.dataset.status, body = { status: s.value, status_at: new Date().toISOString() };
+  s.disabled = true;
+  const { error } = await sb.from('requests').update(body).eq('id', id);
+  s.disabled = false;
+  if (error) return toast(failText(error, 'Couldn’t change the status'));
+  Object.assign(R.reqs.get(id), body);
+  renderRequests();
+  toast(`Marked ${REQ_STATUS[s.value]}`);
 });
 
 // ---------- Sign-in and loading ----------
@@ -955,13 +1194,23 @@ function identity(user) {
   return { name: (m.custom_claims && m.custom_claims.global_name) || m.full_name || m.name || '', avatar: m.avatar_url || '' };
 }
 
-// Team edits (everything members can read besides the content itself)
+// Team edits, requests, upvotes and names: everything members can read besides the content itself
 let lastLoad = 0, started = false;
-async function loadEdits() {
-  const { data, error } = await sb.from('edits').select('*');
-  if (error) throw error;
+async function loadShared() {
+  const [edits, reqs, votes, members] = await Promise.all([
+    sb.from('edits').select('*'),
+    sb.from('requests').select('*').order('at', { ascending: false }).limit(1000),
+    sb.from('votes').select('request_id,user_id').limit(5000),
+    sb.from('members').select('user_id,name,avatar,role,discord_id,approved_at'),
+  ]);
+  const err = edits.error || reqs.error || votes.error || members.error;
+  if (err) throw err;
   EDITS.clear();
-  data.forEach((x) => EDITS.set(editKey(x.platform, x.sec, x.item), x));
+  edits.data.forEach((x) => EDITS.set(editKey(x.platform, x.sec, x.item), x));
+  R.reqs = new Map(reqs.data.map((r) => [r.id, r]));
+  R.votes = new Map();
+  votes.data.forEach((v) => addVote(v.request_id, v.user_id));
+  R.members = new Map(members.data.map((m) => [m.user_id, m]));
   lastLoad = Date.now();
 }
 
@@ -988,7 +1237,7 @@ async function boot() {
   const d = app.data.data;
   ({ ITEMS, CONTENT_ITEMS, VERDICT, SCOPE, P, CONTENT, VARIANTS, HOW, WARN, H1_FIX, PTYPES, BY_TYPE, GUIDES, HOW_GUIDES } = d);
   HOW_UNVERIFIED = new Set(d.HOW_UNVERIFIED || []);
-  try { await loadEdits(); } catch { return gate('error', { user: me, message: 'Couldn’t load the team’s edits. Try again.' }); }
+  try { await loadShared(); } catch { return gate('error', { user: me, message: 'Couldn’t load the team’s data. Try again.' }); }
   startApp(me);
 }
 
@@ -1000,9 +1249,10 @@ function startApp(me) {
   $('#user-name').textContent = me.name || 'Signed in';
   if (me.avatar) { $('#user-avatar').src = me.avatar; $('#user-avatar').hidden = false; }
   $('#team-btn').hidden = !R.manage;
-  if (started) { refresh(); return; }
+  if (started) { refresh(); renderRequests(); return; }
   started = true;
   renderGuideList();
+  fillReqSelects();
   // Open the platform named in the link (#shopify, #wix…), else the last one viewed.
   let start = location.hash.slice(1);
   if (!P.some((p) => p.id === start)) {
@@ -1017,16 +1267,19 @@ function startApp(me) {
     if (Object.hasOwn(PTYPES, v.ptype)) state.ptype = v.ptype;
   } catch {}
   select(start);
-  if (R.manage) { loadTeam(); if (location.hash === '#team') showTeam(true); }
+  renderRequests();
+  if (R.manage) loadTeam();
+  const h = location.hash.slice(1);
+  if (h === 'team' || h === 'requests') showView(h);
   addEventListener('hashchange', () => {
     const k = location.hash.slice(1);
-    if (k === 'team') showTeam(true);
-    else if (P.some((p) => p.id === k)) { showTeam(false); select(k); }
+    if (k === 'team' || k === 'requests') showView(k);
+    else if (P.some((p) => p.id === k)) { showView('answers'); select(k); }
   });
   // Pick up teammates' edits when coming back to the tab.
   document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState !== 'visible' || Date.now() - lastLoad < 30000) return;
-    try { await loadEdits(); refresh(); if (R.manage) loadTeam(); } catch {}
+    try { await loadShared(); refresh(); renderRequests(); if (R.manage) loadTeam(); } catch {}
   });
 }
 
