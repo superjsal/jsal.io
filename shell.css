@@ -1,0 +1,70 @@
+/* jsal.io shared app shell: colours, top bar and theme button, used by every app.
+   Palette is IC Defaults' (slate neutrals, soft teal). Light by default, dark when the
+   computer is set to dark, and <html data-theme="light|dark"> when someone picks one
+   with the theme button (nav.js saves the choice for all the apps). */
+
+:root {
+  --jsal-bg: #f9fafb;
+  --jsal-surface: #ffffff;
+  --jsal-sunk: #eef1f4;
+  --jsal-ink: #16181d;
+  --jsal-ink-2: #3a4350;
+  --jsal-muted: #525d6e;
+  --jsal-line: #dde2e8;
+  --jsal-line-hi: #c5ccd6;
+  --jsal-accent: #2a7f7d;      /* teal for text and links */
+  --jsal-accent-soft: #e3f3f2;
+  --jsal-accent-ring: rgba(42, 127, 125, 0.35);
+  --jsal-fill: #97d3d2;        /* soft teal for main buttons */
+  --jsal-on-fill: #16181d;
+  --jsal-ok: #19784a;   --jsal-ok-soft: #dff2e7;
+  --jsal-warn: #8a5a00; --jsal-warn-soft: #fbefd6;
+  --jsal-bad: #b3352b;  --jsal-bad-soft: #fbe3e0;
+  --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --jsal-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --jsal-radius: 6px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --jsal-bg: #16181d; --jsal-surface: #1f232a; --jsal-sunk: #292e37;
+    --jsal-ink: #f9fafb; --jsal-ink-2: #d0d6de; --jsal-muted: #a3adbb; --jsal-line: #363d48; --jsal-line-hi: #4a5361;
+    --jsal-accent: #97d3d2; --jsal-accent-soft: #233a3b; --jsal-accent-ring: rgba(151, 211, 210, 0.35);
+    --jsal-ok: #5fd193; --jsal-ok-soft: #173326; --jsal-warn: #f0c060; --jsal-warn-soft: #3a2f14; --jsal-bad: #ff8f84; --jsal-bad-soft: #3f1d1a;
+    --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --jsal-bg: #16181d; --jsal-surface: #1f232a; --jsal-sunk: #292e37;
+  --jsal-ink: #f9fafb; --jsal-ink-2: #d0d6de; --jsal-muted: #a3adbb; --jsal-line: #363d48; --jsal-line-hi: #4a5361;
+  --jsal-accent: #97d3d2; --jsal-accent-soft: #233a3b; --jsal-accent-ring: rgba(151, 211, 210, 0.35);
+  --jsal-ok: #5fd193; --jsal-ok-soft: #173326; --jsal-warn: #f0c060; --jsal-warn-soft: #3a2f14; --jsal-bad: #ff8f84; --jsal-bad-soft: #3f1d1a;
+  --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
+}
+
+/* Top bar: logo (app switcher) · app name · the app's own controls · theme button */
+.jsal-top {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
+  min-height: 51px;   /* same height in every app, whether its controls are 32 or 36px tall */
+  padding-bottom: 14px; border-bottom: 1px solid var(--jsal-line);
+  font-family: var(--jsal-font);
+}
+.jsal-brand {
+  display: inline-flex; align-items: center; height: 28px; flex-shrink: 0;
+  font-weight: 800; font-size: 15px; line-height: 1; letter-spacing: -0.3px;
+  color: var(--jsal-ink); text-decoration: none; white-space: nowrap;
+}
+.jsal-brand span { color: var(--jsal-accent); }
+.jsal-title { margin: 0; font: 700 21px/1.2 var(--jsal-font); letter-spacing: -0.02em; color: var(--jsal-ink); }
+.jsal-title .hl { color: var(--jsal-accent); }
+.jsal-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.jsal-theme {
+  width: 32px; height: 32px; flex-shrink: 0; display: grid; place-items: center; padding: 0;
+  border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius);
+  background: transparent; color: var(--jsal-muted); cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.jsal-theme:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
+.jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }

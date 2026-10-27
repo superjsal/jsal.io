@@ -1,14 +1,14 @@
 // Entry point: wires the controls to state, loading, preview and export.
 
 import {
-  state, FORMATS, QUALITY_HINTS, THEMES, savePrefs, loadPrefs,
-  loadRecents, addRecent, removeRecent, loadTheme, saveTheme,
+  state, FORMATS, QUALITY_HINTS, savePrefs, loadPrefs,
+  loadRecents, addRecent, removeRecent,
 } from "./state.js";
 import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js";
 import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js";
 import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js";
 import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js";
-import { icon, plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js";
 import { makeZip, uniqueNames } from "./zip.js";
 import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js";
 
@@ -24,7 +24,6 @@ const widthInput    = $("cw");
 const heightInput   = $("ch");
 const loadChoice    = $("loadChoice");
 const recentSizes   = $("recentSizes");
-const themeToggle   = $("themeToggle");
 
 const sizeButtons    = [...document.querySelectorAll(".seg-btn")];
 const qualityButtons = [...document.querySelectorAll(".quality-btn")];
@@ -379,30 +378,8 @@ function renderRecents() {
   }));
 }
 
-// --- Theme: dark → light → teal → dark ---
-
-// fav: tab-icon colors [gradient start, gradient end, "J." color] — the theme's accent
-const THEME_INFO = {
-  dark:  { icon: "moon",    label: "Dark",  next: "Light", fav: ["#e09840", "#c07828", "#1a1208"] },
-  light: { icon: "sun",     label: "Light", next: "Teal",  fav: ["#9a5e0e", "#7f4c0c", "#ffffff"] },
-  teal:  { icon: "droplet", label: "Teal",  next: "Dark",  fav: ["#97d3d2", "#74c1c0", "#16181d"] },
-};
-
-// "J." tab icon drawn as shapes (tab icons can't use web fonts). Mirrors favicon.svg.
-function faviconFor([a1, a2, ink]) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a1}"/><stop offset="1" stop-color="${a2}"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#g)"/><path d="M18 7v12a5 5 0 0 1-10 0" fill="none" stroke="${ink}" stroke-width="4" stroke-linecap="round"/><circle cx="24" cy="23.5" r="2.5" fill="${ink}"/></svg>`;
-  return "data:image/svg+xml," + encodeURIComponent(svg);
-}
-
-function applyTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  const info = THEME_INFO[theme];
-  themeToggle.innerHTML = icon(info.icon, 14, 2);
-  themeToggle.title = `${info.label} theme — click for ${info.next}`;
-  themeToggle.setAttribute("aria-label", `Theme: ${info.label}. Switch to ${info.next}`);
-  document.querySelector('link[rel="icon"]').href = faviconFor(info.fav);
-  drawEditor();   // crop box color follows the theme
-}
+// Light/dark is shared by all the jsal.io apps (/nav.js): redraw the crop box in the new colors
+addEventListener("jsal-theme", drawEditor);
 
 // --- Event wiring ---
 
@@ -509,13 +486,6 @@ document.addEventListener("keydown", e => {
   }
 });
 
-themeToggle.addEventListener("click", () => {
-  const current = document.documentElement.dataset.theme;
-  const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
-  applyTheme(next);
-  saveTheme(next);
-});
-
 initEditor({
   onLive: drawThumb,
   onCommit: () => { updateCardMeta(); prewarm(600); },
@@ -525,7 +495,6 @@ initGrid({ onSelect: selectImage, onRemove: removeImage, onSave: saveImage });
 // --- Init: restore saved settings ---
 
 loadPrefs();
-applyTheme(loadTheme());
 
 const q = qualityButtons.find(b => parseFloat(b.dataset.quality) === state.quality);
 setPressed(qualityButtons, q);

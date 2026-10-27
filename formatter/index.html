@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Word to Clean HTML Formatter | JSAL</title>
   <meta name="description" content="Paste content from Word, Google Docs or raw HTML and get clean HTML or formatted text, ready for any CMS. Runs entirely in your browser." />
   <link rel="canonical" href="https://jsal.io/formatter/" />
-  <link rel="icon" href="favicon.svg?v=2026-10-27" type="image/svg+xml" />
-  <meta name="theme-color" content="#1a1510" />
+  <link rel="icon" href="favicon.svg?v=2026-10-28" type="image/svg+xml" />
+  <meta name="theme-color" content="#f9fafb" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)" />
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://jsal.io/formatter/" />
@@ -15,11 +16,11 @@
   <meta property="og:description" content="Clean up content pasted from Word or Google Docs. Free and entirely in your browser." />
   <meta name="twitter:card" content="summary" />
 
-  <!-- Apply the saved theme before first paint (falls back to the resizer's choice) -->
+  <!-- Apply the saved light/dark choice (shared by all jsal.io apps) before first paint -->
   <script>
     try {
-      var t = localStorage.getItem("formatter-theme") || localStorage.getItem("resizer-theme");
-      if (t === "light" || t === "teal") document.documentElement.dataset.theme = t;
+      var t = localStorage.getItem("jsal-theme");
+      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
     } catch (e) {}
   </script>
 
@@ -27,31 +28,32 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- Version numbers (?v=) make browsers fetch fresh files after an update. When publishing
-       changes, bump every v=2026-10-27 in this file (find and replace) to the new date. -->
-  <link rel="stylesheet" href="styles.css?v=2026-10-27" />
+       changes, bump every v=2026-10-28 in this file (find and replace) to the new date. -->
+  <link rel="stylesheet" href="/shell.css?v=2026-10-28" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-28" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":   "./js/main.js?v=2026-10-27",
-        "./js/clean.js":  "./js/clean.js?v=2026-10-27",
-        "./js/sample.js": "./js/sample.js?v=2026-10-27"
+        "./js/main.js":   "./js/main.js?v=2026-10-28",
+        "./js/clean.js":  "./js/clean.js?v=2026-10-28",
+        "./js/sample.js": "./js/sample.js?v=2026-10-28"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-27"></script>
+  <script type="module" src="js/main.js?v=2026-10-28"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-27" defer></script>
+  <script src="/nav.js?v=2026-10-28" defer></script>
 </head>
 <body>
   <main class="app">
 
-    <header class="app-header">
-      <a class="logo" href="/" data-jsal-nav>jsal<span class="logo-j">.io</span></a>
-      <div class="header-text">
-        <h1><span class="sr-only">JSAL – Word to Clean HTML </span>Content Formatter</h1>
-        <p class="app-subtitle">Clean up content from Word, Google Docs or HTML code</p>
+    <!-- Top bar shared by every jsal.io app (styles in /shell.css; the logo menu and theme button come from /nav.js) -->
+    <header class="app-header jsal-top">
+      <a class="jsal-brand" href="/" data-jsal-nav>jsal<span>.io</span></a>
+      <h1 class="jsal-title"><span class="sr-only">JSAL – Word to Clean HTML </span>Content <span class="hl">Formatter</span></h1>
+      <div class="jsal-actions">
+        <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"></button>
       </div>
-      <button class="theme-toggle" id="themeToggle" aria-label="Switch theme"></button>
     </header>
 
     <section class="side" aria-label="Checks and copy">

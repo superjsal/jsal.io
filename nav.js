@@ -10,11 +10,39 @@
       icon: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>' },
   ];
   const HOME = { href: '/', name: 'jsal.io home', icon: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>' };
+  const svg = (paths, size = 16) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+
+  // Theme button ([data-jsal-theme]): flips light/dark and remembers it for every app.
+  // Each page applies the saved choice in its <head> so there's no flash. Apps that draw
+  // with theme colours (e.g. a canvas) can listen for the "jsal-theme" event to redraw.
+  const themeBtn = document.querySelector('[data-jsal-theme]');
+  if (themeBtn) {
+    const root = document.documentElement;
+    const system = matchMedia('(prefers-color-scheme: dark)');
+    const current = () => root.dataset.theme || (system.matches ? 'dark' : 'light');
+    const paint = () => {
+      const dark = current() === 'dark';
+      themeBtn.innerHTML = dark
+        ? svg('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>')
+        : svg('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/>');
+      const label = dark ? 'Switch to light theme' : 'Switch to dark theme';
+      themeBtn.title = label;
+      themeBtn.setAttribute('aria-label', label);
+    };
+    themeBtn.addEventListener('click', () => {
+      const next = current() === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('jsal-theme', next); } catch (e) {}
+      paint();
+      dispatchEvent(new Event('jsal-theme'));
+    });
+    system.addEventListener('change', () => { if (!root.dataset.theme) { paint(); dispatchEvent(new Event('jsal-theme')); } });
+    paint();
+  }
 
   const trigger = document.querySelector('[data-jsal-nav]');
   if (!trigger) return;
   const here = location.pathname;
-  const svg = (paths, size = 16) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
 
   document.head.insertAdjacentHTML('beforeend', `<style>
     [data-jsal-nav], [data-jsal-nav]:hover { cursor: pointer; text-decoration: none; border-radius: 6px; }

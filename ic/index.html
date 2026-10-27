@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/shell.css?v=2026-10-28">
+<script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <style>
 /* Layout: platforms down the left, one toolbar with every choice, and each item as a card; a compare grid below.
    Palette follows lp.agency: charcoal hero, slate neutrals, soft-teal highlights, Inter, near-square corners. */
@@ -296,6 +298,9 @@ header.top { gap: 8px 18px; }
 .account #user-name { color: var(--ink); font-weight: 600; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .account .link-btn { color: var(--muted); font-weight: 500; }
 .account .link-btn:hover { color: var(--ink); }
+/* Theme button (shared with the other jsal.io apps): far right of the top bar */
+header.top .jsal-theme { margin-left: auto; }
+header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 @media (max-width: 640px) { .viewnav { margin-left: 0; order: 9; flex: 1 1 100%; } .viewnav button { flex: 1; } .account { margin-left: auto; border-left: 0; padding-left: 0; } }
 .link-btn { font: 600 13px var(--body); color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
 .link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -347,7 +352,7 @@ header.top { gap: 8px 18px; }
 <body>
 
 <div class="app">
-  <header class="top">
+  <header class="top jsal-top">
     <a class="brand" href="/" data-jsal-nav>jsal<span>.io</span></a>
     <h1>IC <span class="hl">Defaults</span></h1>
     <nav class="seg viewnav" id="viewnav" aria-label="Views" hidden>
@@ -356,6 +361,7 @@ header.top { gap: 8px 18px; }
       <button type="button" data-view="team" id="team-btn" aria-pressed="false" hidden>Team <span class="count" id="team-count"></span></button>
     </nav>
     <span class="account" id="user-chip" hidden><img id="user-avatar" alt="" hidden referrerpolicy="no-referrer"><span id="user-name"></span><button type="button" class="link-btn" id="signout">Sign out</button></span>
+    <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"></button>
   </header>
 
   <section class="gate" id="gate" aria-live="polite"><div class="gate-card"><p class="muted">Loading…</p></div></section>
@@ -450,7 +456,7 @@ header.top { gap: 8px 18px; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-27" defer></script>
+<script src="/nav.js?v=2026-10-28" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 // ---------- Config ----------

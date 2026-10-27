@@ -11,7 +11,6 @@ export const QUALITY_HINTS = {
   "0.92": "Sharp output, larger file size",
 };
 
-export const THEMES = ["dark", "light", "teal"];
 export const MAX_RECENTS = 5;
 
 export const state = {
@@ -82,14 +81,4 @@ export function addRecent(w, h) {
 
 export function removeRecent(w, h) {
   write("resizer-recents", JSON.stringify(loadRecents().filter(r => !(r.w === w && r.h === h))));
-}
-
-export function loadTheme() {
-  const saved = read("resizer-theme");
-  if (saved === "indigo") return "teal";   // Indigo was replaced by Teal
-  return THEMES.includes(saved) ? saved : "dark";
-}
-
-export function saveTheme(theme) {
-  write("resizer-theme", theme);
 }

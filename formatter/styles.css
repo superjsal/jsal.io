@@ -1,124 +1,44 @@
-/* ── Themes ────────────────────────────────────────────────────────────────
-   Same three themes as the image resizer, picked by <html data-theme="…">:
-   dark (default, amber), light (amber), teal (matches IC Defaults). */
+/* ── Colours ───────────────────────────────────────────────────────────────
+   Shared with every jsal.io app: the palette, light/dark switching and the top
+   bar live in /shell.css. These names map the shared colours onto this app's
+   components. */
 
 :root {
-  --bg: #1a1510;
-  --surface: #221c14;
-  --surface-2: #2b231a;
-  --surface-3: #342b20;
+  --bg: var(--jsal-bg);
+  --surface: var(--jsal-bg);          /* the app sits flat on the page */
+  --surface-2: var(--jsal-surface);   /* fields, rows and cards */
+  --surface-3: var(--jsal-sunk);      /* hover */
 
-  --border: rgba(255,210,140,0.09);
-  --border-mid: rgba(255,210,140,0.13);
-  --border-hi: rgba(255,210,140,0.22);
+  --border: var(--jsal-line);
+  --border-mid: var(--jsal-line);
+  --border-hi: var(--jsal-line-hi);
 
-  --text: rgba(255,240,215,0.92);
-  --text-2: rgba(255,240,215,0.66);
-  --text-3: rgba(255,240,215,0.52);
+  --text: var(--jsal-ink);
+  --text-2: var(--jsal-ink-2);
+  --text-3: var(--jsal-muted);
 
-  --gradient: linear-gradient(135deg, #e09840 0%, #c07828 100%);
-  --gradient-dim: linear-gradient(135deg, rgba(224,152,64,0.16) 0%, rgba(192,120,40,0.16) 100%);
-  --accent-glow: 0 2px 16px rgba(224,152,64,0.32), 0 1px 4px rgba(192,120,40,0.20);
-  --on-accent: #1a1208;
+  --gradient: var(--jsal-fill);       /* main button */
+  --gradient-dim: var(--jsal-accent-soft);
+  --accent-glow: none;
+  --on-accent: var(--jsal-on-fill);
 
-  --accent: #e09840;
-  --accent-dim: rgba(224,152,64,0.14);
-  --accent-ring: rgba(224,152,64,0.30);
-  --ok: #7aab80;
-  --ok-dim: rgba(122,171,128,0.14);
-  --warn: #f0c060;
-  --warn-dim: rgba(240,192,96,0.12);
-  --bad: #ef6f62;
-  --bad-dim: rgba(224,85,72,0.12);
+  --accent: var(--jsal-accent);
+  --accent-dim: var(--jsal-accent-soft);
+  --accent-ring: var(--jsal-accent-ring);
+  --ok: var(--jsal-ok);
+  --ok-dim: var(--jsal-ok-soft);
+  --warn: var(--jsal-warn);
+  --warn-dim: var(--jsal-warn-soft);
+  --bad: var(--jsal-bad);
+  --bad-dim: var(--jsal-bad-soft);
 
-  --glow-1: rgba(224,152,64,0.10);
-  --glow-2: rgba(122,171,128,0.07);
+  --shadow-card: var(--jsal-shadow);
+  --shadow-inset: none;
 
-  --shadow-card: 0 1px 0 rgba(255,210,140,0.06), 0 2px 8px rgba(0,0,0,0.35);
-  --shadow-inset: inset 0 1px 3px rgba(0,0,0,0.35);
-  --shadow-app: 0 0 0 1px var(--border-mid), 0 32px 80px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.3);
-
-  --radius-sm: 8px;
-  --radius-xs: 5px;
-  --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --radius-sm: var(--jsal-radius);
+  --radius-xs: 4px;
+  --font: var(--jsal-font);
   --mono: ui-monospace, "Cascadia Code", Consolas, "SF Mono", monospace;
-
-  color-scheme: dark;
-}
-
-:root[data-theme="light"] {
-  --bg: #f0ebe2;
-  --surface: #faf7f3;
-  --surface-2: #f0ebe2;
-  --surface-3: #e5ddd2;
-
-  --border: rgba(80,60,40,0.12);
-  --border-mid: rgba(80,60,40,0.18);
-  --border-hi: rgba(80,60,40,0.28);
-
-  --text: rgba(30,20,10,0.90);
-  --text-2: rgba(30,20,10,0.68);
-  --text-3: rgba(30,20,10,0.64);
-
-  --gradient: linear-gradient(135deg, #9a5e0e 0%, #7f4c0c 100%);
-  --gradient-dim: linear-gradient(135deg, rgba(193,127,36,0.13) 0%, rgba(158,99,21,0.13) 100%);
-  --accent-glow: 0 2px 12px rgba(193,127,36,0.30), 0 1px 3px rgba(158,99,21,0.18);
-  --on-accent: #fff;
-
-  --accent: #85500b;
-  --accent-dim: rgba(184,114,26,0.12);
-  --accent-ring: rgba(184,114,26,0.30);
-  --ok: #3f6344;
-  --ok-dim: rgba(78,112,83,0.12);
-  --warn: #8a5a00;
-  --warn-dim: rgba(176,120,10,0.12);
-  --bad: #b03026;
-  --bad-dim: rgba(184,50,40,0.08);
-
-  --glow-1: rgba(193,127,36,0.14);
-  --glow-2: rgba(90,122,95,0.10);
-
-  --shadow-card: 0 1px 0 rgba(255,255,255,0.75), 0 2px 6px rgba(80,50,20,0.08);
-  --shadow-inset: inset 0 1px 3px rgba(80,50,20,0.07);
-  --shadow-app: 0 0 0 1px var(--border-mid), 0 24px 60px rgba(80,50,20,0.14), 0 6px 18px rgba(80,50,20,0.08);
-
-  color-scheme: light;
-}
-
-:root[data-theme="teal"] {
-  --bg: #16181d;
-  --surface: #1f232a;
-  --surface-2: #292e37;
-  --surface-3: #323843;
-
-  --border: #313741;
-  --border-mid: #363d48;
-  --border-hi: #4a5361;
-
-  --text: #f9fafb;
-  --text-2: #b9c2cd;
-  --text-3: #a3adbb;
-
-  --gradient: linear-gradient(135deg, #97d3d2 0%, #74c1c0 100%);
-  --gradient-dim: linear-gradient(135deg, rgba(151,211,210,0.15) 0%, rgba(116,193,192,0.15) 100%);
-  --accent-glow: 0 2px 16px rgba(151,211,210,0.24), 0 1px 4px rgba(116,193,192,0.18);
-  --on-accent: #16181d;
-
-  --accent: #97d3d2;
-  --accent-dim: #233a3b;
-  --accent-ring: rgba(151,211,210,0.35);
-  --ok: #5fd193;
-  --ok-dim: #173326;
-  --warn: #f2c66d;
-  --warn-dim: #3a3120;
-  --bad: #ff8f84;
-  --bad-dim: #3f1d1a;
-
-  --glow-1: rgba(151,211,210,0.08);
-  --glow-2: rgba(95,209,147,0.05);
-
-  --shadow-card: 0 1px 0 rgba(255,255,255,0.03), 0 2px 10px rgba(0,0,0,0.45);
-  --shadow-inset: inset 0 1px 3px rgba(0,0,0,0.40);
 }
 
 /* ── Base ──────────────────────────────────────────────────────────────── */
@@ -141,9 +61,6 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 body {
   min-height: 100vh;
   background: var(--bg);
-  background-image:
-    radial-gradient(ellipse 65% 50% at 20% 0%, var(--glow-1), transparent),
-    radial-gradient(ellipse 45% 40% at 85% 90%, var(--glow-2), transparent);
   color: var(--text);
   font-family: var(--font);
   font-size: 13px;
@@ -154,56 +71,18 @@ body {
 
 .ico { display: inline-grid; place-items: center; flex-shrink: 0; }
 
-/* ── Header ────────────────────────────────────────────────────────────── */
+/* ── Page + header ─────────────────────────────────────────────────────── */
 
 .app {
   width: 100%;
-  max-width: 840px;   /* lines up with the jsal.io home page column (960px on very large screens, below) */
+  max-width: 880px;   /* same as IC Defaults: lines up with the jsal.io home page column */
   display: flex;
   flex-direction: column;
-  padding: 12px 16px;
-  background: var(--surface);
-  box-shadow: var(--shadow-app);
+  padding: 18px 16px;
 }
 
-.app-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.logo {
-  height: 30px;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.4px;
-  color: var(--text);
-  white-space: nowrap;
-}
-.logo-j { color: var(--accent); }
-
-.header-text { flex: 1; min-width: 0; }
-h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.25; }
-.app-subtitle { color: var(--text-3); }
-
-.theme-toggle {
-  width: 32px; height: 32px;
-  border-radius: 7px;
-  border: 1px solid var(--border-mid);
-  background: var(--surface-2);
-  color: var(--text-2);
-  display: grid; place-items: center;
-  flex-shrink: 0;
-  transition: background 0.12s, color 0.12s, border-color 0.12s;
-}
-.theme-toggle:hover { background: var(--surface-3); color: var(--text); border-color: var(--border-hi); }
+/* The top bar itself (.jsal-top) is styled by /shell.css */
+.app-header { margin-bottom: 16px; }
 
 .section-label {
   font-size: 12px;
@@ -221,23 +100,22 @@ h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.2
 
 .option-track {
   display: flex;
-  border-radius: var(--radius-xs);
-  border: 1px solid var(--border-mid);
-  overflow: hidden;
-  background: rgba(0,0,0,0.12);
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
 }
 .option-track button {
   flex: 1;
-  padding: 5px 10px;
-  color: var(--text-2);
-  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  color: var(--text-3);
+  font-weight: 600;
   white-space: nowrap;
   transition: background 0.12s, color 0.12s;
 }
-.option-track button + button { border-left: 1px solid var(--border); }
-.option-track button:hover { background: var(--surface-3); color: var(--text); }
-.option-track button:focus-visible { outline-offset: -2px; }
-.option-track button[aria-selected="true"] { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+.option-track button:hover { color: var(--text); }
+.option-track button[aria-selected="true"] { background: var(--surface-2); color: var(--text); box-shadow: var(--shadow-card); }
 
 /* ── Checks ────────────────────────────────────────────────────────────── */
 
@@ -267,6 +145,7 @@ h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.2
   color: var(--text-2);
   line-height: 1.45;
 }
+.check > span:last-child { min-width: 0; overflow-wrap: anywhere; }   /* long URLs wrap instead of running off */
 .check .ico { margin-top: 1px; width: 16px; height: 16px; border-radius: 50%; }
 .check.ok .ico { color: var(--ok); background: var(--ok-dim); }
 .check.warn { border-color: var(--warn-dim); }
@@ -327,7 +206,7 @@ h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.2
   padding: 32px 20px;
   text-align: center;
   border: 1.5px dashed var(--border-hi);
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--surface-2);
   cursor: text;
   transition: border-color 0.12s, background 0.12s;
@@ -346,7 +225,7 @@ kbd { font: 600 11.5px var(--font); padding: 1px 6px; border-radius: 4px; border
   min-height: 0;
   height: 70vh;
   border: 1px solid var(--border-mid);
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--surface-2);
   overflow: hidden;
 }
@@ -360,7 +239,7 @@ kbd { font: 600 11.5px var(--font); padding: 1px 6px; border-radius: 4px; border
 }
 .pane-title { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pane-meta { font-weight: 400; color: var(--text-3); margin-left: 4px; font-variant-numeric: tabular-nums; }
-.pane-body { flex: 1; min-height: 0; overflow: auto; background: var(--surface); }
+.pane-body { flex: 1; min-height: 0; overflow: auto; background: var(--surface-2); }
 
 .code {
   margin: 0;
@@ -449,15 +328,13 @@ textarea.code[hidden] { display: none; }
 /* ── Layout ────────────────────────────────────────────────────────────── */
 
 @media (min-width: 900px) {
-  body { padding: 16px; height: 100vh; overflow: hidden; }
+  body { height: 100vh; overflow: hidden; }
   .app {
     height: 100%;
     display: grid;
-    grid-template-columns: minmax(300px, 340px) minmax(0, 1fr);
+    grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
-    column-gap: 20px;
-    padding: 16px 20px;
-    border-radius: 16px;
+    column-gap: 28px;
   }
   .app-header { grid-column: 1 / -1; }
   /* Copy buttons pinned at the bottom, checks scroll above them */
@@ -476,7 +353,7 @@ textarea.code[hidden] { display: none; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* Same width as the jsal.io home page column on very large screens */
+/* Same width as IC Defaults on very large screens */
 @media (min-width: 1800px) {
-  .app { max-width: 960px; }
+  .app { max-width: 1000px; }
 }

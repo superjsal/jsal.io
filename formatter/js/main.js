@@ -32,42 +32,11 @@ const icon = (name, size = 14, stroke = 2.2) =>
 for (const el of document.querySelectorAll("[data-icon]")) el.innerHTML = icon(el.dataset.icon, +el.dataset.size || 14);
 if (/Mac|iPhone|iPad/.test(navigator.platform)) for (const k of document.querySelectorAll(".mod-key")) k.textContent = "⌘";
 
-const read = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
-const write = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
-
 // Pasted content is never saved anywhere
 let input = null;     // { html, text } as pasted
 let result = null;    // latest clean() of the editor content
 let fixes = [];       // what cleaning fixed on the first pass (shown until the next paste)
 let source = "";      // "Word", "Google Docs"… for the pane title
-
-// ── Theme: dark → light → teal, same as the resizer ──────────────────────
-
-const THEMES = ["dark", "light", "teal"];
-const THEME_INFO = {
-  dark:  { icon: "moon",    label: "Dark",  next: "Light", fav: ["#e09840", "#c07828", "#1a1208"] },
-  light: { icon: "sun",     label: "Light", next: "Teal",  fav: ["#9a5e0e", "#7f4c0c", "#ffffff"] },
-  teal:  { icon: "droplet", label: "Teal",  next: "Dark",  fav: ["#97d3d2", "#74c1c0", "#16181d"] },
-};
-function faviconFor([a1, a2, ink]) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a1}"/><stop offset="1" stop-color="${a2}"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#g)"/><path d="M18 7v12a5 5 0 0 1-10 0" fill="none" stroke="${ink}" stroke-width="4" stroke-linecap="round"/><circle cx="24" cy="23.5" r="2.5" fill="${ink}"/></svg>`;
-  return "data:image/svg+xml," + encodeURIComponent(svg);
-}
-function applyTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  const info = THEME_INFO[theme];
-  const btn = $("themeToggle");
-  btn.innerHTML = icon(info.icon, 14, 2);
-  btn.title = `${info.label} theme — click for ${info.next}`;
-  btn.setAttribute("aria-label", `Theme: ${info.label}. Switch to ${info.next}`);
-  document.querySelector('link[rel="icon"]').href = faviconFor(info.fav);
-}
-$("themeToggle").addEventListener("click", () => {
-  const next = THEMES[(THEMES.indexOf(document.documentElement.dataset.theme) + 1) % THEMES.length];
-  applyTheme(next);
-  write("formatter-theme", next);
-});
-applyTheme(THEMES.includes(document.documentElement.dataset.theme) ? document.documentElement.dataset.theme : "dark");
 
 // ── Paste ────────────────────────────────────────────────────────────────
 
