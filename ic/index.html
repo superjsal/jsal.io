@@ -287,8 +287,15 @@ code, pre { font-variant-ligatures: none; }
 .gate-card h2 { font-size: 20px; }
 .btn.discord { display: inline-flex; gap: 10px; align-items: center; justify-content: center; background: #5865f2; color: #fff; font-size: 15px; padding: 11px 18px; }
 .btn.discord:hover { filter: brightness(1.08); }
-.user-chip { display: inline-flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 13px; color: var(--muted); margin-left: auto; }
-.user-chip img { width: 26px; height: 26px; border-radius: 50%; }
+header.top { gap: 8px 18px; }
+.viewnav { margin-left: auto; }
+.viewnav .count { margin-left: 4px; }
+.account { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); padding-left: 14px; border-left: 1px solid var(--line); }
+.account img { width: 24px; height: 24px; border-radius: 50%; }
+.account #user-name { color: var(--ink); font-weight: 600; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account .link-btn { color: var(--muted); font-weight: 500; }
+.account .link-btn:hover { color: var(--ink); }
+@media (max-width: 640px) { .viewnav { margin-left: 0; order: 9; flex: 1 1 100%; } .viewnav button { flex: 1; } .account { margin-left: auto; border-left: 0; padding-left: 0; } }
 .link-btn { font: 600 13px var(--body); color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
 .link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
 .count { display: inline-block; min-width: 18px; padding: 0 6px; border-radius: 99px; background: var(--mid-soft); color: var(--mid); font-size: 11.5px; text-align: center; }
@@ -304,7 +311,6 @@ code, pre { font-variant-ligatures: none; }
 .role { font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 3px; padding: 1px 6px; margin-left: 4px; }
 .people .empty { border: 0; background: none; }
 .gate-person { padding: 0; border: 0; grid-template-columns: 36px minmax(0, 1fr); }
-.user-chip .link-btn[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 4px; }
 .req-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .req-form { gap: 12px; }
 .req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
@@ -342,9 +348,13 @@ code, pre { font-variant-ligatures: none; }
 <div class="app">
   <header class="top">
     <a class="brand" href="https://jsal.io/" title="jsal.io">jsal<span>.io</span></a>
-    <h1>Implement Check <span class="hl">Defaults</span></h1>
-    <p>What each platform allows for the Implement Check Form, whether it’s the same on every site, and how to make the change.</p>
-    <span class="user-chip" id="user-chip" hidden><img id="user-avatar" alt="" hidden referrerpolicy="no-referrer"><span id="user-name"></span><button type="button" class="link-btn" id="req-btn" aria-pressed="false">Requests <span class="count" id="req-count"></span></button><button type="button" class="link-btn" id="team-btn" hidden>Team <span class="count" id="team-count"></span></button><button type="button" class="link-btn" id="signout">Sign out</button></span>
+    <h1>IC <span class="hl">Defaults</span></h1>
+    <nav class="seg viewnav" id="viewnav" aria-label="Views" hidden>
+      <button type="button" data-view="answers" aria-pressed="true">Platforms</button>
+      <button type="button" data-view="requests" id="req-btn" aria-pressed="false">Requests <span class="count" id="req-count"></span></button>
+      <button type="button" data-view="team" id="team-btn" aria-pressed="false" hidden>Team <span class="count" id="team-count"></span></button>
+    </nav>
+    <span class="account" id="user-chip" hidden><img id="user-avatar" alt="" hidden referrerpolicy="no-referrer"><span id="user-name"></span><button type="button" class="link-btn" id="signout">Sign out</button></span>
   </header>
 
   <section class="gate" id="gate" aria-live="polite"><div class="gate-card"><p class="muted">Loading…</p></div></section>
@@ -380,7 +390,7 @@ code, pre { font-variant-ligatures: none; }
     <section class="team-view" id="team-view" hidden>
       <div class="panel-head">
         <div style="display:grid;gap:2px;min-width:0"><h2>Team</h2><p class="about">Anyone can sign in with Discord, but only people approved here can see IC Defaults. Only admins see this page.</p></div>
-        <div class="panel-meta"><span class="tally" id="team-tally"></span><span style="display:flex;gap:8px"><button type="button" class="btn" id="team-refresh">Refresh</button><button type="button" class="btn" id="team-close">Back to platforms</button></span></div>
+        <div class="panel-meta"><span class="tally" id="team-tally"></span><button type="button" class="btn" id="team-refresh">Refresh</button></div>
       </div>
       <h3 class="team-h">Waiting for approval</h3>
       <div class="people" id="pending-list"></div>
@@ -397,7 +407,6 @@ code, pre { font-variant-ligatures: none; }
             <label class="picksel"><span class="sr-only">Type</span><select id="req-type-filter"></select></label>
             <label class="picksel"><span class="sr-only">Sort</span><select id="req-sort"><option value="top">Most upvotes</option><option value="new">Newest</option><option value="updated">Recently updated</option></select></label>
             <button type="button" class="btn primary" id="req-new">New request</button>
-            <button type="button" class="btn" id="req-close">Back to platforms</button>
           </span>
         </div>
       </div>
@@ -944,16 +953,13 @@ function showView(name) {
   ['#sticky', '#panel', '#guides-fold', '#compare'].forEach((id) => { $(id).hidden = !answers; });
   $('#team-view').hidden = name !== 'team';
   $('#req-view').hidden = name !== 'requests';
-  $('#team-btn').setAttribute('aria-pressed', String(name === 'team'));
-  $('#req-btn').setAttribute('aria-pressed', String(name === 'requests'));
+  document.querySelectorAll('#viewnav [data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === name)));
   try { history.replaceState(null, '', answers ? `#${state.platform}` : `#${name}`); } catch {}
   if (name === 'team') { renderTeam(); loadTeam(); }
   if (name === 'requests') renderRequests();
   if (!answers) scrollTo(0, 0);
 }
-$('#team-btn').addEventListener('click', () => showView($('#team-view').hidden ? 'team' : 'answers'));
-$('#req-btn').addEventListener('click', () => showView($('#req-view').hidden ? 'requests' : 'answers'));
-$('#team-close').addEventListener('click', () => showView('answers'));
+$('#viewnav').addEventListener('click', (e) => { const b = e.target.closest('[data-view]'); if (b) showView(b.dataset.view); });
 $('#team-view').addEventListener('click', async (e) => {
   const t = e.target.closest('button');
   if (!t) return;
@@ -1119,7 +1125,6 @@ $('#panel').addEventListener('click', (e) => {
 
 $('#req-new').addEventListener('click', () => openReqForm());
 $('#req-cancel').addEventListener('click', closeReqForm);
-$('#req-close').addEventListener('click', () => showView('answers'));
 $('#req-type').addEventListener('click', (e) => { const b = e.target.closest('[data-type]'); if (b) setReqType(b.dataset.type); });
 $('#req-form').addEventListener('change', (e) => { if (e.target.name === 'item' || e.target.name === 'platform') syncReqFields(); });
 $('#req-form').addEventListener('submit', (e) => { e.preventDefault(); postRequest(e.target); });
@@ -1246,6 +1251,7 @@ function startApp(me) {
   $('#side').hidden = false;
   $('#main').hidden = false;
   $('#user-chip').hidden = false;
+  $('#viewnav').hidden = false;
   $('#user-name').textContent = me.name || 'Signed in';
   if (me.avatar) { $('#user-avatar').src = me.avatar; $('#user-avatar').hidden = false; }
   $('#team-btn').hidden = !R.manage;
