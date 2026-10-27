@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>John Salvador</title>
+<meta name="description" content="John Salvador makes small web tools for fun, and plays a lot of games.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111318'/%3E%3Ctext x='16' y='22.5' text-anchor='middle' font-family='Georgia,serif' font-weight='700' font-size='18' fill='%23e3b04b'%3Ej%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&display=swap">
+<style>
+:root {
+  --bg: #f5efe2; --surface: #fbf8f0; --ink: #1f1a12; --muted: #6b6253; --faint: #8f8574; --line: #e2d8c4;
+  --accent: #9a6b14; --glow: rgb(227 176 75 / .22); --frame: #e9e0cd;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111318; --surface: #191c23; --ink: #ece6d6; --muted: #9a9688; --faint: #6f6c63; --line: #262a33; --accent: #e3b04b; --glow: rgb(227 176 75 / .10); --frame: #20242c; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; color: var(--ink); font: 16px/1.65 "Inter", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+  background: radial-gradient(900px 500px at 15% -10%, var(--glow), transparent 70%) no-repeat, var(--bg);
+}
+a { color: inherit; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.col { max-width: 640px; margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)); }
+
+header { display: flex; align-items: center; justify-content: space-between; padding: 40px 0 0; }
+.mark { font-weight: 700; font-size: 18px; letter-spacing: -0.02em; text-decoration: none; }
+.mark span { color: var(--accent); }
+header nav { display: flex; gap: 20px; font-size: 14px; }
+header nav a { color: var(--muted); text-decoration: none; } header nav a:hover { color: var(--ink); }
+
+/* Intro */
+.intro { padding: clamp(64px, 17.40cqw, 112px) 0 56px; }
+h1 { margin: 0; font: 600 clamp(34px, 8.70cqw, 44px)/1.1 "Lora", Georgia, serif; letter-spacing: -0.02em; }
+.intro p { margin: 18px 0 0; color: var(--muted); font-size: 17px; max-width: 32em; }
+.intro p em { font-family: "Lora", Georgia, serif; color: var(--ink); }
+.status { display: inline-flex; align-items: center; gap: 10px; margin-top: 26px; padding: 6px 14px 6px 12px; border: 1px solid var(--line); border-radius: 99px; font-size: 13.5px; color: var(--muted); background: var(--surface); }
+.status i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 var(--accent); animation: pulse 2.4s ease-out infinite; }
+.status b { color: var(--ink); font-weight: 500; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgb(227 176 75 / .5); } 70%, 100% { box-shadow: 0 0 0 8px rgb(227 176 75 / 0); } }
+
+/* Section headings */
+h2 { display: flex; align-items: center; gap: 14px; margin: 0 0 22px; font-size: 13px; font-weight: 500; color: var(--faint); letter-spacing: .02em; }
+h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+section { padding: 0 0 64px; }
+
+/* Projects: real previews, framed like a browser window */
+.project { display: block; text-decoration: none; margin-bottom: 36px; }
+.shot { container-type: inline-size; position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: var(--frame); border: 1px solid var(--line); box-shadow: 0 1px 2px rgb(0 0 0 / .06), 0 12px 32px -16px rgb(0 0 0 / .35); transition: transform .25s, box-shadow .25s; }
+.shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+.project:hover .shot { transform: translateY(-3px); box-shadow: 0 1px 2px rgb(0 0 0 / .06), 0 20px 40px -18px rgb(0 0 0 / .45); }
+.meta { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-top: 16px; }
+.meta h3 { margin: 0; font: 600 20px/1.3 "Lora", Georgia, serif; }
+.meta h3::after { content: " ↗"; font: 400 15px "Inter", sans-serif; color: var(--faint); transition: color .15s; }
+.project:hover .meta h3::after { color: var(--accent); }
+.meta span { font-size: 13px; color: var(--faint); white-space: nowrap; }
+.project.soon { cursor: default; }
+.project.soon .meta h3::after { content: none; }
+.project.soon:hover .shot { transform: none; }
+.project p { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+
+/* IC Defaults preview: an abstract mock (the real app is sign-in only) */
+.mock { position: absolute; inset: 0; padding: 7% 8%; display: grid; grid-template-rows: auto 1fr; gap: 6%; background: linear-gradient(160deg, #1b2a44, #111a2b); }
+.mock .tabs { display: flex; gap: 2.5%; }
+.mock .tabs u { text-decoration: none; font: 600 clamp(8px, 2.46cqw, 11px)/1 "Inter", sans-serif; color: #9fb4d6; padding: 1.4% 3%; border-radius: 99px; background: rgb(255 255 255 / .06); white-space: nowrap; }
+.mock .tabs u:first-child { background: #7cc4f2; color: #0f1a2b; }
+.mock .rows { display: grid; gap: 7%; align-content: start; }
+.mock .r { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6%; }
+.mock .r s { height: clamp(5px, 1.59cqw, 8px); border-radius: 4px; background: rgb(255 255 255 / .14); text-decoration: none; }
+.mock .r b { font: 700 clamp(8px, 2.32cqw, 11px)/1 "Inter", sans-serif; padding: 3px 8px; border-radius: 5px; }
+.mock .y { background: rgb(124 196 242 / .2); color: #9fd6f7; } .mock .v { background: rgb(227 176 75 / .2); color: #f0c870; } .mock .n { background: rgb(255 255 255 / .08); color: #8b97ab; }
+
+/* Resizer preview: an abstract mock in the app's teal theme */
+.mock.rz { display: grid; grid-template-columns: 34% 1fr; grid-template-rows: none; gap: 5%; background: linear-gradient(160deg, #1d2a2d, #12191b); }
+.rz .panel { display: grid; gap: 7%; align-content: start; }
+.rz .presets { display: grid; grid-template-columns: 1fr 1fr; gap: 6%; margin-bottom: 4%; }
+.rz .presets u { text-decoration: none; text-align: center; font: 600 clamp(7px, 2.17cqw, 10.5px)/1 "Inter", sans-serif; color: #8fa5a7; padding: 9% 0; border-radius: 6px; background: rgb(255 255 255 / .06); white-space: nowrap; }
+.rz .presets u.on { background: rgb(151 211 210 / .18); color: #97d3d2; box-shadow: inset 0 -2px 0 #97d3d2; }
+.rz .panel s { height: clamp(5px, 1.59cqw, 8px); border-radius: 4px; background: rgb(255 255 255 / .12); text-decoration: none; }
+.rz .go { justify-self: start; margin-top: 6%; font: 600 clamp(7px, 2.17cqw, 10.5px)/1 "Inter", sans-serif; font-style: normal; color: #12191b; background: #97d3d2; padding: 5% 9%; border-radius: 6px; white-space: nowrap; }
+.rz .drop { display: grid; grid-template-columns: 1fr 1fr; gap: 6%; align-content: center; padding: 6%; border: 1.5px dashed rgb(151 211 210 / .35); border-radius: 10px; }
+.rz .pic { position: relative; aspect-ratio: 1200 / 628; border-radius: 6px; overflow: hidden; }
+.rz .pic::after { content: ""; position: absolute; left: -10%; right: -10%; bottom: -30%; height: 75%; border-radius: 50% 50% 0 0; background: rgb(0 0 0 / .22); }
+.rz .pic.a { background: linear-gradient(170deg, #f7dba6, #f08a5d); }
+.rz .pic.b { background: linear-gradient(170deg, #a9d2e0, #2b5278); }
+.rz .pic.c { background: linear-gradient(170deg, #cfe9e3, #3f7f78); }
+.rz .pic.d { background: linear-gradient(170deg, #f3c1c8, #b9506a); }
+
+/* Formatter preview: a toolbar and a clean document, in the app's amber theme */
+.mock.fm { background: linear-gradient(160deg, #2b2116, #19140e); }
+.fm .tb { display: flex; gap: 2.5%; }
+.fm .tb u { text-decoration: none; font: 700 clamp(8px, 2.3cqw, 11px)/1 "Inter", sans-serif; color: #c9b08a; padding: 1.6% 2.6%; border-radius: 5px; background: rgb(255 255 255 / .06); white-space: nowrap; }
+.fm .tb u.on { margin-left: auto; background: #e09840; color: #1a1208; }
+.fm .doc { display: grid; gap: 4.5%; align-content: start; padding: 5% 6%; background: rgb(255 255 255 / .04); border-radius: 8px; }
+.fm .doc s { display: block; height: clamp(5px, 1.4cqw, 7px); border-radius: 4px; background: rgb(255 240 215 / .16); text-decoration: none; }
+.fm .doc .h { display: flex; align-items: center; gap: 3%; margin-top: 2%; }
+.fm .doc .h b { font: 700 clamp(7px, 1.9cqw, 9.5px)/1 "Inter", sans-serif; color: #e09840; background: rgb(224 152 64 / .16); padding: 2px 5px; border-radius: 4px; }
+.fm .doc .h s { flex: none; height: clamp(7px, 2cqw, 10px); background: rgb(255 240 215 / .35); }
+.rz .pic em { position: absolute; right: 5%; bottom: 8%; z-index: 1; font: 700 clamp(6px, 1.74cqw, 9px)/1 "Inter", sans-serif; font-style: normal; color: #fff; background: rgb(0 0 0 / .45); padding: 3px 5px; border-radius: 4px; }
+
+/* WoW UI feature */
+.ui-card { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; }
+.ui-card .shot { border: 0; border-radius: 0; box-shadow: none; aspect-ratio: 16 / 8; }
+.ui-body { display: grid; gap: 18px; padding: 24px; }
+.ui-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
+.ui-head h3 { margin: 0; font: 600 24px/1.2 "Lora", Georgia, serif; }
+.ui-head span { font-size: 13px; color: var(--faint); }
+.ui-body > p { margin: 0; color: var(--muted); }
+.feats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 8px 20px; font-size: 14.5px; color: var(--muted); }
+.feats li { display: flex; gap: 10px; } .feats li::before { content: "◆"; color: var(--accent); font-size: 9px; line-height: 2.5; }
+.addons { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; color: var(--faint); }
+.addons b { font-weight: 500; margin-right: 4px; }
+.addons span { border: 1px solid var(--line); border-radius: 99px; padding: 1px 10px; color: var(--muted); }
+.ui-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; font: 600 14px/1.2 "Inter", sans-serif; text-decoration: none; border: 1px solid transparent; cursor: pointer; }
+.btn.gold { background: var(--accent); color: var(--bg); }
+.btn.line { border-color: var(--line); color: var(--ink); background: none; }
+.btn.line:hover { border-color: var(--accent); }
+
+/* Drawn in-game UI preview */
+.wow { position: absolute; inset: 0; background:
+  radial-gradient(120% 70% at 30% 0%, #3b5675 0%, transparent 60%),
+  radial-gradient(90% 60% at 80% 100%, #2b3b2a 0%, transparent 70%),
+  linear-gradient(180deg, #24344a 0%, #1a2433 55%, #141b16 100%); }
+.wow::before { content: ""; position: absolute; left: 0; right: 0; bottom: 18%; height: 30%; background: #1b2419; clip-path: polygon(0 60%, 12% 30%, 25% 55%, 38% 20%, 52% 50%, 66% 15%, 80% 45%, 92% 25%, 100% 40%, 100% 100%, 0 100%); opacity: .8; }
+.wow .mm { position: absolute; top: 6%; right: 3.5%; width: 15%; aspect-ratio: 1; border-radius: 50%; border: 2px solid #e3b04b; background: radial-gradient(circle at 40% 40%, #4f6b45, #263524); box-shadow: 0 0 0 3px rgb(0 0 0 / .35); }
+.wow .uf { position: absolute; top: 58%; width: 20%; display: grid; gap: 5%; }
+.wow .uf.p { left: 18%; } .wow .uf.t { right: 18%; }
+.wow .uf i { display: block; height: clamp(4px, 1.6cqw, 12px); border-radius: 2px; background: rgb(0 0 0 / .5); overflow: hidden; position: relative; }
+.wow .uf i::after { content: ""; position: absolute; inset: 0; width: var(--w); border-radius: 2px; }
+.wow .uf .hp::after { background: linear-gradient(90deg, #3fae5a, #6fd47f); }
+.wow .uf .mp::after { background: linear-gradient(90deg, #3a6fd1, #6aa0f0); }
+.wow .uf.t .hp::after { background: linear-gradient(90deg, #c9483f, #e8715f); }
+.wow .uf b { font: 600 clamp(5px, 1.2cqw, 10px)/1 "Inter", sans-serif; color: #ece6d6; }
+.wow .bars { position: absolute; left: 50%; bottom: 5%; transform: translateX(-50%); width: 46%; display: grid; gap: 3%; }
+.wow .row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.4%; }
+.wow .row i { aspect-ratio: 1; border-radius: 2px; border: 1px solid rgb(227 176 75 / .55); background: linear-gradient(150deg, var(--c, #5b4a7a), #1a1d25); }
+.wow .chat { position: absolute; left: 2.5%; bottom: 5%; width: 22%; height: 24%; border-radius: 4px; background: rgb(0 0 0 / .35); padding: 2%; display: grid; gap: 9%; align-content: end; }
+.wow .chat s { height: clamp(2px, .7cqw, 5px); border-radius: 2px; background: rgb(255 255 255 / .25); text-decoration: none; }
+.wow .chat s:nth-child(2) { background: rgb(124 196 242 / .45); } .wow .chat s:nth-child(4) { background: rgb(227 176 75 / .5); }
+.wow .tag { position: absolute; top: 6%; left: 3.5%; font: 700 clamp(7px, 1.5cqw, 12px)/1 "Inter", sans-serif; color: #111318; background: #e3b04b; padding: 4px 8px; border-radius: 4px; letter-spacing: .02em; }
+
+/* Now */
+.now { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.now li { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; }
+.now dt, .now .k { color: var(--faint); font-size: 14px; }
+.now .v { color: var(--muted); }
+.now .v b { color: var(--ink); font-weight: 500; }
+.soon { display: inline-block; margin-left: 6px; font-size: 11.5px; color: var(--accent); border: 1px solid currentColor; border-radius: 99px; padding: 0 8px; vertical-align: 1px; }
+
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; padding: 28px 0 56px; border-top: 1px solid var(--line); font-size: 14px; color: var(--faint); }
+footer nav { display: flex; gap: 18px; }
+footer a { text-decoration: none; } footer a:hover { color: var(--ink); }
+
+/* Large screens: wider column, bigger type, projects side by side */
+@media (min-width: 1280px) {
+  .col { max-width: 880px; }
+  body { font-size: 17px; }
+  h1 { font-size: 52px; }
+  .intro p { font-size: 18.5px; }
+  #projects { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 28px; }
+  #projects h2 { grid-column: 1 / -1; }
+  .project { margin-bottom: 0; }
+}
+@media (min-width: 1800px) {
+  .col { max-width: 1000px; }
+  h1 { font-size: 58px; }
+}
+@media (max-width: 520px) {
+  header nav { gap: 14px; }
+  .now li { grid-template-columns: 80px minmax(0, 1fr); gap: 12px; }
+  .meta span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .status i { animation: none; } .shot { transition: none; } .project:hover .shot { transform: none; } }
+</style>
+</head>
+<body>
+<div class="col">
+  <header>
+    <a class="mark" href="/">jsal<span>.io</span></a>
+    <nav aria-label="Sections"><a href="#projects">Projects</a><!-- <a href="#ui">WoW UI</a> --><a href="#now">Now</a><a href="mailto:dev@jsal.io">Email</a></nav>
+  </header>
+
+  <main>
+    <div class="intro">
+      <h1>John Salvador</h1>
+      <p>I work in SEO and build <em>small web tools</em> on the side, mostly to make my own work less repetitive. The rest of the time I'm gaming.</p>
+      <div class="status"><i aria-hidden="true"></i><span>Currently: <b>getting ready for WoW Forever</b></span></div>
+    </div>
+
+    <section id="projects" aria-labelledby="projects-h">
+      <h2 id="projects-h">Projects</h2>
+      <a class="project" href="/image-resizer/">
+        <div class="shot">
+          <div class="mock rz" aria-hidden="true">
+            <div class="panel">
+              <div class="presets"><u class="on">1200 × 628</u><u>640 × 420</u></div>
+              <s style="width:80%"></s><s style="width:60%"></s><s style="width:70%"></s>
+              <i class="go">Download all</i>
+            </div>
+            <div class="drop">
+              <div class="pic a"><em>1200 × 628</em></div>
+              <div class="pic b"><em>1200 × 628</em></div>
+              <div class="pic c"><em>1200 × 628</em></div>
+              <div class="pic d"><em>1200 × 628</em></div>
+            </div>
+          </div>
+        </div>
+        <div class="meta"><h3>JScale Image Resizer</h3><span>Web app</span></div>
+        <p>Bulk resize, crop and convert images right in the browser. Nothing is uploaded.</p>
+      </a>
+      <!-- IC Defaults goes live at /ic/ once Supabase and Discord sign-in are set up: change this div back to <a class="project" href="/ic/"> -->
+      <div class="project soon">
+        <div class="shot">
+          <div class="mock" aria-hidden="true">
+            <div class="tabs"><u>Shopify</u><u>WordPress</u><u>Wix</u><u>Squarespace</u></div>
+            <div class="rows">
+              <div class="r"><s style="width:62%"></s><b class="y">Y</b></div>
+              <div class="r"><s style="width:48%"></s><b class="y">Y</b></div>
+              <div class="r"><s style="width:70%"></s><b class="v">V</b></div>
+              <div class="r"><s style="width:40%"></s><b class="n">N</b></div>
+              <div class="r"><s style="width:56%"></s><b class="y">Y</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="meta"><h3>IC Defaults</h3><span>Coming soon</span></div>
+        <p>A quick-reference for SEO checks across website platforms, with how-to steps and guides.</p>
+      </div>
+      <a class="project" href="/formatter/">
+        <div class="shot">
+          <div class="mock fm" aria-hidden="true">
+            <div class="tb"><u>B</u><u>I</u><u>H2</u><u>H3</u><u class="on">Copy formatted</u></div>
+            <div class="doc">
+              <div class="h"><b>H2</b><s style="width:52%"></s></div>
+              <s style="width:94%"></s><s style="width:86%"></s><s style="width:62%"></s>
+              <div class="h"><b>H3</b><s style="width:38%"></s></div>
+              <s style="width:90%"></s><s style="width:72%"></s>
+            </div>
+          </div>
+        </div>
+        <div class="meta"><h3>Content Formatter</h3><span>Web app</span></div>
+        <p>Paste from Word or Google Docs and get clean HTML or formatted text, ready for any CMS.</p>
+      </a>
+    </section>
+
+    <!-- Hidden until the UI is ready: remove "hidden" here and uncomment the WoW UI nav link. -->
+    <section id="ui" aria-labelledby="ui-h" hidden>
+      <h2 id="ui-h">WoW UI</h2>
+      <!-- Placeholder content: swap in the real name, screenshot, addon list and links. -->
+      <div class="ui-card">
+        <div class="shot">
+          <div class="wow" aria-hidden="true">
+            <span class="tag">JSal UI</span>
+            <div class="mm"></div>
+            <div class="uf p"><b>Player</b><i class="hp" style="--w:82%"></i><i class="mp" style="--w:64%"></i></div>
+            <div class="uf t"><b>Target</b><i class="hp" style="--w:45%"></i><i class="mp" style="--w:90%"></i></div>
+            <div class="chat"><s style="width:80%"></s><s style="width:60%"></s><s style="width:72%"></s><s style="width:50%"></s></div>
+            <div class="bars"><div class="row"><i style="--c:#7a4a9c"></i><i style="--c:#c9483f"></i><i style="--c:#3a6fd1"></i><i style="--c:#3fae5a"></i><i style="--c:#e3b04b"></i><i style="--c:#7a4a9c"></i><i style="--c:#3a6fd1"></i><i style="--c:#c9483f"></i><i style="--c:#5b4a7a"></i><i style="--c:#3fae5a"></i><i style="--c:#e3b04b"></i><i style="--c:#3a6fd1"></i></div><div class="row"><i style="--c:#3a6fd1"></i><i style="--c:#5b4a7a"></i><i style="--c:#3fae5a"></i><i style="--c:#c9483f"></i><i style="--c:#7a4a9c"></i><i style="--c:#e3b04b"></i><i style="--c:#3a6fd1"></i><i style="--c:#5b4a7a"></i><i style="--c:#c9483f"></i><i style="--c:#3fae5a"></i><i style="--c:#7a4a9c"></i><i style="--c:#5b4a7a"></i></div></div>
+          </div>
+        </div>
+        <div class="ui-body">
+          <div class="ui-head"><h3>JSal UI</h3><span>v1.0 · for WoW Forever</span></div>
+          <p>A clean, minimal interface built for raiding and everyday play. Install it in a few minutes with one import string.</p>
+          <ul class="feats">
+            <li>Compact unit and raid frames</li>
+            <li>Tidy action bars that fade out of combat</li>
+            <li>Profiles for DPS, tank and healer</li>
+            <li>Works at 1080p, 1440p and 4K</li>
+          </ul>
+          <div class="addons"><b>Needs</b><span>ElvUI</span><span>Details!</span><span>WeakAuras</span><span>Plater</span></div>
+          <div class="ui-actions">
+            <a class="btn gold" href="#ui">Get the UI</a>
+            <a class="btn line" href="#ui">Install guide</a>
+            <a class="btn line" href="#ui">Changelog</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="now" aria-labelledby="now-h">
+      <h2 id="now-h">Now</h2>
+      <ul class="now">
+        <li><span class="k">Playing</span><span class="v"><b>WoW Forever</b><span class="soon">Soon</span></span></li>
+        <li><span class="k">Building</span><span class="v"><b>jsal.io</b>, this site</span></li>
+        <li><span class="k">Next</span><span class="v">WoW notes and tools, right here</span></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <span>© <span id="y">2026</span> John Salvador</span>
+    <nav aria-label="Elsewhere"><a href="https://github.com/superjsal">GitHub</a><a href="mailto:dev@jsal.io">Email</a></nav>
+  </footer>
+</div>
+<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word to Clean HTML Formatter | JSAL</title>
+  <meta name="description" content="Paste content from Word, Google Docs or raw HTML and get clean HTML or formatted text, ready for any CMS. Runs entirely in your browser." />
+  <link rel="canonical" href="https://jsal.io/formatter/" />
+  <link rel="icon" href="favicon.svg?v=2026-10-27" type="image/svg+xml" />
+  <meta name="theme-color" content="#1a1510" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jsal.io/formatter/" />
+  <meta property="og:title" content="Content Formatter | JSAL" />
+  <meta property="og:description" content="Clean up content pasted from Word or Google Docs. Free and entirely in your browser." />
+  <meta name="twitter:card" content="summary" />
+
+  <!-- Apply the saved theme before first paint (falls back to the resizer's choice) -->
+  <script>
+    try {
+      var t = localStorage.getItem("formatter-theme") || localStorage.getItem("resizer-theme");
+      if (t === "light" || t === "teal") document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Version numbers (?v=) make browsers fetch fresh files after an update. When publishing
+       changes, bump every v=2026-10-27 in this file (find and replace) to the new date. -->
+  <link rel="stylesheet" href="styles.css?v=2026-10-27" />
+  <script type="importmap">
+    {
+      "imports": {
+        "./js/main.js":   "./js/main.js?v=2026-10-27",
+        "./js/clean.js":  "./js/clean.js?v=2026-10-27",
+        "./js/sample.js": "./js/sample.js?v=2026-10-27"
+      }
+    }
+  </script>
+  <script type="module" src="js/main.js?v=2026-10-27"></script>
+</head>
+<body>
+  <main class="app">
+
+    <header class="app-header">
+      <div class="logo" aria-hidden="true">
+        jsal<span class="logo-j">.io</span>
+      </div>
+      <div class="header-text">
+        <h1><span class="sr-only">JSAL – Word to Clean HTML </span>Content Formatter</h1>
+        <p class="app-subtitle">Clean up content from Word, Google Docs or HTML code</p>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Switch theme"></button>
+    </header>
+
+    <section class="side" aria-label="Checks and copy">
+
+      <div class="results">
+        <h2 class="section-label">Checks</h2>
+        <p class="side-empty" data-no-content>Paste something to see word count, reading time and anything worth fixing.</p>
+        <div class="stats" id="stats" data-needs-content></div>
+        <ul class="checks" id="checks" data-needs-content></ul>
+      </div>
+
+      <div class="actions" data-needs-content>
+        <button class="btn-primary btn-accent" id="copyRich" title="For visual editors like Squarespace, Wix, Shopify and WordPress">
+          <span class="ico" data-icon="copy"></span>Copy formatted
+        </button>
+        <div class="actions-row">
+          <button class="btn-primary" id="copyHtml" title="For HTML / code views"><span class="ico" data-icon="code"></span>Copy HTML</button>
+          <button class="btn-primary" id="copyText" title="Plain text, no formatting"><span class="ico" data-icon="text"></span>Copy text</button>
+        </div>
+        <div class="actions-foot">
+          <span class="toolbar-hint" id="copyNote" aria-live="polite"></span>
+          <button class="btn-clear" id="clearBtn"><span class="ico" data-icon="trash"></span>Clear</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="work" aria-label="Content">
+
+      <!-- Empty state: paste anywhere on the page, or start typing -->
+      <div class="paste-zone" id="pasteZone" tabindex="0" role="button" aria-label="Paste content here">
+        <div class="paste-icon"><span class="ico" data-icon="clipboard" data-size="20"></span></div>
+        <p class="paste-title">Paste your content</p>
+        <p class="paste-sub">Copy from Word, Google Docs, a web page, HTML code or plain text, then press <kbd class="mod-key">Ctrl</kbd> + <kbd>V</kbd> anywhere on this page.</p>
+        <p class="paste-links"><button class="btn-link" id="blankBtn">Start with a blank page</button><span aria-hidden="true">·</span><button class="btn-link" id="sampleBtn">Try an example</button></p>
+        <p class="paste-privacy">Everything stays in your browser. Nothing is uploaded.</p>
+      </div>
+
+      <div class="pane pane-out" data-needs-content>
+        <div class="pane-head">
+          <span class="pane-title">Clean <span class="pane-meta" id="outMeta"></span></span>
+          <div class="option-track" role="tablist" aria-label="Clean view">
+            <button role="tab" data-tab="out" data-view="page" aria-selected="true" title="Edit the formatted text">Text</button>
+            <button role="tab" data-tab="out" data-view="code" aria-selected="false" title="Edit the HTML directly">HTML</button>
+          </div>
+        </div>
+
+        <!-- Formatting toolbar for the editor (data-cmd runs a command, see main.js) -->
+        <div class="toolbar" id="toolbar" role="toolbar" aria-label="Formatting">
+          <button data-cmd="bold" title="Bold (Ctrl+B)" aria-label="Bold"><b>B</b></button>
+          <button data-cmd="italic" title="Italic (Ctrl+I)" aria-label="Italic"><i>I</i></button>
+          <span class="tb-sep"></span>
+          <button data-cmd="h2" title="Heading 2">H2</button>
+          <button data-cmd="h3" title="Heading 3">H3</button>
+          <button data-cmd="h4" title="Heading 4">H4</button>
+          <button data-cmd="p" title="Normal paragraph" aria-label="Paragraph">¶</button>
+          <span class="tb-sep"></span>
+          <button data-cmd="ul" title="Bulleted list" aria-label="Bulleted list"><span class="ico" data-icon="ul"></span></button>
+          <button data-cmd="ol" title="Numbered list" aria-label="Numbered list"><span class="ico" data-icon="ol"></span></button>
+          <button data-cmd="link" title="Add or change link (Ctrl+K)" aria-label="Link"><span class="ico" data-icon="link"></span></button>
+          <button data-cmd="unlink" title="Remove link" aria-label="Remove link"><span class="ico" data-icon="unlink"></span></button>
+          <button data-cmd="clear" title="Clear formatting from the selection" aria-label="Clear formatting"><span class="ico" data-icon="eraser"></span></button>
+          <span class="tb-sep"></span>
+          <button data-cmd="unboldAll" class="tb-wide" title="Remove bold from the whole post (headings stay headings)">Remove all bold</button>
+          <span class="tb-grow"></span>
+          <button data-cmd="undo" title="Undo (Ctrl+Z)" aria-label="Undo"><span class="ico" data-icon="undo"></span></button>
+          <button data-cmd="redo" title="Redo (Ctrl+Y)" aria-label="Redo"><span class="ico" data-icon="redo"></span></button>
+        </div>
+
+        <!-- HTML tab bar -->
+        <div class="toolbar" id="htmlBar" hidden>
+          <button data-format title="Tidy up the indentation and line breaks (Shift+Alt+F)" class="tb-wide"><span class="ico" data-icon="wand"></span>&nbsp;Format</button>
+          <span class="toolbar-hint">Formats automatically when you click away · Shift+Alt+F</span>
+        </div>
+
+        <div class="pane-body">
+          <article class="preview" id="editor" contenteditable="true" spellcheck="true" aria-label="Clean content, editable"></article>
+          <textarea class="code" id="htmlEdit" spellcheck="false" aria-label="HTML, editable" hidden></textarea>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
