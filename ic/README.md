@@ -1,0 +1,29 @@
+# IC Defaults
+
+Team reference for the Implement Check Form: what each CMS lets us change (Content and Tech items), by page type, with how-to steps, watch-outs and guides.
+
+**Live:** https://jsal.io/ic/ (team sign-in required)
+
+## How it works
+
+- `index.html` is the whole app: plain HTML, CSS and JavaScript, no build step. GitHub Pages serves it.
+- Sign-in is **Discord** through **Supabase Auth**. Anyone with a Discord account can sign in, but only people an admin approves on the **Team** page can see anything.
+- The content is **not in this repo**. Answers, how-to steps, watch-outs, page types and guides live in the Supabase database (`app_data` table) and load only for approved members. The access rules are in [`supabase/schema.sql`](supabase/schema.sql):
+  - **Members** read everything.
+  - **Admins** also edit answers (saved in the `edits` table, layered over the built-in content) and approve, remove or promote people.
+  - **Signed-out visitors and unapproved accounts** get nothing.
+- The Supabase URL and anon key at the top of the script are public by design. They only work within those rules.
+
+## Setup (once)
+
+1. Create a Supabase project and run `supabase/schema.sql` in the SQL Editor.
+2. Load the content by running the private `seed.sql`, which is kept outside this repo.
+3. Turn on the Discord provider in Supabase (Authentication → Providers) with a Discord app's client ID and secret, and add Supabase's callback URL to the Discord app's OAuth2 redirects.
+4. In Supabase → Authentication → URL Configuration, set the Site URL and a redirect URL to `https://jsal.io/ic/`.
+5. Put the project URL and anon key into `SUPABASE_URL` / `SUPABASE_ANON_KEY` in `index.html`.
+6. Sign in once, then make yourself admin with the private `make-me-admin.sql`.
+
+## Updating content
+
+- **Small fixes:** sign in as an admin and use **Edit** on an item (Markdown works). Edits apply to the page type you're viewing.
+- **Larger changes:** regenerate `seed.sql` and run it again. Team edits are kept.

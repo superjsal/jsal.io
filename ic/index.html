@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>IC Defaults | jsal.io</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2316181d'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' fill='none' stroke='%2397d3d2' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: platforms down the left, one toolbar with every choice, and each item as a card; a compare grid below.
+   Palette follows lp.agency: charcoal hero, slate neutrals, soft-teal highlights, Inter, near-square corners. */
+:root {
+  --bg: #f9fafb;
+  --surface: #ffffff;
+  --sunk: #eef1f4;
+  --ink: #16181d;
+  --muted: #525d6e;
+  --line: #dde2e8;
+  --accent: #2a7f7d;        /* teal for text and links on light backgrounds */
+  --accent-soft: #e3f3f2;
+  --fill: #97d3d2;          /* soft teal for buttons and selected states */
+  --on-fill: #16181d;
+  --hero: #16181d;          /* charcoal header band */
+  --hero-ink: #f9fafb;
+  --hero-muted: #c4ccd6;
+  --ok: #19784a;      --ok-soft: #dff2e7;
+  --mid: #8a5a00;     --mid-soft: #fbefd6;
+  --bad: #b3352b;     --bad-soft: #fbe3e0;
+  --unk: #475a8f;     --unk-soft: #e4e9f6;
+  --display: "Inter", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", Consolas, "SFMono-Regular", monospace;
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16181d; --surface: #1f232a; --sunk: #292e37; --ink: #f9fafb; --muted: #a3adbb; --line: #363d48;
+    --accent: #97d3d2; --accent-soft: #233a3b; --fill: #97d3d2; --on-fill: #16181d;
+    --hero: #292e37; --hero-ink: #f9fafb; --hero-muted: #b9c2cd;
+    --ok: #5fd193; --ok-soft: #173326; --mid: #f0c060; --mid-soft: #3a2f14;
+    --bad: #ff8f84; --bad-soft: #3f1d1a; --unk: #a5b8ef; --unk-soft: #1e2944;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16181d; --surface: #1f232a; --sunk: #292e37; --ink: #f9fafb; --muted: #a3adbb; --line: #363d48;
+  --accent: #97d3d2; --accent-soft: #233a3b; --fill: #97d3d2; --on-fill: #16181d;
+  --hero: #292e37; --hero-ink: #f9fafb; --hero-muted: #b9c2cd;
+  --ok: #5fd193; --ok-soft: #173326; --mid: #f0c060; --mid-soft: #3a2f14;
+  --bad: #ff8f84; --bad-soft: #3f1d1a; --unk: #a5b8ef; --unk-soft: #1e2944;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body); }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+h2 { font-size: 20px; }
+h3 { font-size: 16px; }
+p { margin: 0; }
+code { font-family: var(--mono); font-size: 0.86em; background: var(--sunk); padding: 1px 5px; border-radius: 4px; }
+.muted { color: var(--muted); }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* App: slim header, platform list on the left, toolbar and cards on the right */
+.app {
+  max-width: 1240px; margin: 0 auto;
+  padding: 18px max(16px, env(safe-area-inset-right, 0px)) 64px max(16px, env(safe-area-inset-left, 0px));
+  display: grid; grid-template-columns: 200px minmax(0, 1fr); grid-template-areas: "top top" "side main"; gap: 16px 28px;
+}
+header.top { grid-area: top; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+header.top h1 { font-size: 21px; line-height: 1.2; }
+header.top .hl { color: var(--accent); }
+header.top p { flex: 1 1 360px; font-size: 14px; color: var(--muted); }
+
+.side { grid-area: side; position: sticky; top: 14px; align-self: start; display: grid; gap: 6px; }
+.side-title { font-size: 11.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); padding: 0 10px 2px; }
+.plist { display: grid; gap: 1px; }
+.plist button {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; text-align: left;
+  font: 500 14px var(--body); color: var(--ink); background: transparent; border: 0; border-radius: 6px; padding: 7px 10px; cursor: pointer;
+}
+.plist button:hover { background: var(--sunk); }
+.plist button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.plist .cnt { flex: none; font-size: 11.5px; font-weight: 700; color: var(--mid); background: var(--mid-soft); border-radius: 99px; padding: 0 7px; font-variant-numeric: tabular-nums; }
+.plist .cnt.zero { color: var(--ok); background: var(--ok-soft); }
+.side-note { font-size: 12px; color: var(--muted); padding: 4px 10px 0; }
+
+.main { grid-area: main; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; min-width: 0; align-content: start; }
+
+/* One toolbar with every choice; stays pinned while scrolling */
+.toolbar { position: sticky; top: 0; z-index: 5; display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; gap: 8px; background: var(--bg); padding-block: 10px; margin-top: -10px; border-bottom: 1px solid transparent; }
+.toolbar.stuck { border-bottom-color: var(--line); }
+.tb-row { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; }
+.tb-sub { gap: 6px 18px; font-size: 13px; }
+.seg { display: inline-flex; flex-wrap: wrap; background: var(--sunk); border-radius: var(--radius); padding: 3px; gap: 2px; }
+.seg button { font: 600 13.5px var(--body); color: var(--muted); background: transparent; border: 0; border-radius: 4px; padding: 6px 13px; cursor: pointer; white-space: nowrap; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgb(0 0 0 / 0.12); }
+.seg.switch button[aria-pressed="true"] { background: var(--fill); color: var(--on-fill); box-shadow: none; }
+.seg[hidden] { display: none; }
+.picksel { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--muted); }
+.picksel select, .mobile-only { font: 600 14px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 8px; }
+.picksel[hidden] { display: none; }
+.mobile-only { display: none; }
+.toggle { display: inline-flex; gap: 7px; align-items: center; font-weight: 600; font-size: 13px; color: var(--ink); cursor: pointer; }
+.toggle input { width: 15px; height: 15px; accent-color: var(--accent); margin: 0; }
+.legend { display: inline-flex; flex-wrap: wrap; gap: 4px 12px; color: var(--muted); font-size: 12.5px; margin-left: auto; }
+.empty { padding: 24px 18px; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; }
+
+/* Collapsible compare section */
+details.fold { display: block; min-width: 0; max-width: 100%; }
+details.fold > * + * { margin-top: 14px; }
+details.fold .scroll { max-width: 100%; }
+details.fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary::before { content: "▸"; color: var(--muted); font-size: 14px; transition: transform .15s; }
+details.fold[open] > summary::before { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { details.fold > summary::before { transition: none; } }
+
+/* Status: one pill — colour = what it takes, dot = whether it's the same on every site */
+.v { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px 2px 8px; border-radius: 99px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.v.yes, .v.auto { background: var(--ok-soft); color: var(--ok); }
+.v.plugin, .v.code, .v.hosting { background: var(--mid-soft); color: var(--mid); }
+.v.no { background: var(--bad-soft); color: var(--bad); }
+.v.check { background: var(--unk-soft); color: var(--unk); }
+.v .sc { font-weight: 500; opacity: 0.85; }
+.dot { display: inline-block; flex: none; width: 9px; height: 9px; padding: 0; margin: 0; border-radius: 50%; border: 2px solid currentColor; vertical-align: -0.5px; }
+.legend .dot, .tally .dot { margin-right: 5px; }
+.h2-sub { color: var(--muted); font-weight: 600; }
+.dot.U { background: var(--ok); border-color: var(--ok); }
+.dot.V { background: transparent; border-color: var(--mid); }
+.dot.C { background: transparent; border-color: var(--unk); border-style: dashed; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Platform panel: a header card, then one card per item */
+.panel { display: grid; gap: 8px; min-width: 0; }
+.panel-head { display: grid; gap: 10px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.panel-head h2 { font-size: 19px; }
+.panel-head .about { color: var(--muted); font-size: 14px; max-width: 75ch; margin-top: 2px; }
+.panel-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding-top: 10px; border-top: 1px solid var(--line); }
+.tally { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; align-items: center; }
+.btn {
+  font: 600 13px var(--body); color: var(--accent); background: var(--accent-soft);
+  border: 0; border-radius: 4px; padding: 7px 12px; cursor: pointer; white-space: nowrap;
+}
+.btn:hover { filter: brightness(0.97); }
+.btn.primary { background: var(--fill); color: var(--on-fill); font-size: 14px; padding: 10px 18px; }
+.btn.primary:hover { filter: brightness(1.05); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 13px 16px; display: grid; gap: 7px; min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 16px; }
+.card .item { font-size: 15px; font-weight: 650; letter-spacing: -0.01em; min-width: 0; }
+.card .item small { display: block; font-weight: 400; color: var(--muted); font-size: 12.5px; letter-spacing: 0; margin-top: 1px; }
+.answer { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.ans { font-size: 14.5px; font-weight: 700; color: var(--ink); }
+/* Settled with nothing to add: one compact, muted line */
+.card.slim { padding-block: 8px; gap: 4px; }
+.card.slim .item { font-weight: 500; color: var(--muted); }
+.card.slim .ans { font-weight: 600; color: var(--muted); }
+.card.slim .v { background: transparent; padding: 0; color: var(--muted); font-weight: 500; }
+.note { font-size: 14px; }
+.note ul, .note ol, .warn ul, .warn ol { margin: 4px 0; padding-left: 20px; display: grid; gap: 2px; }
+.note a, .warn a, .how a { color: var(--accent); text-underline-offset: 2px; }
+.note code, .warn code { font-size: 0.9em; }
+.md-hint { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-size: 12px; color: var(--muted); }
+.md-hint code { font-size: 11.5px; background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
+.copy-icon { display: inline-flex; vertical-align: -2px; margin-left: 6px; padding: 3px; border: 0; border-radius: 4px; background: transparent; color: var(--muted); cursor: pointer; }
+.copy-icon:hover { color: var(--accent); background: var(--accent-soft); }
+/* Shared edits */
+.edit-status { display: inline-flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; font-size: 13px; color: var(--muted); }
+.edit-status[hidden] { display: none; }
+.edit-status .btn { padding: 4px 10px; font-size: 12px; }
+.edit-btn { font: 600 12px var(--body); color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 4px; padding: 1px 8px; cursor: pointer; }
+.edit-btn:hover { color: var(--accent); border-color: var(--accent); }
+.card.editing { background: var(--sunk); }
+.edit-form { display: grid; gap: 10px; min-width: 0; }
+.edit-form label { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.edit-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.edit-form input, .edit-form select, .edit-form textarea { font: 14px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 7px 9px; width: 100%; min-width: 0; }
+.edit-form textarea { resize: vertical; line-height: 1.45; }
+.edit-form input:focus-visible, .edit-form select:focus-visible, .edit-form textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.edit-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.edit-actions .btn.primary { font-size: 13px; padding: 7px 14px; }
+.edit-hint { font-size: 12px; }
+/* How-to steps under a row */
+.warn { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; line-height: 1.45; padding: 8px 10px; border-radius: 6px; background: var(--mid-soft); color: var(--ink); }
+.warn::before { content: "!"; flex: none; display: grid; place-items: center; width: 17px; height: 17px; margin-top: 1px; border-radius: 50%; background: var(--mid); color: var(--surface); font-size: 11px; font-weight: 800; }
+.warn b { color: var(--mid); }
+.warn > div { min-width: 0; }
+.how { font-size: 14px; }
+.how summary { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; border-radius: 4px; }
+.how summary::-webkit-details-marker { display: none; }
+.how summary::before { content: ""; width: 0; height: 0; border-left: 5px solid currentColor; border-block: 4px solid transparent; transition: transform .15s; }
+.how[open] summary::before { transform: rotate(90deg); }
+.how summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+.how ol { margin: 6px 0 0; padding: 10px 14px 10px 32px; display: grid; gap: 5px; background: var(--sunk); border-radius: 6px; }
+.how li::marker { color: var(--muted); font-variant-numeric: tabular-nums; }
+.how code { font-size: 0.9em; }
+.how .how-note { margin: 6px 0 0; font-size: 12.5px; color: var(--muted); }
+.card.slim .how summary { font-weight: 500; }
+.card.slim:has(.how[open]) { padding-block: 13px; }
+/* Compare grid */
+.compare { display: grid; gap: 10px; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+table { border-collapse: collapse; font-size: 12.5px; }
+th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+thead th { position: sticky; top: 0; background: var(--sunk); font-weight: 600; white-space: nowrap; }
+tbody th { font-weight: 600; min-width: 190px; position: sticky; left: 0; background: var(--surface); }
+td { white-space: nowrap; }
+td .v { cursor: help; }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+
+
+footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; max-width: 80ch; }
+footer a { color: var(--accent); }
+
+#toast {
+  position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 8px; font-weight: 600; font-size: 14px;
+  opacity: 0; transition: opacity .2s; pointer-events: none; max-width: calc(100% - 32px);
+}
+#toast.show { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
+
+/* jsal.io mark */
+.brand { display: inline-flex; align-items: center; height: 28px; font-weight: 800; font-size: 15px; letter-spacing: -0.3px; color: var(--ink); text-decoration: none; }
+.brand span { color: var(--accent); }
+.brand:hover { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+
+/* Guides: links under How-to, a list on the page, and a side panel that opens them */
+.guide-links { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; font-size: 13px; color: var(--muted); }
+.guide-link { font: 600 13px var(--body); color: var(--accent); background: var(--accent-soft); border: 0; border-radius: 99px; padding: 3px 10px; cursor: pointer; }
+.guide-link:hover { filter: brightness(0.96); }
+.guide-link::before { content: "📖 "; font-size: 12px; }
+.side .guide-nav { display: grid; gap: 1px; margin-top: 10px; }
+.side .guide-nav button { text-align: left; font: 500 13px var(--body); color: var(--muted); background: transparent; border: 0; border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+.side .guide-nav button:hover { background: var(--sunk); color: var(--ink); }
+.guide-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 10px; }
+.guide-group { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
+.guide-group h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.guide-group button { text-align: left; font: 600 14px var(--body); color: var(--accent); background: none; border: 0; padding: 2px 0; cursor: pointer; }
+.guide-group button:hover { text-decoration: underline; text-underline-offset: 3px; }
+#guide-backdrop { position: fixed; inset: 0; z-index: 20; background: rgb(0 0 0 / 0.35); }
+#guide-backdrop[hidden], #guide[hidden] { display: none; }
+#guide { position: fixed; top: 0; right: 0; bottom: 0; z-index: 21; width: min(620px, 100%); background: var(--surface); border-left: 1px solid var(--line); box-shadow: -12px 0 40px rgb(0 0 0 / 0.2); display: flex; flex-direction: column; }
+.guide-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 20px 12px; border-bottom: 1px solid var(--line); }
+.guide-head h2 { font-size: 19px; }
+.guide-head .eyebrow { display: block; margin-bottom: 2px; }
+.guide-close { flex: none; font: 600 20px/1 var(--body); color: var(--muted); background: var(--sunk); border: 0; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; }
+.guide-close:hover { color: var(--ink); }
+.guide-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px 20px 32px; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; }
+.guide-body > * { flex: none; min-width: 0; }
+.guide-body h3 { font-size: 15px; margin-top: 8px; }
+.guide-body ol, .guide-body ul { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.guide-body a { color: var(--accent); }
+.guide-body .intro { color: var(--muted); }
+.guide-body .tip { font-size: 13.5px; padding: 8px 12px; border-radius: 6px; background: var(--sunk); color: var(--ink); }
+.guide-body .tip::before { content: "Tip: "; font-weight: 700; color: var(--accent); }
+.snippet { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.snippet-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; background: var(--sunk); font-size: 12px; font-weight: 600; color: var(--muted); }
+.snippet pre { margin: 0; padding: 12px; overflow-x: auto; font: 12.5px/1.55 var(--mono); background: var(--surface); color: var(--ink); }
+.snippet pre code { background: none; padding: 0; font-size: inherit; }
+.snippet pre { tab-size: 2; }
+code, pre { font-variant-ligatures: none; }
+.snippet .btn { padding: 4px 10px; font-size: 12px; }
+.guide-body .unverified { font-size: 13px; color: var(--muted); font-style: italic; }
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "main"; }
+  .side { display: none; }
+  .mobile-only { display: block; }
+  #ptype-bar { flex: 1 1 100%; min-width: 0; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  #ptype-bar button { flex: none; }
+  .legend { margin-left: 0; }
+}
+@media (max-width: 560px) {
+  .edit-grid { grid-template-columns: minmax(0, 1fr); }
+  .card-head { align-items: flex-start; }
+}
+/* Sign-in gate, account chip and team page */
+[hidden] { display: none !important; }
+.gate { grid-column: 1 / -1; display: grid; place-items: center; padding: 32px 0; }
+.gate-card { width: min(100%, 460px); display: grid; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 26px 24px; }
+.gate-card h2 { font-size: 20px; }
+.btn.discord { display: inline-flex; gap: 10px; align-items: center; justify-content: center; background: #5865f2; color: #fff; font-size: 15px; padding: 11px 18px; }
+.btn.discord:hover { filter: brightness(1.08); }
+.user-chip { display: inline-flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 13px; color: var(--muted); margin-left: auto; }
+.user-chip img { width: 26px; height: 26px; border-radius: 50%; }
+.link-btn { font: 600 13px var(--body); color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
+.link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+.count { display: inline-block; min-width: 18px; padding: 0 6px; border-radius: 99px; background: var(--mid-soft); color: var(--mid); font-size: 11.5px; text-align: center; }
+.count:empty { display: none; }
+.team-view { display: grid; gap: 10px; }
+.team-h { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-top: 8px; }
+.people { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.person { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.person:last-child { border-bottom: 0; }
+.person img, .avatar-blank { width: 36px; height: 36px; border-radius: 50%; background: var(--sunk); display: block; }
+.person small { display: block; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+.person-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: end; }
+.role { font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 3px; padding: 1px 6px; margin-left: 4px; }
+.people .empty { border: 0; background: none; }
+.gate-person { padding: 0; border: 0; grid-template-columns: 36px minmax(0, 1fr); }
+@media (max-width: 760px) {
+  .person { grid-template-columns: 36px minmax(0, 1fr); }
+  .person-actions { grid-column: 1 / -1; justify-content: start; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="top">
+    <a class="brand" href="https://jsal.io/" title="jsal.io">jsal<span>.io</span></a>
+    <h1>Implement Check <span class="hl">Defaults</span></h1>
+    <p>What each platform allows for the Implement Check Form, whether it’s the same on every site, and how to make the change.</p>
+    <span class="user-chip" id="user-chip" hidden><img id="user-avatar" alt="" hidden referrerpolicy="no-referrer"><span id="user-name"></span><button type="button" class="link-btn" id="team-btn" hidden>Team <span class="count" id="team-count"></span></button><button type="button" class="link-btn" id="signout">Sign out</button></span>
+  </header>
+
+  <section class="gate" id="gate" aria-live="polite"><div class="gate-card"><p class="muted">Loading…</p></div></section>
+
+  <aside class="side" aria-label="Platforms" id="side" hidden>
+    <div class="side-title">Platforms</div>
+    <nav class="plist" id="picker" aria-label="Platform"></nav>
+    <p class="side-note">Numbers: items to check for this view.</p>
+    <div class="side-title" style="margin-top:14px">Guides</div>
+    <nav class="guide-nav" id="guide-nav" aria-label="Guides"></nav>
+  </aside>
+
+  <main class="main" id="main" hidden>
+    <div class="toolbar" id="sticky">
+      <div class="tb-row">
+        <select class="mobile-only" id="platform-select" aria-label="Platform"></select>
+        <div class="seg switch" role="group" aria-label="Section">
+          <button type="button" id="sec-content" data-sec="content" aria-pressed="true">Content</button>
+          <button type="button" id="sec-tech" data-sec="tech" aria-pressed="false">Tech</button>
+        </div>
+        <div class="seg" id="ptype-bar" role="group" aria-label="Page type" hidden></div>
+        <label class="picksel" id="variant-wrap" hidden><span id="variant-label"></span><select id="variant-select"></select></label>
+      </div>
+      <div class="tb-row tb-sub">
+        <label class="toggle"><input type="checkbox" id="only-check"> Only what to check</label>
+        <label class="toggle"><input type="checkbox" id="show-how"> Show how-to steps</label>
+        <span class="legend" aria-label="Legend"><span><i class="dot U"></i>Same on every site</span><span><i class="dot V"></i>Varies by site</span><span><i class="dot C"></i>Not verified</span></span>
+      </div>
+    </div>
+
+    <section class="panel" id="panel" aria-live="polite"></section>
+
+    <section class="team-view" id="team-view" hidden>
+      <div class="panel-head">
+        <div style="display:grid;gap:2px;min-width:0"><h2>Team</h2><p class="about">Anyone can sign in with Discord, but only people approved here can see IC Defaults. Only admins see this page.</p></div>
+        <div class="panel-meta"><span class="tally" id="team-tally"></span><span style="display:flex;gap:8px"><button type="button" class="btn" id="team-refresh">Refresh</button><button type="button" class="btn" id="team-close">Back to answers</button></span></div>
+      </div>
+      <h3 class="team-h">Waiting for approval</h3>
+      <div class="people" id="pending-list"></div>
+      <h3 class="team-h">Members</h3>
+      <div class="people" id="member-list"></div>
+    </section>
+
+    <details class="fold" id="guides-fold">
+      <summary><h2>Guides</h2></summary>
+      <p class="muted">Step-by-step walk-throughs for the bigger jobs: custom fields, templates and theme code, schema, and FAQ/table HTML.</p>
+      <div class="guide-groups" id="guide-list"></div>
+    </details>
+
+    <details class="compare fold" id="compare">
+      <summary><h2 id="compare-title">Compare platforms</h2></summary>
+      <p class="muted">Hover or tap a cell for the note. The dot shows whether the answer is the same on every site.</p>
+      <div class="scroll"><table id="grid"></table></div>
+    </details>
+
+    <footer>
+    <p>Sources checked: Shopify <a href="https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect">URL redirects</a> and <a href="https://help.shopify.com/manual/productivity-tools/rich-text-editor">rich text editor</a>; Squarespace <a href="https://support.squarespace.com/hc/en-us/articles/205815908-Using-code-injection">code injection</a>; Google on <a href="https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls">canonicals and JavaScript</a>; Wix <a href="https://support.wix.com/en/article/changing-the-canonical-tags-for-your-sites-pages">canonical tags</a>, <a href="https://support.wix.com/en/article/default-url-redirects-301-redirects">default redirects</a> and <a href="https://support.wix.com/en/article/managing-your-pages-heading-tags">heading tags</a>; Duda’s <a href="https://support.duda.co/hc/en-us/articles/26519925447703-URL-Redirects">URL Redirects</a>, <a href="https://support.duda.co/hc/en-us/articles/26519250445079-Custom-Code">Custom Code</a> and <a href="https://www.duda.co/product-updates/faq-schema">FAQ schema</a>; GoDaddy’s <a href="https://www.godaddy.com/help/add-html-or-custom-code-to-my-site-27252">custom code help</a>; Miva’s <a href="https://docs.miva.com/docs/uri-management-documentation">URI Management</a> and <a href="https://support.miva.com/hc/en-us/articles/37874352221844-Creating-a-Standard-Sitemap-Protocol-Feed">sitemap feed</a>; BigCommerce <a href="https://support.bigcommerce.com/articles/Public/301-Redirects">301 redirects</a>; Adobe Commerce <a href="https://experienceleague.adobe.com/en/docs/commerce-admin/catalog/catalog/catalog-urls">catalog URLs</a>; WordPress core <a href="https://core.trac.wordpress.org/changeset/11777">rel_canonical</a>.</p>
+    <p>Platforms change. If an answer or step turns out wrong, an admin can fix it with <b>Edit</b>; it’s saved for the team.</p>
+  
+    </footer>
+  </main>
+</div>
+<div id="guide-backdrop" hidden></div>
+<aside id="guide" role="dialog" aria-modal="true" aria-labelledby="guide-title" hidden>
+  <div class="guide-head"><div><span class="eyebrow" id="guide-group"></span><h2 id="guide-title"></h2></div><button type="button" class="guide-close" id="guide-close" aria-label="Close guide">×</button></div>
+  <div class="guide-body" id="guide-body"></div>
+</aside>
+<div id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// ---------- Config ----------
+// Both values are public by design: the anon key only works within the access rules in supabase/schema.sql.
+const SUPABASE_URL = 'https://kvdzluvhwxkrbatgskio.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2ZHpsdXZod3hrcmJhdGdza2lvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMzI4OTQsImV4cCI6MjEwODcwODg5NH0.NKJtGEBjEk4Ma1DXohBy6LTjgm4QHuEH44hdgKtsJFQ';
+
+// Content: loaded from the database after sign-in (table app_data), never stored in this file.
+let ITEMS = [], CONTENT_ITEMS = [], VERDICT = {}, SCOPE = {}, P = [], CONTENT = {}, VARIANTS = {}, HOW = {}, WARN = {},
+  H1_FIX = '', PTYPES = {}, BY_TYPE = {}, GUIDES = {}, HOW_GUIDES = {}, HOW_UNVERIFIED = new Set();
+
+// ---------- Page UI ----------
+const $ = (s) => document.querySelector(s);
+const plain = (html) => html.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+const state = { sec: 'content', onlyCheck: false, showHow: false, ptype: 'home', platform: null, variant: {}, editing: null };
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// Team edits are written in Markdown: **bold**, *italic*, ~~strike~~, `code`, [link](https://…),
+// "- " / "1. " lists and line breaks. Text is escaped first, so nothing else (no HTML) gets through.
+// mdInline() is for one line (how-to steps); md() also handles lists and line breaks.
+function mdInline(line) {
+  const codes = [];
+  let h = esc(line).replace(/`([^`]+)`/g, (_, c) => `\u0000${codes.push(c) - 1}\u0000`);
+  h = h.replace(/\[([^\]]+)\]\(((?:https?:\/\/|mailto:)[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/\*\*(?=\S)(.+?)\*\*/g, '<b>$1</b>')
+    .replace(/(^|[^*\w])\*(?=\S)(.+?)\*(?!\w)/g, '$1<i>$2</i>')
+    .replace(/~~(?=\S)(.+?)~~/g, '<s>$1</s>');
+  return h.replace(/\u0000(\d+)\u0000/g, (_, i) => `<code>${codes[i]}</code>`);
+}
+function md(text) {
+  let html = '', list = null, br = false;
+  for (const line of String(text).split(/\r?\n/)) {
+    const item = line.match(/^\s*([-*•]|\d+[.)])\s+(.*)$/);
+    if (item) {
+      const type = /\d/.test(item[1]) ? 'ol' : 'ul';
+      if (list !== type) { html += (list ? `</${list}>` : '') + `<${type}>`; list = type; }
+      html += `<li>${mdInline(item[2])}</li>`;
+      br = false;
+      continue;
+    }
+    if (list) { html += `</${list}>`; list = null; br = false; }
+    if (!line.trim()) { br = false; continue; }
+    html += (br ? '<br>' : '') + mdInline(line);
+    br = true;
+  }
+  return html + (list ? `</${list}>` : '');
+}
+// For copied notes (they get pasted into the IC form): plain text, links as "text (address)".
+const unmd = (t) => String(t)
+  .replace(/\[([^\]]+)\]\(([^\s)]+)\)/g, '$1 ($2)')
+  .replace(/`([^`]+)`/g, '$1')
+  .replace(/\*\*(?=\S)(.+?)\*\*/g, '$1')
+  .replace(/(^|[^*\w])\*(?=\S)(.+?)\*(?!\w)/g, '$1$2')
+  .replace(/~~(?=\S)(.+?)~~/g, '$1');
+// Built-in text is HTML; in the edit boxes it's shown as the same Markdown so formatting survives an edit.
+const htmlToMd = (h) => plain(String(h).replace(/<code>(.*?)<\/code>/g, '`$1`').replace(/<b>(.*?)<\/b>/g, '**$1**').replace(/<i>(.*?)<\/i>/g, '*$1*'));
+
+const SEC_LABEL = { tech: 'Tech', content: 'Content' };
+function itemsFor(sec) { return sec === 'tech' ? ITEMS : CONTENT_ITEMS; }
+
+// Shared edits: corrections anyone with write access saves for everyone. One document per answer in
+// the "edits" collection, id "<platform>~<section>~<item>", body { verdict, mark, scope, note, how?, warn?, at }.
+// <section> is "tech", "content", or "content.<page type>" for a page-type answer (e.g. "content.product").
+// `how` is the how-to steps, one per line, and `warn` the Watch out text; when either is missing
+// the built-in one shows (an empty string means none). Edits are Markdown; built-in text is trusted HTML.
+const EDITS = new Map();
+let canEditAnswers = false;
+const editKey = (pid, sec, id) => `${pid}~${sec}~${id}`;
+const ownEdit = (p, sec, id) => EDITS.get(editKey(p.id, sec, id));
+
+// Page types: the Content section key for a platform ("content" when it has no page-type answers),
+// and the built-in page-type entry for an item, if any.
+const ptypeOf = (sec) => (sec.startsWith('content.') ? sec.slice(8) : '');
+const contentSec = (p) => (state.ptype && BY_TYPE[p.id] ? `content.${state.ptype}` : 'content');
+const typed = (p, sec, id) => { const t = ptypeOf(sec); return (t && BY_TYPE[p.id]?.[t]?.[id]) || null; };
+// A page-type row has its own answer when it has a built-in page-type cell or its own edit.
+const ownAnswer = (p, sec, id) => !!ptypeOf(sec) && !!(typed(p, sec, id)?.cell || ownEdit(p, sec, id));
+
+// The built-in answer (no edit at this level): page-type cell, else the general Content answer
+// (including its team edit), else the platform's built-in answer.
+function baseCell(p, sec, id) {
+  if (sec === 'tech') return p.cells[id];
+  if (ptypeOf(sec)) return typed(p, sec, id)?.cell || answer(p, 'content', id);
+  return CONTENT[p.id][id];
+}
+// The answer the team uses: an edit at this level if there is one, else the built-in answer.
+function answer(p, sec, id) {
+  const ed = ownEdit(p, sec, id);
+  return ed ? [ed.verdict, ed.mark, ed.scope, ed.note] : baseCell(p, sec, id);
+}
+// Which edit the shown text comes from (so it's rendered as Markdown, not trusted HTML)
+function sourceEdit(p, sec, id) {
+  const ed = ownEdit(p, sec, id);
+  if (ed) return ed;
+  return ptypeOf(sec) && !typed(p, sec, id)?.cell ? ownEdit(p, 'content', id) || null : null;
+}
+function variantCell(p, sec, id) {
+  const v = sec.startsWith('content') && VARIANTS[p.id], choice = v && state.variant[p.id];
+  return (choice && v.options[choice][id]) || null;
+}
+// Page-type answers win over the page-builder picker; otherwise the picker wins.
+function cellFor(p, sec, id) { return (ownAnswer(p, sec, id) ? null : variantCell(p, sec, id)) || answer(p, sec, id); }
+
+// How-to steps, as HTML for the row and as Markdown for the edit box.
+const howText = (steps) => steps.map(htmlToMd).join('\n');
+const stepsFromMd = (t) => t.split('\n').map((x) => x.trim()).filter(Boolean).map(mdInline);
+function baseHowMd(p, sec, id) {
+  const t = typed(p, sec, id);
+  if (t && t.how) return howText(t.how);
+  if (ptypeOf(sec)) return howMd(p, 'content', id);
+  return howText((HOW[p.id] && HOW[p.id][id]) || []);
+}
+function howMd(p, sec, id) { const ed = ownEdit(p, sec, id); return ed && typeof ed.how === 'string' ? ed.how : baseHowMd(p, sec, id); }
+function howFor(p, sec, id) {
+  const ed = ownEdit(p, sec, id);
+  if (ed && typeof ed.how === 'string') return { steps: stepsFromMd(ed.how), edited: true };
+  const t = typed(p, sec, id);
+  if (t && t.how) return { steps: t.how, edited: false };
+  if (ptypeOf(sec)) return howFor(p, 'content', id);
+  return { steps: (HOW[p.id] && HOW[p.id][id]) || [], edited: false };
+}
+
+// Watch out text, the same way. The shared H1 fix sentence is bold in the built-in text.
+const boldFix = (h) => h.replace(H1_FIX, `<b>${H1_FIX}</b>`);
+function baseWarnMd(p, sec, id) {
+  const t = typed(p, sec, id);
+  if (t && typeof t.warn === 'string') return htmlToMd(t.warn.replace(H1_FIX, `**${H1_FIX}**`));
+  if (ptypeOf(sec)) return warnMd(p, 'content', id);
+  return htmlToMd(((WARN[p.id] && WARN[p.id][id]) || '').replace(H1_FIX, `**${H1_FIX}**`));
+}
+function warnMd(p, sec, id) { const ed = ownEdit(p, sec, id); return ed && typeof ed.warn === 'string' ? ed.warn : baseWarnMd(p, sec, id); }
+function warnFor(p, sec, id) {
+  const ed = ownEdit(p, sec, id);
+  if (ed && typeof ed.warn === 'string') return md(ed.warn);
+  const t = typed(p, sec, id);
+  if (t && typeof t.warn === 'string') return boldFix(t.warn);
+  if (ptypeOf(sec)) return warnFor(p, 'content', id);
+  return boldFix((WARN[p.id] && WARN[p.id][id]) || '');
+}
+// An answer that's the same on every site and clear-cut needs no check.
+const settled = (c) => c[2] === 'U' && ['yes', 'auto', 'no'].includes(c[0]);
+function entriesFor(p) {
+  const secs = [state.sec === 'tech' ? 'tech' : contentSec(p)];
+  return secs.flatMap((sec) => itemsFor(sec).map((it) => {
+    const variant = !ownAnswer(p, sec, it.id) && !!variantCell(p, sec, it.id);
+    const edit = !variant && sourceEdit(p, sec, it.id);           // the edit the shown text comes from
+    const own = !variant && !!ownEdit(p, sec, it.id);             // an edit saved at this level (can be reset)
+    return { sec, it, key: `${sec}:${it.id}`, cell: cellFor(p, sec, it.id), variant, edit, own };
+  }));
+}
+
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => t.classList.remove('show'), 1800);
+}
+async function copy(text, selectEl) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('Copied');
+  } catch {
+    if (selectEl) {
+      if (selectEl.select) selectEl.select();
+      else { const r = document.createRange(); r.selectNodeContents(selectEl); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    }
+    toast('Press Ctrl+C to copy');
+  }
+}
+
+function renderControls() {
+  const p = P.find((x) => x.id === state.platform);
+  document.querySelectorAll('[data-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sec === state.sec)));
+  $('#only-check').checked = state.onlyCheck;
+  $('#show-how').checked = state.showHow;
+  // Page type: Content only, on platforms with page-type answers
+  const bar = $('#ptype-bar');
+  bar.hidden = !(state.sec === 'content' && BY_TYPE[p.id]);
+  bar.innerHTML = Object.entries(PTYPES).map(([k, l]) => `<button type="button" data-ptype="${k}" aria-pressed="${state.ptype === k}">${l}</button>`).join('');
+  // Builder / setup picker (WordPress, Magento)
+  const v = state.sec === 'content' && VARIANTS[p.id];
+  $('#variant-wrap').hidden = !v;
+  if (v) {
+    $('#variant-label').textContent = v.label;
+    $('#variant-select').innerHTML = ['', ...Object.keys(v.options)].map((o) => `<option value="${esc(o)}"${(state.variant[p.id] || '') === o ? ' selected' : ''}>${esc(o || 'Not sure')}</option>`).join('');
+  }
+  $('#platform-select').innerHTML = P.map((x) => `<option value="${x.id}"${x.id === p.id ? ' selected' : ''}>${esc(x.name)}</option>`).join('');
+}
+function renderPicker() {
+  // Each platform with how many items to check in the current view
+  $('#picker').innerHTML = P.map((p) => {
+    const n = entriesFor(p).filter((e) => !settled(e.cell)).length;
+    return `<button type="button" id="pick-${p.id}" aria-pressed="${p.id === state.platform}" data-id="${p.id}"><span>${p.name}</span><span class="cnt${n ? '' : ' zero'}" title="${n} to check">${n}</span></button>`;
+  }).join('');
+}
+// One pill per answer: colour = what it takes, dot = same on every site / varies / not verified.
+const SCOPE_SHORT = { U: '', V: 'varies', C: 'not verified' };
+const statusPill = (verdict, scope) =>
+  `<span class="v ${verdict}" title="${esc(VERDICT[verdict])} · ${esc(SCOPE[scope])}"><i class="dot ${scope}" aria-hidden="true"></i>${VERDICT[verdict]}${SCOPE_SHORT[scope] ? `<span class="sc">· ${SCOPE_SHORT[scope]}</span>` : ''}<span class="sr-only"> (${SCOPE[scope]})</span></span>`;
+function editRowHtml(e) {
+  const p = P.find((x) => x.id === state.platform);
+  const [verdict, mark, scope, note] = e.cell;
+  const opts = (map, cur) => Object.keys(map).map((k) => `<option value="${k}"${k === cur ? ' selected' : ''}>${esc(plain(map[k]))}</option>`).join('');
+  return `<article class="card editing">
+      <h3 class="item">${e.it.label}<small>Editing ${esc(p.name)}${ptypeOf(e.sec) ? ` · ${PTYPES[ptypeOf(e.sec)]}` : ''}</small></h3>
+      <form class="edit-form" data-form="${e.key}">
+        <div class="edit-grid">
+          <label>Mark<input name="mark" maxlength="80" required value="${esc(e.edit ? mark : plain(mark))}"></label>
+          <label>Tag<select name="verdict">${opts(VERDICT, verdict)}</select></label>
+          <label>Scope<select name="scope">${opts(SCOPE, scope)}</select></label>
+        </div>
+        <label><span>Note <span style="font-weight:400">(optional; copies as plain text)</span></span><textarea name="note" maxlength="600" rows="3">${esc(e.edit ? note : htmlToMd(note))}</textarea></label>
+        <label><span>Watch out <span style="font-weight:400">(optional, side effects to know before changing it)</span></span><textarea name="warn" maxlength="600" rows="2">${esc(warnMd(p, e.sec, e.it.id))}</textarea></label>
+        <label><span>How-to steps <span style="font-weight:400">(one per line)</span></span><textarea name="how" maxlength="2000" rows="4">${esc(howMd(p, e.sec, e.it.id))}</textarea></label>
+        <div class="edit-actions">
+          <button type="submit" class="btn primary">Save</button>
+          <button type="button" class="btn" data-cancel>Cancel</button>
+          ${e.own ? `<button type="button" class="btn" data-reset="${e.key}">Reset to original</button>` : ''}
+          <span class="muted edit-hint">Saved for everyone who can open this page${ptypeOf(e.sec) ? `, for ${esc(PTYPES[ptypeOf(e.sec)])} only` : ''}.</span>
+        </div>
+        <div class="md-hint">Formatting: <code>**bold**</code> <code>*italic*</code> <code>~~strike~~</code> <code>&#96;code&#96;</code> <code>[link](https://…)</code> <code>- list</code> <code>1. list</code></div>
+      </form>
+    </article>`;
+}
+const COPY_SVG = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+function rowHtml(e) {
+  if (state.editing === e.key) return editRowHtml(e);
+  const [verdict, rawMark, scope, rawNote] = e.cell;
+  const mark = e.edit ? esc(rawMark) : rawMark, note = e.edit ? md(rawNote) : rawNote;
+  const p = P.find((x) => x.id === state.platform);
+  const how = howFor(p, e.sec, e.it.id);
+  const warn = warnFor(p, e.sec, e.it.id);
+  // Settled with nothing to add: one compact, muted line so the cards that need a look stand out.
+  const slim = !note && !warn && settled(e.cell) && !e.edit;
+  const tools = (canEditAnswers && !e.variant ? `<button type="button" class="edit-btn" data-edit="${e.key}" aria-label="Edit answer for ${esc(plain(e.it.label))}">Edit</button>` : '');
+  const howHtml = how.steps.length ? `<details class="how"${state.showHow ? ' open' : ''}><summary>How to</summary><ol>${how.steps.map((t) => `<li>${t}</li>`).join('')}</ol>${
+    !how.edited && HOW_UNVERIFIED.has(p.id) ? '<p class="how-note">These steps haven’t been checked in a live admin yet. If one is off, fix it with Edit.</p>' : ''}${guideLinks(p, e.it.id)}</details>` : '';
+  return `<article class="card${slim ? ' slim' : ''}">
+      <div class="card-head">
+        <h3 class="item">${e.it.label}${e.it.hint && !slim ? `<small>${e.it.hint}</small>` : ''}</h3>
+        <div class="answer"><b class="ans" title="Mark on the form">${mark}</b>${statusPill(verdict, scope)}${tools}</div>
+      </div>
+      ${note ? `<div class="note">${note}<button type="button" class="copy-icon" data-copy="${e.key}" title="Copy note" aria-label="Copy note for ${plain(e.it.label)}">${COPY_SVG}</button></div>` : ''}
+      ${warn ? `<div class="warn"><div><b>Watch out:</b> ${warn}</div></div>` : ''}
+      ${howHtml}
+    </article>`;
+}
+function visibleEntries(p) {
+  const all = entriesFor(p);
+  return state.onlyCheck ? all.filter((e) => !settled(e.cell)) : all;
+}
+function renderPanel() {
+  const p = P.find((x) => x.id === state.platform);
+  const all = entriesFor(p);
+  const shown = visibleEntries(p);
+  const counts = { U: 0, V: 0, C: 0 };
+  all.forEach((e) => counts[e.cell[2]]++);
+  const sub = state.sec === 'content' && contentSec(p) !== 'content' ? ` <span class="h2-sub">· ${PTYPES[state.ptype]}</span>` : '';
+  let body;
+  if (shown.length) body = shown.map(rowHtml).join('');
+  else body = `<p class="empty">Nothing to check here: every ${SEC_LABEL[state.sec]} item on ${p.name} is the same on every site.</p>`;
+  $('#panel').innerHTML = `
+    <div class="panel-head">
+      <div style="display:grid;gap:2px;min-width:0">
+        <h2>${p.name} · ${SEC_LABEL[state.sec]}${sub}</h2>
+        <p class="about">${p.about}</p>
+      </div>
+      <div class="panel-meta">
+        <div class="tally"><span><i class="dot U"></i> ${counts.U} same</span><span><i class="dot V"></i> ${counts.V} vary</span><span><i class="dot C"></i> ${counts.C} not verified</span>${state.onlyCheck ? `<span>· showing ${shown.length} of ${all.length}</span>` : ''}</div>
+        <button type="button" class="btn" id="copy-all">Copy all notes</button>
+      </div>
+    </div>
+    ${body}`;
+}
+function renderGrid() {
+  const sec = state.sec;
+  $('#compare-title').textContent = `Compare platforms · ${SEC_LABEL[state.sec]}${state.sec === 'content' ? ` · ${PTYPES[state.ptype]}` : ''}`;
+  const head = `<thead><tr><th scope="col">Item</th>${P.map((p) => `<th scope="col">${p.name}</th>`).join('')}</tr></thead>`;
+  const body = itemsFor(sec).map((it) => `<tr><th scope="row">${it.label}</th>${P.map((p) => {
+      const s = sec === 'content' ? contentSec(p) : sec;
+      const [verdict, , scope, note] = cellFor(p, s, it.id);
+      const tip = esc(`${p.name} · ${plain(it.label)}: ${VERDICT[verdict]} (${SCOPE[scope]}). ${plain(unmd(note))}`);
+      return `<td><span class="v ${verdict}" title="${tip}" tabindex="0"><i class="dot ${scope}" aria-hidden="true"></i>${VERDICT[verdict]}</span></td>`;
+    }).join('')}</tr>`).join('');
+  $('#grid').innerHTML = head + `<tbody>${body}</tbody>`;
+}
+function render() { state.editing = null; renderControls(); renderPicker(); renderPanel(); renderGrid(); }
+function renderView() { renderControls(); renderPicker(); renderPanel(); renderGrid(); }
+// After shared edits change: redraw, but never wipe a form someone is typing in.
+function refresh() {
+  if (!(state.editing && $('#panel .edit-form'))) renderPanel();
+  renderPicker();
+  renderGrid();
+}
+
+function select(id) {
+  if (!P.some((p) => p.id === id)) return;
+  state.platform = id;
+  try { localStorage.setItem('tech-defaults-platform', id); } catch {}
+  render();
+}
+function remember() {
+  try { localStorage.setItem('ic-defaults-view', JSON.stringify({ sec: state.sec, onlyCheck: state.onlyCheck, showHow: state.showHow, ptype: state.ptype })); } catch {}
+}
+
+$('#sticky').addEventListener('click', (e) => {
+  const s = e.target.closest('button[data-sec]');
+  if (s) { state.sec = s.dataset.sec; remember(); render(); return; }
+  const t = e.target.closest('button[data-ptype]');
+  if (t) { state.ptype = t.dataset.ptype; state.editing = null; remember(); renderView(); }
+});
+$('#variant-select').addEventListener('change', (e) => { state.variant[state.platform] = e.target.value; state.editing = null; renderView(); });
+$('#platform-select').addEventListener('change', (e) => select(e.target.value));
+// Divider under the pinned bar only once it's pinned.
+addEventListener('scroll', () => $('#sticky').classList.toggle('stuck', $('#sticky').getBoundingClientRect().top <= 0), { passive: true });
+$('#only-check').addEventListener('change', (e) => { state.onlyCheck = e.target.checked; remember(); render(); });
+$('#show-how').addEventListener('change', (e) => { state.showHow = e.target.checked; remember(); render(); });
+$('#picker').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-id]');
+  if (b) select(b.dataset.id);
+});
+$('#panel').addEventListener('click', (e) => {
+  const p = P.find((x) => x.id === state.platform);
+  const ed = e.target.closest('[data-edit]');
+  if (ed) {
+    state.editing = ed.dataset.edit;
+    renderPanel();
+    $('#panel .edit-form [name="mark"]')?.focus();
+    return;
+  }
+  if (e.target.closest('[data-cancel]')) { state.editing = null; renderPanel(); return; }
+  const rs = e.target.closest('[data-reset]');
+  if (rs) return saveEdit(rs.dataset.reset, null, rs);
+  const one = e.target.closest('[data-copy]');
+  if (one) {
+    const [sec, id] = one.dataset.copy.split(':');
+    return copy(unmd(cellFor(p, sec, id)[3]), one.closest('.card').querySelector('.note'));
+  }
+  if (e.target.id === 'copy-all') {
+    const text = visibleEntries(p).map((x) => `${plain(x.it.label)} — ${x.cell[1]}${x.cell[3] ? `: ${unmd(x.cell[3])}` : ''}`).join('\n');
+    const v = VARIANTS[p.id] && state.sec !== 'tech' && state.variant[p.id];
+    const t = state.sec === 'content' && contentSec(p) !== 'content' ? ` · ${PTYPES[state.ptype]}` : '';
+    copy(`${p.name} — ${SEC_LABEL[state.sec]}${t}${v ? ` (${v})` : ''}\n${text}`, e.target.closest('.panel-head'));
+  }
+});
+
+$('#panel').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = e.target.closest('form[data-form]');
+  if (f) saveEdit(f.dataset.form, f, f.querySelector('[type="submit"]'));
+});
+// ---------- Guides ----------
+function guideLinks(p, id) {
+  const ids = (HOW_GUIDES[p.id] && HOW_GUIDES[p.id][id]) || [];
+  return ids.length ? `<p class="guide-links">Guide${ids.length > 1 ? 's' : ''}: ${ids.map((g) => `<button type="button" class="guide-link" data-guide="${g}">${esc(GUIDES[g].title)}</button>`).join('')}</p>` : '';
+}
+function guideBlock(b, i) {
+  if (b.h) return `<h3>${b.h}</h3>`;
+  if (b.p) return `<p>${b.p}</p>`;
+  if (b.note) return `<p class="tip">${b.note}</p>`;
+  if (b.ol) return `<ol>${b.ol.map((x) => `<li>${x}</li>`).join('')}</ol>`;
+  if (b.ul) return `<ul>${b.ul.map((x) => `<li>${x}</li>`).join('')}</ul>`;
+  if (b.code) return `<div class="snippet"><div class="snippet-head"><span>${esc(b.label || b.lang || 'Code')}</span><button type="button" class="btn" data-snippet="${i}">Copy</button></div><pre><code>${esc(b.code)}</code></pre></div>`;
+  return '';
+}
+let openGuideId = null, guideOpener = null;
+function openGuide(id, opener) {
+  const g = GUIDES[id];
+  if (!g) return;
+  openGuideId = id;
+  guideOpener = opener || document.activeElement;
+  $('#guide-group').textContent = g.group;
+  $('#guide-title').innerHTML = g.title;
+  $('#guide-body').innerHTML = `<p class="intro">${g.intro}</p>` +
+    (g.unverified ? '<p class="unverified">These steps haven’t been checked in a live admin yet.</p>' : '') +
+    g.blocks.map(guideBlock).join('');
+  $('#guide').hidden = false;
+  $('#guide-backdrop').hidden = false;
+  $('#guide-body').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  $('#guide-close').focus();
+}
+function closeGuide() {
+  if ($('#guide').hidden) return;
+  $('#guide').hidden = true;
+  $('#guide-backdrop').hidden = true;
+  document.body.style.overflow = '';
+  openGuideId = null;
+  if (guideOpener && document.contains(guideOpener)) guideOpener.focus();
+}
+function renderGuideList() {
+  const groups = {};
+  Object.entries(GUIDES).forEach(([id, g]) => (groups[g.group] = groups[g.group] || []).push([id, g]));
+  $('#guide-list').innerHTML = Object.entries(groups).map(([name, list]) =>
+    `<div class="guide-group"><h3>${esc(name)}</h3>${list.map(([id, g]) => `<button type="button" data-guide="${id}">${esc(g.title)}</button>`).join('')}</div>`).join('');
+  $('#guide-nav').innerHTML = Object.entries(GUIDES).map(([id, g]) => `<button type="button" data-guide="${id}">${esc(g.title)}</button>`).join('');
+}
+document.addEventListener('click', (e) => {
+  const g = e.target.closest('[data-guide]');
+  if (g) { e.preventDefault(); openGuide(g.dataset.guide, g); return; }
+  const sn = e.target.closest('[data-snippet]');
+  if (sn && openGuideId) { const b = GUIDES[openGuideId].blocks[+sn.dataset.snippet]; copy(b.code, sn.closest('.snippet').querySelector('pre')); }
+});
+$('#guide-close').addEventListener('click', closeGuide);
+$('#guide-backdrop').addEventListener('click', closeGuide);
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#guide').hidden) { e.stopPropagation(); closeGuide(); } }, true);
+// Keep Tab inside the open guide
+$('#guide').addEventListener('keydown', (e) => {
+  if (e.key !== 'Tab') return;
+  const f = [...$('#guide').querySelectorAll('button, a[href]')].filter((x) => x.offsetParent !== null);
+  if (!f.length) return;
+  if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+});
+
+$('#panel').addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && state.editing) { state.editing = null; renderPanel(); }
+});
+
+// Save (form) or reset (no form) one answer for the team. An edit that matches the original is removed.
+async function saveEdit(key, form, button) {
+  if (!sb) return;
+  const p = P.find((x) => x.id === state.platform);
+  const [sec, id] = key.split(':');
+  const docId = editKey(p.id, sec, id);
+  let body = null;
+  if (form) {
+    body = { verdict: form.verdict.value, mark: form.mark.value.trim(), scope: form.scope.value, note: form.note.value.trim(), at: new Date().toISOString() };
+    if (!body.mark) { form.mark.focus(); return toast('Add what to mark'); }
+    const how = form.how.value.split('\n').map((t) => t.trim()).filter(Boolean).join('\n');
+    if (how !== baseHowMd(p, sec, id)) body.how = how;
+    const warn = form.warn.value.split('\n').map((t) => t.trimEnd()).join('\n').trim();
+    if (warn !== baseWarnMd(p, sec, id)) body.warn = warn;
+    const b = baseCell(p, sec, id);
+    if (b[0] === body.verdict && plain(b[1]) === body.mark && b[2] === body.scope && (sourceEdit(p, sec, id) && !ownEdit(p, sec, id) ? b[3] : htmlToMd(b[3])) === body.note && !('how' in body) && !('warn' in body)) body = null;
+  }
+  if (button) button.disabled = true;
+  const row = body && { platform: p.id, sec, item: id, verdict: body.verdict, mark: body.mark, scope: body.scope, note: body.note,
+    how: 'how' in body ? body.how : null, warn: 'warn' in body ? body.warn : null, at: body.at };
+  const { error } = row ? await sb.from('edits').upsert(row)
+    : EDITS.has(docId) ? await sb.from('edits').delete().match({ platform: p.id, sec, item: id }) : { error: null };
+  if (error) { if (button) button.disabled = false; return toast(failText(error, 'Couldn’t save')); }
+  if (row) EDITS.set(docId, row); else EDITS.delete(docId);
+  state.editing = null;
+  refresh();
+  toast(row ? 'Saved for the team' : 'Back to the original answer');
+}
+
+// A short, plain message for a failed database call.
+function failText(error, what) {
+  const m = String((error && error.message) || '');
+  if (/row-level security|permission|not allowed|Only admins|violates/i.test(m)) return `${what}: you don’t have access to do that`;
+  if (/JWT|expired|session/i.test(m)) return `${what}: your sign-in expired. Reload the page`;
+  if (/fetch|network/i.test(m)) return `${what}: check your connection and try again`;
+  return `${what}. Try again`;
+}
+
+// ---------- Team (admins) ----------
+// Anyone can sign in with Discord; only people an admin approves here can see the content.
+const R = { me: null, manage: false, pending: [], members: new Map() };
+const ago = (iso) => {
+  const s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (!(s >= 0)) return '';
+  if (s < 90) return 'just now';
+  if (s < 3600) return `${Math.round(s / 60)} min ago`;
+  if (s < 86400) return `${Math.round(s / 3600)} h ago`;
+  return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+};
+function personHtml(p, actions) {
+  return `<div class="person">
+      ${p.avatar ? `<img src="${esc(p.avatar)}" alt="" width="36" height="36" referrerpolicy="no-referrer" loading="lazy">` : '<span class="avatar-blank" aria-hidden="true"></span>'}
+      <div style="min-width:0"><b>${esc(p.name || 'Unknown Discord user')}</b>${p.role === 'admin' ? '<span class="role">Admin</span>' : ''}
+        <small>${p.discord_id ? `Discord ID ${esc(p.discord_id)}` : ''}${p.created_at ? ` · asked ${ago(p.created_at)}` : p.approved_at ? ` · added ${ago(p.approved_at)}` : ''}</small></div>
+      <div class="person-actions">${actions}</div>
+    </div>`;
+}
+function renderTeam() {
+  const n = R.pending.length;
+  $('#team-count').textContent = n ? String(n) : '';
+  const members = [...R.members.values()].sort((a, b) => (a.role === b.role ? String(a.name).localeCompare(String(b.name)) : a.role === 'admin' ? -1 : 1));
+  $('#team-tally').textContent = `${members.length} member${members.length === 1 ? '' : 's'} · ${n} waiting`;
+  $('#pending-list').innerHTML = n ? R.pending.map((p) => personHtml(p,
+    `<button type="button" class="btn primary" data-approve="${esc(p.user_id)}">Approve</button><button type="button" class="btn" data-decline="${esc(p.user_id)}">Decline</button>`)).join('')
+    : '<p class="empty">Nobody is waiting. When someone signs in with Discord and isn’t on the team yet, they show up here.</p>';
+  $('#member-list').innerHTML = members.map((m) => personHtml(m, m.user_id === R.me ? '<span class="muted">You</span>' :
+    `<button type="button" class="btn" data-role="${esc(m.user_id)}" data-to="${m.role === 'admin' ? 'member' : 'admin'}">${m.role === 'admin' ? 'Make member' : 'Make admin'}</button><button type="button" class="link-btn" data-remove="${esc(m.user_id)}">Remove</button>`)).join('');
+}
+async function loadTeam() {
+  if (!R.manage) return;
+  const [pend, mem] = await Promise.all([
+    sb.from('access_requests').select('*').order('created_at'),
+    sb.from('members').select('*'),
+  ]);
+  if (!pend.error) R.pending = pend.data;
+  if (!mem.error) R.members = new Map(mem.data.map((m) => [m.user_id, m]));
+  renderTeam();
+}
+// The team page takes the place of the answers (toolbar, cards, guides, compare) while it's open.
+function showTeam(on) {
+  on = on && R.manage;
+  ['#sticky', '#panel', '#guides-fold', '#compare'].forEach((id) => { $(id).hidden = on; });
+  $('#team-view').hidden = !on;
+  try { history.replaceState(null, '', on ? '#team' : `#${state.platform}`); } catch {}
+  if (on) { renderTeam(); loadTeam(); scrollTo(0, 0); }
+}
+$('#team-btn').addEventListener('click', () => showTeam($('#team-view').hidden));
+$('#team-close').addEventListener('click', () => showTeam(false));
+$('#team-view').addEventListener('click', async (e) => {
+  const t = e.target.closest('button');
+  if (!t) return;
+  let call = null, done = '';
+  if (t.dataset.approve) { call = sb.rpc('approve_member', { uid: t.dataset.approve }); done = 'Approved. They can refresh the page now'; }
+  else if (t.dataset.decline && confirm('Decline this person? They can sign in again later to ask again.')) { call = sb.from('access_requests').delete().eq('user_id', t.dataset.decline); done = 'Declined'; }
+  else if (t.dataset.remove && confirm('Remove this person from the team?')) { call = sb.rpc('remove_member', { uid: t.dataset.remove }); done = 'Removed'; }
+  else if (t.dataset.role) { call = sb.rpc('set_member_role', { uid: t.dataset.role, new_role: t.dataset.to }); done = t.dataset.to === 'admin' ? 'Now an admin' : 'Now a member'; }
+  else if (t.id === 'team-refresh') { await loadTeam(); return toast('Up to date'); }
+  if (!call) return;
+  t.disabled = true;
+  const { error } = await call;
+  t.disabled = false;
+  if (error) return toast(failText(error, 'That didn’t work'));
+  await loadTeam();
+  toast(done);
+});
+
+// ---------- Sign-in and loading ----------
+const CONFIGURED = !/YOUR-/.test(SUPABASE_URL + SUPABASE_ANON_KEY);
+const sb = CONFIGURED && window.supabase
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { flowType: 'pkce', detectSessionInUrl: true, persistSession: true } })
+  : null;
+
+// One screen at a time until the person is an approved member.
+function gate(kind, opts = {}) {
+  $('#side').hidden = true;
+  $('#main').hidden = true;
+  $('#gate').hidden = false;
+  const who = opts.user ? `<div class="person gate-person">${opts.user.avatar ? `<img src="${esc(opts.user.avatar)}" alt="" width="36" height="36" referrerpolicy="no-referrer">` : '<span class="avatar-blank" aria-hidden="true"></span>'}<div><b>${esc(opts.user.name || 'Discord user')}</b><small>Signed in with Discord</small></div></div>` : '';
+  const screens = {
+    loading: '<p class="muted">Loading…</p>',
+    signin: `<h2>Team sign-in</h2>
+      <p class="muted">IC Defaults is for the team. Sign in with your Discord account. You don’t need to be in any particular server.</p>
+      <button type="button" class="btn discord" data-act="signin"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18.2 18.2 0 0 0-5.6 0L8.6 3a19.6 19.6 0 0 0-4.9 1.4C.6 9 0 13.5.3 17.9A19.8 19.8 0 0 0 6.3 21l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14 14 0 0 0 11.8 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.7 19.7 0 0 0 6-3.1c.4-5.1-.8-9.6-3.4-13.5ZM8.5 15.2c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Z"/></svg>Sign in with Discord</button>`,
+    pending: `<h2>Almost in</h2>${who}
+      <p class="muted">You’re not on the team list yet. Your request is waiting for an admin to approve it. Once you’re approved, refresh this page.</p>
+      <div class="edit-actions"><button type="button" class="btn primary" data-act="recheck">Check again</button><button type="button" class="btn" data-act="signout">Use a different account</button></div>`,
+    setup: `<h2>Not connected yet</h2>
+      <p class="muted">The database isn’t set up. Add the Supabase project URL and anon key at the top of the script (see the README).</p>`,
+    error: `<h2>Something went wrong</h2><p class="muted">${esc(opts.message || 'Please try again.')}</p>
+      <div class="edit-actions"><button type="button" class="btn primary" data-act="recheck">Try again</button>${opts.user ? '<button type="button" class="btn" data-act="signout">Sign out</button>' : ''}</div>`,
+  };
+  $('#gate .gate-card').innerHTML = screens[kind];
+}
+$('#gate').addEventListener('click', async (e) => {
+  const act = e.target.closest('[data-act]')?.dataset.act;
+  if (act === 'signin') {
+    const { error } = await sb.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: location.origin + location.pathname } });
+    if (error) gate('error', { message: 'Couldn’t reach Discord. Try again.' });
+  }
+  if (act === 'recheck') boot();
+  if (act === 'signout') signOut();
+});
+async function signOut() { await sb.auth.signOut(); location.replace(location.pathname); }
+$('#signout').addEventListener('click', signOut);
+
+function identity(user) {
+  const m = user.user_metadata || {};
+  return { name: (m.custom_claims && m.custom_claims.global_name) || m.full_name || m.name || '', avatar: m.avatar_url || '' };
+}
+
+// Team edits (everything members can read besides the content itself)
+let lastLoad = 0, started = false;
+async function loadEdits() {
+  const { data, error } = await sb.from('edits').select('*');
+  if (error) throw error;
+  EDITS.clear();
+  data.forEach((x) => EDITS.set(editKey(x.platform, x.sec, x.item), x));
+  lastLoad = Date.now();
+}
+
+async function boot() {
+  if (!CONFIGURED) return gate('setup');
+  if (!sb) return gate('error', { message: 'Couldn’t load the sign-in library. Check your connection and reload.' });
+  gate('loading');
+  const { data: { session } } = await sb.auth.getSession();
+  if (/[?&](code|error)=/.test(location.search)) history.replaceState(null, '', location.pathname + location.hash);
+  if (!session) return gate('signin');
+  const user = session.user;
+  const me = identity(user);
+  R.me = user.id;
+  const mem = await sb.from('members').select('role').eq('user_id', user.id).maybeSingle();
+  if (mem.error) return gate('error', { user: me, message: 'Couldn’t check your access. Try again in a moment.' });
+  if (!mem.data) {
+    // Not on the team: record (or keep) the access request so an admin can approve it.
+    await sb.from('access_requests').upsert({ user_id: user.id }, { onConflict: 'user_id', ignoreDuplicates: true });
+    return gate('pending', { user: me });
+  }
+  R.manage = canEditAnswers = mem.data.role === 'admin';
+  const app = await sb.from('app_data').select('data').eq('id', 'defaults').maybeSingle();
+  if (app.error || !app.data) return gate('error', { user: me, message: app.error ? 'Couldn’t load the answers. Try again.' : 'The answers haven’t been loaded into the database yet (run seed.sql).' });
+  const d = app.data.data;
+  ({ ITEMS, CONTENT_ITEMS, VERDICT, SCOPE, P, CONTENT, VARIANTS, HOW, WARN, H1_FIX, PTYPES, BY_TYPE, GUIDES, HOW_GUIDES } = d);
+  HOW_UNVERIFIED = new Set(d.HOW_UNVERIFIED || []);
+  try { await loadEdits(); } catch { return gate('error', { user: me, message: 'Couldn’t load the team’s edits. Try again.' }); }
+  startApp(me);
+}
+
+function startApp(me) {
+  $('#gate').hidden = true;
+  $('#side').hidden = false;
+  $('#main').hidden = false;
+  $('#user-chip').hidden = false;
+  $('#user-name').textContent = me.name || 'Signed in';
+  if (me.avatar) { $('#user-avatar').src = me.avatar; $('#user-avatar').hidden = false; }
+  $('#team-btn').hidden = !R.manage;
+  if (started) { refresh(); return; }
+  started = true;
+  renderGuideList();
+  // Open the platform named in the link (#shopify, #wix…), else the last one viewed.
+  let start = location.hash.slice(1);
+  if (!P.some((p) => p.id === start)) {
+    try { start = localStorage.getItem('tech-defaults-platform') || P[0].id; } catch { start = P[0].id; }
+  }
+  if (!P.some((p) => p.id === start)) start = P[0].id;
+  try {
+    const v = JSON.parse(localStorage.getItem('ic-defaults-view') || '{}');
+    if (['tech', 'content'].includes(v.sec)) state.sec = v.sec;
+    state.onlyCheck = !!v.onlyCheck;
+    state.showHow = !!v.showHow;
+    if (Object.hasOwn(PTYPES, v.ptype)) state.ptype = v.ptype;
+  } catch {}
+  select(start);
+  if (R.manage) { loadTeam(); if (location.hash === '#team') showTeam(true); }
+  addEventListener('hashchange', () => {
+    const k = location.hash.slice(1);
+    if (k === 'team') showTeam(true);
+    else if (P.some((p) => p.id === k)) { showTeam(false); select(k); }
+  });
+  // Pick up teammates' edits when coming back to the tab.
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState !== 'visible' || Date.now() - lastLoad < 30000) return;
+    try { await loadEdits(); refresh(); if (R.manage) loadTeam(); } catch {}
+  });
+}
+
+if (sb) sb.auth.onAuthStateChange((event) => { if (event === 'SIGNED_OUT') location.replace(location.pathname); });
+boot();
+</script>
+</body>
+</html>
