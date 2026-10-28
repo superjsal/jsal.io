@@ -33,12 +33,12 @@ export function detectSource(html, text) {
 
 /**
  * @param {{html?: string, text?: string}} input  what came off the clipboard (or the editor)
- * @returns {{html: string, text: string, stats: object, checks: {level: string, text: string}[]}}
+ * @returns {{html: string, text: string, stats: object, checks: {level: string, text: string, fix: boolean, id?: string, find?: (root: Element) => Element[]}[]}}
  */
 export function clean(input) {
   const out = document.implementation.createHTMLDocument("");
   const root = out.createElement("div");
-  const stats = { googleLinks: 0, fixedLinks: 0, images: 0, comments: 0, boldLines: 0 };
+  const stats = { googleLinks: 0, fixedLinks: 0, images: 0, comments: 0 };
 
   // HTML code pasted as text: treat the code as the content
   const html = input.html && input.html.trim() ? input.html : looksLikeHtml(input.text) ? input.text : "";
@@ -61,7 +61,6 @@ export function clean(input) {
   }
 
   tidy(root, out);
-  stats.boldLines = boldOnlyLines(root).length;
   const checks = runChecks(root, stats);
   return { html: serialize(root).trim(), text: toText(root).trim(), stats, checks, root };
 }
@@ -446,7 +445,7 @@ function removeEmpty(root) {
 // ── Bold-only lines ───────────────────────────────────────────────────────
 
 // A short paragraph that is entirely bold usually means "the writer wanted a heading"
-function boldOnlyLines(root) {
+export function boldOnlyLines(root) {
   return [...root.querySelectorAll(":scope > p")].filter((p) => {
     if (p.dataset.image) return false;
     const text = p.textContent.trim();
@@ -460,43 +459,55 @@ function boldOnlyLines(root) {
 
 function runChecks(root, stats) {
   const checks = [];
-  // fix: something cleaning already fixed (only known on the first clean of a paste)
-  const add = (level, text, fix = false) => checks.push({ level, text, fix });
+  // fix: something cleaning already fixed (only known on the first clean of a paste).
+  // find: the elements a check is about, so the page can point to them. It works on any
+  // root, so the same function finds them in the editor too.
+  const add = (level, text, { fix = false, id, find } = {}) => checks.push({ level, text, fix, id, find });
   const n = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
+  const links = (r, test) => [...r.querySelectorAll("a")].filter((a) => test.test(a.getAttribute("href") || ""));
 
-  const h1 = root.querySelectorAll("h1").length;
-  if (h1) add("warn", `${n(h1, "H1 heading")} in the body. Most CMSs already use the post title as the H1, so change ${h1 === 1 ? "it" : "them"} to H2.`);
+  const findH1 = (r) => [...r.querySelectorAll("h1")];
+  const h1 = findH1(root).length;
+  if (h1) add("warn", `${n(h1, "H1 heading")} in the body. Most CMSs already use the post title as the H1, so change ${h1 === 1 ? "it" : "them"} to H2.`, { id: "h1", find: findH1 });
 
   // Skipped levels: H2 followed by H4
-  let prev = 0, skipped = 0;
-  for (const h of root.querySelectorAll("h1, h2, h3, h4, h5, h6")) {
-    const lvl = +h.localName[1];
-    if (prev && lvl > prev + 1) skipped++;
-    prev = lvl;
+  const findSkips = (r) => {
+    let prev = 0;
+    return [...r.querySelectorAll("h1, h2, h3, h4, h5, h6")].filter((h) => {
+      const lvl = +h.localName[1], skip = prev && lvl > prev + 1;
+      prev = lvl;
+      return skip;
+    });
+  };
+  const skipped = findSkips(root).length;
+  if (skipped) add("warn", `Heading levels skip ${n(skipped, "time")} (for example H2 straight to H4).`, { id: "skip", find: findSkips });
+
+  const bold = boldOnlyLines(root).length;
+  if (bold) {
+    const one = bold === 1;
+    add("warn", `${n(bold, "line")} ${one ? "is" : "are"} only bold text, and may be meant as ${one ? "a heading" : "headings"}. Change ${one ? "it" : "each"} to H2 or H3.`, { id: "bold", find: boldOnlyLines });
   }
-  if (skipped) add("warn", `Heading levels skip ${n(skipped, "time")} (for example H2 straight to H4).`);
 
-  if (stats.boldLines) {
-    const one = stats.boldLines === 1;
-    add("warn", `${n(stats.boldLines, "line")} ${one ? "is" : "are"} only bold text, and may be meant as ${one ? "a heading" : "headings"}. Click into ${one ? "it" : "each"} and use H2 or H3.`);
-  }
+  const findPrivate = (r) => links(r, PRIVATE_LINK);
+  const priv = findPrivate(root);
+  if (priv.length) add("warn", `${n(priv.length, "link")} ${priv.length === 1 ? "points" : "point"} to a draft, file share or local file: ${priv.slice(0, 3).map((a) => short(a.getAttribute("href"))).join(", ")}${priv.length > 3 ? "…" : ""}`, { id: "private", find: findPrivate });
+  const findBookmarks = (r) => links(r, /^#_/);
+  const bookmark = findBookmarks(root).length;
+  if (bookmark) add("warn", `${n(bookmark, "link")} ${bookmark === 1 ? "jumps" : "jump"} to a Word bookmark (like a table of contents) and won't work on the site.`, { id: "bookmark", find: findBookmarks });
+  const findInsecure = (r) => links(r, /^http:\/\//i);
+  const insecure = findInsecure(root).length;
+  if (insecure) add("info", `${n(insecure, "link")} ${insecure === 1 ? "uses" : "use"} http:// instead of https://.`, { id: "http", find: findInsecure });
+  if (stats.googleLinks) add("ok", `Unwrapped ${n(stats.googleLinks, "Google redirect link")} to the real address.`, { fix: true });
+  if (stats.fixedLinks) add("ok", `Added https:// to ${n(stats.fixedLinks, "link")} that started with www.`, { fix: true });
 
-  const links = [...root.querySelectorAll("a")];
-  const priv = links.filter((a) => PRIVATE_LINK.test(a.getAttribute("href")));
-  if (priv.length) add("warn", `${n(priv.length, "link")} ${priv.length === 1 ? "points" : "point"} to a draft, file share or local file: ${priv.slice(0, 3).map((a) => short(a.getAttribute("href"))).join(", ")}${priv.length > 3 ? "…" : ""}`);
-  const bookmark = links.filter((a) => /^#_/.test(a.getAttribute("href")));
-  if (bookmark.length) add("warn", `${n(bookmark.length, "link")} ${bookmark.length === 1 ? "jumps" : "jump"} to a Word bookmark (like a table of contents) and won't work on the site.`);
-  const insecure = links.filter((a) => /^http:\/\//i.test(a.getAttribute("href")));
-  if (insecure.length) add("info", `${n(insecure.length, "link")} ${insecure.length === 1 ? "uses" : "use"} http:// instead of https://.`);
-  if (stats.googleLinks) add("ok", `Unwrapped ${n(stats.googleLinks, "Google redirect link")} to the real address.`, true);
-  if (stats.fixedLinks) add("ok", `Added https:// to ${n(stats.fixedLinks, "link")} that started with www.`, true);
+  const findImages = (r) => [...r.querySelectorAll("p")].filter((p) => /^\[Image(:|\])/.test(p.textContent.trim()));
+  const images = findImages(root).length;
+  if (images) add("info", `${n(images, "image")} marked as [Image]. Upload ${images === 1 ? "it" : "them"} in the CMS and add alt text.`, { id: "image", find: findImages });
+  if (stats.comments) add("ok", `Removed ${n(stats.comments, "Word comment")}.`, { fix: true });
 
-  const images = [...root.querySelectorAll("p")].filter((p) => /^\[Image(:|\])/.test(p.textContent.trim())).length;
-  if (images) add("info", `${n(images, "image")} marked as [Image]. Upload ${images === 1 ? "it" : "them"} in the CMS and add alt text.`);
-  if (stats.comments) add("ok", `Removed ${n(stats.comments, "Word comment")}.`, true);
-
-  const longP = [...root.querySelectorAll(":scope > p")].filter((p) => words(p.textContent) > 150).length;
-  if (longP) add("info", `${n(longP, "paragraph")} over 150 words. Consider splitting for easier reading.`);
+  const findLong = (r) => [...r.querySelectorAll(":scope > p")].filter((p) => words(p.textContent) > 150);
+  const longP = findLong(root).length;
+  if (longP) add("info", `${n(longP, "paragraph")} over 150 words. Consider splitting for easier reading.`, { id: "long", find: findLong });
 
   return checks;
 }

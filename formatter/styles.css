@@ -143,7 +143,13 @@ body {
   color: var(--text-2);
   line-height: 1.45;
 }
-.check > span:last-child { min-width: 0; overflow-wrap: anywhere; }   /* long URLs wrap instead of running off */
+.check > span:nth-child(2) { flex: 1; min-width: 0; overflow-wrap: anywhere; }   /* long URLs wrap instead of running off */
+/* Checks about particular lines are buttons: click to show the line in the text */
+button.check { width: 100%; font: inherit; text-align: left; transition: border-color 0.12s, background 0.12s; }
+button.check:hover { border-color: var(--accent-ring); background: var(--surface-3); }
+button.check:focus-visible { outline-offset: -2px; }
+.check-show { flex-shrink: 0; align-self: center; font-size: 11.5px; font-weight: 600; color: var(--text-3); }
+button.check:hover .check-show, button.check:focus-visible .check-show { color: var(--accent); }
 .check .ico { margin-top: 1px; width: 16px; height: 16px; border-radius: 50%; }
 .check.ok .ico { color: var(--ok); background: var(--ok-dim); }
 .check.warn { border-color: var(--warn-dim); }
@@ -321,6 +327,12 @@ textarea.code[hidden] { display: none; }
 .preview td, .preview th { border: 1px solid var(--border-hi); padding: 6px 10px; text-align: left; vertical-align: top; }
 .preview blockquote { border-left: 3px solid var(--accent-ring); padding-left: 14px; color: var(--text-2); }
 .preview [data-image] { display: inline-block; padding: 4px 10px; border-radius: 6px; border: 1px dashed var(--warn); color: var(--warn); background: var(--warn-dim); font-size: 13px; font-weight: 600; }
+/* Bold-only lines: a gold bar in the margin (see the "only bold text" check) */
+.preview > p[data-bold] { position: relative; }
+.preview > p[data-bold]::before { content: ""; position: absolute; left: -14px; top: 0.2em; bottom: 0.2em; width: 3px; border-radius: 2px; background: var(--accent); opacity: 0.55; }
+/* A check's line, just shown: a short gold flash (stays lit briefly, without motion, if animations are off) */
+.preview .locate { background: var(--accent-dim); border-radius: 4px; animation: locate 1.2s ease-out forwards; }
+@keyframes locate { 0%, 30% { background: var(--accent-dim); box-shadow: 0 0 0 4px var(--accent-dim); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
 .preview .flag { text-decoration-color: var(--warn); text-decoration-style: wavy; text-decoration-line: underline; }
 
 /* ── Layout ────────────────────────────────────────────────────────────── */

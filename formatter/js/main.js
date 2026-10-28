@@ -1,4 +1,4 @@
-import { clean, detectSource, looksLikeHtml, words } from "./clean.js";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines } from "./clean.js";
 import { SAMPLE_HTML } from "./sample.js";
 
 const $ = (id) => document.getElementById(id);
@@ -93,6 +93,12 @@ function decorate() {
     if (/^\[Image(:|\])/.test(p.textContent.trim())) p.dataset.image = "1";
     else delete p.dataset.image;
   }
+  // Bold-only lines get a gold bar in the margin until they're made headings
+  const bold = new Set(boldOnlyLines(editor));
+  for (const p of editor.querySelectorAll(":scope > p")) {
+    if (bold.has(p)) p.dataset.bold = "1";
+    else delete p.dataset.bold;
+  }
   for (const a of editor.querySelectorAll("a")) {
     const href = a.getAttribute("href") || "";
     a.title = href;
@@ -114,11 +120,46 @@ function showResult() {
     `<span class="stat"><b>${Math.max(n ? 1 : 0, Math.round(n / 230))}</b> min read</span>` +
     (saved > 0 ? `<span class="stat good" title="${kb(before)} of code → ${kb(after)}"><b>${saved}%</b> less code</span>` : "");
 
-  const checks = [...result.checks.filter((c) => !c.fix), ...fixes];
-  if (n && !checks.some((c) => c.level === "warn")) checks.push({ level: "ok", text: "No problems found." });
-  $("checks").innerHTML = checks.map((c) =>
-    `<li class="check ${c.level}"><span class="ico">${icon(c.level === "ok" ? "check" : c.level, 12, 2.6)}</span><span>${escapeHtml(c.text)}</span></li>`).join("");
+  shownChecks = [...result.checks.filter((c) => !c.fix), ...fixes];
+  if (n && !shownChecks.some((c) => c.level === "warn")) shownChecks.push({ level: "ok", text: "No problems found." });
+  // Checks about particular lines are buttons that show them in the text
+  $("checks").innerHTML = shownChecks.map((c, i) => {
+    const body = `<span class="ico">${icon(c.level === "ok" ? "check" : c.level, 12, 2.6)}</span><span>${escapeHtml(c.text)}</span>`;
+    return c.find
+      ? `<li><button type="button" class="check ${c.level}" data-check="${i}" title="Show in the text">${body}<span class="check-show">Show</span></button></li>`
+      : `<li class="check ${c.level}">${body}</li>`;
+  }).join("");
 }
+
+// ── Show a check's lines: scroll to it if needed, flash it, put the cursor there.
+// Clicking again moves on to the next one when a check covers several. ──
+let shownChecks = [];
+const located = new Map();   // check id → index of the line shown last
+function locate(check) {
+  if (editor.hidden) document.querySelector('[data-tab="out"][data-view="page"]').click();
+  const lines = check.find(editor);
+  if (!lines.length) return;
+  const i = ((located.get(check.id) ?? -1) + 1) % lines.length;
+  located.set(check.id, i);
+  const el = lines[i];
+  // Only scroll if it's not fully in view, and then bring it to the middle
+  const box = el.getBoundingClientRect(), view = editor.closest(".pane-body").getBoundingClientRect();
+  if (box.top < view.top || box.bottom > view.bottom) el.scrollIntoView({ block: "center" });
+  editor.focus({ preventScroll: true });
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(true);
+  getSelection().removeAllRanges();
+  getSelection().addRange(range);
+  el.classList.remove("locate");
+  void el.offsetWidth;   // restart the flash if it's already running
+  el.classList.add("locate");
+  setTimeout(() => el.classList.remove("locate"), 1300);
+}
+$("checks").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-check]");
+  if (b) locate(shownChecks[+b.dataset.check]);
+});
 
 // Edits are re-cleaned shortly after typing stops, so the HTML stays tidy
 let timer = null, pending = null;
