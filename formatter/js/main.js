@@ -1,4 +1,4 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines } from "./clean.js";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, PRIVATE_LINK, DEAD_LINK } from "./clean.js";
 import { SAMPLE_HTML } from "./sample.js";
 
 const $ = (id) => document.getElementById(id);
@@ -69,6 +69,9 @@ function load(data, blank = false) {
   fixes = result.checks.filter((c) => c.fix);
   editor.innerHTML = result.html;
   htmlEdit.value = result.html;
+  // Open the tab that matches what was pasted: HTML code → HTML, everything else → Text
+  const code = !blank && !(data.html || "").trim() && looksLikeHtml(data.text);
+  tabButton(code ? "code" : "page").click();
   showResult();
 }
 
@@ -102,7 +105,7 @@ function decorate() {
   for (const a of editor.querySelectorAll("a")) {
     const href = a.getAttribute("href") || "";
     a.title = href;
-    a.classList.toggle("flag", /^(file:|#_)|docs\.google\.com|drive\.google\.com|sharepoint\.com|1drv\.ms|onedrive\.live\.com/i.test(href));
+    a.classList.toggle("flag", PRIVATE_LINK.test(href) || DEAD_LINK.test(href));   // same lists as the checks
   }
 }
 
@@ -136,7 +139,7 @@ function showResult() {
 let shownChecks = [];
 const located = new Map();   // check id → index of the line shown last
 function locate(check) {
-  if (editor.hidden) document.querySelector('[data-tab="out"][data-view="page"]').click();
+  if (editor.hidden) tabButton("page").click();
   const lines = check.find(editor);
   if (!lines.length) return;
   const i = ((located.get(check.id) ?? -1) + 1) % lines.length;
@@ -209,6 +212,7 @@ htmlEdit.addEventListener("keydown", (e) => {
 // ── Tabs ─────────────────────────────────────────────────────────────────
 
 const VIEWS = { out: { page: "editor", code: "htmlEdit" } };
+const tabButton = (view) => document.querySelector(`[data-tab="out"][data-view="${view}"]`);
 for (const tab of document.querySelectorAll("[data-tab]")) {
   tab.addEventListener("click", () => {
     flush();

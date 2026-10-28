@@ -19,7 +19,14 @@ const INLINE_FORMAT = ["strong", "em", "sup", "sub"];
 const SPACE = /[ \t\n\r\f ]+/g;
 
 // Links that only work for the writer: drafts, file shares, local files
-const PRIVATE_LINK = /^(file:|https?:\/\/(localhost|127\.0\.0\.1)|https?:\/\/[^/]*(docs\.google\.com|drive\.google\.com|sharepoint\.com|onedrive\.live\.com|1drv\.ms|dropbox\.com\/scl))/i;
+export const PRIVATE_LINK = /^(file:|https?:\/\/(localhost|127\.0\.0\.1)|https?:\/\/[^/]*(docs\.google\.com|drive\.google\.com|sharepoint\.com|onedrive\.live\.com|1drv\.ms|dropbox\.com\/scl))/i;
+
+// Links that go nowhere on the site: Word bookmarks (#_Toc…) and bare "#"
+export const DEAD_LINK = /^#(_|$)/;
+// Same page whatever the spelling: http/https, www, trailing slash, letter case
+const pageKey = (a) => (a.getAttribute("href") || "").replace(/^https?:\/\/(www\.)?/i, "").replace(/[/#?]+$/, "").toLowerCase();
+// Link text that doesn't say where it goes
+const VAGUE_TEXT = /^(click here|click|here|this|this link|link|read more|learn more|more|see more|find out more|more info|details|go)$/i;
 
 // Plain text that is actually HTML code (copied from a code view or a file)
 export const looksLikeHtml = (text) => /<\/?(p|h[1-6]|ul|ol|li|a|strong|b|em|i|br|div|span|table|tr|td|blockquote)\b[^>]*>/i.test(text || "");
@@ -494,6 +501,21 @@ function runChecks(root, stats) {
   const findBookmarks = (r) => links(r, /^#_/);
   const bookmark = findBookmarks(root).length;
   if (bookmark) add("warn", `${n(bookmark, "link")} ${bookmark === 1 ? "jumps" : "jump"} to a Word bookmark (like a table of contents) and won't work on the site.`, { id: "bookmark", find: findBookmarks });
+  const findEmpty = (r) => links(r, /^#$/);
+  const empty = findEmpty(root).length;
+  if (empty) add("warn", `${n(empty, "link")} ${empty === 1 ? "goes" : "go"} nowhere (the address is just #).`, { id: "empty", find: findEmpty });
+  const findVague = (r) => [...r.querySelectorAll("a")].filter((a) => VAGUE_TEXT.test(a.textContent.trim().replace(/[.:!…»›→]+$/, "")));
+  const vague = findVague(root).length;
+  if (vague) add("warn", `${n(vague, "link")} ${vague === 1 ? "says" : "say"} something like "click here". Link words that describe the page instead, which helps readers and SEO.`, { id: "vague", find: findVague });
+  // The same page linked more than once: usually once per post is enough
+  const findRepeats = (r) => {
+    const all = [...r.querySelectorAll("a")].filter((a) => !/^(#|mailto:|tel:)/i.test(a.getAttribute("href") || ""));
+    const count = new Map();
+    all.forEach((a) => count.set(pageKey(a), (count.get(pageKey(a)) || 0) + 1));
+    return all.filter((a) => count.get(pageKey(a)) > 1);
+  };
+  const repeats = new Set(findRepeats(root).map(pageKey)).size;
+  if (repeats) add("info", `${n(repeats, "page")} ${repeats === 1 ? "is" : "are"} linked more than once. Once per post is usually enough.`, { id: "repeat", find: findRepeats });
   const findInsecure = (r) => links(r, /^http:\/\//i);
   const insecure = findInsecure(root).length;
   if (insecure) add("info", `${n(insecure, "link")} ${insecure === 1 ? "uses" : "use"} http:// instead of https://.`, { id: "http", find: findInsecure });
