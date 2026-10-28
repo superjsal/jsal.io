@@ -2,7 +2,7 @@
 // (answers and profiles only, exported by build\playbook.py publish).
 (() => {
   const $ = (s) => document.querySelector(s);
-  const state = { q: '', goal: 'all', compare: new Set() };
+  const state = { q: '', goal: 'all', compare: new Set(), notes: true };
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Code', hosting: 'Hosting/DNS', check: 'Check', indirect: 'Indirectly', no: 'Not possible' };
   // Scope as a symbol, explained once in the key
@@ -110,6 +110,7 @@
     const grid = $('#grid');
     grid.replaceChildren();
     grid.style.setProperty('--n', Math.max(plats.length, 1));
+    grid.classList.toggle('compact', !state.notes);
     if (!plats.length || !items.length) {
       grid.append(el('p', 'empty', plats.length ? 'No items match that search.' : 'No platforms selected. Add some above, or from the cards.'));
       return;
@@ -129,7 +130,9 @@
     items.forEach((it) => {
       if (it.group !== lastGroup && groups[it.group]) {
         const g = groups[it.group];
-        grid.append(el('div', 'row group', `${g.title}${g.asOf ? ` · as of ${g.asOf}` : ''}`));
+        const gr = el('div', 'row group');
+        gr.append(el('span', null, `${g.title}${g.asOf ? ` · as of ${g.asOf}` : ''}`));
+        grid.append(gr);
       }
       lastGroup = it.group;
       const row = el('div', 'row');
@@ -181,6 +184,16 @@
     });
 
     $('#q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
+    // "Show notes" (remembered in this browser): off shows just the tags, for a shorter table
+    const notes = $('#notes');
+    try { state.notes = localStorage.getItem('cms-picker-notes') !== 'off'; } catch (e) { /* storage blocked: keep notes on */ }
+    notes.setAttribute('aria-pressed', String(state.notes));
+    notes.addEventListener('click', () => {
+      state.notes = !state.notes;
+      notes.setAttribute('aria-pressed', String(state.notes));
+      try { localStorage.setItem('cms-picker-notes', state.notes ? 'on' : 'off'); } catch (e) { /* not remembered */ }
+      render();
+    });
     const legend = $('#legend');
     Object.keys(SHORT).filter((k) => k in data.verdicts).forEach((k) => legend.append(el('span', `tag ${k}`, SHORT[k])));
     Object.values(SCOPE).forEach(([sym, label]) => {
