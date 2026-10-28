@@ -2,7 +2,7 @@
 // (answers and profiles only, exported by build\playbook.py publish).
 (() => {
   const $ = (s) => document.querySelector(s);
-  const state = { q: '', goal: 'all', compare: new Set(), notes: true };
+  const state = { q: '', goal: 'all', compare: new Set(), notes: false };
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Code', hosting: 'Hosting/DNS', check: 'Check', indirect: 'Indirectly', no: 'Not possible' };
   // Scope as a symbol, explained once in the key
@@ -107,9 +107,11 @@
     const items = data.items.filter((i) => !q || i.label.toLowerCase().includes(q));
     document.querySelectorAll('.chip[data-pid]').forEach((b) => b.setAttribute('aria-pressed', String(state.compare.has(b.dataset.pid))));
 
-    const grid = $('#grid');
+    const grid = $('#grid'), ghead = $('#ghead');
     grid.replaceChildren();
-    grid.style.setProperty('--n', Math.max(plats.length, 1));
+    ghead.replaceChildren();
+    [grid, ghead].forEach((g) => g.style.setProperty('--n', Math.max(plats.length, 1)));
+    $('#thead').hidden = !plats.length || !items.length;
     grid.classList.toggle('compact', !state.notes);
     if (!plats.length || !items.length) {
       grid.append(el('p', 'empty', plats.length ? 'No items match that search.' : 'No platforms selected. Add some above, or from the cards.'));
@@ -123,7 +125,8 @@
       if (p.profile) c.append(el('span', 'htype', p.profile.type));
       head.append(c);
     });
-    grid.append(head);
+    ghead.append(head);
+    $('#thead').scrollLeft = $('#seo .scroll').scrollLeft;
     // A label row where each section starts: Built in, SEO, AI search (dated, as AI changes fast)
     const groups = Object.fromEntries((data.groups || []).map((g) => [g.id, g]));
     let lastGroup = null;
@@ -149,7 +152,10 @@
           line.append(s);
         }
         cell.append(el('span', 'plat', p.name), line);
-        if (c.mark && !GENERIC.test(c.mark.trim())) cell.append(el('span', 'mark', c.mark));
+        if (c.mark && !GENERIC.test(c.mark.trim())) {
+          cell.append(el('span', 'mark', c.mark));
+          if (!state.notes) line.title = c.mark;
+        }
         row.append(cell);
       });
       grid.append(row);
@@ -183,10 +189,13 @@
       types.append(b);
     });
 
+    // Keep the pinned header in line with the table when it scrolls sideways
+    $('#seo .scroll').addEventListener('scroll', (e) => { $('#thead').scrollLeft = e.target.scrollLeft; }, { passive: true });
     $('#q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
-    // "Show notes" (remembered in this browser): off shows just the tags, for a shorter table
+    // "Show notes" (remembered in this browser). Off by default: just the tags, so the table can be
+    // scanned; each note is still in the cell's tooltip.
     const notes = $('#notes');
-    try { state.notes = localStorage.getItem('cms-picker-notes') !== 'off'; } catch (e) { /* storage blocked: keep notes on */ }
+    try { state.notes = localStorage.getItem('cms-picker-notes') === 'on'; } catch (e) { /* storage blocked: notes stay off */ }
     notes.setAttribute('aria-pressed', String(state.notes));
     notes.addEventListener('click', () => {
       state.notes = !state.notes;

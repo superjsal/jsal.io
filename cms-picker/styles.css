@@ -70,14 +70,20 @@ body {
 
 /* ── Grid ──────────────────────────────────────────────────────────────── */
 
-/* The table scrolls inside its own box (no taller than the screen) so the platform names and the
-   item column stay in view while you read down or across */
-.scroll { overflow: auto; max-height: calc(100vh - 32px); overscroll-behavior: contain; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); }
+/* The table scrolls sideways in its box and up and down with the page. Its header row sits in
+   .thead, outside the box, so it can stay pinned to the top of the window. */
+.thead {
+  position: sticky; top: 0; z-index: 3; overflow: hidden;
+  border: 1px solid var(--jsal-line); border-bottom: 0; border-radius: var(--jsal-radius) var(--jsal-radius) 0 0;
+  background: var(--jsal-sunk); box-shadow: 0 1px 0 var(--jsal-line);
+}
+.thead:not([hidden]) + .scroll { border-top: 0; border-radius: 0 0 var(--jsal-radius) var(--jsal-radius); }
+.scroll { overflow-x: auto; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); }
 /* A handful of platforms at a time (the cards' "Add to compare"), so columns are wide enough to read */
 .grid { --n: 4; min-width: calc(200px + var(--n) * 160px); }
 .row { display: grid; grid-template-columns: 200px repeat(var(--n), minmax(0, 1fr)); border-top: 1px solid var(--jsal-line); }
 .row:first-child { border-top: 0; }
-.row.head { position: sticky; top: 0; z-index: 2; background: var(--jsal-sunk); font-weight: 700; font-size: 14px; box-shadow: 0 1px 0 var(--jsal-line); }
+.row.head { background: var(--jsal-sunk); font-weight: 700; font-size: 14px; }
 .row.head > * { padding: 9px 12px; }
 .hcell { min-width: 0; }
 /* A faint line between platform columns (the item column already has its own) */
@@ -105,7 +111,8 @@ body {
 
 /* Narrow: no table. Each item is a card with one line per platform. */
 @media (max-width: 720px) {
-  .scroll { border: 0; background: none; overflow: visible; max-height: none; }
+  .thead { display: none; }
+  .scroll, .thead:not([hidden]) + .scroll { border: 0; border-radius: 0; background: none; overflow: visible; }
   .grid { min-width: 0; }
   .row.head { display: none; }
   .row { display: block; margin-bottom: 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); overflow: hidden; }

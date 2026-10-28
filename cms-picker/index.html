@@ -6,7 +6,7 @@
   <title>CMS Picker: Which CMS Should You Pick? | jsal.io</title>
   <meta name="description" content="Which CMS should you pick? Compare 13 platforms, including WordPress, Shopify, Wix, Webflow and headless: who each one suits, and what you can change for SEO." />
   <link rel="canonical" href="https://jsal.io/cms-picker/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-28zo" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-28zq" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -191,10 +191,10 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-28zo" />
-  <script src="app.js?v=2026-10-28zo" defer></script>
+  <link rel="stylesheet" href="styles.css?v=2026-10-28zq" />
+  <script src="app.js?v=2026-10-28zq" defer></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-28zo" defer></script>
+  <script src="/nav.js?v=2026-10-28zq" defer></script>
 </head>
 <body>
   <main class="app">
@@ -223,16 +223,18 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
       <h2 id="seo-h">Compare what each CMS can do</h2>
       <div class="controls">
         <label class="search"><span class="sr-only">Search items</span><input class="field" id="q" type="search" placeholder="Search items, e.g. redirects" autocomplete="off" /></label>
-        <button type="button" class="chip" id="notes" aria-pressed="true">Show notes</button>
+        <button type="button" class="chip" id="notes" aria-pressed="false">Show notes</button>
       </div>
 
       <div class="plats" id="plats" role="group" aria-label="Platforms to compare"><span class="plats-label">Compare</span></div>
       <div class="legend" id="legend" aria-label="Key"></div>
 
+      <!-- Platform names, pinned to the top of the window while the table scrolls with the page (kept in line with the table by app.js) -->
+      <div class="thead" id="thead" hidden><div class="grid" id="ghead"></div></div>
       <div class="scroll" role="region" aria-label="Answers by platform" tabindex="0">
         <div class="grid" id="grid" aria-live="polite"><p class="empty">Loading…</p></div>
       </div>
-      <p class="note">Next to each answer: ● the same on every site, ◐ varies by site (theme, plan, permissions or setup), ○ not verified yet. Hover or tap a symbol for its meaning. The AI search rows (crawler control and llms.txt) are dated because AI features change fast. Add platforms from the cards above, or with the buttons here.</p>
+      <p class="note">Next to each answer: ● the same on every site, ◐ varies by site (theme, plan, permissions or setup), ○ not verified yet. Hover or tap a symbol for its meaning. Turn on Show notes for the detail behind each answer, or hover an answer to see its note. The AI search rows (crawler control and llms.txt) are dated because AI features change fast. Add platforms from the cards above, or with the buttons here.</p>
     </section>
   </main>
 
