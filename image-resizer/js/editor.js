@@ -14,6 +14,7 @@ const cropHint    = document.getElementById("cropHint");
 
 const geom = { img: null, box: null, axis: null };
 let dragging = false;
+let resizing = false;   // the window is being resized: draw fast, then once sharp when it stops
 let handlers = { onLive() {}, onCommit() {} };
 
 // Which axis the crop window can move along for this item (null = none).
@@ -29,20 +30,23 @@ export function drawEditor() {
   const bmp = item.preview;
 
   // Backing store matches the displayed size × devicePixelRatio for a sharp preview.
+  // Only reallocated when that size actually changes.
   const dpr  = Math.max(1, window.devicePixelRatio || 1);
   const cssW = canvas.clientWidth  || 320;
   const cssH = canvas.clientHeight || 230;
-  canvas.width  = Math.round(cssW * dpr);
-  canvas.height = Math.round(cssH * dpr);
+  const pxW = Math.round(cssW * dpr), pxH = Math.round(cssH * dpr);
+  if (canvas.width !== pxW || canvas.height !== pxH) { canvas.width = pxW; canvas.height = pxH; }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, cssW, cssH);
 
-  // Contain-fit the whole image.
+  // Contain-fit the whole image. High-quality scaling of the 2048px preview on every
+  // frame of a window resize made dragging the window stutter, so it waits until
+  // the resize stops.
   const fs = Math.min(cssW / bmp.width, cssH / bmp.height);
   const iw = bmp.width * fs, ih = bmp.height * fs;
   const ix = (cssW - iw) / 2, iy = (cssH - ih) / 2;
   ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
+  ctx.imageSmoothingQuality = resizing ? "low" : "high";
   ctx.drawImage(bmp, ix, iy, iw, ih);
 
   // Crop window, positioned by the item's anchor.
@@ -208,9 +212,12 @@ export function initEditor(h) {
 
   // Crop geometry depends on the canvas's rendered size, which changes with the
   // window and when the card strip appears or disappears below it.
-  let resizeRaf = 0;
+  let resizeRaf = 0, settle = 0;
   new ResizeObserver(() => {
+    resizing = true;
     cancelAnimationFrame(resizeRaf);
     resizeRaf = requestAnimationFrame(drawEditor);
+    clearTimeout(settle);
+    settle = setTimeout(() => { resizing = false; drawEditor(); }, 150);
   }).observe(canvas);
 }
