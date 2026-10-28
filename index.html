@@ -393,6 +393,17 @@ p, li { text-wrap: pretty; }
   .tile:is(:hover, :focus-visible) .m-fmt .doc .h b { animation: m-chip 3.2s ease-in-out infinite; }
   .tile:is(:hover, :focus-visible) .m-fmt .check:nth-child(2) b { animation: m-fix 3.2s infinite; }
   .tile:is(:hover, :focus-visible) .m-fmt .check:nth-child(3) b { animation: m-fix 3.2s 0.3s infinite; }
+
+  /* CMS Picker: the "What are you building?" choice steps through its options, the cards
+     refresh with each one, and the comparison refills column by column */
+  .tile:is(:hover, :focus-visible) .m-cms .chips i { animation: m-goal 4s infinite; }
+  .tile:is(:hover, :focus-visible) .m-cms .chips i:nth-child(2) { animation-delay: 1.33s; }
+  .tile:is(:hover, :focus-visible) .m-cms .chips i:nth-child(3) { animation-delay: 2.66s; }
+  .tile:is(:hover, :focus-visible) .m-cms .pcard { animation: m-refresh 1.33s ease-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-cms .pcard + .pcard { animation-delay: 0.08s; }
+  .tile:is(:hover, :focus-visible) .m-cms .table b { animation: m-pop 1.33s ease-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-cms .table b:nth-child(4n + 3) { animation-delay: 0.12s; }
+  .tile:is(:hover, :focus-visible) .m-cms .table b:nth-child(4n) { animation-delay: 0.24s; }
   .m-fmt .doc > :nth-child(1) { --x: 6px; --s: 0.8; }
   .m-fmt .doc > :nth-child(2) { --x: -4px; --s: 1.15; }
   .m-fmt .doc > :nth-child(3) { --x: 10px; --s: 0.9; }
@@ -408,6 +419,8 @@ p, li { text-wrap: pretty; }
 @keyframes m-refresh { 0% { opacity: 0.35; translate: 0 3px; } 40%, 100% { opacity: 1; translate: 0 0; } }
 @keyframes m-tidy { 0%, 10%, 100% { transform: translateX(var(--x)) scaleX(var(--s)); opacity: 0.55; } 40%, 80% { transform: none; opacity: 1; } }
 @keyframes m-chip { 0%, 25%, 100% { opacity: 0; } 45%, 80% { opacity: 1; } }
+@keyframes m-goal { 0%, 32% { background: var(--teal-acc); border-color: var(--teal-acc); } 34%, 100% { background: var(--jsal-surface); border-color: var(--jsal-line); } }
+@keyframes m-pop { 0% { opacity: 0; scale: 0.6; } 35%, 100% { opacity: 1; scale: 1; } }
 @keyframes m-fix { 0%, 40% { background: var(--jsal-warn); } 50%, 85% { background: var(--jsal-ok); } 95%, 100% { background: var(--jsal-warn); } }
 
 .now { grid-column: 1 / 7; background: var(--plain); }
