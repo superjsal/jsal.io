@@ -1,4 +1,4 @@
-# IC Defaults
+# Platform Playbook (formerly IC Defaults)
 
 Team reference for the Implement Check Form: what each CMS lets us change (Content and Tech items), by page type, with how-to steps, watch-outs and guides.
 

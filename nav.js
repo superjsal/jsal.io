@@ -6,9 +6,9 @@
   const APPS = [
     { href: '/image-resizer/', name: 'Image Resizer', desc: 'Resize, crop and convert images',
       icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 9"/>' },
-    { href: '/formatter/', name: 'Content Formatter', desc: 'Clean up Word and Google Docs content',
+    { href: '/formatter/', name: 'Clean Paste', desc: 'Clean up Word and Google Docs content',
       icon: '<path d="M4 6h16M4 12h10M4 18h13"/>' },
-    { href: '/ic/', name: 'IC Defaults', desc: 'Platform answers for the IC form', tag: 'Team',
+    { href: '/ic/', name: 'Platform Playbook', desc: 'Platform answers for the IC form', tag: 'Team',
       icon: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>' },
   ];
   const HOME = { href: '/', name: 'jsal.io home', icon: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>' };
