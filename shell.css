@@ -75,9 +75,12 @@ html { scrollbar-gutter: stable; }
 ::view-transition-new(root) { animation: jsal-fade-in 0.3s ease 0.15s both; }
 /* The logo and theme button are the same on every page and in the same spot, so they get
    their own names: they stay put and sharp while the rest of the page changes around them,
-   instead of fading and shrinking with it. Only the new page's copy is shown. */
+   instead of fading and shrinking with it. Only the new page's copy is shown, already in
+   place: no movement either, or the logo would slide in from above the screen when leaving
+   a page that was scrolled down. */
 .jsal-brand { view-transition-name: jsal-brand; }
 .jsal-theme { view-transition-name: jsal-theme; }
+::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
 ::view-transition-old(jsal-brand), ::view-transition-old(jsal-theme) { display: none; }
 ::view-transition-new(jsal-brand), ::view-transition-new(jsal-theme) { animation: none; }
 @keyframes jsal-fade-out { to { opacity: 0; } }

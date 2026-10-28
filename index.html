@@ -25,14 +25,14 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-28n" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-28o" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500&display=swap">
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions are shared with the apps -->
-<link rel="stylesheet" href="/shell.css?v=2026-10-28n">
+<link rel="stylesheet" href="/shell.css?v=2026-10-28o">
 <style>
 /* Tile colours. The featured app (Image Resizer) has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
@@ -41,21 +41,18 @@
   --cream: #1f1a12; --cream-ink: #f5efe2; --cream-muted: #b8b2a3; --cream-btn: #e3b04b; --cream-btn-ink: #1f1a12;
   --blue: #e6e9f0; --blue-ink: #1f1a12; --blue-muted: #3d362a; --blue-acc: #3b5a9a;
   --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
-  --soft: #4e4637;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
     --blue: #1a2034; --blue-ink: #ece6d6; --blue-muted: #c4bfb2; --blue-acc: #8fb1ff;
     --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
-    --soft: #b8b2a3;
   }
 }
 :root[data-theme="dark"] {
   --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
   --blue: #1a2034; --blue-ink: #ece6d6; --blue-muted: #c4bfb2; --blue-acc: #8fb1ff;
   --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
-  --soft: #b8b2a3;
 }
 
 * { box-sizing: border-box; }
@@ -64,7 +61,6 @@ a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 a:not(.tile):focus-visible { border-radius: 6px; }   /* tiles keep their own rounded corners, and the outline follows them */
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)) 56px; }
-.serif { font-family: "Lora", Georgia, serif; }
 .label { margin: 0; font: 12px/1.5 "JetBrains Mono", Consolas, monospace; }
 
 /* Top bar: the shared one (/shell.css), with section links */
@@ -104,7 +100,7 @@ p, li { text-wrap: pretty; }
 .now-playing .art { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 47% 85%; }
 .now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }
 .now-playing .label { margin-bottom: 10px; }
-.now-playing .label, .now-playing .pill { color: #e3b04b; }
+.now-playing .label, .now-playing .pill { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
 .now-playing .big { font: 700 31px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
 .now-playing .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .now-playing .credit { font-size: 11px; color: rgb(245 239 226 / 0.75); }
@@ -163,10 +159,10 @@ p, li { text-wrap: pretty; }
     radial-gradient(9% 16% at 70% 34%, #ffe1a1 70%, transparent 74%), linear-gradient(#f2ad6c, #cf6f7c 58%, #6f5aa3); }
 .m-jscale .frame { flex: 1; position: relative; overflow: hidden; border-radius: 4px; }
 .m-jscale .frame .photo { position: absolute; inset: 0; border-radius: 0; }
-.m-jscale .crop { position: absolute; inset: 12% 9%; border: 1.5px dashed #e3b04b; border-radius: 2px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.32); }
+.m-jscale .crop { position: absolute; inset: 12% 9%; border: 1.5px dashed var(--jsal-fill); border-radius: 2px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.32); }
 .m-jscale .strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; height: 20%; }
 .m-jscale .strip .photo { outline: 2px solid transparent; outline-offset: 1px; }
-.m-jscale .strip .photo:first-child { outline-color: #e3b04b; }
+.m-jscale .strip .photo:first-child { outline-color: var(--jsal-fill); }
 
 /* Platform Playbook: views in the top bar, platform list + check cards */
 .m-ic { grid-template-columns: minmax(0, 36%) minmax(0, 1fr); }
@@ -234,7 +230,7 @@ p, li { text-wrap: pretty; }
 /* Main photo matches the selected thumbnail (same filters as the strip) */
 @keyframes m-photo { 0%, 24.9% { filter: none; } 25%, 49.9% { filter: hue-rotate(150deg); } 50%, 74.9% { filter: hue-rotate(-60deg) saturate(0.8); } 75%, 100% { filter: hue-rotate(80deg); } }
 @keyframes m-crop { 0%, 100% { translate: 0 0; } 25% { translate: -8% 5%; } 50% { translate: 7% -4%; } 75% { translate: -3% -6%; } }
-@keyframes m-pick { 0%, 24.9% { outline-color: #e3b04b; } 25%, 100% { outline-color: transparent; } }
+@keyframes m-pick { 0%, 24.9% { outline-color: var(--jsal-fill); } 25%, 100% { outline-color: transparent; } }
 @keyframes m-sel { 0%, 18% { background: var(--blue-acc); color: var(--blue); } 20%, 100% { background: transparent; color: var(--jsal-muted); } }
 @keyframes m-refresh { 0% { opacity: 0.35; translate: 0 3px; } 40%, 100% { opacity: 1; translate: 0 0; } }
 @keyframes m-tidy { 0%, 10%, 100% { transform: translateX(var(--x)) scaleX(var(--s)); opacity: 0.55; } 40%, 80% { transform: none; opacity: 1; } }
@@ -290,7 +286,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
   .mail .big { font-size: 22px; }
   footer { margin-top: 32px; }
 }
-@media (prefers-reduced-motion: reduce) { .tile { transition: none; } a.tile:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .tile, .arrow { transition: none; } a.tile:hover, a.tile:hover .arrow, a.tile:focus-visible .arrow { transform: none; } }
 </style>
 </head>
 <body>
@@ -455,6 +451,6 @@ const nameTile = (tile, vt) => {
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-28n" defer></script>
+<script src="/nav.js?v=2026-10-28o" defer></script>
 </body>
 </html>
