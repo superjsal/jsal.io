@@ -115,6 +115,20 @@ html { scrollbar-gutter: stable; }
   transition: background 0.12s, color 0.12s;
 }
 .jsal-theme:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
+/* The caret and both theme icons are in each page's HTML (not added by nav.js), so the top bar
+   is complete on the first frame and doesn't change during page transitions. CSS shows the
+   moon in light mode and the sun in dark mode. */
+.jsal-caret { display: inline-block; margin-left: 5px; opacity: .55; transition: transform .15s; vertical-align: middle; }
+[data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
+[data-jsal-nav]:hover .jsal-caret { opacity: .9; }
+.jsal-theme .i-sun { display: none; }
+:root[data-theme="dark"] .jsal-theme .i-sun { display: block; }
+:root[data-theme="dark"] .jsal-theme .i-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .jsal-theme .i-sun { display: block; }
+  :root:not([data-theme="light"]) .jsal-theme .i-moon { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .jsal-caret { transition: none; } }
 /* Text link in the top bar (e.g. "About", which jumps to the app's About section) */
 .jsal-link { padding: 8px 10px; line-height: 20px; font-size: 14px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }
 .jsal-link:hover { color: var(--jsal-ink); }

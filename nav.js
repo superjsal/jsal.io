@@ -22,9 +22,12 @@
     const root = document.documentElement;
     const system = matchMedia('(prefers-color-scheme: dark)');
     const current = () => root.dataset.theme || (system.matches ? 'dark' : 'light');
+    // Pages carry both icons in their HTML (/shell.css shows the right one); this only fills
+    // the button in for a page that doesn't
+    const hasIcons = !!themeBtn.querySelector('.i-sun');
     const paint = () => {
       const dark = current() === 'dark';
-      themeBtn.innerHTML = dark
+      if (!hasIcons) themeBtn.innerHTML = dark
         ? svg('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>')
         : svg('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/>');
       const label = dark ? 'Switch to light theme' : 'Switch to dark theme';
@@ -49,9 +52,6 @@
   document.head.insertAdjacentHTML('beforeend', `<style>
     [data-jsal-nav], [data-jsal-nav]:hover { cursor: pointer; text-decoration: none; border-radius: 6px; }
     [data-jsal-nav]:focus-visible { outline: 2px solid var(--jsal-accent, currentColor); outline-offset: 3px; }
-    .jsal-caret { display: inline-block; margin-left: 5px; opacity: .55; transition: transform .15s; vertical-align: middle; }
-    [data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
-    [data-jsal-nav]:hover .jsal-caret { opacity: .9; }
     .jsal-menu { position: fixed; z-index: 2147483000; width: min(300px, calc(100vw - 24px)); padding: 6px; border-radius: 12px;
       background: var(--jsal-surface); color: var(--jsal-ink); border: 1px solid var(--jsal-line); box-shadow: 0 16px 40px rgb(0 0 0 / .28), 0 2px 6px rgb(0 0 0 / .12);
       font: 14px/1.35 var(--jsal-font); }
@@ -67,7 +67,6 @@
     .jsal-menu hr { border: 0; border-top: 1px solid var(--jsal-line); margin: 6px 4px; }
     .jsal-menu .home { grid-template-columns: 32px minmax(0, 1fr); }
     .jsal-menu .home .ico { background: none; color: var(--jsal-muted); }
-    @media (prefers-reduced-motion: reduce) { .jsal-caret { transition: none; } }
   </style>`);
 
   const isHere = (href) => href !== '/' && here.startsWith(href);
@@ -85,7 +84,7 @@
   menu.innerHTML = APPS.map((a) => item(a)).join('') + '<hr>' + item(HOME, true);
   document.body.append(menu);
 
-  trigger.insertAdjacentHTML('beforeend', `<span class="jsal-caret">${svg('<path d="m6 9 6 6 6-6"/>', 12)}</span>`);
+  if (!trigger.querySelector('.jsal-caret')) trigger.insertAdjacentHTML('beforeend', `<span class="jsal-caret">${svg('<path d="m6 9 6 6 6-6"/>', 12)}</span>`);
   trigger.setAttribute('aria-haspopup', 'menu');
   trigger.setAttribute('aria-expanded', 'false');
   trigger.setAttribute('aria-controls', 'jsal-menu');
