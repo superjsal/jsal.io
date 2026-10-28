@@ -61,7 +61,6 @@
     $('#count').textContent = state.goal === 'all' ? `All ${shown.length} platforms` : `${shown.length} of ${data.platforms.length} platforms fit`;
     shown.forEach((p) => {
       const c = el('article', 'card'), pr = p.profile;
-      c.id = `card-${p.id}`;
       const top = el('div', 'ctop');
       top.append(logo(p), el('h3', null, p.name));
       c.append(top, el('p', 'ptype', pr.type));
@@ -194,29 +193,32 @@
 
     // Keep the pinned header in line with the table when it scrolls sideways
     $('#seo .scroll').addEventListener('scroll', (e) => { $('#thead').scrollLeft = e.target.scrollLeft; }, { passive: true });
-    // Hero: live counts, the date from the AI search section, and a logo strip that jumps to each card
-    $('#st-plats').textContent = data.platforms.length;
-    $('#st-items').textContent = data.items.length;
-    $('#st-groups').textContent = (data.groups || []).length;
+    // Hero: platform count, the date from the AI search section, and a few real rows of the table
+    document.querySelectorAll('.n-plats').forEach((n) => { n.textContent = data.platforms.length; });
     const asOf = (data.groups || []).map((g) => g.asOf).find(Boolean);
     if (asOf) $('#asof').textContent = ` · updated ${asOf}`;
-    const strip = $('#strip');
-    data.platforms.forEach((p) => {
-      const b = el('button');
-      b.type = 'button';
-      b.title = p.name;
-      b.setAttribute('aria-label', p.name);
-      b.append(logo(p));
-      b.addEventListener('click', () => {
-        if (!fits(p)) setGoal('all');           // the current choice hides this card
-        const card = $(`#card-${p.id}`);
-        card.scrollIntoView({ behavior: smooth(), block: 'center' });
-        card.classList.remove('flash');
-        void card.offsetWidth;                  // restart the highlight
-        card.classList.add('flash');
+    const PEEK_PLATS = ['wordpress', 'shopify', 'wix'].filter((id) => data.answers[id]);
+    const PEEK_ROWS = [['blog', 'Run a blog'], ['store', 'Sell online'], ['gsc404', '301 redirects'], ['templates', 'Edit templates']]
+      .filter(([id]) => data.items.some((i) => i.id === id));
+    const PEEK_SHORT = { plugin: 'Plugin', no: 'No' };   // shorter still, so three columns fit on a phone
+    const peek = $('#peek');
+    const prow = () => { const r = el('div'); r.setAttribute('role', 'row'); return r; };
+    const pcell = (r, role, x) => { const c = typeof x === 'string' ? el('span', null, x) : x; c.setAttribute('role', role); r.append(c); };
+    const head = prow();
+    pcell(head, 'columnheader', '');
+    PEEK_PLATS.forEach((id) => pcell(head, 'columnheader', data.platforms.find((p) => p.id === id).name));
+    peek.append(head);
+    PEEK_ROWS.forEach(([id, label]) => {
+      const r = prow();
+      pcell(r, 'rowheader', label);
+      PEEK_PLATS.forEach((pid) => {
+        const v = data.answers[pid][id].verdict, c = el('span');
+        c.append(el('span', `tag ${v}`, PEEK_SHORT[v] || SHORT[v] || v));
+        pcell(r, 'cell', c);
       });
-      strip.append(b);
+      peek.append(r);
     });
+    $('#peek-cap').textContent = `${PEEK_ROWS.length} of ${data.items.length} rows, from the full table below`;
     // Notes off: hovering (or tapping) an answer shows its note and scope in a tooltip at once.
     // It sits outside the table, fixed to the window, so the table's scroll box can't clip it.
     const tip = $('#tip');
