@@ -229,11 +229,13 @@ body {
   border-radius: var(--radius-xs);
   color: var(--text-3);
   font-weight: 600;
-  transition: background 0.12s, color 0.12s;
+  transition: color 0.12s;
 }
 .quality-btn:hover, .format-btn:hover, .dest-btn:hover { color: var(--text); }
 .quality-btn:focus-visible, .format-btn:focus-visible, .dest-btn:focus-visible { outline-offset: -2px; }
-.quality-btn.active, .format-btn.active, .dest-btn.active { background: var(--surface-2); color: var(--text); box-shadow: var(--shadow-card); }
+/* The chosen option is gold (like the size presets) with its own edge, and switches instantly. It used
+   to be the card's own colour, so it blended into the card and the track looked like it changed size. */
+.quality-btn.active, .format-btn.active, .dest-btn.active { background: var(--accent-dim); color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent-ring); }
 .format-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .format-btn:disabled:hover { color: var(--text-3); }
 .option-hint { flex: 1 1 160px; font-size: 12px; color: var(--text-3); line-height: 1.4; }
@@ -557,6 +559,7 @@ body {
   position: relative;
   box-shadow: var(--shadow-card);
   flex: 0 0 148px;
+  min-width: 0;   /* a fixed width: never stretched by its text (it used to widen as each file size came in) */
   transition: border-color 0.12s, box-shadow 0.12s;
 }
 .preview-item:hover { border-color: var(--border-hi); }
@@ -648,15 +651,17 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 6px;
+  gap: 4px;
   white-space: nowrap;
   margin-top: 2px;
-  padding: 0 4px;
+  padding: 0 2px;
   font-size: 12px;
   color: var(--text-3);
   font-variant-numeric: tabular-nums;
+  overflow: hidden;
 }
-.file-size { white-space: nowrap; }
+.src-dims > :first-child { overflow: hidden; text-overflow: ellipsis; }   /* the source size gives way first */
+.file-size { white-space: nowrap; flex-shrink: 0; }
 .file-size.error { color: var(--bad); }
 
 .card-dl-btn {
@@ -703,6 +708,10 @@ body {
   overflow-y: auto;
   overscroll-behavior: contain;   /* scrolling the settings doesn't scroll the page */
   scrollbar-width: thin;
+  /* Keep the scrollbar's space even when nothing scrolls. Otherwise its coming and going (e.g. as
+     file sizes update after a Quality click) changes the width, and the Quality label jumps above
+     its buttons and back. */
+  scrollbar-gutter: stable;
 }
 
 .workspace {
@@ -744,7 +753,7 @@ body {
   .option-track { flex: 1; }
   .quality-btn, .format-btn, .dest-btn { flex: 1; padding: 5px 6px; }
   .app { --thumb-h: 64px; }
-  .preview-item { flex-basis: 128px; }
+  .preview-item { flex-basis: 140px; }   /* three cards across in a narrow window */
   .src-dims { font-size: 11px; }
 }
 
