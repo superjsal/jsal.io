@@ -289,6 +289,10 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .warn::before { content: "!"; flex: none; display: grid; place-items: center; width: 17px; height: 17px; margin-top: 1px; border-radius: 50%; background: var(--mid); color: var(--surface); font-size: 11px; font-weight: 800; }
 .warn b { color: var(--mid); }
 .warn > div { min-width: 0; }
+/* The platform's own watch-out, under its description (one per platform, admins edit it) */
+.panel-head .pnote { margin-top: 8px; max-width: 75ch; }
+.pnote-tools { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+.pnote-form { margin-top: 8px; max-width: 75ch; }
 .how { font-size: 14px; }
 .how summary { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; border-radius: 4px; }
 .how summary::-webkit-details-marker { display: none; }
@@ -626,6 +630,7 @@ function itemsFor(sec) { return sec === 'tech' ? ITEMS : CONTENT_ITEMS; }
 // `how` is the how-to steps, one per line, and `warn` the Watch out text; when either is missing
 // the built-in one shows (an empty string means none). Edits are Markdown; built-in text is trusted HTML.
 const EDITS = new Map();
+const NOTES = new Map();   // platform id → its watch-out note (platform_notes)
 let canEditAnswers = false;
 const editKey = (pid, sec, id) => `${pid}~${sec}~${id}`;
 const ownEdit = (p, sec, id) => EDITS.get(editKey(p.id, sec, id));
@@ -826,6 +831,7 @@ function renderPanel() {
       <div style="display:grid;gap:2px;min-width:0">
         <h2>${p.name} · ${SEC_LABEL[state.sec]}${sub}</h2>
         <p class="about">${p.about}</p>
+        ${platformNoteHtml(p)}
       </div>
       <div class="panel-meta">
         <div class="tally"><span><i class="dot U"></i> ${counts.U} same</span><span><i class="dot V"></i> ${counts.V} vary</span><span><i class="dot C"></i> ${counts.C} not verified</span>${state.onlyCheck ? `<span>· showing ${shown.length} of ${all.length}</span>` : ''}</div>
@@ -834,6 +840,40 @@ function renderPanel() {
     </div>
     ${body}`;
 }
+// Platform watch-out: one note per platform. state.editing is NOTE_KEY while its form is open, so
+// Escape, Cancel and the refresh guard work as they do for answers.
+const NOTE_KEY = '@platform-note';
+function platformNoteHtml(p) {
+  if (!R.notesOn) return '';
+  const n = NOTES.get(p.id);
+  if (state.editing === NOTE_KEY && canEditAnswers) {
+    return `<form class="edit-form pnote-form" data-note-form>
+        <label><span>Watch out for ${esc(p.name)} <span style="font-weight:400">(shown on every section and page type; Markdown works)</span></span>
+          <textarea name="warn" maxlength="600" rows="3">${esc(n ? n.warn : '')}</textarea></label>
+        <div class="edit-actions">
+          <button type="submit" class="btn primary">Save</button>
+          <button type="button" class="btn" data-cancel>Cancel</button>
+          ${n ? '<button type="button" class="btn" data-note-remove>Remove</button>' : ''}
+          <span class="muted edit-hint">Saved for everyone who can open this page.</span>
+        </div>
+      </form>`;
+  }
+  const tools = canEditAnswers ? `<button type="button" class="link-btn" data-note-edit>${n ? 'Edit watch-out' : 'Add a watch-out'}</button>` : '';
+  return (n ? `<div class="warn pnote"><div><b>Watch out:</b> ${md(n.warn)}</div></div>` : '') +
+    (tools ? `<div class="pnote-tools">${tools}</div>` : '');
+}
+async function saveNote(warn, button) {
+  const p = P.find((x) => x.id === state.platform);
+  if (button) button.disabled = true;
+  const row = warn && { platform: p.id, warn, at: new Date().toISOString() };
+  const { error } = row ? await sb.from('platform_notes').upsert(row) : await sb.from('platform_notes').delete().eq('platform', p.id);
+  if (error) { if (button) button.disabled = false; return toast(failText(error, 'Couldn’t save')); }
+  if (row) NOTES.set(p.id, row); else NOTES.delete(p.id);
+  state.editing = null;
+  renderPanel();
+  toast(row ? 'Saved for the team' : 'Watch-out removed');
+}
+
 function renderGrid() {
   const sec = state.sec;
   $('#compare-title').textContent = `Compare platforms · ${SEC_LABEL[state.sec]}${state.sec === 'content' ? ` · ${PTYPES[state.ptype]}` : ''}`;
@@ -891,6 +931,15 @@ $('#panel').addEventListener('click', (e) => {
     return;
   }
   if (e.target.closest('[data-cancel]')) { state.editing = null; renderPanel(); return; }
+  if (e.target.closest('[data-note-edit]')) {
+    state.editing = NOTE_KEY;
+    renderPanel();
+    const t = $('#panel [data-note-form] textarea');
+    t?.focus(); t?.setSelectionRange(t.value.length, t.value.length);
+    return;
+  }
+  const nr = e.target.closest('[data-note-remove]');
+  if (nr) { if (confirm(`Remove the watch-out for ${p.name}?`)) saveNote('', nr); return; }
   const rs = e.target.closest('[data-reset]');
   if (rs) return saveEdit(rs.dataset.reset, null, rs);
   const one = e.target.closest('[data-copy]');
@@ -908,6 +957,8 @@ $('#panel').addEventListener('click', (e) => {
 
 $('#panel').addEventListener('submit', (e) => {
   e.preventDefault();
+  const nf = e.target.closest('form[data-note-form]');
+  if (nf) return saveNote(nf.warn.value.split('\n').map((t) => t.trimEnd()).join('\n').trim(), nf.querySelector('[type="submit"]'));
   const f = e.target.closest('form[data-form]');
   if (f) saveEdit(f.dataset.form, f, f.querySelector('[type="submit"]'));
 });
@@ -1440,11 +1491,12 @@ function fetchShared() {
     sb.from('votes').select('request_id,user_id').limit(5000),
     sb.from('members').select('user_id,name,avatar,role,discord_id,approved_at'),
     sb.from('comments').select('*').order('at').limit(5000),
-  ]).then(([edits, reqs, votes, members, comments]) => {
+    sb.from('platform_notes').select('*'),
+  ]).then(([edits, reqs, votes, members, comments, notes]) => {
     const err = edits.error || reqs.error || votes.error || members.error;
     if (err) throw err;
     // Comments stay hidden (null) until the comments table exists, so the page still works without it.
-    return { edits: edits.data, reqs: reqs.data, votes: votes.data, members: members.data, comments: comments.error ? null : comments.data };
+    return { edits: edits.data, reqs: reqs.data, votes: votes.data, members: members.data, comments: comments.error ? null : comments.data, notes: notes.error ? null : notes.data };
   });
 }
 function applyShared(x) {
@@ -1454,6 +1506,9 @@ function applyShared(x) {
   R.votes = new Map();
   x.votes.forEach((v) => addVote(v.request_id, v.user_id));
   R.members = new Map(x.members.map((m) => [m.user_id, m]));
+  R.notesOn = Array.isArray(x.notes);   // hidden until the platform_notes table exists
+  NOTES.clear();
+  (x.notes || []).forEach((n) => NOTES.set(n.platform, n));
   R.commentsOn = Array.isArray(x.comments);
   R.comments = new Map();
   (x.comments || []).forEach(addComment);

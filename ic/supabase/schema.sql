@@ -117,6 +117,15 @@ alter table public.edits add column if not exists warn text;
 alter table public.edits drop constraint if exists edits_sec_check;
 alter table public.edits add constraint edits_sec_check check (sec ~ '^(tech|content|content\.(home|pages|category|product))$');
 
+-- One "Watch out" note per platform, shown under its description on every section and page type.
+-- Markdown, like the answers' watch-outs. Removing the note deletes the row.
+create table if not exists public.platform_notes (
+  platform  text primary key,
+  warn      text not null check (char_length(btrim(warn)) between 1 and 600),
+  edited_by uuid default auth.uid() references auth.users on delete set null,
+  at        timestamptz not null default now()
+);
+
 -- ---------- Requests and upvotes ----------
 -- item: '<section>:<item id>' (section may include a page type, e.g. 'content.product:faq'), or '' for none.
 create table if not exists public.requests (
@@ -158,12 +167,13 @@ alter table public.edits           enable row level security;
 alter table public.requests        enable row level security;
 alter table public.votes           enable row level security;
 alter table public.comments        enable row level security;
+alter table public.platform_notes  enable row level security;
 
 do $$
 declare t text;
 begin
   -- Start clean so re-running this file never leaves an old, looser policy behind.
-  foreach t in array array['members', 'access_requests', 'app_data', 'edits', 'requests', 'votes', 'comments'] loop
+  foreach t in array array['members', 'access_requests', 'app_data', 'edits', 'requests', 'votes', 'comments', 'platform_notes'] loop
     execute (select coalesce(string_agg(format('drop policy %I on public.%I;', policyname, t), ' '), '')
              from pg_policies where schemaname = 'public' and tablename = t);
   end loop;
@@ -178,11 +188,13 @@ create policy "own request create" on public.access_requests for insert to authe
 create policy "own request touch" on public.access_requests for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
 create policy "admin decline" on public.access_requests for delete to authenticated using (public.is_admin() or user_id = auth.uid());
 
--- app_data and edits: members read, admins write.
+-- app_data, edits and platform notes: members read, admins write.
 create policy "members read" on public.app_data for select to authenticated using (public.is_member());
 create policy "admins write" on public.app_data for all to authenticated using (public.is_admin()) with check (public.is_admin());
 create policy "members read" on public.edits for select to authenticated using (public.is_member());
 create policy "admins write" on public.edits for all to authenticated using (public.is_admin()) with check (public.is_admin());
+create policy "members read" on public.platform_notes for select to authenticated using (public.is_member());
+create policy "admins write" on public.platform_notes for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- requests: members post as themselves (always starting "Not reviewed"); only admins change them; authors or admins delete.
 create policy "members read" on public.requests for select to authenticated using (public.is_member());
@@ -203,7 +215,7 @@ create policy "members comment" on public.comments for insert to authenticated
 create policy "author or admin delete" on public.comments for delete to authenticated using (author = auth.uid() or public.is_admin());
 
 -- Signed-out visitors get nothing at all.
-revoke all on public.members, public.access_requests, public.app_data, public.edits, public.requests, public.votes, public.comments from anon;
+revoke all on public.members, public.access_requests, public.app_data, public.edits, public.requests, public.votes, public.comments, public.platform_notes from anon;
 
 -- Keep-awake: a weekly GitHub Action calls this so the free Supabase project never pauses for
 -- inactivity. It only returns the time and reads no data.
