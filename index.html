@@ -25,14 +25,14 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-28r" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-28s" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/lora.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions are shared with the apps -->
-<link rel="stylesheet" href="/shell.css?v=2026-10-28r">
+<link rel="stylesheet" href="/shell.css?v=2026-10-28s">
 <style>
 /* Tile colours. The featured app (Image Resizer) has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
@@ -462,6 +462,6 @@ const nameTile = (tile, vt) => {
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-28r" defer></script>
+<script src="/nav.js?v=2026-10-28s" defer></script>
 </body>
 </html>
