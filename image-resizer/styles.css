@@ -745,13 +745,14 @@ body {
 @media (max-width: 899px) {
   .controls { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px; }
   .controls > * { flex: 1 1 100%; margin-top: 0; }
-  .controls > .option-row { flex: 1 1 40%; padding: 6px 8px; }
+  .controls > .option-row { flex: 1 1 40%; padding: 6px 8px; column-gap: 8px; }
   .controls > .option-row-wide, .controls > .folder-row { flex-basis: 100%; margin-bottom: 0; }
   .controls > .divider { margin: 4px 0; }
   .controls > .section-label { margin-bottom: -2px; }
   .option-hint { display: none; }
   .option-track { flex: 1; }
-  .quality-btn, .format-btn, .dest-btn { flex: 1; padding: 5px 6px; }
+  /* Slim enough that "QUALITY  Low Med High" stays on one line with Windows scrollbars (~200px) */
+  .quality-btn, .format-btn, .dest-btn { flex: 1; padding: 5px 4px; }
   .app { --thumb-h: 64px; }
   .preview-item { flex-basis: 140px; }   /* three cards across in a narrow window */
   .src-dims { font-size: 11px; }
