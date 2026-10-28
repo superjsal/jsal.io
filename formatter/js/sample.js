@@ -29,7 +29,7 @@ turns into a <i>big</i> repair bill.<a style='mso-comment-reference:JS_1'></a><s
 or see the <a href="https://docs.google.com/document/d/1AbCdEf/edit"><span style='color:#0563C1'>pricing draft</span></a> and the
 <a href="#_Toc12345">full guide below</a>.<o:p></o:p></span></p>
 
-<p class=MsoNormal align=center style='text-align:center'><span style='mso-no-proof:yes'><!--[if gte vml 1]><v:shape id="Picture_1" type="#_x0000_t75" style='width:468pt;height:263pt'><v:imagedata src="file:///C:/Users/JSAL/AppData/Local/Temp/msohtmlclip1/01/clip_image001.jpg" o:title=""/></v:shape><![endif]--><![if !vml]><img width=624 height=351 src="file:///C:/Users/JSAL/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg" alt="Roofer replacing damaged shingles" v:shapes="Picture_1"><![endif]></span></p>
+<p class=MsoNormal align=center style='text-align:center'><span style='mso-no-proof:yes'><!--[if gte vml 1]><v:shape id="Picture_1" type="#_x0000_t75" style='width:468pt;height:263pt'><v:imagedata src="file:///C:/Users/User/AppData/Local/Temp/msohtmlclip1/01/clip_image001.jpg" o:title=""/></v:shape><![endif]--><![if !vml]><img width=624 height=351 src="file:///C:/Users/User/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg" alt="Roofer replacing damaged shingles" v:shapes="Picture_1"><![endif]></span></p>
 
 <h2><span style='font-size:16.0pt;color:#2F5496'>3. Your roof is over 20 years old<o:p></o:p></span></h2>
 
