@@ -63,15 +63,15 @@ button { cursor: pointer; background: none; border: none; }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-html, body { height: 100%; overflow: hidden; }
-
+/* The app fills the first screen; the About section follows below it */
 body {
   color: var(--text);
   font-family: var(--font);
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 
@@ -686,7 +686,9 @@ body {
   --thumb-h: 84px;
   width: 100%;
   max-width: calc(var(--jsal-col) + 40px);   /* the shared jsal.io column (/shell.css) */
-  height: 100%;
+  height: 100vh;
+  height: 100dvh;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   padding: 0 max(20px, env(safe-area-inset-left, 0px)) 12px;   /* same sides as the home page */
@@ -697,6 +699,7 @@ body {
   flex: 0 1 auto;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;   /* scrolling the settings doesn't scroll the page */
   scrollbar-width: thin;
 }
 

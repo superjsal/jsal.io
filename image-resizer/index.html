@@ -6,7 +6,7 @@
   <title>Fast Image Resizer Online | JScale by JSAL</title>
   <meta name="description" content="JScale by JSAL lets you resize, crop, and convert images in bulk — free, fast, and in-browser. Supports JPG, PNG, WebP, and HEIC input with JPG or WebP output.">
   <link rel="canonical" href="https://jsal.io/image-resizer/" />
-  <link rel="icon" href="favicon.svg?v=2026-10-28j" type="image/svg+xml" />
+  <link rel="icon" href="favicon.svg?v=2026-10-28k" type="image/svg+xml" />
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
 
@@ -53,28 +53,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- Version numbers (?v=) make browsers fetch fresh files after an update instead of
        mixing cached old ones with new ones. When publishing changes, bump every
-       v=2026-10-28j in this file (find and replace) to the new date. -->
-  <link rel="stylesheet" href="/shell.css?v=2026-10-28j" />
-  <link rel="stylesheet" href="styles.css?v=2026-10-28j" />
+       v=2026-10-28k in this file (find and replace) to the new date. -->
+  <link rel="stylesheet" href="/shell.css?v=2026-10-28k" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-28k" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":    "./js/main.js?v=2026-10-28j",
-        "./js/state.js":   "./js/state.js?v=2026-10-28j",
-        "./js/imaging.js": "./js/imaging.js?v=2026-10-28j",
-        "./js/export.js":  "./js/export.js?v=2026-10-28j",
-        "./js/editor.js":  "./js/editor.js?v=2026-10-28j",
-        "./js/grid.js":    "./js/grid.js?v=2026-10-28j",
-        "./js/ui.js":      "./js/ui.js?v=2026-10-28j",
-        "./js/zip.js":     "./js/zip.js?v=2026-10-28j",
-        "./js/folder.js":  "./js/folder.js?v=2026-10-28j",
+        "./js/main.js":    "./js/main.js?v=2026-10-28k",
+        "./js/state.js":   "./js/state.js?v=2026-10-28k",
+        "./js/imaging.js": "./js/imaging.js?v=2026-10-28k",
+        "./js/export.js":  "./js/export.js?v=2026-10-28k",
+        "./js/editor.js":  "./js/editor.js?v=2026-10-28k",
+        "./js/grid.js":    "./js/grid.js?v=2026-10-28k",
+        "./js/ui.js":      "./js/ui.js?v=2026-10-28k",
+        "./js/zip.js":     "./js/zip.js?v=2026-10-28k",
+        "./js/folder.js":  "./js/folder.js?v=2026-10-28k",
         "./vendor/heic-to/heic-to.min.js": "./vendor/heic-to/heic-to.min.js?v=1.6.6"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-28j"></script>
+  <script type="module" src="js/main.js?v=2026-10-28k"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-28j" defer></script>
+  <script src="/nav.js?v=2026-10-28k" defer></script>
 </head>
 <body>
   <main class="app">
@@ -85,6 +85,7 @@
       <!-- Full title stays in the h1 for search engines; only "Image Resizer" is shown -->
       <h1 class="jsal-title"><span class="sr-only">JScale by JSAL – Fast </span>Image <span class="hl">Resizer</span><span class="sr-only"> Online</span></h1>
       <div class="jsal-actions">
+        <a class="jsal-link" href="#about">About</a>
         <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"></button>
       </div>
     </header>
@@ -236,5 +237,32 @@
     </section>
 
   </main>
+
+  <!-- About: below the app (which fills the first screen); styles in /shell.css -->
+  <section class="jsal-about" id="about" aria-labelledby="about-h">
+    <h2 id="about-h">About the Image Resizer</h2>
+    <p>JScale is a free image resizer that works on many images at once. It crops and resizes every image to the exact size you pick, or keeps each image's own size and only converts the format. Everything happens in your browser: your images are never uploaded.</p>
+
+    <h3>How to use it</h3>
+    <ol>
+      <li>Pick an output size: <strong>1200 × 628</strong> (blog and landing page images), <strong>640 × 420</strong>, <strong>Original</strong> to keep each image's size, or type your own width and height.</li>
+      <li>Drop your images on the page, or click to browse.</li>
+      <li>Check the crop. Click any image in the strip to edit it, then drag the crop box (or use the arrow keys) to choose which part is kept.</li>
+      <li>Choose quality and format, then <strong>Download All</strong> (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>). You can also save single images and rename files first.</li>
+    </ol>
+
+    <h3>What it supports</h3>
+    <ul>
+      <li><strong>Input:</strong> JPG, PNG, WebP and HEIC (iPhone photos).</li>
+      <li><strong>Output:</strong> JPG or WebP, at low, medium or high quality.</li>
+      <li><strong>Sizes:</strong> presets, any custom size from 32 to 20,000 pixels (your last five are kept as shortcuts), or original size.</li>
+      <li><strong>Saving:</strong> one download per image, a single ZIP file, or straight into a folder you choose (Chrome and Edge).</li>
+    </ul>
+
+    <h3>Private by design</h3>
+    <p>Resizing, cropping and converting all run on your own device, so it works with client and unreleased images, and it's fast even with large batches. Nothing is sent to a server.</p>
+
+    <p>Made by <a href="/">John Salvador</a>. Also try <a href="/formatter/">Clean Paste</a> for turning Word and Google Docs content into clean HTML.</p>
+  </section>
 </body>
 </html>

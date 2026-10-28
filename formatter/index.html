@@ -6,7 +6,7 @@
   <title>Clean Paste: Word to Clean HTML | JSAL</title>
   <meta name="description" content="Paste content from Word, Google Docs or raw HTML and get clean HTML or formatted text, ready for any CMS. Runs entirely in your browser." />
   <link rel="canonical" href="https://jsal.io/formatter/" />
-  <link rel="icon" href="favicon.svg?v=2026-10-28j" type="image/svg+xml" />
+  <link rel="icon" href="favicon.svg?v=2026-10-28k" type="image/svg+xml" />
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
 
@@ -43,21 +43,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- Version numbers (?v=) make browsers fetch fresh files after an update. When publishing
-       changes, bump every v=2026-10-28j in this file (find and replace) to the new date. -->
-  <link rel="stylesheet" href="/shell.css?v=2026-10-28j" />
-  <link rel="stylesheet" href="styles.css?v=2026-10-28j" />
+       changes, bump every v=2026-10-28k in this file (find and replace) to the new date. -->
+  <link rel="stylesheet" href="/shell.css?v=2026-10-28k" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-28k" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":   "./js/main.js?v=2026-10-28j",
-        "./js/clean.js":  "./js/clean.js?v=2026-10-28j",
-        "./js/sample.js": "./js/sample.js?v=2026-10-28j"
+        "./js/main.js":   "./js/main.js?v=2026-10-28k",
+        "./js/clean.js":  "./js/clean.js?v=2026-10-28k",
+        "./js/sample.js": "./js/sample.js?v=2026-10-28k"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-28j"></script>
+  <script type="module" src="js/main.js?v=2026-10-28k"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-28j" defer></script>
+  <script src="/nav.js?v=2026-10-28k" defer></script>
 </head>
 <body>
   <main class="app">
@@ -67,6 +67,7 @@
       <a class="jsal-brand" href="/" data-jsal-nav>jsal<span>.io</span></a>
       <h1 class="jsal-title"><span class="sr-only">JSAL – </span>Clean <span class="hl">Paste</span><span class="sr-only">: Word to Clean HTML</span></h1>
       <div class="jsal-actions">
+        <a class="jsal-link" href="#about">About</a>
         <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"></button>
       </div>
     </header>
@@ -159,5 +160,37 @@
       </div>
     </section>
   </main>
+
+  <!-- About: below the app (which fills the first screen); styles in /shell.css -->
+  <section class="jsal-about" id="about" aria-labelledby="about-h">
+    <h2 id="about-h">About Clean Paste</h2>
+    <p>Clean Paste turns content copied from Word, Google Docs or a web page into clean, minimal HTML that's ready for any CMS. It strips the hidden styles, fonts and leftover code that come along when you paste, keeps the real structure (headings, lists, links, tables, bold and italic), and points out anything worth fixing before you publish. It runs entirely in your browser: nothing you paste is uploaded or saved.</p>
+
+    <h3>How to use it</h3>
+    <ol>
+      <li>Copy your content from Word, Google Docs, a web page or an HTML file, and press <kbd>Ctrl</kbd> + <kbd>V</kbd> anywhere on the page.</li>
+      <li>Read the checks on the left. Click <strong>Show</strong> on any check to jump to the line it means.</li>
+      <li>Fix things in the <strong>Text</strong> tab with the toolbar (headings, lists, links, remove all bold), or edit the code in the <strong>HTML</strong> tab.</li>
+      <li>Copy the result: <strong>formatted</strong> for visual editors like Shopify, Squarespace and Wix, <strong>HTML</strong> for code views, <strong>plain text</strong>, or <strong>WordPress blocks</strong> for the block editor.</li>
+    </ol>
+
+    <h3>What it cleans up</h3>
+    <ul>
+      <li>Inline styles, fonts, spans, classes and Word's hidden markup and comments.</li>
+      <li>Word's fake bullet and number paragraphs, rebuilt as real nested lists.</li>
+      <li>Google Docs redirect links, changed back to the real address, and links starting with www. given https://.</li>
+      <li>Images, marked as [Image] placeholders so you know where to upload them in the CMS.</li>
+    </ul>
+
+    <h3>What it checks</h3>
+    <ul>
+      <li>An H1 in the body (most CMSs already use the title as the H1) and skipped heading levels.</li>
+      <li>Lines that are only bold text and were probably meant as headings.</li>
+      <li>Links to drafts, file shares or local files, Word bookmark links, links that go nowhere, "click here" link text, the same page linked more than once, and http:// links.</li>
+      <li>Paragraphs over 150 words. It also shows the word count and reading time.</li>
+    </ul>
+
+    <p>Made by <a href="/">John Salvador</a>. Also try the <a href="/image-resizer/">Image Resizer</a> for resizing and cropping images in bulk.</p>
+  </section>
 </body>
 </html>
