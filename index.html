@@ -25,7 +25,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-28zj" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-28zk" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js), fetched once the page has loaded and the browser is idle (2 s at most),
      so its ~180 KB doesn't compete with the page itself. Calls queue up until it arrives. -->
@@ -184,6 +184,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
   --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
   --gold: #f0e4c6; --gold-ink: #1f1a12; --gold-muted: #3d362a; --gold-acc: #835c0e;
   --plain: #e8e5dd; --plain-line: #cfc3a9;
+  --teal: #e0ece8; --teal-ink: #1f1a12; --teal-muted: #3d362a; --teal-acc: #2b6458;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -192,6 +193,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
     --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
     --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
     --plain: #1c1f27; --plain-line: #3d424e;
+    --teal: #15231f; --teal-ink: #ece6d6; --teal-muted: #c4bfb2; --teal-acc: #6cc4b2;
   }
 }
 :root[data-theme="dark"] {
@@ -200,6 +202,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
   --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
   --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
   --plain: #1c1f27; --plain-line: #3d424e;
+  --teal: #15231f; --teal-ink: #ece6d6; --teal-muted: #c4bfb2; --teal-acc: #6cc4b2;
 }
 
 * { box-sizing: border-box; }
@@ -271,8 +274,13 @@ p, li { text-wrap: pretty; }
 .fmt .label { color: var(--gold-acc); }
 .fmt .desc { color: var(--gold-muted); }
 
-.ui { grid-column: 5 / 13; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+.ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
 .ui .label { color: var(--green-acc); }
+.cms { grid-column: 5 / 13; background: var(--teal); color: var(--teal-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; --arrow-bg: var(--teal-acc); --arrow-ink: var(--teal); }
+.cms .foot { flex-direction: column; align-items: flex-start; justify-content: space-between; height: 100%; }
+.cms h2 { font-size: 26px; }
+.cms .label { color: var(--teal-acc); }
+.cms .desc { color: var(--teal-muted); }
 .ui h2 { font-size: 34px; }
 .ui .desc { color: var(--green-muted); margin-top: 8px !important; }
 .ui .pill { margin-top: 14px; color: var(--green-acc); }
@@ -324,6 +332,21 @@ p, li { text-wrap: pretty; }
 .m-ic .card { display: flex; align-items: center; gap: 6px; padding: 6px; }
 .m-ic .card b { width: 9px; height: 9px; flex: none; border-radius: 50%; background: var(--c); }
 .m-ic .card .bar { flex: 1; }
+
+/* CMS Picker: "What are you building?" chips and two platform cards, then the SEO table */
+.m-cms { grid-template-columns: minmax(0, 44%) minmax(0, 1fr); padding: 10px; gap: 8px; align-self: center; }
+.m-cms .chips { display: flex; gap: 3px; }
+.m-cms .chips i { height: 9px; flex: 1; border-radius: 9px; border: 1px solid var(--jsal-line); background: var(--jsal-surface); }
+.m-cms .chips .on { background: var(--teal-acc); border-color: var(--teal-acc); }
+.m-cms .pcard { display: flex; flex-direction: column; gap: 4px; padding: 6px; }
+.m-cms .pcard .bar:first-child { height: 6px; width: 55%; background: var(--jsal-ink-2); }
+.m-cms .pcard .bar { height: 4px; }
+.m-cms .tags { display: flex; gap: 3px; }
+.m-cms .tags i { height: 6px; width: 22%; border-radius: 6px; background: var(--jsal-sunk); }
+.m-cms .table { display: grid; grid-template-columns: 34% repeat(3, minmax(0, 1fr)); gap: 5px 4px; padding: 7px; align-content: start; }
+.m-cms .table .bar { height: 4px; align-self: center; }
+.m-cms .table .th { height: 5px; background: var(--jsal-ink-2); opacity: 0.6; }
+.m-cms .table b { height: 8px; border-radius: 2px; background: var(--c); }
 
 /* Clean Paste: checks + copy buttons, then the editor with its toolbar */
 .m-fmt { grid-template-columns: minmax(0, 36%) minmax(0, 1fr); padding: 10px; gap: 8px; }
@@ -409,7 +432,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
 @media (max-width: 860px) {
   .grid > * { grid-column: 1 / -1 !important; }
   .intro { padding-top: 4px; }
-  .ui { grid-template-columns: minmax(0, 1fr); }
+  .ui, .cms { grid-template-columns: minmax(0, 1fr); }
   .intro p { font-size: 16px; }
 }
 #work, #updates { scroll-margin-top: 16px; }
@@ -543,9 +566,28 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
       </div>
     </a>
 
+    <a class="tile cms" href="/cms-picker/" data-app>
+      <div class="foot">
+        <div>
+          <p class="label">04 · web app</p>
+          <h2>CMS Picker</h2>
+          <p class="desc">Which CMS fits your business, and what you can change for SEO on each.</p>
+        </div>
+        <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+      </div>
+      <div class="mock m-cms" aria-hidden="true">
+        <div class="col">
+          <div class="chips"><i></i><i class="on"></i><i></i></div>
+          <div class="pcard box"><i class="bar"></i><i class="bar" style="width: 92%"></i><div class="tags"><i></i><i></i><i></i></div></div>
+          <div class="pcard box"><i class="bar"></i><i class="bar" style="width: 80%"></i><div class="tags"><i></i><i></i><i></i></div></div>
+        </div>
+        <div class="table box"><i></i><i class="bar th"></i><i class="bar th"></i><i class="bar th"></i><i class="bar"></i><b style="--c: var(--jsal-ok)"></b><b style="--c: var(--jsal-ok)"></b><b style="--c: var(--jsal-info)"></b><i class="bar"></i><b style="--c: var(--jsal-ok)"></b><b style="--c: var(--jsal-info)"></b><b style="--c: var(--jsal-ok)"></b><i class="bar"></i><b style="--c: var(--jsal-warn)"></b><b style="--c: var(--jsal-ok)"></b><b style="--c: var(--jsal-warn)"></b><i class="bar"></i><b style="--c: var(--jsal-ok)"></b><b style="--c: var(--jsal-bad)"></b><b style="--c: var(--jsal-ok)"></b><i class="bar"></i><b style="--c: var(--jsal-info)"></b><b style="--c: var(--jsal-warn)"></b><b style="--c: var(--jsal-ok)"></b></div>
+      </div>
+    </a>
+
     <section class="tile ui" aria-labelledby="ui-h">
       <div>
-        <p class="label">04 · for WoW Forever</p>
+        <p class="label">05 · for WoW Forever</p>
         <h2 id="ui-h">JSal UI</h2>
         <p class="desc">A clean, minimal interface for raiding and everyday play. One import string, a few minutes.</p>
         <span class="pill">Coming soon</span>
@@ -603,6 +645,6 @@ const nameTile = (tile, vt) => {
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-28zj" defer></script>
+<script src="/nav.js?v=2026-10-28zk" defer></script>
 </body>
 </html>

@@ -52,6 +52,12 @@
         pr.tags.forEach((x) => t.append(el('span', 'ktag', x)));
         c.append(t);
       }
+      if (pr.aiTags && pr.aiTags.length) {
+        const a = el('div', 'aitags');
+        a.append(el('span', 'ailabel', 'AI'));
+        pr.aiTags.forEach((x) => a.append(el('span', 'aitag', x)));
+        c.append(a);
+      }
       const who = el('details', 'who');
       who.append(el('summary', null, 'Who it suits'));
       [['Good fit for', pr.goodFit], ['Less suited if', pr.lessSuited]].forEach(([title, list]) => {
@@ -99,7 +105,12 @@
       head.append(c);
     });
     grid.append(head);
+    let aiShown = false;
     items.forEach((it) => {
+      if (it.group === 'ai' && !aiShown) {     // public-only rows, dated because AI features change fast
+        aiShown = true;
+        grid.append(el('div', 'row group', `AI search${data.aiAsOf ? ` · as of ${data.aiAsOf}` : ''}`));
+      }
       const row = el('div', 'row');
       row.append(el('div', 'item', it.label));
       plats.forEach((p) => {
