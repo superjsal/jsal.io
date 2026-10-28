@@ -76,6 +76,13 @@ html { scrollbar-gutter: stable; }
 ::view-transition-new(jsal-app) { animation: jsal-fade-in 0.3s ease 0.2s both; }
 ::view-transition-old(root) { animation: jsal-home-out 0.3s ease both; }
 ::view-transition-new(root) { animation: jsal-fade-in 0.3s ease 0.15s both; }
+/* The logo and theme button are the same on every page and in the same spot, so they get
+   their own names: they stay put and sharp while the rest of the page changes around them,
+   instead of fading and shrinking with it. Only the new page's copy is shown. */
+.jsal-brand { view-transition-name: jsal-brand; }
+.jsal-theme { view-transition-name: jsal-theme; }
+::view-transition-old(jsal-brand), ::view-transition-old(jsal-theme) { display: none; }
+::view-transition-new(jsal-brand), ::view-transition-new(jsal-theme) { animation: none; }
 @keyframes jsal-fade-out { to { opacity: 0; } }
 @keyframes jsal-fade-in { from { opacity: 0; } }
 @keyframes jsal-home-out { to { opacity: 0; transform: scale(0.97); } }
