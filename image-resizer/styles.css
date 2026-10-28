@@ -340,7 +340,7 @@ body {
 
 /* ── Export toolbar + status ───────────────────────────────────────────── */
 
-.toolbar { display: flex; align-items: center; gap: 8px; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 
 .toolbar-hint {
   font-family: inherit;
@@ -741,6 +741,11 @@ body {
   .app { --thumb-h: 64px; }
   .preview-item { flex-basis: 128px; }
   .src-dims { font-size: 11px; }
+}
+
+/* Very narrow: the shortcut hint makes way so Download All and Clear fit on one line */
+@media (max-width: 420px) {
+  .toolbar-hint { display: none; }
 }
 
 /* Shorter windows: drop the step bar, section headings and hints */

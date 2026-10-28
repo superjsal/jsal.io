@@ -233,6 +233,7 @@ kbd { font: 600 11.5px var(--font); padding: 1px 6px; border-radius: 4px; border
   background: var(--surface-2);
   overflow: hidden;
 }
+.pane-out { position: relative; }   /* the link box is placed inside it */
 .pane-head {
   display: flex;
   align-items: center;
@@ -334,6 +335,49 @@ textarea.code[hidden] { display: none; }
 .preview .locate { background: var(--accent-dim); border-radius: 4px; animation: locate 1.2s ease-out forwards; }
 @keyframes locate { 0%, 30% { background: var(--accent-dim); box-shadow: 0 0 0 4px var(--accent-dim); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
 .preview .flag { text-decoration-color: var(--warn); text-decoration-style: wavy; text-decoration-line: underline; }
+
+/* Link box: edit the address of the link the cursor is in */
+.link-box {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: min(400px, calc(100% - 16px));
+  padding: 4px;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+.link-box input {
+  flex: 1;
+  min-width: 0;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-xs);
+  background: var(--bg);
+  color: var(--text);
+  font: 12.5px var(--mono);
+  outline: none;
+}
+.link-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-ring); }
+.link-box button, .link-box a {
+  height: 28px;
+  min-width: 28px;
+  padding: 0 7px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-xs);
+  color: var(--text-2);
+  font-weight: 600;
+  font-size: 12.5px;
+  transition: background 0.12s, color 0.12s;
+}
+.link-box button:hover, .link-box a:hover { background: var(--surface-3); color: var(--text); }
+.link-box #linkSave { color: var(--accent); }
+.link-box #linkRemove:hover { color: var(--bad); }
 
 /* ── Layout ────────────────────────────────────────────────────────────── */
 

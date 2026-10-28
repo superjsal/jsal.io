@@ -22,6 +22,7 @@ const ICONS = {
   eraser:    '<path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21M22 21H7M5 11l9 9"/>',
   undo:      '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>',
   redo:      '<path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/>',
+  external:  '<path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
   wand:      '<path d="m15 4-1.5 1.5M20 9l-1.5 1.5M18 4l1 1M3 21l11-11M14 4l6 6"/><path d="M17.5 2.5v2M21.5 6.5h-2"/>',
 };
 const icon = (name, size = 14, stroke = 2.2) =>
@@ -78,6 +79,7 @@ function load(data, blank = false) {
 $("clearBtn").addEventListener("click", () => {
   input = result = null;
   fixes = [];
+  hideLinkBox();
   editor.innerHTML = "";
   app.classList.remove("has-content");
   $("pasteZone").focus();
@@ -216,6 +218,7 @@ const tabButton = (view) => document.querySelector(`[data-tab="out"][data-view="
 for (const tab of document.querySelectorAll("[data-tab]")) {
   tab.addEventListener("click", () => {
     flush();
+    hideLinkBox();
     const group = tab.dataset.tab;
     for (const t of document.querySelectorAll(`[data-tab="${group}"]`)) t.setAttribute("aria-selected", t === tab);
     for (const [view, id] of Object.entries(VIEWS[group])) $(id).hidden = view !== tab.dataset.view;
@@ -284,9 +287,10 @@ const COMMANDS = {
   ul: () => document.execCommand("insertUnorderedList"),
   ol: () => document.execCommand("insertOrderedList"),
   link: () => {
-    const current = getSelection().anchorNode?.parentElement?.closest("a")?.getAttribute("href") || "https://";
-    const url = prompt("Link address", current);
-    if (url && url.trim() && url.trim() !== "https://") document.execCommand("createLink", false, url.trim());
+    const a = linkAt();
+    const sel = getSelection();
+    if (a) showLinkBox(a, true);
+    else if (sel.rangeCount && editor.contains(sel.anchorNode)) showLinkBox(sel.getRangeAt(0).cloneRange(), true);
   },
   unlink: () => document.execCommand("unlink"),
   clear: () => document.execCommand("removeFormat"),
@@ -344,6 +348,99 @@ function updateToolbar() {
   }
 }
 document.addEventListener("selectionchange", updateToolbar);
+
+// ── Link box ─────────────────────────────────────────────────────────────
+// Put the cursor in a link and a small box under it shows the address to change, open or
+// remove. Ctrl+K or the link button opens it for the selected text to add a new link.
+
+const linkBox = $("linkBox"), linkUrl = $("linkUrl");
+let linkTarget = null;   // the <a> being edited, or the selected Range for a new link
+let dismissed = null;    // link closed with Esc: stays closed until the cursor leaves it
+
+function linkAt() {
+  const n = getSelection().anchorNode;
+  if (!n || !editor.contains(n)) return null;
+  return (n.nodeType === 1 ? n : n.parentElement).closest("a");
+}
+
+function showLinkBox(target, focus) {
+  linkTarget = target;
+  const a = target instanceof Element ? target : null;
+  linkUrl.value = a ? a.getAttribute("href") || "" : "https://";
+  $("linkOpen").hidden = $("linkRemove").hidden = !a;
+  if (a) $("linkOpen").href = a.href;
+  linkBox.hidden = false;
+  placeLinkBox();
+  if (focus) { linkUrl.focus(); linkUrl.select(); }
+}
+
+function hideLinkBox() { linkBox.hidden = true; linkTarget = null; }
+
+// Under the link (above it near the bottom of the pane), kept inside the pane
+function placeLinkBox() {
+  if (linkBox.hidden || !linkTarget) return;
+  const rect = linkTarget.getBoundingClientRect();
+  const pane = linkBox.parentElement.getBoundingClientRect(), view = editor.closest(".pane-body").getBoundingClientRect();
+  linkBox.style.visibility = rect.bottom < view.top || rect.top > view.bottom ? "hidden" : "";
+  const left = Math.max(8, Math.min(rect.left - pane.left, pane.width - linkBox.offsetWidth - 8));
+  let top = rect.bottom - pane.top + 6;
+  if (top + linkBox.offsetHeight > pane.height - 8) top = rect.top - pane.top - linkBox.offsetHeight - 6;
+  linkBox.style.left = `${left}px`;
+  linkBox.style.top = `${top}px`;
+}
+
+// Runs through the browser's own link commands, so Ctrl+Z undoes it like any other edit
+function selectTarget() {
+  editor.focus({ preventScroll: true });
+  let r = linkTarget;
+  if (r instanceof Element) { const a = r; r = document.createRange(); r.selectNodeContents(a); }
+  const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+}
+function saveLink() {
+  if (!linkTarget) return;
+  let url = linkUrl.value.trim();
+  if (/^www\./i.test(url)) url = "https://" + url;
+  const isLink = linkTarget instanceof Element;
+  selectTarget();
+  if (url && url !== "https://") document.execCommand("createLink", false, url);
+  else if (isLink) document.execCommand("unlink");
+  getSelection().collapseToEnd();
+  hideLinkBox();
+}
+function removeLink() {
+  if (!(linkTarget instanceof Element)) return;
+  selectTarget();
+  document.execCommand("unlink");
+  getSelection().collapseToEnd();
+  hideLinkBox();
+}
+
+$("linkSave").addEventListener("click", saveLink);
+$("linkRemove").addEventListener("click", removeLink);
+linkUrl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); saveLink(); }
+  if (e.key === "Escape") {
+    e.preventDefault();
+    const a = linkTarget instanceof Element ? linkTarget : null;
+    dismissed = a;
+    if (a || linkTarget) selectTarget();
+    getSelection().collapseToEnd();
+    hideLinkBox();
+  }
+});
+// Clicking away from a new-link box closes it
+linkBox.addEventListener("focusout", (e) => {
+  if (!linkBox.contains(e.relatedTarget) && !(linkTarget instanceof Element)) hideLinkBox();
+});
+document.addEventListener("selectionchange", () => {
+  if (linkBox.contains(document.activeElement)) return;
+  const a = linkAt();
+  if (!a) { dismissed = null; if (linkTarget instanceof Element) hideLinkBox(); return; }
+  if (a !== dismissed && a !== linkTarget) showLinkBox(a, false);
+});
+editor.closest(".pane-body").addEventListener("scroll", placeLinkBox);
+window.addEventListener("resize", placeLinkBox);
+editor.addEventListener("input", () => requestAnimationFrame(placeLinkBox));
 
 // ── Copy ─────────────────────────────────────────────────────────────────
 

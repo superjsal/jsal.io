@@ -50,8 +50,10 @@
   --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   color-scheme: dark;
 }
-/* Page background with the home page's gold glow */
-body { background: radial-gradient(900px 500px at 15% -10%, var(--jsal-glow), transparent 70%) no-repeat, var(--jsal-bg); }
+/* Page background with the home page's gold glow. The glow is drawn a little wider than the
+   page so it also runs under the scrollbar space kept on the right; otherwise that strip
+   shows as a faint line where the glow is bright. */
+body { background: radial-gradient(900px 500px at 15% -10%, var(--jsal-glow), transparent 70%) 0 0 / calc(100% + 40px) 100% no-repeat, var(--jsal-bg); }
 
 /* One column width for the home page and every app (content width; pages add 20px sides),
    so the top bar never moves when going between them. Each page's container uses
