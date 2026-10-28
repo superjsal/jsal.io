@@ -78,7 +78,9 @@ body {
   background: var(--jsal-sunk); box-shadow: 0 1px 0 var(--jsal-line);
 }
 .thead:not([hidden]) + .scroll { border-top: 0; border-radius: 0 0 var(--jsal-radius) var(--jsal-radius); }
-.scroll { overflow-x: auto; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); }
+/* overflow-y: hidden, so the box can never scroll up and down itself: with display scaling a
+   1px rounding overflow made it catch the mouse wheel, and the page wouldn't scroll over it */
+.scroll { overflow-x: auto; overflow-y: hidden; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); }
 /* A handful of platforms at a time (the cards' "Add to compare"), so columns are wide enough to read */
 .grid { --n: 4; min-width: calc(200px + var(--n) * 160px); }
 .row { display: grid; grid-template-columns: 200px repeat(var(--n), minmax(0, 1fr)); border-top: 1px solid var(--jsal-line); }
