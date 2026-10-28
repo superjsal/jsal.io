@@ -6,6 +6,7 @@
 
 - [Image Resizer (JScale)](https://jsal.io/image-resizer/): Bulk resize, crop and convert images. Presets for 1200 × 628 and 640 × 420, custom sizes, or keep the original size and only convert. Accepts JPG, PNG, WebP and HEIC; saves JPG or WebP to downloads, a ZIP or a chosen folder.
 - [Clean Paste](https://jsal.io/formatter/): Paste content from Word, Google Docs, a web page or HTML code and get clean, minimal HTML. Checks headings and links (drafts, Word bookmarks, vague link text), and copies as formatted text, HTML, plain text or WordPress block markup.
+- [CMS SEO Checker](https://jsal.io/cms-seo/): A platform-by-platform grid of what you can change for SEO on Shopify, WordPress, Wix, Squarespace, BigCommerce, Duda, GoDaddy, Miva and Magento: meta tags, headings, alt text, redirects, canonicals, structured data and template access. General guidance.
 
 ## About
 
