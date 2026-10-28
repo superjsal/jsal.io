@@ -20,6 +20,22 @@
     return e;
   }
 
+  // Platform logos (Simple Icons, CC0) drawn in the text colour via a mask, so they match the theme.
+  // Simple Icons has no Magento or Duda logo, and headless isn't one brand: those get a lettered badge.
+  const LOGOS = new Set(['wordpress', 'shopify', 'wix', 'squarespace', 'webflow', 'framer', 'hubspot', 'bigcommerce', 'drupal', 'godaddy']);
+  const BADGE = { magento: 'M', duda: 'D', headless: '{ }' };
+  function logo(p) {
+    if (LOGOS.has(p.id)) {
+      const s = el('span', 'logo');
+      s.style.setProperty('--logo', `url("logos/${p.id}.svg")`);
+      s.setAttribute('aria-hidden', 'true');
+      return s;
+    }
+    const b = el('span', 'logo badge', BADGE[p.id] || p.name[0]);
+    b.setAttribute('aria-hidden', 'true');
+    return b;
+  }
+
   // "What are you building?": each profile lists the goals it suits (build\cms-picker.json)
   const GOALS = [['all', 'Show all'], ['store', 'Online store'], ['site', 'Business or marketing site'], ['content', 'Blog or content'], ['custom', 'Custom build with developers']];
   const fits = (p) => state.goal === 'all' || ((p.profile && p.profile.goals) || []).includes(state.goal);
@@ -44,7 +60,9 @@
     $('#count').textContent = state.goal === 'all' ? `All ${shown.length} platforms` : `${shown.length} of ${data.platforms.length} platforms fit`;
     shown.forEach((p) => {
       const c = el('article', 'card'), pr = p.profile;
-      c.append(el('h3', null, p.name), el('p', 'ptype', pr.type));
+      const top = el('div', 'ctop');
+      top.append(logo(p), el('h3', null, p.name));
+      c.append(top, el('p', 'ptype', pr.type));
       if (pr.summary) c.append(el('p', 'summary', pr.summary));
       if (pr.tags && pr.tags.length) {
         const t = el('div', 'ktags');
