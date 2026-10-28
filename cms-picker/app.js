@@ -12,6 +12,7 @@
   // With "Show all", the grid starts with these; any other choice starts with the platforms that fit it
   const DEFAULT_COMPARE = ['wordpress', 'shopify', 'wix', 'squarespace'];
   let data;
+  const smooth = () => (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
 
   function el(tag, cls, text) {
     const e = document.createElement(tag);
@@ -60,6 +61,7 @@
     $('#count').textContent = state.goal === 'all' ? `All ${shown.length} platforms` : `${shown.length} of ${data.platforms.length} platforms fit`;
     shown.forEach((p) => {
       const c = el('article', 'card'), pr = p.profile;
+      c.id = `card-${p.id}`;
       const top = el('div', 'ctop');
       top.append(logo(p), el('h3', null, p.name));
       c.append(top, el('p', 'ptype', pr.type));
@@ -147,14 +149,15 @@
         line.append(el('span', `tag ${c.verdict}`, SHORT[c.verdict] || data.verdicts[c.verdict] || c.verdict));
         if (sym) {
           const s = el('span', 'sc', sym);
-          s.title = scope;
+          if (state.notes) s.title = scope;        // with notes off, the cell's tooltip says it instead
+          cell.dataset.scope = scope;
           s.setAttribute('aria-label', scope);
           line.append(s);
         }
         cell.append(el('span', 'plat', p.name), line);
         if (c.mark && !GENERIC.test(c.mark.trim())) {
           cell.append(el('span', 'mark', c.mark));
-          if (!state.notes) line.title = c.mark;
+          cell.dataset.note = c.mark;
         }
         row.append(cell);
       });
@@ -191,6 +194,57 @@
 
     // Keep the pinned header in line with the table when it scrolls sideways
     $('#seo .scroll').addEventListener('scroll', (e) => { $('#thead').scrollLeft = e.target.scrollLeft; }, { passive: true });
+    // Hero: live counts, the date from the AI search section, and a logo strip that jumps to each card
+    $('#st-plats').textContent = data.platforms.length;
+    $('#st-items').textContent = data.items.length;
+    $('#st-groups').textContent = (data.groups || []).length;
+    const asOf = (data.groups || []).map((g) => g.asOf).find(Boolean);
+    if (asOf) $('#asof').textContent = ` · updated ${asOf}`;
+    const strip = $('#strip');
+    data.platforms.forEach((p) => {
+      const b = el('button');
+      b.type = 'button';
+      b.title = p.name;
+      b.setAttribute('aria-label', p.name);
+      b.append(logo(p));
+      b.addEventListener('click', () => {
+        if (!fits(p)) setGoal('all');           // the current choice hides this card
+        const card = $(`#card-${p.id}`);
+        card.scrollIntoView({ behavior: smooth(), block: 'center' });
+        card.classList.remove('flash');
+        void card.offsetWidth;                  // restart the highlight
+        card.classList.add('flash');
+      });
+      strip.append(b);
+    });
+    // Notes off: hovering (or tapping) an answer shows its note and scope in a tooltip at once.
+    // It sits outside the table, fixed to the window, so the table's scroll box can't clip it.
+    const tip = $('#tip');
+    let tipCell = null;
+    const hideTip = () => { tip.hidden = true; tipCell = null; };
+    $('#grid').addEventListener('pointerover', (e) => {
+      const cell = e.target.closest('.cell');
+      if (cell === tipCell) return;
+      if (state.notes || !cell || !(cell.dataset.note || cell.dataset.scope)) { hideTip(); return; }
+      tipCell = cell;
+      tip.replaceChildren();
+      if (cell.dataset.note) tip.append(el('span', null, cell.dataset.note));
+      if (cell.dataset.scope) tip.append(el('small', null, cell.dataset.scope));
+      tip.hidden = false;
+      const r = cell.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+      tip.style.left = `${Math.max(8, Math.min(r.left + 8, innerWidth - w - 8))}px`;
+      tip.style.top = `${r.bottom + h + 8 < innerHeight ? r.bottom - 4 : r.top - h + 4}px`;
+    });
+    $('#grid').addEventListener('pointerleave', hideTip);
+    addEventListener('scroll', hideTip, { passive: true });
+    $('#seo .scroll').addEventListener('scroll', hideTip, { passive: true });
+    document.addEventListener('pointerdown', (e) => { if (!e.target.closest('#grid')) hideTip(); });
+
+    // Back to top, once the hero is out of view
+    const totop = $('#totop');
+    new IntersectionObserver(([e]) => totop.classList.toggle('show', !e.isIntersecting)).observe($('.hero'));
+    totop.addEventListener('click', () => scrollTo({ top: 0, behavior: smooth() }));
+
     $('#q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
     // "Show notes" (remembered in this browser). Off by default: just the tags, so the table can be
     // scanned; each note is still in the cell's tooltip.
@@ -199,6 +253,7 @@
     notes.setAttribute('aria-pressed', String(state.notes));
     notes.addEventListener('click', () => {
       state.notes = !state.notes;
+      hideTip();
       notes.setAttribute('aria-pressed', String(state.notes));
       try { localStorage.setItem('cms-picker-notes', state.notes ? 'on' : 'off'); } catch (e) { /* not remembered */ }
       render();

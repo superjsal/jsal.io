@@ -25,7 +25,60 @@ body {
   padding: 0 max(20px, env(safe-area-inset-left, 0px)) 40px;
 }
 
-.intro { margin: 22px 0 20px; max-width: 680px; color: var(--jsal-ink-2); font-size: 16.5px; line-height: 1.6; }
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+
+.hero {
+  margin: 18px 0 34px; padding: 34px 32px 26px;
+  border: 1px solid var(--jsal-line); border-radius: calc(var(--jsal-radius) * 2);
+  background: radial-gradient(70% 90% at 100% 0%, var(--jsal-accent-soft), transparent 70%), var(--jsal-surface);
+}
+.eyebrow { color: var(--jsal-accent); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.hero-title { max-width: 720px; margin-top: 10px; color: var(--jsal-ink); font-size: clamp(28px, 4.4vw, 42px); line-height: 1.12; letter-spacing: -0.025em; }
+.hero-title .hl { color: var(--jsal-accent); }
+.lede { max-width: 640px; margin-top: 14px; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.6; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.btn {
+  display: inline-flex; align-items: center; height: 42px; padding: 0 20px;
+  border: 1px solid var(--jsal-line-hi); border-radius: 999px;
+  color: var(--jsal-ink); font-size: 15px; font-weight: 700; text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.btn:hover { border-color: var(--jsal-accent); }
+.btn:active { transform: scale(0.98); }
+.btn.primary { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.btn.primary:hover { filter: brightness(1.06); }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; list-style: none; color: var(--jsal-muted); font-size: 14px; }
+.stats b { color: var(--jsal-ink); font-size: 16px; }
+/* Logo strip: every platform, muted until hovered; each one jumps to its card */
+.strip { display: flex; flex-wrap: wrap; gap: 6px; min-height: 63px; margin-top: 22px;   /* room for one row before data.json loads */ padding-top: 18px; border-top: 1px solid var(--jsal-line); }
+.strip button { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; transition: background 0.15s, transform 0.15s; }
+.strip button:hover { background: var(--jsal-sunk); transform: translateY(-2px); }
+.strip .logo { width: 24px; height: 24px; background: var(--jsal-muted); transition: background 0.15s; }
+.strip button:hover .logo { background: var(--jsal-ink); }
+.strip .logo.badge { width: 28px; height: 28px; font-size: 12px; background: var(--jsal-sunk); color: var(--jsal-muted); }
+.strip button:hover .logo.badge { color: var(--jsal-ink); }
+/* A short highlight on the card a logo jumped to */
+.card.flash { animation: flash 1.4s ease-out; }
+@keyframes flash { 0%, 30% { border-color: var(--jsal-accent); box-shadow: 0 0 0 3px var(--jsal-accent-ring); } }
+/* The hero rises in once on load */
+.hero > * { animation: rise 0.5s ease-out both; }
+.hero > :nth-child(2) { animation-delay: 0.05s; }
+.hero > :nth-child(3) { animation-delay: 0.1s; }
+.hero > :nth-child(n + 4) { animation-delay: 0.15s; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+
+/* Back to top: appears once the hero is out of view */
+.totop {
+  position: fixed; right: max(20px, env(safe-area-inset-right, 0px)); bottom: max(20px, env(safe-area-inset-bottom, 0px)); z-index: 10;
+  display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px;
+  border: 1px solid var(--jsal-line-hi); border-radius: 999px;
+  background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 700;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s, border-color 0.15s;
+}
+.totop.show { opacity: 1; visibility: visible; transform: none; transition: opacity 0.2s, transform 0.2s, visibility 0s, border-color 0.15s; }
+.totop:hover { border-color: var(--jsal-accent); }
 
 /* ── Controls ──────────────────────────────────────────────────────────── */
 
@@ -104,8 +157,18 @@ body {
 /* "AI search" heading row inside the table (spans every column) */
 .row.group { display: block; padding: 9px 14px; background: var(--jsal-sunk); color: var(--jsal-info); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
 .row.group > span { position: sticky; left: 14px; }
-/* "Show notes" off: tags only, so far more rows fit on screen */
+/* "Show notes" off: tags only, so far more rows fit on screen; hovering a cell shows its note in .tip */
 .grid.compact .mark { display: none; }
+.grid.compact .cell[data-note], .grid.compact .cell[data-scope] { cursor: help; }
+.grid.compact .cell:hover { background: var(--jsal-sunk); }
+.tip {
+  position: fixed; z-index: 20; max-width: 280px; padding: 8px 11px; pointer-events: none;
+  border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius);
+  background: var(--jsal-surface); color: var(--jsal-ink); font-size: 13.5px; line-height: 1.45;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+.tip small { display: block; color: var(--jsal-muted); font-size: 12px; }
+.tip span + small { margin-top: 4px; }
 .empty { padding: 28px 12px; text-align: center; color: var(--jsal-muted); }
 
 .note { margin-top: 12px; max-width: 680px; color: var(--jsal-muted); font-size: 12.5px; }
@@ -124,6 +187,13 @@ body {
   .cell > :not(.plat) { grid-column: 2; justify-self: start; }
   .cell .mark { margin-top: 0; }
   .search { max-width: none; flex-basis: 100%; }
+  .hero { padding: 24px 18px 18px; }
+  .lede { font-size: 16px; }
+  .btn { flex: 1 1 auto; justify-content: center; }
+  .strip { gap: 2px; }
+  .strip button { width: 37px; height: 40px; }
+  .totop { width: 44px; height: 44px; padding: 0; justify-content: center; }
+  .totop span { display: none; }
 }
 
 /* Sections and platform profile cards */
