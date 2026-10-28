@@ -1,0 +1,18 @@
+# jsal.io
+
+> Personal site of John Salvador, who works in SEO and builds small, free web tools that run entirely in the browser (nothing is uploaded).
+
+## Tools
+
+- [Image Resizer (JScale)](https://jsal.io/image-resizer/): Bulk resize, crop and convert images. Presets for 1200 × 628 and 640 × 420, custom sizes, or keep the original size and only convert. Accepts JPG, PNG, WebP and HEIC; saves JPG or WebP to downloads, a ZIP or a chosen folder.
+- [Clean Paste](https://jsal.io/formatter/): Paste content from Word, Google Docs, a web page or HTML code and get clean, minimal HTML. Checks headings and links (drafts, Word bookmarks, vague link text), and copies as formatted text, HTML, plain text or WordPress block markup.
+
+## About
+
+- [Home](https://jsal.io/): Who John is and what he's working on.
+- Contact: dev@jsal.io
+- Code: https://github.com/superjsal
+
+## Optional
+
+- Platform Playbook (https://jsal.io/ic/) is a private, sign-in-only tool for John's team: SEO implementation answers and how-to steps per website platform (Shopify, WordPress, Wix and others). Its content is not public.

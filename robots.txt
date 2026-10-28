@@ -1,0 +1,6 @@
+# Everything public is open to search engines and AI crawlers.
+# /ic/ (Platform Playbook) is team-only: it is left crawlable so its noindex tag is seen.
+User-agent: *
+Allow: /
+
+Sitemap: https://jsal.io/sitemap.xml
