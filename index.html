@@ -67,22 +67,16 @@ a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; border: 1px solid currentColor; }
 
 .jscale { grid-column: 1 / 8; background: var(--cream); color: var(--cream-ink); padding: 14px; display: flex; flex-direction: column; gap: 16px; }
-.jscale .shot { aspect-ratio: 16 / 8; border-radius: 12px; background: #1b1d24; padding: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-content: center; }
-.jscale .shot span { aspect-ratio: 1200 / 628; border-radius: 5px; }
+.jscale .shot { aspect-ratio: 16 / 8; }
 .jscale .foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding: 0 8px 6px; }
 .jscale .label, .jscale .desc { color: var(--cream-muted); }
 .desc { margin-top: 4px !important; font-size: 14.5px; }
 
 .ic { grid-column: 8 / 13; background: var(--blue); color: var(--blue-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
-.ic .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.ic .chips span { font-size: 12px; font-weight: 600; color: var(--blue-acc); border: 1px solid var(--blue-acc); padding: 2px 10px; border-radius: 99px; }
-.ic .chips span:first-child { background: var(--blue-acc); color: var(--blue); }
 .ic .label { color: var(--blue-acc); }
 .ic .desc { color: var(--blue-muted); }
 
 .fmt { grid-column: 1 / 5; border: 1.5px solid var(--jsal-accent); color: var(--jsal-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; }
-.fmt .code { font: 13px/1.8 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
-.fmt .code b { font-weight: 400; color: var(--jsal-accent); }
 .fmt h2 { font-size: 26px; }
 .fmt .label { color: var(--jsal-muted); }
 .fmt .desc { color: var(--jsal-muted); }
@@ -99,6 +93,64 @@ a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 .ui .frames span.target { margin-top: 6px; }
 .ui .bar { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px; }
 .ui .bar i { aspect-ratio: 1; border-radius: 3px; background: var(--c); }
+
+/* App mockups on the tiles: simplified versions of each app's real layout, in the apps' own
+   page colours, so opening an app looks like the picture growing into it. Photos, links and
+   highlights keep some colour. Bars stand in for text. */
+.mock { display: grid; gap: 10px; padding: 12px; border-radius: 12px; background: var(--jsal-bg); border: 1px solid var(--jsal-line); }
+.mock i, .mock b { display: block; }
+.mock .box { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 4px; }
+.mock .col { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.mock .bar { height: 6px; border-radius: 3px; background: var(--jsal-line-hi); }
+.mock .go { height: 16px; width: 55%; border-radius: 4px; background: var(--jsal-fill); }
+
+/* JScale: settings column + crop preview of a photo + strip of loaded images */
+.m-jscale { grid-template-columns: minmax(0, 34%) minmax(0, 1fr); }
+.m-jscale .seg { height: 24px; display: grid; grid-template-columns: repeat(3, 1fr); overflow: hidden; }
+.m-jscale .seg i + i { border-left: 1px solid var(--jsal-line); }
+.m-jscale .seg .on { background: var(--jsal-accent-soft); box-shadow: inset 0 -2px var(--jsal-accent); }
+.m-jscale .size { display: grid; grid-template-columns: 1fr 1fr 0.7fr; gap: 4px; height: 15px; }
+.m-jscale .opt { height: 17px; display: flex; align-items: center; gap: 5px; padding: 0 5px; }
+.m-jscale .opt .bar { width: 26%; height: 4px; }
+.m-jscale .opt .track { flex: 1; height: 9px; border-radius: 3px; background: var(--jsal-sunk); }
+.m-jscale .view { display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+.photo { position: relative; overflow: hidden; border-radius: 4px;
+  background: radial-gradient(130% 55% at 15% 100%, #2f5f4c 50%, transparent 51%), radial-gradient(90% 45% at 90% 100%, #2b4866 50%, transparent 51%),
+    radial-gradient(9% 16% at 70% 34%, #ffe1a1 70%, transparent 74%), linear-gradient(#f2ad6c, #cf6f7c 58%, #6f5aa3); }
+.m-jscale .photo { flex: 1; }
+.m-jscale .crop { position: absolute; inset: 12% 9%; border: 1.5px dashed #e3b04b; border-radius: 2px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.32); }
+.m-jscale .strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; height: 20%; }
+.m-jscale .strip .photo:first-child { outline: 2px solid #e3b04b; outline-offset: 1px; }
+
+/* IC Defaults: views in the top bar, platform list + check cards */
+.m-ic { grid-template-columns: minmax(0, 36%) minmax(0, 1fr); }
+.m-ic .tabs { grid-column: 1 / -1; justify-self: end; display: flex; gap: 2px; padding: 2px; border-radius: 5px; background: var(--jsal-sunk); }
+.m-ic .tabs i { width: 30px; height: 10px; border-radius: 3px; }
+.m-ic .tabs .on { background: var(--jsal-surface); }
+.m-ic .list span { font-size: 11px; line-height: 1; padding: 5px 7px; border-radius: 4px; color: var(--jsal-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-ic .list .on { background: var(--blue-acc); color: var(--blue); font-weight: 600; }
+.m-ic .card { display: flex; align-items: center; gap: 6px; padding: 6px; }
+.m-ic .card b { width: 9px; height: 9px; flex: none; border-radius: 50%; background: var(--c); }
+.m-ic .card .bar { flex: 1; }
+
+/* Content Formatter: checks + copy buttons, then the editor with its toolbar */
+.m-fmt { grid-template-columns: minmax(0, 36%) minmax(0, 1fr); padding: 10px; gap: 8px; }
+.m-fmt .stats { display: flex; gap: 3px; }
+.m-fmt .stats i { height: 9px; flex: 1; border-radius: 9px; border: 1px solid var(--jsal-line); background: var(--jsal-surface); }
+.m-fmt .check { display: flex; align-items: center; gap: 4px; padding: 5px 4px; }
+.m-fmt .check b { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--c); }
+.m-fmt .check .bar { flex: 1; height: 4px; }
+.m-fmt .go { width: 100%; height: 13px; margin-top: 2px; }
+.m-fmt .pane { overflow: hidden; }
+.m-fmt .tools { display: flex; gap: 4px; padding: 5px 6px; border-bottom: 1px solid var(--jsal-line); }
+.m-fmt .tools i { width: 9px; height: 7px; border-radius: 2px; background: var(--jsal-line-hi); }
+.m-fmt .doc { display: flex; flex-direction: column; gap: 5px; padding: 8px; }
+.m-fmt .doc .h { display: flex; gap: 4px; align-items: center; margin: 2px 0 1px; }
+.m-fmt .doc .h b { width: 13px; height: 8px; border-radius: 2px; background: var(--jsal-accent-soft); box-shadow: inset 0 0 0 1px var(--jsal-accent-ring); }
+.m-fmt .doc .h .bar { height: 7px; background: var(--jsal-ink-2); }
+.m-fmt .doc .bar { height: 4px; }
+.m-fmt .doc .link { display: flex; gap: 3px; }
+.m-fmt .doc .link .bar:nth-child(2) { background: var(--jsal-accent); }
 
 .now { grid-column: 1 / 7; background: var(--jsal-surface); border: 1px solid var(--jsal-line); }
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
@@ -151,9 +203,19 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
 
     <!-- App tiles: data-app opens that app with the tile-to-app transition -->
     <a id="work" class="tile jscale" href="/image-resizer/" data-app>
-      <div class="shot" aria-hidden="true">
-        <span style="background:#c9874f"></span><span style="background:#3a5f80"></span><span style="background:#4f8a80; box-shadow: 0 0 0 2px #e3b04b"></span>
-        <span style="background:#a8566d"></span><span style="background:#6d5aa0"></span><span style="background:#8a7a3a"></span>
+      <div class="shot mock m-jscale" aria-hidden="true">
+        <div class="col">
+          <div class="seg box"><i class="on"></i><i></i><i></i></div>
+          <div class="size"><i class="box"></i><i class="box"></i><i class="box"></i></div>
+          <div class="opt box"><i class="bar"></i><i class="track"></i></div>
+          <div class="opt box"><i class="bar"></i><i class="track"></i></div>
+          <div class="opt box"><i class="bar"></i><i class="track"></i></div>
+          <i class="go"></i>
+        </div>
+        <div class="view">
+          <div class="photo"><i class="crop"></i></div>
+          <div class="strip"><i class="photo"></i><i class="photo" style="filter: hue-rotate(150deg)"></i><i class="photo" style="filter: hue-rotate(-60deg) saturate(0.8)"></i><i class="photo" style="filter: hue-rotate(80deg)"></i></div>
+        </div>
       </div>
       <div class="foot">
         <div>
@@ -166,7 +228,16 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
     </a>
 
     <a class="tile ic" href="/ic/" data-app>
-      <div class="chips" aria-hidden="true"><span>Shopify</span><span>WordPress</span><span>Wix</span><span>Squarespace</span></div>
+      <div class="mock m-ic" aria-hidden="true">
+        <div class="tabs"><i class="on"></i><i></i><i></i></div>
+        <div class="col list"><span class="on">Shopify</span><span>WordPress</span><span>Wix</span><span>Squarespace</span><span>Webflow</span></div>
+        <div class="col">
+          <div class="card box" style="--c: var(--jsal-ok)"><b></b><i class="bar" style="flex: 0 1 70%"></i></div>
+          <div class="card box" style="--c: var(--jsal-ok)"><b></b><i class="bar" style="flex: 0 1 55%"></i></div>
+          <div class="card box" style="--c: var(--jsal-warn)"><b></b><i class="bar" style="flex: 0 1 80%"></i></div>
+          <div class="card box" style="--c: var(--jsal-ok)"><b></b><i class="bar" style="flex: 0 1 45%"></i></div>
+        </div>
+      </div>
       <div>
         <p class="label">02 · team tool</p>
         <h2>IC Defaults</h2>
@@ -175,7 +246,26 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
     </a>
 
     <a class="tile fmt" href="/formatter/" data-app>
-      <p class="code" aria-hidden="true"><b>&lt;h2&gt;</b>Clean<b>&lt;/h2&gt;</b><br><b>&lt;p&gt;</b>No more Word junk.<b>&lt;/p&gt;</b></p>
+      <div class="mock m-fmt" aria-hidden="true">
+        <div class="col">
+          <div class="stats"><i></i><i></i><i></i></div>
+          <div class="check box" style="--c: var(--jsal-warn)"><b></b><i class="bar"></i></div>
+          <div class="check box" style="--c: var(--jsal-warn)"><b></b><i class="bar"></i></div>
+          <div class="check box" style="--c: var(--jsal-ok)"><b></b><i class="bar"></i></div>
+          <i class="go"></i>
+        </div>
+        <div class="pane box">
+          <div class="tools"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="doc">
+            <div class="h"><b></b><i class="bar" style="width: 55%"></i></div>
+            <i class="bar" style="width: 96%"></i>
+            <div class="link"><i class="bar" style="width: 40%"></i><i class="bar" style="width: 30%"></i></div>
+            <i class="bar" style="width: 70%"></i>
+            <div class="h"><b></b><i class="bar" style="width: 45%"></i></div>
+            <i class="bar" style="width: 90%"></i>
+          </div>
+        </div>
+      </div>
       <div>
         <p class="label">03 · web app</p>
         <h2>Content Formatter</h2>
