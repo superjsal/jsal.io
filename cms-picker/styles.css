@@ -50,9 +50,8 @@ body {
 .chip[aria-pressed="true"] { background: var(--jsal-accent-soft); border-color: var(--jsal-accent); color: var(--jsal-accent); }
 .chip-link { padding: 3px 6px; color: var(--jsal-accent); font-size: 13px; text-decoration: underline; text-underline-offset: 2px; }
 
-.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 14px; color: var(--jsal-muted); font-size: 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 14px; color: var(--jsal-muted); font-size: 13px; }
 .legend > span { display: inline-flex; align-items: center; gap: 6px; }
-.legend { font-size: 13px; }
 .skey .sc { margin-left: 0; }
 
 /* ── Verdict tags ──────────────────────────────────────────────────────── */
