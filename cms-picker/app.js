@@ -4,7 +4,7 @@
   const $ = (s) => document.querySelector(s);
   const state = { q: '', goal: 'all', compare: new Set() };
   // Short tag wording for the grid and key (data.json keeps the full labels)
-  const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Code', hosting: 'Hosting/DNS', check: 'Check', no: 'Not possible' };
+  const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Code', hosting: 'Hosting/DNS', check: 'Check', indirect: 'Indirectly', no: 'Not possible' };
   // Scope as a symbol, explained once in the key
   const SCOPE = { U: ['●', 'Same on every site'], V: ['◐', 'Varies by site'], C: ['○', 'Not verified yet'] };
   // A note that only repeats its tag isn't shown ("Yes", "Yes, with an SEO plugin", "Automatic"…)
@@ -74,7 +74,7 @@
       cmp.setAttribute('aria-pressed', String(on));
       cmp.setAttribute('aria-label', `${on ? 'Remove' : 'Add'} ${p.name} ${on ? 'from' : 'to'} the SEO comparison`);
       cmp.addEventListener('click', () => toggleCompare(p.id));
-      const go = el('a', 'golink', 'SEO answers ↓');
+      const go = el('a', 'golink', 'Compare ↓');
       go.href = '#seo';
       go.addEventListener('click', () => { if (!state.compare.has(p.id)) toggleCompare(p.id); });
       foot.append(cmp, go);
@@ -105,12 +105,15 @@
       head.append(c);
     });
     grid.append(head);
-    let aiShown = false;
+    // A label row where each section starts: Built in, SEO, AI search (dated, as AI changes fast)
+    const groups = Object.fromEntries((data.groups || []).map((g) => [g.id, g]));
+    let lastGroup = null;
     items.forEach((it) => {
-      if (it.group === 'ai' && !aiShown) {     // public-only rows, dated because AI features change fast
-        aiShown = true;
-        grid.append(el('div', 'row group', `AI search${data.aiAsOf ? ` · as of ${data.aiAsOf}` : ''}`));
+      if (it.group !== lastGroup && groups[it.group]) {
+        const g = groups[it.group];
+        grid.append(el('div', 'row group', `${g.title}${g.asOf ? ` · as of ${g.asOf}` : ''}`));
       }
+      lastGroup = it.group;
       const row = el('div', 'row');
       row.append(el('div', 'item', it.label));
       plats.forEach((p) => {

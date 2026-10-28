@@ -66,6 +66,7 @@ body {
 .tag.code { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
 .tag.no { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
 .tag.check { background: var(--jsal-sunk); color: var(--jsal-ink-2); }
+.tag.indirect { background: var(--jsal-accent-soft); color: var(--jsal-accent); }   /* not directly, but there is a way round it */
 
 /* ── Grid ──────────────────────────────────────────────────────────────── */
 
