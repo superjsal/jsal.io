@@ -1,4 +1,5 @@
--- IC Defaults database: Discord sign-in, an approved team list, and everything the page stores.
+-- Platform Playbook database: Discord sign-in, an approved team list, and everything the page stores.
+-- This database is the source of truth for the Playbook's content (app_data 'defaults' + edits).
 -- Run once in Supabase → SQL Editor. Safe to re-run: it only creates what is missing and replaces functions and policies.
 --
 -- Who can do what (enforced here, not just hidden in the page):
@@ -186,5 +187,11 @@ create policy "unvote" on public.votes for delete to authenticated using (user_i
 
 -- Signed-out visitors get nothing at all.
 revoke all on public.members, public.access_requests, public.app_data, public.edits, public.requests, public.votes from anon;
+
+-- Keep-awake: a weekly GitHub Action calls this so the free Supabase project never pauses for
+-- inactivity. It only returns the time and reads no data.
+create or replace function public.ping() returns timestamptz
+language sql stable as $$ select now() $$;
+grant execute on function public.ping() to anon;
 revoke execute on function public.approve_member(uuid), public.remove_member(uuid), public.set_member_role(uuid, text) from public, anon;
 grant execute on function public.approve_member(uuid), public.remove_member(uuid), public.set_member_role(uuid, text) to authenticated;

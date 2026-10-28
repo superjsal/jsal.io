@@ -1,0 +1,28 @@
+# Free Supabase projects pause after about a week without activity, which would take Platform
+# Playbook offline. This calls the database's ping() function (it only returns the time) twice a
+# week. The project URL and anon key are read from ic/index.html, where they're public by design.
+name: Keep Platform Playbook awake
+
+on:
+  schedule:
+    - cron: "17 9 * * 1,4"   # Mondays and Thursdays, 09:17 UTC
+  workflow_dispatch:          # "Run workflow" button for a manual check
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: ic/index.html
+          sparse-checkout-cone-mode: false
+      - name: Ping Supabase
+        run: |
+          url=$(grep -oP "const SUPABASE_URL = '\K[^']+" ic/index.html)
+          key=$(grep -oP "const SUPABASE_ANON_KEY = '\K[^']+" ic/index.html)
+          curl --fail --silent --show-error -X POST "$url/rest/v1/rpc/ping" \
+            -H "apikey: $key" -H "Authorization: Bearer $key" -H "Content-Type: application/json" -d '{}'
+          echo
