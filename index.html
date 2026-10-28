@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500&display=swap">
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions are shared with the apps -->
-<link rel="stylesheet" href="/shell.css?v=2026-10-28h">
+<link rel="stylesheet" href="/shell.css?v=2026-10-28i">
 <style>
 /* Tile colours. Dark: cream, night blue and moss tiles on slate. Light (parchment page):
    the cream tile flips to ink so it still stands out. */
@@ -236,6 +236,6 @@ const nameTile = (tile, vt) => {
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-28h" defer></script>
+<script src="/nav.js?v=2026-10-28i" defer></script>
 </body>
 </html>
