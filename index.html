@@ -224,7 +224,9 @@ a.tile:hover .arrow, a.tile:focus-visible .arrow { transform: translate(2px, -2p
 .now ul { margin: 0; padding: 0; list-style: none; }
 .now li { padding: 10px 0; border-top: 1px solid var(--jsal-line); }
 .now li:last-child { border-bottom: 1px solid var(--jsal-line); }
-.now li span { display: inline-block; min-width: 5.5em; color: var(--jsal-muted); }
+.now li { display: flex; gap: 12px; }
+.now li time { flex: none; min-width: 4em; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
+.now li a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 /* Plain surface, so the cream/ink contrast stays with the featured app */
 .mail { grid-column: 7 / 13; background: var(--jsal-surface); border: 1px solid var(--jsal-line); color: var(--jsal-ink); display: flex; justify-content: space-between; align-items: center; gap: 16px; --arrow-bg: var(--jsal-accent); --arrow-ink: var(--jsal-bg); }
@@ -262,7 +264,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
   <header class="jsal-top">
     <a class="jsal-brand" href="/" data-jsal-nav>jsal<span>.io</span></a>
     <div class="jsal-actions">
-      <nav aria-label="Sections"><a href="#work">Work</a><a href="#now">Now</a><a href="mailto:dev@jsal.io">Email</a></nav>
+      <nav aria-label="Sections"><a href="#work">Work</a><a href="#updates">Updates</a><a href="mailto:dev@jsal.io">Email</a></nav>
       <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"></button>
     </div>
   </header>
@@ -375,12 +377,14 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
       </div>
     </section>
 
-    <section id="now" class="tile now" aria-labelledby="now-h">
-      <h2 id="now-h">Now</h2>
+    <!-- Site updates, newest first. "Currently" (top) says what I'm up to; this lists what shipped. -->
+    <section id="updates" class="tile now" aria-labelledby="updates-h">
+      <h2 id="updates-h">Updates</h2>
       <ul>
-        <li><span>Playing</span>WoW Forever, soon</li>
-        <li><span>Building</span>jsal.io, this site</li>
-        <li><span>Next</span>WoW notes and tools, right here</li>
+        <li><time datetime="2026-10-28">Oct 28</time><span><a href="/formatter/">Clean Paste</a>: edit links in place, copy as WordPress blocks</span></li>
+        <li><time datetime="2026-10-28">Oct 28</time><span>New names: Platform Playbook and Clean Paste</span></li>
+        <li><time datetime="2026-10-28">Oct 28</time><span><a href="/image-resizer/">Image Resizer</a>: fits narrow windows, new About page</span></li>
+        <li><time datetime="2026-10-27">Oct 27</time><span>jsal.io launched</span></li>
       </ul>
     </section>
 
