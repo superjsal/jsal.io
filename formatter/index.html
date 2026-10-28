@@ -45,13 +45,19 @@
     } catch (e) {}
   </script>
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ND4L6CSD8S"></script>
+  <!-- Google tag (gtag.js), fetched only once the page has loaded and the browser is idle,
+       so its ~180 KB doesn't compete with the page itself. Calls queue up until it arrives. -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-ND4L6CSD8S');
+    addEventListener('load', () => (window.requestIdleCallback || setTimeout)(() => {
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-ND4L6CSD8S';
+      document.head.append(s);
+    }));
   </script>
 
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
