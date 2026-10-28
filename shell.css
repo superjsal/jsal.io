@@ -13,9 +13,9 @@
   --jsal-muted: #6b6253;
   --jsal-line: #e2d8c4;
   --jsal-line-hi: #cfc3a9;
-  --jsal-accent: #9a6b14;      /* gold for text and links */
+  --jsal-accent: #835c0e;      /* gold for text and links (dark enough for 4.5:1 on every light surface) */
   --jsal-accent-soft: #f1e3c2;
-  --jsal-accent-ring: rgba(154, 107, 20, 0.35);
+  --jsal-accent-ring: rgba(131, 92, 14, 0.35);
   --jsal-fill: #e3b04b;        /* gold for main buttons */
   --jsal-on-fill: #1f1a12;
   --jsal-ok: #3f6b3a;   --jsal-ok-soft: #e3eedb;

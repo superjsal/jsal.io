@@ -11,7 +11,11 @@
 <meta property="og:site_name" content="jsal.io">
 <meta property="og:title" content="John Salvador · SEO and small web tools">
 <meta property="og:description" content="Small, free browser tools for SEO and content work, and what I'm up to.">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://jsal.io/og/home.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="628">
+<meta property="og:image:alt" content="John Salvador: SEO and small web tools, jsal.io">
+<meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -21,13 +25,14 @@
   ]
 }
 </script>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111318'/%3E%3Ctext x='16' y='22.5' text-anchor='middle' font-family='Georgia,serif' font-weight='700' font-size='18' fill='%23e3b04b'%3Ej%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.svg?v=2026-10-28m" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500&display=swap">
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions are shared with the apps -->
-<link rel="stylesheet" href="/shell.css?v=2026-10-28l">
+<link rel="stylesheet" href="/shell.css?v=2026-10-28m">
 <style>
 /* Tile colours. The featured app (Image Resizer) has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
@@ -56,7 +61,8 @@
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
-a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; border-radius: 6px; }
+a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
+a:not(.tile):focus-visible { border-radius: 6px; }   /* tiles keep their own rounded corners, and the outline follows them */
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)) 56px; }
 .serif { font-family: "Lora", Georgia, serif; }
 .label { margin: 0; font: 12px/1.5 "JetBrains Mono", Consolas, monospace; }
@@ -438,6 +444,6 @@ const nameTile = (tile, vt) => {
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-28l" defer></script>
+<script src="/nav.js?v=2026-10-28m" defer></script>
 </body>
 </html>

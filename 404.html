@@ -1,0 +1,55 @@
+<!doctype html>
+<!-- GitHub Pages serves this for any address that doesn't exist. Links are absolute (/...)
+     because it can show up at any path. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found | jsal.io</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg?v=2026-10-28m" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,700;1,600&family=JetBrains+Mono:wght@500&display=swap">
+<script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<link rel="stylesheet" href="/shell.css?v=2026-10-28m">
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 20px 56px; }
+.lost { margin-top: 64px; max-width: 36em; }
+.code { margin: 0 0 12px; font: 500 12.5px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+h1 { margin: 0; font: 700 clamp(40px, 7vw, 72px)/1 "Lora", Georgia, serif; letter-spacing: -0.03em; text-wrap: balance; }
+h1 em { font-weight: 600; color: var(--jsal-accent); }
+.lost p { margin: 18px 0 0; font-size: 17px; color: var(--jsal-muted); text-wrap: pretty; }
+.links { margin: 32px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 420px; }
+.links a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink); text-decoration: none; font-weight: 600; }
+.links a span { font-weight: 400; color: var(--jsal-muted); font-size: 14px; }
+.links a:hover { border-color: var(--jsal-accent-ring); }
+.links a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
+@media (max-width: 520px) { .lost { margin-top: 40px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="jsal-top">
+    <a class="jsal-brand" href="/" data-jsal-nav>jsal<span>.io</span></a>
+    <div class="jsal-actions">
+      <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"></button>
+    </div>
+  </header>
+  <main class="lost">
+    <p class="code">404 · page not found</p>
+    <h1>Nothing <em>here</em></h1>
+    <p>This page doesn't exist, or it moved. One of these is probably what you're after:</p>
+    <ul class="links">
+      <li><a href="/">jsal.io home <span>John Salvador</span></a></li>
+      <li><a href="/image-resizer/">Image Resizer <span>Resize and crop images</span></a></li>
+      <li><a href="/formatter/">Clean Paste <span>Word to clean HTML</span></a></li>
+    </ul>
+  </main>
+</div>
+<script src="/nav.js?v=2026-10-28m" defer></script>
+</body>
+</html>
