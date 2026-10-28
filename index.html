@@ -36,23 +36,26 @@
 <style>
 /* Tile colours. The featured app (Image Resizer) has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
-   support it rather than compete. */
+   support it rather than compete, and so is the gold one. */
 :root {
   --cream: #1f1a12; --cream-ink: #f5efe2; --cream-muted: #b8b2a3; --cream-btn: #e3b04b; --cream-btn-ink: #1f1a12;
   --blue: #e6e9f0; --blue-ink: #1f1a12; --blue-muted: #3d362a; --blue-acc: #3b5a9a;
   --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
+  --gold: #f0e4c6; --gold-ink: #1f1a12; --gold-muted: #3d362a; --gold-acc: #835c0e;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
     --blue: #1a2034; --blue-ink: #ece6d6; --blue-muted: #c4bfb2; --blue-acc: #8fb1ff;
     --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
+    --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
   }
 }
 :root[data-theme="dark"] {
   --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
   --blue: #1a2034; --blue-ink: #ece6d6; --blue-muted: #c4bfb2; --blue-acc: #8fb1ff;
   --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
+  --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
 }
 
 * { box-sizing: border-box; }
@@ -116,10 +119,10 @@ p, li { text-wrap: pretty; }
 .ic .label { color: var(--blue-acc); }
 .ic .desc { color: var(--blue-muted); }
 
-.fmt { grid-column: 1 / 5; border: 1.5px solid var(--jsal-accent); color: var(--jsal-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--jsal-accent); --arrow-ink: var(--jsal-bg); }
+.fmt { grid-column: 1 / 5; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
 .fmt h2, .ic h2 { font-size: 26px; }   /* the featured app keeps the biggest title */
-.fmt .label { color: var(--jsal-muted); }
-.fmt .desc { color: var(--jsal-muted); }
+.fmt .label { color: var(--gold-acc); }
+.fmt .desc { color: var(--gold-muted); }
 
 .ui { grid-column: 5 / 13; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
 .ui .label { color: var(--green-acc); }
