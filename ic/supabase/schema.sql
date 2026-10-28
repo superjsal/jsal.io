@@ -4,7 +4,7 @@
 --
 -- Who can do what (enforced here, not just hidden in the page):
 --   anyone signed in with Discord   → can only ask for access (their own row in access_requests)
---   members (approved)              → read everything, post requests, upvote, delete their own requests
+--   members (approved)              → read everything, post requests, upvote, comment, delete their own requests and comments
 --   admins                          → also edit answers, set request status, approve, remove or promote people
 
 -- ---------- People ----------
@@ -140,6 +140,16 @@ create table if not exists public.votes (
   primary key (request_id, user_id)
 );
 
+-- Comments on a request: a short discussion thread under each one. Markdown, like request details.
+create table if not exists public.comments (
+  id         uuid primary key default gen_random_uuid(),
+  request_id uuid not null references public.requests on delete cascade,
+  author     uuid not null default auth.uid() references auth.users on delete cascade,
+  body       text not null check (char_length(btrim(body)) between 1 and 1000),
+  at         timestamptz not null default now()
+);
+create index if not exists comments_request_at on public.comments (request_id, at);
+
 -- ---------- Access rules ----------
 alter table public.members         enable row level security;
 alter table public.access_requests enable row level security;
@@ -147,12 +157,13 @@ alter table public.app_data        enable row level security;
 alter table public.edits           enable row level security;
 alter table public.requests        enable row level security;
 alter table public.votes           enable row level security;
+alter table public.comments        enable row level security;
 
 do $$
 declare t text;
 begin
   -- Start clean so re-running this file never leaves an old, looser policy behind.
-  foreach t in array array['members', 'access_requests', 'app_data', 'edits', 'requests', 'votes'] loop
+  foreach t in array array['members', 'access_requests', 'app_data', 'edits', 'requests', 'votes', 'comments'] loop
     execute (select coalesce(string_agg(format('drop policy %I on public.%I;', policyname, t), ' '), '')
              from pg_policies where schemaname = 'public' and tablename = t);
   end loop;
@@ -185,8 +196,14 @@ create policy "members read" on public.votes for select to authenticated using (
 create policy "vote" on public.votes for insert to authenticated with check (public.is_member() and user_id = auth.uid());
 create policy "unvote" on public.votes for delete to authenticated using (user_id = auth.uid());
 
+-- comments: members comment as themselves; authors or admins delete.
+create policy "members read" on public.comments for select to authenticated using (public.is_member());
+create policy "members comment" on public.comments for insert to authenticated
+  with check (public.is_member() and author = auth.uid());
+create policy "author or admin delete" on public.comments for delete to authenticated using (author = auth.uid() or public.is_admin());
+
 -- Signed-out visitors get nothing at all.
-revoke all on public.members, public.access_requests, public.app_data, public.edits, public.requests, public.votes from anon;
+revoke all on public.members, public.access_requests, public.app_data, public.edits, public.requests, public.votes, public.comments from anon;
 
 -- Keep-awake: a weekly GitHub Action calls this so the free Supabase project never pauses for
 -- inactivity. It only returns the time and reads no data.

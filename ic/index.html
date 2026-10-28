@@ -311,6 +311,13 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 .req-foot select { font: 13px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; margin-left: 4px; }
 .suggest { font: 600 12px var(--body); color: var(--muted); background: none; border: 0; padding: 1px 4px; cursor: pointer; }
 .suggest:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+/* Comments under a request, opened from its footer */
+.req-thread { display: grid; gap: 10px; margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--line); }
+.comment { display: grid; gap: 2px; font-size: 14px; overflow-wrap: anywhere; }
+.comment-meta { display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: center; font-size: 12px; color: var(--muted); }
+.comment-meta b { color: var(--ink); font-weight: 600; }
+.comment-body ul, .comment-body ol { margin: 4px 0; padding-left: 20px; }
+.comment-form { gap: 6px; }
 @media (max-width: 760px) {
   .person { grid-template-columns: 36px minmax(0, 1fr); }
   .person-actions { grid-column: 1 / -1; justify-content: start; }
@@ -375,7 +382,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 
     <section class="team-view" id="req-view" hidden>
       <div class="panel-head">
-        <div style="display:grid;gap:2px;min-width:0"><h2>Requests</h2><p class="about">Spotted a wrong answer, want a platform added, or have an idea? Post it, and upvote the ones you want most. Admins update the status.</p></div>
+        <div style="display:grid;gap:2px;min-width:0"><h2>Requests</h2><p class="about">Spotted a wrong answer, want a platform added, or have an idea? Post it, upvote the ones you want most, and comment to discuss. Admins update the status.</p></div>
         <div class="panel-meta">
           <div class="seg" id="req-filter" role="group" aria-label="Show"><button type="button" data-filter="open">Open</button><button type="button" data-filter="done">Closed</button><button type="button" data-filter="all">All</button></div>
           <span class="req-tools">
@@ -958,7 +965,8 @@ $('#team-view').addEventListener('click', async (e) => {
 // Members post requests and upvote; admins set the status. One upvote per person per request (the database enforces it).
 const REQ_TYPES = { correction: 'Correct an answer', platform: 'Add a platform', feature: 'Feature idea', other: 'Other' };
 const REQ_STATUS = { new: 'Not reviewed', review: 'Under review', planned: 'Planned', done: 'Done', declined: 'Declined' };
-Object.assign(R, { reqs: new Map(), votes: new Map(), filter: 'open', type: '', sort: 'top', formType: 'correction', busy: new Set() });
+Object.assign(R, { reqs: new Map(), votes: new Map(), filter: 'open', type: '', sort: 'top', formType: 'correction', busy: new Set(),
+  comments: new Map(), commentsOn: false, threads: new Set(), drafts: new Map() });
 const ts = (iso) => new Date(iso).getTime() || 0;
 const isOpen = (r) => r.status !== 'done' && r.status !== 'declined';
 // Short item name for requests: "FAQ" from "FAQ: widget or drag & drop?", "Page Headers" from "Page Headers (e.g., …)"
@@ -974,7 +982,8 @@ function reqTarget(r) {
 function reqList() {
   return [...R.reqs.values()].map((r) => {
     const v = R.votes.get(r.id);
-    return { ...r, votes: v ? v.size : 0, mine: !!(v && v.has(R.me)), updated: Math.max(ts(r.at), ts(r.status_at)) };
+    const c = R.comments.get(r.id) || [];
+    return { ...r, votes: v ? v.size : 0, mine: !!(v && v.has(R.me)), comments: c, updated: Math.max(ts(r.at), ts(r.status_at), ...c.map((x) => ts(x.at))) };
   });
 }
 function personName(uid) {
@@ -996,12 +1005,20 @@ function renderRequests() {
   let list = all.filter((r) => (R.filter === 'all' ? true : R.filter === 'open' ? isOpen(r) : !isOpen(r)));
   if (R.type) list = list.filter((r) => r.type === R.type);
   list.sort({ top: (a, b) => b.votes - a.votes || ts(b.at) - ts(a.at), new: (a, b) => ts(b.at) - ts(a.at), updated: (a, b) => b.updated - a.updated }[R.sort]);
+  // Redrawing replaces the list, so put the cursor back in a comment box being typed in.
+  const typing = document.activeElement && document.activeElement.closest('[data-comment-form]');
   $('#req-list').innerHTML = list.length ? list.map(reqHtml).join('') :
     `<p class="empty">${all.length ? 'No requests match these filters.' : 'No requests yet. Spotted a wrong answer or want a platform added? Post the first one.'}</p>`;
+  if (typing) focusComment(typing.dataset.commentForm);
+}
+function focusComment(id) {
+  const t = document.querySelector(`[data-comment-form="${CSS.escape(id)}"] textarea`);
+  if (t) { t.focus({ preventScroll: true }); t.setSelectionRange(t.value.length, t.value.length); }
 }
 function reqHtml(r) {
   const target = reqTarget(r);
   const canDelete = R.manage || r.author === R.me;
+  const open = R.commentsOn && R.threads.has(r.id), n = r.comments.length;
   return `<article class="req">
       <button type="button" class="vote" data-vote="${esc(r.id)}" aria-pressed="${r.mine}"
         aria-label="${r.mine ? 'Remove your upvote for' : 'Upvote'} ${esc(r.title)} (${r.votes} vote${r.votes === 1 ? '' : 's'})">
@@ -1013,10 +1030,67 @@ function reqHtml(r) {
         ${r.details ? `<div class="req-details">${md(r.details)}</div>` : ''}
         <div class="req-foot"><span>Posted by ${esc(personName(r.author))} · ${ago(r.at)}</span>
           ${R.manage ? `<label>Status <select data-status="${esc(r.id)}">${Object.keys(REQ_STATUS).map((k) => `<option value="${k}"${k === r.status ? ' selected' : ''}>${REQ_STATUS[k]}</option>`).join('')}</select></label>` : ''}
+          ${R.commentsOn ? `<button type="button" class="link-btn" data-thread="${esc(r.id)}" aria-expanded="${open}">${n ? `Comments (${n})` : 'Comment'}</button>` : ''}
+          ${canEditAnswers && answerTarget(r) ? `<button type="button" class="link-btn" data-edit-answer="${esc(r.id)}">Edit answer</button>` : ''}
           ${canDelete ? `<button type="button" class="link-btn" data-del="${esc(r.id)}">Delete</button>` : ''}
         </div>
+        ${open ? threadHtml(r) : ''}
       </div>
     </article>`;
+}
+function threadHtml(r) {
+  const who = (uid) => { const n = personName(uid); return n[0].toUpperCase() + n.slice(1); };
+  return `<div class="req-thread">
+      ${r.comments.map((c) => `<div class="comment">
+        <div class="comment-meta"><b>${esc(who(c.author))}</b><span>${ago(c.at)}</span>${R.manage || c.author === R.me ? `<button type="button" class="link-btn" data-del-comment="${esc(c.id)}">Delete</button>` : ''}</div>
+        <div class="comment-body">${md(c.body)}</div>
+      </div>`).join('')}
+      <form class="edit-form comment-form" data-comment-form="${esc(r.id)}">
+        <label><span class="sr-only">Add a comment</span><textarea name="body" rows="2" maxlength="1000" placeholder="Add a comment (Markdown works, Ctrl+Enter posts)">${esc(R.drafts.get(r.id) || '')}</textarea></label>
+        <div class="edit-actions"><button type="submit" class="btn primary">Post comment</button></div>
+      </form>
+    </div>`;
+}
+
+// Comments: anyone on the team can comment; authors and admins delete.
+function addComment(c) { if (!R.comments.has(c.request_id)) R.comments.set(c.request_id, []); R.comments.get(c.request_id).push(c); }
+async function postComment(form) {
+  const id = form.dataset.commentForm, body = form.body.value.trim();
+  if (!body) { form.body.focus(); return toast('Write a comment first'); }
+  const btn = form.querySelector('[type="submit"]');
+  btn.disabled = true;
+  const { data, error } = await sb.from('comments').insert({ request_id: id, body }).select().single();
+  btn.disabled = false;
+  if (error) return toast(failText(error, 'Couldn’t post your comment'));
+  addComment(data);
+  R.drafts.delete(id);
+  renderRequests();
+  focusComment(id);
+  toast('Comment posted');
+}
+
+// "Edit answer" on a correction: opens the answer it's about (platform, section, page type) in the edit form.
+function answerTarget(r) {
+  const p = P.find((x) => x.id === r.platform);
+  const [sec, id] = String(r.item || '').split(':');
+  if (!p || !id || !itemsFor(sec).some((it) => it.id === id)) return null;
+  return { p, base: sec === 'tech' ? 'tech' : 'content', ptype: ptypeOf(sec), id };
+}
+function openAnswerEdit(r) {
+  const t = answerTarget(r);
+  if (!t) return;
+  state.sec = t.base;
+  if (t.ptype && BY_TYPE[t.p.id]) state.ptype = t.ptype;
+  state.onlyCheck = false;         // the answer may be a settled one this filter hides (not saved as a preference)
+  state.variant[t.p.id] = '';      // builder answers can't be edited, so show the platform's own answer
+  select(t.p.id);
+  showView('answers');
+  state.editing = `${t.base === 'tech' ? 'tech' : contentSec(t.p)}:${t.id}`;
+  renderPanel();
+  const f = $('#panel .edit-form');
+  if (!f) return toast('Couldn’t open that answer');
+  f.scrollIntoView({ block: 'center' });
+  f.querySelector('[name="mark"]')?.focus({ preventScroll: true });
 }
 
 // Form: platform, item and (for Content items on platforms with page types) page type
@@ -1110,6 +1184,26 @@ $('#req-sort').addEventListener('change', (e) => { R.sort = e.target.value; rend
 $('#req-list').addEventListener('click', async (e) => {
   const v = e.target.closest('[data-vote]');
   if (v) return toggleVote(v.dataset.vote);
+  const th = e.target.closest('[data-thread]');
+  if (th) {
+    const id = th.dataset.thread;
+    if (R.threads.has(id)) R.threads.delete(id); else R.threads.add(id);
+    renderRequests();
+    if (R.threads.has(id)) focusComment(id);
+    return;
+  }
+  const ea = e.target.closest('[data-edit-answer]');
+  if (ea) return openAnswerEdit(R.reqs.get(ea.dataset.editAnswer));
+  const dc = e.target.closest('[data-del-comment]');
+  if (dc) {
+    if (!confirm('Delete this comment?')) return;
+    const id = dc.dataset.delComment;
+    const { error } = await sb.from('comments').delete().eq('id', id);
+    if (error) return toast(failText(error, 'Couldn’t delete'));
+    R.comments.forEach((list, k) => R.comments.set(k, list.filter((c) => c.id !== id)));
+    renderRequests(); toast('Comment deleted');
+    return;
+  }
   const d = e.target.closest('[data-del]');
   if (d && confirm('Delete this request for everyone?')) {
     const id = d.dataset.del;
@@ -1117,6 +1211,18 @@ $('#req-list').addEventListener('click', async (e) => {
     if (error) return toast(failText(error, 'Couldn’t delete'));
     R.reqs.delete(id); R.votes.delete(id); renderRequests(); toast('Request deleted');
   }
+});
+$('#req-list').addEventListener('submit', (e) => {
+  const f = e.target.closest('[data-comment-form]');
+  if (f) { e.preventDefault(); postComment(f); }
+});
+$('#req-list').addEventListener('input', (e) => {
+  const f = e.target.closest('[data-comment-form]');
+  if (f) R.drafts.set(f.dataset.commentForm, e.target.value);
+});
+$('#req-list').addEventListener('keydown', (e) => {
+  const f = e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.target.closest('[data-comment-form]');
+  if (f) { e.preventDefault(); f.requestSubmit(); }
 });
 $('#req-list').addEventListener('change', async (e) => {
   const s = e.target.closest('[data-status]');
@@ -1183,10 +1289,12 @@ function fetchShared() {
     sb.from('requests').select('*').order('at', { ascending: false }).limit(1000),
     sb.from('votes').select('request_id,user_id').limit(5000),
     sb.from('members').select('user_id,name,avatar,role,discord_id,approved_at'),
-  ]).then(([edits, reqs, votes, members]) => {
+    sb.from('comments').select('*').order('at').limit(5000),
+  ]).then(([edits, reqs, votes, members, comments]) => {
     const err = edits.error || reqs.error || votes.error || members.error;
     if (err) throw err;
-    return { edits: edits.data, reqs: reqs.data, votes: votes.data, members: members.data };
+    // Comments stay hidden (null) until the comments table exists, so the page still works without it.
+    return { edits: edits.data, reqs: reqs.data, votes: votes.data, members: members.data, comments: comments.error ? null : comments.data };
   });
 }
 function applyShared(x) {
@@ -1196,6 +1304,9 @@ function applyShared(x) {
   R.votes = new Map();
   x.votes.forEach((v) => addVote(v.request_id, v.user_id));
   R.members = new Map(x.members.map((m) => [m.user_id, m]));
+  R.commentsOn = Array.isArray(x.comments);
+  R.comments = new Map();
+  (x.comments || []).forEach(addComment);
 }
 async function loadShared() { applyShared(await fetchShared()); lastLoad = Date.now(); }
 function useContent(d) {
