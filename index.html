@@ -117,10 +117,12 @@ a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 .photo { position: relative; overflow: hidden; border-radius: 4px;
   background: radial-gradient(130% 55% at 15% 100%, #2f5f4c 50%, transparent 51%), radial-gradient(90% 45% at 90% 100%, #2b4866 50%, transparent 51%),
     radial-gradient(9% 16% at 70% 34%, #ffe1a1 70%, transparent 74%), linear-gradient(#f2ad6c, #cf6f7c 58%, #6f5aa3); }
-.m-jscale .photo { flex: 1; }
+.m-jscale .frame { flex: 1; position: relative; overflow: hidden; border-radius: 4px; }
+.m-jscale .frame .photo { position: absolute; inset: 0; border-radius: 0; }
 .m-jscale .crop { position: absolute; inset: 12% 9%; border: 1.5px dashed #e3b04b; border-radius: 2px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.32); }
 .m-jscale .strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; height: 20%; }
-.m-jscale .strip .photo:first-child { outline: 2px solid #e3b04b; outline-offset: 1px; }
+.m-jscale .strip .photo { outline: 2px solid transparent; outline-offset: 1px; }
+.m-jscale .strip .photo:first-child { outline-color: #e3b04b; }
 
 /* Platform Playbook: views in the top bar, platform list + check cards */
 .m-ic { grid-template-columns: minmax(0, 36%) minmax(0, 1fr); }
@@ -151,6 +153,49 @@ a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 .m-fmt .doc .bar { height: 4px; }
 .m-fmt .doc .link { display: flex; gap: 3px; }
 .m-fmt .doc .link .bar:nth-child(2) { background: var(--jsal-accent); }
+
+/* Hovering an app tile plays a short loop of what the app does:
+   Image Resizer steps through the loaded photos, moving the crop box on each;
+   Platform Playbook steps down the platforms, refreshing the cards;
+   Clean Paste snaps messy lines into tidy ones, adds heading tags and turns the checks green. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .tile:is(:hover, :focus-visible) .m-jscale .frame .photo { animation: m-photo 4s infinite; }
+  .tile:is(:hover, :focus-visible) .m-jscale .crop { animation: m-crop 4s ease-in-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-jscale .strip .photo { outline-color: transparent; animation: m-pick 4s infinite; }
+  .tile:is(:hover, :focus-visible) .m-jscale .strip .photo:nth-child(2) { animation-delay: 1s; }
+  .tile:is(:hover, :focus-visible) .m-jscale .strip .photo:nth-child(3) { animation-delay: 2s; }
+  .tile:is(:hover, :focus-visible) .m-jscale .strip .photo:nth-child(4) { animation-delay: 3s; }
+
+  .tile:is(:hover, :focus-visible) .m-ic .list span { animation: m-sel 4s infinite; }
+  .tile:is(:hover, :focus-visible) .m-ic .list span:nth-child(2) { animation-delay: 0.8s; }
+  .tile:is(:hover, :focus-visible) .m-ic .list span:nth-child(3) { animation-delay: 1.6s; }
+  .tile:is(:hover, :focus-visible) .m-ic .list span:nth-child(4) { animation-delay: 2.4s; }
+  .tile:is(:hover, :focus-visible) .m-ic .list span:nth-child(5) { animation-delay: 3.2s; }
+  .tile:is(:hover, :focus-visible) .m-ic .card { animation: m-refresh 0.8s ease-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-ic .card:nth-child(2) { animation-delay: 0.05s; }
+  .tile:is(:hover, :focus-visible) .m-ic .card:nth-child(3) { animation-delay: 0.1s; }
+  .tile:is(:hover, :focus-visible) .m-ic .card:nth-child(4) { animation-delay: 0.15s; }
+
+  .tile:is(:hover, :focus-visible) .m-fmt .doc > * { transform-origin: left; animation: m-tidy 3.2s ease-in-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-fmt .doc .h b { animation: m-chip 3.2s ease-in-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-fmt .check:nth-child(2) b { animation: m-fix 3.2s infinite; }
+  .tile:is(:hover, :focus-visible) .m-fmt .check:nth-child(3) b { animation: m-fix 3.2s 0.3s infinite; }
+  .m-fmt .doc > :nth-child(1) { --x: 6px; --s: 0.8; }
+  .m-fmt .doc > :nth-child(2) { --x: -4px; --s: 1.15; }
+  .m-fmt .doc > :nth-child(3) { --x: 10px; --s: 0.9; }
+  .m-fmt .doc > :nth-child(4) { --x: 0px; --s: 0.6; }
+  .m-fmt .doc > :nth-child(5) { --x: 8px; --s: 1.1; }
+  .m-fmt .doc > :nth-child(6) { --x: -6px; --s: 0.85; }
+}
+/* Main photo matches the selected thumbnail (same filters as the strip) */
+@keyframes m-photo { 0%, 24.9% { filter: none; } 25%, 49.9% { filter: hue-rotate(150deg); } 50%, 74.9% { filter: hue-rotate(-60deg) saturate(0.8); } 75%, 100% { filter: hue-rotate(80deg); } }
+@keyframes m-crop { 0%, 100% { translate: 0 0; } 25% { translate: -8% 5%; } 50% { translate: 7% -4%; } 75% { translate: -3% -6%; } }
+@keyframes m-pick { 0%, 24.9% { outline-color: #e3b04b; } 25%, 100% { outline-color: transparent; } }
+@keyframes m-sel { 0%, 18% { background: var(--blue-acc); color: var(--blue); } 20%, 100% { background: transparent; color: var(--jsal-muted); } }
+@keyframes m-refresh { 0% { opacity: 0.35; translate: 0 3px; } 40%, 100% { opacity: 1; translate: 0 0; } }
+@keyframes m-tidy { 0%, 10%, 100% { transform: translateX(var(--x)) scaleX(var(--s)); opacity: 0.55; } 40%, 80% { transform: none; opacity: 1; } }
+@keyframes m-chip { 0%, 25%, 100% { opacity: 0; } 45%, 80% { opacity: 1; } }
+@keyframes m-fix { 0%, 40% { background: var(--jsal-warn); } 50%, 85% { background: var(--jsal-ok); } 95%, 100% { background: var(--jsal-warn); } }
 
 .now { grid-column: 1 / 7; background: var(--jsal-surface); border: 1px solid var(--jsal-line); }
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
@@ -213,7 +258,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
           <i class="go"></i>
         </div>
         <div class="view">
-          <div class="photo"><i class="crop"></i></div>
+          <div class="frame"><i class="photo"></i><i class="crop"></i></div>
           <div class="strip"><i class="photo"></i><i class="photo" style="filter: hue-rotate(150deg)"></i><i class="photo" style="filter: hue-rotate(-60deg) saturate(0.8)"></i><i class="photo" style="filter: hue-rotate(80deg)"></i></div>
         </div>
       </div>
