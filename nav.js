@@ -8,7 +8,7 @@
       icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 9"/>' },
     { href: '/formatter/', name: 'Clean Paste', desc: 'Clean up Word and Google Docs content',
       icon: '<path d="M4 6h16M4 12h10M4 18h13"/>' },
-    { href: '/cms-seo/', name: 'CMS SEO Checker', desc: 'What you can change on each CMS',
+    { href: '/cms-picker/', name: 'CMS Picker', desc: 'Which CMS fits, and what you can change for SEO',
       icon: '<path d="M3 5h18v14H3z"/><path d="M3 10h18M9 5v14"/>' },
     { href: '/ic/', name: 'Platform Playbook', desc: 'Platform answers for the IC form', tag: 'Team',
       icon: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>' },

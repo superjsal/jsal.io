@@ -6,7 +6,7 @@
 
 - [Image Resizer (JScale)](https://jsal.io/image-resizer/): Bulk resize, crop and convert images. Presets for 1200 × 628 and 640 × 420, custom sizes, or keep the original size and only convert. Accepts JPG, PNG, WebP and HEIC; saves JPG or WebP to downloads, a ZIP or a chosen folder.
 - [Clean Paste](https://jsal.io/formatter/): Paste content from Word, Google Docs, a web page or HTML code and get clean, minimal HTML. Checks headings and links (drafts, Word bookmarks, vague link text), and copies as formatted text, HTML, plain text or WordPress block markup.
-- [CMS SEO Checker](https://jsal.io/cms-seo/): A platform-by-platform grid of what you can change for SEO on Shopify, WordPress, Wix, Squarespace, BigCommerce, Duda, GoDaddy, Miva and Magento: meta tags, headings, alt text, redirects, canonicals, structured data and template access. General guidance.
+- [CMS Picker](https://jsal.io/cms-picker/): Helps a business choose a CMS. A profile of each of 13 platforms (WordPress, Shopify, Wix, Squarespace, Webflow, Framer, HubSpot CMS, BigCommerce, Magento, Drupal, Duda, GoDaddy and headless CMSs such as Sanity, Contentful and Strapi): what type it is, who it suits, when it is less suited and what it is known for. Then a comparison of what you can change for SEO on each: page titles, meta descriptions, image alt text, 301 redirects, canonical tags, structured data, the XML sitemap and template code. General guidance.
 
 ## About
 
