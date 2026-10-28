@@ -36,12 +36,14 @@
 <style>
 /* Tile colours. The featured app (Image Resizer) has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
-   support it rather than compete, and so is the gold one. */
+   support it rather than compete, and so is the gold one. Updates and Email are plain, a neutral fill
+   with no border, so the apps keep the colour. */
 :root {
   --cream: #1f1a12; --cream-ink: #f5efe2; --cream-muted: #b8b2a3; --cream-btn: #e3b04b; --cream-btn-ink: #1f1a12;
   --blue: #e6e9f0; --blue-ink: #1f1a12; --blue-muted: #3d362a; --blue-acc: #3b5a9a;
   --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
   --gold: #f0e4c6; --gold-ink: #1f1a12; --gold-muted: #3d362a; --gold-acc: #835c0e;
+  --plain: #e8e5dd; --plain-line: #cfc3a9;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -49,6 +51,7 @@
     --blue: #1a2034; --blue-ink: #ece6d6; --blue-muted: #c4bfb2; --blue-acc: #8fb1ff;
     --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
     --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
+    --plain: #1c1f27; --plain-line: #3d424e;
   }
 }
 :root[data-theme="dark"] {
@@ -56,6 +59,7 @@
   --blue: #1a2034; --blue-ink: #ece6d6; --blue-muted: #c4bfb2; --blue-acc: #8fb1ff;
   --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
   --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
+  --plain: #1c1f27; --plain-line: #3d424e;
 }
 
 * { box-sizing: border-box; }
@@ -240,17 +244,17 @@ p, li { text-wrap: pretty; }
 @keyframes m-chip { 0%, 25%, 100% { opacity: 0; } 45%, 80% { opacity: 1; } }
 @keyframes m-fix { 0%, 40% { background: var(--jsal-warn); } 50%, 85% { background: var(--jsal-ok); } 95%, 100% { background: var(--jsal-warn); } }
 
-.now { grid-column: 1 / 7; background: var(--jsal-surface); border: 1px solid var(--jsal-line); }
+.now { grid-column: 1 / 7; background: var(--plain); }
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
 .now ul { margin: 0; padding: 0; list-style: none; }
-.now li { padding: 10px 0; border-top: 1px solid var(--jsal-line); }
-.now li:last-child { border-bottom: 1px solid var(--jsal-line); }
+.now li { padding: 10px 0; border-top: 1px solid var(--plain-line); }
+.now li:last-child { border-bottom: 1px solid var(--plain-line); }
 .now li { display: flex; gap: 12px; }
 .now li time { flex: none; min-width: 4em; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now li a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 /* Plain surface, so the cream/ink contrast stays with the featured app */
-.mail { grid-column: 7 / 13; background: var(--jsal-surface); border: 1px solid var(--jsal-line); color: var(--jsal-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--jsal-accent); --arrow-ink: var(--jsal-bg); }
+.mail { grid-column: 7 / 13; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--jsal-accent); --arrow-ink: var(--jsal-bg); }
 .mail .label, .mail .desc { color: var(--jsal-muted); }
 .mail .foot { align-items: center; }
 .mail .big { font: 700 28px/1.2 "Lora", Georgia, serif; }
