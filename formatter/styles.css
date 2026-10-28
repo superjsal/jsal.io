@@ -73,7 +73,7 @@ body {
 
 .app {
   width: 100%;
-  max-width: 880px;   /* same as IC Defaults: lines up with the jsal.io home page column */
+  max-width: calc(var(--jsal-col) + 40px);   /* the shared jsal.io column (/shell.css) */
   display: flex;
   flex-direction: column;
   padding: 0 max(20px, env(safe-area-inset-left, 0px)) 18px;   /* same sides as the home page */
@@ -363,7 +363,3 @@ textarea.code[hidden] { display: none; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* Same width as IC Defaults on very large screens */
-@media (min-width: 1800px) {
-  .app { max-width: 1000px; }
-}

@@ -574,6 +574,39 @@ function listText(list, depth) {
   return s;
 }
 
+// ── WordPress blocks ──────────────────────────────────────────────────────
+
+// Gutenberg block markup, matching what the core blocks save, so pasting it into the
+// block editor gives real paragraph / heading / list / table blocks without "invalid block"
+export function wpBlocks(root) {
+  const block = (name, attrs, inner) => `<!-- wp:${name}${attrs ? " " + JSON.stringify(attrs) : ""} -->\n${inner}\n<!-- /wp:${name} -->`;
+  const list = (l) => block("list", l.localName === "ol" ? { ordered: true } : null,
+    `<${l.localName} class="wp-block-list">${[...l.children].map((li) => {
+      const nested = [...li.children].filter((k) => k.localName === "ul" || k.localName === "ol").map(list).join("");
+      return block("list-item", null, `<li>${inline(li)}${nested}</li>`);
+    }).join("")}</${l.localName}>`);
+  const cells = (tr) => `<tr>${[...tr.children].map((c) => `<${c.localName}${attrs(c)}>${inline(c)}</${c.localName}>`).join("")}</tr>`;
+  const table = (t) => {
+    const cap = t.querySelector("caption");
+    const parts = [...t.children].filter((c) => c.localName !== "caption");
+    const rows = parts.filter((c) => c.localName === "tr");
+    let body = parts.filter((c) => c.localName !== "tr").map((s) => `<${s.localName}>${[...s.children].map(cells).join("")}</${s.localName}>`).join("");
+    if (rows.length) body += `<tbody>${rows.map(cells).join("")}</tbody>`;
+    return block("table", { hasFixedLayout: false },
+      `<figure class="wp-block-table"><table>${body}</table>${cap ? `<figcaption class="wp-element-caption">${inline(cap)}</figcaption>` : ""}</figure>`);
+  };
+  const one = (c) => {
+    const tag = c.localName;
+    if (/^h[1-6]$/.test(tag)) return block("heading", tag === "h2" ? null : { level: +tag[1] }, `<${tag} class="wp-block-heading">${inline(c)}</${tag}>`);
+    if (tag === "ul" || tag === "ol") return list(c);
+    if (tag === "table") return table(c);
+    if (tag === "blockquote") return block("quote", null, `<blockquote class="wp-block-quote">${[...c.children].map(one).join("\n\n")}</blockquote>`);
+    if (tag === "pre") return block("code", null, `<pre class="wp-block-code"><code>${inline(c)}</code></pre>`);
+    return block("paragraph", null, `<p>${inline(c)}</p>`);
+  };
+  return [...root.children].map(one).join("\n\n");
+}
+
 // ── Serialize ─────────────────────────────────────────────────────────────
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/ /g, "&nbsp;");

@@ -6,7 +6,7 @@
   <title>Word to Clean HTML Formatter | JSAL</title>
   <meta name="description" content="Paste content from Word, Google Docs or raw HTML and get clean HTML or formatted text, ready for any CMS. Runs entirely in your browser." />
   <link rel="canonical" href="https://jsal.io/formatter/" />
-  <link rel="icon" href="favicon.svg?v=2026-10-28e" type="image/svg+xml" />
+  <link rel="icon" href="favicon.svg?v=2026-10-28f" type="image/svg+xml" />
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
 
@@ -28,21 +28,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- Version numbers (?v=) make browsers fetch fresh files after an update. When publishing
-       changes, bump every v=2026-10-28e in this file (find and replace) to the new date. -->
-  <link rel="stylesheet" href="/shell.css?v=2026-10-28e" />
-  <link rel="stylesheet" href="styles.css?v=2026-10-28e" />
+       changes, bump every v=2026-10-28f in this file (find and replace) to the new date. -->
+  <link rel="stylesheet" href="/shell.css?v=2026-10-28f" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-28f" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":   "./js/main.js?v=2026-10-28e",
-        "./js/clean.js":  "./js/clean.js?v=2026-10-28e",
-        "./js/sample.js": "./js/sample.js?v=2026-10-28e"
+        "./js/main.js":   "./js/main.js?v=2026-10-28f",
+        "./js/clean.js":  "./js/clean.js?v=2026-10-28f",
+        "./js/sample.js": "./js/sample.js?v=2026-10-28f"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-28e"></script>
+  <script type="module" src="js/main.js?v=2026-10-28f"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-28e" defer></script>
+  <script src="/nav.js?v=2026-10-28f" defer></script>
 </head>
 <body>
   <main class="app">
@@ -73,6 +73,7 @@
           <button class="btn-primary" id="copyHtml" title="For HTML / code views"><span class="ico" data-icon="code"></span>Copy HTML</button>
           <button class="btn-primary" id="copyText" title="Plain text, no formatting"><span class="ico" data-icon="text"></span>Copy text</button>
         </div>
+        <button class="btn-primary" id="copyWp" title="Gutenberg block markup: paste into the WordPress block editor to get real blocks"><span class="ico" data-icon="code"></span>Copy WordPress blocks</button>
         <div class="actions-foot">
           <span class="toolbar-hint" id="copyNote" aria-live="polite"></span>
           <button class="btn-clear" id="clearBtn"><span class="ico" data-icon="trash"></span>Clear</button>

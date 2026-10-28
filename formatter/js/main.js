@@ -1,4 +1,4 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, PRIVATE_LINK, DEAD_LINK } from "./clean.js";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js";
 import { SAMPLE_HTML } from "./sample.js";
 
 const $ = (id) => document.getElementById(id);
@@ -401,6 +401,7 @@ const onCopy = (id, copy, msg) => {
 onCopy("copyRich", copyRich, "Copied. Paste into the CMS editor.");
 onCopy("copyHtml", () => copyPlain(result.html), "HTML copied.");
 onCopy("copyText", () => copyPlain(result.text), "Plain text copied.");
+onCopy("copyWp", () => copyPlain(wpBlocks(result.root)), "Copied. Paste into the WordPress block editor.");
 
 // Handy for testing: window.formatter.load({ html })
 window.formatter = { load, flush, get result() { return result; } };

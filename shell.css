@@ -53,14 +53,33 @@
 /* Page background with the home page's gold glow */
 body { background: radial-gradient(900px 500px at 15% -10%, var(--jsal-glow), transparent 70%) no-repeat, var(--jsal-bg); }
 
-/* Same column as the jsal.io home page (.col: 640 / 880 / 1000px with 20px sides), so the
-   top bar doesn't move when going between the home page and the apps. The apps' own content
-   can be wider than this. */
-:root { --jsal-col: 600px; }
-@media (min-width: 1280px) { :root { --jsal-col: 840px; } }
-@media (min-width: 1800px) { :root { --jsal-col: 960px; } }
+/* One column width for the home page and every app (content width; pages add 20px sides),
+   so the top bar never moves when going between them. Each page's container uses
+   max-width: calc(var(--jsal-col) + 40px). */
+:root { --jsal-col: 840px; }
+@media (min-width: 1280px) { :root { --jsal-col: 1120px; } }
+@media (min-width: 1800px) { :root { --jsal-col: 1240px; } }
 /* Reserve the scrollbar's space on every page, scrolling or not, so nothing shifts sideways */
 html { scrollbar-gutter: stable; }
+
+/* Page transitions (browsers that support them; others just navigate). Opening an app from
+   its home page tile grows the tile into the app: both are named "jsal-app" (the home page
+   names the tile being opened, each app's .app container is named here). */
+@view-transition { navigation: auto; }
+.app { view-transition-name: jsal-app; }
+::view-transition-group(*) { animation-duration: 0.5s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
+::view-transition-image-pair(jsal-app) { overflow: hidden; }
+::view-transition-old(jsal-app), ::view-transition-new(jsal-app) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+::view-transition-old(jsal-app) { animation: jsal-fade-out 0.18s ease both; }
+::view-transition-new(jsal-app) { animation: jsal-fade-in 0.3s ease 0.2s both; }
+::view-transition-old(root) { animation: jsal-home-out 0.3s ease both; }
+::view-transition-new(root) { animation: jsal-fade-in 0.3s ease 0.15s both; }
+@keyframes jsal-fade-out { to { opacity: 0; } }
+@keyframes jsal-fade-in { from { opacity: 0; } }
+@keyframes jsal-home-out { to { opacity: 0; transform: scale(0.97); } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
 
 /* Top bar: logo (app switcher) · app name · the app's own controls · theme button.
    The logo sits exactly where the home page's does: 40px down, 18px. Every row is 36px

@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="preconnect" href="https://kvdzluvhwxkrbatgskio.supabase.co" crossorigin>
 <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js">
-<link rel="stylesheet" href="/shell.css?v=2026-10-28c">
+<link rel="stylesheet" href="/shell.css?v=2026-10-28f">
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <style>
 /* Layout: platforms down the left, one toolbar with every choice, and each item as a card; a compare grid below.
@@ -44,7 +44,7 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visi
 
 /* App: slim header, platform list on the left, toolbar and cards on the right */
 .app {
-  max-width: 880px; margin: 0 auto;
+  max-width: calc(var(--jsal-col) + 40px); margin: 0 auto;
   padding: 0 max(20px, env(safe-area-inset-right, 0px)) 64px max(20px, env(safe-area-inset-left, 0px));
   display: grid; grid-template-columns: 200px minmax(0, 1fr); grid-template-areas: "top top" "side main"; gap: 24px 28px;
 }
@@ -241,8 +241,6 @@ code, pre { font-variant-ligatures: none; }
 .snippet .btn { padding: 4px 10px; font-size: 12px; }
 .guide-body .unverified { font-size: 13px; color: var(--muted); font-style: italic; }
 
-@media (min-width: 1280px) { .app { max-width: 1160px; } }
-@media (min-width: 1800px) { .app { max-width: 1280px; } }
 @media (max-width: 900px) {
   .app { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "main"; }
   .side { display: none; }
@@ -272,7 +270,10 @@ code, pre { font-variant-ligatures: none; }
 /* Theme button (shared with the other jsal.io apps): far right of the top bar */
 header.top .jsal-theme { margin-left: auto; }
 header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
-@media (max-width: 640px) { .viewnav { margin-left: 0; order: 9; flex: 1 1 100%; } .viewnav button { flex: 1; } .account { margin-left: auto; border-left: 0; padding-left: 0; } }
+#signout svg { display: none; }
+/* Narrower screens: the account shrinks to your picture and a sign-out icon, then the tabs get their own row */
+@media (max-width: 959px) { #user-name, #signout span { display: none; } #signout svg { display: block; } }
+@media (max-width: 760px) { .viewnav { margin-left: 0; order: 9; flex: 1 1 100%; } .viewnav button { flex: 1; } .account { margin-left: auto; border-left: 0; padding-left: 0; } }
 .link-btn { font: 600 13px var(--body); color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
 .link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
 .count { display: inline-block; min-width: 18px; padding: 0 6px; border-radius: 99px; background: var(--mid-soft); color: var(--mid); font-size: 11.5px; text-align: center; }
@@ -331,7 +332,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
       <button type="button" data-view="requests" id="req-btn" aria-pressed="false">Requests <span class="count" id="req-count"></span></button>
       <button type="button" data-view="team" id="team-btn" aria-pressed="false" hidden>Team <span class="count" id="team-count"></span></button>
     </nav>
-    <span class="account" id="user-chip" hidden><img id="user-avatar" alt="" hidden referrerpolicy="no-referrer"><span id="user-name"></span><button type="button" class="link-btn" id="signout">Sign out</button></span>
+    <span class="account" id="user-chip" hidden><img id="user-avatar" alt="" hidden referrerpolicy="no-referrer"><span id="user-name"></span><button type="button" class="link-btn" id="signout" title="Sign out"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span>Sign out</span></button></span>
     <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"></button>
   </header>
 
@@ -427,7 +428,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-28c" defer></script>
+<script src="/nav.js?v=2026-10-28f" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 // ---------- Config ----------
