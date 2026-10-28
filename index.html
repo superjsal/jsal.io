@@ -94,6 +94,9 @@ p, li { text-wrap: pretty; }
 .roles span + span::before { content: "·"; margin: 0 10px; color: var(--jsal-muted); }
 .intro h1 { margin: 0; font: 700 clamp(56px, 8vw, 108px)/0.9 "Lora", Georgia, serif; letter-spacing: -0.04em; }
 .intro h1 em { display: inline-block; margin-left: 1.1em; font-weight: 600; color: var(--jsal-accent); }
+/* Pixel portrait beside "John": sized in em so it scales with the name, sitting on the baseline
+   like a letter. Drawn by build/avatar/make_avatar.py. */
+.avatar { display: inline-block; width: 0.74em; height: 0.74em; margin-left: 0.2em; padding: 0.05em; vertical-align: baseline; border-radius: 0.14em; background: var(--jsal-accent-soft); border: 1px solid var(--jsal-accent-ring); image-rendering: pixelated; }
 .intro p { margin: 28px 0 0 4px; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
 
 /* Soft gold rather than solid, so the featured app card keeps the strongest contrast */
@@ -298,7 +301,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
   <main class="grid">
     <section class="intro">
       <div class="roles"><span>SEO Specialist</span><span>Web Tools</span><span>Gaming</span></div>
-      <h1>John<br><em>Salvador</em></h1>
+      <h1>John<img class="avatar" src="/img/avatar.svg" width="80" height="80" alt=""><br><em>Salvador</em></h1>
       <p>I work in SEO and build small web tools on the side, mostly to make my own work less repetitive. The rest of the time I’m gaming.</p>
     </section>
 
