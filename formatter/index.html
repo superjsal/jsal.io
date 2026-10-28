@@ -6,7 +6,7 @@
   <title>Clean Paste: Word to Clean HTML | jsal.io</title>
   <meta name="description" content="Paste content from Word, Google Docs or raw HTML and get clean HTML or formatted text, ready for any CMS. Runs entirely in your browser." />
   <link rel="canonical" href="https://jsal.io/formatter/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-28p" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-28q" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -44,25 +44,23 @@
     } catch (e) {}
   </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <!-- Version numbers (?v=) make browsers fetch fresh files after an update. To bump them on
        every page at once, run build\bump-version.ps1 (see SETUP.md). -->
-  <link rel="stylesheet" href="/shell.css?v=2026-10-28p" />
-  <link rel="stylesheet" href="styles.css?v=2026-10-28p" />
+  <link rel="stylesheet" href="/shell.css?v=2026-10-28q" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-28q" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":   "./js/main.js?v=2026-10-28p",
-        "./js/clean.js":  "./js/clean.js?v=2026-10-28p",
-        "./js/sample.js": "./js/sample.js?v=2026-10-28p"
+        "./js/main.js":   "./js/main.js?v=2026-10-28q",
+        "./js/clean.js":  "./js/clean.js?v=2026-10-28q",
+        "./js/sample.js": "./js/sample.js?v=2026-10-28q"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-28p"></script>
+  <script type="module" src="js/main.js?v=2026-10-28q"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-28p" defer></script>
+  <script src="/nav.js?v=2026-10-28q" defer></script>
 </head>
 <body>
   <main class="app">

@@ -25,14 +25,14 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-28p" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-28q" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/lora.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions are shared with the apps -->
-<link rel="stylesheet" href="/shell.css?v=2026-10-28p">
+<link rel="stylesheet" href="/shell.css?v=2026-10-28q">
 <style>
 /* Tile colours. The featured app (Image Resizer) has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
@@ -307,7 +307,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
     </section>
 
     <section class="tile now-playing" aria-label="Currently">
-      <img class="art" src="/img/wow-forever.jpg" width="2000" height="1125" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" fetchpriority="low">
+      <img class="art" src="/img/wow-forever.jpg" width="2000" height="1125" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" fetchpriority="high">
       <div>
         <p class="label">currently</p>
         <p class="big">Getting ready for WoW Forever</p>
@@ -414,6 +414,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
     <section id="updates" class="tile now" aria-labelledby="updates-h">
       <h2 id="updates-h">Updates</h2>
       <ul>
+        <li><time datetime="2026-10-28">Oct 28</time><span>Faster first load: fonts now come from jsal.io</span></li>
         <li><time datetime="2026-10-28">Oct 28</time><span><a href="/formatter/">Clean Paste</a>: edit links in place, copy as WordPress blocks</span></li>
         <li><time datetime="2026-10-28">Oct 28</time><span>New names: Platform Playbook and Clean Paste</span></li>
         <li><time datetime="2026-10-28">Oct 28</time><span><a href="/image-resizer/">Image Resizer</a>: fits narrow windows, new About page</span></li>
@@ -451,6 +452,6 @@ const nameTile = (tile, vt) => {
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-28p" defer></script>
+<script src="/nav.js?v=2026-10-28q" defer></script>
 </body>
 </html>
