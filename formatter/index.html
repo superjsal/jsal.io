@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Clean Paste: Word to Clean HTML | jsal.io</title>
-  <meta name="description" content="Paste content from Word, Google Docs or raw HTML and get clean HTML or formatted text, ready for any CMS. Runs entirely in your browser." />
+  <meta name="description" content="Paste from Word or Google Docs and get clean HTML, formatted text or WordPress blocks, ready for any CMS. Free, and runs entirely in your browser." />
   <link rel="canonical" href="https://jsal.io/formatter/" />
   <link rel="icon" href="/favicon.svg?v=2026-10-28t" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -13,6 +13,7 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://jsal.io/formatter/" />
+  <meta property="og:site_name" content="jsal.io" />
   <meta property="og:title" content="Clean Paste: Word to Clean HTML | jsal.io" />
   <meta property="og:description" content="Clean up content pasted from Word or Google Docs: clean HTML, formatted text or WordPress blocks. Free and entirely in your browser." />
   <meta property="og:image" content="https://jsal.io/og/formatter.png">
@@ -42,6 +43,15 @@
       var t = localStorage.getItem("jsal-theme");
       if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
     } catch (e) {}
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ND4L6CSD8S"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ND4L6CSD8S');
   </script>
 
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
