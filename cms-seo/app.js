@@ -2,10 +2,10 @@
 // (answers and profiles only, exported by build\playbook.py publish).
 (() => {
   const $ = (s) => document.querySelector(s);
-  const state = { q: '', off: new Set() };
+  const state = { q: '', group: 'all', off: new Set() };
   const SCOPE_NOTE = { U: 'Same on every site', V: 'Varies by site', C: 'Not verified' };
   const TRIVIAL = new Set(['yes', 'no', 'check']);   // marks that just repeat the tag
-  let data, opener;
+  let data;
 
   function el(tag, cls, text) {
     const e = document.createElement(tag);
@@ -14,35 +14,28 @@
     return e;
   }
 
-  function nameButton(p, cls) {
-    const b = el('button', cls, p.name);
-    b.type = 'button';
-    b.title = `About ${p.name}`;
-    b.addEventListener('click', () => openProfile(p, b));
-    return b;
-  }
+  const GROUPS = [['all', 'All'], ['builder', 'Website builders'], ['ecom', 'E-commerce'], ['open', 'Open source'], ['headless', 'Headless']];
+  const groupOf = (p) => { const t = (p.profile && p.profile.type) || ''; return /commerce/i.test(t) ? 'ecom' : /open source/i.test(t) ? 'open' : /headless/i.test(t) ? 'headless' : 'builder'; };
 
-  function openProfile(p, from) {
-    const d = $('#profile'), pr = p.profile;
-    opener = from;
-    d.replaceChildren();
-    const close = el('button', 'close', '×');
-    close.type = 'button';
-    close.setAttribute('aria-label', 'Close');
-    close.addEventListener('click', () => d.close());
-    const h = el('h2', null, p.name);
-    h.id = 'profile-h';
-    d.append(close, h);
-    if (pr) {
-      d.append(el('p', 'ptype', pr.type));
+  function renderCards() {
+    const cards = $('#cards');
+    cards.replaceChildren();
+    document.querySelectorAll('#types button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.g === state.group)));
+    data.platforms.filter((p) => p.profile && (state.group === 'all' || groupOf(p) === state.group)).forEach((p) => {
+      const c = el('article', 'card'), pr = p.profile;
+      c.append(el('h3', null, p.name), el('p', 'ptype', pr.type));
       [['Good fit for', pr.goodFit], ['Less suited if', pr.lessSuited], ['Known for', pr.knownFor]].forEach(([title, list]) => {
         if (!list || !list.length) return;
         const ul = el('ul');
         list.forEach((t) => ul.append(el('li', null, t)));
-        d.append(el('h3', null, title), ul);
+        c.append(el('h4', null, title), ul);
       });
-    }
-    d.showModal();
+      const go = el('a', 'golink', 'See its SEO answers ↓');
+      go.href = '#seo';
+      go.addEventListener('click', () => { state.off.delete(p.id); render(); });
+      c.append(go);
+      cards.append(c);
+    });
   }
 
   function render() {
@@ -55,14 +48,14 @@
     grid.replaceChildren();
     grid.style.setProperty('--n', Math.max(plats.length, 1));
     if (!plats.length || !items.length) {
-      grid.append(el('p', 'empty', plats.length ? 'No items match that search.' : 'Pick at least one platform to compare.'));
+      grid.append(el('p', 'empty', plats.length ? 'No items match that search.' : 'No platforms selected. Choose one or more above, or select All.'));
       return;
     }
     const head = el('div', 'row head');
     head.append(el('div', 'item', 'Can you…'));
     plats.forEach((p) => {
       const c = el('div', 'hcell');
-      c.append(nameButton(p, 'pname'));
+      c.append(el('span', 'pname', p.name));
       if (p.profile) c.append(el('span', 'htype', p.profile.type));
       head.append(c);
     });
@@ -72,7 +65,7 @@
       row.append(el('div', 'item', it.label));
       plats.forEach((p) => {
         const c = data.answers[p.id][it.id], cell = el('div', 'cell');
-        cell.append(nameButton(p, 'plat'), el('span', `tag ${c.verdict}`, data.verdicts[c.verdict] || c.verdict));
+        cell.append(el('span', 'plat', p.name), el('span', `tag ${c.verdict}`, data.verdicts[c.verdict] || c.verdict));
         if (c.mark && !TRIVIAL.has(c.mark.toLowerCase())) cell.append(el('span', 'mark', c.mark));
         cell.append(el('span', 'scope', SCOPE_NOTE[c.scope] || data.scopes[c.scope] || ''));
         row.append(cell);
@@ -94,14 +87,24 @@
     all.type = 'button';
     all.addEventListener('click', () => { state.off.clear(); render(); });
     plats.append(all);
+    const none = el('button', 'chip-link', 'Deselect all');
+    none.type = 'button';
+    none.addEventListener('click', () => { data.platforms.forEach((p) => state.off.add(p.id)); render(); });
+    plats.append(none);
+
+    const types = $('#types');
+    GROUPS.forEach(([g, label]) => {
+      const b = el('button', 'chip', label);
+      b.type = 'button';
+      b.dataset.g = g;
+      b.addEventListener('click', () => { state.group = g; renderCards(); });
+      types.append(b);
+    });
 
     $('#q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
-    const d = $('#profile');
-    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });   // click on the backdrop
-    d.addEventListener('close', () => { if (opener && opener.isConnected) opener.focus(); });
-
     const legend = $('#legend');
     Object.entries(data.verdicts).forEach(([k, label]) => legend.append(el('span', `tag ${k}`, label)));
+    renderCards();
     render();
   }
 
