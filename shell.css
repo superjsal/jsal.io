@@ -1,48 +1,57 @@
 /* jsal.io shared app shell: colours, top bar and theme button, used by every app.
-   Palette is IC Defaults' (slate neutrals, soft teal). Light by default, dark when the
-   computer is set to dark, and <html data-theme="light|dark"> when someone picks one
-   with the theme button (nav.js saves the choice for all the apps). */
+   Palette is the home page's Azeroth one: parchment and gold in light mode, dark slate,
+   gold and arcane blue in dark. Light by default, dark when the computer is set to dark,
+   and <html data-theme="light|dark"> when someone picks one with the theme button
+   (nav.js saves the choice for all the apps and the home page). */
 
 :root {
-  --jsal-bg: #f9fafb;
-  --jsal-surface: #ffffff;
-  --jsal-sunk: #eef1f4;
-  --jsal-ink: #16181d;
-  --jsal-ink-2: #3a4350;
-  --jsal-muted: #525d6e;
-  --jsal-line: #dde2e8;
-  --jsal-line-hi: #c5ccd6;
-  --jsal-accent: #2a7f7d;      /* teal for text and links */
-  --jsal-accent-soft: #e3f3f2;
-  --jsal-accent-ring: rgba(42, 127, 125, 0.35);
-  --jsal-fill: #97d3d2;        /* soft teal for main buttons */
-  --jsal-on-fill: #16181d;
-  --jsal-ok: #19784a;   --jsal-ok-soft: #dff2e7;
-  --jsal-warn: #8a5a00; --jsal-warn-soft: #fbefd6;
-  --jsal-bad: #b3352b;  --jsal-bad-soft: #fbe3e0;
-  --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --jsal-bg: #f5efe2;
+  --jsal-surface: #fbf8f0;
+  --jsal-sunk: #ece4d3;
+  --jsal-ink: #1f1a12;
+  --jsal-ink-2: #3d362a;
+  --jsal-muted: #6b6253;
+  --jsal-line: #e2d8c4;
+  --jsal-line-hi: #cfc3a9;
+  --jsal-accent: #9a6b14;      /* gold for text and links */
+  --jsal-accent-soft: #f1e3c2;
+  --jsal-accent-ring: rgba(154, 107, 20, 0.35);
+  --jsal-fill: #e3b04b;        /* gold for main buttons */
+  --jsal-on-fill: #1f1a12;
+  --jsal-glow: rgb(227 176 75 / 0.22);   /* faint gold glow at the top of the page */
+  --jsal-ok: #3f6b3a;   --jsal-ok-soft: #e3eedb;
+  --jsal-warn: #8a4f0a; --jsal-warn-soft: #f6e2c8;
+  --jsal-bad: #a8352b;  --jsal-bad-soft: #f6dfda;
+  --jsal-info: #3b5a9a; --jsal-info-soft: #e1e7f3;   /* arcane blue */
+  --jsal-shadow: 0 1px 2px rgba(60, 40, 10, 0.08);
   --jsal-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --jsal-radius: 6px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --jsal-bg: #16181d; --jsal-surface: #1f232a; --jsal-sunk: #292e37;
-    --jsal-ink: #f9fafb; --jsal-ink-2: #d0d6de; --jsal-muted: #a3adbb; --jsal-line: #363d48; --jsal-line-hi: #4a5361;
-    --jsal-accent: #97d3d2; --jsal-accent-soft: #233a3b; --jsal-accent-ring: rgba(151, 211, 210, 0.35);
-    --jsal-ok: #5fd193; --jsal-ok-soft: #173326; --jsal-warn: #f0c060; --jsal-warn-soft: #3a2f14; --jsal-bad: #ff8f84; --jsal-bad-soft: #3f1d1a;
+    --jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
+    --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
+    --jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
+    --jsal-fill: #e3b04b; --jsal-on-fill: #16130c; --jsal-glow: rgb(227 176 75 / 0.10);
+    --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
+    --jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --jsal-bg: #16181d; --jsal-surface: #1f232a; --jsal-sunk: #292e37;
-  --jsal-ink: #f9fafb; --jsal-ink-2: #d0d6de; --jsal-muted: #a3adbb; --jsal-line: #363d48; --jsal-line-hi: #4a5361;
-  --jsal-accent: #97d3d2; --jsal-accent-soft: #233a3b; --jsal-accent-ring: rgba(151, 211, 210, 0.35);
-  --jsal-ok: #5fd193; --jsal-ok-soft: #173326; --jsal-warn: #f0c060; --jsal-warn-soft: #3a2f14; --jsal-bad: #ff8f84; --jsal-bad-soft: #3f1d1a;
+  --jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
+  --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
+  --jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
+  --jsal-fill: #e3b04b; --jsal-on-fill: #16130c; --jsal-glow: rgb(227 176 75 / 0.10);
+  --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
+  --jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
   --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   color-scheme: dark;
 }
+/* Page background with the home page's gold glow */
+body { background: radial-gradient(900px 500px at 15% -10%, var(--jsal-glow), transparent 70%) no-repeat, var(--jsal-bg); }
 
 /* Same column as the jsal.io home page (.col: 640 / 880 / 1000px with 20px sides), so the
    top bar doesn't move when going between the home page and the apps. The apps' own content

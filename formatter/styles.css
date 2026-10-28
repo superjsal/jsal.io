@@ -33,7 +33,6 @@
   --bad-dim: var(--jsal-bad-soft);
 
   --shadow-card: var(--jsal-shadow);
-  --shadow-inset: none;
 
   --radius-sm: var(--jsal-radius);
   --radius-xs: 4px;
@@ -60,7 +59,6 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 
 body {
   min-height: 100vh;
-  background: var(--bg);
   color: var(--text);
   font-family: var(--font);
   font-size: 13px;
@@ -185,7 +183,7 @@ body {
 }
 .btn-accent:hover { background: var(--gradient); border-color: transparent; filter: brightness(1.08); }
 .btn-primary.done { border-color: var(--ok); }
-.btn-accent.done { background: var(--ok); }
+.btn-accent.done { background: var(--ok-dim); color: var(--ok); }
 
 .toolbar-hint { font-size: 12px; color: var(--text-3); }
 .btn-clear { display: inline-flex; align-items: center; gap: 5px; padding: 4px 6px; color: var(--bad); font-weight: 500; border-radius: var(--radius-xs); }

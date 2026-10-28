@@ -1,5 +1,7 @@
-// jsal.io app switcher. Each app marks its logo with data-jsal-nav (a link to jsal.io);
-// this turns it into a menu for moving between the apps. To add an app, add it to APPS.
+// Shared by every jsal.io app (with /shell.css for the colours):
+// - the logo marked data-jsal-nav (a link to jsal.io) becomes a menu for moving between the apps
+//   (to add an app, add it to APPS)
+// - the button marked data-jsal-theme switches light/dark for all the apps
 (() => {
   const APPS = [
     { href: '/image-resizer/', name: 'Image Resizer', desc: 'Resize, crop and convert images',
@@ -51,20 +53,20 @@
     [data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
     [data-jsal-nav]:hover .jsal-caret { opacity: .9; }
     .jsal-menu { position: fixed; z-index: 2147483000; width: min(300px, calc(100vw - 24px)); padding: 6px; border-radius: 12px;
-      background: var(--jm-bg); color: var(--jm-ink); border: 1px solid var(--jm-line); box-shadow: 0 16px 40px rgb(0 0 0 / .28), 0 2px 6px rgb(0 0 0 / .12);
-      font: 14px/1.35 "Inter", "Segoe UI", system-ui, sans-serif; }
+      background: var(--jsal-surface); color: var(--jsal-ink); border: 1px solid var(--jsal-line); box-shadow: 0 16px 40px rgb(0 0 0 / .28), 0 2px 6px rgb(0 0 0 / .12);
+      font: 14px/1.35 var(--jsal-font); }
     .jsal-menu[hidden] { display: none; }
     .jsal-menu a { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 8px; color: inherit; text-decoration: none; outline: none; }
-    .jsal-menu a:hover, .jsal-menu a:focus-visible { background: var(--jm-hover); }
-    .jsal-menu a[aria-current="page"] { background: var(--jm-current); }
-    .jsal-menu .ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--jm-hover); color: var(--jsal-accent); }
+    .jsal-menu a:hover, .jsal-menu a:focus-visible { background: var(--jsal-sunk); }
+    .jsal-menu a[aria-current="page"] { background: var(--jsal-accent-soft); }
+    .jsal-menu .ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--jsal-sunk); color: var(--jsal-accent); }
     .jsal-menu b { display: block; font-weight: 600; }
-    .jsal-menu small { display: block; font-size: 12px; color: var(--jm-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .jsal-menu small { display: block; font-size: 12px; color: var(--jsal-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .jsal-menu .tag { font-size: 11px; font-weight: 700; color: var(--jsal-accent); border: 1px solid currentColor; border-radius: 99px; padding: 0 7px; }
-    .jsal-menu .here { font-size: 11px; color: var(--jm-muted); }
-    .jsal-menu hr { border: 0; border-top: 1px solid var(--jm-line); margin: 6px 4px; }
+    .jsal-menu .here { font-size: 11px; color: var(--jsal-muted); }
+    .jsal-menu hr { border: 0; border-top: 1px solid var(--jsal-line); margin: 6px 4px; }
     .jsal-menu .home { grid-template-columns: 32px minmax(0, 1fr); }
-    .jsal-menu .home .ico { background: none; color: var(--jm-muted); }
+    .jsal-menu .home .ico { background: none; color: var(--jsal-muted); }
     @media (prefers-reduced-motion: reduce) { .jsal-caret { transition: none; } }
   </style>`);
 
@@ -90,22 +92,6 @@
   trigger.removeAttribute('aria-hidden');
   if (!trigger.getAttribute('aria-label')) trigger.setAttribute('aria-label', 'jsal.io apps');
 
-  // Match the app's current look: light or dark from the page background, accent from the logo's ".io"
-  function theme() {
-    let el = trigger, bg = 'rgba(0, 0, 0, 0)';
-    while (el && /rgba\(0, 0, 0, 0\)|transparent/.test(bg)) { bg = getComputedStyle(el).backgroundColor; el = el.parentElement; }
-    const [r, g, b] = (bg.match(/\d+(\.\d+)?/g) || [255, 255, 255]).map(Number);
-    const dark = (0.2126 * r + 0.7152 * g + 0.0722 * b) < 140;
-    const accent = getComputedStyle(trigger.querySelector('span') || trigger).color;
-    const s = menu.style;
-    s.setProperty('--jsal-accent', accent);
-    s.setProperty('--jm-bg', dark ? '#1d2027' : '#ffffff');
-    s.setProperty('--jm-ink', dark ? '#f1f2f4' : '#16181d');
-    s.setProperty('--jm-muted', dark ? '#9aa3af' : '#5b6472');
-    s.setProperty('--jm-line', dark ? 'rgb(255 255 255 / .1)' : 'rgb(0 0 0 / .1)');
-    s.setProperty('--jm-hover', dark ? 'rgb(255 255 255 / .07)' : 'rgb(0 0 0 / .05)');
-    s.setProperty('--jm-current', dark ? 'rgb(255 255 255 / .1)' : 'rgb(0 0 0 / .07)');
-  }
   function place() {
     const r = trigger.getBoundingClientRect();
     const w = menu.offsetWidth;
@@ -114,7 +100,6 @@
   }
   const links = () => [...menu.querySelectorAll('a')];
   function open(focusFirst) {
-    theme();
     menu.hidden = false;
     place();
     trigger.setAttribute('aria-expanded', 'true');

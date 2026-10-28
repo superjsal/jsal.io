@@ -9,15 +9,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&display=swap">
+<script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <style>
 :root {
   --bg: #f5efe2; --surface: #fbf8f0; --ink: #1f1a12; --muted: #6b6253; --faint: #8f8574; --line: #e2d8c4;
   --accent: #9a6b14; --glow: rgb(227 176 75 / .22); --frame: #e9e0cd;
   color-scheme: light;
 }
+/* Dark: follows the computer, or the light/dark choice made in any of the apps */
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #111318; --surface: #191c23; --ink: #ece6d6; --muted: #9a9688; --faint: #6f6c63; --line: #262a33; --accent: #e3b04b; --glow: rgb(227 176 75 / .10); --frame: #20242c; color-scheme: dark; }
+  :root:not([data-theme="light"]) { --bg: #111318; --surface: #191c23; --ink: #ece6d6; --muted: #9a9688; --faint: #6f6c63; --line: #262a33; --accent: #e3b04b; --glow: rgb(227 176 75 / .10); --frame: #20242c; color-scheme: dark; }
 }
+:root[data-theme="dark"] { --bg: #111318; --surface: #191c23; --ink: #ece6d6; --muted: #9a9688; --faint: #6f6c63; --line: #262a33; --accent: #e3b04b; --glow: rgb(227 176 75 / .10); --frame: #20242c; color-scheme: dark; }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }   /* no sideways shift vs the apps */
 body {
@@ -72,15 +75,15 @@ section { padding: 0 0 64px; }
 .mock .r b { font: 700 clamp(8px, 2.32cqw, 11px)/1 "Inter", sans-serif; padding: 3px 8px; border-radius: 5px; }
 .mock .y { background: rgb(124 196 242 / .2); color: #9fd6f7; } .mock .v { background: rgb(227 176 75 / .2); color: #f0c870; } .mock .n { background: rgb(255 255 255 / .08); color: #8b97ab; }
 
-/* Resizer preview: an abstract mock in the app's teal theme */
-.mock.rz { display: grid; grid-template-columns: 34% 1fr; grid-template-rows: none; gap: 5%; background: linear-gradient(160deg, #1d2a2d, #12191b); }
+/* Resizer preview: an abstract mock in the apps' Azeroth colours */
+.mock.rz { display: grid; grid-template-columns: 34% 1fr; grid-template-rows: none; gap: 5%; background: linear-gradient(160deg, #1d1f27, #111318); }
 .rz .panel { display: grid; gap: 7%; align-content: start; }
 .rz .presets { display: grid; grid-template-columns: 1fr 1fr; gap: 6%; margin-bottom: 4%; }
-.rz .presets u { text-decoration: none; text-align: center; font: 600 clamp(7px, 2.17cqw, 10.5px)/1 "Inter", sans-serif; color: #8fa5a7; padding: 9% 0; border-radius: 6px; background: rgb(255 255 255 / .06); white-space: nowrap; }
-.rz .presets u.on { background: rgb(151 211 210 / .18); color: #97d3d2; box-shadow: inset 0 -2px 0 #97d3d2; }
+.rz .presets u { text-decoration: none; text-align: center; font: 600 clamp(7px, 2.17cqw, 10.5px)/1 "Inter", sans-serif; color: #9a9688; padding: 9% 0; border-radius: 6px; background: rgb(255 255 255 / .06); white-space: nowrap; }
+.rz .presets u.on { background: rgb(227 176 75 / .18); color: #e3b04b; box-shadow: inset 0 -2px 0 #e3b04b; }
 .rz .panel s { height: clamp(5px, 1.59cqw, 8px); border-radius: 4px; background: rgb(255 255 255 / .12); text-decoration: none; }
-.rz .go { justify-self: start; margin-top: 6%; font: 600 clamp(7px, 2.17cqw, 10.5px)/1 "Inter", sans-serif; font-style: normal; color: #12191b; background: #97d3d2; padding: 5% 9%; border-radius: 6px; white-space: nowrap; }
-.rz .drop { display: grid; grid-template-columns: 1fr 1fr; gap: 6%; align-content: center; padding: 6%; border: 1.5px dashed rgb(151 211 210 / .35); border-radius: 10px; }
+.rz .go { justify-self: start; margin-top: 6%; font: 600 clamp(7px, 2.17cqw, 10.5px)/1 "Inter", sans-serif; font-style: normal; color: #16130c; background: #e3b04b; padding: 5% 9%; border-radius: 6px; white-space: nowrap; }
+.rz .drop { display: grid; grid-template-columns: 1fr 1fr; gap: 6%; align-content: center; padding: 6%; border: 1.5px dashed rgb(227 176 75 / .35); border-radius: 10px; }
 .rz .pic { position: relative; aspect-ratio: 1200 / 628; border-radius: 6px; overflow: hidden; }
 .rz .pic::after { content: ""; position: absolute; left: -10%; right: -10%; bottom: -30%; height: 75%; border-radius: 50% 50% 0 0; background: rgb(0 0 0 / .22); }
 .rz .pic.a { background: linear-gradient(170deg, #f7dba6, #f08a5d); }
@@ -88,15 +91,15 @@ section { padding: 0 0 64px; }
 .rz .pic.c { background: linear-gradient(170deg, #cfe9e3, #3f7f78); }
 .rz .pic.d { background: linear-gradient(170deg, #f3c1c8, #b9506a); }
 
-/* Formatter preview: a toolbar and a clean document, in the app's teal theme */
-.mock.fm { background: linear-gradient(160deg, #1d2a2d, #12191b); }
+/* Formatter preview: a toolbar and a clean document, in the apps' Azeroth colours */
+.mock.fm { background: linear-gradient(160deg, #1d1f27, #111318); }
 .fm .tb { display: flex; gap: 2.5%; }
-.fm .tb u { text-decoration: none; font: 700 clamp(8px, 2.3cqw, 11px)/1 "Inter", sans-serif; color: #8fa5a7; padding: 1.6% 2.6%; border-radius: 5px; background: rgb(255 255 255 / .06); white-space: nowrap; }
-.fm .tb u.on { margin-left: auto; background: #97d3d2; color: #12191b; }
+.fm .tb u { text-decoration: none; font: 700 clamp(8px, 2.3cqw, 11px)/1 "Inter", sans-serif; color: #9a9688; padding: 1.6% 2.6%; border-radius: 5px; background: rgb(255 255 255 / .06); white-space: nowrap; }
+.fm .tb u.on { margin-left: auto; background: #e3b04b; color: #16130c; }
 .fm .doc { display: grid; gap: 4.5%; align-content: start; padding: 5% 6%; background: rgb(255 255 255 / .04); border-radius: 8px; }
 .fm .doc s { display: block; height: clamp(5px, 1.4cqw, 7px); border-radius: 4px; background: rgb(255 255 255 / .12); text-decoration: none; }
 .fm .doc .h { display: flex; align-items: center; gap: 3%; margin-top: 2%; }
-.fm .doc .h b { font: 700 clamp(7px, 1.9cqw, 9.5px)/1 "Inter", sans-serif; color: #97d3d2; background: rgb(151 211 210 / .18); padding: 2px 5px; border-radius: 4px; }
+.fm .doc .h b { font: 700 clamp(7px, 1.9cqw, 9.5px)/1 "Inter", sans-serif; color: #e3b04b; background: rgb(227 176 75 / .18); padding: 2px 5px; border-radius: 4px; }
 .fm .doc .h s { flex: none; height: clamp(7px, 2cqw, 10px); background: rgb(255 255 255 / .3); }
 .rz .pic em { position: absolute; right: 5%; bottom: 8%; z-index: 1; font: 700 clamp(6px, 1.74cqw, 9px)/1 "Inter", sans-serif; font-style: normal; color: #fff; background: rgb(0 0 0 / .45); padding: 3px 5px; border-radius: 4px; }
 

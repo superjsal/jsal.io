@@ -31,12 +31,11 @@
   --bad-dim: var(--jsal-bad-soft);
 
   --shadow-card: var(--jsal-shadow);
-  --shadow-inset: none;
 
   --radius-sm: var(--jsal-radius);
   --radius-xs: 4px;
   --font: var(--jsal-font);
-  --crop: #3cc4c0;                /* crop box on photos: needs to stay bright in both themes */
+  --crop: #e3b04b;                /* crop box on photos: needs to stay bright in both themes */
 }
 
 /* ── Base ──────────────────────────────────────────────────────────────── */
@@ -67,7 +66,6 @@ button { cursor: pointer; background: none; border: none; }
 html, body { height: 100%; overflow: hidden; }
 
 body {
-  background: var(--bg);
   color: var(--text);
   font-family: var(--font);
   font-size: 13px;
@@ -101,7 +99,6 @@ body {
   border: 1px solid var(--border-mid);
   background: var(--surface-2);
   overflow: hidden;
-  box-shadow: var(--shadow-inset);
 }
 
 .seg-btn {
@@ -145,13 +142,12 @@ body {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-mid);
   background: var(--surface-2);
-  box-shadow: var(--shadow-inset);
   transition: border-color 0.12s, box-shadow 0.12s;
 }
-.input-group:focus-within { border-color: var(--accent); box-shadow: var(--shadow-inset), 0 0 0 2px var(--accent-ring); }
+.input-group:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-ring); }
 .input-group.error {
   border-color: var(--bad);
-  box-shadow: var(--shadow-inset), 0 0 0 2px var(--bad-dim);
+  box-shadow: 0 0 0 2px var(--bad-dim);
   animation: shake 0.3s ease;
 }
 
@@ -217,7 +213,6 @@ body {
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-inset);
 }
 .option-label { width: 58px; }
 
@@ -408,7 +403,6 @@ body {
   border-radius: var(--radius-sm);
   background: var(--surface-2);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-inset);
   color: var(--text-2);
   overflow-wrap: anywhere;
 }
@@ -439,7 +433,6 @@ body {
   overflow: hidden;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-inset);
 }
 .canvas-wrap canvas {
   display: block;
@@ -603,7 +596,7 @@ body {
   border-radius: 5px;
   font-size: 11px;
   font-weight: 600;
-  background: var(--accent);
+  background: var(--gradient);
   color: var(--on-accent);
   pointer-events: none;
   box-shadow: 0 1px 4px rgba(0,0,0,0.35);
