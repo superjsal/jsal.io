@@ -1,7 +1,7 @@
 // Entry point: wires the controls to state, loading, preview and export.
 
 import {
-  state, FORMATS, QUALITY_HINTS, savePrefs, loadPrefs,
+  state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
 } from "./state.js";
 import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js";
@@ -502,6 +502,14 @@ $("qualityHint").textContent = QUALITY_HINTS[q.dataset.quality];
 
 setPressed(formatButtons, formatButtons.find(b => FORMATS[b.dataset.format] === state.format));
 $("formatHint").textContent = state.format.hint;
+
+if (!CAN_WEBP) {
+  const webp = formatButtons.find(b => b.dataset.format === "webp");
+  webp.disabled = true;
+  webp.title = "This browser can't save WebP. Use Chrome, Edge or Firefox for WebP.";
+  FORMATS.jpeg.hint = "WebP isn't available in this browser (Safari), so images save as JPG";
+  $("formatHint").textContent = state.format.hint;
+}
 
 if (state.keepOriginal) {
   setPressed(sizeButtons, $("originalBtn"));

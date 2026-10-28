@@ -234,6 +234,8 @@ body {
 .quality-btn:hover, .format-btn:hover, .dest-btn:hover { color: var(--text); }
 .quality-btn:focus-visible, .format-btn:focus-visible, .dest-btn:focus-visible { outline-offset: -2px; }
 .quality-btn.active, .format-btn.active, .dest-btn.active { background: var(--surface-2); color: var(--text); box-shadow: var(--shadow-card); }
+.format-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.format-btn:disabled:hover { color: var(--text-3); }
 .option-hint { flex: 1 1 160px; font-size: 12px; color: var(--text-3); line-height: 1.4; }
 
 /* "Save to" row spans the full width, with its buttons sharing the space */

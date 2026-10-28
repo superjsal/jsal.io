@@ -5,6 +5,18 @@ export const FORMATS = {
   webp: { mime: "image/webp", ext: "webp", hint: "Best compression, modern browsers" },
 };
 
+// Whether this browser can save WebP. Safari can't: asked for WebP, its canvas quietly returns a
+// PNG instead, so there the WebP option is turned off and JPG is used.
+export const CAN_WEBP = (() => {
+  try {
+    const c = document.createElement("canvas");
+    c.width = c.height = 1;
+    return c.toDataURL("image/webp").startsWith("data:image/webp");
+  } catch {
+    return false;
+  }
+})();
+
 export const QUALITY_HINTS = {
   "0.7":  "Smallest file size, some compression visible",
   "0.85": "Good balance of size and quality",
@@ -61,7 +73,7 @@ export function loadPrefs() {
   // Older versions stored {mime, ext}; PNG is no longer offered, so anything
   // other than WebP falls back to JPG.
   const fmt = read("resizer-format") ?? "";
-  state.format = fmt.includes("webp") ? FORMATS.webp : FORMATS.jpeg;
+  state.format = fmt.includes("webp") && CAN_WEBP ? FORMATS.webp : FORMATS.jpeg;
 
   state.keepOriginal = read("resizer-original") === "1";
 

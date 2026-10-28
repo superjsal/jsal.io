@@ -148,6 +148,8 @@ export async function exportImage(item, w, h, format, quality) {
     drawCropped(full, canvas, w, h, item.cropAnchor, format.mime === "image/jpeg" ? "#fff" : null);
     const blob = await canvasToBlob(canvas, format.mime, quality);
     if (!blob) throw new Error(`${w} × ${h} is too large for this browser to export`);
+    // Never save a file under the wrong extension (e.g. a PNG named .webp)
+    if (blob.type !== format.mime) throw new Error(`This browser can't save ${format.ext.toUpperCase()} files`);
     return blob;
   } finally {
     full.close();

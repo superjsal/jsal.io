@@ -25,14 +25,14 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-28q" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-28r" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/lora.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions are shared with the apps -->
-<link rel="stylesheet" href="/shell.css?v=2026-10-28q">
+<link rel="stylesheet" href="/shell.css?v=2026-10-28r">
 <style>
 /* Tile colours. The featured app (Image Resizer) has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
@@ -99,12 +99,15 @@ p, li { text-wrap: pretty; }
 .intro h1 em { display: inline-block; margin-left: 1.1em; font-weight: 600; color: var(--jsal-accent); }
 .intro p { margin: 28px 0 0 4px; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
 
-/* Currently: WoW Forever art behind the text, shown unaltered as Blizzard's fan-site policy
+/* Currently: WoW Forever art behind the text, scaled down but otherwise unaltered as Blizzard's fan-site policy
    requires (the darkening is a separate layer on top, and the copyright notice stays on the
    card). Same light text in both themes, since it sits on the picture. */
 .now-playing { grid-column: 9 / 13; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 280px; }
-/* Text over the sky at the top, so the dwarf and bear show in the lower half */
-.now-playing .art { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 47% 85%; }
+/* Text over the sky at the top, so the dwarf and bear show in the lower half. The art is 2.4:1 and the
+   card is taller than that, so it fills the height and object-position picks the slice with the dwarf
+   and bear. It's drawn 18% taller than the card with the extra above it (sky), which lifts them clear
+   of the credit row at the bottom. The file itself is untouched. */
+.now-playing .art { position: absolute; top: -18%; left: 0; z-index: -2; width: 100%; height: 118%; object-fit: cover; object-position: 12% 50%; }
 .now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }
 .now-playing .label { margin-bottom: 10px; }
 .now-playing .label, .now-playing .pill { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
@@ -314,7 +317,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
     </section>
 
     <section class="tile now-playing" aria-label="Currently">
-      <img class="art" src="/img/wow-forever.jpg" width="2000" height="1125" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" fetchpriority="high">
+      <img class="art" src="/img/wow-forever.webp" width="1920" height="800" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" fetchpriority="high">
       <div>
         <p class="label">currently</p>
         <p class="big">Getting ready for WoW Forever</p>
@@ -459,6 +462,6 @@ const nameTile = (tile, vt) => {
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-28q" defer></script>
+<script src="/nav.js?v=2026-10-28r" defer></script>
 </body>
 </html>
