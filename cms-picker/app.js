@@ -24,7 +24,7 @@
 
   // Platform logos (Simple Icons, CC0) drawn in the text colour via a mask, so they match the theme.
   // Simple Icons has no Magento or Duda logo, and headless isn't one brand: those get a lettered badge.
-  const LOGOS = new Set(['wordpress', 'shopify', 'wix', 'squarespace', 'webflow', 'framer', 'hubspot', 'bigcommerce', 'drupal', 'godaddy']);
+  const LOGOS = new Set(['wordpress', 'shopify', 'wix', 'squarespace', 'webflow', 'framer', 'hubspot', 'bigcommerce', 'drupal']);
   const BADGE = { magento: 'M', duda: 'D', headless: '{ }' };
   function logo(p) {
     if (LOGOS.has(p.id)) {

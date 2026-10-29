@@ -12,12 +12,9 @@
     "magento",
     "drupal",
     "duda",
-    "godaddy",
     "headless"
   ],
-  "names": {
-    "godaddy": "GoDaddy"
-  },
+  "names": {},
   "asOf": "October 2026",
   "sections": [
     {
