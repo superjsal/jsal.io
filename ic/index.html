@@ -211,11 +211,11 @@ header.top p { flex: 1 1 360px; font-size: 14px; color: var(--muted); }
 .mobile-only { display: none; }
 .toggle { display: inline-flex; gap: 7px; align-items: center; font-weight: 600; font-size: 13px; color: var(--ink); cursor: pointer; }
 .toggle input { width: 15px; height: 15px; accent-color: var(--accent); margin: 0; }
-.legend { display: inline-flex; flex-wrap: wrap; gap: 4px 12px; color: var(--muted); font-size: 12.5px; margin-left: auto; }
 .empty { padding: 24px 18px; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; }
 
 /* Collapsible compare section */
 details.fold { display: block; min-width: 0; max-width: 100%; }
+@media (min-width: 901px) { #guides-fold { display: none; } }   /* the sidebar lists the guides */
 details.fold > * + * { margin-top: 14px; }
 details.fold .scroll { max-width: 100%; }
 details.fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; }
@@ -232,7 +232,7 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .v.check { background: var(--unk-soft); color: var(--unk); }
 .v .sc { font-weight: 500; opacity: 0.85; }
 .dot { display: inline-block; flex: none; width: 9px; height: 9px; padding: 0; margin: 0; border-radius: 50%; border: 2px solid currentColor; vertical-align: -0.5px; }
-.legend .dot, .tally .dot { margin-right: 5px; }
+.tally .dot { margin-right: 5px; }
 .h2-sub { color: var(--muted); font-weight: 600; }
 .dot.U { background: var(--ok); border-color: var(--ok); }
 .dot.V { background: transparent; border-color: var(--mid); }
@@ -387,9 +387,7 @@ code, pre { font-variant-ligatures: none; }
   .app { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "main"; }
   .side { display: none; }
   .mobile-only { display: block; }
-  #ptype-bar { flex: 1 1 100%; min-width: 0; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-  #ptype-bar button { flex: none; }
-  .legend { margin-left: 0; }
+  #ptype-bar { flex: 1 1 100%; min-width: 0; flex-wrap: wrap; }
 }
 @media (max-width: 560px) {
   .edit-grid { grid-template-columns: minmax(0, 1fr); }
@@ -511,7 +509,6 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
       <div class="tb-row tb-sub">
         <label class="toggle"><input type="checkbox" id="only-check"> Only what to check</label>
         <label class="toggle"><input type="checkbox" id="show-how"> Show how-to steps</label>
-        <span class="legend" aria-label="Legend"><span><i class="dot U"></i>Same on every site</span><span><i class="dot V"></i>Varies by site</span><span><i class="dot C"></i>Not verified</span></span>
       </div>
     </div>
 
@@ -1662,6 +1659,8 @@ function applyShared(x) {
 async function loadShared() { applyShared(await fetchShared()); lastLoad = Date.now(); }
 function useContent(d) {
   ({ ITEMS, CONTENT_ITEMS, VERDICT, SCOPE, P, CONTENT, VARIANTS, HOW, WARN, H1_FIX, PTYPES, BY_TYPE, GUIDES, HOW_GUIDES } = d);
+  // Alphabetical, so a platform is quick to find; Headless CMS last, as it's a category, not a product
+  P = [...P].sort((a, b) => (a.id === 'headless') - (b.id === 'headless') || a.name.localeCompare(b.name));
   HOW_UNVERIFIED = new Set(d.HOW_UNVERIFIED || []);
 }
 
