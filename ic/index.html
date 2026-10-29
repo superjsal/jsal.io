@@ -958,6 +958,8 @@ function platformNoteHtml(p) {
   const n = NOTES.get(p.id);
   if (state.editing === NOTE_KEY && canEditAnswers) {
     return `<form class="edit-form pnote-form" data-note-form>
+        <input type="hidden" name="base" value="${esc(n ? n.at : '')}">
+        <p class="edit-conflict" role="alert" hidden></p>
         <label><span>Watch out for ${esc(p.name)} <span style="font-weight:400">(shown on every section and page type; Markdown works)</span></span>
           <textarea name="warn" maxlength="600" rows="3">${esc(n ? n.warn : '')}</textarea></label>
         <div class="edit-actions">
@@ -975,7 +977,8 @@ function platformNoteHtml(p) {
 async function saveNote(warn, button) {
   const p = P.find((x) => x.id === state.platform);
   if (button) button.disabled = true;
-  const row = warn && { platform: p.id, warn, at: new Date().toISOString() };
+  if (await changedMeanwhile(button && button.closest('form'), 'platform_notes', { platform: p.id }, 'this watch-out', 'removed this watch-out', button)) return;
+  const row = warn && { platform: p.id, warn, at: new Date().toISOString(), edited_by: R.me };
   const { error } = row ? await sb.from('platform_notes').upsert(row) : await sb.from('platform_notes').delete().eq('platform', p.id);
   if (error) { if (button) button.disabled = false; return toast(failText(error, 'Couldn’t save')); }
   if (row) NOTES.set(p.id, row); else NOTES.delete(p.id);
@@ -1376,6 +1379,24 @@ $('#panel').addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && state.editing) { state.editing = null; renderPanel(); }
 });
 
+// Someone else may have saved this since its form opened (the form's "base" field is the version it
+// opened with). Say who, instead of quietly replacing their change; the form then counts their version
+// as seen, so saving again replaces it on purpose. True when it stopped the save.
+async function changedMeanwhile(form, table, match, what, gone, button) {
+  const base = form && form.elements.base;
+  if (!base) return false;
+  const cur = await sb.from(table).select('at,edited_by').match(match).maybeSingle();
+  if (cur.error || (Date.parse(base.value) || 0) === (Date.parse(cur.data?.at || '') || 0)) return false;
+  base.value = cur.data?.at || '';
+  const who = cur.data ? `${personName(cur.data.edited_by)} changed ${what} ${ago(cur.data.at)}` : `someone ${gone}`;
+  const note = form.querySelector('.edit-conflict');
+  note.innerHTML = `<b>${esc(who.charAt(0).toUpperCase() + who.slice(1))}</b>, while you were editing. Save again to replace it with this, or Cancel to see the saved version.`;
+  note.hidden = false;
+  if (button) button.disabled = false;
+  note.scrollIntoView({ block: 'nearest' });
+  return true;
+}
+
 // Save (form) or reset (no form) one answer for the team. An edit that matches the original is removed.
 async function saveEdit(key, form, button, p = P.find((x) => x.id === state.platform)) {
   if (!sb) return;
@@ -1393,23 +1414,7 @@ async function saveEdit(key, form, button, p = P.find((x) => x.id === state.plat
     if (b[0] === body.verdict && plain(b[1]) === body.mark && b[2] === body.scope && (sourceEdit(p, sec, id) && !ownEdit(p, sec, id) ? b[3] : htmlToMd(b[3])) === body.note && !('how' in body) && !('warn' in body)) body = null;
   }
   if (button) button.disabled = true;
-  // Someone else may have saved this answer since the form opened ("base" is the version it opened
-  // with). Say so instead of quietly replacing their change. The form then counts their version as
-  // seen, so saving again replaces it on purpose.
-  const base = form && form.elements.base;
-  if (base) {
-    const cur = await sb.from('edits').select('at,edited_by').match({ platform: p.id, sec, item: id }).maybeSingle();
-    if (!cur.error && (Date.parse(base.value) || 0) !== (Date.parse(cur.data?.at || '') || 0)) {
-      base.value = cur.data?.at || '';
-      const who = cur.data ? `${personName(cur.data.edited_by)} changed this answer ${ago(cur.data.at)}` : 'Someone reset this answer to the original';
-      const note = form.querySelector('.edit-conflict');
-      note.innerHTML = `<b>${esc(who.charAt(0).toUpperCase() + who.slice(1))}</b>, while you were editing. Save again to replace it with yours, or Cancel to see theirs.`;
-      note.hidden = false;
-      if (button) button.disabled = false;
-      note.scrollIntoView({ block: 'nearest' });
-      return;
-    }
-  }
+  if (await changedMeanwhile(form, 'edits', { platform: p.id, sec, item: id }, 'this answer', 'reset this answer to the original', button)) return;
   const row = body && { platform: p.id, sec, item: id, verdict: body.verdict, mark: body.mark, scope: body.scope, note: body.note,
     how: 'how' in body ? body.how : null, warn: 'warn' in body ? body.warn : null, at: body.at, edited_by: R.me };
   const { error } = row ? await sb.from('edits').upsert(row)
