@@ -67,6 +67,7 @@ function load(data, blank = false) {
   app.classList.add("has-content");
   source = blank ? "" : detectSource(input.html, input.text);
   result = clean(input);
+  if (!blank && data.html !== SAMPLE_HTML) window.jsalAchieve?.("spotless");   // achievement (/nav.js); the sample doesn't count
   fixes = result.checks.filter((c) => c.fix);
   editor.innerHTML = result.html;
   htmlEdit.value = result.html;

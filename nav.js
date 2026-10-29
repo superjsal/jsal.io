@@ -38,6 +38,85 @@
 
   const svg = (paths, size = 16) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
 
+  // Achievements: unlocked by using the site, kept only in this browser (localStorage). An app unlocks
+  // one with window.jsalAchieve('id'); to add one, add it here and call that where it happens. A pop-up
+  // shows on any page; the home page lists them all. None on the team-only Playbook.
+  const ACH = [
+    { id: 'first', name: 'First steps', done: 'Opened a tool', todo: 'Open a tool', icon: '<path d="M14 4h5v16h-5"/><path d="M3 12h11M10 8l4 4-4 4"/>' },
+    { id: 'explorer', name: 'Explorer', done: 'Opened every tool', todo: 'Open every tool', icon: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>' },
+    { id: 'night', name: 'Night owl', done: 'Tried dark mode', todo: 'Try dark mode', icon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/>' },
+    { id: 'pixel', name: 'Pixel pusher', done: 'Resized an image', todo: 'Resize an image', icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 9"/>' },
+    { id: 'spotless', name: 'Spotless', done: 'Cleaned a paste', todo: 'Clean a paste', icon: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 17v4M17 19h4"/>' },
+    { id: 'decision', name: 'Decision made', done: 'Found a CMS fit', todo: 'Find your CMS fit', icon: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>' },
+    { id: 'compare', name: 'Side by side', done: 'Compared platforms', todo: 'Compare platforms', icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/>' },
+    { id: 'secret', name: 'Up, up, down, down', done: 'Found the secret', todo: 'Secret', secret: true, icon: '<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4M15.5 12h.01M18 14h.01"/>' },
+  ];
+  const TOOLS = ['/image-resizer/', '/formatter/', '/cms-picker/'];   // "Explorer": the public tools
+  const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } };
+  const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const team = location.pathname.startsWith('/ic/');
+  const queue = [];
+  let toastEl = null, showing = false;
+  function showNext() {
+    if (showing || !queue.length) return;
+    const a = queue.shift();
+    showing = true;
+    if (!toastEl) {
+      document.head.insertAdjacentHTML('beforeend', `<style>
+        .jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: max(20px, env(safe-area-inset-bottom, 0px)); width: min(340px, calc(100vw - 32px));
+          display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink);
+          border: 1px solid var(--jsal-accent); box-shadow: 0 16px 40px rgb(0 0 0 / .25), 0 2px 6px rgb(0 0 0 / .1); font: 14px/1.35 var(--jsal-font);
+          transform: translate(-50%, 0); transition: opacity .3s ease, transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); pointer-events: none; }
+        .jsal-ach[data-hide] { opacity: 0; transform: translate(-50%, 16px); }
+        .jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
+        .jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
+        .jsal-ach b { display: block; font-size: 15px; }
+        .jsal-ach span.d { display: block; font-size: 12.5px; color: var(--jsal-muted); }
+        @media (prefers-reduced-motion: reduce) { .jsal-ach { transition: none; } }
+      </style>`);
+      toastEl = document.createElement('div');
+      toastEl.className = 'jsal-ach';
+      toastEl.setAttribute('role', 'status');
+      toastEl.dataset.hide = '';
+      document.body.append(toastEl);
+    }
+    toastEl.innerHTML = `<span class="medal">${svg(a.icon, 20)}</span><span><small>Achievement unlocked</small><b>${a.name}</b><span class="d">${a.done}</span></span>`;
+    requestAnimationFrame(() => requestAnimationFrame(() => delete toastEl.dataset.hide));
+    setTimeout(() => {
+      toastEl.dataset.hide = '';
+      setTimeout(() => { showing = false; showNext(); }, 350);
+    }, 4000);
+  }
+  function unlock(id) {
+    const a = ACH.find((x) => x.id === id), got = read('jsal-achievements', {});
+    if (!a || got[id] || team) return;
+    got[id] = Date.now();
+    write('jsal-achievements', got);
+    queue.push(a);
+    if (document.body) showNext(); else addEventListener('DOMContentLoaded', showNext);
+    dispatchEvent(new CustomEvent('jsal-achievement', { detail: id }));
+  }
+  window.jsalAchieve = unlock;
+  window.jsalAchievements = { list: ACH, got: () => read('jsal-achievements', {}) };
+  // Opening a tool: "First steps", and "Explorer" once all of them have been opened
+  const tool = TOOLS.find((t) => location.pathname.startsWith(t));
+  if (tool) {
+    const seen = new Set(read('jsal-tools-seen', []));
+    seen.add(tool);
+    write('jsal-tools-seen', [...seen]);
+    unlock('first');
+    if (TOOLS.every((t) => seen.has(t))) unlock('explorer');
+  }
+  // The secret: the Konami code, anywhere but in a text field
+  const CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+  let step = 0;
+  document.addEventListener('keydown', (e) => {
+    if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+    const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    step = k === CODE[step] ? step + 1 : k === CODE[0] ? 1 : 0;
+    if (step === CODE.length) { step = 0; unlock('secret'); }
+  });
+
   // Theme button ([data-jsal-theme]): flips light/dark and remembers it for every app.
   // Each page applies the saved choice in its <head> so there's no flash. Apps that draw
   // with theme colours (e.g. a canvas) can listen for the "jsal-theme" event to redraw.
@@ -64,6 +143,7 @@
       try { localStorage.setItem('jsal-theme', next); } catch (e) {}
       paint();
       dispatchEvent(new Event('jsal-theme'));
+      if (next === 'dark') unlock('night');
     });
     system.addEventListener('change', () => { if (!root.dataset.theme) { paint(); dispatchEvent(new Event('jsal-theme')); } });
     paint();

@@ -221,6 +221,7 @@ async function saveImage(i) {
       triggerDownload(entry.url, name);
     }
     setSaveState(state.images.indexOf(item), "saved");
+    window.jsalAchieve?.("pixel");   // achievement (/nav.js)
     clearTimeout(saveTimers.get(item));
     saveTimers.set(item, setTimeout(() => setSaveState(state.images.indexOf(item), "idle"), 3000));
   } catch (err) {
@@ -285,6 +286,7 @@ async function downloadAll() {
     return;
   }
 
+  if (files.length) window.jsalAchieve?.("pixel");   // achievement (/nav.js)
   const where = dest === "zip" ? " as a ZIP" : dest === "folder" ? ` to "${dir.name}"` : "";
   if (failed.length) {
     finish(`Exported ${plural(files.length)}${where} · ${failed.length} failed (too large for this browser): ${failed.join(", ")}`, "error");

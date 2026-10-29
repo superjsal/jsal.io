@@ -43,12 +43,13 @@
 
   function setGoal(g) {
     state.goal = g;
+    if (g !== 'all') window.jsalAchieve?.('decision');   // achievement (/nav.js)
     state.compare = new Set(g === 'all' ? DEFAULT_COMPARE : data.platforms.filter(fits).map((p) => p.id));
     renderCards();
     render();
   }
   function toggleCompare(id) {
-    if (state.compare.has(id)) state.compare.delete(id); else state.compare.add(id);
+    if (state.compare.has(id)) state.compare.delete(id); else { state.compare.add(id); window.jsalAchieve?.('compare'); }   // achievement (/nav.js)
     renderCards();
     render();
   }

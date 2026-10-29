@@ -25,7 +25,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-29f" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-29h" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js), fetched once the page has loaded and the browser is idle (2 s at most),
      so its ~180 KB doesn't compete with the page itself. Calls queue up until it arrives. -->
@@ -446,6 +446,26 @@ p, li { text-wrap: pretty; }
 .now li time { flex: none; min-width: 4em; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now li a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
+/* Achievements (/nav.js unlocks them and keeps them in this browser; the script below lists them) */
+.ach { grid-column: 1 / 13; background: var(--plain); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.ach h2 { margin: 0; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
+.ach-count { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
+.ach-bar { height: 6px; margin: 12px 0 16px; border-radius: 99px; background: var(--plain-line); overflow: hidden; }
+.ach-bar i { display: block; height: 100%; width: var(--p, 0%); background: var(--jsal-fill); border-radius: inherit; transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.ach-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.ach-list li { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 12px; background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
+.ach-list .medal { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.ach-list b { display: block; font-weight: 600; }
+.ach-list small { display: block; font-size: 12.5px; color: var(--jsal-muted); }
+.ach-list li.locked { background: transparent; border: 1px dashed var(--plain-line); }
+.ach-list li.locked b { color: var(--jsal-muted); }
+.ach-list li.locked .medal { background: none; color: var(--jsal-muted); border: 1px dashed var(--plain-line); }
+@media (max-width: 760px) { .ach-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 340px) { .ach-list { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .ach-bar i { transition: none; } }
+
 /* Plain surface, so the cream/ink contrast stays with the featured app */
 .mail { grid-column: 7 / 13; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--jsal-accent); --arrow-ink: var(--jsal-bg); }
 .mail .label, .mail .desc { color: var(--jsal-muted); }
@@ -633,6 +653,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
     <section id="updates" class="tile now" aria-labelledby="updates-h">
       <h2 id="updates-h">Updates</h2>
       <ul>
+        <li><time datetime="2026-10-29">Oct 29</time><span>New: <a href="#ach-h">achievements</a> for using the tools, and one secret</span></li>
         <li><time datetime="2026-10-28">Oct 28</time><span>New: <a href="/cms-picker/">CMS Picker</a>, which CMS fits your business and what you can change for SEO</span></li>
         <li><time datetime="2026-10-28">Oct 28</time><span>Faster first load: fonts now come from jsal.io</span></li>
         <li><time datetime="2026-10-28">Oct 28</time><span><a href="/formatter/">Clean Paste</a>: edit links in place, copy as WordPress blocks</span></li>
@@ -652,6 +673,12 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
+
+    <section class="tile ach" aria-labelledby="ach-h">
+      <div class="ach-top"><h2 id="ach-h">Achievements</h2><span class="ach-count" id="ach-count"></span></div>
+      <div class="ach-bar" aria-hidden="true"><i id="ach-bar"></i></div>
+      <ul class="ach-list" id="ach-list"></ul>
+    </section>
   </main>
 
   <footer>
@@ -688,9 +715,27 @@ if (matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: 
     tile.addEventListener('pointerleave', () => { cancelAnimationFrame(frame); tile.classList.remove('tilt'); });
   });
 }
+// Achievements: drawn from /nav.js's list (it loads after this, so wait for it), redrawn on each unlock
+const LOCK = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
+function drawAchievements() {
+  const A = window.jsalAchievements;
+  if (!A) return;
+  const got = A.got(), n = A.list.filter((a) => got[a.id]).length;
+  const icon = (p) => `<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  document.getElementById('ach-count').textContent = `${n} of ${A.list.length}`;
+  document.getElementById('ach-bar').style.setProperty('--p', `${(n / A.list.length) * 100}%`);
+  document.getElementById('ach-list').innerHTML = A.list.map((a) => {
+    const on = !!got[a.id], hidden = a.secret && !on;
+    return `<li class="${on ? '' : 'locked'}"><span class="medal">${icon(hidden ? LOCK : a.icon)}</span><span><b>${hidden ? '???' : a.name}</b><small>${on ? a.done : a.todo}</small></span><span class="sr-only">${on ? ' (unlocked)' : ' (locked)'}</span></li>`;
+  }).join('');
+}
+addEventListener('DOMContentLoaded', drawAchievements);
+addEventListener('jsal-achievement', drawAchievements);
+addEventListener('pageshow', drawAchievements);   // back from a tool: show what was unlocked there
+
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-29f" defer></script>
+<script src="/nav.js?v=2026-10-29h" defer></script>
 </body>
 </html>
