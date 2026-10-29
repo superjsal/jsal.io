@@ -50,6 +50,9 @@
     { id: 'decision', name: 'Decision made', done: 'Found a CMS fit', todo: 'Find your CMS fit', icon: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>' },
     { id: 'compare', name: 'Side by side', done: 'Compared platforms', todo: 'Compare platforms', icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/>' },
     { id: 'social', name: 'Social butterfly', done: 'Said hi', todo: 'Say hi', icon: '<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20.5l1.4-5.1A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01"/>' },
+    { id: 'lost', name: 'Lost adventurer', done: 'Found the 404 page', todo: 'Secret', secret: true, icon: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>' },
+    { id: 'inspector', name: 'Bag inspector', done: 'Inspected every item', todo: 'Secret', secret: true, icon: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.3-4.3"/>' },
+    { id: 'persistent', name: 'Persistent', done: 'Clicked the logo 10 times', todo: 'Secret', secret: true, icon: '<path d="M6 3l13 7-5.5 1.5L11 17z"/><path d="M14 14l5 5"/>' },
     { id: 'secret', name: 'Up, up, down, down', done: 'Found the secret', todo: 'Secret', secret: true, icon: '<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4M15.5 12h.01M18 14h.01"/>' },
   ];
   const TOOLS = ['/image-resizer/', '/formatter/', '/cms-picker/'];   // "Explorer": the public tools
@@ -103,6 +106,10 @@
     if (TOOLS.every((t) => seen.has(t))) unlock('explorer');
   };
   if (tool) { if (document.prerendering) document.addEventListener('prerenderingchange', visit, { once: true }); else visit(); }
+  // "Lost adventurer": the 404 page marks its body
+  if (document.body && document.body.hasAttribute('data-jsal-lost')) {
+    if (document.prerendering) document.addEventListener('prerenderingchange', () => unlock('lost'), { once: true }); else unlock('lost');
+  }
 
   // Pages load ahead when a link is hovered (or pressed, on touch screens), so the click opens them
   // straight away, even on a first visit with nothing cached. Chrome, Edge and Brave; others ignore it.
@@ -223,10 +230,15 @@
     if (refocus) trigger.focus();
   }
 
+  // "Persistent": ten clicks on the logo in a row (each within 1.5 seconds of the last)
+  let clicks = 0, lastClick = 0;
   trigger.addEventListener('click', (e) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;   // new tab: let the link work
     e.preventDefault();
     menu.hidden ? open(e.detail === 0) : close();
+    clicks = Date.now() - lastClick < 1500 ? clicks + 1 : 1;
+    lastClick = Date.now();
+    if (clicks >= 10) unlock('persistent');
   });
   trigger.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown' || ((e.key === 'Enter' || e.key === ' ') && trigger.tagName !== 'A')) { e.preventDefault(); open(true); }
