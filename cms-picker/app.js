@@ -459,6 +459,9 @@
         nav.append(back);
         box.append(nav);
       }
+      // A question is much shorter than the results: if the box's top has gone above the window (Start over,
+      // or a change that brings in a new question), bring it back rather than leave the page further down
+      if (box.getBoundingClientRect().top < 0) $('#quiz').scrollIntoView();
     }
 
     // On the results: each answer as a button; tapping one opens its choices, and picking another
