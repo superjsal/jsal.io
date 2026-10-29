@@ -186,12 +186,14 @@ create table if not exists public.picker (
   answers   jsonb not null default '{}'::jsonb,   -- { row id: [verdict, note, scope] }
   public    boolean not null default false,       -- shown on the public CMS Picker
   logo      text,                                 -- SVG markup or a PNG data: URL
+  sources   jsonb not null default '{}'::jsonb,   -- { row id: { "url": official docs page, "checked": "YYYY-MM-DD" } }
   edited_by uuid default auth.uid() references auth.users on delete set null,
   at        timestamptz not null default now()
 );
 -- Bring a picker table made by an earlier version of this file up to date.
 alter table public.picker add column if not exists public boolean not null default false;
 alter table public.picker add column if not exists logo text;
+alter table public.picker add column if not exists sources jsonb not null default '{}'::jsonb;
 alter table public.picker drop constraint if exists picker_logo_size;
 alter table public.picker add constraint picker_logo_size check (logo is null or length(logo) <= 200000);
 

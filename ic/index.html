@@ -1156,7 +1156,7 @@ async function loadPicker() {
   const own = new Set(rows.data.flatMap((r) => Object.keys(r.answers || {})));
   PK.items = pub.items.filter((it) => own.has(it.id));
   PK.pbItems = pub.items.filter((it) => !own.has(it.id));   // answered by the Playbook rows above; only their sources live here
-  PK.sourcesOn = rows.data.some((r) => 'sources' in r);     // the sources column exists (private/cms-picker-sources.sql has run)
+  PK.sourcesOn = rows.data.some((r) => 'sources' in r);     // the sources column exists (supabase/schema.sql)
   PK.verdicts = pub.verdicts || {};
   PK.pubLogos = new Map(pub.platforms.filter((x) => x.logo).map((x) => [x.id, x.logo]));
   PK.on = true;
