@@ -159,7 +159,7 @@ def publish(backup_file=None, extra_file=None):
         'verdicts': {**base['VERDICT'], 'indirect': 'Indirectly'},
         'groups': [],
         'items': [],
-        'platforms': [{'id': pid, 'name': plats[pid]['name'], 'profile': profiles.get(pid)} for pid in public],
+        'platforms': [{'id': pid, 'name': cfg.get('names', {}).get(pid, plats[pid]['name']), 'profile': profiles.get(pid)} for pid in public],
         'answers': {pid: {} for pid in public},
     }
     # Table sections and rows in order. A row with "playbook" (its Playbook section, "content" or

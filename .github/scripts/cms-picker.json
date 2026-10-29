@@ -15,6 +15,9 @@
     "godaddy",
     "headless"
   ],
+  "names": {
+    "godaddy": "GoDaddy"
+  },
   "sections": [
     {
       "id": "builtin",
