@@ -160,7 +160,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--ink); font: 15px/1.55 var(--body); }
-h1, h2, h3 { font-family: var(--display); font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
 h2 { font-size: 20px; }
 h3 { font-size: 16px; }
 p { margin: 0; }
@@ -224,23 +224,17 @@ details.fold > summary::before { content: "▸"; color: var(--muted); font-size:
 details.fold[open] > summary::before { transform: rotate(90deg); }
 @media (prefers-reduced-motion: reduce) { details.fold > summary::before { transition: none; } }
 
-/* Status: one pill — colour = what it takes, dot = whether it's the same on every site */
+/* Status: one pill. Colour = what it takes; "· varies" or "· not verified" when it isn't the same on every site */
 .v { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px 2px 8px; border-radius: 99px; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .v.yes, .v.auto { background: var(--ok-soft); color: var(--ok); }
 .v.plugin, .v.code, .v.hosting { background: var(--mid-soft); color: var(--mid); }
 .v.no { background: var(--bad-soft); color: var(--bad); }
 .v.check { background: var(--unk-soft); color: var(--unk); }
 .v .sc { font-weight: 500; opacity: 0.85; }
-.dot { display: inline-block; flex: none; width: 9px; height: 9px; padding: 0; margin: 0; border-radius: 50%; border: 2px solid currentColor; vertical-align: -0.5px; }
-.tally .dot { margin-right: 5px; }
 .h2-sub { color: var(--muted); font-weight: 600; }
-.dot.U { background: var(--ok); border-color: var(--ok); }
-.dot.V { background: transparent; border-color: var(--mid); }
-.dot.C { background: transparent; border-color: var(--unk); border-style: dashed; }
-/* Inside a coloured tag the dot takes the tag's colour (a green dot on a red "Not possible" read as
-   a mixed signal); its shape still shows the scope: solid same everywhere, ring varies, dashed not verified */
-.v .dot.U { background: currentColor; border-color: currentColor; }
-.v .dot.V, .v .dot.C { border-color: currentColor; }
+/* Each platform's answers in two groups, so whether an answer holds on every site is spelled out */
+.group-h { display: flex; align-items: baseline; gap: 8px; margin: 10px 0 2px; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: var(--muted); }
+.group-h span { font-weight: 600; font-variant-numeric: tabular-nums; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* Platform panel: a header card, then one card per item */
@@ -568,7 +562,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 
     <details class="compare fold" id="compare">
       <summary><h2 id="compare-title">Compare platforms</h2></summary>
-      <p class="muted">Hover or tap a cell for the note. The dot shows whether the answer is the same on every site.</p>
+      <p class="muted">Hover or tap a cell for the note. An answer is the same on every site unless it says “varies” or “not verified”.</p>
       <div class="scroll"><table id="grid"></table></div>
     </details>
 
@@ -725,8 +719,9 @@ function warnFor(p, sec, id) {
   if (ptypeOf(sec)) return warnFor(p, 'content', id);
   return boldFix((WARN[p.id] && WARN[p.id][id]) || '');
 }
-// An answer that's the same on every site and clear-cut needs no check.
-const settled = (c) => c[2] === 'U' && ['yes', 'auto', 'no'].includes(c[0]);
+// An answer that's the same on every site needs no check on each site (it's in the "Same on every … site"
+// group); the sidebar counts and "Only what to check" use the same rule, so the numbers agree.
+const settled = (c) => c[2] === 'U';
 function entriesFor(p) {
   const secs = [state.sec === 'tech' ? 'tech' : contentSec(p)];
   return secs.flatMap((sec) => itemsFor(sec).map((it) => {
@@ -782,17 +777,17 @@ function renderPicker() {
     return `<button type="button" id="pick-${p.id}" aria-pressed="${p.id === state.platform}" data-id="${p.id}"><span>${p.name}</span><span class="cnt${n ? '' : ' zero'}" title="${n} to check">${n}</span></button>`;
   }).join('');
 }
-// One pill per answer: colour = what it takes, dot = same on every site / varies / not verified.
+// One pill per answer: colour = what it takes; a word says when it varies or isn't verified (no word = same on every site).
 const SCOPE_SHORT = { U: '', V: 'varies', C: 'not verified' };
 // The CMS Picker section has one tag the Playbook doesn't: indirect ("Indirectly")
 const vName = (v) => VERDICT[v] || PK.verdicts[v] || v;
 const statusPill = (verdict, scope) =>
-  `<span class="v ${verdict}" title="${esc(vName(verdict))} · ${esc(SCOPE[scope])}"><i class="dot ${scope}" aria-hidden="true"></i>${vName(verdict)}${SCOPE_SHORT[scope] ? `<span class="sc">· ${SCOPE_SHORT[scope]}</span>` : ''}<span class="sr-only"> (${SCOPE[scope]})</span></span>`;
+  `<span class="v ${verdict}" title="${esc(vName(verdict))} · ${esc(SCOPE[scope])}">${vName(verdict)}${SCOPE_SHORT[scope] ? `<span class="sc">· ${SCOPE_SHORT[scope]}</span>` : ''}<span class="sr-only"> (${SCOPE[scope]})</span></span>`;
 function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
   const [verdict, mark, scope, note] = e.cell;
   const opts = (map, cur) => Object.keys(map).map((k) => `<option value="${k}"${k === cur ? ' selected' : ''}>${esc(plain(map[k]))}</option>`).join('');
   return `<article class="card editing">
-      <h3 class="item">${e.it.label}<small>Editing ${esc(p.name)}${ptypeOf(e.sec) ? ` · ${PTYPES[ptypeOf(e.sec)]}` : ''}</small></h3>
+      <h4 class="item">${e.it.label}<small>Editing ${esc(p.name)}${ptypeOf(e.sec) ? ` · ${PTYPES[ptypeOf(e.sec)]}` : ''}</small></h4>
       <form class="edit-form" data-form="${e.key}">
         <div class="edit-grid">
           <label>Mark<input name="mark" maxlength="80" required value="${esc(e.edit ? mark : plain(mark))}"></label>
@@ -830,7 +825,7 @@ function rowHtml(e) {
     !how.edited && HOW_UNVERIFIED.has(p.id) ? '<p class="how-note">These steps haven’t been checked in a live admin yet. If one is off, fix it with Edit.</p>' : ''}${guideLinks(p, e.it.id)}</details>` : '';
   return `<article class="card${slim ? ' slim' : ''}">
       <div class="card-head">
-        <h3 class="item">${e.it.label}${e.it.hint && !slim ? `<small>${e.it.hint}</small>` : ''}</h3>
+        <h4 class="item">${e.it.label}${e.it.hint && !slim ? `<small>${e.it.hint}</small>` : ''}</h4>
         <div class="answer">${statusPill(verdict, scope)}${addsDetail(rawMark) ? `<span class="ans" title="Mark on the form">${mark}</span>` : ''}${tools}</div>
       </div>
       ${note ? `<div class="note">${note}<button type="button" class="copy-icon" data-copy="${e.key}" title="Copy note" aria-label="Copy note for ${plain(e.it.label)}">${COPY_SVG}</button></div>` : ''}
@@ -846,12 +841,13 @@ function renderPanel() {
   const p = P.find((x) => x.id === state.platform);
   const all = entriesFor(p);
   const shown = visibleEntries(p);
-  const counts = { U: 0, V: 0, C: 0 };
-  all.forEach((e) => counts[e.cell[2]]++);
   const sub = state.sec === 'content' && contentSec(p) !== 'content' ? ` <span class="h2-sub">· ${PTYPES[state.ptype]}</span>` : '';
   let body;
-  if (shown.length) body = shown.map(rowHtml).join('');
-  else body = `<p class="empty">Nothing to check here: every ${SEC_LABEL[state.sec]} item on ${p.name} is the same on every site.</p>`;
+  if (shown.length) {
+    const check = shown.filter((e) => e.cell[2] !== 'U'), same = shown.filter((e) => e.cell[2] === 'U');
+    const group = (title, list) => list.length ? `<h3 class="group-h">${title} <span>${list.length}</span></h3>${list.map(rowHtml).join('')}` : '';
+    body = group('Check on each site: varies or not verified', check) + group(`Same on every ${esc(p.name)} site`, same);
+  } else body = `<p class="empty">Nothing to check here: every ${SEC_LABEL[state.sec]} item on ${p.name} is the same on every site.</p>`;
   $('#panel').innerHTML = `
     <div class="panel-head">
       <div style="display:grid;gap:2px;min-width:0">
@@ -860,7 +856,7 @@ function renderPanel() {
         ${platformNoteHtml(p)}
       </div>
       <div class="panel-meta">
-        <div class="tally"><span><i class="dot U"></i> ${counts.U} same</span><span><i class="dot V"></i> ${counts.V} vary</span><span><i class="dot C"></i> ${counts.C} not verified</span>${state.onlyCheck ? `<span>· showing ${shown.length} of ${all.length}</span>` : ''}</div>
+        ${state.onlyCheck ? `<div class="tally"><span>Showing ${shown.length} of ${all.length}</span></div>` : ''}
         <button type="button" class="btn" id="copy-all">Copy all notes</button>
       </div>
     </div>
@@ -909,7 +905,7 @@ function renderGrid() {
       const s = sec === 'content' ? contentSec(p) : sec;
       const [verdict, , scope, note] = cellFor(p, s, it.id);
       const tip = esc(`${p.name} · ${plain(it.label)}: ${VERDICT[verdict]} (${SCOPE[scope]}). ${plain(unmd(note))}`);
-      return `<td><span class="v ${verdict}" title="${tip}" tabindex="0"><i class="dot ${scope}" aria-hidden="true"></i>${VERDICT[verdict]}</span></td>`;
+      return `<td><span class="v ${verdict}" title="${tip}" tabindex="0">${VERDICT[verdict]}${SCOPE_SHORT[scope] ? `<span class="sc">· ${SCOPE_SHORT[scope]}</span>` : ''}</span></td>`;
     }).join('')}</tr>`).join('');
   $('#grid').innerHTML = head + `<tbody>${body}</tbody>`;
 }
