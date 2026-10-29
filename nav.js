@@ -14,6 +14,28 @@
       icon: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>' },
   ];
   const HOME = { href: '/', name: 'jsal.io home', icon: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>' };
+  // Page transitions (/shell.css): while one plays, the page is a picture the browser can't click
+  // into, so a click straight after arriving (on the logo, a link) did nothing. A press during a
+  // transition now ends it at once, and the click goes to whatever is under the pointer.
+  let replay = false;
+  const watch = (vt) => {
+    if (!vt) return;
+    const press = () => { vt.skipTransition(); replay = true; setTimeout(() => { replay = false; }, 1000); };
+    addEventListener('pointerdown', press, { capture: true });
+    vt.finished.finally(() => removeEventListener('pointerdown', press, { capture: true }));
+  };
+  addEventListener('pagereveal', (e) => watch(e.viewTransition));   // arriving from another page
+  watch(document.activeViewTransition);                              // already running when this loaded
+  addEventListener('click', (e) => {
+    if (!replay) return;
+    replay = false;
+    // The press landed on the page root (the picture), so the browser sends the click there
+    if (e.target !== document.documentElement && e.target !== document.body) return;
+    const t = document.elementFromPoint(e.clientX, e.clientY);
+    const hit = t && t.closest('a[href], button, summary, label, input, select, textarea, [role="button"], [tabindex]');
+    if (hit) { e.preventDefault(); e.stopPropagation(); hit.click(); }
+  }, true);
+
   const svg = (paths, size = 16) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
 
   // Theme button ([data-jsal-theme]): flips light/dark and remembers it for every app.
