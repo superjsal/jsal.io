@@ -1419,7 +1419,7 @@ function renderPickerView() {
   if (!P.some((p) => p.id === PK.sel)) PK.sel = (on[0] || P[0]).id;
   const p = P.find((x) => x.id === PK.sel);
   const pubAt = PK.pub && PK.pub.asOf;
-  $('#pk-status').innerHTML = `${n ? `<b>${n} change${n === 1 ? '' : 's'} waiting</b> for the next publish (nightly, 07:41 UTC).` : 'Everything here is live on the CMS Picker.'}
+  $('#pk-status').innerHTML = `${n ? `<b>${n} change${n === 1 ? '' : 's'} waiting</b> for the next publish (nightly, 07:41 UTC). Just published? GitHub takes a minute or two to put it live; then press Refresh.` : 'Everything here is live on the CMS Picker.'}
     <a href="${PUBLISH_URL}" target="_blank" rel="noopener">Publish now on GitHub</a>${pubAt ? ` <span class="muted">· answers dated ${esc(pubAt)}</span>` : ''}`;
   const chip = (x) => `<button type="button" class="pk-chip${x.id === PK.sel ? ' on' : ''}" data-pk-sel="${x.id}" aria-pressed="${x.id === PK.sel}">${x.name}</button>`;
   $('#pk-body').innerHTML = `${pkTableHtml(on)}
@@ -1445,7 +1445,7 @@ function pkOpen(pid, id) {
   if (card) { card.scrollIntoView({ block: 'center' }); card.querySelector('input, select')?.focus({ preventScroll: true }); }
 }
 function syncPickerHash() {
-  if (!$('#pk-view').hidden) try { history.replaceState(null, '', `#picker/${PK.sel}`); } catch {}
+  if (!$('#pk-view').hidden) try { history.replaceState(null, '', PK.sel ? `#picker/${PK.sel}` : '#picker'); } catch {}
 }
 async function savePicker(p, change, button, msg = 'Saved. Live on the CMS Picker after the next publish') {
   const r = PK.rows.get(p.id);
@@ -1789,7 +1789,8 @@ function showView(name) {
   document.querySelectorAll('#viewnav [data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === name)));
   try { history.replaceState(null, '', answers ? `#${linkFor(P.find((x) => x.id === state.platform))}` : name === 'picker' && PK.sel ? `#picker/${PK.sel}` : `#${name}`); } catch {}
   if (name === 'team') { renderTeam(); loadTeam(); }
-  if (name === 'picker') { renderPickerView(); syncPickerHash(); }
+  // The CMS Picker tab: fresh answers and the latest published copy each time, so "waiting" is never stale
+  if (name === 'picker') { renderPickerView(); syncPickerHash(); loadPicker(); }
   if (name === 'requests') renderRequests();
   if (!answers) scrollTo({ top: 0, behavior: 'instant' });   // a new page starts at the top, no glide
 }

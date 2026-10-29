@@ -23,7 +23,7 @@ const PERSONAS = [
   ['Local bakery, no tech help', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'headless'] }],
   ['Multilingual B2B SaaS marketing site, agency-built', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', lang: 'yes', look: 'pixel', leave: 'no' },
-    { first: ['webflow'], top3: ['webflow', 'hubspot'] }],
+    { first: ['hubspot', 'webflow'], top3: ['hubspot', 'webflow'] }],   // HubSpot since Webflow's languages became a paid add-on (agreed)
   ['Agency-built local service site', { what: 'site', kind: 'local', who: 'agency', care: 'no', lang: 'no', look: 'visual', leave: 'no' },
     { first: ['duda'], top3: ['duda'] }],
   ['Design-led startup landing page', { what: 'site', kind: 'startup', who: 'learn', care: 'no', lang: 'no', look: 'pixel', leave: 'no' },
