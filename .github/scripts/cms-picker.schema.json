@@ -19,7 +19,8 @@
         "additionalProperties": false,
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
-          "title": { "type": "string", "minLength": 1 }
+          "title": { "type": "string", "minLength": 1 },
+          "asOf": { "type": "string", "minLength": 1 }
         }
       }
     },
@@ -75,7 +76,7 @@
           "required": ["verdict", "scope"],
           "additionalProperties": false,
           "properties": {
-            "verdict": { "type": "string", "enum": ["yes", "auto", "plugin", "code", "hosting", "check", "indirect", "no"] },
+            "verdict": { "type": "string", "enum": ["yes", "auto", "plugin", "code", "hosting", "check", "indirect", "no", "free", "low", "mid", "high", "software", "na"] },
             "mark": { "type": "string" },
             "scope": { "$comment": "U same on every site, V varies by site (plan, theme or setup), C not verified", "type": "string", "enum": ["U", "V", "C"] },
             "sourceUrl": { "type": "string", "pattern": "^https://\\S+$" },

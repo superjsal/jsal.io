@@ -18,10 +18,16 @@
     { id: 'lang', q: 'Will it be in more than one language?', opts: [['no', 'No', 'One language', 'One language'], ['yes', 'Yes', 'Two or more', 'Two or more languages']] },
     { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go', 'A good template is enough'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust', 'Arrange the design visually'], ['pixel', 'Every detail', 'Exactly as designed', 'Control every detail of the design']] },
     { id: 'leave', q: 'How important is taking everything with you if you switch later?', opts: [['yes', 'Very important', 'I want to own all of it', 'Taking everything with me matters'], ['no', 'Not a big concern', 'I’ll probably stay', 'Not planning to switch']] },
+    { id: 'budget', q: 'What can you spend each month?', opts: [['none', 'Nothing for now', 'Start free, upgrade later', 'Nothing for now: free to start'], ['low', 'Up to about $25', 'A basic plan', 'Up to about $25 a month'], ['mid', 'Up to about $100', 'Room for a store or more features', 'Up to about $100 a month'], ['any', 'More, or I’ll pay a developer', 'Cost isn’t the deciding factor', 'Cost isn’t the deciding factor']] },
   ];
   const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
   // "Which is closest to what you do?": the reason a matching platform gets (quiz.kind in cms-picker.json lists them)
   const KINDS = { local: 'Suits local businesses and services', creative: 'Suits creative work and portfolios', startup: 'Suits startups and product launches', b2b: 'Suits B2B companies with a sales team', content: 'Suits sites with lots of content' };
+  // "What can you spend each month?" against the "What it costs to start" bands (from each platform's own
+  // pricing page): a platform over budget drops 3 points for each band over; one within it isn't boosted.
+  // Free software still needs paid hosting, so it counts as the lowest paid band.
+  const COST_LEVEL = { free: 0, low: 1, software: 1, mid: 2, high: 3 };
+  const BUDGET = { none: 0, low: 1, mid: 2 };
   const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
 
   // What each part of the score says when it's what put one match ahead of another: [the leader earned
@@ -44,6 +50,7 @@
     lang: [() => 'more than one language is easier to set up', (a, y) => `more than one language is harder to set up on ${y}`],
     look: [(a) => ({ template: 'it has good templates to start from', visual: 'you can arrange your pages visually', pixel: 'it gives full control over the design' })[a.look], null],
     leave: [() => 'you can take more of your site with you', (a, y) => `${y} doesn’t let you take everything with you`],
+    budget: [(a) => (a.budget === 'none' ? 'it’s free to start' : 'it fits your budget'), (a, y) => `${y} costs more than you want to spend`],
   };
 
   function fitScore(data, p, a) {
@@ -86,7 +93,14 @@
       else if (/API/.test(pr.export || '')) add('leave', 1, 'Your content stays yours, through the API');
       else add('leave', -1);
     }
-    // Every reason is shown (six at most), so two cards' lists match only when their reasons really do
+    if (a.budget in BUDGET) {
+      const level = COST_LEVEL[verdict(a.what === 'store' ? 'cost_store' : 'cost_site')];
+      if (level !== undefined) {
+        const over = level - BUDGET[a.budget];
+        if (over > 0) add('budget', -3 * over); else add('budget', 0, a.budget === 'none' ? 'Free to start' : 'Fits your budget');
+      }
+    }
+    // Every reason is shown (seven at most), so two cards' lists match only when their reasons really do
     const all = why.filter(Boolean);
     return { p, s, why: all, all, pts };
   }
@@ -104,9 +118,11 @@
     design: 'design control', meta_title: 'page titles and descriptions for search', urls: 'control over page addresses',
     gsc404: 'redirects for old links', schema: 'search details like prices and ratings', noindex: 'pages kept out of search',
     ai_crawlers: 'control over which AI bots read the site',
+    cost_site: 'a cheaper start', cost_store: 'a cheaper store',   // not used: cost isn't a "can it do it" row (weight 0)
   };
   // How much a row matters for these answers; 0 when the person has ruled it out
   function weight(row, a) {
+    if (row.startsWith('cost_')) return 0;   // the budget question covers cost
     if (row === 'store') return a.what === 'store' ? 3 : 0;      // not selling
     if (row === 'languages') return a.lang === 'yes' ? 3 : 0;    // one language
     if (row === 'design') return a.look === 'template' ? 0 : 2;  // a good template is enough

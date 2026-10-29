@@ -5,6 +5,9 @@
   const state = { goal: 'all', compare: new Set(), notes: false, open: new Set() };   // open: platforms expanded in the "Show all" list
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Needs code', hosting: 'Hosting/DNS', check: 'Unclear', indirect: 'Indirectly', no: 'Not possible' };
+  // "What it costs to start": bands from each platform's own pricing page, never a price (not in the key above the table)
+  const COST = { free: 'Free to start', low: 'Under $25/mo', mid: '$25–$100/mo', high: 'Over $100/mo', software: 'Free software + hosting', na: 'Not for stores' };
+  Object.assign(SHORT, COST);
   // Scope as a symbol, explained once in the key
   // Only the exceptions are marked (a short word after the tag); settled answers have no mark.
   // The longer wording is for the tooltip.
@@ -337,7 +340,7 @@
     // Key: only the tags the table actually uses
     const used = new Set(Object.values(data.answers).flatMap((a) => Object.values(a).map((c) => c.verdict)));
     const legend = $('#legend');
-    Object.keys(SHORT).filter((k) => used.has(k)).forEach((k) => legend.append(el('span', `tag ${k}`, SHORT[k])));
+    Object.keys(SHORT).filter((k) => used.has(k) && !(k in COST)).forEach((k) => legend.append(el('span', `tag ${k}`, SHORT[k])));
     setGoal('all');
     setupQuiz();
   }
@@ -524,7 +527,10 @@
         name.append(el('span', 'fitp', label(r)));
         card.append(logo(r.p), name, el('p', 'sum', pr.summary || ''));
         const fx = el('p', 'qz-effort');
-        [SKILL[data.quiz.ease[r.p.id] ?? 1], upkeep(pr.hosting)].filter(Boolean).forEach((t) => fx.append(el('span', null, t)));
+        // What it costs to start, for what you're making (a store's band for a store), and a note where a developer is needed
+        const cost = ((data.answers[r.p.id] || {})[a.what === 'store' ? 'cost_store' : 'cost_site'] || {}).verdict;
+        [SKILL[data.quiz.ease[r.p.id] ?? 1], upkeep(pr.hosting), COST[cost] && cost !== 'na' ? `Cost: ${COST[cost]}` : '',
+          (data.quiz.ease[r.p.id] ?? 1) === 0 ? 'Plus developer time to build and maintain' : ''].filter(Boolean).forEach((t) => fx.append(el('span', null, t)));
         card.append(fx);
         const ul = el('ul');
         told[i].why.forEach((w) => ul.append(el('li', null, w)));

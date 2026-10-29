@@ -106,6 +106,11 @@ def plain(t):
     return html.unescape(re.sub(r'<[^>]+>', '', str(t or ''))).strip()
 
 
+# The "What it costs to start" rows' tags: a band from the platform's own pricing page, never a price
+COST_TAGS = {'free': 'Free to start', 'low': 'Under $25/mo', 'mid': '$25–$100/mo', 'high': 'Over $100/mo',
+             'software': 'Free software + hosting', 'na': 'Not for stores'}
+
+
 def publish(backup_file=None):
     """Answers only: tag, short mark and scope per platform and item, plus each platform's profile, all
     from the picker table (the CMS Picker keeps its own answers, separate from the Playbook's). The
@@ -146,7 +151,7 @@ def publish(backup_file=None):
     logos = write_logos(public, {r['platform']: r.get('logo') for r in picker})
     result = {
         'schemaVersion': 2,                          # cms-picker.schema.json; 2 = answers can carry their source
-        'verdicts': {**base['VERDICT'], 'indirect': 'Indirectly'},
+        'verdicts': {**base['VERDICT'], 'indirect': 'Indirectly', **COST_TAGS},
         'asOf': cfg.get('asOf'),                     # when the answers were last checked (the hero's "Updated")
         'groups': [],
         'items': [],
@@ -157,7 +162,7 @@ def publish(backup_file=None):
     # Table sections and rows in order, with each platform's answers from the picker table
     # (answers per platform: { row id: [verdict, mark, scope] }).
     for sec in cfg['sections']:
-        result['groups'].append({k: sec[k] for k in ('id', 'title') if k in sec})
+        result['groups'].append({k: sec[k] for k in ('id', 'title', 'asOf') if k in sec})
         for i in sec['items']:
             result['items'].append({'id': i['id'], 'label': i['label'], **({'term': i['term']} if i.get('term') else {}), 'group': sec['id']})
             for pid in public:

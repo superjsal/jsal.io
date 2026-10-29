@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Platform Playbook | jsal.io</title>
-<link rel="icon" href="/favicon.svg?v=2026-10-29zv" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-29zw" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://kvdzluvhwxkrbatgskio.supabase.co" crossorigin>
@@ -387,6 +387,11 @@ a.pk-twin { color: var(--jsal-accent); text-decoration: underline; text-underlin
 .add-plat h4 { font-size: 15px; }
 .add-plat .edit-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: end; }
 .v.indirect { background: var(--jsal-accent-soft); color: var(--jsal-accent); }
+/* The CMS Picker's "What it costs to start" bands (CMS Picker tab) */
+.v.free { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
+.v.low { background: var(--jsal-info-soft); color: var(--jsal-info); }
+.v.mid, .v.high { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
+.v.software, .v.na { background: var(--jsal-sunk); color: var(--jsal-ink-2); }
 /* Card footer: "How to" on the left, "Suggest a fix" quietly on the right, out of the answer's way */
 .card-foot { display: flex; align-items: flex-start; gap: 4px 12px; }
 .card-foot .how { flex: 1; min-width: 0; }
@@ -691,7 +696,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-29zv" defer></script>
+<script src="/nav.js?v=2026-10-29zw" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script>
 // ---------- Config ----------
@@ -1338,6 +1343,9 @@ function pkHints(f) {
   if (f.source && !f.source.value.trim()) out.push('No source yet. Add the platform’s own help page if you can; the public page shows it with the date checked.');
   return out.map((t) => `<p>${t}</p>`).join('');
 }
+// The tags a row can take: the cost bands for "What it costs to start", the usual tags for every other row
+const PK_COST = ['free', 'low', 'mid', 'high', 'software', 'na'];
+const pkTagsFor = (it) => Object.fromEntries(Object.entries(PK.verdicts).filter(([k]) => (it.group === 'cost' ? PK_COST.includes(k) || k === 'check' : !PK_COST.includes(k))));
 function pkRowHtml(p, r, it) {
   const key = `${p.id}~${it.id}`;
   const [verdict, mark, scope] = pkAnswer(r, it.id);
@@ -1350,7 +1358,7 @@ function pkRowHtml(p, r, it) {
         <form class="edit-form" data-pk-form="${it.id}">
           <div class="edit-grid">
             <label>Public note <span style="font-weight:400">(shown on the CMS Picker)</span><input name="mark" maxlength="200" value="${esc(mark)}"></label>
-            <label>Tag<select name="verdict">${opts(PK.verdicts, verdict)}</select></label>
+            <label>${it.group === 'cost' ? 'Cost to start' : 'Tag'}<select name="verdict">${opts(pkTagsFor(it), verdict)}</select></label>
             <label>Varies by site?<select name="scope">${opts(SCOPE, scope)}</select></label>
           </div>
           ${PK.sourcesOn ? `<label class="pk-src-field">Source <span style="font-weight:400">(the platform’s own docs; saving records today as checked)</span><input name="source" type="url" pattern="https://.*" maxlength="500" placeholder="https://help.example.com/…" value="${esc(src ? src.url : '')}"></label>` : ''}
