@@ -102,9 +102,6 @@ body {
 
 /* Key and Show notes share one row */
 .keyrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 14px; }
-.keybtns { display: flex; flex-wrap: wrap; gap: 8px; }
-.diffnote { margin: -6px 0 12px; color: var(--jsal-muted); font-size: 13.5px; }
-.diffnote:empty { display: none; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--jsal-muted); font-size: 13px; }
 .legend > span { display: inline-flex; align-items: center; gap: 6px; }
 
@@ -295,7 +292,7 @@ body {
 /* Printing: the quiz result and the table on paper, with every note written out and the docs links'
    addresses shown; buttons and floating bits are left off */
 @media print {
-  .jsal-top, .jsal-about, .cta, .sections, .qz-hint, .qz-nav, .qz-switch, .qz-ans-l, .qz-ans-ed, .qz-opts, .types, .plats, .keybtns, .cbar, .totop, .tip, .cfoot { display: none !important; }
+  .jsal-top, .jsal-about, .cta, .sections, .qz-hint, .qz-nav, .qz-switch, .qz-ans-l, .qz-ans-ed, .qz-opts, .types, .plats, #notes, .cbar, .totop, .tip, .cfoot { display: none !important; }
   .grid.compact .mark { position: static; width: auto; height: auto; margin: 4px 0 0; overflow: visible; clip-path: none; white-space: normal; }
   .thead { position: static; overflow: visible; }
   .scroll { overflow: visible; }

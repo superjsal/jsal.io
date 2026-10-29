@@ -2,7 +2,7 @@
 // (answers, profiles and the quiz's own values, exported by build\playbook.py publish).
 (() => {
   const $ = (s) => document.querySelector(s);
-  const state = { goal: 'all', compare: new Set(), notes: false, diff: false };
+  const state = { goal: 'all', compare: new Set(), notes: false };
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Needs code', hosting: 'Hosting/DNS', check: 'Unclear', indirect: 'Indirectly', no: 'Not possible' };
   // Scope as a symbol, explained once in the key
@@ -144,7 +144,6 @@
     [grid, ghead].forEach((g) => g.style.setProperty('--n', Math.max(plats.length, 1)));
     $('#thead').hidden = !plats.length;
     grid.classList.toggle('compact', !state.notes);
-    $('#diffnote').textContent = '';
     if (!plats.length) {
       grid.append(el('p', 'empty', 'No platforms selected. Add some above, or from the cards.'));
       return;
@@ -161,11 +160,8 @@
     $('#thead').scrollLeft = $('#seo .scroll').scrollLeft;
     // A label row where each section starts: Built in, SEO
     const groups = Object.fromEntries((data.groups || []).map((g) => [g.id, g]));
-    let lastGroup = null, same = 0;
-    // "Only differences": skip rows where every platform compared has the same answer (tag and scope)
-    const key = (p, it) => `${data.answers[p.id][it.id].verdict}|${data.answers[p.id][it.id].scope}`;
+    let lastGroup = null;
     items.forEach((it) => {
-      if (state.diff && plats.length > 1 && plats.every((p) => key(p, it) === key(plats[0], it))) { same++; return; }
       if (it.group !== lastGroup && groups[it.group]) {
         const g = groups[it.group];
         const gr = el('div', 'row group');
@@ -198,9 +194,6 @@
       });
       grid.append(row);
     });
-    if (state.diff && plats.length < 2) $('#diffnote').textContent = 'Pick two or more platforms to see where they differ.';
-    else if (same === items.length) { $('#diffnote').textContent = ''; grid.append(el('p', 'empty', 'These platforms give the same answer on every row.')); }
-    else if (same) $('#diffnote').textContent = `Hiding ${same} ${same === 1 ? 'row that is' : 'rows that are'} the same for all ${plats.length}.`;
   }
 
   function build() {
@@ -309,13 +302,6 @@
       hideTip();
       notes.setAttribute('aria-pressed', String(state.notes));
       try { localStorage.setItem('cms-picker-notes', state.notes ? 'on' : 'off'); } catch (e) { /* not remembered */ }
-      render();
-    });
-    const diff = $('#diff');
-    diff.addEventListener('click', () => {
-      state.diff = !state.diff;
-      hideTip();
-      diff.setAttribute('aria-pressed', String(state.diff));
       render();
     });
     // Key: only the tags the table actually uses
