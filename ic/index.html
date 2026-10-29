@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Platform Playbook | jsal.io</title>
-<link rel="icon" href="/favicon.svg?v=2026-10-29u" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-29v" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://kvdzluvhwxkrbatgskio.supabase.co" crossorigin>
@@ -326,6 +326,9 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pk-tag { margin-left: 8px; padding: 1px 8px; border-radius: 99px; background: var(--jsal-accent-soft); color: var(--jsal-accent); font-size: 11.5px; font-weight: 700; }
 .pk-body { display: grid; gap: 8px; }
 .pk-sub { margin-top: 6px; font-size: 13px; color: var(--jsal-muted); }
+.pk-src { margin: 6px 0 0; font-size: 12.5px; color: var(--jsal-muted); overflow-wrap: anywhere; }
+.pk-src a { color: var(--jsal-accent); }
+.pk-src-field { margin-top: 10px; }
 .pk-profile dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 16px; margin: 0; font-size: 13.5px; }
 .pk-profile dt { color: var(--jsal-muted); font-weight: 600; }
 .pk-profile dd { margin: 0; min-width: 0; }
@@ -632,7 +635,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-29u" defer></script>
+<script src="/nav.js?v=2026-10-29v" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script>
 // ---------- Config ----------
@@ -1135,7 +1138,7 @@ $('#panel').addEventListener('submit', (e) => {
 // platform's profile live in the picker table, which only admins can read or change. Row labels come
 // from the published /cms-picker/data.json. Changes reach jsal.io/cms-picker with the next publish
 // (the nightly GitHub Action, or playbook.py publish).
-const PK = { on: false, rows: new Map(), items: [], verdicts: {}, open: false, pubLogos: new Map() };
+const PK = { on: false, rows: new Map(), items: [], pbItems: [], verdicts: {}, open: false, pubLogos: new Map() };
 const PK_GOALS = { store: 'Online store', site: 'Business or marketing site', content: 'Blog or content', custom: 'Custom build with developers' };
 const PK_FIELDS = [   // profile field, label, kind
   ['type', 'Type', 'text'], ['summary', 'Summary', 'area'], ['tags', 'Known for', 'list'], ['aiTags', 'AI tools', 'list'],
@@ -1152,6 +1155,8 @@ async function loadPicker() {
   PK.rows = new Map(rows.data.map((r) => [r.platform, r]));
   const own = new Set(rows.data.flatMap((r) => Object.keys(r.answers || {})));
   PK.items = pub.items.filter((it) => own.has(it.id));
+  PK.pbItems = pub.items.filter((it) => !own.has(it.id));   // answered by the Playbook rows above; only their sources live here
+  PK.sourcesOn = rows.data.some((r) => 'sources' in r);     // the sources column exists (private/cms-picker-sources.sql has run)
   PK.verdicts = pub.verdicts || {};
   PK.pubLogos = new Map(pub.platforms.filter((x) => x.logo).map((x) => [x.id, x.logo]));
   PK.on = true;
@@ -1202,9 +1207,21 @@ function pkField(pr, f, label, kind) {
     `<label><input type="checkbox" name="goals" value="${g}"${(v || []).includes(g) ? ' checked' : ''}>${esc(l)}</label>`).join('')}</fieldset>`;
   return `<label>${label}<input name="${f}" maxlength="200" value="${esc(v || '')}"></label>`;
 }
+// Each answer's source: the official page it was checked against, and when (picker.sources). Saving an
+// answer records today as the date checked; the publish shows both on the public CMS Picker.
+const pkSource = (r, id) => ((r.sources || {})[id]) || null;
+function pkSourceLine(src) {
+  if (!PK.sourcesOn) return '';
+  if (!src) return '<p class="pk-src muted">No source yet</p>';
+  let host = src.url;
+  try { host = new URL(src.url).hostname.replace(/^www\./, ''); } catch {}
+  return `<p class="pk-src">Source: <a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(host)}</a> · checked ${esc(src.checked || '?')}</p>`;
+}
+const pkSourceField = (src) => !PK.sourcesOn ? '' : `<label class="pk-src-field">Source <span style="font-weight:400">(official docs; saving records today as checked)</span><input name="source" type="url" pattern="https://.*" maxlength="500" placeholder="https://help.example.com/…" value="${esc(src ? src.url : '')}"></label>`;
 function pkRowHtml(p, r, it) {
   const key = `pk:${it.id}`;
   const [verdict, mark, scope] = (r.answers || {})[it.id] || ['check', '', 'C'];
+  const src = pkSource(r, it.id);
   const opts = (map, cur) => Object.keys(map).map((k) => `<option value="${k}"${k === cur ? ' selected' : ''}>${esc(plain(map[k]))}</option>`).join('');
   if (state.editing === key) {
     return `<article class="card editing">
@@ -1215,13 +1232,29 @@ function pkRowHtml(p, r, it) {
             <label>Tag<select name="verdict">${opts(PK.verdicts, verdict)}</select></label>
             <label>Scope<select name="scope">${opts(SCOPE, scope)}</select></label>
           </div>
+          ${pkSourceField(src)}
           <div class="edit-actions"><button type="submit" class="btn primary">Save</button><button type="button" class="btn" data-cancel>Cancel</button>
             <span class="muted edit-hint">Public on jsal.io/cms-picker after the next publish.</span></div>
         </form>
       </article>`;
   }
   return `<article class="card"><div class="card-head"><h3 class="item">${esc(it.label)}</h3>
-      <div class="answer">${mark ? `<b class="ans">${esc(mark)}</b>` : ''}${statusPill(verdict, scope)}<button type="button" class="edit-btn" data-pk-edit="${key}" aria-label="Edit ${esc(it.label)} for the CMS Picker">Edit</button></div></div></article>`;
+      <div class="answer">${mark ? `<b class="ans">${esc(mark)}</b>` : ''}${statusPill(verdict, scope)}<button type="button" class="edit-btn" data-pk-edit="${key}" aria-label="Edit ${esc(it.label)} for the CMS Picker">Edit</button></div></div>${pkSourceLine(src)}</article>`;
+}
+// A row whose answer comes from the Playbook above: only its source is kept here
+function pkSourceRowHtml(p, r, it) {
+  const key = `pk:${it.id}`, src = pkSource(r, it.id);
+  if (state.editing === key) {
+    return `<article class="card editing">
+        <h3 class="item">${esc(it.label)}<small>CMS Picker source · ${esc(p.name)} (the answer is the Playbook’s, above)</small></h3>
+        <form class="edit-form" data-pk-source="${it.id}">
+          ${pkSourceField(src)}
+          <div class="edit-actions"><button type="submit" class="btn primary">Save</button><button type="button" class="btn" data-cancel>Cancel</button></div>
+        </form>
+      </article>`;
+  }
+  return `<article class="card"><div class="card-head"><h3 class="item">${esc(it.label)}<small>Answer from the Playbook above</small></h3>
+      <div class="answer"><button type="button" class="edit-btn" data-pk-edit="${key}" aria-label="Edit the source for ${esc(it.label)}">Edit source</button></div></div>${pkSourceLine(src)}</article>`;
 }
 function pkProfileHtml(p, r) {
   const pr = r.profile || {};
@@ -1245,7 +1278,7 @@ function pickerHtml(p) {
         <button type="button" class="btn" data-pk-public="on">Add to the CMS Picker</button></div>`
     : `<p class="muted pk-sub">Only admins see this. It’s the public ${link}’s own rows and ${p.name}’s card there; the Playbook rows it also shows come from the answers above. Changes go live with the next publish (nightly).</p>
       ${(r.profile || {}).type ? '' : '<div class="warn"><div><b>Not shown yet:</b> it appears on the CMS Picker once its profile has a type. Fill in the profile with Edit.</div></div>'}
-      ${pkLogoHtml(p, r)}${pkProfileHtml(p, r)}${PK.items.map((it) => pkRowHtml(p, r, it)).join('')}
+      ${pkLogoHtml(p, r)}${pkProfileHtml(p, r)}${PK.items.map((it) => pkRowHtml(p, r, it)).join('')}${PK.sourcesOn ? PK.pbItems.map((it) => pkSourceRowHtml(p, r, it)).join('') : ''}
       <p><button type="button" class="link-btn" data-pk-public="off">Take it off the CMS Picker</button></p>`;
   return `<details class="pk"${PK.open || (state.editing || '').startsWith('pk:') ? ' open' : ''}><summary>CMS Picker<span class="pk-tag">Admins only</span></summary><div class="pk-body">${body}</div></details>`;
 }
@@ -1304,11 +1337,20 @@ $('#panel').addEventListener('submit', (e) => {
   const p = P.find((x) => x.id === state.platform);
   const f = e.target;
   const btn = f.querySelector('[type="submit"]');
+  const withSource = (r, id) => {
+    const sources = { ...(r.sources || {}) }, url = f.source.value.trim();
+    if (url) sources[id] = { url, checked: new Date().toISOString().slice(0, 10) }; else delete sources[id];
+    return sources;
+  };
   if (f.dataset.pkForm) {
     e.preventDefault();
     const r = PK.rows.get(p.id);
     const answers = { ...r.answers, [f.dataset.pkForm]: [f.verdict.value, f.mark.value.trim(), f.scope.value] };
-    return savePicker(p, { answers }, btn);
+    return savePicker(p, PK.sourcesOn ? { answers, sources: withSource(r, f.dataset.pkForm) } : { answers }, btn);
+  }
+  if (f.dataset.pkSource) {
+    e.preventDefault();
+    return savePicker(p, { sources: withSource(PK.rows.get(p.id), f.dataset.pkSource) }, btn);
   }
   if (f.hasAttribute('data-pk-profile')) {
     e.preventDefault();

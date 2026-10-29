@@ -322,6 +322,17 @@
     { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust'], ['pixel', 'Every detail', 'Exactly as designed']] },
     { id: 'leave', q: 'How important is taking everything with you if you switch later?', opts: [['yes', 'Very important', 'I want to own all of it'], ['no', 'Not a big concern', 'I’ll probably stay']] },
   ];
+  // Shared result links carry the quiz version (v=1). Links from before versions (no v) are version 1.
+  // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
+  // people have already shared keep opening a result rather than an empty quiz.
+  const LINK_VERSION = 1;
+  function readLink(params) {
+    const v = Number(params.get('v') || 1);
+    params.delete('v');
+    const answers = Object.fromEntries(params);
+    if (v === 1) return answers;
+    return null;   // a newer version than this page knows: start the quiz fresh
+  }
   const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
   const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
 
@@ -415,7 +426,7 @@
       const ranked = data.platforms.map((p) => fitScore(p, a)).sort((x, y) => y.s - x.s);
       const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
       const label = (r, i) => (!i ? 'Best match' : r.s >= best - 4 ? 'Good match' : 'Worth a look');
-      history.replaceState(null, '', `#quiz?${new URLSearchParams(Object.entries(a).filter(([k]) => steps().some((q) => q.id === k)))}`);
+      history.replaceState(null, '', `#quiz?v=${LINK_VERSION}&${new URLSearchParams(Object.entries(a).filter(([k]) => steps().some((q) => q.id === k)))}`);
       window.jsalAchieve?.('decision');   // achievement (/nav.js)
       box.replaceChildren();
       const head = el('div', 'qz-top');
@@ -462,12 +473,10 @@
       box.append(nav);
     }
 
-    // A shared result (#quiz?what=site&who=easy…) opens straight on it
+    // A shared result (#quiz?v=1&what=site&who=easy…) opens straight on it
     const m = location.hash.match(/^#quiz\?(.+)$/);
-    if (m) {
-      const shared = Object.fromEntries(new URLSearchParams(m[1]));
-      if (valid(shared)) { a = shared; step = steps().length; results(); requestAnimationFrame(() => $('#quiz').scrollIntoView()); return; }
-    }
+    const shared = m && readLink(new URLSearchParams(m[1]));
+    if (shared && valid(shared)) { a = shared; step = steps().length; results(); requestAnimationFrame(() => $('#quiz').scrollIntoView()); return; }
     ask();
   }
 

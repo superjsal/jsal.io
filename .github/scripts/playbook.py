@@ -144,6 +144,8 @@ def publish(backup_file=None):
         sys.exit('Stopped: the picker table is empty or missing. Nothing was published.')
     profiles = {r['platform']: r['profile'] for r in picker}
     own = {r['platform']: r['answers'] for r in picker}
+    # Each answer's source and when it was checked (picker.sources; admins add them in the Playbook)
+    sources = {r['platform']: r.get('sources') or {} for r in picker}
     missing = []
 
     # Which platforms are public: the picker table's "public" switch (admins set it in the Playbook).
@@ -160,6 +162,7 @@ def publish(backup_file=None):
     public = [pid for pid in wanted if pid in plats and pid not in noprofile]
     logos = write_logos(public, {r['platform']: r.get('logo') for r in picker})
     result = {
+        'schemaVersion': 2,                          # cms-picker.schema.json; 2 = answers can carry their source
         'verdicts': {**base['VERDICT'], 'indirect': 'Indirectly'},
         'asOf': cfg.get('asOf'),                     # when the answers were last checked (the hero's "Updated")
         'groups': [],
@@ -185,12 +188,22 @@ def publish(backup_file=None):
                         a = ['check', '', 'C']
                     v, m, s = a
                     result['answers'][pid][i['id']] = {'verdict': v, 'mark': m, 'scope': s}
+                src = sources.get(pid, {}).get(i['id'])
+                if src and src.get('url'):
+                    result['answers'][pid][i['id']].update({'sourceUrl': src['url'], 'lastVerified': src.get('checked', '')})
     # The guided quiz's own values (cms-picker.json), for the public platforms only
     if cfg.get('quiz'):
         q = {k: v for k, v in cfg['quiz'].items() if not k.startswith('_')}
         result['quiz'] = {k: ({p: x for p, x in v.items() if p in public} if isinstance(v, dict) else [p for p in v if p in public]) for k, v in q.items()}
     if missing:
         print('  no answer yet (shown as "Check"): ' + ', '.join(missing))
+    # Never publish data the page or the checks can't read
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    import check_data
+    errs = check_data.problems(result)
+    if errs:
+        sys.exit('Stopped: the CMS Picker data doesn\'t fit cms-picker.schema.json. Nothing was published.\n  - ' + '\n  - '.join(errs[:20]))
+    print('  ' + check_data.report(result).replace('\n', '\n  '))
     out = json.dumps(result, ensure_ascii=False, separators=(',', ':'))
     if PUBLIC.exists() and PUBLIC.read_text(encoding='utf-8') == out:
         print(f'published: no changes ({len(public)} platforms, {len(result["items"])} items)')
