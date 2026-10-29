@@ -213,6 +213,10 @@ body {
 .ailabel { color: var(--jsal-info); font-size: 13px; font-weight: 800; letter-spacing: 0.04em; }
 .aitag { padding: 3px 10px; border-radius: 999px; background: var(--jsal-info-soft); color: var(--jsal-info); font-size: 13.5px; font-weight: 600; }
 .who { margin-top: 14px; }
+/* Running it: two short facts per platform (hosting and updates, what you can export) */
+.run { display: grid; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--jsal-line); }
+.run dt { color: var(--jsal-muted); font-size: 12.5px; font-weight: 700; }
+.run dd { color: var(--jsal-ink-2); font-size: 14.5px; line-height: 1.45; }
 .who summary { color: var(--jsal-accent); font-size: 15px; font-weight: 600; cursor: pointer; }
 .who h4 { margin: 12px 0 4px; color: var(--jsal-ink); font-size: 14px; }
 .who ul { padding-left: 1.2em; font-size: 15px; line-height: 1.5; }
