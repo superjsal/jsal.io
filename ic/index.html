@@ -1345,6 +1345,14 @@ function pkHints(f) {
 }
 // The tags a row can take: the cost bands for "What it costs to start", the usual tags for every other row
 const PK_COST = ['free', 'low', 'mid', 'high', 'software', 'na'];
+// Scope means something different for a price than for a feature ("Same on every site" reads oddly on a cost band)
+const PK_COST_SCOPE = { U: 'Same for everyone', V: 'Varies by plan, setup or region', C: 'Not verified' };
+const pkScopes = (it) => (it.group === 'cost' ? PK_COST_SCOPE : SCOPE);
+function pkPill(it, verdict, scope) {
+  if (it.group !== 'cost') return statusPill(verdict, scope);
+  const word = { V: 'varies', C: 'not verified' }[scope] || '';
+  return `<span class="v ${verdict}" title="${esc(vName(verdict))} · ${esc(PK_COST_SCOPE[scope])}">${vName(verdict)}${word ? `<span class="sc">· ${word}</span>` : ''}<span class="sr-only"> (${PK_COST_SCOPE[scope]})</span></span>`;
+}
 const pkTagsFor = (it) => Object.fromEntries(Object.entries(PK.verdicts).filter(([k]) => (it.group === 'cost' ? PK_COST.includes(k) || k === 'check' : !PK_COST.includes(k))));
 function pkRowHtml(p, r, it) {
   const key = `${p.id}~${it.id}`;
@@ -1359,7 +1367,7 @@ function pkRowHtml(p, r, it) {
           <div class="edit-grid">
             <label>Public note <span style="font-weight:400">(shown on the CMS Picker)</span><input name="mark" maxlength="200" value="${esc(mark)}"></label>
             <label>${it.group === 'cost' ? 'Cost to start' : 'Tag'}<select name="verdict">${opts(pkTagsFor(it), verdict)}</select></label>
-            <label>Varies by site?<select name="scope">${opts(SCOPE, scope)}</select></label>
+            <label>${it.group === 'cost' ? 'Same for everyone?' : 'Varies by site?'}<select name="scope">${opts(pkScopes(it), scope)}</select></label>
           </div>
           ${PK.sourcesOn ? `<label class="pk-src-field">Source <span style="font-weight:400">(the platform’s own docs; saving records today as checked)</span><input name="source" type="url" pattern="https://.*" maxlength="500" placeholder="https://help.example.com/…" value="${esc(src ? src.url : '')}"></label>` : ''}
           <div class="pk-hints" aria-live="polite"></div>
@@ -1370,7 +1378,7 @@ function pkRowHtml(p, r, it) {
   }
   const shown = mark && !PK_GENERIC.test(mark.trim());
   return `<article class="card" id="pk-${key}"><div class="card-head"><h4 class="item">${esc(it.label)}${it.term ? `<small>${esc(it.term)}</small>` : ''}${twinHtml}</h4>
-      <div class="answer">${statusPill(verdict, scope)}${shown ? `<span class="ans">${esc(mark)}</span>` : ''}${pkAnswerWaiting(p, r, it.id) ? pkWaitTag : ''}<button type="button" class="edit-btn" data-pk-edit="${key}" aria-label="Edit ${esc(it.label)} for ${esc(plain(p.name))}">Edit</button></div></div>${pkSourceLine(src)}</article>`;
+      <div class="answer">${pkPill(it, verdict, scope)}${shown ? `<span class="ans">${esc(mark)}</span>` : ''}${pkAnswerWaiting(p, r, it.id) ? pkWaitTag : ''}<button type="button" class="edit-btn" data-pk-edit="${key}" aria-label="Edit ${esc(it.label)} for ${esc(plain(p.name))}">Edit</button></div></div>${pkSourceLine(src)}</article>`;
 }
 function pkProfileHtml(p, r) {
   const pr = r.profile || {};
@@ -1394,7 +1402,7 @@ function pkTableHtml(on) {
   const body = PK.items.map((it) => `<tr><th scope="row">${esc(it.label)}</th>${on.map((p) => {
     const r = PK.rows.get(p.id), [v, m, s] = pkAnswer(r, it.id), wait = pkAnswerWaiting(p, r, it.id), src = pkSource(r, it.id);
     const tip = `${plain(p.name)} · ${plain(it.label)}: ${vName(v)}${m && !PK_GENERIC.test(m.trim()) ? `, ${m}` : ''}${wait ? ' (waiting for publish)' : ''}${PK.sourcesOn && !src ? ' (no source)' : ''}`;
-    return `<td><button type="button" class="pk-cell${wait ? ' wait' : ''}${PK.editing === `${p.id}~${it.id}` ? ' on' : ''}" data-pk-cell="${p.id}~${it.id}" title="${esc(tip)}" aria-label="${esc(tip)}. Edit">${statusPill(v, s)}${PK.sourcesOn && !src ? '<span class="pk-nosrc" aria-hidden="true">no source</span>' : ''}</button></td>`;
+    return `<td><button type="button" class="pk-cell${wait ? ' wait' : ''}${PK.editing === `${p.id}~${it.id}` ? ' on' : ''}" data-pk-cell="${p.id}~${it.id}" title="${esc(tip)}" aria-label="${esc(tip)}. Edit">${pkPill(it, v, s)}${PK.sourcesOn && !src ? '<span class="pk-nosrc" aria-hidden="true">no source</span>' : ''}</button></td>`;
   }).join('')}</tr>`).join('');
   return `<div class="scroll pk-table"><table>${head}<tbody>${body}</tbody></table></div>`;
 }
