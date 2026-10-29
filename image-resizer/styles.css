@@ -1,40 +1,8 @@
 /* ── Colours ───────────────────────────────────────────────────────────────
-   Shared with every jsal.io app: the palette, light/dark switching and the top
-   bar live in /shell.css. These names map the shared colours onto this app's
-   components. */
+   Colours, corners and the font are the shared --jsal-* tokens in /shell.css
+   (light and dark), used directly. Only this app's own values are here. */
 
 :root {
-  --bg: var(--jsal-bg);
-  --surface: var(--jsal-bg);          /* the app sits flat on the page */
-  --surface-2: var(--jsal-surface);   /* fields, rows and cards */
-  --surface-3: var(--jsal-sunk);      /* hover */
-
-  --border: var(--jsal-line);
-  --border-mid: var(--jsal-line);
-  --border-hi: var(--jsal-line-hi);
-
-  --text: var(--jsal-ink);
-  --text-2: var(--jsal-ink-2);
-  --text-3: var(--jsal-muted);
-
-  --gradient: var(--jsal-fill);       /* main button */
-  --gradient-dim: var(--jsal-accent-soft);
-  --accent-glow: none;
-  --on-accent: var(--jsal-on-fill);
-
-  --accent: var(--jsal-accent);
-  --accent-dim: var(--jsal-accent-soft);
-  --accent-ring: var(--jsal-accent-ring);
-  --ok: var(--jsal-ok);
-  --ok-dim: var(--jsal-ok-soft);
-  --bad: var(--jsal-bad);
-  --bad-dim: var(--jsal-bad-soft);
-
-  --shadow-card: var(--jsal-shadow);
-
-  --radius-sm: var(--jsal-radius);
-  --radius-xs: var(--jsal-radius-sm);
-  --font: var(--jsal-font);
   --crop: #e3b04b;                /* crop box on photos: needs to stay bright in both themes */
 }
 
@@ -48,25 +16,15 @@
 .app:not(.has-images) [data-needs-images] { display: none !important; }
 
 /* Visually hidden but still read by search engines and screen readers */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 button, input { font: inherit; color: inherit; }
 button { cursor: pointer; background: none; border: none; }
 
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 
 /* The app fills the first screen; the About section follows below it */
 body {
-  color: var(--text);
-  font-family: var(--font);
+  color: var(--jsal-ink);
+  font-family: var(--jsal-font);
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
   display: flex;
@@ -87,7 +45,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: var(--text-3);
+  color: var(--jsal-muted);
 }
 .section-label { margin-bottom: 8px; }
 
@@ -95,9 +53,9 @@ body {
 
 .segment-group {
   display: flex;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-mid);
-  background: var(--surface-2);
+  border-radius: var(--jsal-radius);
+  border: 1px solid var(--jsal-line);
+  background: var(--jsal-surface);
   overflow: hidden;
 }
 
@@ -108,25 +66,25 @@ body {
   align-items: center;
   gap: 1px;
   padding: 10px 6px;
-  color: var(--text-2);
+  color: var(--jsal-ink-2);
   text-align: center;
   position: relative;
   transition: background 0.12s, color 0.12s;
 }
-.seg-btn + .seg-btn { border-left: 1px solid var(--border); }
+.seg-btn + .seg-btn { border-left: 1px solid var(--jsal-line); }
 .seg-btn:focus-visible { outline-offset: -2px; }
 .seg-label { font-weight: 600; font-variant-numeric: tabular-nums; }
-.seg-hint { font-size: 12px; color: var(--text-3); }
-.seg-btn:hover { background: var(--surface-3); color: var(--text); }
+.seg-hint { font-size: 12px; color: var(--jsal-muted); }
+.seg-btn:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
 
 .seg-btn.active { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
-.seg-btn.active .seg-label { color: var(--accent); }
+.seg-btn.active .seg-label { color: var(--jsal-accent); }
 .seg-btn.active::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 2px;
-  background: var(--accent);
+  background: var(--jsal-accent);
 }
 
 .custom-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
@@ -139,15 +97,15 @@ body {
   gap: 6px;
   padding: 0 10px;
   height: 40px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-mid);
-  background: var(--surface-2);
+  border-radius: var(--jsal-radius);
+  border: 1px solid var(--jsal-line);
+  background: var(--jsal-surface);
   transition: border-color 0.12s, box-shadow 0.12s;
 }
-.input-group:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-ring); }
+.input-group:focus-within { border-color: var(--jsal-accent); box-shadow: 0 0 0 2px var(--jsal-accent-ring); }
 .input-group.error {
-  border-color: var(--bad);
-  box-shadow: 0 0 0 2px var(--bad-dim);
+  border-color: var(--jsal-bad);
+  box-shadow: 0 0 0 2px var(--jsal-bad-soft);
   animation: shake 0.3s ease;
 }
 
@@ -157,22 +115,22 @@ body {
   75% { transform: translateX(3px); }
 }
 
-.input-group label { font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.4px; }
+.input-group label { font-weight: 700; color: var(--jsal-muted); text-transform: uppercase; letter-spacing: 0.4px; }
 .input-group input {
   flex: 1;
   width: 0;
   border: none;
   background: transparent;
-  color: var(--text);
+  color: var(--jsal-ink);
   font-size: 14px;
   font-variant-numeric: tabular-nums;
   outline: none;
 }
-.input-group input::placeholder { color: var(--text-3); opacity: 0.7; }
+.input-group input::placeholder { color: var(--jsal-muted); opacity: 0.7; }
 .input-group input::-webkit-outer-spin-button,
 .input-group input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .input-group input[type=number] { -moz-appearance: textfield; }
-.input-sep { color: var(--text-3); flex-shrink: 0; }
+.input-sep { color: var(--jsal-muted); flex-shrink: 0; }
 
 /* Recent sizes: each pill is two buttons — apply, and × to remove */
 .recent-sizes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
@@ -181,25 +139,25 @@ body {
   display: inline-flex;
   align-items: center;
   border-radius: 20px;
-  border: 1px solid var(--border-mid);
-  background: var(--surface-2);
-  color: var(--text-2);
+  border: 1px solid var(--jsal-line);
+  background: var(--jsal-surface);
+  color: var(--jsal-ink-2);
   font-size: 12px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   transition: background 0.12s, border-color 0.12s;
 }
-.recent-pill:hover { background: var(--surface-3); border-color: var(--accent-ring); }
+.recent-pill:hover { background: var(--jsal-sunk); border-color: var(--jsal-accent-ring); }
 .recent-pill-apply { padding: 4px 4px 4px 10px; border-radius: 20px 0 0 20px; }
-.recent-pill-apply:hover { color: var(--accent); }
+.recent-pill-apply:hover { color: var(--jsal-accent); }
 .recent-pill-del {
   padding: 2px 9px 2px 5px;
   font-size: 15px;
   line-height: 1;
-  color: var(--text-3);
+  color: var(--jsal-muted);
   border-radius: 0 20px 20px 0;
 }
-.recent-pill-del:hover { color: var(--bad); }
+.recent-pill-del:hover { color: var(--jsal-bad); }
 
 /* ── Quality + format rows ─────────────────────────────────────────────── */
 
@@ -210,9 +168,9 @@ body {
   gap: 6px 10px;
   margin-top: 6px;
   padding: 9px 12px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  background: var(--jsal-surface);
+  border: 1px solid var(--jsal-line);
+  border-radius: var(--jsal-radius);
 }
 .option-label { width: 58px; }
 
@@ -220,25 +178,25 @@ body {
   display: flex;
   gap: 2px;
   padding: 3px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-3);
+  border-radius: var(--jsal-radius);
+  background: var(--jsal-sunk);
 }
 
 .quality-btn, .format-btn, .dest-btn {
   padding: 4px 12px;
-  border-radius: var(--radius-xs);
-  color: var(--text-3);
+  border-radius: var(--jsal-radius-sm);
+  color: var(--jsal-muted);
   font-weight: 600;
   transition: color 0.12s;
 }
-.quality-btn:hover, .format-btn:hover, .dest-btn:hover { color: var(--text); }
+.quality-btn:hover, .format-btn:hover, .dest-btn:hover { color: var(--jsal-ink); }
 .quality-btn:focus-visible, .format-btn:focus-visible, .dest-btn:focus-visible { outline-offset: -2px; }
 /* The chosen option is gold (like the size presets) with its own edge, and switches instantly. It used
    to be the card's own colour, so it blended into the card and the track looked like it changed size. */
 .quality-btn.active, .format-btn.active, .dest-btn.active { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .format-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.format-btn:disabled:hover { color: var(--text-3); }
-.option-hint { flex: 1 1 160px; font-size: 12px; color: var(--text-3); line-height: 1.4; }
+.format-btn:disabled:hover { color: var(--jsal-muted); }
+.option-hint { flex: 1 1 160px; font-size: 12px; color: var(--jsal-muted); line-height: 1.4; }
 
 /* "Save to" row spans the full width, with its buttons sharing the space */
 .option-row-wide { margin-bottom: 6px; }
@@ -251,22 +209,22 @@ body {
   gap: 8px;
   margin-bottom: 6px;
   padding: 6px 8px 6px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px dashed var(--border-hi);
-  color: var(--text-2);
+  border-radius: var(--jsal-radius);
+  border: 1px dashed var(--jsal-line-hi);
+  color: var(--jsal-ink-2);
 }
-.folder-row svg { flex-shrink: 0; color: var(--accent); }
-.folder-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--text); }
-.folder-name.empty { color: var(--text-3); font-weight: 400; }
+.folder-row svg { flex-shrink: 0; color: var(--jsal-accent); }
+.folder-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--jsal-ink); }
+.folder-name.empty { color: var(--jsal-muted); font-weight: 400; }
 .folder-change {
   padding: 4px 10px;
-  border-radius: var(--radius-xs);
-  border: 1px solid var(--border-mid);
-  background: var(--surface-3);
-  color: var(--text-2);
+  border-radius: var(--jsal-radius-sm);
+  border: 1px solid var(--jsal-line);
+  background: var(--jsal-sunk);
+  color: var(--jsal-ink-2);
   font-weight: 500;
 }
-.folder-change:hover { border-color: var(--accent-ring); color: var(--accent); }
+.folder-change:hover { border-color: var(--jsal-accent-ring); color: var(--jsal-accent); }
 
 /* ── Drop zone + replace/add prompt ────────────────────────────────────── */
 
@@ -276,38 +234,38 @@ body {
   align-items: center;
   gap: 12px;
   padding: 18px 16px;
-  border-radius: var(--radius-sm);
-  border: 1.5px dashed var(--border-hi);
-  background: var(--surface-2);
+  border-radius: var(--jsal-radius);
+  border: 1.5px dashed var(--jsal-line-hi);
+  background: var(--jsal-surface);
   text-align: left;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
-.drop-zone:hover { background: var(--surface-3); border-color: var(--accent); }
+.drop-zone:hover { background: var(--jsal-sunk); border-color: var(--jsal-accent); }
 .drop-zone.drag {
   border-style: solid;
-  border-color: var(--accent);
-  background: var(--surface-3);
+  border-color: var(--jsal-accent);
+  background: var(--jsal-sunk);
   /* Drawn inside the box: the scrollable settings column would clip an outer glow */
-  box-shadow: inset 0 0 0 2px var(--accent-ring), inset 0 0 20px var(--accent-dim);
+  box-shadow: inset 0 0 0 2px var(--jsal-accent-ring), inset 0 0 20px var(--jsal-accent-soft);
 }
 
 .drop-icon {
   width: 36px;
   height: 36px;
   border-radius: 9px;
-  background: var(--gradient-dim);
-  border: 1px solid var(--accent-ring);
-  color: var(--accent);
+  background: var(--jsal-accent-soft);
+  border: 1px solid var(--jsal-accent-ring);
+  color: var(--jsal-accent);
   display: grid;
   place-items: center;
   flex-shrink: 0;
   transition: transform 0.15s, box-shadow 0.15s;
 }
-.drop-zone:hover .drop-icon, .drop-zone.drag .drop-icon { transform: translateY(-1px); box-shadow: var(--accent-glow); }
+.drop-zone:hover .drop-icon, .drop-zone.drag .drop-icon { transform: translateY(-1px); box-shadow: none; }
 
 .drop-text { display: flex; flex-direction: column; gap: 2px; }
-.drop-title { font-weight: 500; color: var(--text); }
-.drop-sub { color: var(--text-3); }
+.drop-title { font-weight: 500; color: var(--jsal-ink); }
+.drop-sub { color: var(--jsal-muted); }
 
 .load-choice {
   display: flex;
@@ -315,9 +273,9 @@ body {
   gap: 8px;
   margin-top: 6px;
   padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  background: var(--accent-dim);
-  border: 1px solid var(--accent-ring);
+  border-radius: var(--jsal-radius);
+  background: var(--jsal-accent-soft);
+  border: 1px solid var(--jsal-accent-ring);
   animation: fadeIn 0.15s ease;
 }
 
@@ -326,21 +284,21 @@ body {
   to { opacity: 1; transform: none; }
 }
 
-.load-choice-msg { color: var(--text); }
+.load-choice-msg { color: var(--jsal-ink); }
 .load-choice-btns { display: flex; gap: 5px; }
 
 .btn-choice {
   flex: 1;
   padding: 7px 8px;
-  border-radius: var(--radius-xs);
+  border-radius: var(--jsal-radius-sm);
   font-weight: 600;
   border: 1px solid transparent;
   transition: filter 0.12s, background 0.12s;
 }
 .btn-choice:hover { filter: brightness(1.12); }
-.btn-choice-replace { background: var(--bad-dim); border-color: var(--bad); color: var(--bad); }
-.btn-choice-add { background: var(--accent-dim); border-color: var(--accent-ring); color: var(--accent); }
-.btn-choice-cancel { background: var(--surface-3); border-color: var(--border-mid); color: var(--text-2); }
+.btn-choice-replace { background: var(--jsal-bad-soft); border-color: var(--jsal-bad); color: var(--jsal-bad); }
+.btn-choice-add { background: var(--jsal-accent-soft); border-color: var(--jsal-accent-ring); color: var(--jsal-accent); }
+.btn-choice-cancel { background: var(--jsal-sunk); border-color: var(--jsal-line); color: var(--jsal-ink-2); }
 
 /* ── Export toolbar + status ───────────────────────────────────────────── */
 
@@ -349,7 +307,7 @@ body {
 .toolbar-hint {
   font-family: inherit;
   font-size: 12px;
-  color: var(--text-3);
+  color: var(--jsal-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -360,27 +318,27 @@ body {
   gap: 6px;
   padding: 0 14px;
   height: 40px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-mid);
-  background: var(--surface-2);
-  color: var(--text);
+  border-radius: var(--jsal-radius);
+  border: 1px solid var(--jsal-line);
+  background: var(--jsal-surface);
+  color: var(--jsal-ink);
   white-space: nowrap;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--jsal-shadow);
   transition: background 0.12s, border-color 0.12s, opacity 0.12s;
 }
 .btn-apply { font-weight: 600; }
-.btn-apply:hover, .btn-primary:hover { background: var(--surface-3); border-color: var(--border-hi); }
+.btn-apply:hover, .btn-primary:hover { background: var(--jsal-sunk); border-color: var(--jsal-line-hi); }
 .btn-primary:active { transform: scale(0.98); }
 .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .btn-accent {
-  background: var(--gradient);
+  background: var(--jsal-fill);
   border-color: transparent;
-  color: var(--on-accent);
+  color: var(--jsal-on-fill);
   font-weight: 600;
-  box-shadow: var(--accent-glow);
+  box-shadow: none;
 }
-.btn-accent:hover { background: var(--gradient); border-color: transparent; filter: brightness(1.08); }
+.btn-accent:hover { background: var(--jsal-fill); border-color: transparent; filter: brightness(1.08); }
 .btn-accent:disabled { box-shadow: none; filter: none; }
 
 .btn-ghost {
@@ -389,14 +347,14 @@ body {
   gap: 5px;
   padding: 0 10px;
   height: 40px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--jsal-radius);
   border: 1px solid transparent;
   font-weight: 500;
   margin-left: auto;
   transition: background 0.12s, border-color 0.12s;
 }
-.btn-danger { color: var(--bad); }
-.btn-danger:hover { background: var(--bad-dim); border-color: var(--bad); }
+.btn-danger { color: var(--jsal-bad); }
+.btn-danger:hover { background: var(--jsal-bad-soft); border-color: var(--jsal-bad); }
 
 .status-bar {
   display: flex;
@@ -404,10 +362,10 @@ body {
   gap: 8px;
   margin-top: 8px;
   padding: 9px 12px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  color: var(--text-2);
+  border-radius: var(--jsal-radius);
+  background: var(--jsal-surface);
+  border: 1px solid var(--jsal-line);
+  color: var(--jsal-ink-2);
   overflow-wrap: anywhere;
 }
 
@@ -415,13 +373,13 @@ body {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--text-3);
+  background: var(--jsal-muted);
   flex-shrink: 0;
   transition: background 0.2s, box-shadow 0.2s;
 }
-.status-dot.active { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
-.status-dot.busy { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-.status-dot.error { background: var(--bad); box-shadow: 0 0 6px var(--bad); }
+.status-dot.active { background: var(--jsal-ok); box-shadow: 0 0 6px var(--jsal-ok); }
+.status-dot.busy { background: var(--jsal-accent); box-shadow: 0 0 6px var(--jsal-accent); }
+.status-dot.error { background: var(--jsal-bad); box-shadow: 0 0 6px var(--jsal-bad); }
 
 @keyframes statusIn {
   from { opacity: 0.3; transform: translateY(1px); }
@@ -433,10 +391,10 @@ body {
 
 .canvas-wrap {
   position: relative;
-  border-radius: var(--radius-sm);
+  border-radius: var(--jsal-radius);
   overflow: hidden;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
+  background: var(--jsal-surface);
+  border: 1px solid var(--jsal-line);
 }
 .canvas-wrap canvas {
   display: block;
@@ -446,7 +404,7 @@ body {
   user-select: none;
   -webkit-user-select: none;
 }
-.canvas-wrap canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.canvas-wrap canvas:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: -2px; }
 
 /* Empty state: the whole preview is a drop target and browse button */
 .canvas-empty {
@@ -459,20 +417,20 @@ body {
   justify-content: center;
   gap: 6px;
   padding: 12px;
-  border: 1.5px dashed var(--border-hi);
-  border-radius: var(--radius-sm);
-  color: var(--text-3);
+  border: 1.5px dashed var(--jsal-line-hi);
+  border-radius: var(--jsal-radius);
+  color: var(--jsal-muted);
   text-align: center;
   transition: opacity 0.2s, visibility 0.2s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
-.canvas-empty:hover { border-color: var(--accent); background: var(--surface-3); }
+.canvas-empty:hover { border-color: var(--jsal-accent); background: var(--jsal-sunk); }
 .canvas-empty:focus-visible { outline-offset: -2px; }
 .canvas-wrap.drag .canvas-empty {
   border-style: solid;
-  border-color: var(--accent);
-  background: var(--surface-3);
+  border-color: var(--jsal-accent);
+  background: var(--jsal-sunk);
   /* Drawn inside the box: the preview frame would clip an outer glow */
-  box-shadow: inset 0 0 0 2px var(--accent-ring), inset 0 0 30px var(--accent-dim);
+  box-shadow: inset 0 0 0 2px var(--jsal-accent-ring), inset 0 0 30px var(--jsal-accent-soft);
 }
 .canvas-empty.hidden { opacity: 0; visibility: hidden; }
 .canvas-empty-icon {
@@ -480,14 +438,14 @@ body {
   height: 44px;
   margin-bottom: 4px;
   border-radius: 11px;
-  background: var(--gradient-dim);
-  border: 1px solid var(--accent-ring);
-  color: var(--accent);
+  background: var(--jsal-accent-soft);
+  border: 1px solid var(--jsal-accent-ring);
+  color: var(--jsal-accent);
   display: grid;
   place-items: center;
 }
-.canvas-empty-title { font-size: 15px; font-weight: 600; color: var(--text); }
-.canvas-empty-sub { color: var(--text-3); }
+.canvas-empty-title { font-size: 15px; font-weight: 600; color: var(--jsal-ink); }
+.canvas-empty-sub { color: var(--jsal-muted); }
 
 .canvas-badge {
   position: absolute;
@@ -516,7 +474,7 @@ body {
   min-height: 16px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-3);
+  color: var(--jsal-muted);
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -535,7 +493,7 @@ body {
   justify-content: space-between;
   gap: 4px 12px;
 }
-.grid-hint { font-size: 12px; color: var(--text-3); }
+.grid-hint { font-size: 12px; color: var(--jsal-muted); }
 
 /* Cards sit in one horizontal strip that scrolls sideways when there are many */
 .preview-grid {
@@ -551,25 +509,25 @@ body {
 .preview-grid:empty { display: none; }
 
 .preview-item {
-  background: var(--surface-2);
-  border: 1px solid var(--border-mid);
-  border-radius: var(--radius-sm);
+  background: var(--jsal-surface);
+  border: 1px solid var(--jsal-line);
+  border-radius: var(--jsal-radius);
   padding: 7px;
   text-align: center;
   position: relative;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--jsal-shadow);
   flex: 0 0 148px;
   min-width: 0;   /* a fixed width: never stretched by its text (it used to widen as each file size came in) */
   transition: border-color 0.12s, box-shadow 0.12s;
 }
-.preview-item:hover { border-color: var(--border-hi); }
-.preview-item.selected { border-color: var(--accent-ring); box-shadow: 0 0 0 2px var(--accent-ring), var(--shadow-card); }
+.preview-item:hover { border-color: var(--jsal-line-hi); }
+.preview-item.selected { border-color: var(--jsal-accent-ring); box-shadow: 0 0 0 2px var(--jsal-accent-ring), var(--jsal-shadow); }
 
 .thumb-wrap {
   display: block;
   width: 100%;
   position: relative;
-  border-radius: var(--radius-xs);
+  border-radius: var(--jsal-radius-sm);
   overflow: hidden;
   margin-bottom: 6px;
   height: var(--thumb-h);
@@ -601,8 +559,8 @@ body {
   border-radius: 5px;
   font-size: 11px;
   font-weight: 600;
-  background: var(--gradient);
-  color: var(--on-accent);
+  background: var(--jsal-fill);
+  color: var(--jsal-on-fill);
   pointer-events: none;
   box-shadow: 0 1px 4px rgba(0,0,0,0.35);
 }
@@ -638,14 +596,14 @@ body {
   border: 1px solid transparent;
   border-radius: 4px;
   padding: 1px 4px;
-  color: var(--text-2);
+  color: var(--jsal-ink-2);
   text-overflow: ellipsis;
   cursor: text;
   outline: none;
   transition: border-color 0.12s, background 0.12s, color 0.12s;
 }
-.filename-edit:hover { border-color: var(--border-mid); background: var(--surface-3); }
-.filename-edit:focus { border-color: var(--accent); background: var(--surface-3); color: var(--text); box-shadow: 0 0 0 2px var(--accent-ring); }
+.filename-edit:hover { border-color: var(--jsal-line); background: var(--jsal-sunk); }
+.filename-edit:focus { border-color: var(--jsal-accent); background: var(--jsal-sunk); color: var(--jsal-ink); box-shadow: 0 0 0 2px var(--jsal-accent-ring); }
 
 .src-dims {
   display: flex;
@@ -656,13 +614,13 @@ body {
   margin-top: 2px;
   padding: 0 2px;
   font-size: 12px;
-  color: var(--text-3);
+  color: var(--jsal-muted);
   font-variant-numeric: tabular-nums;
   overflow: hidden;
 }
 .src-dims > :first-child { overflow: hidden; text-overflow: ellipsis; }   /* the source size gives way first */
 .file-size { white-space: nowrap; flex-shrink: 0; }
-.file-size.error { color: var(--bad); }
+.file-size.error { color: var(--jsal-bad); }
 
 .card-dl-btn {
   display: flex;
@@ -671,17 +629,17 @@ body {
   gap: 4px;
   width: 100%;
   padding: 6px 0;
-  border-radius: var(--radius-xs);
-  background: var(--surface-3);
-  border: 1px solid var(--border-mid);
-  color: var(--text-2);
+  border-radius: var(--jsal-radius-sm);
+  background: var(--jsal-sunk);
+  border: 1px solid var(--jsal-line);
+  color: var(--jsal-ink-2);
   font-weight: 500;
   transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
-.card-dl-btn:hover { background: var(--gradient-dim); border-color: var(--accent-ring); color: var(--accent); }
-.card-dl-btn.saved { background: var(--ok-dim); border-color: var(--ok); color: var(--ok); }
+.card-dl-btn:hover { background: var(--jsal-accent-soft); border-color: var(--jsal-accent-ring); color: var(--jsal-accent); }
+.card-dl-btn.saved { background: var(--jsal-ok-soft); border-color: var(--jsal-ok); color: var(--jsal-ok); }
 
-.divider { height: 1px; background: var(--border); margin: 12px 0; }
+.divider { height: 1px; background: var(--jsal-line); margin: 12px 0; }
 
 /* ── Fit-to-window layout ──────────────────────────────────────────────────
    Desktop only. The page itself never scrolls: on a full window the settings

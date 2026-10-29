@@ -73,6 +73,9 @@ body { background: var(--jsal-bg); }
   --jsal-btn-weight: 600;
 }
 
+/* Text for screen readers only */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
 /* One column width for the home page and every app (content width; pages add 20px sides),
    so the top bar never moves when going between them. Each page's container uses
    max-width: calc(var(--jsal-col) + 40px). */
