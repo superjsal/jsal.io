@@ -286,6 +286,8 @@ body {
 .qz-card .sum { color: var(--jsal-muted); font-size: 14.5px; }
 .qz-card ul { grid-column: 2; margin: 6px 0 0; padding-left: 1.1em; font-size: 14.5px; }
 .qz-card li + li { margin-top: 3px; }
+.qz-vs { grid-column: 2; margin-top: 6px; color: var(--jsal-ink); font-size: 14.5px; }   /* what sets it apart from its neighbour */
+.qz-vs + .qz-vs { margin-top: 2px; }
 .qz-warn { grid-column: 2; margin-top: 4px; color: var(--jsal-warn); font-size: 14px; }
 .qz-effort { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .qz-effort span { padding: 2px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 13px; }
@@ -300,6 +302,12 @@ body {
 .qz-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 14px; }
 .qz-switch-l { margin-right: 4px; color: var(--jsal-muted); font-size: 14px; }
 .qz-also { margin-top: 12px; color: var(--jsal-muted); font-size: 14px; }
+
+/* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact chips) */
+@media (pointer: coarse) {
+  .chip, .chip-link, .qz-opt, .btn { min-height: 44px; }
+  .chip-link { display: inline-flex; align-items: center; }
+}
 
 /* Printing: the quiz result and the table on paper, with every note written out and the docs links'
    addresses shown; buttons and floating bits are left off */

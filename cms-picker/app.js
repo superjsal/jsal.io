@@ -43,7 +43,6 @@
 
   function setGoal(g) {
     state.goal = g;
-    if (g !== 'all') window.jsalAchieve?.('decision');   // achievement (/nav.js)
     state.compare = new Set(g === 'all' ? DEFAULT_COMPARE : data.platforms.filter(fits).map((p) => p.id));
     renderCards();
     render();
@@ -500,7 +499,10 @@
     function results() {
       const ranked = window.cmsScore.rank(data, a);
       const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
-      const label = (r, i) => (!i ? 'Best match' : r.s >= best - 4 ? 'Good match' : 'Worth a look');
+      // A tie for first is shown as one: list order alone mustn't crown a "Best match"
+      const tied = top[1] && top[1].s === best;
+      const label = (r) => (r.s === best ? (tied ? 'Joint best match' : 'Best match') : r.s >= best - 4 ? 'Good match' : 'Worth a look');
+      const told = window.cmsScore.explain(data, a, top);   // reasons without repeats, and what sets each apart
       history.replaceState(null, '', `#quiz?v=${LINK_VERSION}&${new URLSearchParams(Object.entries(a).filter(([k]) => steps().some((q) => q.id === k)))}`);
       window.jsalAchieve?.('decision');   // achievement (/nav.js)
       box.replaceChildren();
@@ -514,16 +516,17 @@
       h.tabIndex = -1;
       const list = el('div', 'qz-res');
       top.forEach((r, i) => {
-        const card = el('article', `qz-card${i ? '' : ' top'}`), pr = r.p.profile || {};
+        const card = el('article', `qz-card${r.s === best ? ' top' : ''}`), pr = r.p.profile || {};
         const name = el('h4', null, r.p.name);
-        name.append(el('span', 'fitp', label(r, i)));
+        name.append(el('span', 'fitp', label(r)));
         card.append(logo(r.p), name, el('p', 'sum', pr.summary || ''));
         const fx = el('p', 'qz-effort');
         [SKILL[data.quiz.ease[r.p.id] ?? 1], upkeep(pr.hosting)].filter(Boolean).forEach((t) => fx.append(el('span', null, t)));
         card.append(fx);
         const ul = el('ul');
-        r.why.forEach((w) => ul.append(el('li', null, w)));
+        told[i].why.forEach((w) => ul.append(el('li', null, w)));
         card.append(ul);
+        told[i].lines.forEach((t) => card.append(el('p', 'qz-vs', t)));
         const skip = (pr.lessSuited || [])[0];
         if (skip) card.append(el('p', 'qz-warn', `Not ideal if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);

@@ -57,12 +57,59 @@
       else if (/API/.test(pr.export || '')) { s += 1; why.push('Your content stays yours, through the API'); }
       else s -= 1;
     }
-    return { p, s, why: why.filter(Boolean).slice(0, 4) };
+    const all = why.filter(Boolean);
+    return { p, s, why: all.slice(0, 4), all };
   }
 
   // Every platform, best fit first
   const rank = (data, a) => data.platforms.map((p) => fitScore(data, p, a)).sort((x, y) => y.s - x.s);
 
-  const api = { QUESTIONS, rank };
+  // ---------- Telling the top matches apart ----------
+  // Only from what's already published: the table's checked answers and each profile's "good fit" list.
+  // How well an answer does it (built in beats a plugin beats code), and how much a row matters for these answers
+  const LEVEL = { yes: 3, auto: 3, plugin: 2, code: 1, no: 0 };
+  function weight(row, a) {
+    if (row === 'store') return a.what === 'store' ? 3 : 0;   // not selling: who sells better doesn't matter
+    if (row === 'languages') return a.lang === 'yes' ? 3 : 1;
+    if (row === 'blog') return a.what === 'content' ? 3 : 1;
+    if (row === 'design') return a.look === 'template' ? 1 : 2;
+    return 1;
+  }
+  const lowerFirst = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+  const joinAnd = (xs) => (xs.length > 1 ? `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}` : xs[0]);
+  // "Pick it over Wix if you want to …: both are easier on Squarespace." From the rows x does better than y
+  // (most relevant first); without any, x's first "good fit" line. Null when there's nothing to go on.
+  function pickOver(data, a, x, y) {
+    const ax = data.answers[x.p.id] || {}, ay = data.answers[y.p.id] || {};
+    const rows = data.items.map((it) => {
+      const gap = (LEVEL[(ax[it.id] || {}).verdict] ?? -1) - (LEVEL[(ay[it.id] || {}).verdict] ?? -1);
+      return { it, gap, w: weight(it.id, a) };
+    }).filter((r) => r.gap > 0 && r.w > 0 && (LEVEL[(ay[r.it.id] || {}).verdict] ?? -1) >= 0)
+      .sort((p, q) => q.w - p.w || q.gap - p.gap).slice(0, 2);
+    if (rows.length) return `Pick it over ${y.p.name} if you want to ${joinAnd(rows.map((r) => lowerFirst(r.it.label)))}: ${rows.length > 1 ? 'both are' : 'it’s'} easier on ${x.p.name}.`;
+    const fit = ((x.p.profile || {}).goodFit || [])[0];
+    return fit ? `Pick it over ${y.p.name} for ${lowerFirst(fit)}.` : null;
+  }
+  // For the top matches: the reasons to show (the second and third leave out the ones the first already
+  // shows) and a line saying what sets each apart from its neighbour
+  function explain(data, a, top) {
+    const lead = top[0];
+    return top.map((r, i) => {
+      if (!i) {
+        const next = top[1], lines = [];
+        if (next && next.s === r.s) lines.push(`A close call with ${next.p.name}: both fit your answers equally.`, pickOver(data, a, r, next));
+        else if (next) {
+          const extra = r.all.find((w) => !next.all.includes(w));
+          lines.push(extra ? `Ahead of ${next.p.name} for you: ${lowerFirst(extra)}.` : pickOver(data, a, r, next));
+        }
+        return { why: r.why, lines: lines.filter(Boolean) };
+      }
+      const own = r.why.filter((w) => !lead.all.includes(w)), shared = r.why.length - own.length;   // all: the first's list stops at four
+      if (shared) own.push(own.length ? `Otherwise the same reasons as ${lead.p.name}` : `Fits your answers for the same reasons as ${lead.p.name}`);
+      return { why: own, lines: [pickOver(data, a, r, lead)].filter(Boolean) };
+    });
+  }
+
+  const api = { QUESTIONS, rank, explain };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

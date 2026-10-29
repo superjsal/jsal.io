@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-29zm";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-29zm";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-29zm";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-29zm";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-29zm";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-29zm";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-29zm";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-29zm";
+} from "./state.js?v=2026-10-29zo";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-29zo";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-29zo";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-29zo";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-29zo";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-29zo";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-29zo";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-29zo";
 
 const $ = id => document.getElementById(id);
 
