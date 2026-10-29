@@ -2058,7 +2058,7 @@ function startApp(me) {
 }
 
 // Live: a teammate's request, upvote, comment, edit or watch-out shows up on every open page within a
-// second or so (needs the tables in Supabase's realtime publication: private/realtime.sql). Any change
+// second or so (needs the tables in Supabase's realtime publication: supabase/schema.sql). Any change
 // reloads the team data once, with changes that arrive together batched; the redraws keep anything
 // being typed. When a dropped connection comes back, it catches up the same way.
 async function goLive() {

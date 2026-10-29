@@ -290,6 +290,19 @@ create policy "author or admin delete" on public.comments for delete to authenti
 -- Signed-out visitors get nothing at all.
 revoke all on public.members, public.access_requests, public.app_data, public.edits, public.requests, public.votes, public.comments, public.platform_notes, public.picker from anon;
 
+-- Live updates: Supabase Realtime announces changes to these tables, so every open page shows a
+-- teammate's request, upvote, comment, edit or watch-out within a second or so. New and changed rows
+-- only reach members the rules above let read them; a deletion is announced with just the row's id.
+do $$
+declare t text;
+begin
+  foreach t in array array['requests', 'votes', 'comments', 'edits', 'platform_notes'] loop
+    if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = t) then
+      execute format('alter publication supabase_realtime add table public.%I', t);
+    end if;
+  end loop;
+end $$;
+
 -- Keep-awake: a twice-weekly GitHub Action calls this so the free Supabase project never pauses for
 -- inactivity. It only returns the time and reads no data.
 create or replace function public.ping() returns timestamptz
