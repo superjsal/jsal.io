@@ -7,12 +7,14 @@ data, scoring and tests. Real-device checks before a release: `manual-checks.md`
 
 | What | Where | Edited by |
 |---|---|---|
-| Each platform's answers (tag, note, varies/not verified), profile, logo, public switch | Supabase `picker` table, plus the Playbook's own rows for the "playbook" ones | John, in the Playbook |
-| Each answer's source (official docs URL) and the date it was checked | `picker.sources` | John, in the Playbook's CMS Picker section |
+| Each platform's answers (tag, public note, varies/not verified), profile, logo, public switch | Supabase `picker` table (its own answers, separate from the Playbook's) | John, on the Playbook's CMS Picker tab |
+| Each answer's source (official docs URL) and the date it was checked | `picker.sources` | John, on the CMS Picker tab (in the same form as the answer) |
 | The rows, their plain-language labels and SEO names, platform order | `.github/scripts/cms-picker.json` | code |
 | The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker.json` → `quiz` | code |
 | What the page reads | `cms-picker/data.json`, written by `playbook.py publish` (nightly at 07:41 UTC, or Run workflow); never edit it by hand | the publish |
 | Its shape | `.github/scripts/cms-picker.schema.json`, checked by `check_data.py` before every publish and push | code |
+
+**Separate from the Playbook.** The CMS Picker's answers are its own. A topic both cover (meta titles, old links/redirects, structured data) is labelled on both sides ("Also in the Playbook" / "Also on the CMS Picker"); a correction to one should be checked against the other.
 
 **Answers.** Each one is `{verdict, mark, scope, sourceUrl?, lastVerified?}`. `verdict` is the tag (yes =
 Built in, auto, plugin, code, no, …). `mark` is the note shown on tap or with Show notes; a note that only

@@ -8,15 +8,15 @@
 #   backup       → saves every table to private/backups/playbook-<date-time>.json
 #   pull         → saves the Playbook base content to private/playbook/defaults.json for editing
 #   push         → uploads private/playbook/defaults.json as the base content (backs up first)
-#   publish      → writes site/cms-picker/data.json, the answers-only public export (Playbook rows +
-#                  the picker table; which rows, their labels and the platform order from cms-picker.json
-#                  next to this file; which platforms are public from the picker table), any logos admins
+#   publish      → writes site/cms-picker/data.json, the answers-only public export (every answer, profile
+#                  and source from the picker table; platform names from the Playbook; which rows, their
+#                  labels and the platform order from cms-picker.json next to this file), any logos admins
 #                  uploaded, then the plain-HTML copy in the page. Nightly by GitHub Action.
 #   publish --from-backup <file>   → the same, from a backup file (no key needed)
 #   prerender    → re-writes the plain-HTML copy of data.json into site/cms-picker/index.html (no key needed)
 #
-# Small fixes don't need this: sign in on jsal.io/ic as an admin and use Edit (the CMS Picker's own
-# rows, profile, logo and "on the CMS Picker" switch are in an admin-only section on each platform;
+# Small fixes don't need this: sign in on jsal.io/ic as an admin and use Edit (the CMS Picker's answers,
+# profiles, logos and "on the CMS Picker" switches are on the admin-only CMS Picker tab;
 # platforms are added and hidden on the Team page). Use pull/push for structural Playbook changes the
 # page can't make (a new item, page type or guide).
 #
@@ -107,38 +107,21 @@ def plain(t):
 
 
 def publish(backup_file=None):
-    """Answers only: tag, short mark and scope per platform and item, plus each platform's profile.
-    Which rows and platforms are public, their labels and order come from cms-picker.json; Playbook rows
-    from Playbook, the CMS Picker's own rows and the profiles from the picker table.
-    No notes, how-to, watch-outs, guides, page types, requests, comments or team data reach the public file."""
+    """Answers only: tag, short mark and scope per platform and item, plus each platform's profile, all
+    from the picker table (the CMS Picker keeps its own answers, separate from the Playbook's). The
+    Playbook supplies the platform list and names. Which rows and platforms are public, their labels and
+    order come from cms-picker.json. No notes, how-to, watch-outs, guides, page types, requests, comments
+    or team data reach the public file."""
     if backup_file:
         data = json.loads(pathlib.Path(backup_file).read_text(encoding='utf-8'))
-        rows, edits, picker = data['app_data'], data['edits'], data.get('picker')
+        rows, picker = data['app_data'], data.get('picker')
     else:
-        rows, edits, picker = api('GET', 'app_data?id=eq.defaults&select=id,data'), api('GET', 'edits?select=*'), table('picker')
+        rows, picker = api('GET', 'app_data?id=eq.defaults&select=id,data'), table('picker')
     base = next((r['data'] for r in rows if r['id'] == 'defaults'), None)
     if not base:
         sys.exit('No base content found (app_data id "defaults").')
     cfg = json.loads(CONFIG.read_text(encoding='utf-8'))
     plats = {p['id']: p for p in base['P'] if not p.get('hidden')}
-    content = dict(base['CONTENT'])
-    ed = {f"{e['platform']}~{e['sec']}~{e['item']}": e for e in edits}
-
-    def cell(pid, sec, item):                       # an admin edit wins over the built-in answer
-        e = ed.get(f'{pid}~{sec}~{item}')
-        if e:
-            c = [e['verdict'], e['mark'], e['scope'], e.get('note', '')]
-        else:
-            c = (plats[pid]['cells'] if sec == 'tech' else content[pid])[item]
-        out = {'verdict': c[0], 'mark': plain(c[1]), 'scope': c[2]}
-        # "Not possible" with an indirect route in Playbook's note (e.g. the sitemap: "Indirect: noindex
-        # or delete the page") is shown publicly as "Indirectly" plus that route, not as a flat no.
-        note = plain(c[3] if len(c) > 3 else '')
-        if c[0] == 'no' and 'Indirect:' in note:
-            how = note.split('Indirect:', 1)[1].strip().rstrip('.')
-            out = {'verdict': 'indirect', 'mark': how[:1].upper() + how[1:], 'scope': c[2]}
-        return out
-
     # The CMS Picker's own rows, profiles and logos, and which platforms are public: the picker table
     if not picker:   # never publish a blank CMS Picker
         sys.exit('Stopped: the picker table is empty or missing. Nothing was published.')
@@ -171,23 +154,19 @@ def publish(backup_file=None):
                        'profile': profiles.get(pid)} for pid in public],
         'answers': {pid: {} for pid in public},
     }
-    # Table sections and rows in order. A row with "playbook" (its Playbook section, "content" or
-    # "tech") takes its answers from Playbook; any other row is public-only, with its answers in
-    # the picker table (answers per platform: { row id: [verdict, mark, scope] }).
+    # Table sections and rows in order, with each platform's answers from the picker table
+    # (answers per platform: { row id: [verdict, mark, scope] }).
     for sec in cfg['sections']:
         result['groups'].append({k: sec[k] for k in ('id', 'title') if k in sec})
         for i in sec['items']:
             result['items'].append({'id': i['id'], 'label': i['label'], **({'term': i['term']} if i.get('term') else {}), 'group': sec['id']})
             for pid in public:
-                if 'playbook' in i:
-                    result['answers'][pid][i['id']] = cell(pid, i['playbook'], i['id'])
-                else:
-                    a = own.get(pid, {}).get(i['id'])
-                    if not a:
-                        missing.append(f'{pid}/{i["id"]}')
-                        a = ['check', '', 'C']
-                    v, m, s = a
-                    result['answers'][pid][i['id']] = {'verdict': v, 'mark': m, 'scope': s}
+                a = own.get(pid, {}).get(i['id'])
+                if not a:
+                    missing.append(f'{pid}/{i["id"]}')
+                    a = ['check', '', 'C']
+                v, m, s = a
+                result['answers'][pid][i['id']] = {'verdict': v, 'mark': m, 'scope': s}
                 src = sources.get(pid, {}).get(i['id'])
                 if src and src.get('url'):
                     result['answers'][pid][i['id']].update({'sourceUrl': src['url'], 'lastVerified': src.get('checked', '')})
@@ -196,6 +175,11 @@ def publish(backup_file=None):
         q = {k: v for k, v in cfg['quiz'].items() if not k.startswith('_')}
         result['quiz'] = {k: ({p: x for p, x in v.items() if p in public} if isinstance(v, dict) else [p for p in v if p in public]) for k, v in q.items()}
     if missing:
+        # A row no public platform has an answer for means the picker table is missing it altogether
+        # (e.g. a new row in cms-picker.json): never publish a column of "Check" over the live answers
+        empty = [i['id'] for i in result['items'] if all(f'{pid}/{i["id"]}' in missing for pid in public)]
+        if empty:
+            sys.exit(f'Stopped: no platform has an answer for {", ".join(empty)} in the picker table. Nothing was published.')
         print('  no answer yet (shown as "Check"): ' + ', '.join(missing))
     # Never publish data the page or the checks can't read
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
@@ -210,7 +194,7 @@ def publish(backup_file=None):
     else:
         PUBLIC.parent.mkdir(parents=True, exist_ok=True)
         PUBLIC.write_text(out, encoding='utf-8')
-        print(f'published: {PUBLIC} ({len(public)} platforms, {len(result["items"])} items, {len(edits)} admin edits applied)')
+        print(f'published: {PUBLIC} ({len(public)} platforms, {len(result["items"])} items)')
     if skipped:
         print('  not in the Playbook data (or hidden), left out: ' + ', '.join(skipped))
     if noprofile:
