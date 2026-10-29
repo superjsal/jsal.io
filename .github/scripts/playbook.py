@@ -170,10 +170,16 @@ def publish(backup_file=None):
                 src = sources.get(pid, {}).get(i['id'])
                 if src and src.get('url'):
                     result['answers'][pid][i['id']].update({'sourceUrl': src['url'], 'lastVerified': src.get('checked', '')})
-    # The guided quiz's own values (cms-picker.json), for the public platforms only
+    # The guided quiz's own values (cms-picker.json), for the public platforms only. Three shapes: a list of
+    # platforms (storeOnly), a value per platform (ease: {wordpress: 2}), or lists of platforms per answer
+    # (kind: {local: [wix, …]}), told apart by whether the keys are platforms.
+    def only_public(v):
+        if not isinstance(v, dict): return [p for p in v if p in public]
+        if any(k in plats for k in v): return {p: x for p, x in v.items() if p in public}
+        return {k: [p for p in x if p in public] for k, x in v.items()}
     if cfg.get('quiz'):
         q = {k: v for k, v in cfg['quiz'].items() if not k.startswith('_')}
-        result['quiz'] = {k: ({p: x for p, x in v.items() if p in public} if isinstance(v, dict) else [p for p in v if p in public]) for k, v in q.items()}
+        result['quiz'] = {k: only_public(v) for k, v in q.items()}
     if missing:
         # A row no public platform has an answer for means the picker table is missing it altogether
         # (e.g. a new row in cms-picker.json): never publish a column of "Check" over the live answers

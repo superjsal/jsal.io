@@ -97,6 +97,7 @@
         "agencyOnly": { "type": "array", "items": { "type": "string" } },
         "customFrontEnd": { "type": "array", "items": { "type": "string" } },
         "devControl": { "type": "array", "items": { "type": "string" } },
+        "kind": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } },
         "domainDocs": { "type": "object", "additionalProperties": { "type": "string", "pattern": "^https://\\S+$" } }
       }
     }

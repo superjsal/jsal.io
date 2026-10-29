@@ -1,5 +1,5 @@
 // CMS Picker persona tests: example people run through the real Find my fit scoring (cms-picker/score.js),
-// checked against the results John agreed on 2026-10-29. Run by build\check.ps1 (node .github/scripts/personas.test.js).
+// checked against the results John agreed (2026-10-29; 23 people since the business-site follow-up). Run by build\check.ps1 (node .github/scripts/personas.test.js).
 // The answers come from cms-picker/data.json with this folder's cms-picker.json quiz values on top, so a
 // change to either is tested before the next publish. When a result should change, agree it first, then
 // update the expectation here.
@@ -10,34 +10,64 @@ const { rank, explain } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const cfg = require(path.join(__dirname, 'cms-picker.json'));
 
-// The quiz values as the next publish will write them (public platforms only, no _notes)
+// The quiz values as the next publish will write them (public platforms only, no _notes; same three shapes
+// as playbook.py: a list of platforms, a value per platform, or lists of platforms per answer)
 const ids = new Set(data.platforms.map((p) => p.id));
-data.quiz = Object.fromEntries(Object.entries(cfg.quiz).filter(([k]) => !k.startsWith('_')).map(([k, v]) => [k,
-  Array.isArray(v) ? v.filter((p) => ids.has(p)) : Object.fromEntries(Object.entries(v).filter(([p]) => ids.has(p)))]));
+const onlyPublic = (v) => (Array.isArray(v) ? v.filter((p) => ids.has(p))
+  : Object.keys(v).some((k) => ids.has(k)) ? Object.fromEntries(Object.entries(v).filter(([p]) => ids.has(p)))
+  : Object.fromEntries(Object.entries(v).map(([k, x]) => [k, x.filter((p) => ids.has(p))])));
+data.quiz = Object.fromEntries(Object.entries(cfg.quiz).filter(([k]) => !k.startsWith('_')).map(([k, v]) => [k, onlyPublic(v)]));
 
 const PERSONAS = [
-  ['Local bakery, no tech help', { what: 'site', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
+  // Business or work sites (with "Which is closest to what you do?", agreed 2026-10-29)
+  ['Local bakery, no tech help', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'headless'] }],
+  ['Multilingual B2B SaaS marketing site, agency-built', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', lang: 'yes', look: 'pixel', leave: 'no' },
+    { first: ['webflow'], top3: ['webflow', 'hubspot'] }],
+  ['Agency-built local service site', { what: 'site', kind: 'local', who: 'agency', care: 'no', lang: 'no', look: 'visual', leave: 'no' },
+    { first: ['duda'], top3: ['duda'] }],
+  ['Design-led startup landing page', { what: 'site', kind: 'startup', who: 'learn', care: 'no', lang: 'no', look: 'pixel', leave: 'no' },
+    { first: ['webflow', 'framer'], top3: ['webflow', 'framer'] }],
+  ['Photographer portfolio, does it alone', { what: 'site', kind: 'creative', who: 'learn', care: 'no', lang: 'no', look: 'visual', leave: 'no' },
+    { first: ['squarespace', 'framer'], top3: ['squarespace'], not: ['magento', 'drupal', 'headless'] }],
+  ['Learns as they go, local business (John’s answers)', { what: 'site', kind: 'local', who: 'learn', care: 'yes', lang: 'no', look: 'visual', leave: 'no' },
+    { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'] }],
+  ['Learns as they go, B2B company (John’s answers)', { what: 'site', kind: 'b2b', who: 'learn', care: 'yes', lang: 'no', look: 'visual', leave: 'no' },
+    { first: ['webflow'], top3: ['webflow', 'hubspot'] }],
+  ['Freelance consultant, one-page site', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
+    { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'headless'] }],
+  ['Restaurant in a tourist town, two languages', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'yes', look: 'template', leave: 'no' },
+    { first: ['wix'], top3: ['wix', 'squarespace'] }],
+  ['B2B marketing team with lots of articles', { what: 'site', kind: 'content', who: 'learn', care: 'no', lang: 'no', look: 'visual', leave: 'no' },
+    { first: ['webflow'], top3: ['webflow', 'hubspot'] }],
+  ['Estate agent, built by an agency', { what: 'site', kind: 'local', who: 'agency', care: 'no', lang: 'no', look: 'template', leave: 'no' },
+    { first: ['duda'], top3: ['duda'] }],
+  ['Developer portfolio, owns everything', { what: 'site', kind: 'creative', who: 'dev', care: 'yes', lang: 'no', look: 'pixel', leave: 'yes' },
+    { first: ['wordpress', 'drupal'], top3: ['wordpress'] }],
+  // Stores
   ['Etsy-style maker shop', { what: 'store', who: 'easy', care: 'no', size: 'small', lang: 'no', look: 'template', leave: 'no' },
     { first: ['shopify'], top3: ['shopify'], not: ['magento', 'drupal', 'headless'] }],
-  ['Multilingual B2B SaaS marketing site, agency-built', { what: 'site', who: 'agency', care: 'no', lang: 'yes', look: 'pixel', leave: 'no' },
-    { first: ['webflow', 'framer'], top3: ['webflow', 'framer'] }],
-  ['Newsletter writer with paid members', { what: 'content', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes' },
-    { first: ['ghost'], top3: ['ghost'] }],
-  ['Agency-built local service site', { what: 'site', who: 'agency', care: 'no', lang: 'no', look: 'visual', leave: 'no' },
-    { first: ['webflow', 'framer', 'duda'], top3: ['webflow'] }],
   ['5,000-product store with a dev team', { what: 'store', who: 'dev', care: 'yes', size: 'big', lang: 'no', look: 'pixel', leave: 'yes' },
     { first: ['magento'], top3: ['magento', 'shopify'], not: ['wix', 'squarespace'] }],
+  ['Wholesale B2B store with a developer, two languages', { what: 'store', who: 'dev', care: 'yes', size: 'big', lang: 'yes', look: 'pixel', leave: 'no' },
+    { first: ['magento'], top3: ['magento', 'shopify', 'bigcommerce'] }],
+  ['Clothing brand, about 50 products, wants design control', { what: 'store', who: 'learn', care: 'no', size: 'small', lang: 'no', look: 'visual', leave: 'no' },
+    { first: ['shopify', 'wix', 'squarespace'], top3: ['shopify'] }],   // a three-way tie: the store questions don't ask about design
+  // Blogs, publications and custom builds
+  ['Newsletter writer with paid members', { what: 'content', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes' },
+    { first: ['ghost'], top3: ['ghost'] }],
   ['Government multilingual content site', { what: 'content', who: 'dev', care: 'yes', lang: 'yes', look: 'pixel', leave: 'yes' },
     { first: ['drupal'], top3: ['drupal', 'wordpress'], not: ['wix', 'squarespace', 'webflow'] }],
-  ['Design-led startup landing page', { what: 'site', who: 'learn', care: 'no', lang: 'no', look: 'pixel', leave: 'no' },
-    { first: ['webflow', 'framer'], top3: ['webflow', 'framer'] }],
-  ['Developer building an app and a site', { what: 'custom', who: 'dev', care: 'yes', lang: 'no', look: 'pixel', leave: 'yes' },
-    { first: ['headless'], top3: ['headless'] }],
-  ['Photographer portfolio, does it alone', { what: 'site', who: 'learn', care: 'no', lang: 'no', look: 'visual', leave: 'no' },
-    { top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'headless'] }],
   ['Small blog that wants to own everything', { what: 'content', who: 'learn', care: 'yes', lang: 'no', look: 'template', leave: 'yes' },
     { first: ['ghost', 'wordpress'], top3: ['ghost', 'wordpress'] }],
+  ['Hobby blog, not technical', { what: 'content', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
+    { first: ['squarespace', 'ghost'], top3: ['squarespace', 'ghost'] }],
+  ['Online course creator with members', { what: 'content', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
+    { first: ['squarespace', 'ghost'], top3: ['ghost'] }],   // a tie: no question asks about paid members
+  ['Nonprofit with news in two languages', { what: 'content', who: 'learn', care: 'no', lang: 'yes', look: 'template', leave: 'yes' },
+    { first: ['hubspot', 'ghost'], top3: ['hubspot', 'ghost'] }],
+  ['Developer building an app and a site', { what: 'custom', who: 'dev', care: 'yes', lang: 'no', look: 'pixel', leave: 'yes' },
+    { first: ['headless'], top3: ['headless'] }],
 ];
 
 let failed = 0;

@@ -81,7 +81,7 @@
     }
   ],
   "quiz": {
-    "_about": "Find my fit. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template = start from a theme, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop: stores it suits. storeOnly: only for selling, so marked down for anything else. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end. devControl: built to be coded, so a developer gets full control (picked when \"A developer\" builds it). domainDocs: the platform's own help page for connecting your own domain (official docs only, checked 2026-10-29; none for self-hosted Drupal or headless), linked from the first steps on a result.",
+    "_about": "Find my fit. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template = start from a theme, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop: stores it suits. storeOnly: only for selling, so marked down for anything else. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end. devControl: built to be coded, so a developer gets full control (picked when \"A developer\" builds it). domainDocs: the platform's own help page for connecting your own domain (official docs only, checked 2026-10-29; none for self-hosted Drupal or headless), linked from the first steps on a result. kind: for business or work sites, which platforms suit each answer to \"Which is closest to what you do?\" (from each platform's \"good fit\" lines: local businesses and services, creative work, startups, B2B companies, lots of content).",
     "ease": {
       "wordpress": 2,
       "shopify": 3,
@@ -178,6 +178,30 @@
       "drupal",
       "headless"
     ],
+    "kind": {
+      "local": [
+        "wix",
+        "squarespace",
+        "duda"
+      ],
+      "creative": [
+        "squarespace",
+        "framer"
+      ],
+      "startup": [
+        "framer",
+        "webflow"
+      ],
+      "b2b": [
+        "hubspot",
+        "webflow"
+      ],
+      "content": [
+        "wordpress",
+        "webflow",
+        "hubspot"
+      ]
+    },
     "domainDocs": {
       "wordpress": "https://wordpress.org/documentation/article/settings-general-screen/",
       "shopify": "https://help.shopify.com/en/manual/domains/add-a-domain/connecting-domains",
