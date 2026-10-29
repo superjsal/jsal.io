@@ -419,8 +419,10 @@ p, li { text-wrap: pretty; }
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(3) { animation-delay: 0.25s; }
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(4) { animation-delay: 0.5s; }
   .tile:is(:hover, :focus-visible) .m-fmt .to { animation: m-nudge 3s ease-in-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-cms span:not(.more) { animation: m-try 4.05s calc(var(--n) * 0.45s) infinite; }
-  .tile:is(:hover, :focus-visible) .m-cms span:not(.more) i { animation: m-try-logo 4.05s calc(var(--n) * 0.45s) infinite; }
+  /* Negative delays: every logo's loop is already running, so the one picked at rest (Shopify) doesn't
+     stay lit while it waits for its turn */
+  .tile:is(:hover, :focus-visible) .m-cms span:not(.more) { animation: m-try 4.05s calc(var(--n) * 0.45s - 4.05s) infinite; }
+  .tile:is(:hover, :focus-visible) .m-cms span:not(.more) i { animation: m-try-logo 4.05s calc(var(--n) * 0.45s - 4.05s) infinite; }
 }
 /* Main photo matches the selected thumbnail (same filters as the strip) */
 @keyframes m-photo { 0%, 24.9% { filter: none; } 25%, 49.9% { filter: hue-rotate(150deg); } 50%, 74.9% { filter: hue-rotate(-60deg) saturate(0.8); } 75%, 100% { filter: hue-rotate(80deg); } }
