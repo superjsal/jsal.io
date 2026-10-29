@@ -274,8 +274,6 @@ body {
 .qz-ans-l { margin-bottom: 6px; color: var(--jsal-muted); font-size: 13.5px; }
 .qz-ans-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .qz-ans-chips .chip { text-align: left; }   /* a long answer wraps on a phone */
-.qz-ans-q { color: var(--jsal-muted); }   /* the question's name, quieter than the answer */
-.qz-ans-chips .chip[aria-expanded="true"] .qz-ans-q { color: inherit; }
 .qz-ans-chips .chip[aria-expanded="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
 .qz-ans-ed { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; padding: 12px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
 .qz-ans-ed p { flex-basis: 100%; margin-bottom: 2px; color: var(--jsal-ink); font-size: 14.5px; font-weight: 600; }

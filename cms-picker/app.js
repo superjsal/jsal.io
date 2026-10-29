@@ -470,13 +470,12 @@
       const chips = el('div', 'qz-ans-chips');
       steps().forEach((q) => {
         const opt = q.opts.find(([v]) => v === a[q.id]);
-        // "Design control: Every detail", so an answer makes sense without remembering the question
-        const b = el('button', 'chip');
-        b.append(el('span', 'qz-ans-q', `${q.short}:`), ` ${opt ? (opt[1].length > 3 ? opt[1] : opt[2]) : ''}`);   // "No" alone says little: "One language"
+        // The answer on its own ("Two or more languages"), so it makes sense without remembering the question
+        const b = el('button', 'chip', opt ? opt[3] : q.q);
         b.type = 'button';
         b.dataset.q = q.id;
         b.setAttribute('aria-expanded', String(editing === q.id));
-        b.setAttribute('aria-label', `${q.q} ${opt ? opt[1] : ''}. Change`);
+        b.setAttribute('aria-label', `${opt ? opt[3] : ''}. Change your answer to: ${q.q}`);
         b.addEventListener('click', () => { editing = editing === q.id ? null : q.id; results(); box.querySelector(`.qz-ans-chips [data-q="${q.id}"]`)?.focus({ preventScroll: true }); });
         chips.append(b);
       });
