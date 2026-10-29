@@ -73,6 +73,12 @@ body { background: var(--jsal-bg); }
   --jsal-btn-weight: 600;
 }
 
+/* Phones (iOS) zoom into any text field under 16px when it's tapped or focused, which throws the page
+   sideways and away from what you were doing. Touch screens get 16px fields; desktop keeps each app's size. */
+@media (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]), select, textarea { font-size: 16px !important; }
+}
+
 /* Text for screen readers only */
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
