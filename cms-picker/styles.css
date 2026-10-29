@@ -66,10 +66,29 @@ body {
   background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 700;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
   opacity: 0; visibility: hidden; transform: translateY(8px);
-  transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s, border-color 0.15s;
+  transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s, border-color 0.15s, bottom 0.2s;
 }
-.totop.show { opacity: 1; visibility: visible; transform: none; transition: opacity 0.2s, transform 0.2s, visibility 0s, border-color 0.15s; }
+.totop.show { opacity: 1; visibility: visible; transform: none; transition: opacity 0.2s, transform 0.2s, visibility 0s, border-color 0.15s, bottom 0.2s; }
 .totop:hover { border-color: var(--jsal-accent); }
+
+/* Compare bar: slides up while the cards are on screen and something is picked; hides at the table */
+.cbar {
+  position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 11;
+  display: flex; align-items: center; gap: 14px; max-width: calc(100% - 32px); padding: 7px 7px 7px 18px;
+  border: 1px solid var(--jsal-line-hi); border-radius: 999px; background: var(--jsal-surface);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  opacity: 0; visibility: hidden; transform: translate(-50%, 14px);
+  transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s;
+}
+.cbar.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity 0.2s, transform 0.2s, visibility 0s; }
+.cbar-count { color: var(--jsal-ink); font-size: 14px; font-weight: 700; white-space: nowrap; }
+.cbar-logos { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.cbar-logos .logo { width: 20px; height: 20px; }
+.cbar-logos .logo.badge { width: 22px; height: 22px; border-radius: 6px; font-size: 10px; }
+.cbar-logos .pop { animation: cbar-pop 0.3s ease-out; }
+.cbar-more { color: var(--jsal-muted); font-size: 13px; font-weight: 700; }
+.cbar .btn { flex: none; height: 38px; padding: 0 16px; line-height: 36px; font-size: 14px; white-space: nowrap; }
+@keyframes cbar-pop { from { opacity: 0; transform: scale(0.4); } }
 
 /* ── Controls ──────────────────────────────────────────────────────────── */
 
@@ -177,6 +196,10 @@ body {
   .sections { display: none; }   /* the two buttons above already go to the cards and the table */
   .totop { width: 44px; height: 44px; padding: 0; justify-content: center; }
   .totop span { display: none; }
+  /* Full width on phones; the Top button moves up out of its way */
+  .cbar { left: 16px; right: 16px; max-width: none; justify-content: space-between; border-radius: 14px; transform: translateY(14px); }
+  .cbar.show { transform: none; }
+  .cbar-on .totop { bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + 62px); }
 }
 
 /* Sections and platform profile cards */

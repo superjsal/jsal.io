@@ -104,6 +104,33 @@
       c.append(foot);
       cards.append(c);
     });
+    updateBar();
+  }
+
+  // Compare bar: the platforms being compared (newly added ones pop in), and a link to the table
+  let barShown = new Set();
+  function updateBar() {
+    const picked = data.platforms.filter((p) => state.compare.has(p.id));
+    $('#cbar-count').textContent = `Comparing ${picked.length}`;
+    $('#cbar').setAttribute('aria-label', `Your comparison: ${picked.map((p) => p.name).join(', ') || 'none'}`);
+    const room = innerWidth < 500 ? 4 : 7;
+    const logos = $('#cbar-logos');
+    logos.replaceChildren();
+    picked.slice(0, room).forEach((p) => {
+      const l = logo(p);
+      if (barShown.size && !barShown.has(p.id)) l.classList.add('pop');
+      logos.append(l);
+    });
+    if (picked.length > room) logos.append(el('span', 'cbar-more', `+${picked.length - room}`));
+    barShown = new Set(picked.map((p) => p.id));
+    placeBar();
+  }
+  // Shown while the cards are on screen and the table isn't yet, and only with something picked
+  function placeBar() {
+    const fit = $('#fit').getBoundingClientRect(), table = $('#seo .scroll').getBoundingClientRect();
+    const on = state.compare.size > 0 && fit.top < innerHeight * 0.5 && table.top > innerHeight - 60;
+    $('#cbar').classList.toggle('show', on);
+    document.body.classList.toggle('cbar-on', on);
   }
 
   function render() {
@@ -244,6 +271,14 @@
     addEventListener('scroll', hideTip, { passive: true });
     $('#seo .scroll').addEventListener('scroll', hideTip, { passive: true });
     document.addEventListener('pointerdown', (e) => { if (!e.target.closest('#grid')) hideTip(); });
+
+    let barTick = false;
+    addEventListener('scroll', () => {
+      if (barTick) return;
+      barTick = true;
+      requestAnimationFrame(() => { barTick = false; placeBar(); });
+    }, { passive: true });
+    addEventListener('resize', updateBar, { passive: true });
 
     // Back to top, once the hero is out of view
     const totop = $('#totop');
