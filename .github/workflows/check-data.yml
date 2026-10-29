@@ -1,5 +1,5 @@
-# Checks the public CMS Picker data against cms-picker.schema.json after every push to main, and lists
-# what isn't sourced yet. A failure shows as a red X on the commit; GitHub Pages still deploys (main is
+# Checks the public CMS Picker data against cms-picker.schema.json after every push to main, lists
+# what isn't sourced yet, and runs the persona tests. A failure shows as a red X on the commit; GitHub Pages still deploys (main is
 # the live site), so build\check.ps1 before pushing stays the real gate.
 name: Check CMS Picker data
 
@@ -8,8 +8,11 @@ on:
     branches: [main]
     paths:
       - "cms-picker/data.json"
+      - "cms-picker/score.js"
       - ".github/scripts/check_data.py"
       - ".github/scripts/cms-picker.schema.json"
+      - ".github/scripts/cms-picker.json"
+      - ".github/scripts/personas.test.js"
   workflow_dispatch:
 
 permissions:
@@ -25,3 +28,8 @@ jobs:
           python-version: "3.12"
       - name: Check the data and list what isn't sourced
         run: python .github/scripts/check_data.py --list
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Persona tests (the agreed Find my fit results)
+        run: node .github/scripts/personas.test.js

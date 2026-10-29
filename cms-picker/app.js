@@ -2,7 +2,7 @@
 // (answers, profiles and the quiz's own values, exported by build\playbook.py publish).
 (() => {
   const $ = (s) => document.querySelector(s);
-  const state = { goal: 'all', compare: new Set(), notes: false };
+  const state = { goal: 'all', compare: new Set(), notes: false, open: new Set() };   // open: platforms expanded in the "Show all" list
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Needs code', hosting: 'Hosting/DNS', check: 'Unclear', indirect: 'Indirectly', no: 'Not possible' };
   // Scope as a symbol, explained once in the key
@@ -57,9 +57,10 @@
   function renderCards() {
     const cards = $('#cards');
     cards.replaceChildren();
+    cards.classList.toggle('list', state.goal === 'all');
     document.querySelectorAll('#types button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.g === state.goal)));
     const shown = data.platforms.filter((p) => p.profile && fits(p));
-    $('#count').textContent = state.goal === 'all' ? `All ${shown.length} platforms` : `${shown.length} of ${data.platforms.length} platforms fit`;
+    $('#count').textContent = state.goal === 'all' ? `All ${shown.length} platforms. Open one for the details, or pick what you’re building.` : `${shown.length} of ${data.platforms.length} platforms fit`;
     shown.forEach((p) => {
       const c = el('article', 'card'), pr = p.profile;
       const top = el('div', 'ctop');
@@ -102,9 +103,39 @@
       cmp.addEventListener('click', () => toggleCompare(p.id));
       foot.append(cmp);
       c.append(foot);
+      if (state.goal === 'all') shortCard(c, p);
       cards.append(c);
     });
     updateBar();
+  }
+  // "Show all": one line per platform (name and who it's for), so the first look isn't 13 full cards.
+  // The name is a button that opens the rest of the card in place.
+  function shortCard(c, p) {
+    const open = state.open.has(p.id);
+    const body = el('div', 'cbody');
+    body.id = `cb-${p.id}`;
+    body.hidden = !open;
+    body.append(...[...c.children].filter((x) => !x.matches('.ctop, .summary')));
+    const b = el('button', 'mini-btn'), txt = el('span', 'mini-t');
+    b.type = 'button';
+    b.setAttribute('aria-expanded', String(open));
+    b.setAttribute('aria-controls', body.id);
+    txt.append(el('span', 'mini-name', p.name), el('span', 'mini-sum', (p.profile && p.profile.summary) || ''));
+    const chev = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    chev.setAttribute('viewBox', '0 0 24 24');
+    chev.setAttribute('aria-hidden', 'true');
+    chev.innerHTML = '<path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    b.append(logo(p), txt, chev);
+    b.addEventListener('click', () => {
+      if (state.open.has(p.id)) state.open.delete(p.id); else state.open.add(p.id);
+      renderCards();
+      document.querySelector(`[aria-controls="cb-${p.id}"]`)?.focus({ preventScroll: true });
+    });
+    const h = el('h3', 'mini-h');
+    h.append(b);
+    c.classList.add('mini');
+    c.classList.toggle('open', open);
+    c.replaceChildren(h, body);
   }
 
   // Compare bar: the platforms being compared (newly added ones pop in), and a link to the table
@@ -318,16 +349,7 @@
   // quiz's own values in data.quiz (cms-picker.json: how easy each one is, the design control it suits,
   // and a few lists). The reasons shown come from the same data, so the result never claims anything the
   // table doesn't. The answers stay in the page address, so a result can be shared; nothing is stored.
-  const QUESTIONS = [
-    // short: the question's name on its answer button above the results
-    { id: 'what', short: 'Making', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact'], ['store', 'An online store', 'Products, checkout and payments'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing'], ['custom', 'Something custom', 'An app or portal, built with a developer']] },
-    { id: 'who', short: 'Who builds it', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine'], ['agency', 'A designer or agency', 'They build it; I might edit'], ['dev', 'A developer', 'Code is fine']] },
-    { id: 'care', short: 'Hosting and updates', q: 'Do you want to look after hosting, updates and security?', opts: [['no', 'No, handle it for me', 'Everything included'], ['yes', 'That’s fine', 'Or someone will do it for me']] },
-    { id: 'size', short: 'Shop size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few dozen products', 'A small shop'], ['big', 'Hundreds of products, or B2B', 'A large catalogue, or selling to businesses']] },
-    { id: 'lang', short: 'Languages', q: 'Will it be in more than one language?', opts: [['no', 'No', 'One language'], ['yes', 'Yes', 'Two or more']] },
-    { id: 'look', short: 'Design control', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust'], ['pixel', 'Every detail', 'Exactly as designed']] },
-    { id: 'leave', short: 'Switching later', q: 'How important is taking everything with you if you switch later?', opts: [['yes', 'Very important', 'I want to own all of it'], ['no', 'Not a big concern', 'I’ll probably stay']] },
-  ];
+  const { QUESTIONS } = window.cmsScore;   // the questions and the scoring live in score.js (shared with the persona tests)
   // Shared result links carry the quiz version (v=1). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
   // people have already shared keep opening a result rather than an empty quiz.
@@ -339,8 +361,6 @@
     if (v === 1) return answers;
     return null;   // a newer version than this page knows: start the quiz fresh
   }
-  const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
-  const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
   // Effort, from values already checked: the quiz's ease score and the profile's hosting line
   const SKILL = ['Needs a developer', 'Takes some learning', 'Easy to learn', 'No technical skill needed'];
   function upkeep(hosting) {
@@ -392,43 +412,6 @@
     return frag;
   }
 
-  function fitScore(p, a) {
-    const Q = data.quiz, pr = p.profile || {}, why = [];
-    const has = (list) => (Q[list] || []).includes(p.id);
-    const verdict = (row) => ((data.answers[p.id] || {})[row] || {}).verdict;
-    let s = 0;
-    if ((pr.goals || []).includes(a.what)) { s += 4; why.push(WHAT[a.what]); } else s -= 8;
-    if (a.what !== 'store' && has('storeOnly')) s -= 6;
-    if (a.what === 'custom' && has('customFrontEnd')) { s += 3; why.push('Feeds an app or any front end from one place'); }
-    const ease = Q.ease[p.id] ?? 1;
-    if (a.who === 'easy') { s += ease * 2 - 3; if (ease === 3) why.push('Easy to run without technical skills'); }
-    if (a.who === 'learn') s += ease >= 1 ? 1 : -2;
-    if (a.who === 'agency' && has('agency')) { s += 2; why.push('A common choice for designers and agencies'); }
-    if (a.who !== 'agency' && has('agencyOnly')) s -= 2;
-    if (a.who === 'dev') { if (ease <= 1) { s += 2; why.push('Gives a developer full control'); } else s -= 1; }
-    if (a.care === 'no') {
-      const handled = /^Handled for you/.test(pr.hosting || '');
-      s += handled ? 2 : -3;
-      if (handled) why.push('Hosting, updates and security are handled for you');
-    }
-    if (a.what === 'store') {
-      s += { yes: 2, plugin: 0, code: -3, no: -6 }[verdict('store')] ?? 0;
-      if (a.size === 'big') { if (has('largeCatalogue')) { s += 3; why.push('Handles large catalogues'); } else s -= 2; }
-      if (a.size === 'small' && has('smallShop')) s += 1;
-    }
-    if (a.lang === 'yes') {
-      const l = verdict('languages');
-      s += { yes: 2, plugin: 0, code: -2, no: -4 }[l] ?? 0;
-      if (l === 'yes') why.push('More than one language is built in');
-    }
-    if ((Q.look[p.id] || []).includes(a.look)) { s += 2; why.push(LOOKS[a.look]); }
-    if (a.leave === 'yes') {
-      if (/^Everything/.test(pr.export || '')) { s += 2; why.push('You can take everything with you'); }
-      else if (/API/.test(pr.export || '')) { s += 1; why.push('Your content stays yours, through the API'); }
-      else s -= 1;
-    }
-    return { p, s, why: why.filter(Boolean).slice(0, 4) };
-  }
 
   function setupQuiz() {
     const box = $('#qz');
@@ -524,7 +507,7 @@
     }
 
     function results() {
-      const ranked = data.platforms.map((p) => fitScore(p, a)).sort((x, y) => y.s - x.s);
+      const ranked = window.cmsScore.rank(data, a);
       const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
       const label = (r, i) => (!i ? 'Best match' : r.s >= best - 4 ? 'Good match' : 'Worth a look');
       history.replaceState(null, '', `#quiz?v=${LINK_VERSION}&${new URLSearchParams(Object.entries(a).filter(([k]) => steps().some((q) => q.id === k)))}`);

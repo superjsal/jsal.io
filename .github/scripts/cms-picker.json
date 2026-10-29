@@ -84,7 +84,7 @@
     }
   ],
   "quiz": {
-    "_about": "Find my fit. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template = start from a theme, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop: stores it suits. storeOnly: only for selling, so marked down for anything else. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end. domainDocs: the platform's own help page for connecting your own domain (official docs only, checked 2026-10-29; none for self-hosted Drupal or headless), linked from the first steps on a result.",
+    "_about": "Find my fit. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template = start from a theme, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop: stores it suits. storeOnly: only for selling, so marked down for anything else. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end. devControl: built to be coded, so a developer gets full control (picked when \"A developer\" builds it). domainDocs: the platform's own help page for connecting your own domain (official docs only, checked 2026-10-29; none for self-hosted Drupal or headless), linked from the first steps on a result.",
     "ease": {
       "wordpress": 2,
       "shopify": 3,
@@ -173,6 +173,12 @@
       "duda"
     ],
     "customFrontEnd": [
+      "headless"
+    ],
+    "devControl": [
+      "wordpress",
+      "magento",
+      "drupal",
       "headless"
     ],
     "domainDocs": {

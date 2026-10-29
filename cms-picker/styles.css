@@ -212,6 +212,20 @@ body {
 .types .chip { padding: 6px 14px; font-size: 15px; }
 .count { margin-bottom: 14px; color: var(--jsal-muted); font-size: 14px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 16px; }
+/* "Show all": a short list, one row per platform, each opening into its full card */
+.cards.list { grid-template-columns: minmax(0, 1fr); gap: 0; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); overflow: hidden; }
+.cards.list .card { padding: 0; border: 0; border-top: 1px solid var(--jsal-line); border-radius: 0; background: none; }
+.cards.list .card:first-child { border-top: 0; }
+.mini-h { font-size: inherit; letter-spacing: 0; }
+.mini-btn { display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px 16px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.mini-btn:hover, .card.open .mini-btn { background: var(--jsal-sunk); }
+.mini-btn:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: -2px; }
+.mini-t { display: grid; flex: 1; gap: 2px; min-width: 0; }
+.mini-name { color: var(--jsal-ink); font-size: 17px; font-weight: 700; }
+.mini-sum { color: var(--jsal-muted); font-size: 14.5px; font-weight: 400; line-height: 1.4; }
+.mini-btn svg { flex: none; width: 20px; height: 20px; color: var(--jsal-muted); transition: transform 0.15s; }
+.card.open .mini-btn svg { transform: rotate(180deg); }
+.cbody { display: flex; flex-direction: column; padding: 4px 16px 16px; }
 .card { display: flex; flex-direction: column; padding: 20px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink-2); }
 .card h3 { color: var(--jsal-ink); font-size: 21px; letter-spacing: -0.01em; }
 /* Logo beside the name, in the text colour (the SVG is a mask), so it suits light and dark */
@@ -299,6 +313,8 @@ body {
   .grid { min-width: 0; }
   .row, .qz-card, .qz-panel, .card { break-inside: avoid; }
   .qz-card.top { box-shadow: none; }
+  .cards.list .cbody[hidden] { display: flex; }   /* the whole card on paper */
+  .mini-btn svg { display: none; }
   .qz-steps a::after, .qz-later a::after { content: " (" attr(href) ")"; white-space: normal; word-break: break-all; color: var(--jsal-muted); }
   .block { margin-bottom: 20px; }
 }
