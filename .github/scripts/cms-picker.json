@@ -37,6 +37,10 @@
         {
           "id": "forms",
           "label": "Forms (contact, lead capture)"
+        },
+        {
+          "id": "design",
+          "label": "Fully custom design"
         }
       ]
     },
