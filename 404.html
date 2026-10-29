@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page not found | jsal.io</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="/favicon.svg?v=2026-10-29za" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-29zg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js), fetched once the page has loaded and the browser is idle (2 s at most),
      so its ~180 KB doesn't compete with the page itself. Calls queue up until it arrives. -->
@@ -57,7 +57,7 @@
 --jsal-radius: 6px;
 color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
 :root:not([data-theme="light"]) {
 --jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
 --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
@@ -69,6 +69,7 @@ color-scheme: light;
 color-scheme: dark;
 }
 }
+@media screen {
 :root[data-theme="dark"] {
 --jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
 --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
@@ -78,6 +79,7 @@ color-scheme: dark;
 --jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
 --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 color-scheme: dark;
+}
 }
 body { background: var(--jsal-bg); }
 :root {
@@ -213,6 +215,6 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     </ul>
   </main>
 </div>
-<script src="/nav.js?v=2026-10-29za" defer></script>
+<script src="/nav.js?v=2026-10-29zg" defer></script>
 </body>
 </html>

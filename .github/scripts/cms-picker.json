@@ -84,7 +84,7 @@
     }
   ],
   "quiz": {
-    "_about": "Find my fit. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template = start from a theme, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop: stores it suits. storeOnly: only for selling, so marked down for anything else. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end.",
+    "_about": "Find my fit. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template = start from a theme, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop: stores it suits. storeOnly: only for selling, so marked down for anything else. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end. domainDocs: the platform's own help page for connecting your own domain (official docs only, checked 2026-10-29; none for self-hosted Drupal or headless), linked from the first steps on a result.",
     "ease": {
       "wordpress": 2,
       "shopify": 3,
@@ -174,6 +174,19 @@
     ],
     "customFrontEnd": [
       "headless"
-    ]
+    ],
+    "domainDocs": {
+      "wordpress": "https://wordpress.org/documentation/article/settings-general-screen/",
+      "shopify": "https://help.shopify.com/en/manual/domains/add-a-domain/connecting-domains",
+      "wix": "https://support.wix.com/en/article/connecting-your-own-domain-name",
+      "squarespace": "https://support.squarespace.com/hc/en-us/articles/205812378-Connect-a-third-party-domain-to-your-Squarespace-site",
+      "webflow": "https://help.webflow.com/hc/en-us/articles/33961334343827-How-do-I-connect-my-domain-to-Webflow",
+      "framer": "https://www.framer.com/help/articles/how-to-connect-a-custom-domain/",
+      "hubspot": "https://knowledge.hubspot.com/domains-and-urls/connect-a-domain-to-hubspot",
+      "bigcommerce": "https://support.bigcommerce.com/s/article/Domains-and-DNS?language=en_US",
+      "magento": "https://experienceleague.adobe.com/en/docs/commerce-admin/stores-sales/site-store/store-urls",
+      "duda": "https://support.duda.co/hc/en-us/articles/26520132463383-Make-Your-Site-Live-Initial-Steps-and-DNS-Record-Setup",
+      "ghost": "https://ghost.org/help/using-custom-domains/"
+    }
   }
 }

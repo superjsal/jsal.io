@@ -1,9 +1,9 @@
 // Thumbnail cards for every loaded image: crop preview, rename, size, save, remove.
 
-import { state, outSizeFor } from "./state.js?v=2026-10-29za";
-import { drawCropped } from "./imaging.js?v=2026-10-29za";
-import { freshEntry, errorFor } from "./export.js?v=2026-10-29za";
-import { icon, formatBytes } from "./ui.js?v=2026-10-29za";
+import { state, outSizeFor } from "./state.js?v=2026-10-29zg";
+import { drawCropped } from "./imaging.js?v=2026-10-29zg";
+import { freshEntry, errorFor } from "./export.js?v=2026-10-29zg";
+import { icon, formatBytes } from "./ui.js?v=2026-10-29zg";
 
 const previewGrid = document.getElementById("previewGrid");
 const gridHeader  = document.getElementById("gridHeader");

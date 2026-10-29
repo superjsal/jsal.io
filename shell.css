@@ -34,7 +34,8 @@
   --jsal-radius: 6px;
   color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
+/* Dark is for screens only: printing always uses the light colours (dark ink on white paper) */
+@media screen and (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
     --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
@@ -46,15 +47,17 @@
     color-scheme: dark;
   }
 }
-:root[data-theme="dark"] {
-  --jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
-  --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
-  --jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
-  --jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
-  --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
-  --jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
-  --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-  color-scheme: dark;
+@media screen {
+  :root[data-theme="dark"] {
+    --jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
+    --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
+    --jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
+    --jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
+    --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
+    --jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+    --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
 }
 /* Plain page background (no glow) */
 body { background: var(--jsal-bg); }

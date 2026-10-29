@@ -2,7 +2,7 @@
 // (answers, profiles and the quiz's own values, exported by build\playbook.py publish).
 (() => {
   const $ = (s) => document.querySelector(s);
-  const state = { goal: 'all', compare: new Set(), notes: false };
+  const state = { goal: 'all', compare: new Set(), notes: false, diff: false };
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Needs code', hosting: 'Hosting/DNS', check: 'Unclear', indirect: 'Indirectly', no: 'Not possible' };
   // Scope as a symbol, explained once in the key
@@ -144,6 +144,7 @@
     [grid, ghead].forEach((g) => g.style.setProperty('--n', Math.max(plats.length, 1)));
     $('#thead').hidden = !plats.length;
     grid.classList.toggle('compact', !state.notes);
+    $('#diffnote').textContent = '';
     if (!plats.length) {
       grid.append(el('p', 'empty', 'No platforms selected. Add some above, or from the cards.'));
       return;
@@ -160,8 +161,11 @@
     $('#thead').scrollLeft = $('#seo .scroll').scrollLeft;
     // A label row where each section starts: Built in, SEO
     const groups = Object.fromEntries((data.groups || []).map((g) => [g.id, g]));
-    let lastGroup = null;
+    let lastGroup = null, same = 0;
+    // "Only differences": skip rows where every platform compared has the same answer (tag and scope)
+    const key = (p, it) => `${data.answers[p.id][it.id].verdict}|${data.answers[p.id][it.id].scope}`;
     items.forEach((it) => {
+      if (state.diff && plats.length > 1 && plats.every((p) => key(p, it) === key(plats[0], it))) { same++; return; }
       if (it.group !== lastGroup && groups[it.group]) {
         const g = groups[it.group];
         const gr = el('div', 'row group');
@@ -189,10 +193,14 @@
           cell.append(el('span', 'mark', c.mark));
           cell.dataset.note = c.mark;
         }
+        if (!state.notes && (cell.dataset.note || cell.dataset.scope)) cell.tabIndex = 0;   // notes off: Tab to a cell opens its note too
         row.append(cell);
       });
       grid.append(row);
     });
+    if (state.diff && plats.length < 2) $('#diffnote').textContent = 'Pick two or more platforms to see where they differ.';
+    else if (same === items.length) { $('#diffnote').textContent = ''; grid.append(el('p', 'empty', 'These platforms give the same answer on every row.')); }
+    else if (same) $('#diffnote').textContent = `Hiding ${same} ${same === 1 ? 'row that is' : 'rows that are'} the same for all ${plats.length}.`;
   }
 
   function build() {
@@ -251,13 +259,13 @@
       peek.append(r);
     });
     $('#peek-cap').textContent = `${PEEK_ROWS.length} of ${data.items.length} rows, from the full table below`;
-    // Notes off: hovering (or tapping) an answer shows its note and scope in a tooltip at once.
-    // It sits outside the table, fixed to the window, so the table's scroll box can't clip it.
+    // Notes off: hovering, tapping or tabbing to an answer shows its note and scope in a tooltip at once.
+    // It sits outside the table, fixed to the window, so the table's scroll box can't clip it. Screen
+    // readers get the note from the cell itself (.mark, hidden only visually), so the tooltip is aria-hidden.
     const tip = $('#tip');
     let tipCell = null;
     const hideTip = () => { tip.hidden = true; tipCell = null; };
-    $('#grid').addEventListener('pointerover', (e) => {
-      const cell = e.target.closest('.cell');
+    const showTip = (cell) => {
       if (cell === tipCell) return;
       if (state.notes || !cell || !(cell.dataset.note || cell.dataset.scope)) { hideTip(); return; }
       tipCell = cell;
@@ -268,7 +276,11 @@
       const r = cell.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
       tip.style.left = `${Math.max(8, Math.min(r.left + 8, innerWidth - w - 8))}px`;
       tip.style.top = `${r.bottom + h + 8 < innerHeight ? r.bottom - 4 : r.top - h + 4}px`;
-    });
+    };
+    $('#grid').addEventListener('pointerover', (e) => showTip(e.target.closest('.cell')));
+    $('#grid').addEventListener('focusin', (e) => showTip(e.target.closest('.cell')));
+    $('#grid').addEventListener('focusout', hideTip);
+    $('#grid').addEventListener('keydown', (e) => { if (e.key === 'Escape') hideTip(); });
     $('#grid').addEventListener('pointerleave', hideTip);
     addEventListener('scroll', hideTip, { passive: true });
     $('#seo .scroll').addEventListener('scroll', hideTip, { passive: true });
@@ -299,6 +311,13 @@
       try { localStorage.setItem('cms-picker-notes', state.notes ? 'on' : 'off'); } catch (e) { /* not remembered */ }
       render();
     });
+    const diff = $('#diff');
+    diff.addEventListener('click', () => {
+      state.diff = !state.diff;
+      hideTip();
+      diff.setAttribute('aria-pressed', String(state.diff));
+      render();
+    });
     // Key: only the tags the table actually uses
     const used = new Set(Object.values(data.answers).flatMap((a) => Object.values(a).map((c) => c.verdict)));
     const legend = $('#legend');
@@ -314,13 +333,14 @@
   // and a few lists). The reasons shown come from the same data, so the result never claims anything the
   // table doesn't. The answers stay in the page address, so a result can be shared; nothing is stored.
   const QUESTIONS = [
-    { id: 'what', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact'], ['store', 'An online store', 'Products, checkout and payments'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing'], ['custom', 'Something custom', 'An app or portal, built with a developer']] },
-    { id: 'who', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine'], ['agency', 'A designer or agency', 'They build it; I might edit'], ['dev', 'A developer', 'Code is fine']] },
-    { id: 'care', q: 'Do you want to look after hosting, updates and security?', opts: [['no', 'No, handle it for me', 'Everything included'], ['yes', 'That’s fine', 'Or someone will do it for me']] },
-    { id: 'size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few dozen products', 'A small shop'], ['big', 'Hundreds of products, or B2B', 'A large catalogue, or selling to businesses']] },
-    { id: 'lang', q: 'Will it be in more than one language?', opts: [['no', 'No', 'One language'], ['yes', 'Yes', 'Two or more']] },
-    { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust'], ['pixel', 'Every detail', 'Exactly as designed']] },
-    { id: 'leave', q: 'How important is taking everything with you if you switch later?', opts: [['yes', 'Very important', 'I want to own all of it'], ['no', 'Not a big concern', 'I’ll probably stay']] },
+    // short: the question's name on its answer button above the results
+    { id: 'what', short: 'Making', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact'], ['store', 'An online store', 'Products, checkout and payments'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing'], ['custom', 'Something custom', 'An app or portal, built with a developer']] },
+    { id: 'who', short: 'Who builds it', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine'], ['agency', 'A designer or agency', 'They build it; I might edit'], ['dev', 'A developer', 'Code is fine']] },
+    { id: 'care', short: 'Hosting and updates', q: 'Do you want to look after hosting, updates and security?', opts: [['no', 'No, handle it for me', 'Everything included'], ['yes', 'That’s fine', 'Or someone will do it for me']] },
+    { id: 'size', short: 'Shop size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few dozen products', 'A small shop'], ['big', 'Hundreds of products, or B2B', 'A large catalogue, or selling to businesses']] },
+    { id: 'lang', short: 'Languages', q: 'Will it be in more than one language?', opts: [['no', 'No', 'One language'], ['yes', 'Yes', 'Two or more']] },
+    { id: 'look', short: 'Design control', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust'], ['pixel', 'Every detail', 'Exactly as designed']] },
+    { id: 'leave', short: 'Switching later', q: 'How important is taking everything with you if you switch later?', opts: [['yes', 'Very important', 'I want to own all of it'], ['no', 'Not a big concern', 'I’ll probably stay']] },
   ];
   // Shared result links carry the quiz version (v=1). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
@@ -342,31 +362,48 @@
     if (/^You or your host$/.test(hosting)) return 'Updates and security are on you';
     return hosting ? `Hosting: ${hosting.charAt(0).toLowerCase()}${hosting.slice(1)}` : '';
   }
-  // First steps after picking a platform, each linking to that platform's own docs when the answer has a source
+  // First steps after picking a platform: what most new sites do first, in order, each linking to the
+  // platform's own docs (the domain page from data.quiz.domainDocs, the rest from the answers' sources).
+  // A row id means "use that answer"; a link-only step names its link instead.
+  const SEARCH_CONSOLE = 'https://support.google.com/webmasters/answer/34592';   // Google's own guide, the same on every platform
   const STEPS = [
-    ['meta_title', 'Give each page a title and description for search'],
-    ['gsc404', 'Moving from an old site? Point the old links to the new pages'],
-    ['noindex', "Hide pages that shouldn't show in search, like thank-you pages"],
-    ['ai_crawlers', 'Choose which AI bots may read the site'],
+    { text: 'Connect your own domain name', domain: true },
+    { row: 'meta_title', text: 'Give each page a title and description for search' },
+    { text: 'Tell Google the site exists: add it to Search Console and submit its sitemap', url: SEARCH_CONSOLE, link: 'Google’s guide' },
+    { row: 'gsc404', text: 'Moving from an old site? Point the old links to the new pages' },
   ];
+  const LATER = [['noindex', 'hide pages from search'], ['ai_crawlers', 'choose which AI bots may read the site']];
+  function docLink(url, text) {
+    const a = el('a', null, text);
+    a.href = url;
+    a.rel = 'noopener';
+    a.target = '_blank';
+    return a;
+  }
   function nextSteps(p) {
+    const answer = (row) => (data.answers[p.id] || {})[row] || {};
     const ol = el('ol', 'qz-steps');
-    STEPS.forEach(([row, text]) => {
-      const ans = (data.answers[p.id] || {})[row] || {};
-      const li = el('li', null, text);
-      if (ans.sourceUrl) {
-        const a = el('a', null, `How on ${p.name}`);
-        a.href = ans.sourceUrl;
-        a.rel = 'noopener';
-        a.target = '_blank';
-        li.append(' · ', a);
-      }
+    STEPS.forEach((s) => {
+      const ans = s.row ? answer(s.row) : {};
+      const url = s.url || (s.domain ? ((data.quiz.domainDocs || {})[p.id]) : ans.sourceUrl);
+      const li = el('li', null, s.text);
+      if (url) li.append(' · ', docLink(url, s.link || `How on ${p.name}`));
       // How it's done there, when it isn't simply built in ("Yes, with an SEO plugin" → "With an SEO plugin")
       const how = (ans.verdict && ans.verdict !== 'yes' && ans.verdict !== 'auto' && ans.mark || '').replace(/^yes,?\s*/i, '');
       if (how) li.append(el('small', null, how.charAt(0).toUpperCase() + how.slice(1)));
       ol.append(li);
     });
-    return ol;
+    // Less common, so not numbered: a single line, each part linked where there's a source
+    const later = el('p', 'qz-later');
+    later.append(el('b', null, 'Later, if you need it: '));
+    LATER.forEach(([row, text], i) => {
+      if (i) later.append(' · ');
+      const url = answer(row).sourceUrl;
+      later.append(url ? docLink(url, text) : text);
+    });
+    const frag = document.createDocumentFragment();
+    frag.append(ol, later);
+    return frag;
   }
 
   function fitScore(p, a) {
@@ -442,7 +479,7 @@
         b.type = 'button';
         b.setAttribute('aria-pressed', String(a[q.id] === v));
         b.append(el('b', null, title), el('small', null, sub));
-        b.addEventListener('click', () => { a[q.id] = v; step++; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+        b.addEventListener('click', () => { a[q.id] = v; if (resume && valid(a)) { resume = false; step = steps().length; } else step++; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
         opts.append(b);
       });
       box.append(top, h, el('p', 'qz-hint', 'Pick the closest one; you can go back and change it.'), opts);
@@ -453,6 +490,51 @@
         nav.append(back);
         box.append(nav);
       }
+    }
+
+    // On the results: each answer as a button; tapping one opens its choices, and picking another
+    // re-ranks straight away (or asks a question the change brings in, such as the shop's size)
+    let editing = null, resume = false;   // resume: answering a question a change brought in goes straight back to the results
+    function answersBar() {
+      const bar = el('div', 'qz-ans');
+      bar.append(el('p', 'qz-ans-l', 'Your answers · tap one to change it'));
+      const chips = el('div', 'qz-ans-chips');
+      steps().forEach((q) => {
+        const opt = q.opts.find(([v]) => v === a[q.id]);
+        // "Design control: Every detail", so an answer makes sense without remembering the question
+        const b = el('button', 'chip');
+        b.append(el('span', 'qz-ans-q', `${q.short}:`), ` ${opt ? (opt[1].length > 3 ? opt[1] : opt[2]) : ''}`);   // "No" alone says little: "One language"
+        b.type = 'button';
+        b.dataset.q = q.id;
+        b.setAttribute('aria-expanded', String(editing === q.id));
+        b.setAttribute('aria-label', `${q.q} ${opt ? opt[1] : ''}. Change`);
+        b.addEventListener('click', () => { editing = editing === q.id ? null : q.id; results(); box.querySelector(`.qz-ans-chips [data-q="${q.id}"]`)?.focus({ preventScroll: true }); });
+        chips.append(b);
+      });
+      bar.append(chips);
+      const q = steps().find((x) => x.id === editing);
+      if (q) {
+        const ed = el('div', 'qz-ans-ed');
+        ed.setAttribute('role', 'group');
+        ed.setAttribute('aria-label', q.q);
+        ed.append(el('p', null, q.q));
+        q.opts.forEach(([v, title]) => {
+          const b = el('button', 'chip', title);
+          b.type = 'button';
+          b.setAttribute('aria-pressed', String(a[q.id] === v));
+          b.addEventListener('click', () => {
+            a[q.id] = v;
+            editing = null;
+            const missing = steps().findIndex((x) => !x.opts.some(([o]) => o === a[x.id]));
+            if (missing >= 0) { step = missing; resume = true; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); return; }
+            results();
+            box.querySelector(`.qz-ans-chips [data-q="${q.id}"]`)?.focus({ preventScroll: true });
+          });
+          ed.append(b);
+        });
+        bar.append(ed);
+      }
+      return bar;
     }
 
     function results() {
@@ -486,7 +568,7 @@
         if (skip) card.append(el('p', 'qz-warn', `Not ideal if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);
       });
-      box.append(head, h, list);
+      box.append(head, h, answersBar(), list);
       // One first-steps panel under the cards, switched between the three matches
       const panel = el('section', 'qz-panel'), sw = el('div', 'qz-switch'), body = el('div');
       sw.setAttribute('role', 'group');
@@ -523,7 +605,7 @@
       });
       const again = el('button', 'btn', 'Start over');
       again.type = 'button';
-      again.addEventListener('click', () => { a = {}; step = 0; history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+      again.addEventListener('click', () => { a = {}; step = 0; editing = null; resume = false; history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
       nav.append(cmp, copy, again);
       box.append(nav);
     }
