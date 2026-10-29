@@ -95,11 +95,22 @@ html { scrollbar-gutter: stable; }
 ::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
 ::view-transition-old(jsal-brand), ::view-transition-old(jsal-theme) { display: none; }
 ::view-transition-new(jsal-brand), ::view-transition-new(jsal-theme) { animation: none; }
+/* Achievement pop-up (/nav.js). Slides and fades on the graphics card only (transform, opacity). */
+.jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: max(20px, env(safe-area-inset-bottom, 0px)); width: min(340px, calc(100vw - 32px));
+  display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink);
+  border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font);
+  transform: translate(-50%, 0); transition: opacity .3s ease, transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
+.jsal-ach[data-hide] { opacity: 0; transform: translate(-50%, 16px); visibility: hidden; transition: opacity .3s ease, transform .3s ease, visibility 0s .3s; }
+.jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
+.jsal-ach b { display: block; font-size: 15px; }
+.jsal-ach span.d { display: block; font-size: 12.5px; color: var(--jsal-muted); }
 @keyframes jsal-fade-out { to { opacity: 0; } }
 @keyframes jsal-fade-in { from { opacity: 0; } }
 @keyframes jsal-home-out { to { opacity: 0; transform: scale(0.97); } }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  .jsal-ach, .jsal-ach[data-hide] { transition: none; }
 }
 
 /* Top bar: logo (app switcher) · app name · the app's own controls · theme button.

@@ -57,29 +57,21 @@
   const team = location.pathname.startsWith('/ic/');
   const queue = [];
   let toastEl = null, showing = false;
+  // Its styles are in /shell.css (adding a stylesheet at the moment it pops up made the browser
+  // restyle the whole page mid-animation), and the box is made once, while the page is idle
+  function makeToast() {
+    if (toastEl || team || !document.body) return;
+    toastEl = document.createElement('div');
+    toastEl.className = 'jsal-ach';
+    toastEl.setAttribute('role', 'status');
+    toastEl.dataset.hide = '';
+    document.body.append(toastEl);
+  }
   function showNext() {
     if (showing || !queue.length) return;
     const a = queue.shift();
     showing = true;
-    if (!toastEl) {
-      document.head.insertAdjacentHTML('beforeend', `<style>
-        .jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: max(20px, env(safe-area-inset-bottom, 0px)); width: min(340px, calc(100vw - 32px));
-          display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink);
-          border: 1px solid var(--jsal-accent); box-shadow: 0 16px 40px rgb(0 0 0 / .25), 0 2px 6px rgb(0 0 0 / .1); font: 14px/1.35 var(--jsal-font);
-          transform: translate(-50%, 0); transition: opacity .3s ease, transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); pointer-events: none; }
-        .jsal-ach[data-hide] { opacity: 0; transform: translate(-50%, 16px); }
-        .jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
-        .jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
-        .jsal-ach b { display: block; font-size: 15px; }
-        .jsal-ach span.d { display: block; font-size: 12.5px; color: var(--jsal-muted); }
-        @media (prefers-reduced-motion: reduce) { .jsal-ach { transition: none; } }
-      </style>`);
-      toastEl = document.createElement('div');
-      toastEl.className = 'jsal-ach';
-      toastEl.setAttribute('role', 'status');
-      toastEl.dataset.hide = '';
-      document.body.append(toastEl);
-    }
+    if (!toastEl) makeToast();
     toastEl.innerHTML = `<span class="medal">${svg(a.icon, 20)}</span><span><small>Achievement unlocked</small><b>${a.name}</b><span class="d">${a.done}</span></span>`;
     requestAnimationFrame(() => requestAnimationFrame(() => delete toastEl.dataset.hide));
     setTimeout(() => {
@@ -97,6 +89,7 @@
     dispatchEvent(new CustomEvent('jsal-achievement', { detail: id }));
   }
   window.jsalAchieve = unlock;
+  (window.requestIdleCallback || setTimeout)(makeToast);
   window.jsalAchievements = { list: ACH, got: () => read('jsal-achievements', {}) };
   // Opening a tool: "First steps", and "Explorer" once all of them have been opened
   const tool = TOOLS.find((t) => location.pathname.startsWith(t));
