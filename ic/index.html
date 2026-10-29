@@ -233,8 +233,13 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .v .sc { font-weight: 500; opacity: 0.85; }
 .h2-sub { color: var(--muted); font-weight: 600; }
 /* Each platform's answers in two groups, so whether an answer holds on every site is spelled out */
-.group-h { display: flex; align-items: baseline; gap: 8px; margin: 10px 0 2px; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: var(--muted); }
-.group-h span { font-weight: 600; font-variant-numeric: tabular-nums; }
+.group-h { display: flex; align-items: center; gap: 8px; margin: 14px 0 0; font-size: 15px; font-weight: 600; color: var(--ink); }
+.group-h svg { flex: none; }
+.group-h.check svg { color: var(--mid); }
+.group-h.same svg { color: var(--ok); }
+.group-h .n { padding: 1px 8px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.group-h::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.group-sub { margin: -2px 0 4px 26px; color: var(--muted); font-size: 13px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* Platform panel: a header card, then one card per item */
@@ -810,6 +815,9 @@ function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
 // Tag first; the form's mark shows only when it adds something the tag doesn't ("Depends on theme",
 // "No (HTML section)"). "Yes", "No", "Check", "Automatic" and the like just repeat the tag.
 const addsDetail = (m) => !/^(yes|no|check|automatic|built in|needs code|likely no|unlikely)$/i.test(plain(m).trim());
+// Group heading icons: alert circle for answers to check, check circle for the ones that hold everywhere
+const ICON_CHECK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg>';
+const ICON_SAME = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>';
 const COPY_SVG = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
 function rowHtml(e) {
   if (state.editing === e.key) return editRowHtml(e);
@@ -845,8 +853,9 @@ function renderPanel() {
   let body;
   if (shown.length) {
     const check = shown.filter((e) => e.cell[2] !== 'U'), same = shown.filter((e) => e.cell[2] === 'U');
-    const group = (title, list) => list.length ? `<h3 class="group-h">${title} <span>${list.length}</span></h3>${list.map(rowHtml).join('')}` : '';
-    body = group('Check on each site: varies or not verified', check) + group(`Same on every ${esc(p.name)} site`, same);
+    const group = (cls, icon, title, sub, list) => list.length ? `<h3 class="group-h ${cls}">${icon}${title}<span class="n" aria-label="${list.length} items">${list.length}</span></h3>${sub ? `<p class="group-sub">${sub}</p>` : ''}${list.map(rowHtml).join('')}` : '';
+    body = group('check', ICON_CHECK, 'Check on each site', 'These answers vary from site to site or aren’t verified yet.', check)
+      + group('same', ICON_SAME, `Same on every ${esc(p.name)} site`, '', same);
   } else body = `<p class="empty">Nothing to check here: every ${SEC_LABEL[state.sec]} item on ${p.name} is the same on every site.</p>`;
   $('#panel').innerHTML = `
     <div class="panel-head">
