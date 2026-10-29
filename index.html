@@ -185,7 +185,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
   --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
   --gold: #f0e4c6; --gold-ink: #1f1a12; --gold-muted: #3d362a; --gold-acc: #835c0e;
   --plain: #e8e5dd; --plain-line: #cfc3a9;
-  --teal: #e0ece8; --teal-ink: #1f1a12; --teal-muted: #3d362a; --teal-acc: #2b6458;
+  --plum: #ece4f1; --plum-ink: #1f1a12; --plum-muted: #3d362a; --plum-acc: #674690;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -194,7 +194,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
     --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
     --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
     --plain: #1c1f27; --plain-line: #3d424e;
-    --teal: #15231f; --teal-ink: #ece6d6; --teal-muted: #c4bfb2; --teal-acc: #6cc4b2;
+    --plum: #221a2b; --plum-ink: #ece6d6; --plum-muted: #c4bfb2; --plum-acc: #c7a3f0;
   }
 }
 :root[data-theme="dark"] {
@@ -203,7 +203,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
   --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
   --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
   --plain: #1c1f27; --plain-line: #3d424e;
-  --teal: #15231f; --teal-ink: #ece6d6; --teal-muted: #c4bfb2; --teal-acc: #6cc4b2;
+  --plum: #221a2b; --plum-ink: #ece6d6; --plum-muted: #c4bfb2; --plum-acc: #c7a3f0;
 }
 
 * { box-sizing: border-box; }
@@ -277,11 +277,11 @@ p, li { text-wrap: pretty; }
 
 .ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
 .ui .label { color: var(--green-acc); }
-.cms { grid-column: 5 / 13; background: var(--teal); color: var(--teal-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; --arrow-bg: var(--teal-acc); --arrow-ink: var(--teal); }
+.cms { grid-column: 5 / 13; background: var(--plum); color: var(--plum-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; --arrow-bg: var(--plum-acc); --arrow-ink: var(--plum); }
 .cms .foot { flex-direction: column; align-items: flex-start; justify-content: space-between; height: 100%; }
 .cms h2 { font-size: 26px; }
-.cms .label { color: var(--teal-acc); }
-.cms .desc { color: var(--teal-muted); }
+.cms .label { color: var(--plum-acc); }
+.cms .desc { color: var(--plum-muted); }
 .ui h2 { font-size: 34px; }
 .ui .desc { color: var(--green-muted); margin-top: 8px !important; }
 .ui .pill { margin-top: 14px; color: var(--green-acc); }
@@ -338,7 +338,7 @@ p, li { text-wrap: pretty; }
 .m-cms { grid-template-columns: minmax(0, 44%) minmax(0, 1fr); padding: 10px; gap: 8px; align-self: center; }
 .m-cms .chips { display: flex; gap: 3px; }
 .m-cms .chips i { height: 9px; flex: 1; border-radius: 9px; border: 1px solid var(--jsal-line); background: var(--jsal-surface); }
-.m-cms .chips .on { background: var(--teal-acc); border-color: var(--teal-acc); }
+.m-cms .chips .on { background: var(--plum-acc); border-color: var(--plum-acc); }
 .m-cms .pcard { display: flex; flex-direction: column; gap: 4px; padding: 6px; }
 .m-cms .pcard .bar:first-child { height: 6px; width: 55%; background: var(--jsal-ink-2); }
 .m-cms .pcard .bar { height: 4px; }
@@ -420,7 +420,7 @@ p, li { text-wrap: pretty; }
 @keyframes m-refresh { 0% { opacity: 0.35; translate: 0 3px; } 40%, 100% { opacity: 1; translate: 0 0; } }
 @keyframes m-tidy { 0%, 10%, 100% { transform: translateX(var(--x)) scaleX(var(--s)); opacity: 0.55; } 40%, 80% { transform: none; opacity: 1; } }
 @keyframes m-chip { 0%, 25%, 100% { opacity: 0; } 45%, 80% { opacity: 1; } }
-@keyframes m-goal { 0%, 32% { background: var(--teal-acc); border-color: var(--teal-acc); } 34%, 100% { background: var(--jsal-surface); border-color: var(--jsal-line); } }
+@keyframes m-goal { 0%, 32% { background: var(--plum-acc); border-color: var(--plum-acc); } 34%, 100% { background: var(--jsal-surface); border-color: var(--jsal-line); } }
 @keyframes m-pop { 0% { opacity: 0; scale: 0.6; } 35%, 100% { opacity: 1; scale: 1; } }
 @keyframes m-fix { 0%, 40% { background: var(--jsal-warn); } 50%, 85% { background: var(--jsal-ok); } 95%, 100% { background: var(--jsal-warn); } }
 
