@@ -222,7 +222,7 @@ def picker_seed():
 SHORT = {'yes': 'Built in', 'auto': 'Automatic', 'plugin': 'Plugin/app', 'code': 'Code', 'hosting': 'Hosting/DNS',
          'check': 'Check', 'indirect': 'Indirectly', 'no': 'Not possible'}
 SCOPE = {'V': 'varies', 'C': 'not verified'}   # only the exceptions are marked
-LOGOS = {'wordpress', 'shopify', 'wix', 'squarespace', 'webflow', 'framer', 'hubspot', 'bigcommerce', 'drupal'}
+LOGOS = {'wordpress', 'shopify', 'wix', 'squarespace', 'webflow', 'framer', 'hubspot', 'bigcommerce', 'drupal', 'ghost'}
 BADGE = {'magento': 'M', 'duda': 'D', 'headless': '{ }'}
 DEFAULT_COMPARE = ['wordpress', 'shopify', 'wix', 'squarespace']
 PEEK_PLATS = ['wordpress', 'shopify', 'wix']
