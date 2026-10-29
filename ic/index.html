@@ -237,6 +237,10 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .dot.U { background: var(--ok); border-color: var(--ok); }
 .dot.V { background: transparent; border-color: var(--mid); }
 .dot.C { background: transparent; border-color: var(--unk); border-style: dashed; }
+/* Inside a coloured tag the dot takes the tag's colour (a green dot on a red "Not possible" read as
+   a mixed signal); its shape still shows the scope: solid same everywhere, ring varies, dashed not verified */
+.v .dot.U { background: currentColor; border-color: currentColor; }
+.v .dot.V, .v .dot.C { border-color: currentColor; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* Platform panel: a header card, then one card per item */
