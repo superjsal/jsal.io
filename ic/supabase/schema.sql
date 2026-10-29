@@ -5,7 +5,8 @@
 -- Who can do what (enforced here, not just hidden in the page):
 --   anyone signed in with Discord   → can only ask for access (their own row in access_requests)
 --   members (approved)              → read everything, post requests, upvote, comment, delete their own requests and comments
---   admins                          → also edit answers, set request status, approve, remove or promote people
+--   admins                          → also edit answers, add and hide platforms, edit the CMS Picker,
+--                                     set request status, approve, remove or promote people
 
 -- ---------- People ----------
 create table if not exists public.members (
@@ -126,6 +127,74 @@ create table if not exists public.platform_notes (
   at        timestamptz not null default now()
 );
 
+-- Add a platform: every Tech and Content item starts as "Check manually · Not verified", for
+-- admins to fill in with Edit. Name and about are stored escaped (the page shows them as HTML).
+-- With set_platform_hidden, the only changes the page can make to app_data besides an admin's push.
+create or replace function public.add_platform(p_id text, p_name text, p_about text default '')
+returns void language plpgsql security definer set search_path = public as $$
+declare
+  d jsonb; tech jsonb; content jsonb;
+  blank constant jsonb := '["check", "Check", "C", ""]';
+  esc_name text; esc_about text;
+begin
+  if not public.is_admin() then raise exception 'Only admins can add platforms'; end if;
+  if p_id is null or p_id !~ '^[a-z0-9][a-z0-9-]{1,29}$' then
+    raise exception 'The short name must be 2–30 lowercase letters, numbers or dashes'; end if;
+  esc_name := replace(replace(replace(btrim(coalesce(p_name, '')), '&', '&amp;'), '<', '&lt;'), '>', '&gt;');
+  esc_about := replace(replace(replace(btrim(coalesce(p_about, '')), '&', '&amp;'), '<', '&lt;'), '>', '&gt;');
+  if esc_name = '' or length(esc_name) > 80 then raise exception 'Add a name (up to 60 characters)'; end if;
+  if length(esc_about) > 600 then raise exception 'The description is too long'; end if;
+
+  select data into d from public.app_data where id = 'defaults' for update;
+  if d is null then raise exception 'The Playbook data is missing'; end if;
+  if exists (select 1 from jsonb_array_elements(d->'P') x where x->>'id' = p_id) then
+    raise exception 'There is already a platform called %', p_id; end if;
+
+  select coalesce(jsonb_object_agg(i->>'id', blank), '{}') into tech from jsonb_array_elements(d->'ITEMS') i;
+  select coalesce(jsonb_object_agg(i->>'id', blank), '{}') into content from jsonb_array_elements(d->'CONTENT_ITEMS') i;
+  d := jsonb_set(d, '{P}', (d->'P') || jsonb_build_array(jsonb_build_object('id', p_id, 'name', esc_name, 'about', esc_about, 'cells', tech)));
+  d := jsonb_set(d, '{CONTENT}', coalesce(d->'CONTENT', '{}') || jsonb_build_object(p_id, content));
+  update public.app_data set data = d, updated_at = now() where id = 'defaults';
+  insert into public.picker (platform) values (p_id) on conflict (platform) do nothing;
+end $$;
+
+-- Hide or restore a platform. Hidden platforms keep their answers and edits; they just aren't
+-- shown to the team (admins see them on the Team page to restore). Hiding also takes it off
+-- the CMS Picker.
+create or replace function public.set_platform_hidden(p_id text, p_hidden boolean)
+returns void language plpgsql security definer set search_path = public as $$
+declare d jsonb;
+begin
+  if not public.is_admin() then raise exception 'Only admins can hide platforms'; end if;
+  select data into d from public.app_data where id = 'defaults' for update;
+  if not exists (select 1 from jsonb_array_elements(d->'P') x where x->>'id' = p_id) then
+    raise exception 'No platform called %', p_id; end if;
+  update public.app_data set updated_at = now(), data = jsonb_set(d, '{P}', (
+    select jsonb_agg(case when x->>'id' <> p_id then x when p_hidden then x || '{"hidden": true}' else x - 'hidden' end order by n)
+    from jsonb_array_elements(d->'P') with ordinality t(x, n)))
+  where id = 'defaults';
+  if p_hidden then update public.picker set public = false where platform = p_id; end if;
+end $$;
+
+-- ---------- CMS Picker ----------
+-- The rows only the public CMS Picker shows (blog, store, languages, forms, URLs, noindex, AI
+-- crawlers), each platform's public profile and logo, and whether it's on the CMS Picker at all.
+-- Admins only: team members can't read it. playbook.py publish (with the secret key) reads it.
+create table if not exists public.picker (
+  platform  text primary key,
+  profile   jsonb not null default '{}'::jsonb,   -- type, summary, tags, aiTags, goals, goodFit, lessSuited, hosting, export
+  answers   jsonb not null default '{}'::jsonb,   -- { row id: [verdict, note, scope] }
+  public    boolean not null default false,       -- shown on the public CMS Picker
+  logo      text,                                 -- SVG markup or a PNG data: URL
+  edited_by uuid default auth.uid() references auth.users on delete set null,
+  at        timestamptz not null default now()
+);
+-- Bring a picker table made by an earlier version of this file up to date.
+alter table public.picker add column if not exists public boolean not null default false;
+alter table public.picker add column if not exists logo text;
+alter table public.picker drop constraint if exists picker_logo_size;
+alter table public.picker add constraint picker_logo_size check (logo is null or length(logo) <= 200000);
+
 -- ---------- Requests and upvotes ----------
 -- item: '<section>:<item id>' (section may include a page type, e.g. 'content.product:faq'), or '' for none.
 create table if not exists public.requests (
@@ -168,12 +237,13 @@ alter table public.requests        enable row level security;
 alter table public.votes           enable row level security;
 alter table public.comments        enable row level security;
 alter table public.platform_notes  enable row level security;
+alter table public.picker          enable row level security;
 
 do $$
 declare t text;
 begin
   -- Start clean so re-running this file never leaves an old, looser policy behind.
-  foreach t in array array['members', 'access_requests', 'app_data', 'edits', 'requests', 'votes', 'comments', 'platform_notes'] loop
+  foreach t in array array['members', 'access_requests', 'app_data', 'edits', 'requests', 'votes', 'comments', 'platform_notes', 'picker'] loop
     execute (select coalesce(string_agg(format('drop policy %I on public.%I;', policyname, t), ' '), '')
              from pg_policies where schemaname = 'public' and tablename = t);
   end loop;
@@ -196,6 +266,9 @@ create policy "admins write" on public.edits for all to authenticated using (pub
 create policy "members read" on public.platform_notes for select to authenticated using (public.is_member());
 create policy "admins write" on public.platform_notes for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
+-- picker: admins only.
+create policy "picker: admins only" on public.picker for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
 -- requests: members post as themselves (always starting "Not reviewed"); only admins change them; authors or admins delete.
 create policy "members read" on public.requests for select to authenticated using (public.is_member());
 create policy "members post" on public.requests for insert to authenticated
@@ -215,12 +288,19 @@ create policy "members comment" on public.comments for insert to authenticated
 create policy "author or admin delete" on public.comments for delete to authenticated using (author = auth.uid() or public.is_admin());
 
 -- Signed-out visitors get nothing at all.
-revoke all on public.members, public.access_requests, public.app_data, public.edits, public.requests, public.votes, public.comments, public.platform_notes from anon;
+revoke all on public.members, public.access_requests, public.app_data, public.edits, public.requests, public.votes, public.comments, public.platform_notes, public.picker from anon;
 
--- Keep-awake: a weekly GitHub Action calls this so the free Supabase project never pauses for
+-- Keep-awake: a twice-weekly GitHub Action calls this so the free Supabase project never pauses for
 -- inactivity. It only returns the time and reads no data.
 create or replace function public.ping() returns timestamptz
-language sql stable as $$ select now() $$;
+language sql stable set search_path = '' as $$ select now() $$;
 grant execute on function public.ping() to anon;
-revoke execute on function public.approve_member(uuid), public.remove_member(uuid), public.set_member_role(uuid, text) from public, anon;
-grant execute on function public.approve_member(uuid), public.remove_member(uuid), public.set_member_role(uuid, text) to authenticated;
+
+-- Functions: signed-in people only (each admin action refuses non-admins itself; the access rules
+-- above need is_member and is_admin). Supabase's Advisor still lists these as "Signed-In Users Can
+-- Execute SECURITY DEFINER Function", on purpose. "Leaked Password Protection" doesn't apply:
+-- everyone signs in with Discord.
+revoke execute on function public.is_member(), public.is_admin(), public.approve_member(uuid), public.remove_member(uuid),
+  public.set_member_role(uuid, text), public.add_platform(text, text, text), public.set_platform_hidden(text, boolean) from public, anon;
+grant execute on function public.is_member(), public.is_admin(), public.approve_member(uuid), public.remove_member(uuid),
+  public.set_member_role(uuid, text), public.add_platform(text, text, text), public.set_platform_hidden(text, boolean) to authenticated;

@@ -57,7 +57,7 @@ def api(method, path, body=None, prefer=None):
 
 
 def table(name, query='select=*'):
-    """Rows of a table, or None when it doesn't exist yet (e.g. picker before picker.sql has run)."""
+    """Rows of a table, or None when it doesn't exist yet (e.g. picker before schema.sql has made it)."""
     try:
         return api('GET', f'{name}?{query}')
     except urllib.error.HTTPError as e:

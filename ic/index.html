@@ -1140,7 +1140,7 @@ async function loadPicker() {
     sb.from('picker').select('*'),
     fetch('/cms-picker/data.json', { cache: 'no-cache' }).then((r) => r.json()).catch(() => null),
   ]);
-  if (rows.error || !pub) return;   // table not set up yet (private/picker.sql): no section
+  if (rows.error || !pub) return;   // table not set up yet (supabase/schema.sql): no section
   PK.rows = new Map(rows.data.map((r) => [r.platform, r]));
   const own = new Set(rows.data.flatMap((r) => Object.keys(r.answers || {})));
   PK.items = pub.items.filter((it) => own.has(it.id));
@@ -1455,7 +1455,7 @@ function renderTeam() {
 }
 // Platforms: admins add one (it starts with every answer "Check manually"), hide one (answers kept) or
 // restore it. The page can only make these changes through add_platform and set_platform_hidden
-// (private/platforms.sql), which check for an admin; then it reloads the Playbook data.
+// (supabase/schema.sql), which check for an admin; then it reloads the Playbook data.
 function renderPlatformList() {
   if (!R.manage) return;
   $('#platform-list').innerHTML = ALL_P.map((p) => {
