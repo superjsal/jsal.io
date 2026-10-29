@@ -335,6 +335,39 @@
   }
   const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
   const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
+  // Effort, from values already checked: the quiz's ease score and the profile's hosting line
+  const SKILL = ['Needs a developer', 'Takes some learning', 'Easy to learn', 'No technical skill needed'];
+  function upkeep(hosting) {
+    if (/^Handled for you$/.test(hosting)) return 'Updates and security handled for you';
+    if (/^You or your host$/.test(hosting)) return 'Updates and security are on you';
+    return hosting ? `Hosting: ${hosting.charAt(0).toLowerCase()}${hosting.slice(1)}` : '';
+  }
+  // First steps after picking a platform, each linking to that platform's own docs when the answer has a source
+  const STEPS = [
+    ['meta_title', 'Give each page a title and description for search'],
+    ['gsc404', 'Moving from an old site? Point the old links to the new pages'],
+    ['noindex', "Hide pages that shouldn't show in search, like thank-you pages"],
+    ['ai_crawlers', 'Choose which AI bots may read the site'],
+  ];
+  function nextSteps(p) {
+    const ol = el('ol', 'qz-steps');
+    STEPS.forEach(([row, text]) => {
+      const ans = (data.answers[p.id] || {})[row] || {};
+      const li = el('li', null, text);
+      if (ans.sourceUrl) {
+        const a = el('a', null, `How on ${p.name}`);
+        a.href = ans.sourceUrl;
+        a.rel = 'noopener';
+        a.target = '_blank';
+        li.append(' · ', a);
+      }
+      // How it's done there, when it isn't simply built in ("Yes, with an SEO plugin" → "With an SEO plugin")
+      const how = (ans.verdict && ans.verdict !== 'yes' && ans.verdict !== 'auto' && ans.mark || '').replace(/^yes,?\s*/i, '');
+      if (how) li.append(el('small', null, how.charAt(0).toUpperCase() + how.slice(1)));
+      ol.append(li);
+    });
+    return ol;
+  }
 
   function fitScore(p, a) {
     const Q = data.quiz, pr = p.profile || {}, why = [];
@@ -443,6 +476,9 @@
         const name = el('h4', null, r.p.name);
         name.append(el('span', 'fitp', label(r, i)));
         card.append(logo(r.p), name, el('p', 'sum', pr.summary || ''));
+        const fx = el('p', 'qz-effort');
+        [SKILL[data.quiz.ease[r.p.id] ?? 1], upkeep(pr.hosting)].filter(Boolean).forEach((t) => fx.append(el('span', null, t)));
+        card.append(fx);
         const ul = el('ul');
         r.why.forEach((w) => ul.append(el('li', null, w)));
         card.append(ul);
@@ -451,6 +487,25 @@
         list.append(card);
       });
       box.append(head, h, list);
+      // One first-steps panel under the cards, switched between the three matches
+      const panel = el('section', 'qz-panel'), sw = el('div', 'qz-switch'), body = el('div');
+      sw.setAttribute('role', 'group');
+      sw.setAttribute('aria-label', 'Show first steps for');
+      sw.append(el('span', 'qz-switch-l', 'Show steps for'));
+      const show = (p) => {
+        sw.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === p.id)));
+        body.replaceChildren(el('h4', null, `First steps if you pick ${p.name}`), nextSteps(p));
+      };
+      top.forEach((r) => {
+        const b = el('button', 'chip', r.p.name);
+        b.type = 'button';
+        b.dataset.id = r.p.id;
+        b.addEventListener('click', () => show(r.p));
+        sw.append(b);
+      });
+      panel.append(sw, body);
+      show(top[0].p);
+      box.append(panel);
       if (also.length) box.append(el('p', 'qz-also', `Also worth a look: ${also.map((r) => r.p.name).join(', ')}`));
       const nav = el('div', 'qz-nav');
       const cmp = el('button', 'btn primary', 'Compare these side by side');
