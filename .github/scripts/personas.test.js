@@ -1,5 +1,5 @@
 // CMS Picker persona tests: example people run through the real Find my fit scoring (cms-picker/score.js),
-// checked against the results John agreed (2026-10-29; 23 people since the business-site follow-up). Run by build\check.ps1 (node .github/scripts/personas.test.js).
+// checked against the results John agreed (2026-10-29; 24 people since the business-site and members follow-ups). Run by build\check.ps1 (node .github/scripts/personas.test.js).
 // The answers come from cms-picker/data.json with this folder's cms-picker.json quiz values on top, so a
 // change to either is tested before the next publish. When a result should change, agree it first, then
 // update the expectation here.
@@ -54,17 +54,19 @@ const PERSONAS = [
   ['Clothing brand, about 50 products, wants design control', { what: 'store', who: 'learn', care: 'no', size: 'small', lang: 'no', look: 'visual', leave: 'no' },
     { first: ['shopify', 'wix', 'squarespace'], top3: ['shopify'] }],   // a three-way tie: the store questions don't ask about design
   // Blogs, publications and custom builds
-  ['Newsletter writer with paid members', { what: 'content', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes' },
+  ['Newsletter writer with paid members', { what: 'content', members: 'yes', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes' },
     { first: ['ghost'], top3: ['ghost'] }],
-  ['Government multilingual content site', { what: 'content', who: 'dev', care: 'yes', lang: 'yes', look: 'pixel', leave: 'yes' },
+  ['Government multilingual content site', { what: 'content', members: 'no', who: 'dev', care: 'yes', lang: 'yes', look: 'pixel', leave: 'yes' },
     { first: ['drupal'], top3: ['drupal', 'wordpress'], not: ['wix', 'squarespace', 'webflow'] }],
-  ['Small blog that wants to own everything', { what: 'content', who: 'learn', care: 'yes', lang: 'no', look: 'template', leave: 'yes' },
+  ['Small blog that wants to own everything', { what: 'content', members: 'no', who: 'learn', care: 'yes', lang: 'no', look: 'template', leave: 'yes' },
     { first: ['ghost', 'wordpress'], top3: ['ghost', 'wordpress'] }],
-  ['Hobby blog, not technical', { what: 'content', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
+  ['Hobby blog, not technical', { what: 'content', members: 'no', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
     { first: ['squarespace', 'ghost'], top3: ['squarespace', 'ghost'] }],
-  ['Online course creator with members', { what: 'content', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
-    { first: ['squarespace', 'ghost'], top3: ['ghost'] }],   // a tie: no question asks about paid members
-  ['Nonprofit with news in two languages', { what: 'content', who: 'learn', care: 'no', lang: 'yes', look: 'template', leave: 'yes' },
+  ['Online course creator with members', { what: 'content', members: 'yes', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
+    { first: ['ghost'], top3: ['ghost', 'squarespace'] }],
+  ['Paid newsletter, not technical, two languages', { what: 'content', members: 'yes', who: 'easy', care: 'no', lang: 'yes', look: 'template', leave: 'no' },
+    { first: ['ghost'], top3: ['ghost'] }],
+  ['Nonprofit with news in two languages', { what: 'content', members: 'no', who: 'learn', care: 'no', lang: 'yes', look: 'template', leave: 'yes' },
     { first: ['hubspot', 'ghost'], top3: ['hubspot', 'ghost'] }],
   ['Developer building an app and a site', { what: 'custom', who: 'dev', care: 'yes', lang: 'no', look: 'pixel', leave: 'yes' },
     { first: ['headless'], top3: ['headless'] }],

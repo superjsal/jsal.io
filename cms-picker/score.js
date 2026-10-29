@@ -11,6 +11,7 @@
     // Each option: [value, title, hint, its answer on its own] (the last is the answer button above the results, so it reads without the question)
     { id: 'what', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact', 'A business or work site'], ['store', 'An online store', 'Products, checkout and payments', 'An online store'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing', 'A blog, newsletter or publication'], ['custom', 'Something custom', 'An app or portal, built with a developer', 'Something custom, with a developer']] },
     { id: 'kind', q: 'Which is closest to what you do?', when: (a) => a.what === 'site', opts: [['local', 'A local business or services', 'Shops, trades, salons, clinics, consultants', 'A local business or services'], ['creative', 'Creative work or a portfolio', 'Photography, design, art, music', 'Creative work or a portfolio'], ['startup', 'A startup or product launch', 'A product, an app or a launch page', 'A startup or product launch'], ['b2b', 'A B2B company with a sales team', 'Leads, demos and a CRM', 'A B2B company with a sales team'], ['content', 'Lots of content', 'Articles, guides and resources', 'A site with lots of content']] },
+    { id: 'members', q: 'Will you have paid members or a newsletter?', when: (a) => a.what === 'content', opts: [['yes', 'Yes', 'Subscribers, paid posts or a newsletter', 'Paid members or a newsletter'], ['no', 'No', 'Just the posts', 'Just posts, no members']] },
     { id: 'who', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple', 'I’ll build it, not technical'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine', 'I’ll build it and learn'], ['agency', 'A designer or agency', 'They build it; I might edit', 'A designer or agency builds it'], ['dev', 'A developer', 'Code is fine', 'A developer builds it']] },
     { id: 'care', q: 'Do you want to look after hosting, updates and security?', opts: [['no', 'No, handle it for me', 'Everything included', 'Hosting and updates handled for me'], ['yes', 'That’s fine', 'Or someone will do it for me', 'Fine looking after hosting and updates']] },
     { id: 'size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few dozen products', 'A small shop', 'A small shop, up to a few dozen products'], ['big', 'Hundreds of products, or B2B', 'A large catalogue, or selling to businesses', 'Hundreds of products, or B2B']] },
@@ -28,6 +29,7 @@
   const TIP = {
     goal: [(a) => `it’s ${WHAT[a.what].charAt(0).toLowerCase()}${WHAT[a.what].slice(1)}`, (a, y) => `${y} isn’t made for this`],
     kind: [(a) => `it ${KINDS[a.kind].charAt(0).toLowerCase()}${KINDS[a.kind].slice(1)}`, null],
+    members: [() => 'paid members and newsletters are built in', null],
     sellOnly: [null, (a, y) => `${y} is made only for selling`],
     frontEnd: [() => 'it feeds an app or any front end from one place', null],
     ease: [(a) => (a.who === 'easy' ? 'it’s easier to run without technical skills' : 'it’s easier to learn'), (a, y) => (a.who === 'easy' ? `${y} is harder to run without technical skills` : `${y} is harder to learn`)],
@@ -54,6 +56,7 @@
     if ((pr.goals || []).includes(a.what)) add('goal', 4, WHAT[a.what]); else add('goal', -8);
     if (a.what !== 'store' && has('storeOnly')) add('sellOnly', -6);
     if (a.what === 'site' && ((Q.kind || {})[a.kind] || []).includes(p.id)) add('kind', 3, KINDS[a.kind]);
+    if (a.what === 'content' && a.members === 'yes' && has('members')) add('members', 3, 'Paid members and newsletters built in');
     if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'Feeds an app or any front end from one place');
     const ease = Q.ease[p.id] ?? 1;
     if (a.who === 'easy') add('ease', ease * 2 - 3, ease === 3 && 'Easy to run without technical skills');
