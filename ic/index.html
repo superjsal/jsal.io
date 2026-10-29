@@ -211,6 +211,10 @@ header.top p { flex: 1 1 360px; font-size: 14px; color: var(--muted); }
 .mobile-only { display: none; }
 .toggle { display: inline-flex; gap: 7px; align-items: center; font-weight: 600; font-size: 13px; color: var(--ink); cursor: pointer; }
 .toggle input { width: 15px; height: 15px; accent-color: var(--accent); margin: 0; }
+.search { position: relative; flex: 1 1 220px; max-width: 320px; margin-left: auto; }
+.search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.search input { width: 100%; font: 14px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px 6px 32px; }
+.search input::placeholder { color: var(--muted); }
 .empty { padding: 24px 18px; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; }
 
 /* Collapsible compare section */
@@ -240,6 +244,10 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .group-h .n { padding: 1px 8px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .group-h::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .group-sub { margin: -2px 0 4px 26px; color: var(--muted); font-size: 13px; }
+/* The card a shared link points to */
+.card.target { outline: 2px solid var(--accent); outline-offset: 2px; }
+.link-copy { display: inline-flex; align-items: center; padding: 3px 4px; }
+.link-copy:hover, .suggest:hover { color: var(--ink); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* Platform panel: a header card, then one card per item */
@@ -399,6 +407,7 @@ code, pre { font-variant-ligatures: none; }
   #ptype-bar { flex: 1 1 100%; min-width: 0; flex-wrap: wrap; }
 }
 @media (max-width: 560px) {
+  .search { flex-basis: 100%; max-width: none; margin-left: 0; }
   .edit-grid { grid-template-columns: minmax(0, 1fr); }
 }
 /* Sign-in gate, account chip and team page */
@@ -517,6 +526,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
       <div class="tb-row tb-sub">
         <label class="toggle"><input type="checkbox" id="only-check"> Only what to check</label>
         <label class="toggle"><input type="checkbox" id="show-how"> Show how-to steps</label>
+        <label class="search"><span class="sr-only" id="search-label">Search answers</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="search" autocomplete="off" spellcheck="false" placeholder="Search answers"></label>
       </div>
     </div>
 
@@ -599,7 +609,7 @@ let ITEMS = [], CONTENT_ITEMS = [], VERDICT = {}, SCOPE = {}, P = [], CONTENT = 
 // ---------- Page UI ----------
 const $ = (s) => document.querySelector(s);
 const plain = (html) => html.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-const state = { sec: 'content', onlyCheck: false, showHow: false, ptype: 'home', platform: null, variant: {}, editing: null };
+const state = { sec: 'content', onlyCheck: false, showHow: false, ptype: 'home', platform: null, variant: {}, editing: null, q: '' };
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 // Team edits are written in Markdown: **bold**, *italic*, ~~strike~~, `code`, [link](https://…),
 // "- " / "1. " lists and line breaks. Text is escaped first, so nothing else (no HTML) gets through.
@@ -727,8 +737,8 @@ function warnFor(p, sec, id) {
 // An answer that's the same on every site needs no check on each site (it's in the "Same on every … site"
 // group); the sidebar counts and "Only what to check" use the same rule, so the numbers agree.
 const settled = (c) => c[2] === 'U';
-function entriesFor(p) {
-  const secs = [state.sec === 'tech' ? 'tech' : contentSec(p)];
+const curSec = (p) => (state.sec === 'tech' ? 'tech' : contentSec(p));
+function entriesFor(p, secs = [curSec(p)]) {
   return secs.flatMap((sec) => itemsFor(sec).map((it) => {
     const variant = !ownAnswer(p, sec, it.id) && !!variantCell(p, sec, it.id);
     const edit = !variant && sourceEdit(p, sec, it.id);           // the edit the shown text comes from
@@ -762,6 +772,7 @@ function renderControls() {
   document.querySelectorAll('[data-sec]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sec === state.sec)));
   $('#only-check').checked = state.onlyCheck;
   $('#show-how').checked = state.showHow;
+  $('#search').placeholder = `Search ${p.name}`;
   // Page type: Content only, on platforms with page-type answers
   const bar = $('#ptype-bar');
   bar.hidden = !(state.sec === 'content' && BY_TYPE[p.id]);
@@ -818,6 +829,17 @@ const addsDetail = (m) => !/^(yes|no|check|automatic|built in|needs code|likely 
 // Group heading icons: alert circle for answers to check, check circle for the ones that hold everywhere
 const ICON_CHECK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg>';
 const ICON_SAME = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>';
+const LINK_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>';
+// When the answers on show last changed: the latest team edit to this platform's section, its watch-out,
+// or the Playbook's own content (a new platform, item or wording pushed from playbook.py)
+let DATA_AT = null;
+function updatedHtml(p) {
+  const tech = state.sec === 'tech' && !state.q.trim(), content = state.sec !== 'tech' && !state.q.trim();
+  const times = [DATA_AT, NOTES.get(p.id)?.at];
+  EDITS.forEach((e) => { if (e.platform === p.id && (!tech || e.sec === 'tech') && (!content || e.sec.startsWith('content'))) times.push(e.at); });
+  const t = Math.max(...times.map((x) => Date.parse(x || '')).filter((n) => !isNaN(n)));
+  return isFinite(t) ? `<span title="Latest change to these answers: a team edit, the platform’s watch-out, or a Playbook update">Updated ${new Date(t).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : '';
+}
 const COPY_SVG = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
 function rowHtml(e) {
   if (state.editing === e.key) return editRowHtml(e);
@@ -828,10 +850,10 @@ function rowHtml(e) {
   const warn = warnFor(p, e.sec, e.it.id);
   // Settled with nothing to add: one compact, muted line so the cards that need a look stand out.
   const slim = !note && !warn && settled(e.cell) && !e.edit;
-  const tools = suggestLink(e) + (canEditAnswers && !e.variant ? `<button type="button" class="edit-btn" data-edit="${e.key}" aria-label="Edit answer for ${esc(plain(e.it.label))}">Edit</button>` : '');
+  const tools = `<button type="button" class="suggest link-copy" data-link="${e.key}" title="Copy a link to this answer" aria-label="Copy link to ${esc(plain(e.it.label))}">${LINK_SVG}</button>` + suggestLink(e) + (canEditAnswers && !e.variant ? `<button type="button" class="edit-btn" data-edit="${e.key}" aria-label="Edit answer for ${esc(plain(e.it.label))}">Edit</button>` : '');
   const howHtml = how.steps.length ? `<details class="how"${state.showHow ? ' open' : ''}><summary>How to</summary><ol>${how.steps.map((t) => `<li>${t}</li>`).join('')}</ol>${
     !how.edited && HOW_UNVERIFIED.has(p.id) ? '<p class="how-note">These steps haven’t been checked in a live admin yet. If one is off, fix it with Edit.</p>' : ''}${guideLinks(p, e.it.id)}</details>` : '';
-  return `<article class="card${slim ? ' slim' : ''}">
+  return `<article class="card${slim ? ' slim' : ''}" id="card-${e.sec}-${e.it.id}">
       <div class="card-head">
         <h4 class="item">${e.it.label}${e.it.hint && !slim ? `<small>${e.it.hint}</small>` : ''}</h4>
         <div class="answer">${statusPill(verdict, scope)}${addsDetail(rawMark) ? `<span class="ans" title="Mark on the form">${mark}</span>` : ''}${tools}</div>
@@ -841,17 +863,34 @@ function rowHtml(e) {
       ${howHtml}
     </article>`;
 }
+// Search looks through the platform's Tech answers and its Content answers (current page type) at once,
+// in the item name, hint, mark and note; every word typed has to appear.
+function searchEntries(p) {
+  const words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+  const secs = state.sec === 'tech' ? ['tech', contentSec(p)] : [contentSec(p), 'tech'];
+  return entriesFor(p, secs).filter((e) => {
+    const hay = plain(`${e.it.label} ${e.it.hint || ''} ${e.cell[1]} ${unmd(e.cell[3] || '')}`).toLowerCase();
+    return words.every((w) => hay.includes(w));
+  });
+}
 function visibleEntries(p) {
-  const all = entriesFor(p);
+  const all = state.q.trim() ? searchEntries(p) : entriesFor(p);
   return state.onlyCheck ? all.filter((e) => !settled(e.cell)) : all;
 }
 function renderPanel() {
   const p = P.find((x) => x.id === state.platform);
-  const all = entriesFor(p);
+  const searching = !!state.q.trim();
+  const all = searching ? searchEntries(p) : entriesFor(p);
   const shown = visibleEntries(p);
   const sub = state.sec === 'content' && contentSec(p) !== 'content' ? ` <span class="h2-sub">· ${PTYPES[state.ptype]}</span>` : '';
+  const secName = (sec) => (sec === 'tech' ? 'Tech' : `Content${ptypeOf(sec) ? ` · ${PTYPES[ptypeOf(sec)]}` : ''}`);
   let body;
-  if (shown.length) {
+  if (searching) {
+    const secs = [...new Set(shown.map((e) => e.sec))];
+    body = shown.length
+      ? secs.map((sec) => { const list = shown.filter((e) => e.sec === sec); return `<h3 class="group-h">${secName(sec)}<span class="n" aria-label="${list.length} items">${list.length}</span></h3>${list.map(rowHtml).join('')}`; }).join('')
+      : `<p class="empty">No ${esc(p.name)} answers match “${esc(state.q.trim())}”. Try another word, or pick another platform.</p>`;
+  } else if (shown.length) {
     const check = shown.filter((e) => e.cell[2] !== 'U'), same = shown.filter((e) => e.cell[2] === 'U');
     const group = (cls, icon, title, sub, list) => list.length ? `<h3 class="group-h ${cls}">${icon}${title}<span class="n" aria-label="${list.length} items">${list.length}</span></h3>${sub ? `<p class="group-sub">${sub}</p>` : ''}${list.map(rowHtml).join('')}` : '';
     body = group('check', ICON_CHECK, 'Check on each site', 'These answers vary from site to site or aren’t verified yet.', check)
@@ -860,12 +899,12 @@ function renderPanel() {
   $('#panel').innerHTML = `
     <div class="panel-head">
       <div style="display:grid;gap:2px;min-width:0">
-        <h2>${p.name} · ${SEC_LABEL[state.sec]}${sub}</h2>
+        <h2>${p.name} · ${searching ? 'Search' : SEC_LABEL[state.sec] + sub}</h2>
         <p class="about">${p.about}</p>
         ${platformNoteHtml(p)}
       </div>
       <div class="panel-meta">
-        ${state.onlyCheck ? `<div class="tally"><span>Showing ${shown.length} of ${all.length}</span></div>` : ''}
+        <div class="tally">${updatedHtml(p)}${searching ? `<span>${shown.length} ${shown.length === 1 ? 'match' : 'matches'}${state.onlyCheck ? ' to check' : ''}</span>` : state.onlyCheck ? `<span>Showing ${shown.length} of ${all.length}</span>` : ''}</div>
         <button type="button" class="btn" id="copy-all">Copy all notes</button>
       </div>
     </div>
@@ -918,13 +957,42 @@ function renderGrid() {
     }).join('')}</tr>`).join('');
   $('#grid').innerHTML = head + `<tbody>${body}</tbody>`;
 }
-function render() { state.editing = null; renderControls(); renderPicker(); renderPanel(); renderGrid(); }
-function renderView() { renderControls(); renderPicker(); renderPanel(); renderGrid(); }
+function render() { state.editing = null; renderControls(); renderPicker(); renderPanel(); renderGrid(); syncHash(); }
+function renderView() { renderControls(); renderPicker(); renderPanel(); renderGrid(); syncHash(); }
 // After shared edits change: redraw, but never wipe a form someone is typing in.
 function refresh() {
   if (!(state.editing && $('#panel .edit-form'))) renderPanel();
   renderPicker();
   renderGrid();
+}
+
+// Links: #shopify, #shopify/tech, #shopify/content (or a page type: #shopify/product), and a third part
+// for one answer: #shopify/tech/footer. The address follows what's on screen so it can be copied as is.
+const viewToken = (sec) => (sec === 'tech' ? 'tech' : ptypeOf(sec) || 'content');
+const linkFor = (p, sec = curSec(p), id = '') => `${p.id}/${viewToken(sec)}${id ? `/${id}` : ''}`;
+function syncHash() {
+  const p = P.find((x) => x.id === state.platform);
+  if (p && !$('#panel').hidden) try { history.replaceState(null, '', `#${linkFor(p)}`); } catch {}
+}
+function parseLink(hash) {
+  let parts;
+  try { parts = decodeURIComponent(hash.replace(/^#/, '')).split('/'); } catch { return null; }
+  return P.some((p) => p.id === parts[0]) ? { platform: parts[0], view: parts[1] || '', item: parts[2] || '' } : null;
+}
+function openLink({ platform, view, item }) {
+  if (view === 'tech') state.sec = 'tech';
+  else if (view === 'content' || Object.hasOwn(PTYPES, view)) { state.sec = 'content'; if (view !== 'content') state.ptype = view; }
+  if (item) { state.q = ''; $('#search').value = ''; }
+  select(platform);
+  if (!item) return;
+  const find = () => document.getElementById(`card-${curSec(P.find((x) => x.id === platform))}-${item}`);
+  let card = find();
+  if (!card && state.onlyCheck) { state.onlyCheck = false; render(); card = find(); }   // a settled answer is hidden by the filter
+  if (!card) return;
+  card.classList.add('target');
+  card.tabIndex = -1;
+  card.focus({ preventScroll: true });
+  card.scrollIntoView({ block: 'center' });
 }
 
 function select(id) {
@@ -948,6 +1016,14 @@ $('#platform-select').addEventListener('change', (e) => select(e.target.value));
 // Divider under the pinned bar only once it's pinned.
 addEventListener('scroll', () => $('#sticky').classList.toggle('stuck', $('#sticky').getBoundingClientRect().top <= 0), { passive: true });
 $('#only-check').addEventListener('change', (e) => { state.onlyCheck = e.target.checked; remember(); render(); });
+$('#search').addEventListener('input', (e) => { state.q = e.target.value; state.editing = null; renderPanel(); });
+$('#search').addEventListener('keydown', (e) => { if (e.key === 'Escape' && e.target.value) { e.preventDefault(); e.stopPropagation(); e.target.value = state.q = ''; renderPanel(); } });
+// "/" jumps to the search box (unless typing somewhere already)
+addEventListener('keydown', (e) => {
+  if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey || e.target.closest('input, textarea, select, [contenteditable]') || $('#panel').hidden || $('#main').hidden) return;
+  e.preventDefault();
+  $('#search').focus();
+});
 $('#show-how').addEventListener('change', (e) => { state.showHow = e.target.checked; remember(); render(); });
 $('#picker').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-id]');
@@ -974,6 +1050,11 @@ $('#panel').addEventListener('click', (e) => {
   if (nr) { if (confirm(`Remove the watch-out for ${p.name}?`)) saveNote('', nr); return; }
   const rs = e.target.closest('[data-reset]');
   if (rs) return saveEdit(rs.dataset.reset, null, rs);
+  const ln = e.target.closest('[data-link]');
+  if (ln) {
+    const [sec, id] = ln.dataset.link.split(':');
+    return copy(`${location.origin}${location.pathname}#${linkFor(p, sec, id)}`);
+  }
   const one = e.target.closest('[data-copy]');
   if (one) {
     const [sec, id] = one.dataset.copy.split(':');
@@ -1276,7 +1357,7 @@ function showView(name) {
   $('#team-view').hidden = name !== 'team';
   $('#req-view').hidden = name !== 'requests';
   document.querySelectorAll('#viewnav [data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === name)));
-  try { history.replaceState(null, '', answers ? `#${state.platform}` : `#${name}`); } catch {}
+  try { history.replaceState(null, '', answers ? `#${linkFor(P.find((x) => x.id === state.platform))}` : `#${name}`); } catch {}
   if (name === 'team') { renderTeam(); loadTeam(); }
   if (name === 'requests') renderRequests();
   if (!answers) scrollTo({ top: 0, behavior: 'instant' });   // a new page starts at the top, no glide
@@ -1676,6 +1757,7 @@ function applyShared(x) {
 async function loadShared() { applyShared(await fetchShared()); lastLoad = Date.now(); }
 function useContent(d) {
   ({ ITEMS, CONTENT_ITEMS, VERDICT, SCOPE, P, CONTENT, VARIANTS, HOW, WARN, H1_FIX, PTYPES, BY_TYPE, GUIDES, HOW_GUIDES } = d);
+  DATA_AT = d.AT || null;
   // Alphabetical, so a platform is quick to find; Headless CMS last, as it's a category, not a product
   P = [...P].sort((a, b) => (a.id === 'headless') - (b.id === 'headless') || a.name.localeCompare(b.name));
   HOW_UNVERIFIED = new Set(d.HOW_UNVERIFIED || []);
@@ -1710,7 +1792,7 @@ async function boot() {
   // Access check, answers and team data all at once (one round trip instead of three)
   const [mem, app, shared] = await Promise.all([
     sb.from('members').select('role').eq('user_id', user.id).maybeSingle(),
-    sb.from('app_data').select('data').eq('id', 'defaults').maybeSingle(),
+    sb.from('app_data').select('data,updated_at').eq('id', 'defaults').maybeSingle(),
     fetchShared().catch((error) => ({ error })),
   ]);
   if (mem.error) return cached ? toast('Couldn’t refresh. Showing the last loaded answers.') : gate('error', { user: me, message: 'Couldn’t check your access. Try again in a moment.' });
@@ -1726,10 +1808,11 @@ async function boot() {
     return gate('error', { user: me, message: app.error ? 'Couldn’t load the answers. Try again.' : 'The answers haven’t been loaded into the database yet (run seed.sql).' });
   }
   R.manage = canEditAnswers = mem.data.role === 'admin';
-  useContent(app.data.data);
+  const data = { ...app.data.data, AT: app.data.updated_at };
+  useContent(data);
   applyShared(shared);
   lastLoad = Date.now();
-  writeCache({ uid: user.id, role: mem.data.role, data: app.data.data, shared });
+  writeCache({ uid: user.id, role: mem.data.role, data, shared });
   startApp(me);
 }
 
@@ -1755,11 +1838,10 @@ function startApp(me) {
   started = true;
   renderGuideList();
   fillReqSelects();
-  // Open the platform named in the link (#shopify, #wix…), else the last one viewed.
-  let start = location.hash.slice(1);
-  if (!P.some((p) => p.id === start)) {
-    try { start = localStorage.getItem('tech-defaults-platform') || P[0].id; } catch { start = P[0].id; }
-  }
+  // Open what the link names (#shopify, #shopify/tech/footer…), else the last platform viewed.
+  const h = location.hash.slice(1), link = parseLink(location.hash);
+  let start = link && link.platform;
+  if (!start) { try { start = localStorage.getItem('tech-defaults-platform'); } catch {} }
   if (!P.some((p) => p.id === start)) start = P[0].id;
   try {
     const v = JSON.parse(localStorage.getItem('ic-defaults-view') || '{}');
@@ -1768,15 +1850,14 @@ function startApp(me) {
     state.showHow = !!v.showHow;
     if (Object.hasOwn(PTYPES, v.ptype)) state.ptype = v.ptype;
   } catch {}
-  select(start);
+  if (link) openLink(link); else select(start);
   renderRequests();
   if (R.manage) { loadTeam(); loadPicker(); }
-  const h = location.hash.slice(1);
   if (h === 'team' || h === 'requests') showView(h);
   addEventListener('hashchange', () => {
-    const k = location.hash.slice(1);
+    const k = location.hash.slice(1), l = parseLink(location.hash);
     if (k === 'team' || k === 'requests') showView(k);
-    else if (P.some((p) => p.id === k)) { showView('answers'); select(k); }
+    else if (l) { showView('answers'); openLink(l); }
   });
   // Pick up teammates' edits when coming back to the tab.
   document.addEventListener('visibilitychange', async () => {
