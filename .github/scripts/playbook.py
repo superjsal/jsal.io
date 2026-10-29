@@ -14,8 +14,6 @@
 #                  uploaded, then the plain-HTML copy in the page. Nightly by GitHub Action.
 #   publish --from-backup <file>   → the same, from a backup file (no key needed)
 #   prerender    → re-writes the plain-HTML copy of data.json into site/cms-picker/index.html (no key needed)
-#   picker-seed  → one time: copies the profiles and answers still in cms-picker.json into the picker table
-#   add --extra <file> to layer draft platforms over it for development (never commit that output)
 #
 # Small fixes don't need this: sign in on jsal.io/ic as an admin and use Edit (the CMS Picker's own
 # rows, profile, logo and "on the CMS Picker" switch are in an admin-only section on each platform;
@@ -108,7 +106,7 @@ def plain(t):
     return html.unescape(re.sub(r'<[^>]+>', '', str(t or ''))).strip()
 
 
-def publish(backup_file=None, extra_file=None):
+def publish(backup_file=None):
     """Answers only: tag, short mark and scope per platform and item, plus each platform's profile.
     Which rows and platforms are public, their labels and order come from cms-picker.json; Playbook rows
     from Playbook, the CMS Picker's own rows and the profiles from the picker table.
@@ -124,11 +122,6 @@ def publish(backup_file=None, extra_file=None):
     cfg = json.loads(CONFIG.read_text(encoding='utf-8'))
     plats = {p['id']: p for p in base['P'] if not p.get('hidden')}
     content = dict(base['CONTENT'])
-    if extra_file:                                  # development only: draft platforms not in Supabase yet
-        for p in json.loads(pathlib.Path(extra_file).read_text(encoding='utf-8'))['platforms']:
-            plats.setdefault(p['id'], p)
-            content.setdefault(p['id'], p['content'])
-        print('NOTE: built with --extra (draft platforms). Do not commit this data.json.')
     ed = {f"{e['platform']}~{e['sec']}~{e['item']}": e for e in edits}
 
     def cell(pid, sec, item):                       # an admin edit wins over the built-in answer
@@ -146,38 +139,32 @@ def publish(backup_file=None, extra_file=None):
             out = {'verdict': 'indirect', 'mark': how[:1].upper() + how[1:], 'scope': c[2]}
         return out
 
-    # The CMS Picker's own rows and the profiles: the picker table, or cms-picker.json until it's seeded
-    if picker:
-        profiles = {r['platform']: r['profile'] for r in picker}
-        own = {r['platform']: r['answers'] for r in picker}
-    else:
-        print('NOTE: picker table missing or empty, using the profiles and answers in cms-picker.json (run picker-seed).')
-        profiles = cfg.get('profiles', {})
-        own = {pid: {k: v for sec in cfg['sections'] for k, v in sec.get('answers', {}).get(pid, {}).items()} for pid in cfg['platforms']}
-        if not profiles:   # seeded, but the table came back empty: never publish a blank CMS Picker
-            sys.exit('Stopped: the picker table is empty and cms-picker.json has no profiles. Nothing was published.')
+    # The CMS Picker's own rows, profiles and logos, and which platforms are public: the picker table
+    if not picker:   # never publish a blank CMS Picker
+        sys.exit('Stopped: the picker table is empty or missing. Nothing was published.')
+    profiles = {r['platform']: r['profile'] for r in picker}
+    own = {r['platform']: r['answers'] for r in picker}
     missing = []
 
-    # Which platforms are public: the picker table's "public" switch (admins set it in the Playbook), else
-    # the list in cms-picker.json (before private/platforms.sql has run). Order: cms-picker.json's list,
-    # then any others by name, Headless CMS last. A platform needs a profile with a type to be shown.
-    if picker and 'public' in picker[0]:
-        on = {r['platform'] for r in picker if r.get('public')}
-        listed = [pid for pid in cfg['platforms'] if pid in on and pid != 'headless']
-        rest = sorted((pid for pid in on if pid not in listed and pid != 'headless' and pid in plats), key=lambda pid: plain(plats[pid]['name']).lower())
-        wanted = listed + rest + (['headless'] if 'headless' in on else [])
-    else:
-        wanted = list(cfg['platforms'])
+    # Which platforms are public: the picker table's "public" switch (admins set it in the Playbook).
+    # Order: cms-picker.json's list, then any others by name, Headless CMS last. A platform needs a
+    # profile with a type to be shown.
+    on = {r['platform'] for r in picker if r.get('public')}
+    if not on:   # e.g. a backup from before the switch existed: never publish a blank CMS Picker
+        sys.exit('Stopped: no platform is switched on for the CMS Picker. Nothing was published.')
+    listed = [pid for pid in cfg['platforms'] if pid in on and pid != 'headless']
+    rest = sorted((pid for pid in on if pid not in listed and pid != 'headless' and pid in plats), key=lambda pid: plain(plats[pid]['name']).lower())
+    wanted = listed + rest + (['headless'] if 'headless' in on else [])
     skipped = [pid for pid in wanted if pid not in plats]
     noprofile = [pid for pid in wanted if pid in plats and not (profiles.get(pid) or {}).get('type')]
     public = [pid for pid in wanted if pid in plats and pid not in noprofile]
-    logos = write_logos(public, {r['platform']: r.get('logo') for r in (picker or [])})
+    logos = write_logos(public, {r['platform']: r.get('logo') for r in picker})
     result = {
         'verdicts': {**base['VERDICT'], 'indirect': 'Indirectly'},
         'asOf': cfg.get('asOf'),                     # when the answers were last checked (the hero's "Updated")
         'groups': [],
         'items': [],
-        'platforms': [{'id': pid, 'name': cfg.get('names', {}).get(pid, plain(plats[pid]['name'])), **({'logo': logos[pid]} if pid in logos else {}),
+        'platforms': [{'id': pid, 'name': plain(plats[pid]['name']), **({'logo': logos[pid]} if pid in logos else {}),
                        'profile': profiles.get(pid)} for pid in public],
         'answers': {pid: {} for pid in public},
     }
@@ -287,26 +274,6 @@ def write_logos(public, uploads):
         if f.name not in keep:
             f.unlink()
     return paths
-
-
-def picker_seed():
-    """One time: move the profiles and the CMS Picker's own answers from cms-picker.json into the
-    picker table, then remove them from the file so there's only one copy."""
-    cfg = json.loads(CONFIG.read_text(encoding='utf-8'))
-    if 'profiles' not in cfg:
-        sys.exit('Already seeded: cms-picker.json has no profiles left. Edit them on jsal.io/ic as an admin.')
-    if table('picker', 'select=platform') is None:
-        sys.exit('The picker table doesn\'t exist yet: run private/picker.sql in Supabase → SQL Editor first.')
-    rows = [{'platform': pid, 'profile': cfg['profiles'].get(pid, {}),
-             'answers': {k: v for sec in cfg['sections'] for k, v in sec.get('answers', {}).get(pid, {}).items()}}
-            for pid in cfg['platforms']]
-    backup()
-    api('POST', 'picker', rows, prefer='resolution=merge-duplicates,return=minimal')
-    cfg.pop('profiles')
-    for sec in cfg['sections']:
-        sec.pop('answers', None)
-    CONFIG.write_text(json.dumps(cfg, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    print(f'seeded: {len(rows)} platforms into the picker table; removed them from {CONFIG.name}.')
 
 
 # ── Pre-render: a plain-HTML copy of the CMS Picker's content, written into its index.html ──
@@ -424,13 +391,13 @@ if __name__ == '__main__':
     if cmd == 'prerender':
         prerender()
         sys.exit()
-    if cmd not in ('backup', 'pull', 'push', 'publish', 'picker-seed'):
-        sys.exit('Usage: python playbook.py backup | pull | push | publish [--from-backup <file>] [--extra <file>] | prerender | picker-seed')
+    if cmd not in ('backup', 'pull', 'push', 'publish'):
+        sys.exit('Usage: python playbook.py backup | pull | push | publish [--from-backup <file>] | prerender')
     flag = lambda name: sys.argv[sys.argv.index(name) + 1] if name in sys.argv[2:-1] else None
     if cmd == 'publish' and flag('--from-backup'):
-        publish(flag('--from-backup'), flag('--extra'))
+        publish(flag('--from-backup'))
         sys.exit()
     if not KEY:
         sys.exit('Set the service_role key first (in this terminal only):\n'
                  '  $env:SUPABASE_SERVICE_ROLE_KEY = "<key from Supabase → Project Settings → API>"')
-    publish(None, flag('--extra')) if cmd == 'publish' else {'backup': backup, 'pull': pull, 'push': push, 'picker-seed': picker_seed}[cmd]()
+    publish() if cmd == 'publish' else {'backup': backup, 'pull': pull, 'push': push}[cmd]()

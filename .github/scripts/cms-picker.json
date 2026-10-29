@@ -1,5 +1,5 @@
 {
-  "_about": "Public CMS Picker settings, read by `python build\\playbook.py publish`. Rows marked \"playbook\" take their answers from Playbook (Supabase); every other row, each platform's profile and logo, and which platforms are public live in the picker table (admins edit them in the Playbook). `platforms` here is the display order (others follow by name), and decides what's public only until private/platforms.sql has run.",
+  "_about": "Public CMS Picker settings, read by `python build\\playbook.py publish`. Rows marked \"playbook\" take their answers from Playbook (Supabase); every other row, each platform's profile and logo, and which platforms are public live in the picker table (admins edit them in the Playbook). `platforms` here is the display order; other public platforms follow by name.",
   "platforms": [
     "wordpress",
     "shopify",
@@ -15,7 +15,6 @@
     "ghost",
     "headless"
   ],
-  "names": {},
   "asOf": "October 2026",
   "sections": [
     {

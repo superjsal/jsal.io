@@ -1121,7 +1121,7 @@ $('#panel').addEventListener('submit', (e) => {
 // platform's profile live in the picker table, which only admins can read or change. Row labels come
 // from the published /cms-picker/data.json. Changes reach jsal.io/cms-picker with the next publish
 // (the nightly GitHub Action, or playbook.py publish).
-const PK = { on: false, rows: new Map(), items: [], verdicts: {}, open: false, hasPublic: false, pubIds: new Set(), pubLogos: new Map() };
+const PK = { on: false, rows: new Map(), items: [], verdicts: {}, open: false, pubLogos: new Map() };
 const PK_GOALS = { store: 'Online store', site: 'Business or marketing site', content: 'Blog or content', custom: 'Custom build with developers' };
 const PK_FIELDS = [   // profile field, label, kind
   ['type', 'Type', 'text'], ['summary', 'Summary', 'area'], ['tags', 'Known for', 'list'], ['aiTags', 'AI tools', 'list'],
@@ -1139,9 +1139,6 @@ async function loadPicker() {
   const own = new Set(rows.data.flatMap((r) => Object.keys(r.answers || {})));
   PK.items = pub.items.filter((it) => own.has(it.id));
   PK.verdicts = pub.verdicts || {};
-  // Which platforms are public: the picker table's switch (private/platforms.sql), else what's published
-  PK.hasPublic = rows.data.some((r) => 'public' in r);
-  PK.pubIds = new Set(pub.platforms.map((x) => x.id));
   PK.pubLogos = new Map(pub.platforms.filter((x) => x.logo).map((x) => [x.id, x.logo]));
   PK.on = true;
   if (!(state.editing && $('#panel .edit-form'))) renderPanel();
@@ -1149,7 +1146,7 @@ async function loadPicker() {
 }
 function pkPublic(p) {
   const r = PK.rows.get(p.id);
-  return PK.hasPublic ? !!(r && r.public) : PK.pubIds.has(p.id);
+  return !!(r && r.public);   // the picker table's switch
 }
 const logoUrl = (v) => (v.startsWith('data:image/png;base64,') ? v : `data:image/svg+xml;charset=utf-8,${encodeURIComponent(v)}`);
 function pkLogoHtml(p, r) {
@@ -1230,14 +1227,12 @@ function pickerHtml(p) {
   if (!R.manage || !PK.on) return '';
   const r = PK.rows.get(p.id);
   const link = '<a href="/cms-picker/" target="_blank" rel="noopener">CMS Picker</a>';
-  const body = !PK.rows.size ? '<p class="empty">Not set up yet: run <code>playbook.py picker-seed</code> to copy the profiles and answers in.</p>'
-    : !pkPublic(p) ? `<div class="pk-off"><p class="muted pk-sub" style="margin:0">${p.name} isn’t on the public ${link}.</p>${PK.hasPublic
-        ? '<button type="button" class="btn" data-pk-public="on">Add to the CMS Picker</button>' : ''}</div>`
-    : !r ? `<p class="empty">${p.name} isn’t in the CMS Picker.</p>`
+  const body = !pkPublic(p) ? `<div class="pk-off"><p class="muted pk-sub" style="margin:0">${p.name} isn’t on the public ${link}.</p>
+        <button type="button" class="btn" data-pk-public="on">Add to the CMS Picker</button></div>`
     : `<p class="muted pk-sub">Only admins see this. It’s the public ${link}’s own rows and ${p.name}’s card there; the Playbook rows it also shows come from the answers above. Changes go live with the next publish (nightly).</p>
       ${(r.profile || {}).type ? '' : '<div class="warn"><div><b>Not shown yet:</b> it appears on the CMS Picker once its profile has a type. Fill in the profile with Edit.</div></div>'}
       ${pkLogoHtml(p, r)}${pkProfileHtml(p, r)}${PK.items.map((it) => pkRowHtml(p, r, it)).join('')}
-      ${PK.hasPublic ? '<p><button type="button" class="link-btn" data-pk-public="off">Take it off the CMS Picker</button></p>' : ''}`;
+      <p><button type="button" class="link-btn" data-pk-public="off">Take it off the CMS Picker</button></p>`;
   return `<details class="pk"${PK.open || (state.editing || '').startsWith('pk:') ? ' open' : ''}><summary>CMS Picker<span class="pk-tag">Admins only</span></summary><div class="pk-body">${body}</div></details>`;
 }
 async function savePicker(p, change, button, msg = 'Saved. Live on the CMS Picker after the next publish') {
@@ -1516,7 +1511,6 @@ $('#add-platform').addEventListener('submit', async (e) => {
 });
 // The database's own message is written for people ("There is already a platform called miva")
 function platError(error, what) {
-  if (/Could not find the function|PGRST202/i.test(`${error.message} ${error.code}`)) return `${what}: run private/platforms.sql in Supabase first`;
   return /^(There is|The short name|Add a name|The description|No platform)/.test(error.message || '') ? error.message : failText(error, what);
 }
 async function loadTeam() {
@@ -1986,7 +1980,7 @@ async function boot() {
   if (app.error || !app.data || shared.error) {
     if (cached) return toast('Couldn’t refresh. Showing the last loaded answers.');
     if (shared.error && !app.error && app.data) return gate('error', { user: me, message: 'Couldn’t load the team’s data. Try again.' });
-    return gate('error', { user: me, message: app.error ? 'Couldn’t load the answers. Try again.' : 'The answers haven’t been loaded into the database yet (run seed.sql).' });
+    return gate('error', { user: me, message: app.error ? 'Couldn’t load the answers. Try again.' : 'The Playbook’s answers are missing from the database.' });
   }
   R.manage = canEditAnswers = mem.data.role === 'admin';
   const data = { ...app.data.data, AT: app.data.updated_at };
