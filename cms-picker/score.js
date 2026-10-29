@@ -20,45 +20,66 @@
   const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
   const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
 
+  // What each part of the score says when it's what put one match ahead of another: [the leader earned
+  // it, the runner-up lost it]. Keys match fitScore's parts; every phrase comes from the published data.
+  const TIP = {
+    goal: [(a) => `it’s ${WHAT[a.what].charAt(0).toLowerCase()}${WHAT[a.what].slice(1)}`, (a, y) => `${y} isn’t made for this`],
+    sellOnly: [null, (a, y) => `${y} is made only for selling`],
+    frontEnd: [() => 'it feeds an app or any front end from one place', null],
+    ease: [(a) => (a.who === 'easy' ? 'it’s easier to run without technical skills' : 'it’s easier to learn'), (a, y) => (a.who === 'easy' ? `${y} is harder to run without technical skills` : `${y} is harder to learn`)],
+    agency: [() => 'it’s a common choice for designers and agencies', null],
+    agencyOnly: [null, (a, y) => `${y} is mainly sold through agencies`],
+    dev: [() => 'it gives a developer full control', (a, y) => `${y} isn’t built to be coded`],
+    care: [() => 'hosting, updates and security are handled for you', (a, y) => `${y} leaves hosting and updates to you`],
+    sell: [() => 'selling is easier to set up', (a, y) => `selling is harder to set up on ${y}`],
+    sellFirst: [() => 'it’s made for selling first', null],
+    size: [() => 'it handles large catalogues', (a, y) => `${y} isn’t made for large catalogues`],
+    small: [() => 'it suits small shops', null],
+    lang: [() => 'more than one language is easier to set up', (a, y) => `more than one language is harder to set up on ${y}`],
+    look: [(a) => ({ template: 'it has good templates to start from', visual: 'you can arrange your pages visually', pixel: 'it gives full control over the design' })[a.look], null],
+    leave: [() => 'you can take more of your site with you', (a, y) => `${y} doesn’t let you take everything with you`],
+  };
+
   function fitScore(data, p, a) {
-    const Q = data.quiz, pr = p.profile || {}, why = [];
+    const Q = data.quiz, pr = p.profile || {}, why = [], pts = {};
     const has = (list) => (Q[list] || []).includes(p.id);
     const verdict = (row) => ((data.answers[p.id] || {})[row] || {}).verdict;
     let s = 0;
-    if ((pr.goals || []).includes(a.what)) { s += 4; why.push(WHAT[a.what]); } else s -= 8;
-    if (a.what !== 'store' && has('storeOnly')) s -= 6;
-    if (a.what === 'custom' && has('customFrontEnd')) { s += 3; why.push('Feeds an app or any front end from one place'); }
+    // One part of the score: its key (see TIP), its points, and the reason it adds, if any
+    const add = (key, n, reason) => { s += n; pts[key] = (pts[key] || 0) + n; if (reason) why.push(reason); };
+    if ((pr.goals || []).includes(a.what)) add('goal', 4, WHAT[a.what]); else add('goal', -8);
+    if (a.what !== 'store' && has('storeOnly')) add('sellOnly', -6);
+    if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'Feeds an app or any front end from one place');
     const ease = Q.ease[p.id] ?? 1;
-    if (a.who === 'easy') { s += ease * 2 - 3; if (ease === 3) why.push('Easy to run without technical skills'); }
-    if (a.who === 'learn') s += ease >= 1 ? 1 : -2;
-    if (a.who === 'agency' && has('agency')) { s += 2; why.push('A common choice for designers and agencies'); }
-    if (a.who !== 'agency' && has('agencyOnly')) s -= 2;
+    if (a.who === 'easy') add('ease', ease * 2 - 3, ease === 3 && 'Easy to run without technical skills');
+    if (a.who === 'learn') add('ease', ease >= 1 ? 1 : -2);
+    if (a.who === 'agency' && has('agency')) add('agency', 2, 'A common choice for designers and agencies');
+    if (a.who !== 'agency' && has('agencyOnly')) add('agencyOnly', -2);
     // A developer: platforms built to be coded (quiz.devControl)
-    if (a.who === 'dev') { if (has('devControl')) { s += 2; why.push('Gives a developer full control'); } else s -= 1; }
+    if (a.who === 'dev') { if (has('devControl')) add('dev', 2, 'Gives a developer full control'); else add('dev', -1); }
     if (a.care === 'no') {
       const handled = /^Handled for you/.test(pr.hosting || '');
-      s += handled ? 2 : -3;
-      if (handled) why.push('Hosting, updates and security are handled for you');
+      add('care', handled ? 2 : -3, handled && 'Hosting, updates and security are handled for you');
     }
     if (a.what === 'store') {
-      s += { yes: 2, plugin: 0, code: -3, no: -6 }[verdict('store')] ?? 0;
-      if (has('storeOnly')) s += 2;   // made for selling first, so it leads a tie with all-round builders
-      if (a.size === 'big') { if (has('largeCatalogue')) { s += 3; why.push('Handles large catalogues'); } else s -= 2; }
-      if (a.size === 'small' && has('smallShop')) s += 1;
+      add('sell', { yes: 2, plugin: 0, code: -3, no: -6 }[verdict('store')] ?? 0);
+      if (has('storeOnly')) add('sellFirst', 2);   // made for selling first, so it leads a tie with all-round builders
+      if (a.size === 'big') { if (has('largeCatalogue')) add('size', 3, 'Handles large catalogues'); else add('size', -2); }
+      if (a.size === 'small' && has('smallShop')) add('small', 1);
     }
     if (a.lang === 'yes') {
       const l = verdict('languages');
-      s += { yes: 2, plugin: 0, code: -2, no: -4 }[l] ?? 0;
-      if (l === 'yes') why.push('More than one language is built in');
+      add('lang', { yes: 2, plugin: 0, code: -2, no: -4 }[l] ?? 0, l === 'yes' && 'More than one language is built in');
     }
-    if ((Q.look[p.id] || []).includes(a.look)) { s += 2; why.push(LOOKS[a.look]); }
+    if ((Q.look[p.id] || []).includes(a.look)) add('look', 2, LOOKS[a.look]);
     if (a.leave === 'yes') {
-      if (/^Everything/.test(pr.export || '')) { s += 2; why.push('You can take everything with you'); }
-      else if (/API/.test(pr.export || '')) { s += 1; why.push('Your content stays yours, through the API'); }
-      else s -= 1;
+      if (/^Everything/.test(pr.export || '')) add('leave', 2, 'You can take everything with you');
+      else if (/API/.test(pr.export || '')) add('leave', 1, 'Your content stays yours, through the API');
+      else add('leave', -1);
     }
+    // Every reason is shown (six at most), so two cards' lists match only when their reasons really do
     const all = why.filter(Boolean);
-    return { p, s, why: all.slice(0, 4), all };
+    return { p, s, why: all, all, pts };
   }
 
   // Every platform, best fit first
@@ -66,32 +87,56 @@
 
   // ---------- Telling the top matches apart ----------
   // Only from what's already published: the table's checked answers and each profile's "good fit" list.
-  // How well an answer does it (built in beats a plugin beats code), and how much a row matters for these answers
+  // How well an answer does it (built in beats a plugin beats code)
   const LEVEL = { yes: 3, auto: 3, plugin: 2, code: 1, no: 0 };
+  // Each table row as a short phrase for "Pick it over … if you want …"
+  const PHRASE = {
+    blog: 'a blog', store: 'online selling', languages: 'more than one language', forms: 'contact and sign-up forms',
+    design: 'design control', meta_title: 'page titles and descriptions for search', urls: 'control over page addresses',
+    gsc404: 'redirects for old links', schema: 'search details like prices and ratings', noindex: 'pages kept out of search',
+    ai_crawlers: 'control over which AI bots read the site',
+  };
+  // How much a row matters for these answers; 0 when the person has ruled it out
   function weight(row, a) {
-    if (row === 'store') return a.what === 'store' ? 3 : 0;   // not selling: who sells better doesn't matter
-    if (row === 'languages') return a.lang === 'yes' ? 3 : 1;
+    if (row === 'store') return a.what === 'store' ? 3 : 0;      // not selling
+    if (row === 'languages') return a.lang === 'yes' ? 3 : 0;    // one language
+    if (row === 'design') return a.look === 'template' ? 0 : 2;  // a good template is enough
     if (row === 'blog') return a.what === 'content' ? 3 : 1;
-    if (row === 'design') return a.look === 'template' ? 1 : 2;
     return 1;
   }
   const lowerFirst = (t) => t.charAt(0).toLowerCase() + t.slice(1);
   const joinAnd = (xs) => (xs.length > 1 ? `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}` : xs[0]);
-  // "Pick it over Wix if you want to …: both are easier on Squarespace." From the rows x does better than y
-  // (most relevant first); without any, x's first "good fit" line. Null when there's nothing to go on.
-  function pickOver(data, a, x, y) {
+  // The rows x does better than y and the person hasn't ruled out, most relevant first
+  function edgeRows(data, a, x, y) {
     const ax = data.answers[x.p.id] || {}, ay = data.answers[y.p.id] || {};
-    const rows = data.items.map((it) => {
-      const gap = (LEVEL[(ax[it.id] || {}).verdict] ?? -1) - (LEVEL[(ay[it.id] || {}).verdict] ?? -1);
-      return { it, gap, w: weight(it.id, a) };
-    }).filter((r) => r.gap > 0 && r.w > 0 && (LEVEL[(ay[r.it.id] || {}).verdict] ?? -1) >= 0)
-      .sort((p, q) => q.w - p.w || q.gap - p.gap).slice(0, 2);
-    if (rows.length) return `Pick it over ${y.p.name} if you want to ${joinAnd(rows.map((r) => lowerFirst(r.it.label)))}: ${rows.length > 1 ? 'both are' : 'it’s'} easier on ${x.p.name}.`;
+    return data.items.map((it) => {
+      const lx = LEVEL[(ax[it.id] || {}).verdict] ?? -1, ly = LEVEL[(ay[it.id] || {}).verdict] ?? -1;
+      return { id: it.id, gap: lx - ly, w: weight(it.id, a), ly };
+    }).filter((r) => r.gap > 0 && r.w > 0 && r.ly >= 0 && PHRASE[r.id]).sort((p, q) => q.w - p.w || q.gap - p.gap).slice(0, 2);
+  }
+  // "Pick it over Wix if you want design control and a blog: Squarespace makes both easier." Without such
+  // rows, x's first "good fit" line. Null when there's nothing to go on.
+  function pickOver(data, a, x, y) {
+    const rows = edgeRows(data, a, x, y);
+    if (rows.length) return `Pick it over ${y.p.name} if you want ${joinAnd(rows.map((r) => PHRASE[r.id]))}: ${x.p.name} makes ${rows.length > 1 ? 'both' : 'it'} easier.`;
     const fit = ((x.p.profile || {}).goodFit || [])[0];
     return fit ? `Pick it over ${y.p.name} for ${lowerFirst(fit)}.` : null;
   }
-  // For the top matches: the reasons to show (the second and third leave out the ones the first already
-  // shows) and vs, a heading and a sentence on what sets each apart from its neighbour (null if nothing to say)
+  // What put x ahead of y: the part of the score with the biggest gap, in plain words
+  function tipped(a, x, y) {
+    let best = null, gap = 0;
+    new Set([...Object.keys(x.pts), ...Object.keys(y.pts)]).forEach((k) => {
+      const d = (x.pts[k] || 0) - (y.pts[k] || 0);
+      if (d > gap && TIP[k]) { gap = d; best = k; }
+    });
+    if (!best) return null;
+    const [plus, minus] = TIP[best], f = (x.pts[best] || 0) > 0 ? plus || minus : minus || plus;
+    return f ? `What tipped it: ${f(a, y.p.name)}.` : null;
+  }
+  const sameSet = (xs, ys) => xs.length === ys.length && xs.every((w) => ys.includes(w));
+  // For the top matches: the reasons to show and vs, a heading and a sentence on what sets each apart
+  // from its neighbour (null if there's nothing to say). The second and third show their own reasons,
+  // collapsed to "the same reasons as …" only when they're exactly the first's.
   function explain(data, a, top) {
     const lead = top[0];
     return top.map((r, i) => {
@@ -100,19 +145,17 @@
         let vs = null;
         if (next && next.s === r.s) vs = { head: `A close call with ${next.p.name}`, text: ['Both fit your answers equally.', pickOver(data, a, r, next)].filter(Boolean).join(' ') };
         else if (next) {
-          const extra = r.all.find((w) => !next.all.includes(w));
-          const text = extra ? `What tipped it: ${lowerFirst(extra)}.` : pickOver(data, a, r, next);
+          const text = tipped(a, r, next) || pickOver(data, a, r, next);
           if (text) vs = { head: `Ahead of ${next.p.name}`, text };
         }
         return { why: r.why, vs };
       }
-      const own = r.why.filter((w) => !lead.all.includes(w)), shared = r.why.length - own.length;   // all: the first's list stops at four
-      if (shared) own.push(own.length ? `Otherwise the same reasons as ${lead.p.name}` : `Fits your answers for the same reasons as ${lead.p.name}`);
+      const why = sameSet(r.all, lead.all) ? [`Fits your answers for the same reasons as ${lead.p.name}`] : r.why;
       const text = pickOver(data, a, r, lead);
-      return { why: own, vs: text ? { head: `Versus ${lead.p.name}`, text } : null };
+      return { why, vs: text ? { head: `Versus ${lead.p.name}`, text } : null };
     });
   }
 
-  const api = { QUESTIONS, rank, explain };
+  const api = { QUESTIONS, rank, explain, PHRASE, weight };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

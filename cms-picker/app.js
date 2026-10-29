@@ -579,15 +579,26 @@
 
     // A shared result (#quiz?v=1&what=site&who=easy…) opens straight on it. One with an answer missing or
     // unknown (cut short, or edited) keeps the good answers and asks the first question it lacks.
-    const m = location.hash.match(/^#quiz\?(.+)$/);
-    const shared = m && readLink(new URLSearchParams(m[1]));
-    if (shared) {
+    // Returns false when the address holds no quiz answers.
+    function fromLink() {
+      const m = location.hash.match(/^#quiz\?(.+)$/);
+      const shared = m && readLink(new URLSearchParams(m[1]));
+      if (!shared) return false;
+      a = {};
+      editing = null;
+      resume = false;
       QUESTIONS.forEach((q) => { if (q.opts.some(([v]) => v === shared[q.id])) a[q.id] = shared[q.id]; });
       const missing = steps().findIndex((q) => !(q.id in a));
-      if (missing < 0) { step = steps().length; results(); requestAnimationFrame(() => $('#quiz').scrollIntoView()); return; }
-      if (Object.keys(a).length) { step = missing; resume = true; requestAnimationFrame(() => $('#quiz').scrollIntoView()); }
+      if (missing < 0) { step = steps().length; results(); }
+      else if (Object.keys(a).length) { step = missing; resume = true; ask(); }
+      else { step = 0; ask(); }
+      return true;
     }
-    ask();
+    if (fromLink()) requestAnimationFrame(() => $('#quiz').scrollIntoView());
+    else ask();
+    // The address changed without a reload (edited by hand, or Back/Forward to another result): follow it.
+    // The page's own updates use replaceState, which doesn't fire this, so there's no loop.
+    addEventListener('hashchange', () => { if (fromLink()) $('#quiz').scrollIntoView(); });
   }
 
   // no-cache: always check with the server (a quick 304 if unchanged), so a publish shows straight away
