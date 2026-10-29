@@ -91,14 +91,28 @@
   window.jsalAchieve = unlock;
   (window.requestIdleCallback || setTimeout)(makeToast);
   window.jsalAchievements = { list: ACH, got: () => read('jsal-achievements', {}) };
-  // Opening a tool: "First steps", and "Explorer" once all of them have been opened
+  // Opening a tool: "First steps", and "Explorer" once all of them have been opened. A page loaded
+  // ahead on hover (below) only counts once it's actually shown.
   const tool = TOOLS.find((t) => location.pathname.startsWith(t));
-  if (tool) {
+  const visit = () => {
     const seen = new Set(read('jsal-tools-seen', []));
     seen.add(tool);
     write('jsal-tools-seen', [...seen]);
     unlock('first');
     if (TOOLS.every((t) => seen.has(t))) unlock('explorer');
+  };
+  if (tool) { if (document.prerendering) document.addEventListener('prerenderingchange', visit, { once: true }); else visit(); }
+
+  // Pages load ahead when a link is hovered (or pressed, on touch screens), so the click opens them
+  // straight away, even on a first visit with nothing cached. Chrome, Edge and Brave; others ignore it.
+  // Not the team Playbook (it signs in as it loads) or the logo (it opens the menu, not a page).
+  if (window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
+    const rules = document.createElement('script');
+    rules.type = 'speculationrules';
+    rules.textContent = JSON.stringify({ prerender: [{ eagerness: 'moderate', where: { and: [
+      { href_matches: '/*' }, { not: { href_matches: '/ic/*' } }, { not: { selector_matches: '[data-jsal-nav]' } },
+    ] } }] });
+    document.head.append(rules);
   }
   // The secret: the Konami code, anywhere but in a text field
   const CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
