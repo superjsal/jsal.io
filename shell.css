@@ -67,6 +67,9 @@ body { background: var(--jsal-bg); }
 @media (min-width: 1800px) { :root { --jsal-col: 1240px; } }
 /* Reserve the scrollbar's space on every page, scrolling or not, so nothing shifts sideways */
 html { scrollbar-gutter: stable; }
+/* In-page links (About, #sections, Top) glide, unless the visitor has turned motion off.
+   A script that wants a jump passes behavior: 'instant'. */
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
 /* Page transitions (browsers that support them; others just navigate). Opening an app from
    its home page tile grows the tile into the app: both are named "jsal-app" (the home page

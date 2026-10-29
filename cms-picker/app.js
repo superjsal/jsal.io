@@ -12,7 +12,6 @@
   // With "Show all", the grid starts with these; any other choice starts with the platforms that fit it
   const DEFAULT_COMPARE = ['wordpress', 'shopify', 'wix', 'squarespace'];
   let data;
-  const smooth = () => (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
 
   function el(tag, cls, text) {
     const e = document.createElement(tag);
@@ -246,7 +245,7 @@
     // Back to top, once the hero is out of view
     const totop = $('#totop');
     new IntersectionObserver(([e]) => totop.classList.toggle('show', !e.isIntersecting)).observe($('.hero'));
-    totop.addEventListener('click', () => scrollTo({ top: 0, behavior: smooth() }));
+    totop.addEventListener('click', () => scrollTo({ top: 0 }));   // smooth via scroll-behavior in shell.css
 
     $('#q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
     // "Show notes" (remembered in this browser). Off by default: just the tags, so the table can be
