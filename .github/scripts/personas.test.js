@@ -1,5 +1,5 @@
 // CMS Picker persona tests: example people run through the real Find my fit scoring (cms-picker/score.js),
-// checked against the results John agreed (2026-10-29; 24 people since the business-site and members follow-ups). Run by build\check.ps1 (node .github/scripts/personas.test.js).
+// checked against the results John agreed (2026-10-29; 30 people since the business-site, members and budget questions). Run by build\check.ps1 (node .github/scripts/personas.test.js).
 // The answers come from cms-picker/data.json with this folder's cms-picker.json quiz values on top, so a
 // change to either is tested before the next publish. When a result should change, agree it first, then
 // update the expectation here.
@@ -70,6 +70,19 @@ const PERSONAS = [
     { first: ['hubspot', 'ghost'], top3: ['hubspot', 'ghost'] }],
   ['Developer building an app and a site', { what: 'custom', who: 'dev', care: 'yes', lang: 'no', look: 'pixel', leave: 'yes' },
     { first: ['headless'], top3: ['headless'] }],
+  // With "What can you spend each month?" (the "What it costs to start" bands)
+  ['Local bakery, no budget yet', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no', budget: 'none' },
+    { first: ['wix'], top3: ['wix'] }],
+  ['Etsy-style maker shop, up to $25 a month', { what: 'store', who: 'easy', care: 'no', size: 'small', lang: 'no', look: 'template', leave: 'no', budget: 'low' },
+    { first: ['squarespace'], top3: ['squarespace', 'shopify'] }],
+  ['Etsy-style maker shop, up to $100 a month', { what: 'store', who: 'easy', care: 'no', size: 'small', lang: 'no', look: 'template', leave: 'no', budget: 'mid' },
+    { first: ['shopify'], top3: ['shopify'] }],
+  ['Photographer, no budget yet', { what: 'site', kind: 'creative', who: 'learn', care: 'no', lang: 'no', look: 'visual', leave: 'no', budget: 'none' },
+    { first: ['framer'], top3: ['framer'] }],
+  ['Newsletter with paid members, up to $25 a month', { what: 'content', members: 'yes', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes', budget: 'low' },
+    { first: ['ghost'], top3: ['ghost'] }],
+  ['5,000-product store with a dev team, cost no object', { what: 'store', who: 'dev', care: 'yes', size: 'big', lang: 'no', look: 'pixel', leave: 'yes', budget: 'any' },
+    { first: ['magento'], top3: ['magento'] }],
 ];
 
 let failed = 0;
