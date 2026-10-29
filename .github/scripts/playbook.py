@@ -157,6 +157,7 @@ def publish(backup_file=None, extra_file=None):
     skipped = [pid for pid in cfg['platforms'] if pid not in plats]
     result = {
         'verdicts': {**base['VERDICT'], 'indirect': 'Indirectly'},
+        'asOf': cfg.get('asOf'),                     # when the answers were last checked (the hero's "Updated")
         'groups': [],
         'items': [],
         'platforms': [{'id': pid, 'name': cfg.get('names', {}).get(pid, plats[pid]['name']), 'profile': profiles.get(pid)} for pid in public],
@@ -166,7 +167,7 @@ def publish(backup_file=None, extra_file=None):
     # "tech") takes its answers from Playbook; any other row is public-only, with its answers in
     # the picker table (answers per platform: { row id: [verdict, mark, scope] }).
     for sec in cfg['sections']:
-        result['groups'].append({k: sec[k] for k in ('id', 'title', 'asOf') if k in sec})
+        result['groups'].append({k: sec[k] for k in ('id', 'title') if k in sec})
         for i in sec['items']:
             result['items'].append({'id': i['id'], 'label': i['label'], 'group': sec['id']})
             for pid in public:
@@ -220,7 +221,7 @@ def picker_seed():
 # Keep the markup in step with renderCards(), render() and the hero code in site/cms-picker/app.js.
 SHORT = {'yes': 'Built in', 'auto': 'Automatic', 'plugin': 'Plugin/app', 'code': 'Code', 'hosting': 'Hosting/DNS',
          'check': 'Check', 'indirect': 'Indirectly', 'no': 'Not possible'}
-SCOPE = {'U': ('●', 'Same on every site'), 'V': ('◐', 'Varies by site'), 'C': ('○', 'Not verified yet')}
+SCOPE = {'V': 'varies', 'C': 'not verified'}   # only the exceptions are marked
 LOGOS = {'wordpress', 'shopify', 'wix', 'squarespace', 'webflow', 'framer', 'hubspot', 'bigcommerce', 'drupal', 'godaddy'}
 BADGE = {'magento': 'M', 'duda': 'D', 'headless': '{ }'}
 DEFAULT_COMPARE = ['wordpress', 'shopify', 'wix', 'squarespace']
@@ -260,7 +261,7 @@ def prerender():
             c.append(f'<dl class="run">{run}</dl>')
         on = p['id'] in DEFAULT_COMPARE
         c.append(f'<div class="cfoot"><button class="chip cmp" type="button" aria-pressed="{str(on).lower()}">'
-                 f'{"✓ Comparing" if on else "+ Add to compare"}</button><a class="golink" href="#seo">Compare ↓</a></div></article>')
+                 f'{"✓ Comparing" if on else "+ Add to compare"}</button></div></article>')
         cards.append(''.join(c))
 
     # The table: every platform (the live page starts with four), with notes, so nothing is left out
@@ -272,15 +273,15 @@ def prerender():
     for it in d['items']:
         if it['group'] != last and it['group'] in groups:
             g = groups[it['group']]
-            rows.append(f'<div class="row group"><span>{e(g["title"])}{" · as of " + e(g["asOf"]) if g.get("asOf") else ""}</span></div>')
+            rows.append(f'<div class="row group"><span>{e(g["title"])}</span></div>')
         last = it['group']
         cells = []
         for p in plats:
             a = d['answers'][p['id']][it['id']]
-            sym, scope = SCOPE.get(a['scope'], ('', ''))
+            word = SCOPE.get(a['scope'])
             line = f'<span class="tag {e(a["verdict"])}">{e(SHORT.get(a["verdict"], a["verdict"]))}</span>'
-            if sym:
-                line += f'<span class="sc" role="img" aria-label="{scope}">{sym}</span>'
+            if word:
+                line += f'<span class="sc">{word}</span>'
             mark = f'<span class="mark">{e(a["mark"])}</span>' if a.get('mark') and not GENERIC.match(a['mark'].strip()) else ''
             cells.append(f'<div class="cell"><span class="plat">{e(p["name"])}</span><span class="line">{line}</span>{mark}</div>')
         rows.append(f'<div class="row"><div class="item">{e(it["label"])}</div>{"".join(cells)}</div>')
@@ -295,7 +296,7 @@ def prerender():
 
     page_p = SITE / 'cms-picker' / 'index.html'
     s = before = page_p.read_text(encoding='utf-8')
-    as_of = next((g['asOf'] for g in d.get('groups', []) if g.get('asOf')), None)
+    as_of = d.get('asOf')
     # Its own .grid sized for every platform (the outer one is sized by app.js for the ones it shows)
     grid = f'<div class="grid" style="--n: {len(plats)}">' + '\n'.join(rows) + '</div>'
     parts = {'cards': '\n'.join(cards), 'grid': grid, 'peek': ''.join(peek),

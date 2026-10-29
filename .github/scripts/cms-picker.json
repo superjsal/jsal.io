@@ -18,6 +18,7 @@
   "names": {
     "godaddy": "GoDaddy"
   },
+  "asOf": "October 2026",
   "sections": [
     {
       "id": "builtin",
@@ -77,17 +78,10 @@
           "id": "templates",
           "playbook": "tech",
           "label": "Edit theme or template code"
-        }
-      ]
-    },
-    {
-      "id": "ai",
-      "title": "AI search",
-      "asOf": "October 2026",
-      "items": [
+        },
         {
           "id": "ai_crawlers",
-          "label": "Control AI crawlers (robots.txt)"
+          "label": "Control AI crawlers (as of October 2026)"
         }
       ]
     }

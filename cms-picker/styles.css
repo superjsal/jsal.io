@@ -73,15 +73,6 @@ body {
 
 /* ── Controls ──────────────────────────────────────────────────────────── */
 
-.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-bottom: 12px; }
-.field {
-  height: 34px; padding: 0 10px; min-width: 0;
-  border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius);
-  background: var(--jsal-surface); color: var(--jsal-ink);
-}
-.field::placeholder { color: var(--jsal-muted); }
-.search { flex: 1 1 200px; max-width: 320px; }
-.search .field { width: 100%; }
 
 .plats { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 14px; }
 .plats-label { color: var(--jsal-muted); font-size: 12px; font-weight: 600; margin-right: 2px; }
@@ -94,9 +85,10 @@ body {
 .chip[aria-pressed="true"] { background: var(--jsal-accent-soft); border-color: var(--jsal-accent); color: var(--jsal-accent); }
 .chip-link { padding: 3px 6px; color: var(--jsal-accent); font-size: 13px; text-decoration: underline; text-underline-offset: 2px; }
 
-.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 14px; color: var(--jsal-muted); font-size: 13px; }
+/* Key and Show notes share one row */
+.keyrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--jsal-muted); font-size: 13px; }
 .legend > span { display: inline-flex; align-items: center; gap: 6px; }
-.skey .sc { margin-left: 0; }
 
 /* ── Verdict tags ──────────────────────────────────────────────────────── */
 
@@ -143,9 +135,9 @@ body {
 .cell { padding: 10px 12px; min-width: 0; }
 .cell .plat { display: none; }
 .line { display: inline-flex; align-items: center; gap: 7px; }
-.sc { color: var(--jsal-muted); font-size: 15px; line-height: 1; cursor: help; }
+.sc { color: var(--jsal-muted); font-size: 12.5px; font-weight: 600; white-space: nowrap; }   /* "varies" / "not verified" after a tag */
 .mark { display: block; margin-top: 4px; color: var(--jsal-ink-2); font-size: 14px; line-height: 1.4; }
-/* "AI search" heading row inside the table (spans every column) */
+/* Section heading row inside the table: Built in, SEO (spans every column) */
 .row.group { display: block; padding: 9px 14px; background: var(--jsal-sunk); color: var(--jsal-info); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
 .row.group > span { position: sticky; left: 14px; }
 /* "Show notes" off: tags only, so far more rows fit on screen; hovering a cell shows its note in .tip */
@@ -177,7 +169,6 @@ body {
   .cell .plat { display: block; grid-row: 1 / span 2; color: var(--jsal-ink-2); font-weight: 600; font-size: 14px; }
   .cell > :not(.plat) { grid-column: 2; justify-self: start; }
   .cell .mark { margin-top: 0; }
-  .search { max-width: none; flex-basis: 100%; }
   .hero { margin-top: 22px; }
   .hero-main { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .lede { font-size: 16px; }
@@ -226,7 +217,6 @@ body {
 .run dd { margin-top: 1px; color: var(--jsal-ink); font-size: 14.5px; line-height: 1.4; }
 .cfoot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: auto; padding-top: 16px; }
 .cmp { padding: 5px 12px; font-size: 14px; }
-.golink { color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

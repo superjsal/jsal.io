@@ -2,11 +2,13 @@
 // (answers and profiles only, exported by build\playbook.py publish).
 (() => {
   const $ = (s) => document.querySelector(s);
-  const state = { q: '', goal: 'all', compare: new Set(), notes: false };
+  const state = { goal: 'all', compare: new Set(), notes: false };
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Code', hosting: 'Hosting/DNS', check: 'Check', indirect: 'Indirectly', no: 'Not possible' };
   // Scope as a symbol, explained once in the key
-  const SCOPE = { U: ['●', 'Same on every site'], V: ['◐', 'Varies by site'], C: ['○', 'Not verified yet'] };
+  // Only the exceptions are marked (a short word after the tag); settled answers have no mark.
+  // The longer wording is for the tooltip.
+  const SCOPE = { V: ['varies', 'Varies by site: depends on the plan, theme or setup'], C: ['not verified', 'Not checked against the platform’s own docs yet'] };
   // A note that only repeats its tag isn't shown ("Yes", "Yes, with an SEO plugin", "Automatic"…)
   const GENERIC = /^(yes|no|check|automatic|built in)$|^yes, with (an? )?(seo |redirect )?(plugin|module|extension|app|custom code)$/i;
   // With "Show all", the grid starts with these; any other choice starts with the platforms that fit it
@@ -98,10 +100,7 @@
       cmp.setAttribute('aria-pressed', String(on));
       cmp.setAttribute('aria-label', `${on ? 'Remove' : 'Add'} ${p.name} ${on ? 'from' : 'to'} the SEO comparison`);
       cmp.addEventListener('click', () => toggleCompare(p.id));
-      const go = el('a', 'golink', 'Compare ↓');
-      go.href = '#seo';
-      go.addEventListener('click', () => { if (!state.compare.has(p.id)) toggleCompare(p.id); });
-      foot.append(cmp, go);
+      foot.append(cmp);
       c.append(foot);
       cards.append(c);
     });
@@ -109,18 +108,17 @@
 
   function render() {
     const plats = data.platforms.filter((p) => state.compare.has(p.id));
-    const q = state.q.trim().toLowerCase();
-    const items = data.items.filter((i) => !q || i.label.toLowerCase().includes(q));
+    const items = data.items;
     document.querySelectorAll('.chip[data-pid]').forEach((b) => b.setAttribute('aria-pressed', String(state.compare.has(b.dataset.pid))));
 
     const grid = $('#grid'), ghead = $('#ghead');
     grid.replaceChildren();
     ghead.replaceChildren();
     [grid, ghead].forEach((g) => g.style.setProperty('--n', Math.max(plats.length, 1)));
-    $('#thead').hidden = !plats.length || !items.length;
+    $('#thead').hidden = !plats.length;
     grid.classList.toggle('compact', !state.notes);
-    if (!plats.length || !items.length) {
-      grid.append(el('p', 'empty', plats.length ? 'No items match that search.' : 'No platforms selected. Add some above, or from the cards.'));
+    if (!plats.length) {
+      grid.append(el('p', 'empty', 'No platforms selected. Add some above, or from the cards.'));
       return;
     }
     const head = el('div', 'row head');
@@ -133,7 +131,7 @@
     });
     ghead.append(head);
     $('#thead').scrollLeft = $('#seo .scroll').scrollLeft;
-    // A label row where each section starts: Built in, SEO, AI search (dated, as AI changes fast)
+    // A label row where each section starts: Built in, SEO
     const groups = Object.fromEntries((data.groups || []).map((g) => [g.id, g]));
     let lastGroup = null;
     items.forEach((it) => {
@@ -148,15 +146,13 @@
       row.append(el('div', 'item', it.label));
       plats.forEach((p) => {
         const c = data.answers[p.id][it.id], cell = el('div', 'cell');
-        const [sym, scope] = SCOPE[c.scope] || ['', ''];
+        const [word, scope] = SCOPE[c.scope] || ['', ''];
         const line = el('span', 'line');
         line.append(el('span', `tag ${c.verdict}`, SHORT[c.verdict] || data.verdicts[c.verdict] || c.verdict));
-        if (sym) {
-          const s = el('span', 'sc', sym);
+        if (word) {
+          const s = el('span', 'sc', word);
           if (state.notes) s.title = scope;        // with notes off, the cell's tooltip says it instead
           cell.dataset.scope = scope;
-          s.setAttribute('role', 'img');   // the symbol reads as its meaning
-          s.setAttribute('aria-label', scope);
           line.append(s);
         }
         cell.append(el('span', 'plat', p.name), line);
@@ -199,9 +195,9 @@
 
     // Keep the pinned header in line with the table when it scrolls sideways
     $('#seo .scroll').addEventListener('scroll', (e) => { $('#thead').scrollLeft = e.target.scrollLeft; }, { passive: true });
-    // Hero: platform count, the date from the AI search section, and a few real rows of the table
+    // Hero: platform count, when the answers were last checked, and a few real rows of the table
     document.querySelectorAll('.n-plats').forEach((n) => { n.textContent = data.platforms.length; });
-    const asOf = (data.groups || []).map((g) => g.asOf).find(Boolean);
+    const asOf = data.asOf;
     if (asOf) $('#asof').textContent = asOf;
     const PEEK_PLATS = ['wordpress', 'shopify', 'wix'].filter((id) => data.answers[id]);
     const PEEK_ROWS = [['blog', 'Run a blog'], ['store', 'Sell online'], ['gsc404', '301 redirects'], ['templates', 'Edit templates']]
@@ -254,7 +250,6 @@
     new IntersectionObserver(([e]) => totop.classList.toggle('show', !e.isIntersecting)).observe($('.hero'));
     totop.addEventListener('click', () => scrollTo({ top: 0 }));   // smooth via scroll-behavior in shell.css
 
-    $('#q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
     // "Show notes" (remembered in this browser). Off by default: just the tags, so the table can be
     // scanned; each note is still in the cell's tooltip.
     const notes = $('#notes');
@@ -267,13 +262,10 @@
       try { localStorage.setItem('cms-picker-notes', state.notes ? 'on' : 'off'); } catch (e) { /* not remembered */ }
       render();
     });
+    // Key: only the tags the table actually uses
+    const used = new Set(Object.values(data.answers).flatMap((a) => Object.values(a).map((c) => c.verdict)));
     const legend = $('#legend');
-    Object.keys(SHORT).filter((k) => k in data.verdicts).forEach((k) => legend.append(el('span', `tag ${k}`, SHORT[k])));
-    Object.values(SCOPE).forEach(([sym, label]) => {
-      const s = el('span', 'skey');
-      s.append(el('span', 'sc', sym), document.createTextNode(label));
-      legend.append(s);
-    });
+    Object.keys(SHORT).filter((k) => used.has(k)).forEach((k) => legend.append(el('span', `tag ${k}`, SHORT[k])));
     setGoal('all');
   }
 
