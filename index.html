@@ -223,6 +223,19 @@ a:not(.tile):focus-visible { border-radius: 6px; }   /* tiles keep their own rou
 .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
 .tile { border-radius: 22px; padding: 26px; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
 a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
+/* With a mouse: the tile tilts toward the pointer and a soft light follows it (the script below sets
+   --rx/--ry and --mx/--my). Not on touch screens, and not with reduced motion (the plain lift above). */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  a.tile { position: relative; isolation: isolate; }
+  a.tile.tilt { transform: perspective(1000px) translateY(-4px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 0.12s ease-out; }
+  a.tile::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.2), transparent 65%); }
+  a.tile.tilt::after { opacity: 1; }
+  :root[data-theme="dark"] a.tile::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 65%); }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) a.tile::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 65%); }
+}
 .tile h2 { margin: 2px 0 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
 .tile p { margin: 0; }
 /* Every clickable tile ends with the same round arrow, in that tile's accent colour */
@@ -656,6 +669,25 @@ const nameTile = (tile, vt) => {
   tile.style.viewTransitionName = 'jsal-app';
   vt.finished.finally(() => { tile.style.viewTransitionName = ''; });
 };
+// Tiles tilt toward the mouse (up to 4°) with a light that follows it; the CSS decides when it applies
+if (matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
+  document.querySelectorAll('a.tile').forEach((tile) => {
+    let frame = 0;
+    tile.addEventListener('pointermove', (e) => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const r = tile.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        tile.style.setProperty('--ry', `${((x - 0.5) * 8).toFixed(2)}deg`);
+        tile.style.setProperty('--rx', `${((0.5 - y) * 8).toFixed(2)}deg`);
+        tile.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
+        tile.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
+        tile.classList.add('tilt');
+      });
+    });
+    tile.addEventListener('pointerleave', () => { cancelAnimationFrame(frame); tile.classList.remove('tilt'); });
+  });
+}
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
