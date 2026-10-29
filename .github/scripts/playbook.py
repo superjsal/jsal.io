@@ -253,7 +253,7 @@ def prerender():
             c.append('<div class="ktags" aria-label="Known for">' + ''.join(f'<span class="ktag">{e(t)}</span>' for t in pr['tags']) + '</div>')
         if pr.get('aiTags'):
             c.append('<div class="aitags"><span class="ailabel">AI</span>' + ''.join(f'<span class="aitag">{e(t)}</span>' for t in pr['aiTags']) + '</div>')
-        run = ''.join(f'<div><dt>{t}</dt><dd>{e(v)}</dd></div>' for t, v in (('Hosting and updates', pr.get('hosting')), ('If you leave', pr.get('export'))) if v)
+        run = ''.join(f'<div class="{cls}"><dt>{t}</dt><dd>{e(v)}</dd></div>' for t, v, cls in (('Hosting and updates', pr.get('hosting'), 'r-host'), ('If you leave', pr.get('export'), 'r-exit')) if v)
         if run:
             c.append(f'<dl class="run">{run}</dl>')
         who = ''.join(f'<h4>{title}</h4><ul>' + ''.join(f'<li>{e(x)}</li>' for x in lst) + '</ul>'

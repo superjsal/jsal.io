@@ -79,9 +79,9 @@
       // Running it: who looks after hosting and updates, and what you can take with you if you leave
       if (pr.hosting || pr.export) {
         const run = el('dl', 'run');
-        [['Hosting and updates', pr.hosting], ['If you leave', pr.export]].forEach(([t, v]) => {
+        [['Hosting and updates', pr.hosting, 'r-host'], ['If you leave', pr.export, 'r-exit']].forEach(([t, v, cls]) => {
           if (!v) return;
-          const d = el('div');
+          const d = el('div', cls);
           d.append(el('dt', null, t), el('dd', null, v));
           run.append(d);
         });
