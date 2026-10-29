@@ -219,14 +219,14 @@ def picker_seed():
 # (most AI search bots) would see only "Loading…", so publish also writes the same content as HTML
 # between <!-- prerender:NAME --> markers. app.js replaces it on load; visitors see no difference.
 # Keep the markup in step with renderCards(), render() and the hero code in site/cms-picker/app.js.
-SHORT = {'yes': 'Built in', 'auto': 'Automatic', 'plugin': 'Plugin/app', 'code': 'Code', 'hosting': 'Hosting/DNS',
-         'check': 'Check', 'indirect': 'Indirectly', 'no': 'Not possible'}
+SHORT = {'yes': 'Built in', 'auto': 'Automatic', 'plugin': 'Plugin/app', 'code': 'Needs code', 'hosting': 'Hosting/DNS',
+         'check': 'Unclear', 'indirect': 'Indirectly', 'no': 'Not possible'}
 SCOPE = {'V': 'varies', 'C': 'not verified'}   # only the exceptions are marked
 LOGOS = {'wordpress', 'shopify', 'wix', 'squarespace', 'webflow', 'framer', 'hubspot', 'bigcommerce', 'drupal', 'ghost'}
 BADGE = {'magento': 'M', 'duda': 'D', 'headless': '{ }'}
 DEFAULT_COMPARE = ['wordpress', 'shopify', 'wix', 'squarespace']
 PEEK_PLATS = ['wordpress', 'shopify', 'wix']
-PEEK_ROWS = [('blog', 'Run a blog'), ('store', 'Sell online'), ('gsc404', '301 redirects'), ('templates', 'Edit templates')]
+PEEK_ROWS = [('blog', 'Run a blog'), ('store', 'Sell online'), ('gsc404', '301 redirects'), ('design', 'Custom design')]
 PEEK_SHORT = {**SHORT, 'plugin': 'Plugin', 'no': 'No'}
 GENERIC = re.compile(r'^(yes|no|check|automatic|built in)$|^yes, with (an? )?(seo |redirect )?(plugin|module|extension|app|custom code)$', re.I)
 

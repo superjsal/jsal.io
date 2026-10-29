@@ -4,7 +4,7 @@
   const $ = (s) => document.querySelector(s);
   const state = { goal: 'all', compare: new Set(), notes: false };
   // Short tag wording for the grid and key (data.json keeps the full labels)
-  const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Code', hosting: 'Hosting/DNS', check: 'Check', indirect: 'Indirectly', no: 'Not possible' };
+  const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Needs code', hosting: 'Hosting/DNS', check: 'Unclear', indirect: 'Indirectly', no: 'Not possible' };
   // Scope as a symbol, explained once in the key
   // Only the exceptions are marked (a short word after the tag); settled answers have no mark.
   // The longer wording is for the tooltip.
@@ -227,7 +227,7 @@
     const asOf = data.asOf;
     if (asOf) $('#asof').textContent = asOf;
     const PEEK_PLATS = ['wordpress', 'shopify', 'wix'].filter((id) => data.answers[id]);
-    const PEEK_ROWS = [['blog', 'Run a blog'], ['store', 'Sell online'], ['gsc404', '301 redirects'], ['templates', 'Edit templates']]
+    const PEEK_ROWS = [['blog', 'Run a blog'], ['store', 'Sell online'], ['gsc404', '301 redirects'], ['design', 'Custom design']]
       .filter(([id]) => data.items.some((i) => i.id === id));
     const PEEK_SHORT = { plugin: 'Plugin', no: 'No' };   // shorter still, so three columns fit on a phone
     const peek = $('#peek');
