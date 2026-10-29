@@ -202,6 +202,7 @@
       .filter(([id]) => data.items.some((i) => i.id === id));
     const PEEK_SHORT = { plugin: 'Plugin', no: 'No' };   // shorter still, so three columns fit on a phone
     const peek = $('#peek');
+    peek.replaceChildren();                     // drop the plain-HTML copy (build\playbook.py prerender)
     const prow = () => { const r = el('div'); r.setAttribute('role', 'row'); return r; };
     const pcell = (r, role, x) => { const c = typeof x === 'string' ? el('span', null, x) : x; c.setAttribute('role', role); r.append(c); };
     const head = prow();
@@ -270,6 +271,7 @@
     setGoal('all');
   }
 
-  fetch('data.json').then((r) => r.json()).then((d) => { data = d; build(); })
+  // no-cache: always check with the server (a quick 304 if unchanged), so a publish shows straight away
+  fetch('data.json', { cache: 'no-cache' }).then((r) => r.json()).then((d) => { data = d; build(); })
     .catch(() => { $('#grid').replaceChildren(el('p', 'empty', 'Could not load the answers. Try reloading the page.')); });
 })();
