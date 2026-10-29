@@ -58,7 +58,8 @@ console.log(failed ? `${failed} of ${PERSONAS.length} personas failed.` : `All $
 // The result cards, for every possible set of answers: each card says what sets it apart, without
 // mentioning anything the person ruled out; "the same reasons as" only when it's true; the top two
 // never show the same list; and a clear winner says what tipped it.
-const { QUESTIONS, PHRASE, weight } = require(path.join(site, 'cms-picker', 'score.js'));
+const { QUESTIONS, PHRASE, weight, TIP } = require(path.join(site, 'cms-picker', 'score.js'));
+const unworded = new Set();   // parts of the score with no "What tipped it" wording in TIP (score.js)
 const sameSet = (x, y) => x.length === y.length && x.every((w) => y.includes(w));
 let combos = 0, clear = 0, fallback = 0;
 const cardErrs = [];
@@ -70,7 +71,8 @@ const walk = (a, i) => {
     return;
   }
   combos++;
-  const r = rank(data, a).slice(0, 3), told = explain(data, a, r), at = new URLSearchParams(a).toString();
+  const ranked = rank(data, a), r = ranked.slice(0, 3), told = explain(data, a, r), at = new URLSearchParams(a).toString();
+  ranked.forEach((x) => Object.keys(x.pts).forEach((k) => { if (!TIP[k]) unworded.add(k); }));
   told.forEach((t, k) => {
     if (!t.vs) return cardErrs.push(`${at}: nothing setting ${r[k].p.id} apart`);
     Object.keys(PHRASE).forEach((row) => { if (weight(row, a) === 0 && t.vs.text.includes(PHRASE[row])) cardErrs.push(`${at}: ${r[k].p.id} mentions "${PHRASE[row]}", which these answers rule out`); });
@@ -80,6 +82,8 @@ const walk = (a, i) => {
   if (r[0].s > r[1].s) { clear++; if (!/^What tipped it/.test(told[0].vs.text)) fallback++; }
 };
 walk({}, 0);
+unworded.forEach((k) => cardErrs.push(`score part "${k}" has no wording in TIP (score.js), so it can't say what tipped a result`));
+data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
 console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it".`);
 process.exit(failed || cardErrs.length ? 1 : 0);

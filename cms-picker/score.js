@@ -156,6 +156,6 @@
     });
   }
 
-  const api = { QUESTIONS, rank, explain, PHRASE, weight };
+  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

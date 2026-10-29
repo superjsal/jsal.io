@@ -1,0 +1,70 @@
+# CMS Picker: how it's put together, and keeping it right
+
+`SETUP.md` (outside the repo) covers publishing and the Playbook day to day; this is the CMS Picker's
+data, scoring and tests. Real-device checks before a release: `manual-checks.md`, next to this file.
+
+## Where everything lives
+
+| What | Where | Edited by |
+|---|---|---|
+| Each platform's answers (tag, note, varies/not verified), profile, logo, public switch | Supabase `picker` table, plus the Playbook's own rows for the "playbook" ones | John, in the Playbook |
+| Each answer's source (official docs URL) and the date it was checked | `picker.sources` | John, in the Playbook's CMS Picker section |
+| The rows, their plain-language labels and SEO names, platform order | `.github/scripts/cms-picker.json` | code |
+| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker.json` → `quiz` | code |
+| What the page reads | `cms-picker/data.json`, written by `playbook.py publish` (nightly at 07:41 UTC, or Run workflow); never edit it by hand | the publish |
+| Its shape | `.github/scripts/cms-picker.schema.json`, checked by `check_data.py` before every publish and push | code |
+
+**Answers.** Each one is `{verdict, mark, scope, sourceUrl?, lastVerified?}`. `verdict` is the tag (yes =
+Built in, auto, plugin, code, no, …). `mark` is the note shown on tap or with Show notes; a note that only
+repeats its tag ("Yes, with an SEO plugin") is hidden as generic, so name the plugin or plan instead.
+`scope` is U (same everywhere), V ("varies": depends on plan, theme or setup) or C (not verified).
+
+**Sources.** Only the platform's own documentation (or the named plugin's own page), never a guess. No
+source is better than a wrong one: `check_data.py --list` shows what's missing.
+
+## The quiz and its explanations (`cms-picker/score.js`)
+
+Shared by the page and the tests, so they always run the same code.
+
+- **Questions:** `QUESTIONS`. Each option is `[value, title, hint, the answer on its own]`; the last is the
+  answer button on the results. Changing the questions means raising `LINK_VERSION` in `app.js` and
+  translating older answers in `readLink`, so shared links keep working.
+- **Scoring:** `fitScore` builds the score from parts with `add(key, points, reason)`. The reason (if any)
+  shows as a bullet on the card.
+- **"What tipped it":** every part's key has wording in `TIP`: `[what the leader earned, what the
+  runner-up lost]`. The clear winner's box names the part with the biggest gap. **A new part needs a
+  `TIP` entry**; the persona test fails without one.
+- **"Pick it over":** rows where a platform does better than its neighbour (built in beats a plugin beats
+  code), described by `PHRASE` (a short phrase per table row; **a new row needs one**, the test checks).
+  `weight` decides how much a row matters for the answers, and is 0 for rows the person ruled out
+  (design control after "a good template is enough", more languages after "one language", selling when
+  not making a store). Without such a row, the platform's first "good fit" line is used.
+
+## Persona tests
+
+```
+node .github/scripts/personas.test.js
+```
+
+Also run by `build\check.ps1` before every push, and by the "Check CMS Picker data" Action on GitHub.
+
+- **11 personas** (bakery, maker shop, government site…) must keep the first places and top threes John
+  agreed. A failure means a result changed: agree the new result with John before editing the expectation.
+- **Every answer combination (480)**, for every result card:
+  - it has a box saying what sets it apart, and never mentions a row those answers rule out;
+  - "the same reasons as X" appears only when the reasons really are the same, and the top two never
+    show an identical list;
+  - every score part has `TIP` wording and every row a `PHRASE`;
+  - it reports how many clear winners fall back from "What tipped it" (0 today).
+
+## Keeping the answers current
+
+Platforms change plans and features often. Every few months (or when a platform announces a change):
+
+- Recheck the **"varies" answers**, since they depend on plans and themes that move.
+- Recheck the **AI crawlers row**: the bots and how each platform lets you block them change fastest.
+  The row's SEO name (`term` in `cms-picker.json`) carries its "as of" month; update it when you recheck.
+- Update each answer's checked date in the Playbook when you confirm it, so `check_data.py` (sources
+  older than 90 days) stays useful.
+
+No automation does this; it's a manual pass, on purpose.
