@@ -302,15 +302,14 @@ p, li { text-wrap: pretty; }
 .ic .label { color: var(--blue-acc); }
 .ic .desc { color: var(--blue-muted); }
 
-.fmt { grid-column: 1 / 5; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
+.fmt { grid-column: 1 / 7; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
 .fmt h2, .ic h2 { font-size: 26px; }   /* the featured app keeps the biggest title */
 .fmt .label { color: var(--gold-acc); }
 .fmt .desc { color: var(--gold-muted); }
 
 .ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
 .ui .label { color: var(--green-acc); }
-.cms { grid-column: 5 / 13; background: var(--plum); color: var(--plum-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; --arrow-bg: var(--plum-acc); --arrow-ink: var(--plum); }
-.cms .foot { flex-direction: column; align-items: flex-start; justify-content: space-between; height: 100%; }
+.cms { grid-column: 7 / 13; background: var(--plum); color: var(--plum-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--plum-acc); --arrow-ink: var(--plum); }
 .cms h2 { font-size: 26px; }
 .cms .label { color: var(--plum-acc); }
 .cms .desc { color: var(--plum-muted); }
@@ -371,43 +370,33 @@ p, li { text-wrap: pretty; }
 .m-ic .card .bar { flex: 1; }
 
 /* CMS Picker: "What are you building?" chips and two platform cards, then the SEO table */
-.m-cms { grid-template-columns: minmax(0, 44%) minmax(0, 1fr); padding: 10px; gap: 8px; align-self: center; }
-.m-cms .chips { display: flex; gap: 3px; }
-.m-cms .chips i { height: 9px; flex: 1; border-radius: 9px; border: 1px solid var(--jsal-line); background: var(--jsal-surface); }
-.m-cms .chips .on { background: var(--plum-acc); border-color: var(--plum-acc); }
-.m-cms .pcard { display: flex; flex-direction: column; gap: 4px; padding: 6px; }
-.m-cms .pcard .bar:first-child { height: 6px; width: 55%; background: var(--jsal-ink-2); }
-.m-cms .pcard .bar { height: 4px; }
-.m-cms .tags { display: flex; gap: 3px; }
-.m-cms .tags i { height: 6px; width: 22%; border-radius: 6px; background: var(--jsal-sunk); }
-.m-cms .table { display: grid; grid-template-columns: 34% repeat(3, minmax(0, 1fr)); gap: 5px 4px; padding: 7px; align-content: start; }
-.m-cms .table .bar { height: 4px; align-self: center; }
-.m-cms .table .th { height: 5px; background: var(--jsal-ink-2); opacity: 0.6; }
-.m-cms .table b { height: 8px; border-radius: 2px; background: var(--c); }
+/* CMS Picker: the platforms it compares (the CMS Picker's own logo files), one of them picked */
+.m-cms { flex: 1; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; align-content: center; }
+.m-cms span { aspect-ratio: 1.35; display: grid; place-items: center; border-radius: var(--jsal-radius-lg); }
+.m-cms span i { width: 42%; height: 42%; background: var(--plum-ink); opacity: 0.85; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
+.m-cms .pick { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); }
+.m-cms .pick i { background: var(--plum-acc); opacity: 1; }
+.m-cms .more { font-size: 15px; font-weight: 700; color: var(--plum-acc); }
 
 /* Clean Paste: checks + copy buttons, then the editor with its toolbar */
-.m-fmt { grid-template-columns: minmax(0, 36%) minmax(0, 1fr); padding: 10px; gap: 8px; }
-.m-fmt .stats { display: flex; gap: 3px; }
-.m-fmt .stats i { height: 9px; flex: 1; border-radius: 9px; border: 1px solid var(--jsal-line); background: var(--jsal-surface); }
-.m-fmt .check { display: flex; align-items: center; gap: 4px; padding: 5px 4px; }
-.m-fmt .check b { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--c); }
-.m-fmt .check .bar { flex: 1; height: 4px; }
-.m-fmt .go { width: 100%; height: 13px; margin-top: 2px; }
-.m-fmt .pane { overflow: hidden; }
-.m-fmt .tools { display: flex; gap: 4px; padding: 5px 6px; border-bottom: 1px solid var(--jsal-line); }
-.m-fmt .tools i { width: 9px; height: 7px; border-radius: 2px; background: var(--jsal-line-hi); }
-.m-fmt .doc { display: flex; flex-direction: column; gap: 5px; padding: 8px; }
-.m-fmt .doc .h { display: flex; gap: 4px; align-items: center; margin: 2px 0 1px; }
-.m-fmt .doc .h b { width: 13px; height: 8px; border-radius: 2px; background: var(--jsal-accent-soft); box-shadow: inset 0 0 0 1px var(--jsal-accent-ring); }
-.m-fmt .doc .h .bar { height: 7px; background: var(--jsal-ink-2); }
-.m-fmt .doc .bar { height: 4px; }
-.m-fmt .doc .link { display: flex; gap: 3px; }
-.m-fmt .doc .link .bar:nth-child(2) { background: var(--jsal-accent); }
+/* Clean Paste: what Word's formatting looks like going in, and the clean HTML coming out */
+.m-fmt { flex: 1; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+.m-fmt .doc { padding: 10px 11px; font-size: 12.5px; line-height: 1.5; overflow: hidden; }
+.m-fmt small { display: block; margin-bottom: 7px; font: 600 10px/1 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
+.m-fmt .word b { font: 700 15px "Times New Roman", Times, serif; color: var(--blue-acc); }
+.m-fmt .word p { margin-top: 3px; font-family: Calibri, Carlito, sans-serif; color: var(--jsal-ink-2); }
+.m-fmt .word mark { padding: 0 2px; background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.m-fmt .word .odd { font: italic 13.5px Georgia, serif; color: var(--jsal-bad); }
+.m-fmt .html { font: 11.5px/1.6 "JetBrains Mono", Consolas, monospace; color: var(--jsal-ink-2); }
+.m-fmt .html .ln { display: block; }
+.m-fmt .html .t { color: var(--gold-acc); }
+.m-fmt .to { align-self: center; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--gold-acc); color: var(--gold); }
 
 /* Hovering an app tile plays a short loop of what the app does:
    Image Resizer steps through the loaded photos, moving the crop box on each;
    Platform Playbook steps down the platforms, refreshing the cards;
-   Clean Paste snaps messy lines into tidy ones, adds heading tags and turns the checks green. */
+   Clean Paste writes out the clean HTML line by line;
+   CMS Picker tries each platform in turn. */
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .tile:is(:hover, :focus-visible) .m-jscale .frame .photo { animation: m-photo 4s infinite; }
   .tile:is(:hover, :focus-visible) .m-jscale .crop { animation: m-crop 4s ease-in-out infinite; }
@@ -426,39 +415,23 @@ p, li { text-wrap: pretty; }
   .tile:is(:hover, :focus-visible) .m-ic .card:nth-child(3) { animation-delay: 0.1s; }
   .tile:is(:hover, :focus-visible) .m-ic .card:nth-child(4) { animation-delay: 0.15s; }
 
-  .tile:is(:hover, :focus-visible) .m-fmt .doc > * { transform-origin: left; animation: m-tidy 3.2s ease-in-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-fmt .doc .h b { animation: m-chip 3.2s ease-in-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-fmt .check:nth-child(2) b { animation: m-fix 3.2s infinite; }
-  .tile:is(:hover, :focus-visible) .m-fmt .check:nth-child(3) b { animation: m-fix 3.2s 0.3s infinite; }
-
-  /* CMS Picker: the "What are you building?" choice steps through its options, the cards
-     refresh with each one, and the comparison refills column by column */
-  .tile:is(:hover, :focus-visible) .m-cms .chips i { animation: m-goal 4s infinite; }
-  .tile:is(:hover, :focus-visible) .m-cms .chips i:nth-child(2) { animation-delay: 1.33s; }
-  .tile:is(:hover, :focus-visible) .m-cms .chips i:nth-child(3) { animation-delay: 2.66s; }
-  .tile:is(:hover, :focus-visible) .m-cms .pcard { animation: m-refresh 1.33s ease-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-cms .pcard + .pcard { animation-delay: 0.08s; }
-  .tile:is(:hover, :focus-visible) .m-cms .table b { animation: m-pop 1.33s ease-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-cms .table b:nth-child(4n + 3) { animation-delay: 0.12s; }
-  .tile:is(:hover, :focus-visible) .m-cms .table b:nth-child(4n) { animation-delay: 0.24s; }
-  .m-fmt .doc > :nth-child(1) { --x: 6px; --s: 0.8; }
-  .m-fmt .doc > :nth-child(2) { --x: -4px; --s: 1.15; }
-  .m-fmt .doc > :nth-child(3) { --x: 10px; --s: 0.9; }
-  .m-fmt .doc > :nth-child(4) { --x: 0px; --s: 0.6; }
-  .m-fmt .doc > :nth-child(5) { --x: 8px; --s: 1.1; }
-  .m-fmt .doc > :nth-child(6) { --x: -6px; --s: 0.85; }
+  .tile:is(:hover, :focus-visible) .m-fmt .html .ln { animation: m-line 3s ease-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(3) { animation-delay: 0.25s; }
+  .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(4) { animation-delay: 0.5s; }
+  .tile:is(:hover, :focus-visible) .m-fmt .to { animation: m-nudge 3s ease-in-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-cms span:not(.more) { animation: m-try 4.05s calc(var(--n) * 0.45s) infinite; }
+  .tile:is(:hover, :focus-visible) .m-cms span:not(.more) i { animation: m-try-logo 4.05s calc(var(--n) * 0.45s) infinite; }
 }
 /* Main photo matches the selected thumbnail (same filters as the strip) */
 @keyframes m-photo { 0%, 24.9% { filter: none; } 25%, 49.9% { filter: hue-rotate(150deg); } 50%, 74.9% { filter: hue-rotate(-60deg) saturate(0.8); } 75%, 100% { filter: hue-rotate(80deg); } }
 @keyframes m-crop { 0%, 100% { translate: 0 0; } 25% { translate: -8% 5%; } 50% { translate: 7% -4%; } 75% { translate: -3% -6%; } }
 @keyframes m-pick { 0%, 24.9% { outline-color: var(--jsal-fill); } 25%, 100% { outline-color: transparent; } }
 @keyframes m-sel { 0%, 18% { background: var(--blue-acc); color: var(--blue); } 20%, 100% { background: transparent; color: var(--jsal-muted); } }
+@keyframes m-line { 0%, 10% { opacity: 0; translate: -4px 0; } 25%, 85% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
+@keyframes m-nudge { 0%, 100% { translate: 0 0; } 15% { translate: 3px 0; } 30% { translate: 0 0; } }
+@keyframes m-try { 0%, 10% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } 11.5%, 100% { border-color: var(--jsal-line); box-shadow: none; } }
+@keyframes m-try-logo { 0%, 10% { background: var(--plum-acc); opacity: 1; } 11.5%, 100% { background: var(--plum-ink); opacity: 0.85; } }
 @keyframes m-refresh { 0% { opacity: 0.35; translate: 0 3px; } 40%, 100% { opacity: 1; translate: 0 0; } }
-@keyframes m-tidy { 0%, 10%, 100% { transform: translateX(var(--x)) scaleX(var(--s)); opacity: 0.55; } 40%, 80% { transform: none; opacity: 1; } }
-@keyframes m-chip { 0%, 25%, 100% { opacity: 0; } 45%, 80% { opacity: 1; } }
-@keyframes m-goal { 0%, 32% { background: var(--plum-acc); border-color: var(--plum-acc); } 34%, 100% { background: var(--jsal-surface); border-color: var(--jsal-line); } }
-@keyframes m-pop { 0% { opacity: 0; scale: 0.6; } 35%, 100% { opacity: 1; scale: 1; } }
-@keyframes m-fix { 0%, 40% { background: var(--jsal-warn); } 50%, 85% { background: var(--jsal-ok); } 95%, 100% { background: var(--jsal-warn); } }
 
 .now { grid-column: 1 / 7; background: var(--plain); }
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
@@ -501,7 +474,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
 @media (max-width: 860px) {
   .grid > * { grid-column: 1 / -1 !important; }
   .intro { padding-top: 4px; }
-  .ui, .cms { grid-template-columns: minmax(0, 1fr); }
+  .ui { grid-template-columns: minmax(0, 1fr); }
   .intro p { font-size: 16px; }
 }
 #work, #updates { scroll-margin-top: 16px; }
@@ -520,6 +493,8 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
   .jscale { padding: 12px; }
   .jscale .foot { padding: 0 6px 4px; }
   .mock { border-radius: 10px; }
+  .m-fmt { grid-template-columns: minmax(0, 1fr); }
+  .m-fmt .to { justify-self: center; rotate: 90deg; }
   .tile h2, .ui h2 { font-size: 26px; }
   .ui { gap: 20px; }
   .now-playing { gap: 14px; }
@@ -607,24 +582,9 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
 
     <a class="tile fmt" href="/formatter/" data-app>
       <div class="mock m-fmt" aria-hidden="true">
-        <div class="col">
-          <div class="stats"><i></i><i></i><i></i></div>
-          <div class="check box" style="--c: var(--jsal-warn)"><b></b><i class="bar"></i></div>
-          <div class="check box" style="--c: var(--jsal-warn)"><b></b><i class="bar"></i></div>
-          <div class="check box" style="--c: var(--jsal-ok)"><b></b><i class="bar"></i></div>
-          <i class="go"></i>
-        </div>
-        <div class="pane box">
-          <div class="tools"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-          <div class="doc">
-            <div class="h"><b></b><i class="bar" style="width: 55%"></i></div>
-            <i class="bar" style="width: 96%"></i>
-            <div class="link"><i class="bar" style="width: 40%"></i><i class="bar" style="width: 30%"></i></div>
-            <i class="bar" style="width: 70%"></i>
-            <div class="h"><b></b><i class="bar" style="width: 45%"></i></div>
-            <i class="bar" style="width: 90%"></i>
-          </div>
-        </div>
+        <div class="doc box word"><small>From Word</small><b>Spring menu</b><p>Our <mark>new dishes</mark> are&nbsp;&nbsp; here, with <span class="odd">seasonal</span> picks.</p></div>
+        <span class="to"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        <div class="doc box html"><small>Clean HTML</small><span class="ln"><span class="t">&lt;h2&gt;</span>Spring menu<span class="t">&lt;/h2&gt;</span></span><span class="ln"><span class="t">&lt;p&gt;</span>Our new dishes are here,</span><span class="ln">with seasonal picks.<span class="t">&lt;/p&gt;</span></span></div>
       </div>
       <div class="foot">
         <div>
@@ -637,6 +597,9 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
     </a>
 
     <a class="tile cms" href="/cms-picker/" data-app>
+      <div class="mock m-cms" aria-hidden="true">
+        <span class="box" style="--n: 0"><i style="--logo: url(/cms-picker/logos/wordpress.svg)"></i></span><span class="box pick" style="--n: 1"><i style="--logo: url(/cms-picker/logos/shopify.svg)"></i></span><span class="box" style="--n: 2"><i style="--logo: url(/cms-picker/logos/wix.svg)"></i></span><span class="box" style="--n: 3"><i style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span class="box" style="--n: 4"><i style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span class="box" style="--n: 5"><i style="--logo: url(/cms-picker/logos/framer.svg)"></i></span><span class="box" style="--n: 6"><i style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span class="box" style="--n: 7"><i style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span class="box" style="--n: 8"><i style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span class="box more">+4</span>
+      </div>
       <div class="foot">
         <div>
           <p class="label">04 · web app</p>
@@ -644,14 +607,6 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
           <p class="desc">Compare 13 CMS platforms: who each one suits, what’s built in, and what you can change for SEO and AI search.</p>
         </div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-      </div>
-      <div class="mock m-cms" aria-hidden="true">
-        <div class="col">
-          <div class="chips"><i></i><i class="on"></i><i></i></div>
-          <div class="pcard box"><i class="bar"></i><i class="bar" style="width: 92%"></i><div class="tags"><i></i><i></i><i></i></div></div>
-          <div class="pcard box"><i class="bar"></i><i class="bar" style="width: 80%"></i><div class="tags"><i></i><i></i><i></i></div></div>
-        </div>
-        <div class="table box"><i></i><i class="bar th"></i><i class="bar th"></i><i class="bar th"></i><i class="bar"></i><b style="--c: var(--jsal-ok)"></b><b style="--c: var(--jsal-ok)"></b><b style="--c: var(--jsal-info)"></b><i class="bar"></i><b style="--c: var(--jsal-ok)"></b><b style="--c: var(--jsal-info)"></b><b style="--c: var(--jsal-ok)"></b><i class="bar"></i><b style="--c: var(--jsal-warn)"></b><b style="--c: var(--jsal-ok)"></b><b style="--c: var(--jsal-warn)"></b><i class="bar"></i><b style="--c: var(--jsal-ok)"></b><b style="--c: var(--jsal-bad)"></b><b style="--c: var(--jsal-ok)"></b><i class="bar"></i><b style="--c: var(--jsal-info)"></b><b style="--c: var(--jsal-warn)"></b><b style="--c: var(--jsal-ok)"></b></div>
       </div>
     </a>
 
