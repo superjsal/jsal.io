@@ -3,25 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>John Salvador: SEO and Free Web Tools | jsal.io</title>
-<meta name="description" content="John Salvador works in SEO and builds free web tools: an image resizer, Clean Paste (Word to clean HTML) and CMS Picker, a guide to choosing a CMS.">
+<title>John Salvador: SEO Portfolio and Free Web Tools | jsal.io</title>
+<meta name="description" content="Personal portfolio of John Salvador, SEO specialist. Free web tools: Image Resizer, Clean Paste (Word and Google Docs to clean HTML) and CMS Picker.">
 <link rel="canonical" href="https://jsal.io/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jsal.io/">
 <meta property="og:site_name" content="jsal.io">
-<meta property="og:title" content="John Salvador: SEO and Free Web Tools | jsal.io">
-<meta property="og:description" content="Small, free browser tools for SEO and content work, and what I'm up to.">
+<meta property="og:title" content="John Salvador: SEO Portfolio and Free Web Tools | jsal.io">
+<meta property="og:description" content="John Salvador's personal portfolio: SEO work, and small free browser tools for anyone who works on website content.">
 <meta property="og:image" content="https://jsal.io/og/home.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="628">
-<meta property="og:image:alt" content="John Salvador: SEO and small web tools, jsal.io">
+<meta property="og:image:alt" content="John Salvador: SEO portfolio and small web tools, jsal.io">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
     { "@type": "WebSite", "@id": "https://jsal.io/#website", "url": "https://jsal.io/", "name": "jsal.io", "publisher": { "@id": "https://jsal.io/#john" } },
-    { "@type": "Person", "@id": "https://jsal.io/#john", "name": "John Salvador", "url": "https://jsal.io/", "email": "mailto:dev@jsal.io", "knowsAbout": ["SEO", "Web development"], "sameAs": ["https://github.com/superjsal"] }
+    { "@type": "ProfilePage", "@id": "https://jsal.io/#profile", "url": "https://jsal.io/", "name": "John Salvador: SEO Portfolio and Free Web Tools", "isPartOf": { "@id": "https://jsal.io/#website" }, "mainEntity": { "@id": "https://jsal.io/#john" } },
+    { "@type": "Person", "@id": "https://jsal.io/#john", "name": "John Salvador", "jobTitle": "SEO Specialist", "url": "https://jsal.io/", "email": "mailto:dev@jsal.io", "knowsAbout": ["SEO", "Technical SEO", "Content management systems", "Web development"], "sameAs": ["https://github.com/superjsal"] }
   ]
 }
 </script>
@@ -316,6 +317,10 @@ p, li { text-wrap: pretty; }
 .ui h2 { font-size: 34px; }
 .ui .desc { color: var(--green-muted); margin-top: 8px !important; }
 .ui .pill { margin-top: 14px; color: var(--green-acc); }
+/* Live projects are the default and carry no badge; what isn't ready yet is an outline with no fill */
+.tile.soon { background: none; border: 2px dashed var(--jsal-line-hi); }
+.ui.soon .screen { box-shadow: inset 0 0 0 1px var(--jsal-line-hi); }   /* the screen is near the dark page colour */
+.ic .pill { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; color: var(--blue-acc); }
 .ui .screen { border-radius: 14px; background: #111318; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }   /* style: allow (JSal UI tile: the in-game screen illustration) */
 .ui .frames { display: flex; flex-direction: column; gap: 6px; max-width: 170px; }
 .ui .frames span { height: 10px; border-radius: 2px; background: linear-gradient(90deg, var(--c) var(--w), #22262f var(--w)); }   /* style: allow (JSal UI tile: illustration) */
@@ -549,7 +554,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
         <p class="label">currently</p>
         <p class="big">Getting ready for WoW Forever</p>
       </div>
-      <div class="row"><span class="pill">Soon</span><span class="credit">Art © Blizzard Entertainment</span></div>
+      <div class="row"><span class="pill">Coming soon</span><span class="credit">Art © Blizzard Entertainment</span></div>
     </section>
 
     <!-- App tiles: data-app opens that app with the tile-to-app transition -->
@@ -572,7 +577,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
         <div>
           <p class="label">01 · web app</p>
           <h2>Image Resizer</h2>
-          <p class="desc">Bulk resize, crop and convert images in the browser. Nothing is uploaded.</p>
+          <p class="desc">Photos straight off a camera or phone are too big for any website. Resize, crop and convert a whole batch to WebP in one go. Nothing leaves your browser.</p>
         </div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </div>
@@ -593,7 +598,8 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
         <div>
           <p class="label">02 · team tool</p>
           <h2>Platform Playbook</h2>
-          <p class="desc">SEO checks across website platforms, with how-to steps and guides.</p>
+          <p class="desc">What each website platform lets you change for SEO, with how-to steps and guides. Built for my team: Discord sign-in, approved members only.</p>
+          <span class="pill"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Team sign-in</span>
         </div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </div>
@@ -624,7 +630,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
         <div>
           <p class="label">03 · web app</p>
           <h2>Clean Paste</h2>
-          <p class="desc">Paste from Word or Google Docs, get clean HTML.</p>
+          <p class="desc">Copying from Word or Google Docs into a CMS drags along hidden styles, stray spans and broken spacing. Paste it here and get clean HTML or WordPress blocks, ready to publish.</p>
         </div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </div>
@@ -635,7 +641,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
         <div>
           <p class="label">04 · web app</p>
           <h2>CMS Picker</h2>
-          <p class="desc">Which CMS fits your business, and what you can change for SEO on each.</p>
+          <p class="desc">Choosing a CMS? Compare 13 platforms by what your business needs, and see what each one lets you change for SEO before you commit.</p>
         </div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </div>
@@ -649,7 +655,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
       </div>
     </a>
 
-    <section class="tile ui" aria-labelledby="ui-h">
+    <section class="tile ui soon" aria-labelledby="ui-h">
       <div>
         <p class="label">05 · for WoW Forever</p>
         <h2 id="ui-h">JSal UI</h2>
@@ -670,6 +676,7 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
     <section id="updates" class="tile now" aria-labelledby="updates-h">
       <h2 id="updates-h">Updates</h2>
       <ul>
+        <li><time datetime="2026-10-29">Oct 29</time><span>Clearer descriptions for each project, and what’s live or coming soon</span></li>
         <li><time datetime="2026-10-29">Oct 29</time><span>New: <a href="#ach-h">achievements</a> for using the tools, and one secret</span></li>
         <li><time datetime="2026-10-28">Oct 28</time><span>New: <a href="/cms-picker/">CMS Picker</a>, which CMS fits your business and what you can change for SEO</span></li>
         <li><time datetime="2026-10-28">Oct 28</time><span>Faster first load: fonts now come from jsal.io</span></li>
