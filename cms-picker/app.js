@@ -424,8 +424,8 @@
       return;
     }
     let step = 0, a = {};
-    const steps = () => QUESTIONS.filter((q) => !q.when || q.when(a));
-    const valid = (o) => steps().every((q) => q.opts.some(([v]) => v === o[q.id]));
+    const steps = (o = a) => QUESTIONS.filter((q) => !q.when || q.when(o));   // the questions these answers call for
+    const valid = (o) => steps(o).every((q) => q.opts.some(([v]) => v === o[q.id]));
 
     function ask() {
       const list = steps();
@@ -581,10 +581,16 @@
       box.append(nav);
     }
 
-    // A shared result (#quiz?v=1&what=site&who=easy…) opens straight on it
+    // A shared result (#quiz?v=1&what=site&who=easy…) opens straight on it. One with an answer missing or
+    // unknown (cut short, or edited) keeps the good answers and asks the first question it lacks.
     const m = location.hash.match(/^#quiz\?(.+)$/);
     const shared = m && readLink(new URLSearchParams(m[1]));
-    if (shared && valid(shared)) { a = shared; step = steps().length; results(); requestAnimationFrame(() => $('#quiz').scrollIntoView()); return; }
+    if (shared) {
+      QUESTIONS.forEach((q) => { if (q.opts.some(([v]) => v === shared[q.id])) a[q.id] = shared[q.id]; });
+      const missing = steps().findIndex((q) => !(q.id in a));
+      if (missing < 0) { step = steps().length; results(); requestAnimationFrame(() => $('#quiz').scrollIntoView()); return; }
+      if (Object.keys(a).length) { step = missing; resume = true; requestAnimationFrame(() => $('#quiz').scrollIntoView()); }
+    }
     ask();
   }
 
