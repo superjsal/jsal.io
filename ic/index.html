@@ -294,6 +294,20 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .panel-head .pnote { margin-top: 8px; max-width: 75ch; }
 .pnote-tools { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
 .pnote-form { margin-top: 8px; max-width: 75ch; }
+/* Admins only: the public CMS Picker's own rows and this platform's profile (the picker table) */
+.pk { margin-top: 18px; padding: 12px 14px; border: 1px dashed var(--accent); border-radius: 8px; }
+.pk > summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+.pk[open] > summary { margin-bottom: 10px; }
+.pk-tag { margin-left: 8px; padding: 1px 8px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); font-size: 11.5px; font-weight: 700; }
+.pk-body { display: grid; gap: 8px; }
+.pk-sub { margin-top: 6px; font-size: 13px; color: var(--muted); }
+.pk-profile dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 16px; margin: 0; font-size: 13.5px; }
+.pk-profile dt { color: var(--muted); font-weight: 600; }
+.pk-profile dd { margin: 0; min-width: 0; }
+.pk-goals { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.pk-goals label { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--ink); }
+.pk-goals input { width: auto; }
+.v.indirect { background: var(--accent-soft); color: var(--accent); }
 .how { font-size: 14px; }
 .how summary { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; border-radius: 4px; }
 .how summary::-webkit-details-marker { display: none; }
@@ -764,8 +778,10 @@ function renderPicker() {
 }
 // One pill per answer: colour = what it takes, dot = same on every site / varies / not verified.
 const SCOPE_SHORT = { U: '', V: 'varies', C: 'not verified' };
+// The CMS Picker section has one tag the Playbook doesn't: indirect ("Indirectly")
+const vName = (v) => VERDICT[v] || PK.verdicts[v] || v;
 const statusPill = (verdict, scope) =>
-  `<span class="v ${verdict}" title="${esc(VERDICT[verdict])} · ${esc(SCOPE[scope])}"><i class="dot ${scope}" aria-hidden="true"></i>${VERDICT[verdict]}${SCOPE_SHORT[scope] ? `<span class="sc">· ${SCOPE_SHORT[scope]}</span>` : ''}<span class="sr-only"> (${SCOPE[scope]})</span></span>`;
+  `<span class="v ${verdict}" title="${esc(vName(verdict))} · ${esc(SCOPE[scope])}"><i class="dot ${scope}" aria-hidden="true"></i>${vName(verdict)}${SCOPE_SHORT[scope] ? `<span class="sc">· ${SCOPE_SHORT[scope]}</span>` : ''}<span class="sr-only"> (${SCOPE[scope]})</span></span>`;
 function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
   const [verdict, mark, scope, note] = e.cell;
   const opts = (map, cur) => Object.keys(map).map((k) => `<option value="${k}"${k === cur ? ' selected' : ''}>${esc(plain(map[k]))}</option>`).join('');
@@ -839,7 +855,8 @@ function renderPanel() {
         <button type="button" class="btn" id="copy-all">Copy all notes</button>
       </div>
     </div>
-    ${body}`;
+    ${body}
+    ${pickerHtml(p)}`;
 }
 // Platform watch-out: one note per platform. state.editing is NOTE_KEY while its form is open, so
 // Escape, Cancel and the refresh guard work as they do for answers.
@@ -963,6 +980,134 @@ $('#panel').addEventListener('submit', (e) => {
   const f = e.target.closest('form[data-form]');
   if (f) saveEdit(f.dataset.form, f, f.querySelector('[type="submit"]'));
 });
+// ---------- CMS Picker (admins only) ----------
+// The public CMS Picker's own rows (blog, store, languages, forms, URLs, noindex, AI crawlers) and each
+// platform's profile live in the picker table, which only admins can read or change. Row labels come
+// from the published /cms-picker/data.json. Changes reach jsal.io/cms-picker with the next publish
+// (the nightly GitHub Action, or playbook.py publish).
+const PK = { on: false, rows: new Map(), items: [], verdicts: {}, open: false };
+const PK_GOALS = { store: 'Online store', site: 'Business or marketing site', content: 'Blog or content', custom: 'Custom build with developers' };
+const PK_FIELDS = [   // profile field, label, kind
+  ['type', 'Type', 'text'], ['summary', 'Summary', 'area'], ['tags', 'Known for', 'list'], ['aiTags', 'AI tools', 'list'],
+  ['goals', 'Fits', 'goals'], ['goodFit', 'Good fit for', 'lines'], ['lessSuited', 'Less suited if', 'lines'],
+  ['hosting', 'Hosting and updates', 'text'], ['export', 'If you leave', 'text'],
+];
+async function loadPicker() {
+  if (!R.manage) return;
+  const [rows, pub] = await Promise.all([
+    sb.from('picker').select('*'),
+    fetch('/cms-picker/data.json', { cache: 'no-cache' }).then((r) => r.json()).catch(() => null),
+  ]);
+  if (rows.error || !pub) return;   // table not set up yet (private/picker.sql): no section
+  PK.rows = new Map(rows.data.map((r) => [r.platform, r]));
+  const own = new Set(rows.data.flatMap((r) => Object.keys(r.answers || {})));
+  PK.items = pub.items.filter((it) => own.has(it.id));
+  PK.verdicts = pub.verdicts || {};
+  PK.on = true;
+  if (!(state.editing && $('#panel .edit-form'))) renderPanel();
+}
+function pkShow(p, f, kind) {
+  const v = (PK.rows.get(p.id).profile || {})[f];
+  if (kind === 'goals') return (v || []).map((g) => esc(PK_GOALS[g] || g)).join(', ');
+  if (Array.isArray(v)) return v.map(esc).join(kind === 'lines' ? '<br>' : ', ');
+  return esc(v || '');
+}
+function pkField(pr, f, label, kind) {
+  const v = pr[f];
+  if (kind === 'area') return `<label>${label}<textarea name="${f}" rows="2" maxlength="300">${esc(v || '')}</textarea></label>`;
+  if (kind === 'lines') return `<label><span>${label} <span style="font-weight:400">(one per line)</span></span><textarea name="${f}" rows="3" maxlength="800">${esc((v || []).join('\n'))}</textarea></label>`;
+  if (kind === 'list') return `<label><span>${label} <span style="font-weight:400">(comma-separated)</span></span><input name="${f}" maxlength="300" value="${esc((v || []).join(', '))}"></label>`;
+  if (kind === 'goals') return `<fieldset class="pk-goals"><legend class="muted" style="font-size:12px;font-weight:600">${label}</legend>${Object.entries(PK_GOALS).map(([g, l]) =>
+    `<label><input type="checkbox" name="goals" value="${g}"${(v || []).includes(g) ? ' checked' : ''}>${esc(l)}</label>`).join('')}</fieldset>`;
+  return `<label>${label}<input name="${f}" maxlength="200" value="${esc(v || '')}"></label>`;
+}
+function pkRowHtml(p, r, it) {
+  const key = `pk:${it.id}`;
+  const [verdict, mark, scope] = (r.answers || {})[it.id] || ['check', '', 'C'];
+  const opts = (map, cur) => Object.keys(map).map((k) => `<option value="${k}"${k === cur ? ' selected' : ''}>${esc(plain(map[k]))}</option>`).join('');
+  if (state.editing === key) {
+    return `<article class="card editing">
+        <h3 class="item">${esc(it.label)}<small>CMS Picker · editing ${esc(p.name)}</small></h3>
+        <form class="edit-form" data-pk-form="${it.id}">
+          <div class="edit-grid">
+            <label>Note<input name="mark" maxlength="200" value="${esc(mark)}"></label>
+            <label>Tag<select name="verdict">${opts(PK.verdicts, verdict)}</select></label>
+            <label>Scope<select name="scope">${opts(SCOPE, scope)}</select></label>
+          </div>
+          <div class="edit-actions"><button type="submit" class="btn primary">Save</button><button type="button" class="btn" data-cancel>Cancel</button>
+            <span class="muted edit-hint">Public on jsal.io/cms-picker after the next publish.</span></div>
+        </form>
+      </article>`;
+  }
+  return `<article class="card"><div class="card-head"><h3 class="item">${esc(it.label)}</h3>
+      <div class="answer">${mark ? `<b class="ans">${esc(mark)}</b>` : ''}${statusPill(verdict, scope)}<button type="button" class="edit-btn" data-pk-edit="${key}" aria-label="Edit ${esc(it.label)} for the CMS Picker">Edit</button></div></div></article>`;
+}
+function pkProfileHtml(p, r) {
+  const pr = r.profile || {};
+  if (state.editing === 'pk:@profile') {
+    return `<article class="card editing pk-profile"><h3 class="item">Profile<small>CMS Picker · editing ${esc(p.name)}</small></h3>
+        <form class="edit-form" data-pk-profile>
+          ${PK_FIELDS.map(([f, l, k]) => pkField(pr, f, l, k)).join('')}
+          <div class="edit-actions"><button type="submit" class="btn primary">Save</button><button type="button" class="btn" data-cancel>Cancel</button>
+            <span class="muted edit-hint">Public on jsal.io/cms-picker after the next publish.</span></div>
+        </form></article>`;
+  }
+  return `<article class="card pk-profile"><div class="card-head"><h3 class="item">Profile</h3>
+      <div class="answer"><button type="button" class="edit-btn" data-pk-edit="pk:@profile" aria-label="Edit the CMS Picker profile for ${esc(p.name)}">Edit</button></div></div>
+      <dl>${PK_FIELDS.map(([f, l, k]) => `<dt>${l}</dt><dd>${pkShow(p, f, k) || '<span class="muted">None</span>'}</dd>`).join('')}</dl></article>`;
+}
+function pickerHtml(p) {
+  if (!R.manage || !PK.on) return '';
+  const r = PK.rows.get(p.id);
+  const body = !PK.rows.size ? '<p class="empty">Not set up yet: run <code>playbook.py picker-seed</code> to copy the profiles and answers in.</p>'
+    : !r ? `<p class="empty">${esc(p.name)} isn’t in the CMS Picker.</p>`
+    : `<p class="muted pk-sub">Only admins see this. It’s the public <a href="/cms-picker/" target="_blank" rel="noopener">CMS Picker</a>’s own rows and ${esc(p.name)}’s card there; the Playbook rows it also shows come from the answers above. Changes go live with the next publish (nightly).</p>
+      ${pkProfileHtml(p, r)}${PK.items.map((it) => pkRowHtml(p, r, it)).join('')}`;
+  return `<details class="pk"${PK.open || (state.editing || '').startsWith('pk:') ? ' open' : ''}><summary>CMS Picker<span class="pk-tag">Admins only</span></summary><div class="pk-body">${body}</div></details>`;
+}
+async function savePicker(p, change, button) {
+  const r = PK.rows.get(p.id);
+  if (button) button.disabled = true;
+  const upd = { ...change, at: new Date().toISOString() };
+  const { error } = await sb.from('picker').update(upd).eq('platform', p.id);
+  if (error) { if (button) button.disabled = false; return toast(failText(error, 'Couldn’t save')); }
+  Object.assign(r, upd);
+  state.editing = null;
+  renderPanel();
+  toast('Saved. Live on the CMS Picker after the next publish');
+}
+$('#panel').addEventListener('toggle', (e) => { if (e.target.matches('details.pk')) PK.open = e.target.open; }, true);
+$('#panel').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-pk-edit]');
+  if (!b) return;
+  state.editing = b.dataset.pkEdit;
+  renderPanel();
+  $('#panel .pk .edit-form input, #panel .pk .edit-form textarea')?.focus();
+});
+$('#panel').addEventListener('submit', (e) => {
+  const p = P.find((x) => x.id === state.platform);
+  const f = e.target;
+  const btn = f.querySelector('[type="submit"]');
+  if (f.dataset.pkForm) {
+    e.preventDefault();
+    const r = PK.rows.get(p.id);
+    const answers = { ...r.answers, [f.dataset.pkForm]: [f.verdict.value, f.mark.value.trim(), f.scope.value] };
+    return savePicker(p, { answers }, btn);
+  }
+  if (f.hasAttribute('data-pk-profile')) {
+    e.preventDefault();
+    const pr = { ...(PK.rows.get(p.id).profile || {}) };
+    PK_FIELDS.forEach(([fld, , kind]) => {
+      if (kind === 'goals') pr.goals = [...f.querySelectorAll('[name="goals"]:checked')].map((x) => x.value);
+      else if (kind === 'lines') pr[fld] = f[fld].value.split('\n').map((t) => t.trim()).filter(Boolean);
+      else if (kind === 'list') pr[fld] = f[fld].value.split(',').map((t) => t.trim()).filter(Boolean);
+      else pr[fld] = f[fld].value.trim();
+    });
+    if (!pr.type) { f.type.focus(); return toast('Add the type'); }
+    return savePicker(p, { profile: pr }, btn);
+  }
+});
+
 // ---------- Guides ----------
 function guideLinks(p, id) {
   const ids = (HOW_GUIDES[p.id] && HOW_GUIDES[p.id][id]) || [];
@@ -1588,7 +1733,7 @@ function startApp(me) {
     if (P.some((p) => p.id === state.platform)) refresh();
     else select(P[0].id);   // the platform being viewed was removed
     renderRequests();
-    if (R.manage) loadTeam();
+    if (R.manage) { loadTeam(); loadPicker(); }
     return;
   }
   started = true;
@@ -1609,7 +1754,7 @@ function startApp(me) {
   } catch {}
   select(start);
   renderRequests();
-  if (R.manage) loadTeam();
+  if (R.manage) { loadTeam(); loadPicker(); }
   const h = location.hash.slice(1);
   if (h === 'team' || h === 'requests') showView(h);
   addEventListener('hashchange', () => {
@@ -1620,7 +1765,7 @@ function startApp(me) {
   // Pick up teammates' edits when coming back to the tab.
   document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState !== 'visible' || Date.now() - lastLoad < 30000) return;
-    try { await loadShared(); refresh(); renderRequests(); if (R.manage) loadTeam(); } catch {}
+    try { await loadShared(); refresh(); renderRequests(); if (R.manage) { loadTeam(); loadPicker(); } } catch {}
   });
 }
 

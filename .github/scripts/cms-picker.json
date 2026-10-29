@@ -1,0 +1,92 @@
+{
+  "_about": "Public CMS Picker settings, read by `python build\\playbook.py publish`. Rows marked \"playbook\" take their answers from Playbook (Supabase); every other row, and each platform's profile, is public-only and lives here. Edit here, then re-run publish (or publish --from-backup).",
+  "platforms": [
+    "wordpress",
+    "shopify",
+    "wix",
+    "squarespace",
+    "webflow",
+    "framer",
+    "hubspot",
+    "bigcommerce",
+    "magento",
+    "drupal",
+    "duda",
+    "godaddy",
+    "headless"
+  ],
+  "sections": [
+    {
+      "id": "builtin",
+      "title": "Built in",
+      "items": [
+        {
+          "id": "blog",
+          "label": "Run a blog"
+        },
+        {
+          "id": "store",
+          "label": "Sell online (products and categories)"
+        },
+        {
+          "id": "languages",
+          "label": "Multiple languages"
+        },
+        {
+          "id": "forms",
+          "label": "Forms (contact, lead capture)"
+        }
+      ]
+    },
+    {
+      "id": "seo",
+      "title": "SEO",
+      "items": [
+        {
+          "id": "meta_title",
+          "playbook": "content",
+          "label": "Edit titles and meta descriptions"
+        },
+        {
+          "id": "urls",
+          "label": "Edit URLs"
+        },
+        {
+          "id": "gsc404",
+          "playbook": "tech",
+          "label": "Set up 301 redirects"
+        },
+        {
+          "id": "canonical",
+          "playbook": "tech",
+          "label": "Set canonical tags"
+        },
+        {
+          "id": "schema",
+          "playbook": "tech",
+          "label": "Add structured data (schema)"
+        },
+        {
+          "id": "noindex",
+          "label": "Hide a page from search (noindex)"
+        },
+        {
+          "id": "templates",
+          "playbook": "tech",
+          "label": "Edit theme or template code"
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "title": "AI search",
+      "asOf": "October 2026",
+      "items": [
+        {
+          "id": "ai_crawlers",
+          "label": "Control AI crawlers (robots.txt)"
+        }
+      ]
+    }
+  ]
+}

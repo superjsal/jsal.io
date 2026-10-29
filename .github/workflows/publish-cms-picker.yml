@@ -1,0 +1,49 @@
+# Publishes the CMS Picker from Supabase every night: Playbook answers (with admin edits) plus the
+# admin-only picker table, written to cms-picker/data.json and the plain-HTML copy in the page.
+# Commits only when something changed, then asks GitHub Pages to rebuild.
+#
+# Needs one repository secret: Settings → Secrets and variables → Actions → New repository secret,
+# name SUPABASE_SERVICE_ROLE_KEY, value the Supabase secret key (the same one you set in your terminal).
+name: Publish CMS Picker
+
+on:
+  schedule:
+    - cron: "41 7 * * *"     # every day, 07:41 UTC
+  workflow_dispatch:          # "Run workflow" button to publish now
+
+permissions:
+  contents: write             # commit the published files
+  pages: write                # ask Pages to rebuild after that commit
+
+concurrency:
+  group: publish-cms-picker
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Publish from Supabase
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python .github/scripts/playbook.py publish
+      - name: Commit if anything changed
+        id: commit
+        run: |
+          if git diff --quiet; then echo "No changes to publish."; exit 0; fi
+          git config user.name "superjsal"
+          git config user.email "dev@jsal.io"
+          git add cms-picker/data.json cms-picker/index.html sitemap.xml
+          git commit -m "CMS Picker: nightly publish from Playbook"
+          git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+      # Pushes made with the workflow's own token don't start the Pages build by themselves
+      - name: Rebuild GitHub Pages
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"
