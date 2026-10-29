@@ -119,7 +119,7 @@ body {
 .seg-hint { font-size: 12px; color: var(--text-3); }
 .seg-btn:hover { background: var(--surface-3); color: var(--text); }
 
-.seg-btn.active { background: var(--gradient-dim); color: var(--text); }
+.seg-btn.active { background: var(--accent-dim); color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent-ring); }   /* selected: the same gold tint as every jsal.io toggle */
 .seg-btn.active .seg-label { color: var(--accent); }
 .seg-btn.active::after {
   content: '';
@@ -628,7 +628,7 @@ body {
 }
 .preview-item:hover .card-remove,
 .preview-item:focus-within .card-remove { opacity: 1; }
-.card-remove:hover { background: #b03026; border-color: #ef6f62; color: #fff; }
+.card-remove:hover { background: var(--jsal-bad); border-color: var(--jsal-bad); color: var(--jsal-bg); }
 
 .card-info { margin-bottom: 6px; }
 

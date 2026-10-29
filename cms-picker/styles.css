@@ -36,7 +36,7 @@ body {
 .btn {
   display: inline-block; height: 40px; padding: 0 18px; line-height: 38px; text-align: center;   /* not flex: that drops the space before the count */
   border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius);
-  color: var(--jsal-ink); font-size: 15px; font-weight: 700; text-decoration: none;
+  color: var(--jsal-ink); font-size: 14px; font-weight: 600; text-decoration: none;   /* semibold, like the other tools' buttons */
   transition: border-color 0.15s;
 }
 .btn:hover { border-color: var(--jsal-accent); }
