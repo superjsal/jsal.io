@@ -323,6 +323,9 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pnote-form { margin-top: 8px; max-width: 75ch; }
 /* Admins only: the public CMS Picker's own rows and this platform's profile (the picker table) */
 /* CMS Picker tab (admins): status line, the table of every public answer, platform chips, then one platform */
+/* The platform list isn't used on the CMS Picker tab (it has its own platform chips): hidden, so the table gets the width */
+.app.pk-wide { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top top" "main main"; }
+.app.pk-wide .side { display: none; }
 #pk-view, .pk-body { min-width: 0; }   /* the wide table scrolls in its own box, never the page */
 .pk-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
 .pk-status { margin: 0; font-size: 13.5px; color: var(--jsal-ink-2); }
@@ -1750,6 +1753,7 @@ function showView(name) {
   ['#sticky', '#panel', '#guides-fold', '#compare'].forEach((id) => { $(id).hidden = !answers; });
   $('#team-view').hidden = name !== 'team';
   $('#pk-view').hidden = name !== 'picker';
+  document.querySelector('.app').classList.toggle('pk-wide', name === 'picker');
   $('#req-view').hidden = name !== 'requests';
   document.querySelectorAll('#viewnav [data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === name)));
   try { history.replaceState(null, '', answers ? `#${linkFor(P.find((x) => x.id === state.platform))}` : name === 'picker' && PK.sel ? `#picker/${PK.sel}` : `#${name}`); } catch {}
