@@ -36,7 +36,7 @@ body {
 .btn {
   display: inline-block; height: 40px; padding: 0 18px; line-height: 38px; text-align: center;   /* not flex: that drops the space before the count */
   border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius);
-  color: var(--jsal-ink); font-size: 14px; font-weight: 600; text-decoration: none;   /* semibold, like the other tools' buttons */
+  color: var(--jsal-ink); font-size: 14px; font-weight: var(--jsal-btn-weight); text-decoration: none;
   transition: border-color 0.15s;
 }
 .btn:hover { border-color: var(--jsal-accent); }
@@ -88,7 +88,7 @@ body {
 .cbar-logos .logo.badge { width: 22px; height: 22px; border-radius: 6px; font-size: 10px; }
 .cbar-logos .pop { animation: cbar-pop 0.3s ease-out; }
 .cbar-more { color: var(--jsal-muted); font-size: 13px; font-weight: 700; }
-.cbar .btn { flex: none; height: 38px; padding: 0 18px; line-height: 36px; font-size: 14px; white-space: nowrap; border-radius: 999px; }   /* round ends, like the bar */
+.cbar .btn { flex: none; height: 38px; padding: 0 18px; line-height: 36px; font-size: 14px; white-space: nowrap; border-radius: var(--jsal-radius-pill); }   /* round ends, like the bar */
 @keyframes cbar-pop { from { opacity: 0; transform: scale(0.4); } }
 
 /* ── Controls ──────────────────────────────────────────────────────────── */
@@ -102,7 +102,7 @@ body {
   transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
 .chip:hover { color: var(--jsal-ink); }
-.chip[aria-pressed="true"] { background: var(--jsal-accent-soft); border-color: var(--jsal-accent); color: var(--jsal-accent); }
+.chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
 .chip-link { padding: 3px 6px; color: var(--jsal-accent); font-size: 13px; text-decoration: underline; text-underline-offset: 2px; }
 
 /* Key and Show notes share one row */

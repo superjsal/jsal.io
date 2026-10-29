@@ -25,7 +25,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-29m" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-29n" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js), fetched once the page has loaded and the browser is idle (2 s at most),
      so its ~180 KB doesn't compete with the page itself. Calls queue up until it arrives. -->
@@ -97,6 +97,12 @@ color-scheme: dark;
 color-scheme: dark;
 }
 body { background: var(--jsal-bg); }
+:root {
+--jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-pill: 999px;
+--jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
+--jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
+--jsal-btn-weight: 600;
+}
 :root { --jsal-col: 840px; }
 @media (min-width: 1280px) { :root { --jsal-col: 1120px; } }
 @media (min-width: 1800px) { :root { --jsal-col: 1240px; } }
@@ -269,18 +275,18 @@ p, li { text-wrap: pretty; }
 /* Currently: WoW Forever art behind the text, scaled down but otherwise unaltered as Blizzard's fan-site policy
    requires (the darkening is a separate layer on top, and the copyright notice stays on the
    card). Same light text in both themes, since it sits on the picture. */
-.now-playing { grid-column: 9 / 13; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 280px; }
+.now-playing { grid-column: 9 / 13; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 280px; }   /* style: allow (WoW tile: dark green under the art) */
 /* Text over the sky at the top, so the dwarf and bear show in the lower half. The art is 2.4:1 and the
    card is taller than that, so it fills the height and object-position picks the slice with the dwarf
    and bear. It's drawn 18% taller than the card with the extra above it (sky), which lifts them clear
    of the credit row at the bottom. The file itself is untouched. */
 .now-playing .art { position: absolute; top: -18%; left: 0; z-index: -2; width: 100%; height: 118%; object-fit: cover; object-position: 12% 50%; }
-.now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }
+.now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }   /* style: allow (WoW tile: shade over the art for the text) */
 .now-playing .label { margin-bottom: 10px; }
 .now-playing .label, .now-playing .pill { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
 .now-playing .big { font: 700 31px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
 .now-playing .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.now-playing .credit { font-size: 11px; color: rgb(245 239 226 / 0.75); }
+.now-playing .credit { font-size: 11px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; border: 1px solid currentColor; }
 
 .jscale { grid-column: 1 / 8; background: var(--cream); color: var(--cream-ink); padding: 14px; display: flex; flex-direction: column; gap: 16px; --arrow-bg: var(--cream-btn); --arrow-ink: var(--cream-btn-ink); }
@@ -308,9 +314,9 @@ p, li { text-wrap: pretty; }
 .ui h2 { font-size: 34px; }
 .ui .desc { color: var(--green-muted); margin-top: 8px !important; }
 .ui .pill { margin-top: 14px; color: var(--green-acc); }
-.ui .screen { border-radius: 14px; background: #111318; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+.ui .screen { border-radius: 14px; background: #111318; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }   /* style: allow (JSal UI tile: the in-game screen illustration) */
 .ui .frames { display: flex; flex-direction: column; gap: 6px; max-width: 170px; }
-.ui .frames span { height: 10px; border-radius: 2px; background: linear-gradient(90deg, var(--c) var(--w), #22262f var(--w)); }
+.ui .frames span { height: 10px; border-radius: 2px; background: linear-gradient(90deg, var(--c) var(--w), #22262f var(--w)); }   /* style: allow (JSal UI tile: illustration) */
 .ui .frames span.mana { height: 5px; }
 .ui .frames span.target { margin-top: 6px; }
 .ui .bar { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px; }
@@ -337,7 +343,7 @@ p, li { text-wrap: pretty; }
 .m-jscale .opt .track { flex: 1; height: 9px; border-radius: 3px; background: var(--jsal-sunk); }
 .m-jscale .view { display: flex; flex-direction: column; gap: 6px; min-height: 0; }
 .photo { position: relative; overflow: hidden; border-radius: 4px;
-  background: radial-gradient(130% 55% at 15% 100%, #2f5f4c 50%, transparent 51%), radial-gradient(90% 45% at 90% 100%, #2b4866 50%, transparent 51%),
+  background: radial-gradient(130% 55% at 15% 100%, #2f5f4c 50%, transparent 51%), radial-gradient(90% 45% at 90% 100%, #2b4866 50%, transparent 51%),   /* style: allow (JSal UI tile: illustration) */
     radial-gradient(9% 16% at 70% 34%, #ffe1a1 70%, transparent 74%), linear-gradient(#f2ad6c, #cf6f7c 58%, #6f5aa3); }
 .m-jscale .frame { flex: 1; position: relative; overflow: hidden; border-radius: 4px; }
 .m-jscale .frame .photo { position: absolute; inset: 0; border-radius: 0; }
@@ -746,6 +752,6 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-29m" defer></script>
+<script src="/nav.js?v=2026-10-29n" defer></script>
 </body>
 </html>

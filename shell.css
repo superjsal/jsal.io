@@ -59,6 +59,20 @@
 /* Plain page background (no glow) */
 body { background: var(--jsal-bg); }
 
+/* Shared building blocks, so the apps look like one site. Use these rather than new values;
+   build\check.py flags written-out colours, selected states without these tokens, button corners
+   outside the scale and odd font weights (a deliberate exception carries a "style: allow" comment).
+   - Corners: small controls and chips inside a control 4px, buttons and fields 6px, cards 8px,
+     pills and round buttons 999px.
+   - Selected (a pressed toggle, the current tab): gold tint, gold text, thin gold ring.
+   - Buttons: semibold (600); main = gold fill, secondary = outlined. */
+:root {
+  --jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-pill: 999px;
+  --jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
+  --jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
+  --jsal-btn-weight: 600;
+}
+
 /* One column width for the home page and every app (content width; pages add 20px sides),
    so the top bar never moves when going between them. Each page's container uses
    max-width: calc(var(--jsal-col) + 40px). */

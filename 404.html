@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page not found | jsal.io</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="/favicon.svg?v=2026-10-29m" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-29n" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js), fetched once the page has loaded and the browser is idle (2 s at most),
      so its ~180 KB doesn't compete with the page itself. Calls queue up until it arrives. -->
@@ -80,6 +80,12 @@ color-scheme: dark;
 color-scheme: dark;
 }
 body { background: var(--jsal-bg); }
+:root {
+--jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-pill: 999px;
+--jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
+--jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
+--jsal-btn-weight: 600;
+}
 :root { --jsal-col: 840px; }
 @media (min-width: 1280px) { :root { --jsal-col: 1120px; } }
 @media (min-width: 1800px) { :root { --jsal-col: 1240px; } }
@@ -203,6 +209,6 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     </ul>
   </main>
 </div>
-<script src="/nav.js?v=2026-10-29m" defer></script>
+<script src="/nav.js?v=2026-10-29n" defer></script>
 </body>
 </html>
