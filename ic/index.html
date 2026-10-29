@@ -254,11 +254,17 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .btn.primary { background: var(--fill); color: var(--on-fill); font-size: 14px; padding: 10px 18px; }
 .btn.primary:hover { filter: brightness(1.05); }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 13px 16px; display: grid; gap: 7px; min-width: 0; }
-.card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 16px; }
-.card .item { font-size: 15px; font-weight: 650; letter-spacing: -0.01em; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px 16px; }
+.card .item { flex: 1 1 auto; font-size: 15px; font-weight: 650; letter-spacing: -0.01em; min-width: 0; }
 .card .item small { display: block; font-weight: 400; color: var(--muted); font-size: 12.5px; letter-spacing: 0; margin-top: 1px; }
-.answer { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
-.ans { font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.answer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 8px; align-items: center; max-width: 72%; }
+/* A narrow card (phone, or a slim column) puts the answer under the title on every card alike */
+.card { container-type: inline-size; }
+@container (max-width: 470px) {
+  .card-head { flex-direction: column; }
+  .answer { max-width: none; justify-content: flex-start; }
+}
+.ans { font-size: 14px; font-weight: 600; color: var(--jsal-ink-2); }
 /* Settled with nothing to add: one compact, muted line */
 .card.slim { padding-block: 8px; gap: 4px; }
 .card.slim .item { font-weight: 500; color: var(--muted); }
@@ -391,7 +397,6 @@ code, pre { font-variant-ligatures: none; }
 }
 @media (max-width: 560px) {
   .edit-grid { grid-template-columns: minmax(0, 1fr); }
-  .card-head { align-items: flex-start; }
 }
 /* Sign-in gate, account chip and team page */
 [hidden] { display: none !important; }
@@ -803,6 +808,9 @@ function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
       </form>
     </article>`;
 }
+// Tag first; the form's mark shows only when it adds something the tag doesn't ("Depends on theme",
+// "No (HTML section)"). "Yes", "No", "Check", "Automatic" and the like just repeat the tag.
+const addsDetail = (m) => !/^(yes|no|check|automatic|built in|needs code|likely no|unlikely)$/i.test(plain(m).trim());
 const COPY_SVG = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
 function rowHtml(e) {
   if (state.editing === e.key) return editRowHtml(e);
@@ -819,7 +827,7 @@ function rowHtml(e) {
   return `<article class="card${slim ? ' slim' : ''}">
       <div class="card-head">
         <h3 class="item">${e.it.label}${e.it.hint && !slim ? `<small>${e.it.hint}</small>` : ''}</h3>
-        <div class="answer"><b class="ans" title="Mark on the form">${mark}</b>${statusPill(verdict, scope)}${tools}</div>
+        <div class="answer">${statusPill(verdict, scope)}${addsDetail(rawMark) ? `<span class="ans" title="Mark on the form">${mark}</span>` : ''}${tools}</div>
       </div>
       ${note ? `<div class="note">${note}<button type="button" class="copy-icon" data-copy="${e.key}" title="Copy note" aria-label="Copy note for ${plain(e.it.label)}">${COPY_SVG}</button></div>` : ''}
       ${warn ? `<div class="warn"><div><b>Watch out:</b> ${warn}</div></div>` : ''}
