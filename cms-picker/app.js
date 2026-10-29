@@ -526,7 +526,11 @@
         const ul = el('ul');
         told[i].why.forEach((w) => ul.append(el('li', null, w)));
         card.append(ul);
-        told[i].lines.forEach((t) => card.append(el('p', 'qz-vs', t)));
+        if (told[i].vs) {
+          const vs = el('div', 'qz-vs');
+          vs.append(el('p', 'qz-vs-h', told[i].vs.head), el('p', null, told[i].vs.text));
+          card.append(vs);
+        }
         const skip = (pr.lessSuited || [])[0];
         if (skip) card.append(el('p', 'qz-warn', `Not ideal if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);

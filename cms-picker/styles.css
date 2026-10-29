@@ -286,8 +286,9 @@ body {
 .qz-card .sum { color: var(--jsal-muted); font-size: 14.5px; }
 .qz-card ul { grid-column: 2; margin: 6px 0 0; padding-left: 1.1em; font-size: 14.5px; }
 .qz-card li + li { margin-top: 3px; }
-.qz-vs { grid-column: 2; margin-top: 6px; color: var(--jsal-ink); font-size: 14.5px; }   /* what sets it apart from its neighbour */
-.qz-vs + .qz-vs { margin-top: 2px; }
+/* What sets it apart from its neighbour: a soft gold box, so it stands out from the reasons */
+.qz-vs { grid-column: 2; margin-top: 10px; padding: 10px 12px; border-radius: var(--jsal-radius); background: var(--jsal-accent-soft); color: var(--jsal-ink); font-size: 14.5px; line-height: 1.45; }
+.qz-vs-h { margin-bottom: 2px; color: var(--jsal-accent); font-weight: 700; }
 .qz-warn { grid-column: 2; margin-top: 4px; color: var(--jsal-warn); font-size: 14px; }
 .qz-effort { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .qz-effort span { padding: 2px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 13px; }

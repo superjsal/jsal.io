@@ -51,7 +51,7 @@ for (const [name, answers, want] of PERSONAS) {
   if (r[1] && r[0].s === r[1].s && want.first && want.first.length === 1) errs.push(`tied for first: ${r[0].p.id} and ${r[1].p.id}`);
   // Each card says what sets it apart, and the top two never show the same reasons
   const told = explain(data, answers, r.slice(0, 3));
-  told.forEach((t, i) => { if (!t.lines.length) errs.push(`no line setting ${r[i].p.id} apart`); });
+  told.forEach((t, i) => { if (!t.vs) errs.push(`nothing setting ${r[i].p.id} apart`); });
   if (told[1] && JSON.stringify(told[0].why) === JSON.stringify(told[1].why)) errs.push(`${r[0].p.id} and ${r[1].p.id} show the same reasons`);
   const line = r.slice(0, 3).map((x) => `${x.p.name} ${x.s}`).join(', ');
   if (errs.length) { failed++; console.log(`FAIL ${name}: ${errs.join('; ')}  [${line}]`); }

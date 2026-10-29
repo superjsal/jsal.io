@@ -91,22 +91,25 @@
     return fit ? `Pick it over ${y.p.name} for ${lowerFirst(fit)}.` : null;
   }
   // For the top matches: the reasons to show (the second and third leave out the ones the first already
-  // shows) and a line saying what sets each apart from its neighbour
+  // shows) and vs, a heading and a sentence on what sets each apart from its neighbour (null if nothing to say)
   function explain(data, a, top) {
     const lead = top[0];
     return top.map((r, i) => {
       if (!i) {
-        const next = top[1], lines = [];
-        if (next && next.s === r.s) lines.push(`A close call with ${next.p.name}: both fit your answers equally.`, pickOver(data, a, r, next));
+        const next = top[1];
+        let vs = null;
+        if (next && next.s === r.s) vs = { head: `A close call with ${next.p.name}`, text: ['Both fit your answers equally.', pickOver(data, a, r, next)].filter(Boolean).join(' ') };
         else if (next) {
           const extra = r.all.find((w) => !next.all.includes(w));
-          lines.push(extra ? `Ahead of ${next.p.name} for you: ${lowerFirst(extra)}.` : pickOver(data, a, r, next));
+          const text = extra ? `What tipped it: ${lowerFirst(extra)}.` : pickOver(data, a, r, next);
+          if (text) vs = { head: `Ahead of ${next.p.name}`, text };
         }
-        return { why: r.why, lines: lines.filter(Boolean) };
+        return { why: r.why, vs };
       }
       const own = r.why.filter((w) => !lead.all.includes(w)), shared = r.why.length - own.length;   // all: the first's list stops at four
       if (shared) own.push(own.length ? `Otherwise the same reasons as ${lead.p.name}` : `Fits your answers for the same reasons as ${lead.p.name}`);
-      return { why: own, lines: [pickOver(data, a, r, lead)].filter(Boolean) };
+      const text = pickOver(data, a, r, lead);
+      return { why: own, vs: text ? { head: `Versus ${lead.p.name}`, text } : null };
     });
   }
 
