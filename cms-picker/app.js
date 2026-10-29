@@ -66,6 +66,7 @@
       if (pr.summary) c.append(el('p', 'summary', pr.summary));
       if (pr.tags && pr.tags.length) {
         const t = el('div', 'ktags');
+        t.setAttribute('role', 'group');
         t.setAttribute('aria-label', 'Known for');
         pr.tags.forEach((x) => t.append(el('span', 'ktag', x)));
         c.append(t);
@@ -154,6 +155,7 @@
           const s = el('span', 'sc', sym);
           if (state.notes) s.title = scope;        // with notes off, the cell's tooltip says it instead
           cell.dataset.scope = scope;
+          s.setAttribute('role', 'img');   // the symbol reads as its meaning
           s.setAttribute('aria-label', scope);
           line.append(s);
         }

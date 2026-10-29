@@ -220,7 +220,7 @@ for (const tab of document.querySelectorAll("[data-tab]")) {
     flush();
     hideLinkBox();
     const group = tab.dataset.tab;
-    for (const t of document.querySelectorAll(`[data-tab="${group}"]`)) t.setAttribute("aria-selected", t === tab);
+    for (const t of document.querySelectorAll(`[data-tab="${group}"]`)) t.setAttribute("aria-pressed", t === tab);
     for (const [view, id] of Object.entries(VIEWS[group])) $(id).hidden = view !== tab.dataset.view;
     if (group === "out") {
       $("toolbar").hidden = tab.dataset.view !== "page";

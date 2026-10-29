@@ -250,7 +250,7 @@ def prerender():
         if pr.get('summary'):
             c.append(f'<p class="summary">{e(pr["summary"])}</p>')
         if pr.get('tags'):
-            c.append('<div class="ktags" aria-label="Known for">' + ''.join(f'<span class="ktag">{e(t)}</span>' for t in pr['tags']) + '</div>')
+            c.append('<div class="ktags" role="group" aria-label="Known for">' + ''.join(f'<span class="ktag">{e(t)}</span>' for t in pr['tags']) + '</div>')
         if pr.get('aiTags'):
             c.append('<div class="aitags"><span class="ailabel">AI</span>' + ''.join(f'<span class="aitag">{e(t)}</span>' for t in pr['aiTags']) + '</div>')
         facts = (('Hosting and updates', pr.get('hosting'), 'r-host'), ('If you leave', pr.get('export'), 'r-exit'), ('Not ideal if', pr.get('lessSuited'), 'r-skip'))
@@ -280,7 +280,7 @@ def prerender():
             sym, scope = SCOPE.get(a['scope'], ('', ''))
             line = f'<span class="tag {e(a["verdict"])}">{e(SHORT.get(a["verdict"], a["verdict"]))}</span>'
             if sym:
-                line += f'<span class="sc" aria-label="{scope}">{sym}</span>'
+                line += f'<span class="sc" role="img" aria-label="{scope}">{sym}</span>'
             mark = f'<span class="mark">{e(a["mark"])}</span>' if a.get('mark') and not GENERIC.match(a['mark'].strip()) else ''
             cells.append(f'<div class="cell"><span class="plat">{e(p["name"])}</span><span class="line">{line}</span>{mark}</div>')
         rows.append(f'<div class="row"><div class="item">{e(it["label"])}</div>{"".join(cells)}</div>')
