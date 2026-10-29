@@ -307,6 +307,7 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .edit-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .edit-actions .btn.primary { font-size: 13px; padding: 7px 14px; }
 .edit-hint { font-size: 12px; }
+.edit-conflict { margin: 0; padding: 8px 10px; border-radius: var(--jsal-radius); background: var(--jsal-warn-soft); color: var(--jsal-ink); font-size: 13.5px; line-height: 1.45; }
 /* How-to steps under a row */
 .warn { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; line-height: 1.45; padding: 8px 10px; border-radius: 6px; background: var(--jsal-warn-soft); color: var(--jsal-ink); }
 .warn::before { content: "!"; flex: none; display: grid; place-items: center; width: 17px; height: 17px; margin-top: 1px; border-radius: 50%; background: var(--jsal-warn); color: var(--jsal-surface); font-size: 11px; font-weight: 800; }
@@ -840,6 +841,8 @@ function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
   return `<article class="card editing">
       <h4 class="item">${e.it.label}<small>Editing ${esc(p.name)}${ptypeOf(e.sec) ? ` · ${PTYPES[ptypeOf(e.sec)]}` : ''}</small></h4>
       <form class="edit-form" data-form="${e.key}">
+        <input type="hidden" name="base" value="${esc(EDITS.get(editKey(p.id, e.sec, e.it.id))?.at || '')}">
+        <p class="edit-conflict" role="alert" hidden></p>
         <div class="edit-grid">
           <label>Mark<input name="mark" maxlength="80" required value="${esc(e.edit ? mark : plain(mark))}"></label>
           <label>Tag<select name="verdict">${opts(VERDICT, verdict)}</select></label>
@@ -1390,8 +1393,25 @@ async function saveEdit(key, form, button, p = P.find((x) => x.id === state.plat
     if (b[0] === body.verdict && plain(b[1]) === body.mark && b[2] === body.scope && (sourceEdit(p, sec, id) && !ownEdit(p, sec, id) ? b[3] : htmlToMd(b[3])) === body.note && !('how' in body) && !('warn' in body)) body = null;
   }
   if (button) button.disabled = true;
+  // Someone else may have saved this answer since the form opened ("base" is the version it opened
+  // with). Say so instead of quietly replacing their change. The form then counts their version as
+  // seen, so saving again replaces it on purpose.
+  const base = form && form.elements.base;
+  if (base) {
+    const cur = await sb.from('edits').select('at,edited_by').match({ platform: p.id, sec, item: id }).maybeSingle();
+    if (!cur.error && (Date.parse(base.value) || 0) !== (Date.parse(cur.data?.at || '') || 0)) {
+      base.value = cur.data?.at || '';
+      const who = cur.data ? `${personName(cur.data.edited_by)} changed this answer ${ago(cur.data.at)}` : 'Someone reset this answer to the original';
+      const note = form.querySelector('.edit-conflict');
+      note.innerHTML = `<b>${esc(who.charAt(0).toUpperCase() + who.slice(1))}</b>, while you were editing. Save again to replace it with yours, or Cancel to see theirs.`;
+      note.hidden = false;
+      if (button) button.disabled = false;
+      note.scrollIntoView({ block: 'nearest' });
+      return;
+    }
+  }
   const row = body && { platform: p.id, sec, item: id, verdict: body.verdict, mark: body.mark, scope: body.scope, note: body.note,
-    how: 'how' in body ? body.how : null, warn: 'warn' in body ? body.warn : null, at: body.at };
+    how: 'how' in body ? body.how : null, warn: 'warn' in body ? body.warn : null, at: body.at, edited_by: R.me };
   const { error } = row ? await sb.from('edits').upsert(row)
     : EDITS.has(docId) ? await sb.from('edits').delete().match({ platform: p.id, sec, item: id }) : { error: null };
   if (error) { if (button) button.disabled = false; return toast(failText(error, 'Couldn’t save')); }
@@ -2034,6 +2054,27 @@ function startApp(me) {
     if (document.visibilityState !== 'visible' || Date.now() - lastLoad < 30000) return;
     try { await loadShared(); refresh(); renderRequests(); if (R.manage) { loadTeam(); loadPicker(); } } catch {}
   });
+  goLive();
+}
+
+// Live: a teammate's request, upvote, comment, edit or watch-out shows up on every open page within a
+// second or so (needs the tables in Supabase's realtime publication: private/realtime.sql). Any change
+// reloads the team data once, with changes that arrive together batched; the redraws keep anything
+// being typed. When a dropped connection comes back, it catches up the same way.
+async function goLive() {
+  if (!sb) return;
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+  sb.realtime.setAuth(session.access_token);   // so the access rules see who's listening
+  let timer = 0, joined = false;
+  const changed = () => {
+    clearTimeout(timer);
+    timer = setTimeout(async () => { try { await loadShared(); refresh(); renderRequests(); } catch {} }, 400);
+  };
+  const ch = sb.channel('playbook');
+  ['requests', 'votes', 'comments', 'edits', 'platform_notes'].forEach((table) =>
+    ch.on('postgres_changes', { event: '*', schema: 'public', table }, changed));
+  ch.subscribe((status) => { if (status === 'SUBSCRIBED') { if (joined) changed(); joined = true; } });
 }
 
 if (sb) sb.auth.onAuthStateChange((event) => { if (event === 'SIGNED_OUT') { clearCache(); location.replace(location.pathname); } });
