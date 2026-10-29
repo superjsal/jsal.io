@@ -196,7 +196,7 @@
     // Hero: platform count, the date from the AI search section, and a few real rows of the table
     document.querySelectorAll('.n-plats').forEach((n) => { n.textContent = data.platforms.length; });
     const asOf = (data.groups || []).map((g) => g.asOf).find(Boolean);
-    if (asOf) $('#asof').textContent = ` · updated ${asOf}`;
+    if (asOf) $('#asof').textContent = asOf;
     const PEEK_PLATS = ['wordpress', 'shopify', 'wix'].filter((id) => data.answers[id]);
     const PEEK_ROWS = [['blog', 'Run a blog'], ['store', 'Sell online'], ['gsc404', '301 redirects'], ['templates', 'Edit templates']]
       .filter(([id]) => data.items.some((i) => i.id === id));

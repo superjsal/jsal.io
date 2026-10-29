@@ -6,7 +6,7 @@
   <title>CMS Picker: Which CMS Should You Pick? | jsal.io</title>
   <meta name="description" content="Which CMS should you pick? Compare 13 platforms, including WordPress, Shopify, Wix, Webflow and headless: who each one suits, and what you can change for SEO." />
   <link rel="canonical" href="https://jsal.io/cms-picker/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-28zx" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-28zza" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -191,10 +191,10 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-28zx" />
-  <script src="app.js?v=2026-10-28zx" defer></script>
+  <link rel="stylesheet" href="styles.css?v=2026-10-28zza" />
+  <script src="app.js?v=2026-10-28zza" defer></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-28zx" defer></script>
+  <script src="/nav.js?v=2026-10-28zza" defer></script>
 </head>
 <body>
   <main class="app">
@@ -212,7 +212,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
     <!-- Hero: headline beside a live slice of the comparison table (filled from data.json by app.js),
          then numbered links to the page's three sections -->
     <section class="hero" id="top" aria-labelledby="hero-h">
-      <p class="byline">CMS Picker · by John Salvador<span id="asof"> · updated October 2026</span></p>
+      <p class="byline">Updated <span id="asof">October 2026</span></p>
       <div class="hero-main">
         <div>
           <h2 class="hero-title" id="hero-h">Which CMS should you build on?</h2>
@@ -235,15 +235,14 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
     </section>
 
     <section class="block" id="fit" aria-labelledby="fit-h">
-      <h2 id="fit-h">Which CMS fits your business?</h2>
-      <p class="goal-q" id="goal-q">What are you building?</p>
-      <div class="types" id="types" role="group" aria-labelledby="goal-q"></div>
+      <h2 id="fit-h"><span class="num">01 · Find your fit</span>What are you building?</h2>
+      <div class="types" id="types" role="group" aria-labelledby="fit-h"></div>
       <p class="count" id="count" aria-live="polite"></p>
       <div class="cards" id="cards"><p class="empty">Loading…</p></div>
     </section>
 
     <section class="block" id="seo" aria-labelledby="seo-h">
-      <h2 id="seo-h">Compare what each CMS can do</h2>
+      <h2 id="seo-h"><span class="num">02 · Compare features</span>What can each CMS do?</h2>
       <div class="controls">
         <label class="search"><span class="sr-only">Search items</span><input class="field" id="q" type="search" placeholder="Search items, e.g. redirects" autocomplete="off" /></label>
         <button type="button" class="chip" id="notes" aria-pressed="false">Show notes</button>
