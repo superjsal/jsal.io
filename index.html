@@ -25,7 +25,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-29i" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-29j" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js), fetched once the page has loaded and the browser is idle (2 s at most),
      so its ~180 KB doesn't compete with the page itself. Calls queue up until it arrives. -->
@@ -116,7 +116,7 @@ html { scrollbar-gutter: stable; }
 ::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
 ::view-transition-old(jsal-brand), ::view-transition-old(jsal-theme) { display: none; }
 ::view-transition-new(jsal-brand), ::view-transition-new(jsal-theme) { animation: none; }
-.jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: max(20px, env(safe-area-inset-bottom, 0px)); width: min(340px, calc(100vw - 32px));
+.jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(340px, calc(100vw - 32px));
 display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink);
 border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font);
 transform: translate(-50%, 0); transition: opacity .3s ease, transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
@@ -746,6 +746,6 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-29i" defer></script>
+<script src="/nav.js?v=2026-10-29j" defer></script>
 </body>
 </html>

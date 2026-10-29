@@ -80,6 +80,7 @@ body {
   opacity: 0; visibility: hidden; transform: translate(-50%, 14px);
   transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s;
 }
+.cbar-on { --jsal-ach-lift: 62px; }   /* achievement pop-ups (/shell.css) sit above the bar */
 .cbar.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity 0.2s, transform 0.2s, visibility 0s; }
 .cbar-count { color: var(--jsal-ink); font-size: 14px; font-weight: 700; white-space: nowrap; }
 .cbar-logos { display: flex; align-items: center; gap: 8px; min-width: 0; }
