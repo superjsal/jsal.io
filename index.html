@@ -334,40 +334,43 @@ p, li { text-wrap: pretty; }
 .mock { display: grid; gap: 10px; padding: 12px; border-radius: 12px; background: var(--jsal-bg); border: 1px solid var(--jsal-line); }
 .mock i, .mock b { display: block; }
 .mock .box { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 4px; }
-.mock .col { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.mock .bar { height: 6px; border-radius: 3px; background: var(--jsal-line-hi); }
-.mock .go { height: 16px; width: 55%; border-radius: 4px; background: var(--jsal-fill); }
 
-/* Image Resizer: settings column + crop preview of a photo + strip of loaded images */
-.m-jscale { grid-template-columns: minmax(0, 34%) minmax(0, 1fr); }
-.m-jscale .seg { height: 24px; display: grid; grid-template-columns: repeat(3, 1fr); overflow: hidden; }
-.m-jscale .seg i + i { border-left: 1px solid var(--jsal-line); }
-.m-jscale .seg .on { background: var(--jsal-accent-soft); box-shadow: inset 0 -2px var(--jsal-accent); }
-.m-jscale .size { display: grid; grid-template-columns: 1fr 1fr 0.7fr; gap: 4px; height: 15px; }
-.m-jscale .opt { height: 17px; display: flex; align-items: center; gap: 5px; padding: 0 5px; }
-.m-jscale .opt .bar { width: 26%; height: 4px; }
-.m-jscale .opt .track { flex: 1; height: 9px; border-radius: 3px; background: var(--jsal-sunk); }
-.m-jscale .view { display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+/* Image Resizer: camera photos in (a pile, with crop corners), web-ready files out */
+.m-jscale { grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1fr); align-items: center; gap: 14px; padding: 18px; }
+.m-jscale .to { background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.m-jscale .pile { position: relative; aspect-ratio: 4 / 3; }
+.m-jscale .pile .photo { position: absolute; inset: 0; border-radius: 6px; box-shadow: 0 4px 12px rgb(0 0 0 / 0.25); }
+.m-jscale .pile .back { rotate: -7deg; translate: -4% 2%; }
+.m-jscale .pile .back2 { rotate: 5deg; translate: 4% -2%; }
+.m-jscale .corner { position: absolute; width: 14px; height: 14px; border: 3px solid var(--jsal-fill); }
+.m-jscale .tl { top: 9%; left: 8%; border-right: 0; border-bottom: 0; }
+.m-jscale .tr { top: 9%; right: 8%; border-left: 0; border-bottom: 0; }
+.m-jscale .bl { bottom: 9%; left: 8%; border-right: 0; border-top: 0; }
+.m-jscale .br { bottom: 9%; right: 8%; border-left: 0; border-top: 0; }
+.m-jscale .tag { position: absolute; left: 50%; bottom: -10px; translate: -50% 0; padding: 3px 9px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad); color: var(--jsal-bg); font: 600 11px/1.4 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
+.m-jscale .outs { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.m-jscale .out { display: flex; align-items: center; gap: 9px; padding: 6px; min-width: 0; font: 11px/1.35 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
+.m-jscale .out .photo { flex: none; width: 38px; aspect-ratio: 4 / 3; border-radius: 3px; }
+.m-jscale .out b { color: var(--jsal-ink); font-weight: 600; }
+.m-jscale .saved { font-size: 12px; font-weight: 700; color: var(--jsal-ok); text-align: center; }
 .photo { position: relative; overflow: hidden; border-radius: 4px;
-  background: radial-gradient(130% 55% at 15% 100%, #2f5f4c 50%, transparent 51%), radial-gradient(90% 45% at 90% 100%, #2b4866 50%, transparent 51%),   /* style: allow (JSal UI tile: illustration) */
+  background: radial-gradient(130% 55% at 15% 100%, #2f5f4c 50%, transparent 51%), radial-gradient(90% 45% at 90% 100%, #2b4866 50%, transparent 51%),   /* style: allow (Image Resizer tile: the photo illustration) */
     radial-gradient(9% 16% at 70% 34%, #ffe1a1 70%, transparent 74%), linear-gradient(#f2ad6c, #cf6f7c 58%, #6f5aa3); }
-.m-jscale .frame { flex: 1; position: relative; overflow: hidden; border-radius: 4px; }
-.m-jscale .frame .photo { position: absolute; inset: 0; border-radius: 0; }
-.m-jscale .crop { position: absolute; inset: 12% 9%; border: 1.5px dashed var(--jsal-fill); border-radius: 2px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.32); }
-.m-jscale .strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; height: 20%; }
-.m-jscale .strip .photo { outline: 2px solid transparent; outline-offset: 1px; }
-.m-jscale .strip .photo:first-child { outline-color: var(--jsal-fill); }
 
-/* Platform Playbook: views in the top bar, platform list + check cards */
-.m-ic { grid-template-columns: minmax(0, 36%) minmax(0, 1fr); }
-.m-ic .tabs { grid-column: 1 / -1; justify-self: end; display: flex; gap: 2px; padding: 2px; border-radius: 5px; background: var(--jsal-sunk); }
-.m-ic .tabs i { width: 30px; height: 10px; border-radius: 3px; }
-.m-ic .tabs .on { background: var(--jsal-surface); }
-.m-ic .list span { font-size: 11px; line-height: 1; padding: 5px 7px; border-radius: 4px; color: var(--jsal-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.m-ic .list .on { background: var(--blue-acc); color: var(--blue); font-weight: 600; }
-.m-ic .card { display: flex; align-items: center; gap: 6px; padding: 6px; }
-.m-ic .card b { width: 9px; height: 9px; flex: none; border-radius: 50%; background: var(--c); }
-.m-ic .card .bar { flex: 1; }
+/* Platform Playbook: one platform's answers and how sure each one is */
+.m-ic { grid-template-columns: minmax(0, 1fr); gap: 7px; padding: 14px; }
+.m-ic .ph { display: flex; align-items: center; gap: 9px; margin-bottom: 2px; font-size: 14px; }
+.m-ic .ph b { font-weight: 700; color: var(--jsal-ink); }
+.m-ic .logo { flex: none; width: 28px; height: 28px; border-radius: var(--jsal-radius-lg); display: grid; place-items: center; background: var(--blue-acc); }
+.m-ic .logo i { width: 16px; height: 16px; background: var(--blue); -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
+.m-ic .tabs { margin-left: auto; display: flex; gap: 2px; padding: 2px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); font-size: 11px; }
+.m-ic .tabs i { padding: 2px 8px; border-radius: var(--jsal-radius-sm); font-style: normal; color: var(--jsal-muted); }
+.m-ic .tabs .on { background: var(--jsal-surface); color: var(--jsal-ink); font-weight: 600; }
+.m-ic .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 10px; font-size: 12.5px; color: var(--jsal-ink-2); }
+.m-ic .v { flex: none; padding: 2px 9px; border-radius: var(--jsal-radius-pill); font-size: 11.5px; font-weight: 700; font-style: normal; }
+.m-ic .v.ok { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
+.m-ic .v.info { background: var(--jsal-info-soft); color: var(--jsal-info); }
+.m-ic .v.warn { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
 
 /* CMS Picker: "What are you building?" chips and two platform cards, then the SEO table */
 /* CMS Picker: the platforms it compares (the CMS Picker's own logo files), one of them picked */
@@ -390,30 +393,25 @@ p, li { text-wrap: pretty; }
 .m-fmt .html { font: 11.5px/1.6 "JetBrains Mono", Consolas, monospace; color: var(--jsal-ink-2); }
 .m-fmt .html .ln { display: block; }
 .m-fmt .html .t { color: var(--gold-acc); }
-.m-fmt .to { align-self: center; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--gold-acc); color: var(--gold); }
+.mock .to { align-self: center; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; }
+.m-fmt .to { background: var(--gold-acc); color: var(--gold); }
 
 /* Hovering an app tile plays a short loop of what the app does:
-   Image Resizer steps through the loaded photos, moving the crop box on each;
-   Platform Playbook steps down the platforms, refreshing the cards;
+   Image Resizer sends out the resized files one by one;
+   Platform Playbook fills in the answers row by row;
    Clean Paste writes out the clean HTML line by line;
    CMS Picker tries each platform in turn. */
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .tile:is(:hover, :focus-visible) .m-jscale .frame .photo { animation: m-photo 4s infinite; }
-  .tile:is(:hover, :focus-visible) .m-jscale .crop { animation: m-crop 4s ease-in-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-jscale .strip .photo { outline-color: transparent; animation: m-pick 4s infinite; }
-  .tile:is(:hover, :focus-visible) .m-jscale .strip .photo:nth-child(2) { animation-delay: 1s; }
-  .tile:is(:hover, :focus-visible) .m-jscale .strip .photo:nth-child(3) { animation-delay: 2s; }
-  .tile:is(:hover, :focus-visible) .m-jscale .strip .photo:nth-child(4) { animation-delay: 3s; }
+  .tile:is(:hover, :focus-visible) .m-jscale .out, .tile:is(:hover, :focus-visible) .m-jscale .saved { animation: m-line 3s ease-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-jscale .out:nth-child(2) { animation-delay: 0.25s; }
+  .tile:is(:hover, :focus-visible) .m-jscale .out:nth-child(3) { animation-delay: 0.5s; }
+  .tile:is(:hover, :focus-visible) .m-jscale .saved { animation-delay: 0.75s; }
+  .tile:is(:hover, :focus-visible) .m-jscale .to { animation: m-nudge 3s ease-in-out infinite; }
 
-  .tile:is(:hover, :focus-visible) .m-ic .list span { animation: m-sel 4s infinite; }
-  .tile:is(:hover, :focus-visible) .m-ic .list span:nth-child(2) { animation-delay: 0.8s; }
-  .tile:is(:hover, :focus-visible) .m-ic .list span:nth-child(3) { animation-delay: 1.6s; }
-  .tile:is(:hover, :focus-visible) .m-ic .list span:nth-child(4) { animation-delay: 2.4s; }
-  .tile:is(:hover, :focus-visible) .m-ic .list span:nth-child(5) { animation-delay: 3.2s; }
-  .tile:is(:hover, :focus-visible) .m-ic .card { animation: m-refresh 0.8s ease-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-ic .card:nth-child(2) { animation-delay: 0.05s; }
-  .tile:is(:hover, :focus-visible) .m-ic .card:nth-child(3) { animation-delay: 0.1s; }
-  .tile:is(:hover, :focus-visible) .m-ic .card:nth-child(4) { animation-delay: 0.15s; }
+  .tile:is(:hover, :focus-visible) .m-ic .row { animation: m-line 3s ease-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-ic .row:nth-child(3) { animation-delay: 0.2s; }
+  .tile:is(:hover, :focus-visible) .m-ic .row:nth-child(4) { animation-delay: 0.4s; }
+  .tile:is(:hover, :focus-visible) .m-ic .row:nth-child(5) { animation-delay: 0.6s; }
 
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln { animation: m-line 3s ease-out infinite; }
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(3) { animation-delay: 0.25s; }
@@ -424,16 +422,10 @@ p, li { text-wrap: pretty; }
   .tile:is(:hover, :focus-visible) .m-cms span:not(.more) { animation: m-try 4.05s calc(var(--n) * 0.45s - 4.05s) infinite; }
   .tile:is(:hover, :focus-visible) .m-cms span:not(.more) i { animation: m-try-logo 4.05s calc(var(--n) * 0.45s - 4.05s) infinite; }
 }
-/* Main photo matches the selected thumbnail (same filters as the strip) */
-@keyframes m-photo { 0%, 24.9% { filter: none; } 25%, 49.9% { filter: hue-rotate(150deg); } 50%, 74.9% { filter: hue-rotate(-60deg) saturate(0.8); } 75%, 100% { filter: hue-rotate(80deg); } }
-@keyframes m-crop { 0%, 100% { translate: 0 0; } 25% { translate: -8% 5%; } 50% { translate: 7% -4%; } 75% { translate: -3% -6%; } }
-@keyframes m-pick { 0%, 24.9% { outline-color: var(--jsal-fill); } 25%, 100% { outline-color: transparent; } }
-@keyframes m-sel { 0%, 18% { background: var(--blue-acc); color: var(--blue); } 20%, 100% { background: transparent; color: var(--jsal-muted); } }
 @keyframes m-line { 0%, 10% { opacity: 0; translate: -4px 0; } 25%, 85% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
 @keyframes m-nudge { 0%, 100% { translate: 0 0; } 15% { translate: 3px 0; } 30% { translate: 0 0; } }
 @keyframes m-try { 0%, 10% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } 11.5%, 100% { border-color: var(--jsal-line); box-shadow: none; } }
 @keyframes m-try-logo { 0%, 10% { background: var(--plum-acc); opacity: 1; } 11.5%, 100% { background: var(--plum-ink); opacity: 0.85; } }
-@keyframes m-refresh { 0% { opacity: 0.35; translate: 0 3px; } 40%, 100% { opacity: 1; translate: 0 0; } }
 
 .now { grid-column: 1 / 7; background: var(--plain); }
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
@@ -544,6 +536,8 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
   .mock { border-radius: 10px; }
   .m-fmt { grid-template-columns: minmax(0, 1fr); }
   .m-fmt .to { justify-self: center; rotate: 90deg; }
+  .m-jscale { gap: 10px; padding: 12px; }
+  .m-jscale .out .photo { display: none; }
   .tile h2, .ui h2 { font-size: 26px; }
   .ui { gap: 20px; }
   .now-playing { gap: 14px; }
@@ -583,17 +577,17 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
     <!-- App tiles: data-app opens that app with the tile-to-app transition -->
     <a id="work" class="tile jscale" href="/image-resizer/" data-app>
       <div class="shot mock m-jscale" aria-hidden="true">
-        <div class="col">
-          <div class="seg box"><i class="on"></i><i></i><i></i></div>
-          <div class="size"><i class="box"></i><i class="box"></i><i class="box"></i></div>
-          <div class="opt box"><i class="bar"></i><i class="track"></i></div>
-          <div class="opt box"><i class="bar"></i><i class="track"></i></div>
-          <div class="opt box"><i class="bar"></i><i class="track"></i></div>
-          <i class="go"></i>
+        <div class="pile">
+          <i class="photo back" style="filter: hue-rotate(150deg) brightness(0.9)"></i><i class="photo back2" style="filter: hue-rotate(-60deg) saturate(0.8) brightness(0.9)"></i><i class="photo"></i>
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <span class="tag">3 photos · 12.4 MB</span>
         </div>
-        <div class="view">
-          <div class="frame"><i class="photo"></i><i class="crop"></i></div>
-          <div class="strip"><i class="photo"></i><i class="photo" style="filter: hue-rotate(150deg)"></i><i class="photo" style="filter: hue-rotate(-60deg) saturate(0.8)"></i><i class="photo" style="filter: hue-rotate(80deg)"></i></div>
+        <span class="to"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        <div class="outs">
+          <span class="out box"><i class="photo"></i><span><b>1600 × 1200</b>WebP · 186 KB</span></span>
+          <span class="out box"><i class="photo" style="filter: hue-rotate(150deg)"></i><span><b>1600 × 1200</b>WebP · 203 KB</span></span>
+          <span class="out box"><i class="photo" style="filter: hue-rotate(-60deg) saturate(0.8)"></i><span><b>1600 × 1200</b>WebP · 171 KB</span></span>
+          <span class="saved">95% smaller</span>
         </div>
       </div>
       <div class="foot">
@@ -608,14 +602,11 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
 
     <a class="tile ic" href="/ic/" data-app>
       <div class="mock m-ic" aria-hidden="true">
-        <div class="tabs"><i class="on"></i><i></i><i></i></div>
-        <div class="col list"><span class="on">Shopify</span><span>WordPress</span><span>Wix</span><span>Squarespace</span><span>Webflow</span></div>
-        <div class="col">
-          <div class="card box" style="--c: var(--jsal-ok)"><b></b><i class="bar" style="flex: 0 1 70%"></i></div>
-          <div class="card box" style="--c: var(--jsal-ok)"><b></b><i class="bar" style="flex: 0 1 55%"></i></div>
-          <div class="card box" style="--c: var(--jsal-warn)"><b></b><i class="bar" style="flex: 0 1 80%"></i></div>
-          <div class="card box" style="--c: var(--jsal-ok)"><b></b><i class="bar" style="flex: 0 1 45%"></i></div>
-        </div>
+        <div class="ph"><span class="logo"><i style="--logo: url(/cms-picker/logos/shopify.svg)"></i></span><b>Shopify</b><span class="tabs"><i class="on">Content</i><i>Tech</i></span></div>
+        <div class="row box"><span>Title tag</span><em class="v ok">Yes</em></div>
+        <div class="row box"><span>Meta description</span><em class="v ok">Yes</em></div>
+        <div class="row box"><span>Canonical URL</span><em class="v info">Automatic</em></div>
+        <div class="row box"><span>Product schema</span><em class="v warn">Check</em></div>
       </div>
       <div class="foot">
         <div>
