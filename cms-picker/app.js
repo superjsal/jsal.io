@@ -76,26 +76,20 @@
         pr.aiTags.forEach((x) => a.append(el('span', 'aitag', x)));
         c.append(a);
       }
-      // Running it: who looks after hosting and updates, and what you can take with you if you leave
-      if (pr.hosting || pr.export) {
+      // The facts panel: who looks after hosting and updates, what you can take with you, and when
+      // to skip it (the summary above already says who it suits)
+      const facts = [['Hosting and updates', pr.hosting, 'r-host'], ['If you leave', pr.export, 'r-exit'], ['Not ideal if', pr.lessSuited, 'r-skip']];
+      if (facts.some(([, v]) => v && v.length)) {
         const run = el('dl', 'run');
-        [['Hosting and updates', pr.hosting, 'r-host'], ['If you leave', pr.export, 'r-exit']].forEach(([t, v, cls]) => {
-          if (!v) return;
-          const d = el('div', cls);
-          d.append(el('dt', null, t), el('dd', null, v));
+        facts.forEach(([t, v, cls]) => {
+          if (!v || !v.length) return;
+          const d = el('div', cls), dd = el('dd');
+          [].concat(v).forEach((x) => dd.append(el('span', null, x)));
+          d.append(el('dt', null, t), dd);
           run.append(d);
         });
         c.append(run);
       }
-      const who = el('details', 'who');
-      who.append(el('summary', null, 'Who it suits'));
-      [['Good fit for', pr.goodFit], ['Less suited if', pr.lessSuited]].forEach(([title, list]) => {
-        if (!list || !list.length) return;
-        const ul = el('ul');
-        list.forEach((x) => ul.append(el('li', null, x)));
-        who.append(el('h4', null, title), ul);
-      });
-      c.append(who);
       const foot = el('div', 'cfoot');
       const on = state.compare.has(p.id);
       const cmp = el('button', 'chip cmp', on ? '✓ Comparing' : '+ Add to compare');

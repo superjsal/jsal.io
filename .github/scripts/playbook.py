@@ -253,12 +253,11 @@ def prerender():
             c.append('<div class="ktags" aria-label="Known for">' + ''.join(f'<span class="ktag">{e(t)}</span>' for t in pr['tags']) + '</div>')
         if pr.get('aiTags'):
             c.append('<div class="aitags"><span class="ailabel">AI</span>' + ''.join(f'<span class="aitag">{e(t)}</span>' for t in pr['aiTags']) + '</div>')
-        run = ''.join(f'<div class="{cls}"><dt>{t}</dt><dd>{e(v)}</dd></div>' for t, v, cls in (('Hosting and updates', pr.get('hosting'), 'r-host'), ('If you leave', pr.get('export'), 'r-exit')) if v)
+        facts = (('Hosting and updates', pr.get('hosting'), 'r-host'), ('If you leave', pr.get('export'), 'r-exit'), ('Not ideal if', pr.get('lessSuited'), 'r-skip'))
+        run = ''.join(f'<div class="{cls}"><dt>{t}</dt><dd>' + ''.join(f'<span>{e(x)}</span>' for x in ([v] if isinstance(v, str) else v)) + '</dd></div>'
+                      for t, v, cls in facts if v)
         if run:
             c.append(f'<dl class="run">{run}</dl>')
-        who = ''.join(f'<h4>{title}</h4><ul>' + ''.join(f'<li>{e(x)}</li>' for x in lst) + '</ul>'
-                      for title, lst in (('Good fit for', pr.get('goodFit')), ('Less suited if', pr.get('lessSuited'))) if lst)
-        c.append(f'<details class="who"><summary>Who it suits</summary>{who}</details>')
         on = p['id'] in DEFAULT_COMPARE
         c.append(f'<div class="cfoot"><button class="chip cmp" type="button" aria-pressed="{str(on).lower()}">'
                  f'{"✓ Comparing" if on else "+ Add to compare"}</button><a class="golink" href="#seo">Compare ↓</a></div></article>')
