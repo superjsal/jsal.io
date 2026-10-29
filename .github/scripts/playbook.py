@@ -174,7 +174,7 @@ def publish(backup_file=None):
     for sec in cfg['sections']:
         result['groups'].append({k: sec[k] for k in ('id', 'title') if k in sec})
         for i in sec['items']:
-            result['items'].append({'id': i['id'], 'label': i['label'], 'group': sec['id']})
+            result['items'].append({'id': i['id'], 'label': i['label'], **({'term': i['term']} if i.get('term') else {}), 'group': sec['id']})
             for pid in public:
                 if 'playbook' in i:
                     result['answers'][pid][i['id']] = cell(pid, i['playbook'], i['id'])
@@ -185,6 +185,10 @@ def publish(backup_file=None):
                         a = ['check', '', 'C']
                     v, m, s = a
                     result['answers'][pid][i['id']] = {'verdict': v, 'mark': m, 'scope': s}
+    # The guided quiz's own values (cms-picker.json), for the public platforms only
+    if cfg.get('quiz'):
+        q = {k: v for k, v in cfg['quiz'].items() if not k.startswith('_')}
+        result['quiz'] = {k: ({p: x for p, x in v.items() if p in public} if isinstance(v, dict) else [p for p in v if p in public]) for k, v in q.items()}
     if missing:
         print('  no answer yet (shown as "Check"): ' + ', '.join(missing))
     out = json.dumps(result, ensure_ascii=False, separators=(',', ':'))
@@ -287,7 +291,7 @@ SCOPE = {'V': 'varies', 'C': 'not verified'}   # only the exceptions are marked
 BADGE = {'magento': 'M', 'duda': 'D', 'headless': '{ }'}
 DEFAULT_COMPARE = ['wordpress', 'shopify', 'wix', 'squarespace']
 PEEK_PLATS = ['wordpress', 'shopify', 'wix']
-PEEK_ROWS = [('blog', 'Run a blog'), ('store', 'Sell online'), ('gsc404', '301 redirects'), ('design', 'Custom design')]
+PEEK_ROWS = [('blog', 'Run a blog'), ('store', 'Sell online'), ('gsc404', 'Keep old links'), ('design', 'Custom design')]
 PEEK_SHORT = {**SHORT, 'plugin': 'Plugin', 'no': 'No'}
 GENERIC = re.compile(r'^(yes|no|check|automatic|built in)$|^yes, with (an? )?(seo |redirect )?(plugin|module|extension|app|custom code)$', re.I)
 
@@ -345,7 +349,8 @@ def prerender():
                 line += f'<span class="sc">{word}</span>'
             mark = f'<span class="mark">{e(a["mark"])}</span>' if a.get('mark') and not GENERIC.match(a['mark'].strip()) else ''
             cells.append(f'<div class="cell"><span class="plat">{e(p["name"])}</span><span class="line">{line}</span>{mark}</div>')
-        rows.append(f'<div class="row"><div class="item">{e(it["label"])}</div>{"".join(cells)}</div>')
+        term = f'<small class="term">{e(it["term"])}</small>' if it.get('term') else ''
+        rows.append(f'<div class="row"><div class="item">{e(it["label"])}{term}</div>{"".join(cells)}</div>')
 
     names = {p['id']: p['name'] for p in plats}
     pp = [i for i in PEEK_PLATS if i in d['answers']]

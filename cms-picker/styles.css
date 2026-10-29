@@ -189,6 +189,7 @@ body {
   .lede { font-size: 16px; }
   .btn { flex: 1 1 auto; }
   .peek [role="row"] { padding: 8px 12px; gap: 6px; }
+  .peek .tag { white-space: normal; line-height: 1.25; }   /* "Needs code" is wider than a phone's column: two lines, not overlapping */
   .sections { display: none; }   /* the two buttons above already go to the cards and the table */
   .totop { width: 44px; height: 44px; padding: 0; justify-content: center; }
   .totop span { display: none; }
@@ -236,6 +237,34 @@ body {
 .run dd { margin-top: 1px; color: var(--jsal-ink); font-size: 14.5px; line-height: 1.4; }
 .cfoot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: auto; padding-top: 16px; }
 .cmp { padding: 5px 12px; font-size: 14px; }
+/* The SEO name, small, under each plain-language row */
+.item .term { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 12px; font-weight: 500; }
+
+/* Find my fit: one question at a time, then the top three with their reasons */
+.qz { padding: 22px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
+.qz-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; color: var(--jsal-muted); font-size: 13px; }
+.qz-bar { flex: 1; height: 6px; overflow: hidden; border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); }
+.qz-bar i { display: block; height: 100%; background: var(--jsal-fill); transition: width 0.25s ease; }
+.qz h3 { color: var(--jsal-ink); font-size: 20px; outline: none; }
+.qz-hint { margin: 4px 0 14px; color: var(--jsal-muted); font-size: 14px; }
+.qz-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+.qz-opt { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: inherit; text-align: left; cursor: pointer; }
+.qz-opt b { font-size: 15px; font-weight: 600; }
+.qz-opt small { color: var(--jsal-muted); font-size: 13px; }
+.qz-opt:hover { border-color: var(--jsal-accent); }
+.qz-opt[aria-pressed="true"] { border-color: var(--jsal-accent); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+.qz-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.qz-res { display: grid; gap: 12px; }
+.qz-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; padding: 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); color: var(--jsal-ink-2); }
+.qz-card.top { border-color: var(--jsal-accent); box-shadow: var(--jsal-selected-ring); }
+.qz-card .logo { grid-row: span 2; width: 34px; height: 34px; }
+.qz-card h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--jsal-ink); font-size: 18px; }
+.fitp { padding: 2px 9px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
+.qz-card .sum { color: var(--jsal-muted); font-size: 14.5px; }
+.qz-card ul { grid-column: 2; margin: 6px 0 0; padding-left: 1.1em; font-size: 14.5px; }
+.qz-card li + li { margin-top: 3px; }
+.qz-warn { grid-column: 2; margin-top: 4px; color: var(--jsal-warn); font-size: 14px; }
+.qz-also { margin-top: 12px; color: var(--jsal-muted); font-size: 14px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

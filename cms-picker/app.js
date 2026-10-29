@@ -1,5 +1,5 @@
-// CMS Picker: draws the platform cards and the platform × item SEO grid from data.json
-// (answers and profiles only, exported by build\playbook.py publish).
+// CMS Picker: the Find my fit quiz, the platform cards and the platform × item grid, all from data.json
+// (answers, profiles and the quiz's own values, exported by build\playbook.py publish).
 (() => {
   const $ = (s) => document.querySelector(s);
   const state = { goal: 'all', compare: new Set(), notes: false };
@@ -170,7 +170,9 @@
       }
       lastGroup = it.group;
       const row = el('div', 'row');
-      row.append(el('div', 'item', it.label));
+      const label = el('div', 'item', it.label);
+      if (it.term) label.append(el('small', 'term', it.term));   // the SEO name, small, under the plain question
+      row.append(label);
       plats.forEach((p) => {
         const c = data.answers[p.id][it.id], cell = el('div', 'cell');
         const [word, scope] = SCOPE[c.scope] || ['', ''];
@@ -227,7 +229,7 @@
     const asOf = data.asOf;
     if (asOf) $('#asof').textContent = asOf;
     const PEEK_PLATS = ['wordpress', 'shopify', 'wix'].filter((id) => data.answers[id]);
-    const PEEK_ROWS = [['blog', 'Run a blog'], ['store', 'Sell online'], ['gsc404', '301 redirects'], ['design', 'Custom design']]
+    const PEEK_ROWS = [['blog', 'Run a blog'], ['store', 'Sell online'], ['gsc404', 'Keep old links'], ['design', 'Custom design']]   // short, so three columns fit on a phone
       .filter(([id]) => data.items.some((i) => i.id === id));
     const PEEK_SHORT = { plugin: 'Plugin', no: 'No' };   // shorter still, so three columns fit on a phone
     const peek = $('#peek');
@@ -302,6 +304,171 @@
     const legend = $('#legend');
     Object.keys(SHORT).filter((k) => used.has(k)).forEach((k) => legend.append(el('span', `tag ${k}`, SHORT[k])));
     setGoal('all');
+    setupQuiz();
+  }
+
+  // ---------- Find my fit: a short guided quiz ----------
+  // One question at a time; then every platform is scored from what's already published (each profile's
+  // goals, hosting and export, and the verified answers for selling, languages and design) plus the
+  // quiz's own values in data.quiz (cms-picker.json: how easy each one is, the design control it suits,
+  // and a few lists). The reasons shown come from the same data, so the result never claims anything the
+  // table doesn't. The answers stay in the page address, so a result can be shared; nothing is stored.
+  const QUESTIONS = [
+    { id: 'what', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact'], ['store', 'An online store', 'Products, checkout and payments'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing'], ['custom', 'Something custom', 'An app or portal, built with a developer']] },
+    { id: 'who', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine'], ['agency', 'A designer or agency', 'They build it; I might edit'], ['dev', 'A developer', 'Code is fine']] },
+    { id: 'care', q: 'Do you want to look after hosting, updates and security?', opts: [['no', 'No, handle it for me', 'Everything included'], ['yes', 'That’s fine', 'Or someone will do it for me']] },
+    { id: 'size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few dozen products', 'A small shop'], ['big', 'Hundreds of products, or B2B', 'A large catalogue, or selling to businesses']] },
+    { id: 'lang', q: 'Will it be in more than one language?', opts: [['no', 'No', 'One language'], ['yes', 'Yes', 'Two or more']] },
+    { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust'], ['pixel', 'Every detail', 'Exactly as designed']] },
+    { id: 'leave', q: 'How important is taking everything with you if you switch later?', opts: [['yes', 'Very important', 'I want to own all of it'], ['no', 'Not a big concern', 'I’ll probably stay']] },
+  ];
+  const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
+  const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
+
+  function fitScore(p, a) {
+    const Q = data.quiz, pr = p.profile || {}, why = [];
+    const has = (list) => (Q[list] || []).includes(p.id);
+    const verdict = (row) => ((data.answers[p.id] || {})[row] || {}).verdict;
+    let s = 0;
+    if ((pr.goals || []).includes(a.what)) { s += 4; why.push(WHAT[a.what]); } else s -= 8;
+    if (a.what !== 'store' && has('storeOnly')) s -= 6;
+    if (a.what === 'custom' && has('customFrontEnd')) { s += 3; why.push('Feeds an app or any front end from one place'); }
+    const ease = Q.ease[p.id] ?? 1;
+    if (a.who === 'easy') { s += ease * 2 - 3; if (ease === 3) why.push('Easy to run without technical skills'); }
+    if (a.who === 'learn') s += ease >= 1 ? 1 : -2;
+    if (a.who === 'agency' && has('agency')) { s += 2; why.push('A common choice for designers and agencies'); }
+    if (a.who !== 'agency' && has('agencyOnly')) s -= 2;
+    if (a.who === 'dev') { if (ease <= 1) { s += 2; why.push('Gives a developer full control'); } else s -= 1; }
+    if (a.care === 'no') {
+      const handled = /^Handled for you/.test(pr.hosting || '');
+      s += handled ? 2 : -3;
+      if (handled) why.push('Hosting, updates and security are handled for you');
+    }
+    if (a.what === 'store') {
+      s += { yes: 2, plugin: 0, code: -3, no: -6 }[verdict('store')] ?? 0;
+      if (a.size === 'big') { if (has('largeCatalogue')) { s += 3; why.push('Handles large catalogues'); } else s -= 2; }
+      if (a.size === 'small' && has('smallShop')) s += 1;
+    }
+    if (a.lang === 'yes') {
+      const l = verdict('languages');
+      s += { yes: 2, plugin: 0, code: -2, no: -4 }[l] ?? 0;
+      if (l === 'yes') why.push('More than one language is built in');
+    }
+    if ((Q.look[p.id] || []).includes(a.look)) { s += 2; why.push(LOOKS[a.look]); }
+    if (a.leave === 'yes') {
+      if (/^Everything/.test(pr.export || '')) { s += 2; why.push('You can take everything with you'); }
+      else if (/API/.test(pr.export || '')) { s += 1; why.push('Your content stays yours, through the API'); }
+      else s -= 1;
+    }
+    return { p, s, why: why.filter(Boolean).slice(0, 4) };
+  }
+
+  function setupQuiz() {
+    const box = $('#qz');
+    if (!box) return;
+    // Until data.json carries the quiz's values (the next publish), the page works as before
+    if (!data.quiz) {
+      $('#quiz').hidden = true;
+      document.querySelectorAll('a[href="#quiz"]').forEach((l) => { l.href = '#fit'; });
+      $('.cta .btn.primary').textContent = 'Find my fit';
+      return;
+    }
+    let step = 0, a = {};
+    const steps = () => QUESTIONS.filter((q) => !q.when || q.when(a));
+    const valid = (o) => steps().every((q) => q.opts.some(([v]) => v === o[q.id]));
+
+    function ask() {
+      const list = steps();
+      if (step >= list.length) return results();
+      const q = list[step];
+      box.replaceChildren();
+      const top = el('div', 'qz-top');
+      top.append(el('span', null, `Question ${step + 1} of ${list.length}`));
+      const bar = el('span', 'qz-bar'), fill = el('i');
+      fill.style.width = `${(step / list.length) * 100}%`;
+      bar.append(fill);
+      top.append(bar);
+      const h = el('h3', null, q.q);
+      h.tabIndex = -1;
+      const opts = el('div', 'qz-opts');
+      opts.setAttribute('role', 'group');
+      opts.setAttribute('aria-label', q.q);
+      q.opts.forEach(([v, title, sub]) => {
+        const b = el('button', 'qz-opt');
+        b.type = 'button';
+        b.setAttribute('aria-pressed', String(a[q.id] === v));
+        b.append(el('b', null, title), el('small', null, sub));
+        b.addEventListener('click', () => { a[q.id] = v; step++; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+        opts.append(b);
+      });
+      box.append(top, h, el('p', 'qz-hint', 'Pick the closest one; you can go back and change it.'), opts);
+      if (step) {
+        const nav = el('div', 'qz-nav'), back = el('button', 'btn', 'Back');
+        back.type = 'button';
+        back.addEventListener('click', () => { step--; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+        nav.append(back);
+        box.append(nav);
+      }
+    }
+
+    function results() {
+      const ranked = data.platforms.map((p) => fitScore(p, a)).sort((x, y) => y.s - x.s);
+      const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
+      const label = (r, i) => (!i ? 'Best match' : r.s >= best - 4 ? 'Good match' : 'Worth a look');
+      history.replaceState(null, '', `#quiz?${new URLSearchParams(Object.entries(a).filter(([k]) => steps().some((q) => q.id === k)))}`);
+      window.jsalAchieve?.('decision');   // achievement (/nav.js)
+      box.replaceChildren();
+      const head = el('div', 'qz-top');
+      head.append(el('span', null, 'Your best matches'));
+      const bar = el('span', 'qz-bar'), fill = el('i');
+      fill.style.width = '100%';
+      bar.append(fill);
+      head.append(bar);
+      const h = el('h3', 'sr-only', 'Your best matches');
+      h.tabIndex = -1;
+      const list = el('div', 'qz-res');
+      top.forEach((r, i) => {
+        const card = el('article', `qz-card${i ? '' : ' top'}`), pr = r.p.profile || {};
+        const name = el('h4', null, r.p.name);
+        name.append(el('span', 'fitp', label(r, i)));
+        card.append(logo(r.p), name, el('p', 'sum', pr.summary || ''));
+        const ul = el('ul');
+        r.why.forEach((w) => ul.append(el('li', null, w)));
+        card.append(ul);
+        const skip = (pr.lessSuited || [])[0];
+        if (skip) card.append(el('p', 'qz-warn', `Not ideal if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
+        list.append(card);
+      });
+      box.append(head, h, list);
+      if (also.length) box.append(el('p', 'qz-also', `Also worth a look: ${also.map((r) => r.p.name).join(', ')}`));
+      const nav = el('div', 'qz-nav');
+      const cmp = el('button', 'btn primary', 'Compare these side by side');
+      cmp.type = 'button';
+      cmp.addEventListener('click', () => {
+        state.compare = new Set(top.map((r) => r.p.id));
+        renderCards();
+        render();
+        $('#seo').scrollIntoView();
+      });
+      const copy = el('button', 'btn', 'Copy link to this result');
+      copy.type = 'button';
+      copy.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(location.href); copy.textContent = 'Link copied'; } catch (e) { copy.textContent = 'Copy the address bar to share'; }
+      });
+      const again = el('button', 'btn', 'Start over');
+      again.type = 'button';
+      again.addEventListener('click', () => { a = {}; step = 0; history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+      nav.append(cmp, copy, again);
+      box.append(nav);
+    }
+
+    // A shared result (#quiz?what=site&who=easy…) opens straight on it
+    const m = location.hash.match(/^#quiz\?(.+)$/);
+    if (m) {
+      const shared = Object.fromEntries(new URLSearchParams(m[1]));
+      if (valid(shared)) { a = shared; step = steps().length; results(); requestAnimationFrame(() => $('#quiz').scrollIntoView()); return; }
+    }
+    ask();
   }
 
   // no-cache: always check with the server (a quick 304 if unchanged), so a publish shows straight away

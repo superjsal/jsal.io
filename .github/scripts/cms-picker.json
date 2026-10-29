@@ -1,5 +1,5 @@
 {
-  "_about": "Public CMS Picker settings, read by `python build\\playbook.py publish`. Rows marked \"playbook\" take their answers from Playbook (Supabase); every other row, each platform's profile and logo, and which platforms are public live in the picker table (admins edit them in the Playbook). `platforms` here is the display order; other public platforms follow by name.",
+  "_about": "Public CMS Picker settings, read by `python build\\playbook.py publish`. Rows marked \"playbook\" take their answers from Playbook (Supabase); every other row, each platform's profile and logo, and which platforms are public live in the picker table (admins edit them in the Playbook). `platforms` here is the display order; other public platforms follow by name. Each row's label finishes \"Can you…\" in plain words; \"term\" is the SEO name shown small under it. `quiz` holds the guided quiz's own judgements per platform (the rest of its scoring comes from the answers and profiles).",
   "platforms": [
     "wordpress",
     "shopify",
@@ -19,7 +19,7 @@
   "sections": [
     {
       "id": "builtin",
-      "title": "Features",
+      "title": "Everyday",
       "items": [
         {
           "id": "blog",
@@ -27,54 +27,153 @@
         },
         {
           "id": "store",
-          "label": "Sell online (products and categories)"
+          "label": "Sell online"
         },
         {
           "id": "languages",
-          "label": "Multiple languages"
+          "label": "Use more than one language"
         },
         {
           "id": "forms",
-          "label": "Forms (contact, lead capture)"
+          "label": "Add contact and sign-up forms"
         },
         {
           "id": "design",
-          "label": "Fully custom design"
+          "label": "Design every detail"
         }
       ]
     },
     {
       "id": "seo",
-      "title": "SEO",
+      "title": "Getting found on Google and AI search",
       "items": [
         {
           "id": "meta_title",
           "playbook": "content",
-          "label": "Edit search titles and descriptions"
+          "label": "Set page titles and descriptions for search",
+          "term": "meta titles and descriptions"
         },
         {
           "id": "urls",
-          "label": "Edit URLs"
+          "label": "Choose page addresses",
+          "term": "URLs"
         },
         {
           "id": "gsc404",
           "playbook": "tech",
-          "label": "Redirect old pages (301 redirects)"
+          "label": "Keep old links working when pages move",
+          "term": "301 redirects"
         },
         {
           "id": "schema",
           "playbook": "tech",
-          "label": "Add your own structured data (schema)"
+          "label": "Add details search engines can use, like prices and ratings",
+          "term": "structured data (schema)"
         },
         {
           "id": "noindex",
-          "label": "Hide a page from search (noindex)"
+          "label": "Keep a page out of search results",
+          "term": "noindex"
         },
         {
           "id": "ai_crawlers",
-          "label": "Control AI crawlers (as of October 2026)"
+          "label": "Choose which AI bots may read the site",
+          "term": "AI crawlers, as of October 2026"
         }
       ]
     }
-  ]
+  ],
+  "quiz": {
+    "_about": "Find my fit. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template = start from a theme, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop: stores it suits. storeOnly: only for selling, so marked down for anything else. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end.",
+    "ease": {
+      "wordpress": 2,
+      "shopify": 3,
+      "wix": 3,
+      "squarespace": 3,
+      "webflow": 1,
+      "framer": 2,
+      "hubspot": 1,
+      "bigcommerce": 2,
+      "magento": 0,
+      "drupal": 0,
+      "duda": 2,
+      "ghost": 3,
+      "headless": 0
+    },
+    "look": {
+      "wordpress": [
+        "pixel"
+      ],
+      "shopify": [
+        "template"
+      ],
+      "wix": [
+        "template",
+        "visual"
+      ],
+      "squarespace": [
+        "template",
+        "visual"
+      ],
+      "webflow": [
+        "visual",
+        "pixel"
+      ],
+      "framer": [
+        "visual",
+        "pixel"
+      ],
+      "hubspot": [
+        "template"
+      ],
+      "bigcommerce": [
+        "template"
+      ],
+      "magento": [
+        "pixel"
+      ],
+      "drupal": [
+        "pixel"
+      ],
+      "duda": [
+        "template",
+        "visual"
+      ],
+      "ghost": [
+        "template"
+      ],
+      "headless": [
+        "pixel"
+      ]
+    },
+    "largeCatalogue": [
+      "shopify",
+      "bigcommerce",
+      "magento"
+    ],
+    "smallShop": [
+      "shopify",
+      "wix",
+      "squarespace",
+      "wordpress"
+    ],
+    "storeOnly": [
+      "shopify",
+      "bigcommerce",
+      "magento"
+    ],
+    "agency": [
+      "duda",
+      "webflow",
+      "framer",
+      "wordpress",
+      "hubspot"
+    ],
+    "agencyOnly": [
+      "duda"
+    ],
+    "customFrontEnd": [
+      "headless"
+    ]
+  }
 }
