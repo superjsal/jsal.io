@@ -421,9 +421,12 @@
       const q = list[step];
       box.replaceChildren();
       const top = el('div', 'qz-top');
-      top.append(el('span', null, `Question ${step + 1} of ${list.length}`));
+      // Until "What are you making?" is answered, count the longest path (its follow-up question included),
+      // so the total doesn't jump from 6 to 7 after the first answer
+      const first = QUESTIONS[0], total = first.id in a ? list.length : Math.max(...first.opts.map(([v]) => steps({ ...a, [first.id]: v }).length));
+      top.append(el('span', null, `Question ${step + 1} of ${total}`));
       const bar = el('span', 'qz-bar'), fill = el('i');
-      fill.style.width = `${(step / list.length) * 100}%`;
+      fill.style.width = `${(step / total) * 100}%`;
       bar.append(fill);
       top.append(bar);
       const h = el('h3', null, q.q);
