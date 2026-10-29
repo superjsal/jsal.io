@@ -344,12 +344,9 @@
   }
 
   // ---------- Find my fit: a short guided quiz ----------
-  // One question at a time; then every platform is scored from what's already published (each profile's
-  // goals, hosting and export, and the verified answers for selling, languages and design) plus the
-  // quiz's own values in data.quiz (cms-picker.json: how easy each one is, the design control it suits,
-  // and a few lists). The reasons shown come from the same data, so the result never claims anything the
-  // table doesn't. The answers stay in the page address, so a result can be shared; nothing is stored.
-  const { QUESTIONS } = window.cmsScore;   // the questions and the scoring live in score.js (shared with the persona tests)
+  // One question at a time, then the best matches. The questions and the scoring live in score.js (shared
+  // with the persona tests). The answers stay in the page address, so a result can be shared; nothing is stored.
+  const { QUESTIONS } = window.cmsScore;
   // Shared result links carry the quiz version (v=1). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
   // people have already shared keep opening a result rather than an empty quiz.
@@ -391,7 +388,7 @@
     const ol = el('ol', 'qz-steps');
     STEPS.forEach((s) => {
       const ans = s.row ? answer(s.row) : {};
-      const url = s.url || (s.domain ? ((data.quiz.domainDocs || {})[p.id]) : ans.sourceUrl);
+      const url = s.url || (s.domain ? data.quiz.domainDocs[p.id] : ans.sourceUrl);
       const li = el('li', null, s.text);
       if (url) li.append(' · ', docLink(url, s.link || `How on ${p.name}`));
       // How it's done there, when it isn't simply built in ("Yes, with an SEO plugin" → "With an SEO plugin")
@@ -412,17 +409,9 @@
     return frag;
   }
 
-
   function setupQuiz() {
     const box = $('#qz');
     if (!box) return;
-    // Until data.json carries the quiz's values (the next publish), the page works as before
-    if (!data.quiz) {
-      $('#quiz').hidden = true;
-      document.querySelectorAll('a[href="#quiz"]').forEach((l) => { l.href = '#fit'; });
-      $('.cta .btn.primary').textContent = 'Find my fit';
-      return;
-    }
     let step = 0, a = {};
     const steps = (o = a) => QUESTIONS.filter((q) => !q.when || q.when(o));   // the questions these answers call for
     const valid = (o) => steps(o).every((q) => q.opts.some(([v]) => v === o[q.id]));

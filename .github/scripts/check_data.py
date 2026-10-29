@@ -48,10 +48,7 @@ def validate(value, schema, path='data'):
     return errs
 
 def problems(d):
-    """Schema errors, plus a few links the schema can't express (every row and platform answered).
-    Data published before version 2 has no schemaVersion and no sources; it's checked as version 2
-    otherwise (the next publish upgrades it)."""
-    if 'schemaVersion' not in d: d = {'schemaVersion': 2, **d}
+    """Schema errors, plus a few links the schema can't express (every row and platform answered)."""
     errs = validate(d, SCHEMA)
     if errs: return errs
     rows = [i['id'] for i in d['items']]
@@ -78,7 +75,6 @@ def report(d, listing=False, today=None):
             total += 1
             if not a.get('sourceUrl'): missing.append((pid, r))
             elif not a.get('lastVerified') or (today - datetime.date.fromisoformat(a['lastVerified'])).days > STALE_DAYS: stale.append((pid, r, a.get('lastVerified') or 'no date'))
-    if 'schemaVersion' not in d: out.append('CMS Picker data: published before sources were added; the next publish adds them.')
     out.append(f'CMS Picker data: {total} answers, {total - len(missing)} with a source, {len(missing)} without, {len(stale)} checked over {STALE_DAYS} days ago.')
     flagged = [x for x in per if x[1] or x[2]]
     out.append('  not verified / unclear: ' + (', '.join(f'{n} {a}/{b}' for n, a, b, _, _ in flagged) if flagged else 'none'))

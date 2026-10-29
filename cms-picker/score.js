@@ -33,9 +33,8 @@
     if (a.who === 'learn') s += ease >= 1 ? 1 : -2;
     if (a.who === 'agency' && has('agency')) { s += 2; why.push('A common choice for designers and agencies'); }
     if (a.who !== 'agency' && has('agencyOnly')) s -= 2;
-    // A developer: platforms built to be coded (quiz.devControl); until a publish carries that list, the hardest to run
-    const devControl = Q.devControl ? has('devControl') : ease <= 1;
-    if (a.who === 'dev') { if (devControl) { s += 2; why.push('Gives a developer full control'); } else s -= 1; }
+    // A developer: platforms built to be coded (quiz.devControl)
+    if (a.who === 'dev') { if (has('devControl')) { s += 2; why.push('Gives a developer full control'); } else s -= 1; }
     if (a.care === 'no') {
       const handled = /^Handled for you/.test(pr.hosting || '');
       s += handled ? 2 : -3;
@@ -64,6 +63,6 @@
   // Every platform, best fit first
   const rank = (data, a) => data.platforms.map((p) => fitScore(data, p, a)).sort((x, y) => y.s - x.s);
 
-  const api = { QUESTIONS, fitScore, rank };
+  const api = { QUESTIONS, rank };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);
