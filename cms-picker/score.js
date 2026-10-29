@@ -14,7 +14,7 @@
     { id: 'members', q: 'Will you have paid members or a newsletter?', when: (a) => a.what === 'content', opts: [['yes', 'Yes', 'Subscribers, paid posts or a newsletter', 'Paid members or a newsletter'], ['no', 'No', 'Just the posts', 'Just posts, no members']] },
     { id: 'who', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple', 'I’ll build it, not technical'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine', 'I’ll build it and learn'], ['agency', 'A designer or agency', 'They build it; I might edit', 'A designer or agency builds it'], ['dev', 'A developer', 'Code is fine', 'A developer builds it']] },
     { id: 'care', q: 'Do you want to look after hosting, updates and security?', opts: [['no', 'No, handle it for me', 'Everything included', 'Hosting and updates handled for me'], ['yes', 'That’s fine', 'Or someone will do it for me', 'Fine looking after hosting and updates']] },
-    { id: 'size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few dozen products', 'A small shop', 'A small shop, up to a few dozen products'], ['big', 'Hundreds of products, or B2B', 'A large catalogue, or selling to businesses', 'Hundreds of products, or B2B']] },
+    { id: 'size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few dozen products', 'A small shop', 'A small shop, up to a few dozen products'], ['big', 'Hundreds of products', 'A large catalogue', 'Hundreds of products'], ['b2b', 'Selling to other businesses (B2B)', 'Wholesale, trade accounts or bulk orders', 'Selling to other businesses (B2B)']] },
     { id: 'lang', q: 'Will it be in more than one language?', opts: [['no', 'No', 'One language', 'One language'], ['yes', 'Yes', 'Two or more', 'Two or more languages']] },
     { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go', 'A good template is enough'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust', 'Arrange the design visually'], ['pixel', 'Every detail', 'Exactly as designed', 'Control every detail of the design']] },
     { id: 'leave', q: 'How important is taking everything with you if you switch later?', opts: [['yes', 'Very important', 'I want to own all of it', 'Taking everything with me matters'], ['no', 'Not a big concern', 'I’ll probably stay', 'Not planning to switch']] },
@@ -47,6 +47,7 @@
     sellFirst: [() => 'it’s made for selling first', null],
     size: [() => 'it handles large catalogues', (a, y) => `${y} isn’t made for large catalogues`],
     small: [() => 'it suits small shops', null],
+    b2b: [() => 'it suits selling to other businesses', null],
     lang: [() => 'more than one language is easier to set up', (a, y) => `more than one language is harder to set up on ${y}`],
     look: [(a) => ({ template: 'it has good templates to start from', visual: 'you can arrange your pages visually', pixel: 'it gives full control over the design' })[a.look], null],
     leave: [() => 'you can take more of your site with you', (a, y) => `${y} doesn’t let you take everything with you`],
@@ -79,7 +80,9 @@
     if (a.what === 'store') {
       add('sell', { yes: 2, plugin: 0, code: -3, no: -6 }[verdict('store')] ?? 0);
       if (has('storeOnly')) add('sellFirst', 2);   // made for selling first, so it leads a tie with all-round builders
-      if (a.size === 'big') { if (has('largeCatalogue')) add('size', 3, 'Handles large catalogues'); else add('size', -2); }
+      // Selling to other businesses (B2B) is a large catalogue too, plus the platforms whose profiles name B2B (quiz.b2b)
+      if (a.size === 'big' || a.size === 'b2b') { if (has('largeCatalogue')) add('size', 3, 'Handles large catalogues'); else add('size', -2); }
+      if (a.size === 'b2b' && has('b2b')) add('b2b', 3, 'Suits selling to other businesses (B2B)');
       if (a.size === 'small' && has('smallShop')) add('small', 1);
     }
     if (a.lang === 'yes') {

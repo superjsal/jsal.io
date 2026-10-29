@@ -1,5 +1,5 @@
 // CMS Picker persona tests: example people run through the real Find my fit scoring (cms-picker/score.js),
-// checked against the results John agreed (2026-10-29; 30 people since the business-site, members and budget questions). Run by build\check.ps1 (node .github/scripts/personas.test.js).
+// checked against the results John agreed (2026-10-29; 33 people since the business-site, members, budget and B2B questions). Run by build\check.ps1 (node .github/scripts/personas.test.js).
 // The answers come from cms-picker/data.json with this folder's cms-picker.json quiz values on top, so a
 // change to either is tested before the next publish. When a result should change, agree it first, then
 // update the expectation here.
@@ -53,6 +53,12 @@ const PERSONAS = [
     { first: ['magento'], top3: ['magento', 'shopify', 'bigcommerce'] }],
   ['Clothing brand, about 50 products, wants design control', { what: 'store', who: 'learn', care: 'no', size: 'small', lang: 'no', look: 'visual', leave: 'no' },
     { first: ['shopify', 'wix', 'squarespace'], top3: ['shopify'] }],   // a three-way tie: the store questions don't ask about design
+  ['Coffee roaster selling to cafés (B2B), not technical', { what: 'store', who: 'easy', care: 'no', size: 'b2b', lang: 'no', look: 'template', leave: 'no' },
+    { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
+  ['Wholesaler with trade accounts (B2B), happy to learn', { what: 'store', who: 'learn', care: 'no', size: 'b2b', lang: 'no', look: 'template', leave: 'no' },
+    { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
+  ['Parts supplier selling to businesses (B2B), with a developer', { what: 'store', who: 'dev', care: 'yes', size: 'b2b', lang: 'no', look: 'template', leave: 'no' },
+    { first: ['magento'], top3: ['magento', 'bigcommerce'] }],
   // Blogs, publications and custom builds
   ['Newsletter writer with paid members', { what: 'content', members: 'yes', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes' },
     { first: ['ghost'], top3: ['ghost'] }],
