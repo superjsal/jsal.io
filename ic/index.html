@@ -257,8 +257,6 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .group-sub { margin: -2px 0 4px 26px; color: var(--jsal-muted); font-size: 13px; }
 /* The card a shared link points to */
 .card.target { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
-.link-copy { display: inline-flex; align-items: center; padding: 3px 4px; }
-.link-copy:hover, .suggest:hover { color: var(--jsal-ink); }
 
 /* Platform panel: a header card, then one card per item */
 .panel { display: grid; gap: 8px; min-width: 0; }
@@ -286,6 +284,13 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
   .answer { max-width: none; justify-content: flex-start; }
 }
 .ans { font-size: 14px; font-weight: 600; color: var(--jsal-ink-2); }
+/* The Answer (can we do it?): the first thing on each card, coloured by what it says */
+.answer-word { font-size: 14px; font-weight: 700; white-space: nowrap; }
+.answer-word.a-yes { color: var(--jsal-ok); }
+.answer-word.a-some { color: var(--jsal-warn); }
+.answer-word.a-no { color: var(--jsal-bad); }
+.answer-word.a-check { color: var(--jsal-info); }
+.edit-form .was { margin: -4px 0 0; font-size: 12.5px; color: var(--jsal-muted); }
 /* Settled with nothing to add: one compact, muted line */
 .card.slim { padding-block: 8px; gap: 4px; }
 .card.slim .item { font-weight: 500; color: var(--jsal-muted); }
@@ -382,6 +387,14 @@ a.pk-twin { color: var(--jsal-accent); text-decoration: underline; text-underlin
 .add-plat h4 { font-size: 15px; }
 .add-plat .edit-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: end; }
 .v.indirect { background: var(--jsal-accent-soft); color: var(--jsal-accent); }
+/* Card footer: "How to" on the left, "Suggest a fix" quietly on the right, out of the answer's way */
+.card-foot { display: flex; align-items: flex-start; gap: 4px 12px; }
+.card-foot .how { flex: 1; min-width: 0; }
+.card-foot .suggest { margin-left: auto; flex: none; }
+/* How to open: the steps take the full width and "Suggest a fix" moves below them, rather than floating at the top */
+.card-foot:has(.how[open]) { flex-direction: column; align-items: stretch; }
+.card-foot:has(.how[open]) .suggest { align-self: flex-end; }
+@media (pointer: coarse) { .card-foot .suggest { padding-block: 12px; margin-block: -12px; } }   /* a bigger target for a thumb, same look */
 .how { font-size: 14px; }
 .how summary { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--jsal-accent); list-style: none; border-radius: 4px; }
 .how summary::-webkit-details-marker { display: none; }
@@ -892,10 +905,11 @@ function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
         <input type="hidden" name="base" value="${esc(EDITS.get(editKey(p.id, e.sec, e.it.id))?.at || '')}">
         <p class="edit-conflict" role="alert" hidden></p>
         <div class="edit-grid">
-          <label>Mark<input name="mark" maxlength="80" required value="${esc(e.edit ? mark : plain(mark))}"></label>
+          <label title="Can we do it?">Answer<select name="mark">${ANSWERS.map((a) => `<option${a === answerOf(mark, verdict) ? ' selected' : ''}>${a}</option>`).join('')}</select></label>
           <label>Tag<select name="verdict">${opts(VERDICT, verdict)}</select></label>
           <label>Scope<select name="scope">${opts(SCOPE, scope)}</select></label>
         </div>
+        ${ANSWERS.includes(plain(mark).trim()) ? '' : `<p class="was">The answer used to say “${esc(plain(mark))}”. Add anything worth keeping to the Note.</p>`}
         <label><span>Note <span style="font-weight:400">(optional; copies as plain text)</span></span><textarea name="note" maxlength="600" rows="3">${esc(e.edit ? note : htmlToMd(note))}</textarea></label>
         <label><span>Watch out <span style="font-weight:400">(optional, side effects to know before changing it)</span></span><textarea name="warn" maxlength="600" rows="2">${esc(warnMd(p, e.sec, e.it.id))}</textarea></label>
         <label><span>How-to steps <span style="font-weight:400">(one per line)</span></span><textarea name="how" maxlength="2000" rows="4">${esc(howMd(p, e.sec, e.it.id))}</textarea></label>
@@ -909,13 +923,27 @@ function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
       </form>
     </article>`;
 }
-// Tag first; the form's mark shows only when it adds something the tag doesn't ("Depends on theme",
-// "No (HTML section)"). "Yes", "No", "Check", "Automatic" and the like just repeat the tag.
-const addsDetail = (m) => !/^(yes|no|check|automatic|built in|needs code|likely no|unlikely)$/i.test(plain(m).trim());
+// The Answer: can we do it? Stored in the answer's "mark". Tag says what it takes, Scope whether it's
+// the same on every site. An older free-text mark ("Yes, with a module", "Depends on theme") counts as
+// the closest Answer, and its wording shows beside it until someone saves the answer again.
+const ANSWERS = ['Yes', 'Yes, with limitations', 'No', 'Check'];
+const ANSWER_CLASS = { Yes: 'a-yes', 'Yes, with limitations': 'a-some', No: 'a-no', Check: 'a-check' };
+const LIMITED = /^(partly|partial|mostly|some|limited|depends)\b|\b(paid plans?|plan\+|plans? and up|pages only|only on|limited)\b|\d+(\.\d+)*\+|;/i;
+function answerOf(mark, verdict) {
+  const m = plain(mark).trim(), low = m.toLowerCase();
+  if (ANSWERS.includes(m)) return m;
+  if (/^(check|unknown|unclear|not sure)\b/.test(low) || (!m && verdict === 'check')) return 'Check';
+  if (/^(likely no|unlikely|probably not)\b/.test(low)) return verdict === 'check' ? 'Check' : 'No';
+  if (/^no\b/.test(low)) return ['code', 'plugin', 'hosting'].includes(verdict) && /[(\w]/.test(low.slice(2)) ? 'Yes, with limitations' : 'No';
+  if (LIMITED.test(m)) return 'Yes, with limitations';
+  if (verdict === 'no') return 'No';
+  if (verdict === 'check') return 'Check';
+  return 'Yes';
+}
+const answerHtml = (mark, verdict) => { const a = answerOf(mark, verdict); return `<b class="answer-word ${ANSWER_CLASS[a]}">${a}</b>`; };
 // Group heading icons: alert circle for answers to check, check circle for the ones that hold everywhere
 const ICON_CHECK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg>';
 const ICON_SAME = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>';
-const LINK_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>';
 // When the answers on show last changed: the latest team edit to this platform's section, its watch-out,
 // or the Playbook's own content (a new platform, item or wording pushed from playbook.py)
 let DATA_AT = null;
@@ -931,23 +959,24 @@ const COPY_SVG = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="t
 function rowHtml(e) {
   if (state.editing === e.key) return editRowHtml(e);
   const [verdict, rawMark, scope, rawNote] = e.cell;
-  const mark = e.edit ? esc(rawMark) : rawMark, note = e.edit ? md(rawNote) : rawNote;
+  const note = e.edit ? md(rawNote) : rawNote;
+  const oldWords = !ANSWERS.includes(plain(rawMark).trim()) && plain(rawMark).trim().toLowerCase() !== answerOf(rawMark, verdict).toLowerCase();
   const p = P.find((x) => x.id === state.platform);
   const how = howFor(p, e.sec, e.it.id);
   const warn = warnFor(p, e.sec, e.it.id);
   // Settled with nothing to add: one compact, muted line so the cards that need a look stand out.
   const slim = !note && !warn && settled(e.cell) && !e.edit;
-  const tools = `<button type="button" class="suggest link-copy" data-link="${e.key}" title="Copy a link to this answer" aria-label="Copy link to ${esc(plain(e.it.label))}">${LINK_SVG}</button>` + suggestLink(e) + (canEditAnswers && !e.variant ? `<button type="button" class="edit-btn" data-edit="${e.key}" aria-label="Edit answer for ${esc(plain(e.it.label))}">Edit</button>` : '');
+  const tools = canEditAnswers && !e.variant ? `<button type="button" class="edit-btn" data-edit="${e.key}" aria-label="Edit answer for ${esc(plain(e.it.label))}">Edit</button>` : '';
   const howHtml = how.steps.length ? `<details class="how"${state.showHow ? ' open' : ''}><summary>How to</summary><ol>${how.steps.map((t) => `<li>${t}</li>`).join('')}</ol>${
     !how.edited && HOW_UNVERIFIED.has(p.id) ? '<p class="how-note">These steps haven’t been checked in a live admin yet. If one is off, fix it with Edit.</p>' : ''}${guideLinks(p, e.it.id)}</details>` : '';
   return `<article class="card${slim ? ' slim' : ''}" id="card-${e.sec}-${e.it.id}">
       <div class="card-head">
         <h4 class="item">${e.it.label}${e.it.hint && !slim ? `<small>${e.it.hint}</small>` : ''}${R.manage && PK.on && PK.items.some((x) => x.id === e.it.id) ? `<a class="pk-twin" href="#picker/${p.id}/${e.it.id}" title="The public CMS Picker keeps its own answer on this, edited on the CMS Picker tab">Also on the CMS Picker</a>` : ''}</h4>
-        <div class="answer">${statusPill(verdict, scope)}${addsDetail(rawMark) ? `<span class="ans" title="Mark on the form">${mark}</span>` : ''}${tools}</div>
+        <div class="answer">${answerHtml(rawMark, verdict)}${statusPill(verdict, scope)}${oldWords ? `<span class="ans">${esc(plain(rawMark))}</span>` : ''}${tools}</div>
       </div>
       ${note ? `<div class="note">${note}<button type="button" class="copy-icon" data-copy="${e.key}" title="Copy note" aria-label="Copy note for ${plain(e.it.label)}">${COPY_SVG}</button></div>` : ''}
       ${warn ? `<div class="warn"><div><b>Watch out:</b> ${warn}</div></div>` : ''}
-      ${howHtml}
+      <div class="card-foot">${howHtml}${suggestLink(e)}</div>
     </article>`;
 }
 // Search looks through the platform's Tech answers and its Content answers (current page type) at once,
@@ -1150,18 +1179,13 @@ $('#panel').addEventListener('click', (e) => {
   if (nr) { if (confirm(`Remove the watch-out for ${p.name}?`)) saveNote('', nr); return; }
   const rs = e.target.closest('[data-reset]');
   if (rs) return saveEdit(rs.dataset.reset, null, rs);
-  const ln = e.target.closest('[data-link]');
-  if (ln) {
-    const [sec, id] = ln.dataset.link.split(':');
-    return copy(`${location.origin}${location.pathname}#${linkFor(p, sec, id)}`);
-  }
   const one = e.target.closest('[data-copy]');
   if (one) {
     const [sec, id] = one.dataset.copy.split(':');
     return copy(unmd(cellFor(p, sec, id)[3]), one.closest('.card').querySelector('.note'));
   }
   if (e.target.id === 'copy-all') {
-    const text = visibleEntries(p).map((x) => `${plain(x.it.label)} — ${x.cell[1]}${x.cell[3] ? `: ${unmd(x.cell[3])}` : ''}`).join('\n');
+    const text = visibleEntries(p).map((x) => `${plain(x.it.label)} — ${answerOf(x.cell[1], x.cell[0])}${x.cell[3] ? `: ${unmd(x.cell[3])}` : ''}`).join('\n');
     const v = VARIANTS[p.id] && state.sec !== 'tech' && state.variant[p.id];
     const t = state.sec === 'content' && contentSec(p) !== 'content' ? ` · ${PTYPES[state.ptype]}` : '';
     copy(`${p.name} — ${SEC_LABEL[state.sec]}${t}${v ? ` (${v})` : ''}\n${text}`, e.target.closest('.panel-head'));
@@ -1601,7 +1625,6 @@ async function saveEdit(key, form, button, p = P.find((x) => x.id === state.plat
   let body = null;
   if (form) {
     body = { verdict: form.verdict.value, mark: form.mark.value.trim(), scope: form.scope.value, note: form.note.value.trim(), at: new Date().toISOString() };
-    if (!body.mark) { form.mark.focus(); return toast('Add what to mark'); }
     const how = form.how.value.split('\n').map((t) => t.trim()).filter(Boolean).join('\n');
     if (how !== baseHowMd(p, sec, id)) body.how = how;
     const warn = form.warn.value.split('\n').map((t) => t.trimEnd()).join('\n').trim();
@@ -1988,7 +2011,7 @@ async function toggleVote(id) {
 }
 
 // "Suggest fix" on an answer card: a correction request for that platform, item and page type
-const suggestLink = (e) => `<button type="button" class="suggest" data-suggest="${e.key}" title="Suggest a correction to this answer">Suggest fix</button>`;
+const suggestLink = (e) => `<button type="button" class="suggest" data-suggest="${e.key}" title="Suggest a correction to this answer">Suggest a fix</button>`;
 $('#panel').addEventListener('click', (e) => {
   const s = e.target.closest('[data-suggest]');
   if (!s) return;
