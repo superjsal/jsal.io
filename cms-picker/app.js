@@ -22,14 +22,13 @@
     return e;
   }
 
-  // Platform logos (Simple Icons, CC0) drawn in the text colour via a mask, so they match the theme.
-  // Simple Icons has no Magento or Duda logo, and headless isn't one brand: those get a lettered badge.
-  const LOGOS = new Set(['wordpress', 'shopify', 'wix', 'squarespace', 'webflow', 'framer', 'hubspot', 'bigcommerce', 'drupal', 'ghost']);
+  // Platform logos (Simple Icons, CC0, or uploaded by an admin) drawn in the text colour via a mask, so
+  // they match the theme; data.json names the file. Without one (Magento, Duda, headless): a letter badge.
   const BADGE = { magento: 'M', duda: 'D', headless: '{ }' };
   function logo(p) {
-    if (LOGOS.has(p.id)) {
+    if (p.logo) {
       const s = el('span', 'logo');
-      s.style.setProperty('--logo', `url("logos/${p.id}.svg")`);
+      s.style.setProperty('--logo', `url("${p.logo}")`);
       s.setAttribute('aria-hidden', 'true');
       return s;
     }

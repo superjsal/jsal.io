@@ -34,10 +34,10 @@ jobs:
       - name: Commit if anything changed
         id: commit
         run: |
-          if git diff --quiet; then echo "No changes to publish."; exit 0; fi
+          if [ -z "$(git status --porcelain)" ]; then echo "No changes to publish."; exit 0; fi
           git config user.name "superjsal"
           git config user.email "dev@jsal.io"
-          git add cms-picker/data.json cms-picker/index.html sitemap.xml
+          git add -A cms-picker/data.json cms-picker/index.html cms-picker/logos sitemap.xml
           git commit -m "CMS Picker: nightly publish from Playbook"
           git push
           echo "pushed=true" >> "$GITHUB_OUTPUT"

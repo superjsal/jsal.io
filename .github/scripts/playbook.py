@@ -9,22 +9,25 @@
 #   pull         → saves the Playbook base content to private/playbook/defaults.json for editing
 #   push         → uploads private/playbook/defaults.json as the base content (backs up first)
 #   publish      → writes site/cms-picker/data.json, the answers-only public export (Playbook rows +
-#                  the picker table; which rows and platforms, their labels and order from cms-picker.json
-#                  next to this file), then the plain-HTML copy in the page. Nightly by GitHub Action.
+#                  the picker table; which rows, their labels and the platform order from cms-picker.json
+#                  next to this file; which platforms are public from the picker table), any logos admins
+#                  uploaded, then the plain-HTML copy in the page. Nightly by GitHub Action.
 #   publish --from-backup <file>   → the same, from a backup file (no key needed)
 #   prerender    → re-writes the plain-HTML copy of data.json into site/cms-picker/index.html (no key needed)
 #   picker-seed  → one time: copies the profiles and answers still in cms-picker.json into the picker table
 #   add --extra <file> to layer draft platforms over it for development (never commit that output)
 #
 # Small fixes don't need this: sign in on jsal.io/ic as an admin and use Edit (the CMS Picker's own
-# rows and profile are in an admin-only section on each platform). Use pull/push for structural
-# Playbook changes the page can't make (a new platform, item, page type or guide).
+# rows, profile, logo and "on the CMS Picker" switch are in an admin-only section on each platform;
+# platforms are added and hidden on the Team page). Use pull/push for structural Playbook changes the
+# page can't make (a new item, page type or guide).
 #
 # Needs a secret key, which bypasses the access rules: Supabase → Project Settings → API Keys → a
 # "secret" key (sb_secret_…), or the legacy service_role key. Set it in your own terminal only,
 # never in a file or in chat:
 #   PowerShell:  $env:SUPABASE_SERVICE_ROLE_KEY = "<secret key>"
-import datetime, html, json, os, pathlib, re, sys, urllib.error, urllib.request
+import base64, datetime, hashlib, html, json, os, pathlib, re, sys, urllib.error, urllib.request
+import xml.etree.ElementTree as ET
 
 HERE = pathlib.Path(__file__).resolve().parent             # site/.github/scripts
 SITE = HERE.parents[1]                                      # the site repo (what jsal.io serves)
@@ -32,6 +35,8 @@ PRIV = SITE.parent / 'private'                              # never committed; o
 PAGE = SITE / 'ic' / 'index.html'
 CONFIG = HERE / 'cms-picker.json'
 PUBLIC = SITE / 'cms-picker' / 'data.json'
+LOGO_DIR = SITE / 'cms-picker' / 'logos'                     # hand-made logos: <id>.svg
+UPLOADED = LOGO_DIR / 'uploaded'                            # logos admins upload in the Playbook (written by publish)
 DEFAULTS = PRIV / 'playbook' / 'defaults.json'
 TABLES = ['app_data', 'edits', 'members', 'access_requests', 'requests', 'votes', 'comments', 'platform_notes', 'picker']
 
@@ -117,7 +122,7 @@ def publish(backup_file=None, extra_file=None):
     if not base:
         sys.exit('No base content found (app_data id "defaults").')
     cfg = json.loads(CONFIG.read_text(encoding='utf-8'))
-    plats = {p['id']: p for p in base['P']}
+    plats = {p['id']: p for p in base['P'] if not p.get('hidden')}
     content = dict(base['CONTENT'])
     if extra_file:                                  # development only: draft platforms not in Supabase yet
         for p in json.loads(pathlib.Path(extra_file).read_text(encoding='utf-8'))['platforms']:
@@ -153,14 +158,27 @@ def publish(backup_file=None, extra_file=None):
             sys.exit('Stopped: the picker table is empty and cms-picker.json has no profiles. Nothing was published.')
     missing = []
 
-    public = [pid for pid in cfg['platforms'] if pid in plats]
-    skipped = [pid for pid in cfg['platforms'] if pid not in plats]
+    # Which platforms are public: the picker table's "public" switch (admins set it in the Playbook), else
+    # the list in cms-picker.json (before private/platforms.sql has run). Order: cms-picker.json's list,
+    # then any others by name, Headless CMS last. A platform needs a profile with a type to be shown.
+    if picker and 'public' in picker[0]:
+        on = {r['platform'] for r in picker if r.get('public')}
+        listed = [pid for pid in cfg['platforms'] if pid in on and pid != 'headless']
+        rest = sorted((pid for pid in on if pid not in listed and pid != 'headless' and pid in plats), key=lambda pid: plain(plats[pid]['name']).lower())
+        wanted = listed + rest + (['headless'] if 'headless' in on else [])
+    else:
+        wanted = list(cfg['platforms'])
+    skipped = [pid for pid in wanted if pid not in plats]
+    noprofile = [pid for pid in wanted if pid in plats and not (profiles.get(pid) or {}).get('type')]
+    public = [pid for pid in wanted if pid in plats and pid not in noprofile]
+    logos = write_logos(public, {r['platform']: r.get('logo') for r in (picker or [])})
     result = {
         'verdicts': {**base['VERDICT'], 'indirect': 'Indirectly'},
         'asOf': cfg.get('asOf'),                     # when the answers were last checked (the hero's "Updated")
         'groups': [],
         'items': [],
-        'platforms': [{'id': pid, 'name': cfg.get('names', {}).get(pid, plats[pid]['name']), 'profile': profiles.get(pid)} for pid in public],
+        'platforms': [{'id': pid, 'name': cfg.get('names', {}).get(pid, plain(plats[pid]['name'])), **({'logo': logos[pid]} if pid in logos else {}),
+                       'profile': profiles.get(pid)} for pid in public],
         'answers': {pid: {} for pid in public},
     }
     # Table sections and rows in order. A row with "playbook" (its Playbook section, "content" or
@@ -190,8 +208,85 @@ def publish(backup_file=None, extra_file=None):
         PUBLIC.write_text(out, encoding='utf-8')
         print(f'published: {PUBLIC} ({len(public)} platforms, {len(result["items"])} items, {len(edits)} admin edits applied)')
     if skipped:
-        print('  not in the Playbook data yet, left out: ' + ', '.join(skipped))
+        print('  not in the Playbook data (or hidden), left out: ' + ', '.join(skipped))
+    if noprofile:
+        print('  on the CMS Picker but no profile type yet, left out: ' + ', '.join(noprofile))
     prerender()
+
+
+# ── Logos ──
+# A logo is drawn in one colour through a CSS mask, so only its shape matters. Admins upload SVG or PNG
+# in the Playbook; it's stored in the picker table and written here as cms-picker/logos/uploaded/<id>.*
+# (SVG cleaned first: no scripts, event handlers, external links or embedded documents). Without an
+# upload, a hand-made logos/<id>.svg is used if there is one; otherwise the page shows a letter badge.
+SVG_NS, XLINK_NS = 'http://www.w3.org/2000/svg', 'http://www.w3.org/1999/xlink'
+SVG_TAGS = {'svg', 'g', 'path', 'circle', 'ellipse', 'rect', 'line', 'polyline', 'polygon', 'defs', 'clipPath', 'mask',
+            'linearGradient', 'radialGradient', 'stop', 'title', 'desc', 'use', 'symbol', 'style'}
+
+
+def clean_svg(text):
+    if re.search(r'<!(DOCTYPE|ENTITY)', text, re.I):
+        raise ValueError('DOCTYPE or ENTITY')
+    root = ET.fromstring(text)
+    local = lambda t: t.rsplit('}', 1)[-1]
+    if local(root.tag) != 'svg':
+        raise ValueError('not an SVG')
+
+    def bad_value(v):
+        v = v.lower()
+        return 'javascript:' in v or 'expression(' in v or '@import' in v or re.search(r'url\(\s*[\'"]?(?!#)', v)
+
+    def walk(el):
+        for k in list(el.attrib):
+            n = local(k).lower()
+            if n.startswith('on') or (n == 'href' and not el.attrib[k].startswith('#')) or bad_value(el.attrib[k]):
+                del el.attrib[k]
+        if local(el.tag) == 'style' and el.text and bad_value(el.text):
+            el.text = ''
+        for child in list(el):
+            if not isinstance(child.tag, str) or local(child.tag) not in SVG_TAGS:
+                el.remove(child)
+            else:
+                walk(child)
+    walk(root)
+    ET.register_namespace('', SVG_NS)
+    ET.register_namespace('xlink', XLINK_NS)
+    if not root.tag.startswith('{'):
+        root.set('xmlns', SVG_NS)
+    return ET.tostring(root, encoding='unicode').encode('utf-8')
+
+
+def write_logos(public, uploads):
+    # Writes the uploaded logos and returns {platform: path for data.json} (with a ?v= of the file)
+    UPLOADED.mkdir(parents=True, exist_ok=True)
+    keep, paths = set(), {}
+    for pid in public:
+        raw, data, ext = uploads.get(pid), None, None
+        if raw:
+            try:
+                if raw.startswith('data:image/png;base64,'):
+                    data, ext = base64.b64decode(raw.split(',', 1)[1], validate=True), 'png'
+                    if not data.startswith(b'\x89PNG\r\n\x1a\n'):
+                        raise ValueError('not a PNG')
+                else:
+                    data, ext = clean_svg(raw), 'svg'
+            except Exception as err:   # a bad upload falls back to the hand-made logo or the badge
+                print(f'  logo for {pid} skipped ({err})')
+                data = None
+        if data:
+            f = UPLOADED / f'{pid}.{ext}'
+            if not f.exists() or f.read_bytes() != data:
+                f.write_bytes(data)
+            keep.add(f.name)
+        else:
+            f = LOGO_DIR / f'{pid}.svg'
+            if not f.exists():
+                continue
+        paths[pid] = f'{f.relative_to(LOGO_DIR.parent).as_posix()}?v={hashlib.sha1(f.read_bytes()).hexdigest()[:8]}'
+    for f in UPLOADED.iterdir():   # uploads that were removed, or platforms taken off the CMS Picker
+        if f.name not in keep:
+            f.unlink()
+    return paths
 
 
 def picker_seed():
@@ -222,7 +317,6 @@ def picker_seed():
 SHORT = {'yes': 'Built in', 'auto': 'Automatic', 'plugin': 'Plugin/app', 'code': 'Needs code', 'hosting': 'Hosting/DNS',
          'check': 'Unclear', 'indirect': 'Indirectly', 'no': 'Not possible'}
 SCOPE = {'V': 'varies', 'C': 'not verified'}   # only the exceptions are marked
-LOGOS = {'wordpress', 'shopify', 'wix', 'squarespace', 'webflow', 'framer', 'hubspot', 'bigcommerce', 'drupal', 'ghost'}
 BADGE = {'magento': 'M', 'duda': 'D', 'headless': '{ }'}
 DEFAULT_COMPARE = ['wordpress', 'shopify', 'wix', 'squarespace']
 PEEK_PLATS = ['wordpress', 'shopify', 'wix']
@@ -237,8 +331,8 @@ def prerender():
     plats = d['platforms']
 
     def logo(p):
-        if p['id'] in LOGOS:
-            return f'<span class="logo" style="--logo: url(&quot;logos/{p["id"]}.svg&quot;)" aria-hidden="true"></span>'
+        if p.get('logo'):
+            return f'<span class="logo" style="--logo: url(&quot;{e(p["logo"])}&quot;)" aria-hidden="true"></span>'
         return f'<span class="logo badge" aria-hidden="true">{e(BADGE.get(p["id"], p["name"][0]))}</span>'
 
     cards = []

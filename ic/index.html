@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Platform Playbook | jsal.io</title>
-<link rel="icon" href="/favicon.svg?v=2026-10-29c" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-29d" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://kvdzluvhwxkrbatgskio.supabase.co" crossorigin>
@@ -324,6 +324,18 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pk-goals { display: flex; flex-wrap: wrap; gap: 6px 14px; }
 .pk-goals label { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--ink); }
 .pk-goals input { width: auto; }
+/* CMS Picker logo: drawn in one colour through a mask, like on the CMS Picker itself */
+.pk-logo-show { display: flex; align-items: center; gap: 14px; }
+.pk-logo-img { flex: none; width: 40px; height: 40px; background: var(--ink); -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
+.pk-logo-img.sm { width: 20px; height: 20px; }
+.pk-hint { font-size: 12.5px; }
+.pk-off { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+/* Team page: platforms */
+.person .plat-badge { display: grid; place-items: center; font-weight: 700; color: var(--muted); }
+.person.is-hidden b { color: var(--muted); }
+.add-plat { margin-top: 10px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.add-plat h4 { font-size: 15px; }
+.add-plat .edit-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: end; }
 .v.indirect { background: var(--accent-soft); color: var(--accent); }
 .how { font-size: 14px; }
 .how summary { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; border-radius: 4px; }
@@ -344,6 +356,11 @@ table { border-collapse: collapse; font-size: 12.5px; }
 th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
 thead th { position: sticky; top: 0; background: var(--sunk); font-weight: 600; white-space: nowrap; }
 tbody th { font-weight: 600; min-width: 190px; position: sticky; left: 0; background: var(--surface); }
+/* The pinned first column stays above the cells scrolling under it (the pills' "· varies" text has
+   its own layer, from its opacity) */
+tbody th { z-index: 1; }
+thead th { z-index: 2; }
+thead th:first-child { left: 0; z-index: 3; }
 td { white-space: nowrap; }
 td .v { cursor: help; }
 tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
@@ -409,6 +426,7 @@ code, pre { font-variant-ligatures: none; }
 @media (max-width: 560px) {
   .search { flex-basis: 100%; max-width: none; margin-left: 0; }
   .edit-grid { grid-template-columns: minmax(0, 1fr); }
+  .add-plat .edit-grid { grid-template-columns: minmax(0, 1fr); }
 }
 /* Sign-in gate, account chip and team page */
 [hidden] { display: none !important; }
@@ -541,6 +559,18 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
       <div class="people" id="pending-list"></div>
       <h3 class="team-h">Members</h3>
       <div class="people" id="member-list"></div>
+      <h3 class="team-h">Platforms</h3>
+      <div class="people" id="platform-list"></div>
+      <form class="edit-form add-plat" id="add-platform">
+        <h4>Add a platform</h4>
+        <div class="edit-grid">
+          <label>Name<input name="pname" maxlength="60" required autocomplete="off" placeholder="Weebly"></label>
+          <label><span>Short name <span style="font-weight:400">(for links)</span></span><input name="pid" maxlength="30" required autocomplete="off" pattern="[a-z0-9][a-z0-9\-]{1,29}" title="2–30 lowercase letters, numbers or dashes" placeholder="weebly"></label>
+        </div>
+        <label><span>About <span style="font-weight:400">(optional; shown under the name)</span></span><textarea name="pabout" rows="2" maxlength="400" placeholder="Hosted. How settings work across sites, and where theme code lives."></textarea></label>
+        <div class="edit-actions"><button type="submit" class="btn primary">Add platform</button>
+          <span class="muted edit-hint">Every answer starts as “Check manually · not verified”. Fill them in with Edit.</span></div>
+      </form>
     </section>
 
     <section class="team-view" id="req-view" hidden>
@@ -594,7 +624,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-29c" defer></script>
+<script src="/nav.js?v=2026-10-29d" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 // ---------- Config ----------
@@ -833,6 +863,7 @@ const LINK_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" st
 // When the answers on show last changed: the latest team edit to this platform's section, its watch-out,
 // or the Playbook's own content (a new platform, item or wording pushed from playbook.py)
 let DATA_AT = null;
+let ALL_P = [];   // every platform, hidden ones too (admins restore them on the Team page); P is the visible ones
 function updatedHtml(p) {
   const tech = state.sec === 'tech' && !state.q.trim(), content = state.sec !== 'tech' && !state.q.trim();
   const times = [DATA_AT, NOTES.get(p.id)?.at];
@@ -1080,7 +1111,7 @@ $('#panel').addEventListener('submit', (e) => {
 // platform's profile live in the picker table, which only admins can read or change. Row labels come
 // from the published /cms-picker/data.json. Changes reach jsal.io/cms-picker with the next publish
 // (the nightly GitHub Action, or playbook.py publish).
-const PK = { on: false, rows: new Map(), items: [], verdicts: {}, open: false };
+const PK = { on: false, rows: new Map(), items: [], verdicts: {}, open: false, hasPublic: false, pubIds: new Set(), pubLogos: new Map() };
 const PK_GOALS = { store: 'Online store', site: 'Business or marketing site', content: 'Blog or content', custom: 'Custom build with developers' };
 const PK_FIELDS = [   // profile field, label, kind
   ['type', 'Type', 'text'], ['summary', 'Summary', 'area'], ['tags', 'Known for', 'list'], ['aiTags', 'AI tools', 'list'],
@@ -1098,8 +1129,42 @@ async function loadPicker() {
   const own = new Set(rows.data.flatMap((r) => Object.keys(r.answers || {})));
   PK.items = pub.items.filter((it) => own.has(it.id));
   PK.verdicts = pub.verdicts || {};
+  // Which platforms are public: the picker table's switch (private/platforms.sql), else what's published
+  PK.hasPublic = rows.data.some((r) => 'public' in r);
+  PK.pubIds = new Set(pub.platforms.map((x) => x.id));
+  PK.pubLogos = new Map(pub.platforms.filter((x) => x.logo).map((x) => [x.id, x.logo]));
   PK.on = true;
   if (!(state.editing && $('#panel .edit-form'))) renderPanel();
+  renderPlatformList();
+}
+function pkPublic(p) {
+  const r = PK.rows.get(p.id);
+  return PK.hasPublic ? !!(r && r.public) : PK.pubIds.has(p.id);
+}
+const logoUrl = (v) => (v.startsWith('data:image/png;base64,') ? v : `data:image/svg+xml;charset=utf-8,${encodeURIComponent(v)}`);
+function pkLogoHtml(p, r) {
+  const pub = PK.pubLogos.get(p.id);
+  const src = r.logo ? logoUrl(r.logo) : pub ? `/cms-picker/${pub}` : '';
+  const img = (cls) => `<span class="pk-logo-img${cls}" style="--logo: url(&quot;${esc(src)}&quot;)" aria-hidden="true"></span>`;
+  return `<article class="card pk-logo"><div class="card-head"><h4 class="item">Logo<small>${r.logo ? 'Uploaded. On the CMS Picker after the next publish.' : pub ? 'The CMS Picker’s own logo file.' : 'None yet: the CMS Picker shows a letter instead.'}</small></h4>
+      <div class="answer"><button type="button" class="edit-btn" data-pk-logo-pick>${src ? 'Replace' : 'Upload'}</button>${r.logo ? '<button type="button" class="edit-btn" data-pk-logo-remove>Remove</button>' : ''}
+      <input type="file" accept=".svg,image/svg+xml,.png,image/png" data-pk-logo hidden></div></div>
+      ${src ? `<div class="pk-logo-show">${img('')}${img(' sm')}</div>` : ''}
+      <p class="muted pk-hint">SVG (best) or PNG with a transparent background, up to 150 KB. It’s drawn in the text colour like the other logos, so only its shape shows.</p></article>`;
+}
+// A first clean-up in the browser (the publish script cleans it again before it goes public)
+function cleanSvg(text) {
+  if (!/xmlns=/.test(text)) text = text.replace(/<svg\b/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+  const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+  const svg = doc.documentElement;
+  if (svg.localName !== 'svg' || doc.querySelector('parsererror')) return '';
+  svg.querySelectorAll('script, foreignObject, image, iframe, a').forEach((n) => n.remove());
+  for (const el of [svg, ...svg.querySelectorAll('*')]) {
+    for (const a of [...el.attributes]) if (/^on/i.test(a.name) || (/href$/i.test(a.name) && !a.value.startsWith('#'))) el.removeAttribute(a.name);
+  }
+  const w = parseFloat(svg.getAttribute('width')), h = parseFloat(svg.getAttribute('height'));
+  if (!svg.getAttribute('viewBox') && w && h) svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  return new XMLSerializer().serializeToString(svg);
 }
 function pkShow(p, f, kind) {
   const v = (PK.rows.get(p.id).profile || {})[f];
@@ -1154,13 +1219,18 @@ function pkProfileHtml(p, r) {
 function pickerHtml(p) {
   if (!R.manage || !PK.on) return '';
   const r = PK.rows.get(p.id);
+  const link = '<a href="/cms-picker/" target="_blank" rel="noopener">CMS Picker</a>';
   const body = !PK.rows.size ? '<p class="empty">Not set up yet: run <code>playbook.py picker-seed</code> to copy the profiles and answers in.</p>'
-    : !r ? `<p class="empty">${esc(p.name)} isn’t in the CMS Picker.</p>`
-    : `<p class="muted pk-sub">Only admins see this. It’s the public <a href="/cms-picker/" target="_blank" rel="noopener">CMS Picker</a>’s own rows and ${esc(p.name)}’s card there; the Playbook rows it also shows come from the answers above. Changes go live with the next publish (nightly).</p>
-      ${pkProfileHtml(p, r)}${PK.items.map((it) => pkRowHtml(p, r, it)).join('')}`;
+    : !pkPublic(p) ? `<div class="pk-off"><p class="muted pk-sub" style="margin:0">${p.name} isn’t on the public ${link}.</p>${PK.hasPublic
+        ? '<button type="button" class="btn" data-pk-public="on">Add to the CMS Picker</button>' : ''}</div>`
+    : !r ? `<p class="empty">${p.name} isn’t in the CMS Picker.</p>`
+    : `<p class="muted pk-sub">Only admins see this. It’s the public ${link}’s own rows and ${p.name}’s card there; the Playbook rows it also shows come from the answers above. Changes go live with the next publish (nightly).</p>
+      ${(r.profile || {}).type ? '' : '<div class="warn"><div><b>Not shown yet:</b> it appears on the CMS Picker once its profile has a type. Fill in the profile with Edit.</div></div>'}
+      ${pkLogoHtml(p, r)}${pkProfileHtml(p, r)}${PK.items.map((it) => pkRowHtml(p, r, it)).join('')}
+      ${PK.hasPublic ? '<p><button type="button" class="link-btn" data-pk-public="off">Take it off the CMS Picker</button></p>' : ''}`;
   return `<details class="pk"${PK.open || (state.editing || '').startsWith('pk:') ? ' open' : ''}><summary>CMS Picker<span class="pk-tag">Admins only</span></summary><div class="pk-body">${body}</div></details>`;
 }
-async function savePicker(p, change, button) {
+async function savePicker(p, change, button, msg = 'Saved. Live on the CMS Picker after the next publish') {
   const r = PK.rows.get(p.id);
   if (button) button.disabled = true;
   const upd = { ...change, at: new Date().toISOString() };
@@ -1169,10 +1239,42 @@ async function savePicker(p, change, button) {
   Object.assign(r, upd);
   state.editing = null;
   renderPanel();
-  toast('Saved. Live on the CMS Picker after the next publish');
+  renderPlatformList();
+  toast(msg);
 }
+$('#panel').addEventListener('change', async (e) => {
+  const inp = e.target.closest('[data-pk-logo]');
+  if (!inp || !inp.files[0]) return;
+  const f = inp.files[0], p = P.find((x) => x.id === state.platform);
+  if (f.size > 150000) return toast('That file is over 150 KB');
+  let logo = '';
+  if (f.type === 'image/svg+xml' || /\.svg$/i.test(f.name)) logo = cleanSvg(await f.text());
+  else if (f.type === 'image/png') logo = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => res(''); fr.readAsDataURL(f); });
+  else return toast('Use an SVG or PNG file');
+  if (!logo) return toast('That file couldn’t be read');
+  savePicker(p, { logo }, null, 'Logo saved. On the CMS Picker after the next publish');
+});
 $('#panel').addEventListener('toggle', (e) => { if (e.target.matches('details.pk')) PK.open = e.target.open; }, true);
-$('#panel').addEventListener('click', (e) => {
+$('#panel').addEventListener('click', async (e) => {
+  const p = P.find((x) => x.id === state.platform);
+  const sw = e.target.closest('[data-pk-public]');
+  if (sw) {
+    const on = sw.dataset.pkPublic === 'on';
+    if (!on && !confirm(`Take ${plain(p.name)} off the public CMS Picker? Its card, logo and answers are kept for later.`)) return;
+    const msg = on ? 'Added. It shows on the CMS Picker after the next publish' : 'Taken off. Gone from the CMS Picker after the next publish';
+    PK.open = true;
+    if (PK.rows.has(p.id)) return savePicker(p, { public: on }, sw, msg);
+    sw.disabled = true;
+    const { data, error } = await sb.from('picker').insert({ platform: p.id, public: true }).select().single();
+    if (error) { sw.disabled = false; return toast(failText(error, 'Couldn’t add it')); }
+    PK.rows.set(p.id, data);
+    renderPanel();
+    renderPlatformList();
+    return toast(msg);
+  }
+  if (e.target.closest('[data-pk-logo-pick]')) return e.target.closest('.card').querySelector('[data-pk-logo]').click();
+  const rm = e.target.closest('[data-pk-logo-remove]');
+  if (rm) { if (confirm(`Remove ${plain(p.name)}’s uploaded logo?`)) savePicker(p, { logo: null }, rm, 'Logo removed. Gone from the CMS Picker after the next publish'); return; }
   const b = e.target.closest('[data-pk-edit]');
   if (!b) return;
   state.editing = b.dataset.pkEdit;
@@ -1336,8 +1438,76 @@ function renderTeam() {
   $('#pending-list').innerHTML = n ? R.pending.map((p) => personHtml(p,
     `<button type="button" class="btn primary" data-approve="${esc(p.user_id)}">Approve</button><button type="button" class="btn" data-decline="${esc(p.user_id)}">Decline</button>`)).join('')
     : '<p class="empty">Nobody is waiting. When someone signs in with Discord and isn’t on the team yet, they show up here.</p>';
+  renderPlatformList();
   $('#member-list').innerHTML = members.map((m) => personHtml(m, m.user_id === R.me ? '<span class="muted">You</span>' :
     `<button type="button" class="btn" data-role="${esc(m.user_id)}" data-to="${m.role === 'admin' ? 'member' : 'admin'}">${m.role === 'admin' ? 'Make member' : 'Make admin'}</button><button type="button" class="link-btn" data-remove="${esc(m.user_id)}">Remove</button>`)).join('');
+}
+// Platforms: admins add one (it starts with every answer "Check manually"), hide one (answers kept) or
+// restore it. The page can only make these changes through add_platform and set_platform_hidden
+// (private/platforms.sql), which check for an admin; then it reloads the Playbook data.
+function renderPlatformList() {
+  if (!R.manage) return;
+  $('#platform-list').innerHTML = ALL_P.map((p) => {
+    const status = p.hidden ? 'Hidden from the team' : pkPublic(p) ? 'Playbook and CMS Picker' : 'Playbook only';
+    const actions = p.hidden ? `<button type="button" class="btn" data-plat-restore="${p.id}">Restore</button>`
+      : `<button type="button" class="btn" data-plat-open="${p.id}">Open</button><button type="button" class="link-btn" data-plat-hide="${p.id}">Hide</button>`;
+    return `<div class="person${p.hidden ? ' is-hidden' : ''}"><span class="avatar-blank plat-badge" aria-hidden="true">${esc(plain(p.name).slice(0, 1))}</span>
+      <div><b>${p.name}</b><small>${status}</small></div><div class="person-actions">${actions}</div></div>`;
+  }).join('');
+}
+async function reloadContent() {
+  const app = await sb.from('app_data').select('data,updated_at').eq('id', 'defaults').maybeSingle();
+  if (app.error || !app.data) return toast('Couldn’t reload the Playbook. Refresh the page');
+  const data = { ...app.data.data, AT: app.data.updated_at };
+  useContent(data);
+  const c = readCache(R.me);
+  if (c) writeCache({ ...c, data });
+  if (!P.some((p) => p.id === state.platform)) state.platform = P[0].id;
+  renderControls(); renderPicker(); renderPanel(); renderGrid();
+  renderPlatformList();
+}
+$('#platform-list').addEventListener('click', async (e) => {
+  const open = e.target.closest('[data-plat-open]');
+  if (open) { showView('answers'); return select(open.dataset.platOpen); }
+  const b = e.target.closest('[data-plat-hide], [data-plat-restore]');
+  if (!b) return;
+  const id = b.dataset.platHide || b.dataset.platRestore, hide = !!b.dataset.platHide;
+  const p = ALL_P.find((x) => x.id === id);
+  if (hide && !confirm(`Hide ${plain(p.name)}? The team won’t see it and it comes off the CMS Picker. Its answers are kept, and you can restore it here.`)) return;
+  b.disabled = true;
+  const { error } = await sb.rpc('set_platform_hidden', { p_id: id, p_hidden: hide });
+  b.disabled = false;
+  if (error) return toast(platError(error, hide ? 'Couldn’t hide it' : 'Couldn’t restore it'));
+  await reloadContent();
+  loadPicker();
+  toast(hide ? `${plain(p.name)} is hidden` : `${plain(p.name)} is back`);
+});
+// The short name follows the name until it's typed in by hand
+$('#add-platform').addEventListener('input', (e) => {
+  const f = e.currentTarget;
+  if (e.target === f.pid) f.pid.dataset.typed = '1';
+  if (e.target === f.pname && !f.pid.dataset.typed) f.pid.value = plain(f.pname.value).toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
+});
+$('#add-platform').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const f = e.currentTarget, btn = f.querySelector('[type="submit"]');
+  const id = f.pid.value.trim(), name = f.pname.value.trim();
+  btn.disabled = true;
+  const { error } = await sb.rpc('add_platform', { p_id: id, p_name: name, p_about: f.pabout.value.trim() });
+  btn.disabled = false;
+  if (error) return toast(platError(error, 'Couldn’t add it'));
+  f.reset();
+  delete f.pid.dataset.typed;
+  await reloadContent();
+  loadPicker();
+  showView('answers');
+  select(id);
+  toast(`${name} added. Fill in its answers with Edit`);
+});
+// The database's own message is written for people ("There is already a platform called miva")
+function platError(error, what) {
+  if (/Could not find the function|PGRST202/i.test(`${error.message} ${error.code}`)) return `${what}: run private/platforms.sql in Supabase first`;
+  return /^(There is|The short name|Add a name|The description|No platform)/.test(error.message || '') ? error.message : failText(error, what);
 }
 async function loadTeam() {
   if (!R.manage) return;
@@ -1759,7 +1929,8 @@ function useContent(d) {
   ({ ITEMS, CONTENT_ITEMS, VERDICT, SCOPE, P, CONTENT, VARIANTS, HOW, WARN, H1_FIX, PTYPES, BY_TYPE, GUIDES, HOW_GUIDES } = d);
   DATA_AT = d.AT || null;
   // Alphabetical, so a platform is quick to find; Headless CMS last, as it's a category, not a product
-  P = [...P].sort((a, b) => (a.id === 'headless') - (b.id === 'headless') || a.name.localeCompare(b.name));
+  ALL_P = [...P].sort((a, b) => (a.id === 'headless') - (b.id === 'headless') || a.name.localeCompare(b.name));
+  P = ALL_P.filter((p) => !p.hidden);
   HOW_UNVERIFIED = new Set(d.HOW_UNVERIFIED || []);
 }
 
