@@ -26,7 +26,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-30zj" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-30zk" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
      only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
@@ -356,7 +356,7 @@ p, li { text-wrap: pretty; }
 .fmt .label { color: var(--gold-acc); }
 .fmt .desc { color: var(--gold-muted); }
 
-.ui { grid-column: 1 / 6; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr); align-content: space-between; gap: 22px; }   /* a narrow tile: the screen sits under the text */
+.ui { grid-column: 1 / 6; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 22px; }   /* a narrow tile: the screen sits under the text and fills the rest of it */
 .ui .label { color: var(--green-acc); }
 .cms { grid-column: 6 / 13; background: var(--plum); color: var(--plum-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--plum-acc); --arrow-ink: var(--plum); }
 .cms h2 { font-size: 36px; }
@@ -989,6 +989,6 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-30zj" defer></script>
+<script src="/nav.js?v=2026-10-30zk" defer></script>
 </body>
 </html>
