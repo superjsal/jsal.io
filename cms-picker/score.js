@@ -29,10 +29,15 @@
   // Free software still needs paid hosting, so it counts as the lowest paid band.
   const COST_LEVEL = { free: 0, low: 1, software: 1, mid: 2, high: 3 };
   const BUDGET = { none: 0, low: 1, mid: 2 };
+  // Which "What it costs to start" row prices these answers for a platform: a store's, or (with paid members)
+  // the plan that includes paid memberships ("Start a site with paid members"), else a website's. Shared by the
+  // budget score, the "costs less to start" box and the card's cost line, so they always agree.
+  const costRow = (ans, a) => (a.what === 'store' ? 'cost_store' : a.members === 'yes' && (ans || {}).cost_members ? 'cost_members' : 'cost_site');
   const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
 
   // What each part of the score says when it's what put one match ahead of another: [the leader earned
-  // it, the runner-up lost it], given (answers, runner-up's name, leader's name). Keys match fitScore's
+  // it, the runner-up lost it], given (answers, runner-up's name, leader's name, the leader's own points for
+  // that part). Keys match fitScore's
   // parts; every phrase comes from the published data.
   const TIP = {
     goal: [(a, y, x) => `${x} is made for that`, (a, y) => `${y} isn’t made for that`],
@@ -56,7 +61,8 @@
     leave: [(a, y, x) => `moving off ${x} later is easier`, (a, y) => `moving off ${y} later is harder`],
     grow: [(a, y, x) => `${x} has more plugins and apps for that`, (a, y) => `${y} has fewer plugins and apps for that`],
     notIdeal: [null, (a, y) => `${y}’s own card says it isn’t ideal for answers like yours`],
-    budget: [(a, y, x) => (a.budget === 'none' ? `${x} is free to start` : `${x} fits it`), (a, y) => `${y} costs more than that`],
+    // Minus: when the leader is over the budget too (lost points of its own), it only costs less than the runner-up
+    budget: [(a, y, x) => (a.budget === 'none' ? `${x} is free to start` : `${x} fits it`), (a, y, x, own) => (own < 0 ? `${x} costs less than ${y}` : `${y} costs more than that`)],
   };
   // The answer behind each part, said first so the reason reads as a reply to it: "you're building an app
   // or portal, and Sanity is built to…". Null when the wording already names the answer.
@@ -152,7 +158,7 @@
     // nothing else fits
     if (notIdealFor(Q, p.id, a)) add('notIdeal', -30);
     if (a.budget in BUDGET) {
-      const level = COST_LEVEL[verdict(a.what === 'store' ? 'cost_store' : 'cost_site')];
+      const level = COST_LEVEL[verdict(costRow(data.answers[p.id], a))];
       if (level !== undefined) {
         const over = level - BUDGET[a.budget];
         if (over > 0) add('budget', -3 * over); else add('budget', 0, a.budget === 'none' ? 'Free to start' : 'Fits your budget');
@@ -176,7 +182,7 @@
     design: 'design control', meta_title: 'page titles and descriptions for search', urls: 'control over page addresses',
     gsc404: 'redirects for old links', schema: 'search details like prices and ratings', noindex: 'pages kept out of search',
     ai_crawlers: 'control over which AI bots read the site',
-    cost_site: 'a cheaper start', cost_store: 'a cheaper store',   // not used: cost isn't a "can it do it" row (weight 0)
+    cost_site: 'a cheaper start', cost_store: 'a cheaper store', cost_members: 'a cheaper start with paid members',   // not used: cost isn't a "can it do it" row (weight 0)
   };
   // How much a row matters for these answers; 0 when the person has ruled it out
   function weight(row, a) {
@@ -233,7 +239,7 @@
     const two = gaps(x, y).slice(0, 2).sort((p, q) => (p.k === 'leave') - (q.k === 'leave'));
     let said = null;
     const words = two.map(({ k }) => {
-      const [plus, minus] = TIP[k], f = (x.pts[k] || 0) > 0 ? plus || minus : minus || plus, w = f && f(a, y.p.name, x.p.name);
+      const [plus, minus] = TIP[k], f = (x.pts[k] || 0) > 0 ? plus || minus : minus || plus, w = f && f(a, y.p.name, x.p.name, x.pts[k] || 0);
       if (!w) return null;
       const lead = LEAD[k] && LEAD[k](a);
       if (!lead || lead === said) return w;
@@ -254,7 +260,7 @@
     const w = reasons(a, x, y);
     if (w) return `Where ${x.p.name} does better for you: ${w}.`;
     if (!(a.budget in BUDGET)) return null;
-    const row = a.what === 'store' ? 'cost_store' : 'cost_site', band = (p) => ((data.answers[p.p.id] || {})[row] || {}).verdict;
+    const band = (p) => { const ans = data.answers[p.p.id] || {}; return (ans[costRow(ans, a)] || {}).verdict; };
     const bx = band(x), by = band(y);
     if (!(bx in COST_LEVEL) || !(by in COST_LEVEL) || COST_LEVEL[bx] >= COST_LEVEL[by]) return null;
     const label = (v) => (data.verdicts || {})[v] || v;
@@ -310,6 +316,6 @@
   // Answers that pull against each other, with the question to change: a custom app or portal built by
   // someone not technical
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict };
+  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

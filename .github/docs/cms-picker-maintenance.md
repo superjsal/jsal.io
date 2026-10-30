@@ -54,6 +54,9 @@ Shared by the page and the tests, so they always run the same code.
 - **Paid members** ("Will you have paid members or a newsletter?" → Yes) read the "Sell memberships or paid
   posts" row: built in +3, plugin 0, needs code or check manually −2, no −4. Ghost gets +2 more for sending
   newsletters to those members itself (`quiz.members`). HubSpot's card rules it out for paid members.
+  Their budget reads "Start a site with paid members" (`cost_members`: the plan that includes paid
+  memberships, e.g. Ghost(Pro) Publisher, Wix Core), as does the card's "Cost to start" line; `costRow` in
+  `score.js` picks the row for the score, the "costs less to start" box and the card alike.
 - **A platform's own reason:** `quiz.leaveWhy` replaces "Easy to move to another platform later" where the
   card's "If you leave" says more (Sanity: "You own the site code and can export all your content").
 
@@ -81,6 +84,12 @@ Also run by `build\check.ps1` before every push, and by the "Check CMS Picker da
   - every "What tipped it" starts from one of their answers (`LEAD`).
   If one starts failing in new ways, that's the point to revisit two-step scoring (must-haves filter first,
   then preferences), simulated and parked on 2026-10-30.
+- **Parked: partial fit.** Being made for what someone's making is all or nothing (+4 if the card's "Fits"
+  lists it, −8 if not), so one tick moves a platform 12 points. Wix has a built-in blog but its card doesn't
+  list "Blog or content": ticking it would make Wix first in 720 content answer sets and beat Ghost for paid
+  newsletters (3 personas fail), so it was left off (2026-10-30; Duda got it, changing 143). If people
+  report Wix missing from content-site results, add a middle level ("can do it, not what it's made for",
+  e.g. 0 points) for platforms whose answer for the matching row is built in, instead of ticking the card.
 
 ## Keeping the answers current
 

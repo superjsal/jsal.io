@@ -28,6 +28,10 @@
           "label": "Start a website"
         },
         {
+          "id": "cost_members",
+          "label": "Start a site with paid members"
+        },
+        {
           "id": "cost_store",
           "label": "Start an online store"
         }
