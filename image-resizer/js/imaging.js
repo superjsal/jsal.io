@@ -3,9 +3,13 @@
 
 export const DEFAULT_ANCHOR = { x: 0.5, y: 0.5 };
 
-// Long edge of the in-memory preview copy. Big enough for a sharp crop editor
-// on a 2x screen; the full-resolution image is only decoded again at export.
-const PREVIEW_MAX_EDGE = 2048;
+// Every image keeps a small copy in memory for its card: 800px on the long edge, or more if its short
+// edge would drop under 480px (so a narrow crop of a panorama still fills a 2x card), never over 2048px.
+// Only the image open in the crop editor gets a sharp 2048px copy (decodeForEditor), and the
+// full-resolution image is only decoded again at export.
+const COPY_LONG = 800;
+const COPY_SHORT = 480;
+const EDITOR_MAX_EDGE = 2048;
 
 // heic-to (libheif compiled to JS, ~3 MB, bundled in vendor/) — only loaded the
 // first time a HEIC/HEIF file can't be decoded natively (Safari reads them on its own).
@@ -47,9 +51,28 @@ async function canvasToBlob(canvas, mime, quality) {
   return new Promise(r => canvas.toBlob(r, mime, quality));
 }
 
-// Loads one file. Returns the source dimensions, a small preview bitmap for the
-// UI, and the Blob to re-decode at export time. HEIC files that needed the JS
-// decoder are stored as a lossless PNG so the slow decode only happens once.
+// Scales a decoded bitmap down by `scale` (no-op at 1 or more) and frees the full-size one.
+async function shrink(full, scale) {
+  if (scale >= 1) return full;
+  const pw = Math.max(1, Math.round(full.width * scale));
+  const ph = Math.max(1, Math.round(full.height * scale));
+  const [c, ctx] = newCanvas(pw, ph);
+  drawScaled(full, 0, 0, full.width, full.height, ctx, pw, ph);
+  const small = await createImageBitmap(c);
+  freeCanvas(c);
+  full.close();
+  return small;
+}
+
+// The sharp copy for the crop editor, decoded again from the source.
+export async function decodeForEditor(item) {
+  const full = await createImageBitmap(item.source);
+  return shrink(full, EDITOR_MAX_EDGE / Math.max(full.width, full.height));
+}
+
+// Loads one file. Returns the source dimensions, the small copy for the card (`preview`; the editor
+// shows it until its sharp copy is ready), and the Blob to re-decode later. HEIC files that needed
+// the JS decoder are stored as a lossless PNG so the slow decode only happens once.
 export async function loadImage(file) {
   let full;
   let source = file;
@@ -66,17 +89,9 @@ export async function loadImage(file) {
   }
 
   const { width, height } = full;
-  const scale = Math.min(1, PREVIEW_MAX_EDGE / Math.max(width, height));
-  let preview = full;
-  if (scale < 1) {
-    const pw = Math.max(1, Math.round(width * scale));
-    const ph = Math.max(1, Math.round(height * scale));
-    const [c, ctx] = newCanvas(pw, ph);
-    drawScaled(full, 0, 0, width, height, ctx, pw, ph);
-    preview = await createImageBitmap(c);
-    freeCanvas(c);
-    full.close();
-  }
+  const long = Math.max(width, height), short = Math.min(width, height);
+  const scale = Math.min(Math.max(COPY_LONG / long, COPY_SHORT / short), EDITOR_MAX_EDGE / long);
+  const preview = await shrink(full, scale);
   return { width, height, preview, source };
 }
 

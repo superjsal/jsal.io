@@ -2,9 +2,9 @@
 // the part that will be cropped away, and lets the crop window be dragged or
 // moved with arrow keys along whichever axis has room.
 
-import { state, outSizeFor } from "./state.js?v=2026-10-30zc";
-import { getCropRect } from "./imaging.js?v=2026-10-30zc";
-import { clamp } from "./ui.js?v=2026-10-30zc";
+import { state, outSizeFor } from "./state.js?v=2026-10-30zd";
+import { getCropRect, decodeForEditor } from "./imaging.js?v=2026-10-30zd";
+import { clamp } from "./ui.js?v=2026-10-30zd";
 
 const canvas      = document.getElementById("out");
 const ctx         = canvas.getContext("2d");
@@ -19,6 +19,29 @@ let resizing = false;   // the window is being resized: draw fast, then once sha
 let handlers = { onLive() {}, onCommit() {} };
 const TOUCH = matchMedia("(pointer: coarse)").matches;   // phones and tablets: no arrow keys to mention
 
+// The sharp copy of the open image (only one is kept). Until it's decoded, the editor shows the card's
+// small copy, then redraws.
+const sharp = { item: null, bmp: null };
+
+function releaseSharp() {
+  sharp.bmp?.close();
+  sharp.item = sharp.bmp = null;
+}
+
+function editorBitmap(item) {
+  if (sharp.item === item) return sharp.bmp ?? item.preview;
+  releaseSharp();
+  // Already full size (small images): nothing sharper to decode
+  if (item.preview.width >= item.width) return item.preview;
+  sharp.item = item;
+  decodeForEditor(item).then(bmp => {
+    if (sharp.item !== item || item.freed) { bmp.close(); return; }
+    sharp.bmp = bmp;
+    drawEditor();
+  }, () => {});   // keep showing the small copy
+  return item.preview;
+}
+
 // Which axis the crop window can move along for this item (null = none).
 export function cropAxis(item) {
   const { w, h } = outSizeFor(item);
@@ -29,7 +52,7 @@ export function cropAxis(item) {
 export function drawEditor() {
   const item = state.images[state.selectedIndex];
   if (!item) return;
-  const bmp = item.preview;
+  const bmp = editorBitmap(item);
 
   // Backing store matches the displayed size × devicePixelRatio for a sharp preview.
   // Only reallocated when that size actually changes.
@@ -138,6 +161,7 @@ export function drawEditor() {
 }
 
 export function clearEditor() {
+  releaseSharp();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   geom.axis = null;

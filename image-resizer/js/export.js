@@ -2,8 +2,8 @@
 // the settings it was made with, so file sizes can be shown and single saves
 // are instant. Encodes run one at a time in idle time ("prewarming").
 
-import { state, outSizeFor } from "./state.js?v=2026-10-30zc";
-import { exportImage } from "./imaging.js?v=2026-10-30zc";
+import { state, outSizeFor } from "./state.js?v=2026-10-30zd";
+import { exportImage } from "./imaging.js?v=2026-10-30zd";
 
 export function blobKey(item) {
   const { w, h } = outSizeFor(item);
@@ -25,7 +25,9 @@ async function encode(item) {
     const { w, h } = outSizeFor(item);
     const blob = await exportImage(item, w, h, state.format, state.quality);
     if (item.freed) return null;
-    if (item.cache) URL.revokeObjectURL(item.cache.url);
+    // The old file may still be queued in Download All (a setting changed mid-export), so its URL stays
+    // valid for a minute instead of failing that download
+    if (item.cache) { const old = item.cache.url; setTimeout(() => URL.revokeObjectURL(old), 60000); }
     item.cache = { key, blob, url: URL.createObjectURL(blob), size: blob.size };
     item.error = null;
     return item.cache;

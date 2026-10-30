@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-30zc";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zc";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zc";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zc";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zc";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zc";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zc";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zc";
+} from "./state.js?v=2026-10-30zd";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zd";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zd";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zd";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zd";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zd";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zd";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zd";
 
 const $ = id => document.getElementById(id);
 
@@ -36,6 +36,8 @@ const DOWNLOAD_GAP_MS = 300;   // browsers drop rapid-fire downloads; space them
 
 let pendingFiles   = null;
 let loadGeneration = 0;
+let loadQueue      = [];   // files waiting to be decoded by the running load
+let loadingGen     = 0;    // generation of the running load, 0 when none is running
 
 const prewarm = (delay) => schedulePrewarm(updateCardMeta, delay);
 
@@ -65,8 +67,14 @@ function refreshAll() {
   showSummary();
 }
 
-function resetUI() {
+// Stops a running load; it frees what it had decoded so far.
+function cancelLoad() {
   loadGeneration++;
+  loadQueue = [];
+}
+
+function resetUI() {
+  cancelLoad();
   cancelPrewarm();
   state.images.forEach(freeItem);
   state.images = [];
@@ -97,27 +105,36 @@ function makeItem(file, loaded) {
   return { ...loaded, name: file.name, customName: "", cropAnchor: { ...DEFAULT_ANCHOR }, cache: null };
 }
 
-// Decodes one file at a time so memory stays bounded with large batches.
+// Decodes one file at a time so memory stays bounded with large batches. Files dropped while a load
+// is running join it, rather than starting a second load that would replace the first.
 async function loadFiles(files) {
-  const gen = ++loadGeneration;
+  loadQueue.push(...files);
+  if (loadingGen && loadingGen === loadGeneration) return;
+  const gen = loadingGen = ++loadGeneration;
   const loaded = [];
   const skipped = [];
+  let n = 0;
 
-  for (const [n, file] of files.entries()) {
-    const heicNote = isHeicFile(file) ? " (converting HEIC)" : "";
-    setStatus(`Loading ${n + 1} of ${files.length}${heicNote}…`, "busy");
-    try {
-      const result = await loadImage(file);
-      if (gen !== loadGeneration) { result.preview.close(); return; }
-      loaded.push(makeItem(file, result));
-    } catch (err) {
-      if (gen !== loadGeneration) return;
-      console.warn("Skipped unreadable file:", file.name, err);
-      // Say why where it's likely: a HEIC the converter couldn't read, or a file too big for this browser's memory
-      skipped.push(isHeicFile(file) ? `${file.name} (HEIC couldn't be converted)` : file.size > 40e6 ? `${file.name} (too large to open here)` : file.name);
+  try {
+    while (loadQueue.length) {
+      const file = loadQueue.shift();
+      const heicNote = isHeicFile(file) ? " (converting HEIC)" : "";
+      setStatus(`Loading ${++n} of ${n + loadQueue.length}${heicNote}…`, "busy");
+      try {
+        const result = await loadImage(file);
+        if (gen !== loadGeneration) { result.preview.close(); return; }
+        loaded.push(makeItem(file, result));
+      } catch (err) {
+        if (gen !== loadGeneration) return;
+        console.warn("Skipped unreadable file:", file.name, err);
+        // Say why where it's likely: a HEIC the converter couldn't read, or a file too big for this browser's memory
+        skipped.push(isHeicFile(file) ? `${file.name} (HEIC couldn't be converted)` : file.size > 40e6 ? `${file.name} (too large to open here)` : file.name);
+      }
     }
+  } finally {
+    if (loadingGen === gen) loadingGen = 0;
+    if (gen !== loadGeneration) loaded.forEach(freeItem);   // cancelled: nothing it decoded is kept
   }
-  if (gen !== loadGeneration) return;
 
   state.images.push(...loaded);
   if (!state.images.length) {
@@ -137,6 +154,7 @@ function acceptPending(add) {
   pendingFiles = null;
   loadChoice.hidden = true;
   if (!add) {
+    cancelLoad();
     cancelPrewarm();
     state.images.forEach(freeItem);
     state.images = [];
@@ -222,8 +240,8 @@ async function saveImage(i) {
     if (!entry) return;
     const name = getFilename(item);
     if (dir) {
-      await writeToFolder(dir, name, entry.blob);
-      setStatus(`Saved ${name} to "${dir.name}"`, "active");
+      const saved = await writeToFolder(dir, name, entry.blob);
+      setStatus(`Saved ${saved} to "${dir.name}"${saved !== name ? ` (${name} was already there)` : ""}`, "active");
     } else {
       triggerDownload(entry.url, name);
     }
@@ -258,6 +276,7 @@ async function downloadAll() {
 
   const files = [];
   const failed = [];
+  let renamed = 0;   // folder saves that got a number because the name was taken
   for (const [n, item] of [...state.images].entries()) {
     downloadLabel.textContent = `Preparing ${n + 1}/${state.images.length}…`;
     try {
@@ -279,7 +298,7 @@ async function downloadAll() {
     } else if (dest === "folder") {
       for (const [n, f] of files.entries()) {
         downloadLabel.textContent = `Saving ${n + 1}/${files.length}…`;
-        await writeToFolder(dir, f.name, f.blob);
+        if (await writeToFolder(dir, f.name, f.blob) !== f.name) renamed++;
       }
     } else {
       downloadLabel.textContent = "Downloading…";
@@ -294,7 +313,9 @@ async function downloadAll() {
   }
 
   if (files.length) window.jsalAchieve?.("pixel");   // achievement (/nav.js)
-  const where = dest === "zip" ? " as a ZIP" : dest === "folder" ? ` to "${dir.name}"` : "";
+  const where = dest === "zip" ? " as a ZIP"
+    : dest === "folder" ? ` to "${dir.name}"${renamed ? ` (${plural(renamed, "name")} already there got a number added)` : ""}`
+    : "";
   if (failed.length) {
     finish(`Exported ${plural(files.length)}${where} · ${failed.length} failed (too large for this browser): ${failed.join(", ")}`, "error");
   } else {

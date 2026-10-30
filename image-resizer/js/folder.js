@@ -43,8 +43,23 @@ export async function ensureWritable(handle) {
   return (await handle.requestPermission(opts)) === "granted";
 }
 
-// Writes (or overwrites) one file in the folder.
+// A name not yet in the folder: photo.jpg, else photo-2.jpg, photo-3.jpg… Never overwrite, since
+// the folder may be the one the originals came from.
+async function freeName(handle, name) {
+  for (let n = 1; ; n++) {
+    const candidate = n === 1 ? name : name.replace(/(\.[^.]+)?$/, `-${n}$1`);
+    try {
+      await handle.getFileHandle(candidate);
+    } catch (err) {
+      if (err.name === "NotFoundError") return candidate;
+      throw err;
+    }
+  }
+}
+
+// Writes one file into the folder and returns the name it was saved under.
 export async function writeToFolder(handle, name, blob) {
+  name = await freeName(handle, name);
   const file = await handle.getFileHandle(name, { create: true });
   const out = await file.createWritable();
   try {
@@ -52,4 +67,5 @@ export async function writeToFolder(handle, name, blob) {
   } finally {
     await out.close();
   }
+  return name;
 }
