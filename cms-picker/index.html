@@ -6,7 +6,7 @@
   <title>CMS Picker: Which Website Builder or CMS Fits You? | jsal.io</title>
   <meta name="description" content="Which website builder or CMS fits you? Take a short quiz or compare 13 platforms, from WordPress to Webflow: who each suits, what’s built in, and SEO." />
   <link rel="canonical" href="https://jsal.io/cms-picker/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-30zg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-30zi" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -250,11 +250,11 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-30zg" />
-  <script src="score.js?v=2026-10-30zg" defer></script>
-  <script src="app.js?v=2026-10-30zg" defer></script>
+  <link rel="stylesheet" href="styles.css?v=2026-10-30zi" />
+  <script src="score.js?v=2026-10-30zi" defer></script>
+  <script src="app.js?v=2026-10-30zi" defer></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-30zg" defer></script>
+  <script src="/nav.js?v=2026-10-30zi" defer></script>
 </head>
 <body>
   <main class="app">
@@ -295,12 +295,12 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
     </section>
 
     <section class="block" id="quiz" aria-labelledby="quiz-h">
-      <h2 id="quiz-h"><span class="num">01 · Find your fit</span>A few questions, then your best matches</h2>
+      <h2 id="quiz-h"><span class="num">01 · Find your fit<span class="sr-only">:&nbsp;</span></span>A few questions, then your best matches</h2>
       <div class="qz" id="qz"></div>
     </section>
 
     <section class="block" id="fit" aria-labelledby="fit-h">
-      <h2 id="fit-h"><span class="num">All <span class="n-plats"><!-- prerender:count -->13<!-- /prerender:count --></span> platforms</span>Or browse by what you’re building</h2>
+      <h2 id="fit-h"><span class="num">All <span class="n-plats"><!-- prerender:count -->13<!-- /prerender:count --></span> platforms<span class="sr-only">:&nbsp;</span></span>Or browse by what you’re building</h2>
       <div class="types" id="types" role="group" aria-labelledby="fit-h"></div>
       <p class="count" id="count" aria-live="polite"></p>
       <!-- The cards and the table below are filled by build\playbook.py (a plain-HTML copy for crawlers); app.js redraws them on load -->
@@ -320,7 +320,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
     </section>
 
     <section class="block" id="seo" aria-labelledby="seo-h">
-      <h2 id="seo-h"><span class="num">02 · Compare platforms</span>What can each one do?</h2>
+      <h2 id="seo-h"><span class="num">02 · Compare platforms<span class="sr-only">:&nbsp;</span></span>What can each one do?</h2>
       <div class="plats" id="plats" role="group" aria-label="Platforms to compare"><span class="plats-label">Compare</span></div>
       <div class="keyrow">
         <div class="legend" id="legend" role="group" aria-label="Key"></div>

@@ -469,7 +469,8 @@
       top.append(bar);
       // Focus moves to this heading after each answer, so it carries the progress too ("Question 2 of 9: …")
       const h = el('h3');
-      h.append(el('span', 'sr-only', `${progress}: `), q.q);
+      // A no-break space: an ordinary one at the end of the hidden span is dropped, and screen readers ran "9:Which" together
+      h.append(el('span', 'sr-only', `${progress}: `), q.q);
       h.tabIndex = -1;
       const opts = el('div', 'qz-opts');
       opts.setAttribute('role', 'group');

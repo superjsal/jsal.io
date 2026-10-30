@@ -275,9 +275,11 @@ textarea.code[hidden] { display: none; }
 .preview h1 { font-size: 26px; } .preview h2 { font-size: 21px; } .preview h3 { font-size: 18px; } .preview h4, .preview h5, .preview h6 { font-size: 15.5px; }
 /* Marks in the editor follow the site's colour roles: neutral for plain information (heading tags), blue for
    links, orange for anything a check wants fixed, and gold only for what's selected or just shown */
-/* Small tag before each heading so the level is visible at a glance */
+/* Small tag before each heading so the level is visible at a glance. Screen readers already say "heading level 2",
+   so the tags carry empty alt text ("H2" / ""); browsers without that syntax keep the plain line before it */
 .preview :is(h1, h2, h3, h4, h5, h6)::before {
   content: "H1";
+  content: "H1" / "";
   display: inline-block;
   margin-right: 8px;
   padding: 1px 5px;
@@ -287,8 +289,8 @@ textarea.code[hidden] { display: none; }
   color: var(--jsal-ink-2);
   background: var(--jsal-sunk);
 }
-.preview h2::before { content: "H2"; } .preview h3::before { content: "H3"; } .preview h4::before { content: "H4"; }
-.preview h5::before { content: "H5"; } .preview h6::before { content: "H6"; }
+.preview h2::before { content: "H2"; content: "H2" / ""; } .preview h3::before { content: "H3"; content: "H3" / ""; } .preview h4::before { content: "H4"; content: "H4" / ""; }
+.preview h5::before { content: "H5"; content: "H5" / ""; } .preview h6::before { content: "H6"; content: "H6" / ""; }
 /* An H1 in the body is one of the checks, so its tag gets the dashed warning outline the [Image] note has,
    which tells it apart from the other heading tags at a glance */
 .preview h1::before { padding: 0 4px; border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); }

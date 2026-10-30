@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-30zg";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-30zg";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-30zi";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-30zi";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -108,6 +108,9 @@ $("blankBtn").addEventListener("click", () => { load({ html: "", text: "" }, tru
 
 function load(data, blank = false) {
   if (!blank && !(data.html || "").trim() && !(data.text || "").trim()) return;
+  // The paste area (and the button just pressed in it) is about to disappear: keyboard focus would fall back to
+  // the start of the page, so it goes to the Checks heading instead
+  const focusLost = !document.activeElement || document.activeElement === document.body || $("pasteZone").contains(document.activeElement);
   input = data;
   app.classList.add("has-content");
   source = blank ? "" : detectSource(input.html, input.text);
@@ -120,6 +123,13 @@ function load(data, blank = false) {
   const code = !blank && !(data.html || "").trim() && looksLikeHtml(data.text);
   tabButton(code ? "code" : "page").click();
   showResult();
+  if (focusLost && !blank) {
+    $("checksH").focus();
+    // Read the summary ("3 things to check…") after the heading, not over it
+    const say = $("checksSay").textContent;
+    $("checksSay").textContent = "";
+    setTimeout(() => { $("checksSay").textContent = say; }, 600);
+  }
 }
 
 $("clearBtn").addEventListener("click", () => {
@@ -178,7 +188,7 @@ function showResult() {
   $("checks").innerHTML = shownChecks.map((c, i) => {
     const body = `<span class="ico">${icon(c.level === "ok" ? "check" : c.level, 12, 2.6)}</span><span>${escapeHtml(c.text)}</span>`;
     return c.find
-      ? `<li><button type="button" class="check ${c.level}" data-check="${i}" title="Show in the text">${body}<span class="check-show">Show</span></button></li>`
+      ? `<li><button type="button" class="check ${c.level}" data-check="${i}" title="Show in the text">${body}<span class="sr-only"> </span><span class="check-show">Show</span></button></li>`
       : `<li class="check ${c.level}">${body}</li>`;
   }).join("");
   // Screen readers hear the summary when it changes (not on every keystroke)
