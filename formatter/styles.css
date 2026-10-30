@@ -303,6 +303,8 @@ textarea.code[hidden] { display: none; }
 .preview .locate { --wash: color-mix(in srgb, var(--jsal-fill) 30%, transparent); margin-inline: -22px; padding-inline: 22px; border-radius: var(--jsal-radius); background: var(--wash); animation: locate 2.6s ease-out forwards; }
 /* A link or other inline bit gets a snug wash instead, so it doesn't spill over the words beside it */
 .preview :is(a, span, strong, b, em, i, img).locate { margin-inline: 0; padding-inline: 0; border-radius: var(--jsal-radius-sm); box-shadow: 0 0 0 2px var(--wash); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+/* An [Image] note is already its own box: keep its size and padding so its text doesn't shift */
+.preview [data-image].locate { margin-inline: 0; padding-inline: 10px; }
 .preview > p[data-bold].locate::before { left: 8px; opacity: 1; background: var(--jsal-fill); animation: locate-bar 2.6s ease-out forwards; }
 @keyframes locate { 0%, 60% { background: var(--wash); } 100% { background: transparent; } }
 @keyframes locate-bar { 0%, 60% { opacity: 1; background: var(--jsal-fill); } 100% { opacity: 0.55; background: var(--jsal-accent); } }
