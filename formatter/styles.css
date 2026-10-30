@@ -391,6 +391,9 @@ textarea.code[hidden] { display: none; }
 }
 @media (max-width: 899px) {
   .app { min-height: 100vh; }
+  /* Before anything is pasted the paste box stretches to the bottom of the first screen, so the space reads as
+     room for your content rather than the page running out */
+  .app:not(.has-content) .work { flex: 1 1 auto; }
   .option-track button { padding: 5px 8px; }
   .pane { height: 75vh; }
 }
