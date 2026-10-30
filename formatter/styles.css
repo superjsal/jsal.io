@@ -284,6 +284,9 @@ textarea.code[hidden] { display: none; }
 }
 .preview h2::before { content: "H2"; } .preview h3::before { content: "H3"; } .preview h4::before { content: "H4"; }
 .preview h5::before { content: "H5"; } .preview h6::before { content: "H6"; }
+/* An H1 in the body is one of the checks, so its tag gets the dashed warning outline the [Image] note has,
+   which tells it apart from the other heading tags even where the orange and gold look alike */
+.preview h1::before { padding: 0 4px; border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); }
 .preview a { color: var(--jsal-accent); text-underline-offset: 2px; }
 .preview ul, .preview ol { padding-left: 1.5em; }
 .preview li + li, .preview li > ul, .preview li > ol { margin-top: 0.3em; }
@@ -341,6 +344,8 @@ textarea.code[hidden] { display: none; }
   font: 12.5px var(--mono);
   outline: none;
 }
+/* iPhones zoom the whole page into any text box under 16px and stay zoomed, so touch screens get 16px */
+@media (pointer: coarse) { .link-box input { height: 36px; font-size: 16px; } }
 .link-box input:focus { border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
 .link-box button, .link-box a {
   height: 28px;

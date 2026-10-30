@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzza";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzza";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzzc";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzzc";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -145,7 +145,7 @@ function decorate() {
   for (const a of editor.querySelectorAll("a")) {
     const href = a.getAttribute("href") || "";
     a.title = href;
-    a.classList.toggle("flag", PRIVATE_LINK.test(href) || DEAD_LINK.test(href));   // same lists as the checks
+    a.classList.toggle("flag", PRIVATE_LINK.test(href) || DEAD_LINK.test(href) || /^http:\/\//i.test(href));   // same tests as the checks
   }
 }
 
