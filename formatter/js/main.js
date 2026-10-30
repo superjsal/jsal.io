@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-30zo";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-30zo";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-30zp";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-30zp";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -115,6 +115,7 @@ function load(data, blank = false) {
   app.classList.add("has-content");
   source = blank ? "" : detectSource(input.html, input.text);
   result = clean(input);
+  window.jsalUsed?.();   // "First steps" / "Explorer" (/nav.js): a paste, the example or a blank page
   if (!blank && data.html !== SAMPLE_HTML) window.jsalAchieve?.("spotless");   // achievement (/nav.js); the sample doesn't count
   fixes = result.checks.filter((c) => c.fix);
   editor.innerHTML = result.html;

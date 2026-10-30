@@ -54,7 +54,7 @@
   function toggleCompare(id) {
     state.pick = null;
     if (state.compare.has(id)) state.compare.delete(id);
-    else { state.compare.add(id); window.jsalAchieve?.('compare'); window.jsalTrack?.('compare_add', { platform: id }); }   // achievement and GA4 event (/nav.js)
+    else { state.compare.add(id); window.jsalUsed?.(); window.jsalAchieve?.('compare'); window.jsalTrack?.('compare_add', { platform: id }); }   // achievements and GA4 event (/nav.js)
     renderCards();
     render();
   }
@@ -143,7 +143,7 @@
     chev.innerHTML = '<path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
     b.append(logo(p), txt, chev);
     b.addEventListener('click', () => {
-      if (state.open.has(p.id)) state.open.delete(p.id); else state.open.add(p.id);
+      if (state.open.has(p.id)) state.open.delete(p.id); else { state.open.add(p.id); window.jsalUsed?.(); }   // opening a platform counts as use (/nav.js)
       renderCards();
       document.querySelector(`[aria-controls="cb-${p.id}"]`)?.focus({ preventScroll: true });
     });
@@ -490,6 +490,7 @@
           opts.dataset.busy = '1';
           opts.querySelectorAll('.qz-opt').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
           await new Promise((r) => setTimeout(r, 150));
+          window.jsalUsed?.();   // "First steps" / "Explorer" (/nav.js)
           a[q.id] = v;
           pending.delete(q.id);
           if (resume) {

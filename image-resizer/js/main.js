@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-30zo";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zo";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zo";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zo";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zo";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zo";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zo";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zo";
+} from "./state.js?v=2026-10-30zp";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zp";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zp";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zp";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zp";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zp";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zp";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zp";
 
 const $ = id => document.getElementById(id);
 
@@ -142,6 +142,7 @@ async function loadFiles(files) {
     return;
   }
   refreshAll();
+  window.jsalUsed?.();   // "First steps" / "Explorer" (/nav.js): images loaded
   if (skipped.length) {
     setStatus(`${sizeSummary()}  ·  skipped ${plural(skipped.length, "file")} it couldn't read: ${skipped.join(", ")}`, "error");
   }

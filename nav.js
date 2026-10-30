@@ -130,8 +130,8 @@
   // one with window.jsalAchieve('id'); to add one, add it here and call that where it happens. A pop-up
   // shows on any page; the home page lists them all. None on the team-only Playbook.
   const ACH = [
-    { id: 'first', name: 'First steps', done: 'Opened a tool', todo: 'Open a tool', icon: '<path d="M14 4h5v16h-5"/><path d="M3 12h11M10 8l4 4-4 4"/>' },
-    { id: 'explorer', name: 'Explorer', done: 'Opened every tool', todo: 'Open every tool', icon: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>' },
+    { id: 'first', name: 'First steps', done: 'Used a tool', todo: 'Use a tool', icon: '<path d="M14 4h5v16h-5"/><path d="M3 12h11M10 8l4 4-4 4"/>' },
+    { id: 'explorer', name: 'Explorer', done: 'Used every tool', todo: 'Use every tool', icon: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>' },
     { id: 'night', name: 'Night owl', done: 'Tried dark mode', todo: 'Try dark mode', icon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/>' },
     { id: 'pixel', name: 'Pixel pusher', done: 'Resized an image', todo: 'Resize an image', icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 9"/>' },
     { id: 'spotless', name: 'Spotless', done: 'Cleaned a paste', todo: 'Clean a paste', icon: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 17v4M17 19h4"/>' },
@@ -183,17 +183,19 @@
   window.jsalAchieve = unlock;
   (window.requestIdleCallback || setTimeout)(makeToast);
   window.jsalAchievements = { list: ACH, got: () => read('jsal-achievements', {}) };
-  // Opening a tool: "First steps", and "Explorer" once all of them have been opened. A page loaded
-  // ahead on hover (below) only counts once it's actually shown.
+  // Using a tool, not just opening it: "First steps", and "Explorer" once all of them have been used. Each
+  // tool calls window.jsalUsed() at its first real action (a paste, images loaded, a quiz answer…), so the
+  // pop-up comes after something was done and never over a tool someone has only just opened. Kept under
+  // its own key: the visits counted before this don't count as use.
   const tool = TOOLS.find((t) => location.pathname.startsWith(t));
-  const visit = () => {
-    const seen = new Set(read('jsal-tools-seen', []));
-    seen.add(tool);
-    write('jsal-tools-seen', [...seen]);
+  window.jsalUsed = () => {
+    if (!tool) return;
+    const used = new Set(read('jsal-tools-used', []));
+    used.add(tool);
+    write('jsal-tools-used', [...used]);
     unlock('first');
-    if (TOOLS.every((t) => seen.has(t))) unlock('explorer');
+    if (TOOLS.every((t) => used.has(t))) unlock('explorer');
   };
-  if (tool) { if (document.prerendering) document.addEventListener('prerenderingchange', visit, { once: true }); else visit(); }
   // "Lost adventurer": the 404 page marks its body
   if (document.body && document.body.hasAttribute('data-jsal-lost')) {
     if (document.prerendering) document.addEventListener('prerenderingchange', () => unlock('lost'), { once: true }); else unlock('lost');
