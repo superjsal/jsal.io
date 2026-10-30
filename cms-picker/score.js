@@ -47,6 +47,7 @@
     sellFirst: [() => 'it’s made for selling first', null],
     size: [() => 'it handles large catalogues', (a, y) => `${y} isn’t made for large catalogues`],
     small: [() => 'it suits small shops', null],
+    bigOnly: [null, (a, y) => `${y} is built for large or complex stores`],
     b2b: [() => 'it suits selling to other businesses', null],
     lang: [() => 'more than one language is easier to set up', (a, y) => `more than one language is harder to set up on ${y}`],
     look: [(a) => ({ template: 'it has good templates to start from', visual: 'you can arrange your pages visually', pixel: 'it gives full control over the design' })[a.look], null],
@@ -67,15 +68,16 @@
     if (a.what === 'content' && a.members === 'yes' && has('members')) add('members', 3, 'Paid members and newsletters built in');
     if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'Feeds an app or any front end from one place');
     const ease = Q.ease[p.id] ?? 1;
-    if (a.who === 'easy') add('ease', ease * 2 - 3, ease === 3 && 'Easy to run without technical skills');
-    if (a.who === 'learn') add('ease', ease >= 1 ? 1 : -2);
+    // Building it yourself: one that needs a developer counts as heavily as one not made for what you're making
+    if (a.who === 'easy') add('ease', ease === 0 ? -8 : ease * 2 - 3, ease === 3 && 'Easy to run without technical skills');
+    if (a.who === 'learn') add('ease', ease >= 1 ? 1 : -8);
     if (a.who === 'agency' && has('agency')) add('agency', 2, 'A common choice for designers and agencies');
     if (a.who !== 'agency' && has('agencyOnly')) add('agencyOnly', -2);
     // A developer: platforms built to be coded (quiz.devControl)
     if (a.who === 'dev') { if (has('devControl')) add('dev', 2, 'Gives a developer full control'); else add('dev', -1); }
     if (a.care === 'no') {
       const handled = /^Handled for you/.test(pr.hosting || '');
-      add('care', handled ? 2 : -3, handled && 'Hosting, updates and security are handled for you');
+      add('care', handled ? 2 : -6, handled &&'Hosting, updates and security are handled for you');
     }
     if (a.what === 'store') {
       add('sell', { yes: 2, plugin: 0, code: -3, no: -6 }[verdict('store')] ?? 0);
@@ -84,6 +86,7 @@
       if (a.size === 'big' || a.size === 'b2b') { if (has('largeCatalogue')) add('size', 3, 'Handles large catalogues'); else add('size', -2); }
       if (a.size === 'b2b' && has('b2b')) add('b2b', 3, 'Suits selling to other businesses (B2B)');
       if (a.size === 'small' && has('smallShop')) add('small', 1);
+      if (a.size === 'small' && has('bigStoresOnly')) add('bigOnly', -3);   // built for large or complex stores (quiz.bigStoresOnly)
     }
     if (a.lang === 'yes') {
       const l = verdict('languages');

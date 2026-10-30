@@ -93,6 +93,7 @@
         "look": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string", "enum": ["template", "visual", "pixel"] } } },
         "largeCatalogue": { "type": "array", "items": { "type": "string" } },
         "smallShop": { "type": "array", "items": { "type": "string" } },
+        "bigStoresOnly": { "type": "array", "items": { "type": "string" } },
         "storeOnly": { "type": "array", "items": { "type": "string" } },
         "agency": { "type": "array", "items": { "type": "string" } },
         "agencyOnly": { "type": "array", "items": { "type": "string" } },

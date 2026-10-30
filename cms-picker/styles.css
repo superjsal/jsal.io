@@ -295,8 +295,17 @@ body {
 .qz-vs { grid-column: 2; margin-top: 10px; padding: 10px 12px; border-radius: var(--jsal-radius); background: var(--jsal-accent-soft); color: var(--jsal-ink); font-size: 14.5px; line-height: 1.45; }
 .qz-vs-h { margin-bottom: 2px; color: var(--jsal-accent); font-weight: 700; }
 .qz-warn { grid-column: 2; margin-top: 4px; color: var(--jsal-warn); font-size: 14px; }
-.qz-effort { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-.qz-effort span { padding: 2px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 13px; }
+/* The key facts as a strip of labelled boxes, side by side; stacked on a phone */
+.qz-facts { grid-column: 2; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); margin: 8px 0 2px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); overflow: hidden; }
+.qz-facts div { padding: 8px 12px; }
+.qz-facts div + div { border-left: 1px solid var(--jsal-line); }
+.qz-facts dt { color: var(--jsal-muted); font-size: 12.5px; }
+.qz-facts dd { margin: 0; color: var(--jsal-ink); font-size: 14.5px; font-weight: 600; line-height: 1.35; }
+.qz-facts small { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 12.5px; font-weight: 400; }
+@media (max-width: 560px) {
+  .qz-facts { grid-auto-flow: row; }
+  .qz-facts div + div { border-left: 0; border-top: 1px solid var(--jsal-line); }
+}
 .qz-steps { margin: 8px 0 0; padding-left: 1.4em; font-size: 14.5px; }
 .qz-steps li + li { margin-top: 4px; }
 .qz-steps small { display: block; color: var(--jsal-muted); font-size: 13.5px; }

@@ -362,11 +362,6 @@
   }
   // Effort, from values already checked: the quiz's ease score and the profile's hosting line
   const SKILL = ['Needs a developer', 'Takes some learning', 'Easy to learn', 'No technical skill needed'];
-  function upkeep(hosting) {
-    if (/^Handled for you$/.test(hosting)) return 'Updates and security handled for you';
-    if (/^You or your host$/.test(hosting)) return 'Updates and security are on you';
-    return hosting ? `Hosting: ${hosting.charAt(0).toLowerCase()}${hosting.slice(1)}` : '';
-  }
   // First steps after picking a platform: what most new sites do first, in order, each linking to the
   // platform's own docs (the domain page from data.quiz.domainDocs, the rest from the answers' sources).
   // A row id means "use that answer"; a link-only step names its link instead.
@@ -526,11 +521,19 @@
         const name = el('h4', null, r.p.name);
         name.append(el('span', 'fitp', label(r)));
         card.append(logo(r.p), name, el('p', 'sum', pr.summary || ''));
-        const fx = el('p', 'qz-effort');
-        // What it costs to start, for what you're making (a store's band for a store), and a note where a developer is needed
+        // The key facts people compare first: skill, hosting and updates, and what it costs to start for what
+        // you're making (a store's band for a store), with a note where a developer is needed
+        const fx = el('dl', 'qz-facts'), ease = data.quiz.ease[r.p.id] ?? 1;
         const cost = ((data.answers[r.p.id] || {})[a.what === 'store' ? 'cost_store' : 'cost_site'] || {}).verdict;
-        [SKILL[data.quiz.ease[r.p.id] ?? 1], upkeep(pr.hosting), COST[cost] && cost !== 'na' ? `Cost: ${COST[cost]}` : '',
-          (data.quiz.ease[r.p.id] ?? 1) === 0 ? 'Plus developer time to build and maintain' : ''].filter(Boolean).forEach((t) => fx.append(el('span', null, t)));
+        [['Skill needed', SKILL[ease]], ['Hosting and updates', pr.hosting],
+          ['Cost to start', COST[cost] && cost !== 'na' ? COST[cost] : '', ease === 0 ? 'Plus developer time to build and maintain' : '']]
+          .filter(([, v]) => v).forEach(([k, v, note]) => {
+            const f = el('div');
+            const dd = el('dd', null, v);
+            if (note) dd.append(el('small', null, note));
+            f.append(el('dt', null, k), dd);
+            fx.append(f);
+          });
         card.append(fx);
         const ul = el('ul');
         told[i].why.forEach((w) => ul.append(el('li', null, w)));

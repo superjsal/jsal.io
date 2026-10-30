@@ -96,7 +96,7 @@
     }
   ],
   "quiz": {
-    "_about": "Find my fit. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template = start from a theme, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop: stores it suits. storeOnly: only for selling, so marked down for anything else. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end. devControl: built to be coded, so a developer gets full control (picked when \"A developer\" builds it). domainDocs: the platform's own help page for connecting your own domain (official docs only, checked 2026-10-29; none for self-hosted Drupal or headless), linked from the first steps on a result. kind: for business or work sites, which platforms suit each answer to \"Which is closest to what you do?\" (from each platform's \"good fit\" lines: local businesses and services, creative work, startups, B2B companies, lots of content). members: for blogs and publications, the platforms with paid memberships and newsletters built in (from their published profiles). b2b: stores whose profiles name selling to other businesses (wholesale, trade accounts, bulk orders): BigCommerce (\"B2B tools\") and Magento (\"Enterprise and B2B stores\").",
+    "_about": "Find my fit. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template = start from a theme, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop: stores it suits. storeOnly: only for selling, so marked down for anything else. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end. devControl: built to be coded, so a developer gets full control (picked when \"A developer\" builds it). domainDocs: the platform's own help page for connecting your own domain (official docs only, checked 2026-10-29; none for self-hosted Drupal or headless), linked from the first steps on a result. kind: for business or work sites, which platforms suit each answer to \"Which is closest to what you do?\" (from each platform's \"good fit\" lines: local businesses and services, creative work, startups, B2B companies, lots of content). members: for blogs and publications, the platforms with paid memberships and newsletters built in (from their published profiles). b2b: stores whose profiles name selling to other businesses (wholesale, trade accounts, bulk orders): BigCommerce (\"B2B tools\") and Magento (\"Enterprise and B2B stores\"). bigStoresOnly: built for large or complex stores, so marked down for a small shop (Magento: its card says \"Less suited if you run a small shop\"). Checked 2026-10-29: visual arranging on WordPress (block editor), Shopify (theme editor sections), BigCommerce (Page Builder), HubSpot (drag-and-drop editor) and Drupal (Canvas, default in Drupal CMS 2.0); HubSpot ease 2 as marketers build pages on its themes without code.",
     "ease": {
       "wordpress": 2,
       "shopify": 3,
@@ -104,7 +104,7 @@
       "squarespace": 3,
       "webflow": 1,
       "framer": 2,
-      "hubspot": 1,
+      "hubspot": 2,
       "bigcommerce": 2,
       "magento": 0,
       "drupal": 0,
@@ -114,10 +114,13 @@
     },
     "look": {
       "wordpress": [
+        "template",
+        "visual",
         "pixel"
       ],
       "shopify": [
-        "template"
+        "template",
+        "visual"
       ],
       "wix": [
         "template",
@@ -136,15 +139,18 @@
         "pixel"
       ],
       "hubspot": [
-        "template"
+        "template",
+        "visual"
       ],
       "bigcommerce": [
-        "template"
+        "template",
+        "visual"
       ],
       "magento": [
         "pixel"
       ],
       "drupal": [
+        "visual",
         "pixel"
       ],
       "duda": [
@@ -172,6 +178,9 @@
       "wix",
       "squarespace",
       "wordpress"
+    ],
+    "bigStoresOnly": [
+      "magento"
     ],
     "storeOnly": [
       "shopify",
