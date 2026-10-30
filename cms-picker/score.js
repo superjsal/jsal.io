@@ -48,15 +48,18 @@
     sellFirst: [() => 'it’s made for selling first', null],
     size: [() => 'it handles large catalogues', (a, y) => `${y} isn’t made for large catalogues`],
     small: [() => 'it suits small shops', null],
-    bigOnly: [null, (a, y) => `${y} is built for large or complex stores`],
     b2b: [() => 'it suits selling to other businesses', null],
     lang: [() => 'more than one language is easier to set up', (a, y) => `more than one language is harder to set up on ${y}`],
     look: [(a) => ({ template: 'it has good templates to start from', visual: 'you can arrange your pages visually', pixel: 'it gives full control over the design' })[a.look], null],
     leave: [() => 'moving to another platform later is easier', (a, y) => `moving off ${y} later is harder`],
     grow: [() => 'it has more plugins and apps to add as you grow', (a, y) => `${y} has fewer plugins and apps to add as you grow`],
-    crm: [null, (a, y) => `${y} suits businesses already on its CRM`],
+    notIdeal: [null, (a, y) => `${y}’s own card says it isn’t ideal for answers like yours`],
     budget: [(a) => (a.budget === 'none' ? 'it’s free to start' : 'it fits your budget'), (a, y) => `${y} costs more than you want to spend`],
   };
+
+  // The first of a platform's "Not ideal if" lines (quiz.notIdeal) these answers match: every key in "when" has one
+  // of its listed answers
+  const notIdealFor = (Q, id, a) => ((Q.notIdeal || {})[id] || []).find((n) => Object.entries(n.when).every(([q, vs]) => vs.includes(a[q])));
 
   function fitScore(data, p, a) {
     const Q = data.quiz, pr = p.profile || {}, why = [], pts = {};
@@ -68,9 +71,6 @@
     if ((pr.goals || []).includes(a.what)) add('goal', 4, WHAT[a.what]); else add('goal', -8);
     if (a.what !== 'store' && has('storeOnly')) add('sellOnly', -6);
     if (a.what === 'site' && ((Q.kind || {})[a.kind] || []).includes(p.id)) add('kind', 3, KINDS[a.kind]);
-    // Platforms built around their own CRM (quiz.crmFirst): their cards say they're less suited if you don't already
-    // use it, which a local business or a creative rarely does
-    if (a.what === 'site' && (a.kind === 'local' || a.kind === 'creative') && has('crmFirst')) add('crm', -2);
     if (a.what === 'content' && a.members === 'yes' && has('members')) add('members', 3, 'Paid members and newsletters built in');
     if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'One place to manage content for a website and an app');
     const ease = Q.ease[p.id] ?? 1;
@@ -92,7 +92,6 @@
       if (a.size === 'big' || a.size === 'b2b') { if (has('largeCatalogue')) add('size', 3, 'Handles large catalogues'); else add('size', -2); }
       if (a.size === 'b2b' && has('b2b')) add('b2b', 3, 'Suits selling to other businesses (B2B)');
       if (a.size === 'small' && has('smallShop')) add('small', 1);
-      if (a.size === 'small' && has('bigStoresOnly')) add('bigOnly', -3);   // built for large or complex stores (quiz.bigStoresOnly)
     }
     if (a.lang === 'yes') {
       const l = verdict('languages');
@@ -111,6 +110,9 @@
       if (has('addOnsMany')) add('grow', 2, 'Thousands of plugins and apps to add later');
       else if (has('addOnsSome')) add('grow', 1, 'A good range of apps to add later');
     }
+    // The platform's own "Not ideal if" lines that match these answers (quiz.notIdeal): it's ruled out unless
+    // nothing else fits
+    if (notIdealFor(Q, p.id, a)) add('notIdeal', -30);
     if (a.budget in BUDGET) {
       const level = COST_LEVEL[verdict(a.what === 'store' ? 'cost_store' : 'cost_site')];
       if (level !== undefined) {
@@ -197,10 +199,17 @@
     const w = reasons(a, x, y);
     return w ? `What tipped it: ${w}.` : null;
   }
-  // For a match behind the first: what it scored better on for these answers, if anything
-  function better(a, x, y) {
+  // For a match behind the first: what it scored better on for these answers, or else (when the person gave a
+  // budget) that it starts in a lower cost band, from the published bands
+  function better(data, a, x, y) {
     const w = reasons(a, x, y);
-    return w ? `Where ${x.p.name} does better for you: ${w}.` : null;
+    if (w) return `Where ${x.p.name} does better for you: ${w}.`;
+    if (!(a.budget in BUDGET)) return null;
+    const row = a.what === 'store' ? 'cost_store' : 'cost_site', band = (p) => ((data.answers[p.p.id] || {})[row] || {}).verdict;
+    const bx = band(x), by = band(y);
+    if (!(bx in COST_LEVEL) || !(by in COST_LEVEL) || COST_LEVEL[bx] >= COST_LEVEL[by]) return null;
+    const label = (v) => (data.verdicts || {})[v] || v;
+    return `Where ${x.p.name} does better for you: it costs less to start (${label(bx)} vs ${label(by)}).`;
   }
   const sameSet = (xs, ys) => xs.length === ys.length && xs.every((w) => ys.includes(w));
   // For the top matches: the reasons to show and vs, a heading and a sentence on what sets each apart
@@ -213,7 +222,7 @@
       if (!i) {
         const next = top[1];
         let vs = null;
-        if (next && next.s === r.s) vs = { head: `A close call with ${next.p.name}`, text: ['Both fit your answers equally.', better(a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' ') };
+        if (next && next.s === r.s) vs = { head: `A close call with ${next.p.name}`, text: ['Both fit your answers equally.', better(data, a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' ') };
         else if (next) {
           const text = tipped(a, r, next) || pickOver(data, a, r, next);
           if (text) vs = { head: `Ahead of ${next.p.name}`, text };
@@ -221,13 +230,13 @@
         return { why: r.why, vs };
       }
       const why = sameSet(r.all, lead.all) ? [`Fits your answers for the same reasons as ${lead.p.name}`] : r.why;
-      const text = better(a, r, lead) || pickOver(data, a, r, lead);
+      const text = better(data, a, r, lead) || pickOver(data, a, r, lead);
       return { why, vs: text ? { head: `Versus ${lead.p.name}`, text } : null };
     });
   }
 
   // Answers that add and take nothing, used for questions an old shared link (v=1) didn't have
   const NEUTRAL = { grow: 'no', budget: 'any' };
-  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP, NEUTRAL };
+  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP, NEUTRAL, notIdealFor };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

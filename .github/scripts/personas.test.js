@@ -120,10 +120,10 @@ console.log(failed ? `${failed} of ${PERSONAS.length} personas failed.` : `All $
 // The result cards, for every possible set of answers: each card says what sets it apart, without
 // mentioning anything the person ruled out; "the same reasons as" only when it's true; the top two
 // never show the same list; and a clear winner says what tipped it.
-const { QUESTIONS, PHRASE, weight, TIP, NEUTRAL } = require(path.join(site, 'cms-picker', 'score.js'));
+const { QUESTIONS, PHRASE, weight, TIP, NEUTRAL, notIdealFor } = require(path.join(site, 'cms-picker', 'score.js'));
 const unworded = new Set();   // parts of the score with no "What tipped it" wording in TIP (score.js)
 const sameSet = (x, y) => x.length === y.length && x.every((w) => y.includes(w));
-let combos = 0, clear = 0, fallback = 0, boxes = 0, tagBoxes = 0;
+let combos = 0, clear = 0, fallback = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0;
 const cardErrs = [];
 const walk = (a, i) => {
   if (i < QUESTIONS.length) {
@@ -142,6 +142,8 @@ const walk = (a, i) => {
     Object.keys(PHRASE).forEach((row) => { if (weight(row, a) === 0 && t.vs.text.includes(PHRASE[row])) cardErrs.push(`${at}: ${r[k].p.id} mentions "${PHRASE[row]}", which these answers rule out`); });
     if (k && /same reasons as/.test(t.why[0]) && !sameSet(r[k].all, r[0].all)) cardErrs.push(`${at}: ${r[k].p.id} says "same reasons" but they differ`);
   });
+  // No match in the top three whose own "Not ideal if" line matches these answers (quiz.notIdeal)
+  r.forEach((x) => { if (notIdealFor(data.quiz, x.p.id, a)) { notIdealTop++; if (notIdealTop <= 3) cardErrs.push(`${at}: ${x.p.id} is in the top three, but its card says it isn't ideal for these answers`); } });
   if (JSON.stringify(told[0].why) === JSON.stringify(told[1].why)) cardErrs.push(`${at}: ${r[0].p.id} and ${r[1].p.id} show the same reasons`);
   if (r[0].s > r[1].s) { clear++; if (!/^What tipped it/.test(told[0].vs.text)) fallback++; }
   // Old shared links (v=1) get NEUTRAL answers for questions they didn't have: they must change no score,
@@ -156,7 +158,12 @@ const walk = (a, i) => {
 };
 walk({}, 0);
 unworded.forEach((k) => cardErrs.push(`score part "${k}" has no wording in TIP (score.js), so it can't say what tipped a result`));
+// Every mapped "Not ideal if" line must still be on its platform's card, or the rule matches a line nobody sees
+Object.entries(data.quiz.notIdeal || {}).forEach(([id, rules]) => {
+  const lines = ((data.platforms.find((p) => p.id === id) || {}).profile || {}).lessSuited || [];
+  rules.forEach((n) => { if (!lines.some((l) => l.startsWith(n.if))) cardErrs.push(`notIdeal for ${id}: "${n.if}" isn't a "Not ideal if" line on its card any more`); });
+});
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
-console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it". ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%).`);
+console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it". ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal.`);
 process.exit(failed || cardErrs.length ? 1 : 0);

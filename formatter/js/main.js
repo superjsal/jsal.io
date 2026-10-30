@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zze";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zze";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzf";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzf";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
