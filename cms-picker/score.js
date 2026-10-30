@@ -9,7 +9,7 @@
   // shown come from the same data, so a result never claims anything the table doesn't.
   const QUESTIONS = [
     // Each option: [value, title, hint, its answer on its own] (the last is the answer button above the results, so it reads without the question)
-    { id: 'what', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact', 'A business or work site'], ['store', 'An online store', 'Products, checkout and payments', 'An online store'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing', 'A blog, newsletter or publication'], ['custom', 'Something custom', 'An app or portal, built with a developer', 'Something custom, with a developer']] },
+    { id: 'what', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact', 'A business or work site'], ['store', 'An online store', 'Products, checkout and payments', 'An online store'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing', 'A blog, newsletter or publication'], ['custom', 'Something custom', 'An app or portal, built with a developer', 'Something custom: an app or portal']] },
     { id: 'kind', q: 'Which is closest to what you do?', when: (a) => a.what === 'site', opts: [['local', 'A local business or services', 'Shops, trades, salons, clinics, consultants', 'A local business or services'], ['creative', 'Creative work or a portfolio', 'Photography, design, art, music', 'Creative work or a portfolio'], ['startup', 'A startup or product launch', 'A product, an app or a launch page', 'A startup or product launch'], ['b2b', 'A company selling to other businesses', 'B2B: leads, demos and a sales team', 'A company selling to other businesses (B2B)'], ['content', 'Lots of content', 'Articles, guides and resources', 'A site with lots of content']] },
     { id: 'members', q: 'Will you have paid members or a newsletter?', when: (a) => a.what === 'content', opts: [['yes', 'Yes', 'Subscribers, paid posts or a newsletter', 'Paid members or a newsletter'], ['no', 'No', 'Just the posts', 'Just posts, no members']] },
     { id: 'who', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple', 'I’ll build it, not technical'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine', 'I’ll build it and learn'], ['agency', 'A designer or agency', 'They build it; I might edit', 'A designer or agency builds it'], ['dev', 'A developer', 'Code is fine', 'A developer builds it']] },
@@ -292,6 +292,13 @@
 
   // Answers that add and take nothing, used for questions an old shared link (v=1) didn't have
   const NEUTRAL = { grow: 'no', budget: 'any' };
-  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor };
+  // A first match scoring under this fits poorly: less than being made for what you're making earns on its
+  // own. The page calls it the closest match, not the best. First places mostly score 7 to 19 (the lowest
+  // persona is 9); about 3% of answer sets fall under it, all of them custom builds.
+  const LOW_FIT = 4;
+  // Answers that pull against each other, with the question to change: a custom app or portal built by
+  // someone not technical
+  const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
+  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -545,9 +545,11 @@
     function results() {
       const ranked = window.cmsScore.rank(data, a);
       const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
-      // A tie for first is shown as one: list order alone mustn't crown a "Best match"
-      const tied = top[1] && top[1].s === best;
-      const label = (r) => (r.s === best ? (tied ? 'Joint best match' : 'Best match') : r.s >= best - 4 ? 'Good match' : 'Worth a look');
+      // A tie for first is shown as one: list order alone mustn't crown a "Best match". When even the first
+      // fits poorly (cmsScore.LOW_FIT), it's only the closest, and the others are worth a look at most.
+      const tied = top[1] && top[1].s === best, weak = best < window.cmsScore.LOW_FIT;
+      const first = weak ? 'closest match' : 'best match';
+      const label = (r) => (r.s === best ? (tied ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : r.s >= best - 4 && !weak ? 'Good match' : 'Worth a look');
       const told = window.cmsScore.explain(data, a, top);   // reasons without repeats, and what sets each apart
       // An old link stays v=1 (its own answers) until its newer questions are answered
       const kept = Object.entries(a).filter(([k]) => steps().some((q) => q.id === k) && !pending.has(k));
@@ -556,18 +558,18 @@
       box.replaceChildren();
       box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');   // fades in, like a new question
       const head = el('div', 'qz-top');
-      head.append(el('span', null, 'Your best matches'));
+      head.append(el('span', null, `Your ${first}es`));
       const bar = el('span', 'qz-bar'), fill = el('i');
       fill.style.width = '100%';
       bar.append(fill);
       head.append(bar);
-      const h = el('h3', 'sr-only', 'Your best matches');
+      const h = el('h3', 'sr-only', `Your ${first}es`);
       h.tabIndex = -1;
       const list = el('div', 'qz-res');
       top.forEach((r, i) => {
         const card = el('article', `qz-card${r.s === best ? ' top' : ''}`), pr = r.p.profile || {};
         const name = el('h4', null, r.p.name);
-        name.append(el('span', 'fitp', label(r)));
+        name.append(el('span', `fitp${weak ? ' low' : ''}`, label(r)));
         card.append(logo(r.p), name, el('p', 'sum', pr.summary || ''));
         // The key facts people compare first: skill, hosting and updates, and what it costs to start for what
         // you're making (a store's band for a store), with a note where a developer is needed
@@ -589,7 +591,9 @@
         card.append(ul);
         if (told[i].vs) {
           const vs = el('div', 'qz-vs');
-          vs.append(el('p', 'qz-vs-h', told[i].vs.head), el('p', null, told[i].vs.text));
+          // Only the closest can't be "ahead": its box compares, like the others' ("Versus Wix")
+          const head = weak ? told[i].vs.head.replace(/^Ahead of /, 'Versus ') : told[i].vs.head;
+          vs.append(el('p', 'qz-vs-h', head), el('p', null, told[i].vs.text));
           card.append(vs);
         }
         const skip = (pr.lessSuited || [])[0];
@@ -603,7 +607,24 @@
         more.addEventListener('click', () => { step = steps().findIndex((q) => pending.has(q.id)); resume = true; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
         box.append(more);
       }
-      box.append(answersBar(), list);
+      box.append(answersBar());
+      // Above the cards, why they're only the closest: answers that pull against each other (with the question to
+      // change, opening its answer as the chip above does), or else that nothing fits them well
+      const clash = window.cmsScore.conflict(a);
+      if (clash || weak) {
+        // The sentence in one span, so the info icon (::before) is the note's only other flex item
+        const note = el('p', 'qz-note'), say = el('span');
+        note.append(say);
+        if (clash === 'who') {
+          const change = el('button', 'qz-note-a', `change “${steps().find((q) => q.id === 'who').q}”`);
+          change.type = 'button';
+          change.addEventListener('click', () => { editing = 'who'; results(); box.querySelector('.qz-ans-chips [data-q="who"]')?.focus({ preventScroll: true }); });
+          // Ends on the link: a button can't wrap mid-line like text, so nothing is left dangling after it on a phone
+          say.append('An app or portal usually needs a developer. Without one, these are the closest options. To see developer-built choices, ', change, '.');
+        } else say.append('No platform fits these answers well, so these are the closest. Changing an answer above may bring better matches.');
+        box.append(note);
+      }
+      box.append(list);
       // One first-steps panel under the cards, switched between the three matches
       const panel = el('section', 'qz-panel'), sw = el('div', 'qz-switch'), body = el('div');
       sw.setAttribute('role', 'group');

@@ -312,6 +312,11 @@ body {
 .qz-card .logo { grid-row: span 2; width: 34px; height: 34px; }
 .qz-card h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--jsal-ink); font-size: 18px; }
 .fitp { padding: 2px 9px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
+.fitp.low { background: var(--jsal-line); color: var(--jsal-ink-2); }   /* the closest, not a fit: neutral, not green */
+/* Above the cards when nothing fits well or the answers pull against each other: information, so blue */
+.qz-note { display: flex; gap: 8px; margin: 0 0 12px; padding: 10px 12px; border-left: 3px solid var(--jsal-info); border-radius: var(--jsal-radius-sm); background: var(--jsal-info-soft); color: var(--jsal-ink); font-size: 14.5px; line-height: 1.45; }
+.qz-note::before { content: ""; flex: none; width: 16px; height: 16px; margin-top: 2px; background: var(--jsal-info); -webkit-mask: var(--info) center / contain no-repeat; mask: var(--info) center / contain no-repeat; }
+.qz-note-a { display: inline; padding: 0; text-align: left; border: 0; background: none; color: var(--jsal-info); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .qz-card .sum { color: var(--jsal-muted); font-size: 14.5px; }
 /* "Why it fits": a small label, then the reasons with quiet ticks */
 .qz-sec { grid-column: 2; margin-top: 10px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }

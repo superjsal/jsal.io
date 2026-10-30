@@ -106,6 +106,8 @@ for (const [name, answers, want] of PERSONAS) {
   (want.not || []).forEach((id) => { if (top.includes(id)) errs.push(`${id} in the top three`); });
   // A tie for first means the page shows a "Best match" it can't back up
   if (r[1] && r[0].s === r[1].s && want.first && want.first.length === 1) errs.push(`tied for first: ${r[0].p.id} and ${r[1].p.id}`);
+  // Every agreed person gets a real "Best match", never only the closest
+  if (r[0].s < require(path.join(site, 'cms-picker', 'score.js')).LOW_FIT) errs.push(`first scores ${r[0].s}: only a "Closest match"`);
   const line = r.slice(0, 3).map((x) => `${x.p.name} ${x.s}`).join(', ');
   if (errs.length) { failed++; console.log(`FAIL ${name}: ${errs.join('; ')}  [${line}]`); }
   else console.log(`ok   ${name}  [${line}]`);
@@ -115,10 +117,10 @@ console.log(failed ? `${failed} of ${PERSONAS.length} personas failed.` : `All $
 // The result cards, for every possible set of answers: each card says what sets it apart, without
 // mentioning anything the person ruled out; "the same reasons as" only when it's true; the top two
 // never show the same list; and a clear winner says what tipped it.
-const { QUESTIONS, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor } = require(path.join(site, 'cms-picker', 'score.js'));
+const { QUESTIONS, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT } = require(path.join(site, 'cms-picker', 'score.js'));
 const unworded = new Set();   // parts of the score with no "What tipped it" wording in TIP (score.js)
 const sameSet = (x, y) => x.length === y.length && x.every((w) => y.includes(w));
-let combos = 0, clear = 0, fallback = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0;
+let combos = 0, clear = 0, fallback = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0, weak = 0;
 const cardErrs = [];
 const walk = (a, i) => {
   if (i < QUESTIONS.length) {
@@ -145,6 +147,7 @@ const walk = (a, i) => {
   // No match in the top three whose own "Not ideal if" line matches these answers (quiz.notIdeal)
   r.forEach((x) => { if (notIdealFor(data.quiz, x.p.id, a)) { notIdealTop++; if (notIdealTop <= 3) cardErrs.push(`${at}: ${x.p.id} is in the top three, but its card says it isn't ideal for these answers`); } });
   if (JSON.stringify(told[0].why) === JSON.stringify(told[1].why)) cardErrs.push(`${at}: ${r[0].p.id} and ${r[1].p.id} show the same reasons`);
+  if (r[0].s < LOW_FIT) weak++;
   if (r[0].s > r[1].s) { clear++; if (!/^What tipped it/.test(told[0].vs.text)) fallback++; }
   // Old shared links (v=1) get NEUTRAL answers for questions they didn't have: they must change no score,
   // and leaving a question unanswered (kind, members) mustn't break the ranking
@@ -167,5 +170,5 @@ Object.entries(data.quiz.notIdeal || {}).forEach(([id, rules]) => {
 });
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
-console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it". ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal.`);
+console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it". ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal. ${weak} show a "Closest match" (first scores under ${LOW_FIT}).`);
 process.exit(failed || cardErrs.length ? 1 : 0);
