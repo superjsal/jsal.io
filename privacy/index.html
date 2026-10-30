@@ -13,7 +13,7 @@
 <meta property="og:description" content="Your files never leave your browser. Basic Google Analytics usage stats, only with your consent in Europe.">
 <meta property="og:image" content="https://jsal.io/og/home.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.svg?v=2026-10-30zk" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-30zl" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
      only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
@@ -126,6 +126,10 @@ display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; bor
 border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font);
 transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
 .jsal-ach[data-hide] { opacity: 0; transform: translate(-50%, 16px); visibility: hidden; transition: opacity .3s ease, transform .3s ease, visibility 0s .3s; }
+@media (min-width: 900px) {
+.jsal-ach { left: auto; right: max(20px, env(safe-area-inset-right, 0px)); transform: none; }
+.jsal-ach[data-hide] { transform: translateY(16px); }
+}
 .jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
 .jsal-ach b { display: block; font-size: 15px; }
@@ -286,6 +290,6 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     <p>Email <a href="mailto:dev@jsal.io">dev@jsal.io</a>. Made by <a href="/">John Salvador</a>.</p>
   </main>
 </div>
-<script src="/nav.js?v=2026-10-30zk" defer></script>
+<script src="/nav.js?v=2026-10-30zl" defer></script>
 </body>
 </html>
