@@ -498,11 +498,15 @@ p, li { text-wrap: pretty; }
 
 .now { grid-column: 1 / 13; background: var(--plain); }
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
-.now ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }   /* rows across, newest top left */
-.now li { padding: 10px 0; border-top: 1px solid var(--plain-line); }
-.now li { display: flex; gap: 12px; }
+/* Grouped by app: the CMS Picker on the left, the other apps stacked on the right (Site last) */
+.upd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; row-gap: 22px; align-items: start; }
+.upd-side { display: grid; gap: 22px; }
+.now h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+.now h3 time { font-size: 14px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
+.now ul { margin: 0; padding: 0; list-style: none; }
+.now li { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--plain-line); }
 .now li time { flex: none; min-width: 4em; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
-.now li a { color: var(--jsal-accent); text-underline-offset: 2px; }
+.now a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 /* Achievements (/nav.js unlocks them and keeps them in this browser; the script below lists them) */
 .ach { grid-column: 1 / 13; background: var(--plain); }
@@ -583,7 +587,6 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
 @media (max-width: 860px) {
   .grid > * { grid-column: 1 / -1 !important; }
-  .now ul { grid-template-columns: minmax(0, 1fr); }
   .intro { padding-top: 4px; }
   .intro p { font-size: 16px; }
 }
@@ -613,6 +616,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .now-playing { gap: 14px; min-height: 300px; }
   .now-playing .big { font-size: 27px; }
   .now h2 { font-size: 24px; }
+  .upd { grid-template-columns: minmax(0, 1fr); }
   footer { margin-top: 32px; }
 }
 @media (prefers-reduced-motion: reduce) { .tile, .arrow { transition: none; } a.tile:hover, a.tile:hover .arrow, a.tile:focus-visible .arrow { transform: none; } }
@@ -781,12 +785,39 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     <!-- Site updates, newest first. "Currently" (the WoW tile) says what I'm up to; this lists what shipped. -->
     <section id="updates" class="tile now" aria-labelledby="updates-h">
       <h2 id="updates-h">Updates</h2>
-      <ul>
-        <li><time datetime="2026-10-30">Oct 30</time><span><a href="/cms-picker/">CMS Picker</a>: a page per platform with where to find each SEO setting, like <a href="/cms-picker/squarespace/">Squarespace</a>. Results now say which answers tipped them</span></li>
-        <li><time datetime="2026-10-30">Oct 30</time><span>A new home page, plus clearer colours, shorter About sections and accessibility fixes across the site</span></li>
-        <li><time datetime="2026-10-30">Oct 30</time><span><a href="/formatter/">Clean Paste</a> gets WordPress and Google Docs shortcuts; the <a href="/image-resizer/">Image Resizer</a> uses far less memory and never overwrites a file</span></li>
-        <li><time datetime="2026-10-29">Oct 29</time><span><a href="/cms-picker/">CMS Picker</a>: find your fit in a few questions. Plus <a href="#ach-h">achievements</a> and a <a href="#hi-h">backpack</a></span></li>
-      </ul>
+      <!-- One group per app, at most three entries each, newest first. The CMS Picker is the left column;
+           the others stack on the right, ordered by their newest entry, with Site last. -->
+      <div class="upd">
+        <div>
+          <h3><a href="/cms-picker/">CMS Picker</a><time datetime="2026-10-30">· Oct 30</time></h3>
+          <ul>
+            <li><time datetime="2026-10-30">Oct 30</time><span>A page per platform with where to find each SEO setting, like <a href="/cms-picker/squarespace/">Squarespace</a></span></li>
+            <li><time datetime="2026-10-30">Oct 30</time><span>Results say which of your answers tipped them, and Sanity replaces the general “Headless CMS”</span></li>
+            <li><time datetime="2026-10-29">Oct 29</time><span>Find your fit in a few questions</span></li>
+          </ul>
+        </div>
+        <div class="upd-side">
+          <div>
+            <h3><a href="/formatter/">Clean Paste</a><time datetime="2026-10-30">· Oct 30</time></h3>
+            <ul>
+              <li><time datetime="2026-10-30">Oct 30</time><span>The heading and list shortcuts of WordPress and Google Docs</span></li>
+            </ul>
+          </div>
+          <div>
+            <h3><a href="/image-resizer/">Image Resizer</a><time datetime="2026-10-30">· Oct 30</time></h3>
+            <ul>
+              <li><time datetime="2026-10-30">Oct 30</time><span>Uses far less memory and never overwrites a file when saving to a folder</span></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Site<time datetime="2026-10-30">· Oct 30</time></h3>
+            <ul>
+              <li><time datetime="2026-10-30">Oct 30</time><span>A new home page, clearer colours, shorter About sections and accessibility fixes</span></li>
+              <li><time datetime="2026-10-29">Oct 29</time><span><a href="#ach-h">Achievements</a> and a <a href="#hi-h">backpack</a> with where to find me</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="tile ach" aria-labelledby="ach-h">
