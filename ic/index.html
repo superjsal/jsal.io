@@ -976,7 +976,8 @@ function answerOf(mark, verdict) {
   if (verdict === 'check') return 'Check';
   return 'Yes';
 }
-const answerHtml = (mark, verdict) => { const a = answerOf(mark, verdict); return `<b class="answer-word ${ANSWER_CLASS[a]}">${a}</b>`; };
+// "Check" beside a "Check manually" tag says the same thing twice, so the tag says it alone
+const answerHtml = (mark, verdict) => { const a = answerOf(mark, verdict); return a === 'Check' && verdict === 'check' ? '' : `<b class="answer-word ${ANSWER_CLASS[a]}">${a}</b>`; };
 // Group heading icons: alert circle for answers to check, check circle for the ones that hold everywhere
 const ICON_CHECK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg>';
 const ICON_SAME = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>';
