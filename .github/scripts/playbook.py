@@ -465,7 +465,8 @@ def platform_pages(d):
                  for r in BUILT_ROWS if r in ans and r in items]
         checked = max((ans[r].get('lastVerified', '') for r in rows), default='') or d.get('asOf') or ''
         has_where = any(ans[r].get('where') for r in rows)
-        desc = f'{name} SEO answered: titles, URLs, redirects, schema, noindex and AI crawlers, with where to find each setting in {name}.'
+        desc = (f'{name} SEO answered: titles, URLs, redirects, schema, noindex and AI crawlers, '
+                f'{"each with where to find the setting" if has_where else "and what each takes"}, checked against {name}’s own docs.')   # 134–160 characters
         url = f'https://jsal.io/cms-picker/{pid}/'
         ld = {'@context': 'https://schema.org', '@type': 'WebPage', 'name': f'{name} SEO: What You Can Change, and Where',
               'url': url, 'description': desc, 'inLanguage': 'en', 'dateModified': date, 'about': {'@type': 'Thing', 'name': name},
