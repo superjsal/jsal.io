@@ -349,15 +349,16 @@
   // One question at a time, then the best matches. The questions and the scoring live in score.js (shared
   // with the persona tests). The answers stay in the page address, so a result can be shared; nothing is stored.
   const { QUESTIONS } = window.cmsScore;
-  // Shared result links carry the quiz version (v=1). Links from before versions (no v) are version 1.
+  // Shared result links carry the quiz version (v=2). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
   // people have already shared keep opening a result rather than an empty quiz.
-  const LINK_VERSION = 1;
+  const LINK_VERSION = 2;
   function readLink(params) {
     const v = Number(params.get('v') || 1);
     params.delete('v');
     const answers = Object.fromEntries(params);
-    if (v === 1) return answers;
+    if (v === 1) return { grow: 'no', ...answers };   // v1 had no "add features" question; no answer scored like "No"
+    if (v === 2) return answers;
     return null;   // a newer version than this page knows: start the quiz fresh
   }
   // Effort, from values already checked: the quiz's ease score and the profile's hosting line

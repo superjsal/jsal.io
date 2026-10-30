@@ -18,6 +18,7 @@
     { id: 'lang', q: 'Will it be in more than one language?', opts: [['no', 'No', 'One language', 'One language'], ['yes', 'Yes', 'Two or more', 'Two or more languages']] },
     { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go', 'A good template is enough'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust', 'Arrange the design visually'], ['pixel', 'Every detail', 'Exactly as designed', 'Control every detail of the design']] },
     { id: 'leave', q: 'How important is taking everything with you if you switch later?', opts: [['yes', 'Very important', 'I want to own all of it', 'Taking everything with me matters'], ['no', 'Not a big concern', 'I’ll probably stay', 'Not planning to switch']] },
+    { id: 'grow', q: 'Will you add features as the site grows?', opts: [['yes', 'Yes, I’ll keep adding things', 'Bookings, memberships, reviews, CRM links…', 'Adding features as it grows'], ['no', 'No, what’s built in is enough', 'Keep it simple', 'What’s built in is enough']] },
     { id: 'budget', q: 'What can you spend each month?', opts: [['none', 'Nothing for now', 'Start free, upgrade later', 'Nothing for now: free to start'], ['low', 'Up to about $25', 'A basic plan', 'Up to about $25 a month'], ['mid', 'Up to about $100', 'Room for a store or more features', 'Up to about $100 a month'], ['any', 'More, or I’ll pay a developer', 'Cost isn’t the deciding factor', 'Cost isn’t the deciding factor']] },
   ];
   const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
@@ -52,6 +53,7 @@
     lang: [() => 'more than one language is easier to set up', (a, y) => `more than one language is harder to set up on ${y}`],
     look: [(a) => ({ template: 'it has good templates to start from', visual: 'you can arrange your pages visually', pixel: 'it gives full control over the design' })[a.look], null],
     leave: [() => 'you can take more of your site with you', (a, y) => `${y} doesn’t let you take everything with you`],
+    grow: [() => 'it has more plugins and apps to add later', (a, y) => `${y} has fewer plugins and apps to add later`],
     budget: [(a) => (a.budget === 'none' ? 'it’s free to start' : 'it fits your budget'), (a, y) => `${y} costs more than you want to spend`],
   };
 
@@ -98,6 +100,12 @@
       if (/^Everything/.test(pr.export || '')) add('leave', 2, 'You can take everything with you');
       else if (/API/.test(pr.export || '')) add('leave', 1, 'Your content stays yours, through the API');
       else add('leave', -1);
+    }
+    // Adding features later: the platforms with the biggest plugin and app libraries (quiz.addOnsMany: tens of
+    // thousands; quiz.addOnsSome: about a thousand or more)
+    if (a.grow === 'yes') {
+      if (has('addOnsMany')) add('grow', 2, 'Thousands of plugins and apps to add later');
+      else if (has('addOnsSome')) add('grow', 1, 'A good range of apps to add later');
     }
     if (a.budget in BUDGET) {
       const level = COST_LEVEL[verdict(a.what === 'store' ? 'cost_store' : 'cost_site')];

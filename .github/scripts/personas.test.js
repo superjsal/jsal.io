@@ -1,5 +1,5 @@
 // CMS Picker persona tests: example people run through the real Find my fit scoring (cms-picker/score.js),
-// checked against the results John agreed (2026-10-29; 33 people since the business-site, members, budget and B2B questions). Run by build\check.ps1 (node .github/scripts/personas.test.js).
+// checked against the results John agreed (2026-10-29; 36 people since the business-site, members, budget and B2B questions). Run by build\check.ps1 (node .github/scripts/personas.test.js).
 // The answers come from cms-picker/data.json with this folder's cms-picker.json quiz values on top, so a
 // change to either is tested before the next publish. When a result should change, agree it first, then
 // update the expectation here.
@@ -60,6 +60,13 @@ const PERSONAS = [
     { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
   ['Parts supplier selling to businesses (B2B), with a developer', { what: 'store', who: 'dev', care: 'yes', size: 'b2b', lang: 'no', look: 'template', leave: 'no' },
     { first: ['magento'], top3: ['magento', 'bigcommerce'] }],
+  // Adding features as the site grows: the biggest plugin and app libraries count, not over hosting being handled
+  ['Local business adding bookings and reviews later, happy to learn', { what: 'site', kind: 'local', who: 'learn', care: 'yes', lang: 'no', look: 'template', leave: 'yes', grow: 'yes', budget: 'low' },
+    { first: ['wordpress'], top3: ['wordpress', 'wix', 'squarespace'] }],
+  ['Local business adding features later, wants hosting handled', { what: 'site', kind: 'local', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes', grow: 'yes', budget: 'low' },
+    { first: ['wix', 'squarespace'], not: ['wordpress'] }],
+  ['Blogger who will add features, happy to learn', { what: 'content', members: 'no', who: 'learn', care: 'yes', lang: 'no', look: 'template', leave: 'yes', grow: 'yes', budget: 'low' },
+    { first: ['wordpress'], top3: ['wordpress', 'ghost'] }],
   // Blogs, publications and custom builds
   ['Newsletter writer with paid members', { what: 'content', members: 'yes', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes' },
     { first: ['ghost'], top3: ['ghost'] }],
