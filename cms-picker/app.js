@@ -269,7 +269,11 @@
     $('#seo .scroll').addEventListener('scroll', (e) => { $('#thead').scrollLeft = e.target.scrollLeft; }, { passive: true });
     // The column under the pointer or keyboard focus is marked, header included, so a platform's answers
     // are easy to follow down the table
-    const markCol = (i) => document.querySelectorAll('#seo [data-col]').forEach((c) => c.classList.toggle('col-on', c.dataset.col === i));
+    // (only with two or more columns: with one, every answer is already that platform's)
+    const markCol = (i) => {
+      if (state.compare.size < 2) i = null;
+      document.querySelectorAll('#seo [data-col]').forEach((c) => c.classList.toggle('col-on', c.dataset.col === i));
+    };
     ['#grid', '#ghead'].forEach((sel) => {
       $(sel).addEventListener('pointerover', (e) => markCol(e.target.closest('[data-col]')?.dataset.col ?? null));
       $(sel).addEventListener('pointerleave', () => markCol(null));
