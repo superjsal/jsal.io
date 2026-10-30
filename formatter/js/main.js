@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzzd";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzzd";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzze";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzze";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -67,14 +67,19 @@ $("pasteZone").addEventListener("click", (e) => { if (e.target === $("pasteZone"
 // Phones and tablets have no Ctrl/⌘+V: the paste area takes a tap-and-hold Paste (it's editable there, but
 // typing into it does nothing), and a button reads the clipboard where the browser allows it
 const touch = matchMedia("(pointer: coarse)").matches;
+const canReadClipboard = !!(navigator.clipboard && (navigator.clipboard.read || navigator.clipboard.readText));
 if (touch) {
   const zone = $("pasteZone");
   zone.contentEditable = "true";
   zone.inputMode = "none";   // no on-screen keyboard: it's only there to receive a paste
   zone.addEventListener("beforeinput", (e) => { if (e.inputType !== "insertFromPaste") e.preventDefault(); });
-  document.querySelector(".paste-sub").textContent = "Copy from Word, Google Docs, a web page or HTML code, then tap and hold here and choose Paste.";
+  // A tablet with a keyboard is still a touch screen, so the keyboard paste is mentioned too
+  const keys = `${isMac ? "⌘" : "Ctrl"} + V`;
+  document.querySelector(".paste-sub").textContent = `Copy from Word, Google Docs, a web page or HTML code, then tap and hold here and choose Paste (or press ${keys}).`;
+  // The About steps mention the Paste from clipboard button only where it's shown (the same test as below)
+  $("howPaste").textContent = `. Then tap and hold the paste area and choose Paste${canReadClipboard ? ", or tap Paste from clipboard" : ""} (or press ${keys} with a keyboard)`;
 }
-if (navigator.clipboard && (navigator.clipboard.read || navigator.clipboard.readText)) {
+if (canReadClipboard) {
   $("pasteBtn").hidden = $("pasteSep").hidden = false;
   $("pasteBtn").addEventListener("click", async () => {
     try {
