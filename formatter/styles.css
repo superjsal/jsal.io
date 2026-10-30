@@ -156,7 +156,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .toolbar-hint { font-size: 12px; color: var(--jsal-muted); }
 .btn-clear { display: inline-flex; align-items: center; gap: 5px; padding: 4px 6px; color: var(--jsal-bad); font-weight: 500; border-radius: var(--jsal-radius-sm); }
 .btn-clear:hover { background: var(--jsal-bad-soft); }
-.btn-link { color: var(--jsal-accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.btn-link { padding: 4px 0; color: var(--jsal-accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }   /* 24px tall: easier to hit (WCAG 2.5.8) */
 
 /* ── Workspace ─────────────────────────────────────────────────────────── */
 
