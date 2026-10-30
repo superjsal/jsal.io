@@ -306,19 +306,28 @@ a.tile:hover .arrow, a.tile:focus-visible .arrow { transform: translate(2px, -2p
 h1, h2, .big { text-wrap: balance; }
 p, li { text-wrap: pretty; }
 
-/* Top padding lines the descriptor up with the "currently" label in the tile beside it
+/* Top padding lines the small line up with the picture's top edge in the CMS Picker tile beside it
    (tile padding 26px + 1px border) */
-.intro { grid-column: 1 / 9; padding: 27px 0 0; }
+.intro { grid-column: 1 / 6; padding: 27px 0 0; }
 .roles { display: flex; flex-wrap: wrap; margin: 0 0 18px 4px; font: 500 12.5px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 .roles span + span::before { content: "·"; margin: 0 10px; color: var(--jsal-muted); }
-.intro h1 { margin: 0; font: 700 clamp(56px, 8vw, 108px)/0.9 "Lora", Georgia, serif; letter-spacing: -0.04em; }
-.intro h1 em { display: inline-block; margin-left: 1.1em; font-weight: 600; color: var(--jsal-accent); }
+.intro h1 { margin: 0; font: 700 clamp(44px, 5vw, 62px)/1.02 "Lora", Georgia, serif; letter-spacing: -0.03em; }
+.intro h1 em { font-weight: 600; color: var(--jsal-accent); }
 .intro p { margin: 28px 0 0 4px; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
+/* The first click: the CMS Picker (gold, the main action), or the backpack's ways to get in touch */
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0 2px; }
+.cta a { display: inline-flex; align-items: center; padding: 11px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; }
+.cta .main { background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.cta .alt { border: 1px solid var(--jsal-line-hi); color: var(--jsal-ink); }
+.cta a:hover { transform: translateY(-2px); }
+.cta .alt:hover { border-color: var(--jsal-hover-line); }
+.cta a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+@media (pointer: coarse) { .cta a { min-height: 44px; } }
 
 /* Currently: WoW Forever art behind the text, scaled down but otherwise unaltered as Blizzard's fan-site policy
    requires (the darkening is a separate layer on top, and the copyright notice stays on the
    card). Same light text in both themes, since it sits on the picture. */
-.now-playing { grid-column: 9 / 13; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 280px; }   /* style: allow (WoW tile: dark green under the art) */
+.now-playing { grid-column: 6 / 13; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 280px; }   /* style: allow (WoW tile: dark green under the art) */
 /* Text over the sky at the top, so the dwarf and bear show in the lower half. The art is 2.4:1 and the
    card is taller than that, so it fills the height and object-position picks the slice with the dwarf
    and bear. It's drawn 18% taller than the card with the extra above it (sky), which lifts them clear
@@ -332,25 +341,26 @@ p, li { text-wrap: pretty; }
 .now-playing .credit { font-size: 11px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
 
-.jscale { grid-column: 1 / 7; background: var(--cream); color: var(--cream-ink); padding: 14px; display: flex; flex-direction: column; gap: 16px; --arrow-bg: var(--cream-btn); --arrow-ink: var(--cream-btn-ink); }
+.jscale { grid-column: 6 / 13; background: var(--cream); color: var(--cream-ink); padding: 14px; display: flex; flex-direction: column; gap: 16px; --arrow-bg: var(--cream-btn); --arrow-ink: var(--cream-btn-ink); }
 .jscale .shot { aspect-ratio: 16 / 8; min-width: 0; }   /* min-width: Safari otherwise sizes it to its content and it sticks out on phones */
 .jscale .foot { padding: 0 8px 6px; }
 .jscale .label, .jscale .desc { color: var(--cream-muted); }
 .desc { margin-top: 4px !important; font-size: 14.5px; }
 
-.ic { grid-column: 7 / 13; background: var(--blue); color: var(--blue-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 28px; --arrow-bg: var(--blue-acc); --arrow-ink: var(--blue); }
+.ic { grid-column: 1 / 8; background: var(--blue); color: var(--blue-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 28px; --arrow-bg: var(--blue-acc); --arrow-ink: var(--blue); }
 .ic .label { color: var(--blue-acc); }
 .ic .desc { color: var(--blue-muted); }
 
-.fmt { grid-column: 8 / 13; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
-.fmt h2, .ic h2 { font-size: 26px; }   /* the featured app keeps the biggest title */
+.fmt { grid-column: 1 / 6; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
+.fmt h2, .jscale h2, .ic h2 { font-size: 24px; }   /* the featured app keeps the biggest title */
 .fmt .label { color: var(--gold-acc); }
 .fmt .desc { color: var(--gold-muted); }
 
-.ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+.ui { grid-column: 8 / 13; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr); align-content: space-between; gap: 22px; }   /* a narrow tile: the screen sits under the text */
 .ui .label { color: var(--green-acc); }
-.cms { grid-column: 1 / 8; background: var(--plum); color: var(--plum-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--plum-acc); --arrow-ink: var(--plum); }
-.cms h2 { font-size: 26px; }
+.cms { grid-column: 6 / 13; background: var(--plum); color: var(--plum-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--plum-acc); --arrow-ink: var(--plum); }
+.cms h2 { font-size: 36px; }
+.cms .desc { font-size: 16px; max-width: 32em; }
 .cms .label { color: var(--plum-acc); }
 .cms .desc { color: var(--plum-muted); }
 .ui h2 { font-size: 34px; }
@@ -415,14 +425,25 @@ p, li { text-wrap: pretty; }
 .m-ic .v.warn { background: var(--jsal-warn-soft); box-shadow: inset 0 0 0 1px var(--jsal-warn); }
 .m-ic .lock { position: absolute; top: 50%; left: 50%; translate: -50% -50%; display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: var(--jsal-radius-pill); background: var(--blue-acc); color: var(--blue); font-size: 14px; font-weight: 700; box-shadow: 0 8px 22px rgb(0 0 0 / 0.3); }
 
-/* CMS Picker: "What are you building?" chips and two platform cards, then the SEO table */
-/* CMS Picker: the platforms it compares (the CMS Picker's own logo files), one of them picked */
-.m-cms { flex: 1; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; align-content: center; }
-.m-cms span { aspect-ratio: 1.35; display: grid; place-items: center; border-radius: var(--jsal-radius-lg); }
-.m-cms span i { width: 42%; height: 42%; background: var(--plum-ink); opacity: 0.85; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
+/* CMS Picker: the quiz's real first question with an answer picked, the top match that gives (Shopify's
+   own card tags), and the platforms it compares (the CMS Picker's own logo files; Duda and Magento have none) */
+.m-cms { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 20px; }
+.m-cms small { display: block; font: 600 11px/1 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
+.m-cms .q { margin: 8px 0 12px; font: 700 22px/1.2 "Lora", Georgia, serif; color: var(--jsal-ink); }
+.m-cms .opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.m-cms .opt { padding: 10px 12px; font-size: 13.5px; line-height: 1.35; color: var(--jsal-ink-2); border-radius: var(--jsal-radius); }
 .m-cms .pick { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); }
-.m-cms .pick i { background: var(--plum-acc); opacity: 1; }
-.m-cms .more { font-size: 15px; font-weight: 700; color: var(--plum-acc); }
+.m-cms .opt.pick { color: var(--jsal-ink); font-weight: 600; }
+.m-cms .res { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--jsal-radius-lg); }
+.m-cms .res > i { flex: none; width: 30px; height: 30px; }
+.m-cms .res span { flex: 1; min-width: 0; font-size: 12.5px; color: var(--jsal-muted); }
+.m-cms .res b { font-size: 15px; color: var(--jsal-ink); }
+.m-cms .fit { flex: none; font-style: normal; padding: 3px 10px; border-radius: var(--jsal-radius-pill); font-size: 12px; font-weight: 600; color: var(--jsal-ok); background: var(--jsal-ok-soft); }
+.m-cms .logos { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding-top: 4px; }
+.m-cms .logos i { width: 18px; height: 18px; opacity: 0.6; }
+.m-cms .more { font-size: 12px; font-weight: 700; color: var(--plum-acc); }
+.m-cms .logo { background: var(--plum-ink); -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
+.m-cms .res .logo { background: var(--plum-acc); }
 
 /* Clean Paste: checks + copy buttons, then the editor with its toolbar */
 /* Clean Paste: what Word's formatting looks like going in, and the clean HTML coming out */
@@ -443,7 +464,7 @@ p, li { text-wrap: pretty; }
    Image Resizer sends out the resized files one by one;
    Platform Playbook's lock rattles (it's for the team);
    Clean Paste writes out the clean HTML line by line;
-   CMS Picker tries each platform in turn. */
+   CMS Picker picks the answer, then shows the match. */
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .tile:is(:hover, :focus-visible) .m-jscale .out, .tile:is(:hover, :focus-visible) .m-jscale .saved { animation: m-line 3s ease-out infinite; }
   .tile:is(:hover, :focus-visible) .m-jscale .out:nth-child(2) { animation-delay: 0.25s; }
@@ -457,18 +478,15 @@ p, li { text-wrap: pretty; }
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(3) { animation-delay: 0.25s; }
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(4) { animation-delay: 0.5s; }
   .tile:is(:hover, :focus-visible) .m-fmt .to { animation: m-nudge 3s ease-in-out infinite; }
-  /* Negative delays: every logo's loop is already running, so the one picked at rest (Shopify) doesn't
-     stay lit while it waits for its turn */
-  .tile:is(:hover, :focus-visible) .m-cms span:not(.more) { animation: m-try 4.05s calc(var(--n) * 0.45s - 4.05s) infinite; }
-  .tile:is(:hover, :focus-visible) .m-cms span:not(.more) i { animation: m-try-logo 4.05s calc(var(--n) * 0.45s - 4.05s) infinite; }
+  .tile:is(:hover, :focus-visible) .m-cms .opt.pick { animation: m-pick 3s ease-out infinite; }
+  .tile:is(:hover, :focus-visible) .m-cms .res { animation: m-line 3s 0.35s ease-out infinite; }
 }
 @keyframes m-line { 0%, 10% { opacity: 0; translate: -4px 0; } 25%, 85% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
 @keyframes m-rattle { 0%, 100% { rotate: 0deg; } 20% { rotate: -7deg; } 40% { rotate: 6deg; } 60% { rotate: -4deg; } 80% { rotate: 2deg; } }
 @keyframes m-nudge { 0%, 100% { translate: 0 0; } 15% { translate: 3px 0; } 30% { translate: 0 0; } }
-@keyframes m-try { 0%, 10% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } 11.5%, 100% { border-color: var(--jsal-line); box-shadow: none; } }
-@keyframes m-try-logo { 0%, 10% { background: var(--plum-acc); opacity: 1; } 11.5%, 100% { background: var(--plum-ink); opacity: 0.85; } }
+@keyframes m-pick { 0%, 8% { border-color: var(--jsal-line); box-shadow: none; } 12%, 100% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } }
 
-.now { grid-column: 1 / 7; background: var(--plain); }
+.now { grid-column: 1 / 6; grid-row: span 2; background: var(--plain); }   /* beside "Currently" and the backpack, stacked */
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
 .now ul { margin: 0; padding: 0; list-style: none; }
 .now li { padding: 10px 0; border-top: 1px solid var(--plain-line); }
@@ -497,7 +515,7 @@ p, li { text-wrap: pretty; }
 @media (prefers-reduced-motion: reduce) { .ach-bar i { transition: none; } }
 
 /* Plain surface, so the cream/ink contrast stays with the featured app */
-.mail { grid-column: 7 / 13; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; gap: 4px; }
+.mail { grid-column: 6 / 13; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; gap: 4px; }
 .mail .label, .mail .desc { color: var(--jsal-muted); }
 /* Backpack: where to find me, as gear in a game bag. The tile is the bag (stitched leather, a portrait
    and title bar like a bag window) and keeps its look in both themes, like the WoW Forever tile. Items
@@ -554,10 +572,13 @@ footer nav { display: flex; gap: 4px; }
 footer a, footer .foot-btn { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
 
+/* Small laptops: Image Resizer's output list keeps the sizes but drops the thumbnails, so it doesn't
+   squeeze in the narrower tile */
+@media (min-width: 861px) and (max-width: 1100px) { .m-jscale .out .photo { display: none; } }
 @media (max-width: 860px) {
   .grid > * { grid-column: 1 / -1 !important; }
+  .now { grid-row: auto; }
   .intro { padding-top: 4px; }
-  .ui { grid-template-columns: minmax(0, 1fr); }
   .intro p { font-size: 16px; }
 }
 #work, #updates { scroll-margin-top: 16px; }
@@ -569,9 +590,13 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .grid { margin-top: 22px; gap: 14px; }
   .roles { margin: 0 0 12px 2px; font-size: 11px; letter-spacing: 0.05em; }
   .roles span + span::before { margin: 0 8px; }
-  .intro h1 { font-size: 50px; line-height: 0.92; }
-  .intro h1 em { margin-left: 0.8em; }
+  .intro h1 { font-size: 40px; line-height: 1.05; }
   .intro p { margin: 16px 0 6px 2px; font-size: 15.5px; line-height: 1.55; }
+  .cta { margin-top: 18px; }
+  .m-cms { padding: 14px; gap: 12px; }
+  .m-cms .q { font-size: 19px; }
+  .m-cms .opt { font-size: 13px; padding: 9px 10px; }
+  .m-cms .logos i { width: 15px; height: 15px; }
   .tile { padding: 20px; border-radius: 18px; }
   .jscale { padding: 12px; }
   .jscale .foot { padding: 0 6px 4px; }
@@ -602,27 +627,20 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
   <main class="grid">
     <section class="intro">
-      <div class="roles"><span>Technical SEO</span><span>Web Tools</span><span>Gaming</span></div>
-      <h1>John <br><em>Salvador</em></h1>
-      <p>I’m a web developer working in technical SEO, and I build small web tools on the side, mostly to make my own work less repetitive. The rest of the time I’m gaming.</p>
+      <div class="roles"><span>John Salvador</span><span>Technical SEO</span><span>Gaming</span></div>
+      <h1>Small tools that do <em>one job</em> well.</h1>
+      <p>Start with the CMS Picker: answer a few questions to see which website platform fits you, and what it lets you change for SEO. The others are quick, lightweight helpers for the small jobs around a site.</p>
+      <div class="cta"><a class="main" href="/cms-picker/">Find your CMS</a><a class="alt" href="#hi-h">Say hi</a></div>
     </section>
 
-    <section class="tile now-playing" aria-label="Currently">
-      <!-- It covers a tall box, so it's drawn about 800px wide on phones and 1,050px on desktop: sizes says that,
-           and 2x screens still get the 1920px original -->
-      <img class="art" src="/img/wow-forever.webp" srcset="/img/wow-forever-1200.webp 1200w, /img/wow-forever.webp 1920w" sizes="(max-width: 1023px) 800px, 1050px" width="1920" height="800" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" fetchpriority="high">
-      <div>
-        <p class="label">currently</p>
-        <p class="big">Getting ready for WoW Forever</p>
-      </div>
-      <div class="row"><span class="pill">Coming soon</span><span class="credit">Art © Blizzard Entertainment</span></div>
-    </section>
-
-    <!-- App tiles: data-app opens that app with the tile-to-app transition. The public tools first, CMS Picker
-         leading; the team's Playbook last -->
+    <!-- App tiles: data-app opens that app with the tile-to-app transition. CMS Picker is the big one beside
+         the intro; the smaller tools in a row beneath it, the team's Playbook last -->
     <a id="work" class="tile cms" href="/cms-picker/" data-app>
       <div class="mock m-cms" aria-hidden="true">
-        <span class="box" style="--n: 0"><i style="--logo: url(/cms-picker/logos/wordpress.svg)"></i></span><span class="box pick" style="--n: 1"><i style="--logo: url(/cms-picker/logos/shopify.svg)"></i></span><span class="box" style="--n: 2"><i style="--logo: url(/cms-picker/logos/wix.svg)"></i></span><span class="box" style="--n: 3"><i style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span class="box" style="--n: 4"><i style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span class="box" style="--n: 5"><i style="--logo: url(/cms-picker/logos/framer.svg)"></i></span><span class="box" style="--n: 6"><i style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span class="box" style="--n: 7"><i style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span class="box" style="--n: 8"><i style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span class="box more">+4</span>
+        <div><small>Question 1 of 9</small><b class="q">What are you making?</b>
+          <div class="opts"><span class="box opt">A site for my business</span><span class="box opt pick">An online store</span><span class="box opt">A blog or newsletter</span><span class="box opt">Something custom</span></div></div>
+        <div class="box res pick"><i class="logo" style="--logo: url(/cms-picker/logos/shopify.svg)"></i><span><b>Shopify</b>Built-in checkout, app ecosystem</span><em class="fit">Best fit</em></div>
+        <div class="logos"><i class="logo" style="--logo: url(/cms-picker/logos/wordpress.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/shopify.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/wix.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/squarespace.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/webflow.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/framer.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/hubspot.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/drupal.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/ghost.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/sanity.svg)"></i><span class="more">+2</span></div>
       </div>
       <div class="foot">
         <div>
@@ -714,16 +732,28 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
     </section>
 
-    <!-- Site updates, newest first. "Currently" (top) says what I'm up to; this lists what shipped. -->
+    <!-- Site updates, newest first. "Currently" (the WoW tile) says what I'm up to; this lists what shipped. -->
     <section id="updates" class="tile now" aria-labelledby="updates-h">
       <h2 id="updates-h">Updates</h2>
       <ul>
         <li><time datetime="2026-10-30">Oct 30</time><span><a href="/cms-picker/">CMS Picker</a>: a page per platform with its SEO settings and where to find each one, like <a href="/cms-picker/squarespace/">Squarespace</a></span></li>
         <li><time datetime="2026-10-30">Oct 30</time><span><a href="/cms-picker/">CMS Picker</a>: Sanity replaces the general “Headless CMS”, a new question on adding features as your site grows, and results now say which of your answers tipped them, or when nothing fits your answers well</span></li>
         <li><time datetime="2026-10-30">Oct 30</time><span><a href="/formatter/">Clean Paste</a> and the <a href="/image-resizer/">Image Resizer</a> work better on phones, point out what to fix more clearly, and warn when an image may look blurry</span></li>
-        <li><time datetime="2026-10-30">Oct 30</time><span>A tidier site: clearer colours and shorter About sections</span></li>
+        <li><time datetime="2026-10-30">Oct 30</time><span>A new home page with the <a href="/cms-picker/">CMS Picker</a> up front, plus clearer colours and shorter About sections across the site</span></li>
         <li><time datetime="2026-10-29">Oct 29</time><span><a href="/cms-picker/">CMS Picker</a>: find your fit in a few questions. Plus <a href="#ach-h">achievements</a> and a <a href="#hi-h">backpack</a> with where to find me</span></li>
       </ul>
+    </section>
+
+    <!-- What I'm up to, above the backpack (Updates runs down beside both) -->
+    <section class="tile now-playing" aria-label="Currently">
+      <!-- It covers a tall box, so it's drawn about 800px wide whatever the screen: sizes says that,
+           and 2x screens still get the 1920px original. Well below the first screen, so it loads late. -->
+      <img class="art" src="/img/wow-forever.webp" srcset="/img/wow-forever-1200.webp 1200w, /img/wow-forever.webp 1920w" sizes="800px" width="1920" height="800" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" loading="lazy" decoding="async">
+      <div>
+        <p class="label">currently</p>
+        <p class="big">Getting ready for WoW Forever</p>
+      </div>
+      <div class="row"><span class="pill">Coming soon</span><span class="credit">Art © Blizzard Entertainment</span></div>
     </section>
 
     <!-- Say hi: where to find me, as gear in a game backpack. Each item's tooltip says what it does;
