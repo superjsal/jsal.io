@@ -6,7 +6,7 @@
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
 const site = path.join(__dirname, '..', '..');
-const { rank, explain } = require(path.join(site, 'cms-picker', 'score.js'));
+const { rank, explain, QUESTIONS, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
@@ -107,7 +107,7 @@ for (const [name, answers, want] of PERSONAS) {
   // A tie for first means the page shows a "Best match" it can't back up
   if (r[1] && r[0].s === r[1].s && want.first && want.first.length === 1) errs.push(`tied for first: ${r[0].p.id} and ${r[1].p.id}`);
   // Every agreed person gets a real "Best match", never only the closest
-  if (r[0].s < require(path.join(site, 'cms-picker', 'score.js')).LOW_FIT) errs.push(`first scores ${r[0].s}: only a "Closest match"`);
+  if (r[0].s < LOW_FIT) errs.push(`first scores ${r[0].s}: only a "Closest match"`);
   const line = r.slice(0, 3).map((x) => `${x.p.name} ${x.s}`).join(', ');
   if (errs.length) { failed++; console.log(`FAIL ${name}: ${errs.join('; ')}  [${line}]`); }
   else console.log(`ok   ${name}  [${line}]`);
@@ -117,7 +117,6 @@ console.log(failed ? `${failed} of ${PERSONAS.length} personas failed.` : `All $
 // The result cards, for every possible set of answers: each card says what sets it apart, without
 // mentioning anything the person ruled out; "the same reasons as" only when it's true; the top two
 // never show the same list; and a clear winner says what tipped it.
-const { QUESTIONS, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
 // Four rules every result must keep (agreed with Claude Reviewer, 2026-10-30), counted across all answer sets:
 //   made: the first match is made for what they're making, unless the page shows the "Closest match" notice
 //   dev: someone not technical never gets a "Needs a developer" platform (ease 0) first

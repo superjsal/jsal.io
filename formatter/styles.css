@@ -400,6 +400,10 @@ textarea.code[hidden] { display: none; }
   .toolbar button, .option-track button, .btn-primary, .btn-clear, .btn-link, .link-box button, .link-box a { min-height: 44px; }
   .toolbar button { min-width: 44px; }
   button.check { min-height: 44px; }
+  /* The paste area is editable on touch screens (to take a tap-and-hold Paste): iPhones zoom into an editable
+     element under 16px, so it gets 16px, and its unsized lines keep the size they had */
+  .paste-zone { font-size: 16px; }
+  .paste-sub, .paste-links { font-size: 13px; }
 }
 /* Phones: the toolbar in two even rows (formatting, then links, fixes and undo) instead of wrapping onto three */
 .tb-break { display: none; }

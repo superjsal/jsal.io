@@ -585,7 +585,7 @@
         // The key facts people compare first: skill, hosting and updates, and what it costs to start for what
         // you're making (a store's band for a store), with a note where a developer is needed
         const fx = el('dl', 'qz-facts'), ease = data.quiz.ease[r.p.id] ?? 1;
-        const ans = data.answers[r.p.id] || {}, cost = (ans[window.cmsScore.costRow(ans, a)] || {}).verdict;
+        const cost = ((data.answers[r.p.id] || {})[window.cmsScore.costRow(a)] || {}).verdict;
         [['Skill needed', SKILL[ease]], ['Hosting and updates', pr.hosting],
           ['Cost to start', COST[cost] && cost !== 'na' ? COST[cost] : '', ease === 0 ? 'Plus developer time to build and maintain' : '']]
           .filter(([, v]) => v).forEach(([k, v, note]) => {

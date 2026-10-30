@@ -85,6 +85,11 @@ body { background: var(--jsal-bg); }
    sideways and away from what you were doing. Touch screens get 16px fields; desktop keeps each app's size. */
 @media (pointer: coarse) {
   input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]), select, textarea { font-size: 16px !important; }
+  /* Top bar: a finger-sized (44px+) hit area round the logo, links and theme button, without changing how
+     they look or where they sit, so the bar still doesn't move between pages */
+  .jsal-brand, .jsal-link, .jsal-theme { position: relative; }
+  .jsal-brand::after, .jsal-link::after, .jsal-theme::after { content: ""; position: absolute; inset: -6px; }
+  .jsal-theme::after { inset: -7px; }   /* measured from inside its 1px border: 32px button → 44px to tap */
 }
 
 /* Text for screen readers only */

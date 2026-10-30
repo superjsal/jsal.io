@@ -32,7 +32,7 @@
   // Which "What it costs to start" row prices these answers for a platform: a store's, or (with paid members)
   // the plan that includes paid memberships ("Start a site with paid members"), else a website's. Shared by the
   // budget score, the "costs less to start" box and the card's cost line, so they always agree.
-  const costRow = (ans, a) => (a.what === 'store' ? 'cost_store' : a.members === 'yes' && (ans || {}).cost_members ? 'cost_members' : 'cost_site');
+  const costRow = (a) => (a.what === 'store' ? 'cost_store' : a.members === 'yes' ? 'cost_members' : 'cost_site');
   const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
 
   // What each part of the score says when it's what put one match ahead of another: [the leader earned
@@ -107,12 +107,11 @@
     if (a.what === 'site' && ((Q.kind || {})[a.kind] || []).includes(p.id)) add('kind', 3, KINDS[a.kind]);
     if (a.what === 'content' && a.members === 'yes') {
       // The "Sell memberships or paid posts" row: built in beats an add-on (Wix, Squarespace and Duda have their
-      // own; Webflow retired its own in 2026). Until that row is published, quiz.members stands in for it.
+      // own; Webflow retired its own in 2026).
       const m = verdict('members');
-      if (m) add('members', { yes: 3, plugin: 0, code: -2, check: -2, no: -4 }[m] ?? 0, m === 'yes' && 'Paid memberships built in');
-      else if (has('members')) add('members', 3, 'Paid members and newsletters built in');
+      add('members', { yes: 3, plugin: 0, code: -2, check: -2, no: -4 }[m] ?? 0, m === 'yes' && 'Paid memberships built in');
       // quiz.members: newsletters sent to those members from the platform itself (Ghost), on top of the row
-      if (m && has('members')) add('letters', 2, 'Newsletters to your members built in');
+      if (has('members')) add('letters', 2, 'Newsletters to your members built in');
     }
     if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'One place to manage content for a website and an app');
     const ease = Q.ease[p.id] ?? 1;
@@ -158,7 +157,7 @@
     // nothing else fits
     if (notIdealFor(Q, p.id, a)) add('notIdeal', -30);
     if (a.budget in BUDGET) {
-      const level = COST_LEVEL[verdict(costRow(data.answers[p.id], a))];
+      const level = COST_LEVEL[verdict(costRow(a))];
       if (level !== undefined) {
         const over = level - BUDGET[a.budget];
         if (over > 0) add('budget', -3 * over); else add('budget', 0, a.budget === 'none' ? 'Free to start' : 'Fits your budget');
@@ -260,7 +259,7 @@
     const w = reasons(a, x, y);
     if (w) return `Where ${x.p.name} does better for you: ${w}.`;
     if (!(a.budget in BUDGET)) return null;
-    const band = (p) => { const ans = data.answers[p.p.id] || {}; return (ans[costRow(ans, a)] || {}).verdict; };
+    const band = (p) => (((data.answers[p.p.id] || {})[costRow(a)]) || {}).verdict;
     const bx = band(x), by = band(y);
     if (!(bx in COST_LEVEL) || !(by in COST_LEVEL) || COST_LEVEL[bx] >= COST_LEVEL[by]) return null;
     const label = (v) => (data.verdicts || {})[v] || v;
