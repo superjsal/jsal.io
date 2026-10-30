@@ -47,6 +47,11 @@ Shared by the page and the tests, so they always run the same code.
   the other platform's card doesn't list ("Shopify is known for: app ecosystem, built-in checkout, and
   theme store"), so **card tags are customer-facing selling points**, written as they should read there.
   Then the smaller rows (the technical SEO ones), and last the platform's first "good fit" line.
+- **Second and third:** both are compared with the first, unless the third would repeat the second (the
+  same reasons, or the same box sentence). Then the third says "the same reasons as" the second and is
+  compared with the second instead, falling back to what it's known for if that sentence still matches.
+- **A platform's own reason:** `quiz.leaveWhy` replaces "Easy to move to another platform later" where the
+  card's "If you leave" says more (Sanity: "You own the site code and can export all your content").
 
 ## Persona tests
 
@@ -60,8 +65,8 @@ Also run by `build\check.ps1` before every push, and by the "Check CMS Picker da
   agreed. A failure means a result changed: agree the new result with John before editing the expectation.
 - **Every answer combination (8,448)**, for every result card:
   - it has a box saying what sets it apart, and never mentions a row those answers rule out;
-  - "the same reasons as X" appears only when the reasons really are the same, and the top two never
-    show an identical list;
+  - "the same reasons as X" appears only when the reasons really are the same, the top two never
+    show an identical list, and the second and third never show the same box;
   - every score part has `TIP` wording and every row a `PHRASE`;
   - it reports how many clear winners fall back from "What tipped it" (0 today).
 

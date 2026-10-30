@@ -126,7 +126,9 @@
     }
     if ((Q.look[p.id] || []).includes(a.look)) add('look', 2, LOOKS[a.look]);
     if (a.leave === 'yes') {
-      if (/^Everything/.test(pr.export || '')) add('leave', 2, 'Easy to move to another platform later');
+      // A platform's own wording for it where the general line undersells it (quiz.leaveWhy: Sanity, whose card
+      // says the website's code is already yours)
+      if (/^Everything/.test(pr.export || '')) add('leave', 2, (Q.leaveWhy || {})[p.id] || 'Easy to move to another platform later');
       else if (/API/.test(pr.export || '')) add('leave', 1, 'Your content stays yours, through the API');
       else add('leave', -1);
     }
@@ -248,13 +250,17 @@
     return `Where ${x.p.name} does better for you: it costs less to start (${label(bx)} vs ${label(by)}).`;
   }
   const sameSet = (xs, ys) => xs.length === ys.length && xs.every((w) => ys.includes(w));
+  // A box's sentence with its own platform's name taken out, to tell whether two boxes say the same thing
+  const generic = (text, name) => text.split(name).join('·');
   // For the top matches: the reasons to show and vs, a heading and a sentence on what sets each apart
   // from its neighbour (null if there's nothing to say). The second and third show their own reasons,
   // collapsed to "the same reasons as …" only when they're exactly the first's; their box says where they
-  // did better than the first for these answers, or else what they offer (pickOver).
+  // did better than the first for these answers, or else what they offer (pickOver). When the third would
+  // repeat the second (the same reasons, or the same box against the first), it's compared with the second
+  // instead, so the two read differently.
   function explain(data, a, top) {
     const lead = top[0];
-    return top.map((r, i) => {
+    const out = top.map((r, i) => {
       if (!i) {
         const next = top[1];
         let vs = null;
@@ -269,6 +275,19 @@
       const text = better(data, a, r, lead) || pickOver(data, a, r, lead);
       return { why, vs: text ? { head: `Versus ${lead.p.name}`, text } : null };
     });
+    const [, second, third] = top;
+    if (third) {
+      const twin = sameSet(third.all, second.all) && !sameSet(third.all, lead.all);
+      const echo = out[1].vs && out[2].vs && generic(out[1].vs.text, second.p.name) === generic(out[2].vs.text, third.p.name);
+      if (twin || echo) {
+        let text = better(data, a, third, second);
+        // Still the second's sentence ("…has more plugins and apps for that" twice): what the third offers instead
+        if (!text || (out[1].vs && generic(out[1].vs.text, second.p.name) === generic(text, third.p.name))) text = pickOver(data, a, third, second);
+        if (twin) out[2].why = [`Fits your answers for the same reasons as ${second.p.name}`];
+        if (text) out[2].vs = { head: `Versus ${second.p.name}`, text };
+      }
+    }
+    return out;
   }
 
   // Answers that add and take nothing, used for questions an old shared link (v=1) didn't have

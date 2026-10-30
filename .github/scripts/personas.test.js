@@ -134,8 +134,13 @@ const walk = (a, i) => {
     boxes++;
     if (/ is known for: /.test(t.vs.text)) tagBoxes++;
     Object.keys(PHRASE).forEach((row) => { if (weight(row, a) === 0 && t.vs.text.includes(PHRASE[row])) cardErrs.push(`${at}: ${r[k].p.id} mentions "${PHRASE[row]}", which these answers rule out`); });
-    if (k && /same reasons as/.test(t.why[0]) && !sameSet(r[k].all, r[0].all)) cardErrs.push(`${at}: ${r[k].p.id} says "same reasons" but they differ`);
+    // "the same reasons as" names the first or, for the third, the second: they must really match that one
+    const named = k && /same reasons as/.test(t.why[0]) && r.find((x) => t.why[0].endsWith(` ${x.p.name}`));
+    if (k && /same reasons as/.test(t.why[0]) && !(named && sameSet(r[k].all, named.all))) cardErrs.push(`${at}: ${r[k].p.id} says "same reasons" but they differ`);
   });
+  // The second and third never say the same thing in their box (their own names aside)
+  const generic = (k) => told[k].vs.text.split(r[k].p.name).join('·');
+  if (r[2] && told[1].vs && told[2].vs && generic(1) === generic(2)) cardErrs.push(`${at}: ${r[1].p.id} and ${r[2].p.id} have the same box`);
   // No match in the top three whose own "Not ideal if" line matches these answers (quiz.notIdeal)
   r.forEach((x) => { if (notIdealFor(data.quiz, x.p.id, a)) { notIdealTop++; if (notIdealTop <= 3) cardErrs.push(`${at}: ${x.p.id} is in the top three, but its card says it isn't ideal for these answers`); } });
   if (JSON.stringify(told[0].why) === JSON.stringify(told[1].why)) cardErrs.push(`${at}: ${r[0].p.id} and ${r[1].p.id} show the same reasons`);
