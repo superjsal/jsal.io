@@ -6,8 +6,8 @@
 #   python check_data.py --list     also lists every answer with no source, an old source, or that isn't verified
 #
 # Reported (not a failure): answers with no source, sources last checked over 90 days ago, and per
-# platform, answers marked "not verified" (scope C) or "Unclear" (verdict check). A headless answer
-# depends on the CMS chosen, so it has no single source to cite.
+# platform, answers marked "not verified" (scope C) or "Unclear" (verdict check), and any of the quiz's "Not
+# ideal if" rules whose line is no longer on its card.
 import datetime, json, os, pathlib, re, sys
 
 HERE = pathlib.Path(__file__).resolve().parent

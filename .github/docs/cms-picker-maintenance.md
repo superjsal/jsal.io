@@ -42,8 +42,8 @@ Shared by the page and the tests, so they always run the same code.
   (design control after "a good template is enough", more languages after "one language", selling when
   not making a store). Only rows that matter to the answers (weight over 1: selling, languages, design
   control, a blog for content sites) come first. Next is what the platform offers: its card tags that
-  the other platform's card doesn't list ("Shopify stands out for: App ecosystem · Built-in checkout ·
-  Theme store"), so **card tags are customer-facing selling points**, written as they should read there.
+  the other platform's card doesn't list ("Shopify is known for: app ecosystem, built-in checkout, and
+  theme store"), so **card tags are customer-facing selling points**, written as they should read there.
   Then the smaller rows (the technical SEO ones), and last the platform's first "good fit" line.
 
 ## Persona tests

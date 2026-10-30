@@ -149,7 +149,7 @@
     if (row === 'blog') return a.what === 'content' ? 3 : 1;
     return 1;
   }
-  // Card tags about a row, left out of "stands out for" when the answers rule that row out
+  // Card tags about a row, left out of "is known for" when the answers rule that row out
   const TAG_ABOUT = { design: /design control|canvas|animation/i, languages: /lingual|language|translat/i, store: /stor|sell|checkout|commerce/i };
   const lowerFirst = (t) => t.charAt(0).toLowerCase() + t.slice(1);
   // A card tag inside a sentence: lower case, unless it starts with a name or an abbreviation (Figma, WooCommerce, SEO)
