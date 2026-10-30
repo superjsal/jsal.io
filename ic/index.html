@@ -623,7 +623,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
         <div style="display:grid;gap:2px;min-width:0"><h2>CMS Picker</h2><p class="about">The answers, cards and logos on the public <a href="/cms-picker/" target="_blank" rel="noopener">CMS Picker</a>. They’re kept separately from the Playbook’s answers, so a topic both cover is labelled. Changes go live with the next publish. Only admins see this page.</p></div>
         <div class="panel-meta"><button type="button" class="btn" id="pk-refresh">Refresh</button></div>
       </div>
-      <p class="pk-status" id="pk-status" aria-live="polite"></p>
+      <p class="pk-status" id="pk-status" aria-live="polite">Loading…</p>
       <div class="pk-body" id="pk-body"></div>
     </section>
     <section class="team-view" id="team-view" hidden>
@@ -1232,7 +1232,10 @@ async function loadPicker() {
     sb.from('picker').select('*'),
     fetch('/cms-picker/data.json', { cache: 'no-cache' }).then((r) => r.json()).catch(() => null),
   ]);
-  if (rows.error || !pub) return;   // table not set up yet (supabase/schema.sql): no tab
+  if (rows.error || !pub) {   // table not set up yet (supabase/schema.sql): no tab
+    if (!PK.on) { $('#pk-btn').hidden = true; if (!$('#pk-view').hidden) showView('answers'); }
+    return;
+  }
   PK.rows = new Map(rows.data.map((r) => [r.platform, r]));
   PK.items = pub.items;
   PK.sourcesOn = rows.data.some((r) => 'sources' in r);     // the sources column exists (supabase/schema.sql)
@@ -2277,7 +2280,7 @@ function startApp(me) {
   $('#user-name').textContent = me.name || 'Signed in';
   if (me.avatar) { $('#user-avatar').src = me.avatar; $('#user-avatar').hidden = false; }
   $('#team-btn').hidden = !R.manage;
-  if (!R.manage) $('#pk-btn').hidden = true;   // admins see it once the picker table has loaded (loadPicker)
+  $('#pk-btn').hidden = !R.manage;   // with Team, so the bar doesn't shift; loadPicker hides it if the table isn't there
   if (started) {
     // Fresh data after opening from the saved copy (or after a retry): redraw everything that uses it
     renderGuideList();
