@@ -205,7 +205,7 @@ kbd { font: 600 11.5px var(--jsal-font); padding: 1px 6px; border-radius: 4px; b
   padding: 7px 8px 7px 12px;
   border-bottom: 1px solid var(--jsal-line);
 }
-.pane-title { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pane-title { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }   /* wraps rather than hiding "· from Word · 1.6 KB" behind "…" when text is spaced out (WCAG 1.4.12) */
 .pane-meta { font-weight: 400; color: var(--jsal-muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
 .pane-body { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; background: var(--jsal-surface); }
 /* The editor and the HTML box have no outline of their own (a ring round a long scrolling text reads badly), so
