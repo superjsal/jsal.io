@@ -16,7 +16,7 @@ data, scoring and tests. Real-device checks before a release: `manual-checks.md`
 
 **Separate from the Playbook.** The CMS Picker's answers are its own. A topic both cover (meta titles, old links/redirects, structured data) is labelled on both sides ("Also in the Playbook" / "Also on the CMS Picker"); a correction to one should be checked against the other.
 
-**Answers.** Each one is `{verdict, mark, scope, sourceUrl?, lastVerified?}`. `verdict` is the tag (yes =
+**Answers.** Each one is `{verdict, mark, scope, sourceUrl?, lastVerified?, where?}`. `where` is the menu path to the setting ("Pages → page settings → SEO"), checked against the platform's docs; it's kept with the source in `picker.sources` and shown under the note. `verdict` is the tag (yes =
 Built in, auto, plugin, code, no, …). `mark` is the note shown on tap or with Show notes; a note that only
 repeats its tag ("Yes, with an SEO plugin") is hidden as generic, so name the plugin or plan instead.
 `scope` is U (same everywhere), V ("varies": depends on plan, theme or setup) or C (not verified).

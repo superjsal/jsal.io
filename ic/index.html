@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Platform Playbook | jsal.io</title>
-<link rel="icon" href="/favicon.svg?v=2026-10-30l" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-30m" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://kvdzluvhwxkrbatgskio.supabase.co" crossorigin>
@@ -745,7 +745,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-30l" defer></script>
+<script src="/nav.js?v=2026-10-30m" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script>
 // ---------- Config ----------
@@ -1309,7 +1309,7 @@ function pkAnswerWaiting(p, r, id) {
   const pa = ((PK.pub.answers || {})[p.id] || {})[id];
   if (!pa) return true;
   const [v, m, s] = pkAnswer(r, id), src = pkSource(r, id);
-  return v !== pa.verdict || plain(m) !== pa.mark || s !== pa.scope || ((src && src.url) || '') !== (pa.sourceUrl || '');
+  return v !== pa.verdict || plain(m) !== pa.mark || s !== pa.scope || ((src && src.url) || '') !== (pa.sourceUrl || '') || ((src && src.where) || '') !== (pa.where || '');
 }
 const pkProfileWaiting = (p, r) => pkPublic(p) && stable(r.profile || {}) !== stable((pubPlatform(p.id) || {}).profile || {});
 const pkSwitchWaiting = (p) => pkPublic(p) !== !!pubPlatform(p.id);
@@ -1382,11 +1382,12 @@ function pkField(pr, f, label, kind) {
 // answer records today as the date checked; the publish shows both on the public CMS Picker.
 function pkSourceLine(src) {
   if (!PK.sourcesOn) return '';
-  if (!src) return '<p class="pk-src muted">No source yet</p>';
+  const where = src && src.where ? `<p class="pk-src">Where: ${esc(src.where)}</p>` : '';
+  if (!src || !src.url) return `${where}<p class="pk-src muted">No source yet</p>`;
   let host = src.url;
   try { host = new URL(src.url).hostname.replace(/^www\./, ''); } catch {}
   const age = (Date.now() - Date.parse(src.checked || '')) / 864e5;
-  return `<p class="pk-src">Source: <a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(host)}</a> · checked ${esc(src.checked || '?')}${age > PK_RECHECK_DAYS ? ' · <b class="pk-recheck">worth rechecking</b>' : ''}</p>`;
+  return `${where}<p class="pk-src">Source: <a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(host)}</a> · checked ${esc(src.checked || '?')}${age > PK_RECHECK_DAYS ? ' · <b class="pk-recheck">worth rechecking</b>' : ''}</p>`;
 }
 // Hints under the form as you type: a note that won't show, and a missing source
 function pkHints(f) {
@@ -1422,7 +1423,8 @@ function pkRowHtml(p, r, it) {
             <label>${it.group === 'cost' ? 'Cost to start' : 'Tag'}<select name="verdict">${opts(pkTagsFor(it), verdict)}</select></label>
             <label>${it.group === 'cost' ? 'Same for everyone?' : 'Varies by site?'}<select name="scope">${opts(pkScopes(it), scope)}</select></label>
           </div>
-          ${PK.sourcesOn ? `<label class="pk-src-field">Source <span style="font-weight:400">(the platform’s own docs; saving records today as checked)</span><input name="source" type="url" pattern="https://.*" maxlength="500" placeholder="https://help.example.com/…" value="${esc(src ? src.url : '')}"></label>` : ''}
+          ${PK.sourcesOn ? `<label class="pk-src-field">Source <span style="font-weight:400">(the platform’s own docs; saving records today as checked)</span><input name="source" type="url" pattern="https://.*" maxlength="500" placeholder="https://help.example.com/…" value="${esc(src ? src.url || '' : '')}"></label>` : ''}
+          ${PK.sourcesOn && it.group !== 'cost' ? `<label class="pk-src-field">Where to find it <span style="font-weight:400">(menu path from those docs, e.g. Pages → page settings → SEO; shown on the CMS Picker)</span><input name="where" maxlength="200" value="${esc(src ? src.where || '' : '')}"></label>` : ''}
           <div class="pk-hints" aria-live="polite"></div>
           <div class="edit-actions"><button type="submit" class="btn primary">Save</button><button type="button" class="btn" data-pk-cancel>Cancel</button>
             <span class="muted edit-hint">Public on jsal.io/cms-picker after the next publish. Ctrl+Enter saves, Esc cancels.</span></div>
@@ -1461,8 +1463,8 @@ function pkTableHtml(on) {
   // A heading row where each of the public page's sections starts (What it costs to start, Everyday, …)
   const body = PK.items.map((it, i) => `${pkSectionStarts(i) ? `<tr class="pk-group"><th colspan="${on.length + 1}" scope="colgroup"><span>${esc(pkSectionTitle(it))}</span></th></tr>` : ''}<tr><th scope="row">${esc(it.label)}</th>${on.map((p) => {
     const r = PK.rows.get(p.id), [v, m, s] = pkAnswer(r, it.id), wait = pkAnswerWaiting(p, r, it.id), src = pkSource(r, it.id);
-    const tip = `${plain(p.name)} · ${plain(it.label)}: ${vName(v)}${m && !PK_GENERIC.test(m.trim()) ? `, ${m}` : ''}${wait ? ' (waiting for publish)' : ''}${PK.sourcesOn && !src ? ' (no source)' : ''}`;
-    return `<td><button type="button" class="pk-cell${wait ? ' wait' : ''}${PK.editing === `${p.id}~${it.id}` ? ' on' : ''}" data-pk-cell="${p.id}~${it.id}" title="${esc(tip)}" aria-label="${esc(tip)}. Edit">${pkPill(it, v, s)}${PK.sourcesOn && !src ? '<span class="pk-nosrc" aria-hidden="true">no source</span>' : ''}</button></td>`;
+    const tip = `${plain(p.name)} · ${plain(it.label)}: ${vName(v)}${m && !PK_GENERIC.test(m.trim()) ? `, ${m}` : ''}${wait ? ' (waiting for publish)' : ''}${PK.sourcesOn && !(src && src.url) ? ' (no source)' : ''}`;
+    return `<td><button type="button" class="pk-cell${wait ? ' wait' : ''}${PK.editing === `${p.id}~${it.id}` ? ' on' : ''}" data-pk-cell="${p.id}~${it.id}" title="${esc(tip)}" aria-label="${esc(tip)}. Edit">${pkPill(it, v, s)}${PK.sourcesOn && !(src && src.url) ? '<span class="pk-nosrc" aria-hidden="true">no source</span>' : ''}</button></td>`;
   }).join('')}</tr>`).join('');
   return `<div class="scroll pk-table"><table>${head}<tbody>${body}</tbody></table></div>`;
 }
@@ -1590,8 +1592,9 @@ $('#pk-view').addEventListener('submit', (e) => {
     const r = PK.rows.get(p.id), id = f.dataset.pkForm;
     const answers = { ...r.answers, [id]: [f.verdict.value, f.mark.value.trim(), f.scope.value] };
     if (!PK.sourcesOn) return savePicker(p, { answers }, btn);
-    const sources = { ...(r.sources || {}) }, url = f.source.value.trim();
-    if (url) sources[id] = { url, checked: new Date().toISOString().slice(0, 10) }; else delete sources[id];
+    const sources = { ...(r.sources || {}) }, url = f.source.value.trim(), where = f.where ? f.where.value.trim() : '';
+    const src = { ...(url ? { url, checked: new Date().toISOString().slice(0, 10) } : {}), ...(where ? { where } : {}) };
+    if (url || where) sources[id] = src; else delete sources[id];
     return savePicker(p, { answers, sources }, btn);
   }
   if (f.hasAttribute('data-pk-profile')) {

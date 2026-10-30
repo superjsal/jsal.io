@@ -175,6 +175,8 @@ def publish(backup_file=None):
                 src = sources.get(pid, {}).get(i['id'])
                 if src and src.get('url'):
                     result['answers'][pid][i['id']].update({'sourceUrl': src['url'], 'lastVerified': src.get('checked', '')})
+                if src and src.get('where'):   # where to find the setting, e.g. "Pages → page settings → SEO"
+                    result['answers'][pid][i['id']]['where'] = src['where']
     # The quiz's own values aren't published here: they're in cms-picker/quiz.json, which ships with the page
     # code (and its ?v= number), so a release never pairs new scoring with old values or the other way round
     if missing:
@@ -349,7 +351,8 @@ def prerender():
             if word:
                 line += f'<span class="sc">{word}</span>'
             mark = f'<span class="mark">{e(a["mark"])}</span>' if a.get('mark') and not GENERIC.match(a['mark'].strip()) else ''
-            cells.append(f'<div class="cell"><span class="plat">{e(p["name"])}</span><span class="line">{line}</span>{mark}</div>')
+            where = f'<span class="where">Where: {e(a["where"])}</span>' if a.get('where') else ''
+            cells.append(f'<div class="cell"><span class="plat">{e(p["name"])}</span><span class="line">{line}</span>{mark}{where}</div>')
         term = f'<small class="term">{e(it["term"])}</small>' if it.get('term') else ''
         rows.append(f'<div class="row"><div class="item">{e(it["label"])}{term}</div>{"".join(cells)}</div>')
 

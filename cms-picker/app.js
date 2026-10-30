@@ -231,7 +231,11 @@
           cell.append(el('span', 'mark', c.mark));
           cell.dataset.note = c.mark;
         }
-        if (!state.notes && (cell.dataset.note || cell.dataset.scope)) cell.tabIndex = 0;   // notes off: Tab to a cell opens its note too
+        if (c.where) {   // where to find the setting, e.g. "Pages → page settings → SEO"
+          cell.append(el('span', 'where', `Where: ${c.where}`));
+          cell.dataset.where = c.where;
+        }
+        if (!state.notes && (cell.dataset.note || cell.dataset.scope || cell.dataset.where)) cell.tabIndex = 0;   // notes off: Tab to a cell opens its note too
         row.append(cell);
       });
       grid.append(row);
@@ -315,10 +319,11 @@
     const hideTip = () => { tip.hidden = true; tipCell = null; };
     const showTip = (cell) => {
       if (cell === tipCell) return;
-      if (state.notes || !cell || !(cell.dataset.note || cell.dataset.scope)) { hideTip(); return; }
+      if (state.notes || !cell || !(cell.dataset.note || cell.dataset.scope || cell.dataset.where)) { hideTip(); return; }
       tipCell = cell;
       tip.replaceChildren();
       if (cell.dataset.note) tip.append(el('span', null, cell.dataset.note));
+      if (cell.dataset.where) tip.append(el('small', 'where', `Where: ${cell.dataset.where}`));
       if (cell.dataset.scope) tip.append(el('small', null, cell.dataset.scope));
       tip.hidden = false;
       const r = cell.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
