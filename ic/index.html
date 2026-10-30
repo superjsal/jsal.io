@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Platform Playbook | jsal.io</title>
-<link rel="icon" href="/favicon.svg?v=2026-10-29zzm" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-29zzn" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://kvdzluvhwxkrbatgskio.supabase.co" crossorigin>
@@ -69,6 +69,8 @@ body { background: var(--jsal-bg); }
 --jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
 --jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
 --jsal-btn-weight: 600;
+--jsal-hover-line: var(--jsal-muted);
+--jsal-focus-ring: 0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent);
 }
 @media (pointer: coarse) {
 input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]), select, textarea { font-size: 16px !important; }
@@ -269,7 +271,7 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
   font: var(--jsal-btn-weight) 13px var(--jsal-font); color: var(--jsal-ink); background: var(--jsal-surface);
   border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); padding: 6px 12px; cursor: pointer; white-space: nowrap;
 }
-.btn:hover { border-color: var(--jsal-accent); }
+.btn:hover { border-color: var(--jsal-hover-line); }
 .btn.primary { background: var(--jsal-fill); border-color: var(--jsal-fill); color: var(--jsal-on-fill); font-size: 14px; padding: 9px 18px; }
 .btn.primary:hover { filter: brightness(1.05); }
 .card { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); padding: 13px 16px; display: grid; gap: 7px; min-width: 0; }
@@ -303,10 +305,10 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .md-hint { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-size: 12px; color: var(--jsal-muted); }
 .md-hint code { font-size: 11.5px; background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 3px; padding: 0 4px; }
 .copy-icon { display: inline-flex; vertical-align: -2px; margin-left: 6px; padding: 3px; border: 0; border-radius: 4px; background: transparent; color: var(--jsal-muted); cursor: pointer; }
-.copy-icon:hover { color: var(--jsal-accent); background: var(--jsal-accent-soft); }
+.copy-icon:hover { color: var(--jsal-ink); background: var(--jsal-sunk); }
 /* Shared edits */
 .edit-btn { font: 600 12px var(--jsal-font); color: var(--jsal-muted); background: transparent; border: 1px solid var(--jsal-line); border-radius: 4px; padding: 1px 8px; cursor: pointer; }
-.edit-btn:hover { color: var(--jsal-accent); border-color: var(--jsal-accent); }
+.edit-btn:hover { color: var(--jsal-ink); border-color: var(--jsal-hover-line); }
 .card.editing { background: var(--jsal-sunk); }
 .edit-form { display: grid; gap: 10px; min-width: 0; }
 .edit-form label { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
@@ -337,7 +339,8 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pk-status a, #pk-view .about a, .pk-twin a, a.pk-twin { color: var(--jsal-accent); }
 .pk-table td { padding: 4px 6px; }
 .pk-cell { position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 3px;   /* relative: keeps the pills' screen-reader text inside the scroll box */ border: 1px solid transparent; border-radius: var(--jsal-radius-sm); background: none; font: inherit; cursor: pointer; }
-.pk-cell:hover, .pk-cell.on { border-color: var(--jsal-accent); }
+.pk-cell:hover { border-color: var(--jsal-hover-line); }
+.pk-cell.on { border-color: var(--jsal-accent); }   /* the answer open below */
 .pk-cell .v { cursor: pointer; }
 .pk-cell.wait::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--jsal-warn); }   /* waiting for the next publish */
 .pk-nosrc { font-size: 10.5px; color: var(--jsal-muted); }
@@ -552,7 +555,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 .req { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 8px; padding: 14px 16px; }
 .vote { align-self: start; display: grid; justify-items: center; gap: 2px; padding: 8px 4px; border: 1px solid var(--jsal-line); border-radius: 8px; background: var(--jsal-surface); color: var(--jsal-muted); cursor: pointer; }
 .vote b { font-size: 17px; color: var(--jsal-ink); font-variant-numeric: tabular-nums; }
-.vote:hover { border-color: var(--jsal-accent); color: var(--jsal-accent); }
+.vote:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .vote[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
 .vote[aria-pressed="true"] b { color: var(--jsal-accent); }
 .req-body { display: grid; gap: 6px; min-width: 0; }
@@ -570,7 +573,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 .req-foot { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 12.5px; color: var(--jsal-muted); }
 .req-foot select { font: 13px var(--jsal-font); color: var(--jsal-ink); background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 4px; padding: 2px 6px; margin-left: 4px; }
 .suggest { font: 600 12px var(--jsal-font); color: var(--jsal-muted); background: none; border: 0; padding: 1px 4px; cursor: pointer; }
-.suggest:hover { color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 3px; }
+.suggest:hover { color: var(--jsal-ink); text-decoration: underline; text-underline-offset: 3px; }
 /* Comments under a request, opened from its footer */
 .req-thread { display: grid; gap: 10px; margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--jsal-line); }
 .comment { display: grid; gap: 2px; font-size: 14px; overflow-wrap: anywhere; }
@@ -724,7 +727,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-29zzm" defer></script>
+<script src="/nav.js?v=2026-10-29zzn" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script>
 // ---------- Config ----------

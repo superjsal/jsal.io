@@ -74,6 +74,11 @@ body { background: var(--jsal-bg); }
   --jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
   --jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
   --jsal-btn-weight: 600;
+  /* Hover is neutral everywhere: a firmer border or a slight tint. Gold means selected, focused, a file being
+     dragged over, or the main action (build\check.py fails a gold hover that isn't marked as one of those). */
+  --jsal-hover-line: var(--jsal-muted);
+  /* One focus ring for every control, text fields included */
+  --jsal-focus-ring: 0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent);
 }
 
 /* Phones (iOS) zoom into any text field under 16px when it's tapped or focused, which throws the page

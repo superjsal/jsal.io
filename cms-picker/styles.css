@@ -34,7 +34,7 @@ body {
   color: var(--jsal-ink); font-size: 14px; font-weight: var(--jsal-btn-weight); text-decoration: none;
   transition: border-color 0.15s;
 }
-.btn:hover { border-color: var(--jsal-muted); }   /* hover is neutral; gold means selected, focused or the main action */
+.btn:hover { border-color: var(--jsal-hover-line); }   /* hover is neutral; gold means selected, focused or the main action */
 .btn.primary { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .btn.primary:hover { filter: brightness(1.06); }
 /* A few real rows of the table (app.js), so the hero shows what the page does */
@@ -51,7 +51,7 @@ body {
 .sections span { color: var(--jsal-accent); font-size: 13px; font-weight: 700; }
 .sections b { display: block; margin-top: 3px; font-size: 16px; }
 .sections small { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 13.5px; }
-.sections a:hover b { color: var(--jsal-accent); }
+.sections a:hover b { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Back to top: appears once the hero is out of view */
 .totop {
@@ -64,7 +64,7 @@ body {
   transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s, border-color 0.15s, bottom 0.2s;
 }
 .totop.show { opacity: 1; visibility: visible; transform: none; transition: opacity 0.2s, transform 0.2s, visibility 0s, border-color 0.15s, bottom 0.2s; }
-.totop:hover { border-color: var(--jsal-accent); }
+.totop:hover { border-color: var(--jsal-hover-line); }
 
 /* Compare bar: slides up while the cards are on screen and something is picked; hides at the table */
 .cbar {
@@ -96,7 +96,7 @@ body {
   background: transparent; color: var(--jsal-muted); font-size: 13px; font-weight: 600;
   transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
-.chip:hover { border-color: var(--jsal-muted); color: var(--jsal-ink); }
+.chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
 .chip-link { padding: 3px 6px; color: var(--jsal-accent); font-size: 13px; text-decoration: underline; text-underline-offset: 2px; }
 
@@ -285,7 +285,7 @@ body {
 .qz-opt { position: relative; display: grid; gap: 2px; padding: 12px 34px 12px 14px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: inherit; text-align: left; cursor: pointer; }
 .qz-opt b { font-size: 15px; font-weight: 600; }
 .qz-opt small { color: var(--jsal-muted); font-size: 13px; }
-.qz-opt:hover { border-color: var(--jsal-muted); }
+.qz-opt:hover { border-color: var(--jsal-hover-line); }
 .qz-opt[aria-pressed="true"] { border-color: var(--jsal-accent); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 /* Selected: a small tick, the same mark wherever a choice is made */
 .qz-opt[aria-pressed="true"]::after { content: ""; position: absolute; top: 13px; right: 12px; width: 14px; height: 14px; background: var(--jsal-accent); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }

@@ -78,14 +78,6 @@ body {
 .seg-btn:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
 
 .seg-btn.active { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
-.seg-btn.active .seg-label { color: var(--jsal-accent); }
-.seg-btn.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--jsal-accent);
-}
 
 .custom-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
 
@@ -102,7 +94,7 @@ body {
   background: var(--jsal-surface);
   transition: border-color 0.12s, box-shadow 0.12s;
 }
-.input-group:focus-within { border-color: var(--jsal-accent); box-shadow: 0 0 0 2px var(--jsal-accent-ring); }
+.input-group:focus-within { border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
 .input-group.error {
   border-color: var(--jsal-bad);
   box-shadow: 0 0 0 2px var(--jsal-bad-soft);
@@ -147,9 +139,9 @@ body {
   font-variant-numeric: tabular-nums;
   transition: background 0.12s, border-color 0.12s;
 }
-.recent-pill:hover { background: var(--jsal-sunk); border-color: var(--jsal-accent-ring); }
+.recent-pill:hover { background: var(--jsal-sunk); border-color: var(--jsal-hover-line); }
 .recent-pill-apply { padding: 4px 4px 4px 10px; border-radius: 20px 0 0 20px; }
-.recent-pill-apply:hover { color: var(--jsal-accent); }
+.recent-pill-apply:hover { color: var(--jsal-ink); }
 .recent-pill-del {
   padding: 2px 9px 2px 5px;
   font-size: 15px;
@@ -224,7 +216,7 @@ body {
   color: var(--jsal-ink-2);
   font-weight: 500;
 }
-.folder-change:hover { border-color: var(--jsal-accent-ring); color: var(--jsal-accent); }
+.folder-change:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 
 /* ── Drop zone + replace/add prompt ────────────────────────────────────── */
 
@@ -240,7 +232,7 @@ body {
   text-align: left;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
-.drop-zone:hover { background: var(--jsal-sunk); border-color: var(--jsal-accent); }
+.drop-zone:hover { background: var(--jsal-sunk); border-color: var(--jsal-hover-line); }   /* gold only while a file is dragged over (.drag) */
 .drop-zone.drag {
   border-style: solid;
   border-color: var(--jsal-accent);
@@ -338,7 +330,7 @@ body {
   font-weight: 600;
   box-shadow: none;
 }
-.btn-accent:hover { background: var(--jsal-fill); border-color: transparent; filter: brightness(1.08); }
+.btn-accent:hover { background: var(--jsal-fill); border-color: transparent; filter: brightness(1.08); }   /* style: allow (the main action keeps its gold) */
 .btn-accent:disabled { box-shadow: none; filter: none; }
 
 .btn-ghost {
@@ -423,7 +415,7 @@ body {
   text-align: center;
   transition: opacity 0.2s, visibility 0.2s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
-.canvas-empty:hover { border-color: var(--jsal-accent); background: var(--jsal-sunk); }
+.canvas-empty:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }   /* gold only while dragging (.drag) */
 .canvas-empty:focus-visible { outline-offset: -2px; }
 .canvas-wrap.drag .canvas-empty {
   border-style: solid;
@@ -603,7 +595,7 @@ body {
   transition: border-color 0.12s, background 0.12s, color 0.12s;
 }
 .filename-edit:hover { border-color: var(--jsal-line); background: var(--jsal-sunk); }
-.filename-edit:focus { border-color: var(--jsal-accent); background: var(--jsal-sunk); color: var(--jsal-ink); box-shadow: 0 0 0 2px var(--jsal-accent-ring); }
+.filename-edit:focus { border-color: var(--jsal-accent); background: var(--jsal-sunk); color: var(--jsal-ink); box-shadow: var(--jsal-focus-ring); }
 
 .src-dims {
   display: flex;
@@ -636,7 +628,7 @@ body {
   font-weight: 500;
   transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
-.card-dl-btn:hover { background: var(--jsal-accent-soft); border-color: var(--jsal-accent-ring); color: var(--jsal-accent); }
+.card-dl-btn:hover { background: var(--jsal-sunk); border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .card-dl-btn.saved { background: var(--jsal-ok-soft); border-color: var(--jsal-ok); color: var(--jsal-ok); }
 
 .divider { height: 1px; background: var(--jsal-line); margin: 12px 0; }

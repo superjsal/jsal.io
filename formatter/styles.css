@@ -108,10 +108,10 @@ body {
 .check > span:nth-child(2) { flex: 1; min-width: 0; overflow-wrap: anywhere; }   /* long URLs wrap instead of running off */
 /* Checks about particular lines are buttons: click to show the line in the text */
 button.check { width: 100%; font: inherit; text-align: left; transition: border-color 0.12s, background 0.12s; }
-button.check:hover { border-color: var(--jsal-accent-ring); background: var(--jsal-sunk); }
+button.check:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
 button.check:focus-visible { outline-offset: -2px; }
 .check-show { flex-shrink: 0; align-self: center; font-size: 11.5px; font-weight: 600; color: var(--jsal-muted); }
-button.check:hover .check-show, button.check:focus-visible .check-show { color: var(--jsal-accent); }
+button.check:hover .check-show, button.check:focus-visible .check-show { color: var(--jsal-ink); }
 .check .ico { margin-top: 1px; width: 16px; height: 16px; border-radius: 50%; }
 .check.ok .ico { color: var(--jsal-ok); background: var(--jsal-ok-soft); }
 .check.warn { border-color: var(--jsal-warn-soft); }
@@ -149,7 +149,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
   font-weight: 600;
   box-shadow: none;
 }
-.btn-accent:hover { background: var(--jsal-fill); border-color: transparent; filter: brightness(1.08); }
+.btn-accent:hover { background: var(--jsal-fill); border-color: transparent; filter: brightness(1.08); }   /* style: allow (the main action keeps its gold) */
 .btn-primary.done { border-color: var(--jsal-ok); }
 .btn-accent.done { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 
@@ -177,7 +177,8 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
   cursor: text;
   transition: border-color 0.12s, background 0.12s;
 }
-.paste-zone:hover, .paste-zone:focus-visible { border-color: var(--jsal-accent); background: var(--jsal-accent-soft); outline: none; }
+.paste-zone:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
+.paste-zone:focus-visible { border-color: var(--jsal-accent); background: var(--jsal-accent-soft); outline: none; box-shadow: var(--jsal-focus-ring); }   /* focused: ready to paste */
 .paste-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--jsal-accent-soft); color: var(--jsal-accent); border: 1px solid var(--jsal-accent-ring); margin-bottom: 4px; }
 .paste-title { font-size: 15px; font-weight: 600; }
 .paste-sub { max-width: 34em; color: var(--jsal-ink-2); line-height: 1.5; }
@@ -242,7 +243,7 @@ kbd { font: 600 11.5px var(--jsal-font); padding: 1px 6px; border-radius: 4px; b
   transition: background 0.12s, color 0.12s;
 }
 .toolbar button:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
-.toolbar button.on { background: var(--jsal-accent-soft); color: var(--jsal-accent); }
+.toolbar button.on { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .toolbar button b { font-weight: 800; } .toolbar button i { font-family: Georgia, serif; font-size: 14px; }
 .toolbar .tb-wide { padding: 0 10px; font-weight: 500; border: 1px solid var(--jsal-line); display: inline-flex; gap: 2px; }
 .toolbar .toolbar-hint { margin-left: 8px; }
@@ -324,7 +325,7 @@ textarea.code[hidden] { display: none; }
   font: 12.5px var(--mono);
   outline: none;
 }
-.link-box input:focus { border-color: var(--jsal-accent); box-shadow: 0 0 0 2px var(--jsal-accent-ring); }
+.link-box input:focus { border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
 .link-box button, .link-box a {
   height: 28px;
   min-width: 28px;
