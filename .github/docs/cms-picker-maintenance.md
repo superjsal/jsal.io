@@ -85,4 +85,8 @@ Platforms change plans and features often. Every few months (or when a platform 
 - Update each answer's checked date in the Playbook when you confirm it, so `check_data.py` (sources
   older than 90 days) stays useful.
 
+- After rewording a card's **"Not ideal if"** line on the CMS Picker tab, check the publish output (or
+  `build\check.ps1`): a line starting `WARNING "Not ideal if" rules…` means a rule in `cms-picker/quiz.json`
+  (`notIdeal`, matched on the start of the line) no longer matches, so update its `if` text there.
+
 No automation does this; it's a manual pass, on purpose.

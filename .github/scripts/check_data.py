@@ -60,6 +60,13 @@ def problems(d):
         errs += [f'data.answers.{p["id"]}: no answer for "{r}"' for r in rows if r not in a]
     return errs
 
+def not_ideal_unmatched(d):
+    """The quiz's "Not ideal if" rules whose line is no longer on that platform's card (platforms on the CMS Picker only)."""
+    quiz = json.loads((DATA.parent / 'quiz.json').read_text(encoding='utf-8'))
+    cards = {p['id']: p for p in d['platforms']}
+    return [f'{cards[pid]["name"]}: "{n["if"]}…"' for pid, rules in quiz.get('notIdeal', {}).items() if pid in cards
+            for n in rules if not any(l.startswith(n['if']) for l in cards[pid]['profile'].get('lessSuited', []))]
+
 def report(d, listing=False, today=None):
     today = today or datetime.date.today()
     names = {p['id']: p['name'] for p in d['platforms']}
@@ -78,6 +85,10 @@ def report(d, listing=False, today=None):
     out.append(f'CMS Picker data: {total} answers, {total - len(missing)} with a source, {len(missing)} without, {len(stale)} checked over {STALE_DAYS} days ago.')
     flagged = [x for x in per if x[1] or x[2]]
     out.append('  not verified / unclear: ' + (', '.join(f'{n} {a}/{b}' for n, a, b, _, _ in flagged) if flagged else 'none'))
+    # The quiz's "Not ideal if" rules (cms-picker/quiz.json) match the start of a line on the card. A card edited in
+    # the Playbook can stop a rule matching, so say so on every publish and check (the persona test fails on a push)
+    gone = not_ideal_unmatched(d)
+    if gone: out.append('  WARNING "Not ideal if" rules whose card line has changed (update cms-picker/quiz.json): ' + '; '.join(gone))
     if listing:
         if missing:
             out.append('\nNo source yet:')

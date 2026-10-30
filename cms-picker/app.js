@@ -647,7 +647,9 @@
   // data.json (the answers, from the database) with no-cache: always check with the server (a quick 304 if
   // unchanged), so a publish shows straight away. quiz.json (the quiz's own values) with this script's own
   // ?v= number, so the scoring code and its values always arrive from the same release.
-  const VERSION = new URL(document.currentScript.src).searchParams.get('v') || '';
+  // (currentScript is empty in a module script, so the page's own <script src="app.js?v=…"> is the fallback)
+  const self = document.currentScript || document.querySelector('script[src*="app.js?v="]');
+  const VERSION = self ? new URL(self.src).searchParams.get('v') : '';
   Promise.all([
     fetch('data.json', { cache: 'no-cache' }).then((r) => r.json()),
     fetch(`quiz.json?v=${VERSION}`).then((r) => r.json()),
