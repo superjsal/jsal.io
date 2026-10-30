@@ -425,13 +425,14 @@ p, li { text-wrap: pretty; }
 .m-ic .v.warn { background: var(--jsal-warn-soft); box-shadow: inset 0 0 0 1px var(--jsal-warn); }
 .m-ic .lock { position: absolute; top: 50%; left: 50%; translate: -50% -50%; display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: var(--jsal-radius-pill); background: var(--blue-acc); color: var(--blue); font-size: 14px; font-weight: 700; box-shadow: 0 8px 22px rgb(0 0 0 / 0.3); }
 
-/* CMS Picker: the quiz's real first question with an answer picked, the top match that gives (Shopify's
+/* CMS Picker: the quiz's real first question with an answer picked, the top match that gives (WordPress's
    own card tags), and the platforms it compares (the CMS Picker's own logo files; Duda and Magento have none) */
 .m-cms { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 20px; }
 .m-cms small { display: block; font: 600 11px/1 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
 .m-cms .q { margin: 8px 0 12px; font: 700 22px/1.2 "Lora", Georgia, serif; color: var(--jsal-ink); }
 .m-cms .opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.m-cms .opt { padding: 10px 12px; font-size: 13.5px; line-height: 1.35; color: var(--jsal-ink-2); border-radius: var(--jsal-radius); }
+/* Flat, borderless answers so they read as part of the picture, not buttons (the whole card is one link) */
+.m-cms .opt { padding: 10px 12px; font-size: 13.5px; line-height: 1.35; color: var(--jsal-muted); border-color: transparent; background: var(--jsal-sunk); border-radius: var(--jsal-radius); }
 .m-cms .pick { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); }
 .m-cms .opt.pick { color: var(--jsal-ink); font-weight: 600; }
 .m-cms .res { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--jsal-radius-lg); }
@@ -444,6 +445,13 @@ p, li { text-wrap: pretty; }
 .m-cms .more { font-size: 12px; font-weight: 700; color: var(--plum-acc); }
 .m-cms .logo { background: var(--plum-ink); -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
 .m-cms .res .logo { background: var(--plum-acc); }
+/* The words are blurred (like the Playbook tile's card) so the picture reads as a picture, not buttons to
+   press; the outlines and the platform logos stay sharp. Blurred by a text shadow in the text's own
+   colour, so only the letters soften. */
+.m-cms small, .m-cms .q, .m-cms .opt, .m-cms .res span, .m-cms .fit { color: transparent !important; text-shadow: 0 0 5px var(--blur-ink); --blur-ink: var(--jsal-muted); }
+.m-cms .q, .m-cms .opt.pick, .m-cms .res b { --blur-ink: var(--jsal-ink); }
+.m-cms .res b { color: transparent; text-shadow: 0 0 5px var(--blur-ink); }
+.m-cms .fit { --blur-ink: var(--jsal-ok); }
 
 /* Clean Paste: checks + copy buttons, then the editor with its toolbar */
 /* Clean Paste: what Word's formatting looks like going in, and the clean HTML coming out */
@@ -486,7 +494,7 @@ p, li { text-wrap: pretty; }
 @keyframes m-nudge { 0%, 100% { translate: 0 0; } 15% { translate: 3px 0; } 30% { translate: 0 0; } }
 /* One loop of the CMS Picker: the answer is picked, then its match appears, holds, and is gone again
    before the answer resets (hidden from the first frame, so nothing flickers when the pointer arrives) */
-@keyframes m-pick { 0%, 8% { border-color: var(--jsal-line); box-shadow: none; } 12%, 100% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } }
+@keyframes m-pick { 0%, 8% { border-color: transparent; box-shadow: none; } 12%, 100% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } }
 @keyframes m-match { 0%, 15% { opacity: 0; translate: 0 6px; } 30%, 80% { opacity: 1; translate: 0 0; } 92%, 100% { opacity: 0; translate: 0 0; } }
 
 .now { grid-column: 8 / 13; grid-row: span 2; background: var(--plain); }   /* beside "Currently" and the backpack, stacked */
@@ -638,8 +646,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     <a id="work" class="tile cms" href="/cms-picker/" data-app>
       <div class="mock m-cms" aria-hidden="true">
         <div><small>Question 1 of 9</small><b class="q">What are you making?</b>
-          <div class="opts"><span class="box opt">A site for my business</span><span class="box opt pick">An online store</span><span class="box opt">A blog or newsletter</span><span class="box opt">Something custom</span></div></div>
-        <div class="box res pick"><i class="logo" style="--logo: url(/cms-picker/logos/shopify.svg)"></i><span><b>Shopify</b>Built-in checkout, app ecosystem</span><em class="fit">Best fit</em></div>
+          <div class="opts"><span class="box opt">A site for my business</span><span class="box opt">An online store</span><span class="box opt pick">A blog or newsletter</span><span class="box opt">Something custom</span></div></div>
+        <div class="box res pick"><i class="logo" style="--logo: url(/cms-picker/logos/wordpress.svg)"></i><span><b>WordPress</b>Plugins for everything, most-used CMS</span><em class="fit">Best fit</em></div>
         <div class="logos"><i class="logo" style="--logo: url(/cms-picker/logos/wordpress.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/shopify.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/wix.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/squarespace.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/webflow.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/framer.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/hubspot.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/drupal.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/ghost.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/sanity.svg)"></i><span class="more">+2</span></div>
       </div>
       <div class="foot">
