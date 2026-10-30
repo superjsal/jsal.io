@@ -105,7 +105,13 @@
       cmp.setAttribute('aria-pressed', String(on));
       cmp.setAttribute('aria-label', `${on ? 'Remove' : 'Add'} ${p.name} ${on ? 'from' : 'to'} the SEO comparison`);
       cmp.addEventListener('click', () => toggleCompare(p.id));
-      foot.append(cmp);
+      // Its own page: each SEO answer with where to find the setting (written by the publish)
+      const seo = el('a', 'cseo', 'SEO settings');
+      seo.href = `${p.id}/`;
+      seo.setAttribute('aria-label', `${p.name} SEO settings, and where to find each one`);
+      seo.append(el('span', null, ' →'));
+      seo.lastChild.setAttribute('aria-hidden', 'true');
+      foot.append(cmp, seo);
       c.append(foot);
       if (state.goal === 'all') shortCard(c, p);
       cards.append(c);

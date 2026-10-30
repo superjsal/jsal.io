@@ -330,7 +330,8 @@ def prerender():
             c.append(f'<dl class="run">{run}</dl>')
         on = p['id'] in DEFAULT_COMPARE
         c.append(f'<div class="cfoot"><button class="chip cmp" type="button" aria-pressed="{str(on).lower()}">'
-                 f'{"✓ Comparing" if on else "+ Add to compare"}</button></div></article>')
+                 f'{"✓ Comparing" if on else "+ Add to compare"}</button>'
+                 f'<a class="cseo" href="{e(p["id"])}/" aria-label="{e(p["name"])} SEO settings, and where to find each one">SEO settings<span aria-hidden="true"> →</span></a></div></article>')
         cards.append(''.join(c))
 
     # The table: every platform (the live page starts with four), with notes, so nothing is left out

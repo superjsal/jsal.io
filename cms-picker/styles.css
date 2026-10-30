@@ -273,6 +273,8 @@ body {
 .run dd { margin-top: 1px; color: var(--jsal-ink); font-size: 14.5px; line-height: 1.4; }
 .cfoot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: auto; padding-top: 16px; }
 .cmp { padding: 5px 12px; font-size: 14px; }
+.cseo { color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; }   /* the platform's own page */
+@media (pointer: coarse) { .cseo { display: inline-flex; align-items: center; min-height: 44px; } }
 /* The SEO name, small, under each plain-language row */
 .item .term { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 12px; font-weight: 500; }
 
