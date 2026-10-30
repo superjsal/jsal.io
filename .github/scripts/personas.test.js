@@ -117,7 +117,14 @@ console.log(failed ? `${failed} of ${PERSONAS.length} personas failed.` : `All $
 // The result cards, for every possible set of answers: each card says what sets it apart, without
 // mentioning anything the person ruled out; "the same reasons as" only when it's true; the top two
 // never show the same list; and a clear winner says what tipped it.
-const { QUESTIONS, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT } = require(path.join(site, 'cms-picker', 'score.js'));
+const { QUESTIONS, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
+// Four rules every result must keep (agreed with Claude Reviewer, 2026-10-30), counted across all answer sets:
+//   made: the first match is made for what they're making, unless the page shows the "Closest match" notice
+//   dev: someone not technical never gets a "Needs a developer" platform (ease 0) first
+//   notIdeal: no top-three platform has a matching "Not ideal if" line (counted in notIdealTop below)
+//   named: every "What tipped it" starts from one of their answers (LEAD), never a bare feature
+const broke = { made: 0, dev: 0, named: 0 };
+const ruleErr = (rule, msg) => { if (++broke[rule] <= 3) cardErrs.push(`rule "${rule}": ${msg}`); };
 const unworded = new Set();   // parts of the score with no "What tipped it" wording in TIP (score.js)
 const sameSet = (x, y) => x.length === y.length && x.every((w) => y.includes(w));
 let combos = 0, clear = 0, fallback = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0, weak = 0;
@@ -148,6 +155,13 @@ const walk = (a, i) => {
   r.forEach((x) => { if (notIdealFor(data.quiz, x.p.id, a)) { notIdealTop++; if (notIdealTop <= 3) cardErrs.push(`${at}: ${x.p.id} is in the top three, but its card says it isn't ideal for these answers`); } });
   if (JSON.stringify(told[0].why) === JSON.stringify(told[1].why)) cardErrs.push(`${at}: ${r[0].p.id} and ${r[1].p.id} show the same reasons`);
   if (r[0].s < LOW_FIT) weak++;
+  const notice = r[0].s < LOW_FIT || !!conflict(a);   // the page explains a poor fit above the cards
+  if (!notice && !((r[0].p.profile || {}).goals || []).includes(a.what)) ruleErr('made', `${at}: ${r[0].p.id} is first but isn't made for "${a.what}"`);
+  if (a.who === 'easy' && data.quiz.ease[r[0].p.id] === 0) ruleErr('dev', `${at}: ${r[0].p.id} is first for someone not technical but needs a developer`);
+  if (/^What tipped it: /.test((told[0].vs || {}).text || '')) {
+    const said = told[0].vs.text.slice('What tipped it: '.length), leads = Object.values(LEAD).map((f) => f && f(a)).filter(Boolean);
+    if (!leads.some((l) => said.startsWith(l))) ruleErr('named', `${at}: "${told[0].vs.text}" doesn't start from an answer`);
+  }
   if (r[0].s > r[1].s) { clear++; if (!/^What tipped it/.test(told[0].vs.text)) fallback++; }
   // Old shared links (v=1) get NEUTRAL answers for questions they didn't have: they must change no score,
   // and leaving a question unanswered (kind, members) mustn't break the ranking
@@ -171,4 +185,5 @@ Object.entries(data.quiz.notIdeal || {}).forEach(([id, rules]) => {
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
 console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it". ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal. ${weak} show a "Closest match" (first scores under ${LOW_FIT}).`);
+console.log(`Rules: first is made for what they're making ${broke.made ? `FAILS ${broke.made}` : 'ok'}; not technical never gets "Needs a developer" first ${broke.dev ? `FAILS ${broke.dev}` : 'ok'}; no "Not ideal if" in the top three ${notIdealTop ? `FAILS ${notIdealTop}` : 'ok'}; every "What tipped it" names an answer ${broke.named ? `FAILS ${broke.named}` : 'ok'}.`);
 process.exit(failed || cardErrs.length ? 1 : 0);

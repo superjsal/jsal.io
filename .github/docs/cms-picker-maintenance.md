@@ -62,14 +62,22 @@ node .github/scripts/personas.test.js
 
 Also run by `build\check.ps1` before every push, and by the "Check CMS Picker data" Action on GitHub.
 
-- **36 personas** (bakery, maker shop, B2B wholesaler, government site…) must keep the first places and top threes John
+- **37 personas** (bakery, maker shop, B2B wholesaler, government site…) must keep the first places and top threes John
   agreed. A failure means a result changed: agree the new result with John before editing the expectation.
 - **Every answer combination (8,448)**, for every result card:
   - it has a box saying what sets it apart, and never mentions a row those answers rule out;
   - "the same reasons as X" appears only when the reasons really are the same, the top two never
     show an identical list, and the second and third never show the same box;
   - every score part has `TIP` wording and every row a `PHRASE`;
-  - it reports how many clear winners fall back from "What tipped it" (0 today).
+  - it reports how many clear winners fall back from "What tipped it" (0 today), and how many show a
+    "Closest match" (first scores under `LOW_FIT`, 4: 241 today). No persona may get only a closest match.
+- **Four rules** that must hold for every answer set (a failure names the first few):
+  - the first match is made for what they're making, unless the page shows the "Closest match" notice;
+  - someone not technical never gets a "Needs a developer" platform first;
+  - no top-three platform has a matching "Not ideal if" line;
+  - every "What tipped it" starts from one of their answers (`LEAD`).
+  If one starts failing in new ways, that's the point to revisit two-step scoring (must-haves filter first,
+  then preferences), simulated and parked on 2026-10-30.
 
 ## Keeping the answers current
 
