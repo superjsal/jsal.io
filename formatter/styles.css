@@ -298,11 +298,13 @@ textarea.code[hidden] { display: none; }
 /* Show: the line a check means gets a clear gold wash and a bar beside it, held, then fading out. With reduced
    motion it stays highlighted (no fade) until the next Show or edit. */
 /* The bright gold (--jsal-fill), so it reads as gold in light mode too (the darker text gold turned beige); text
-   on it stays above 4.5:1 in both themes. The bold-line bar steps aside while it shows. */
-.preview .locate { --wash: color-mix(in srgb, var(--jsal-fill) 38%, transparent); border-radius: 4px; background: var(--wash); box-shadow: -6px 0 0 var(--jsal-fill), 0 0 0 4px var(--wash); animation: locate 2.6s ease-out forwards; }
-.preview > p[data-bold].locate::before { opacity: 0; }
-@keyframes locate { 0%, 60% { background: var(--wash); box-shadow: -6px 0 0 var(--jsal-fill), 0 0 0 4px var(--wash); } 100% { background: transparent; box-shadow: -6px 0 0 transparent, 0 0 0 4px transparent; } }
-@media (prefers-reduced-motion: reduce) { .preview .locate { animation: none; } }
+   on it stays above 4.5:1 in both themes. The wash reaches into the gutter (the text doesn't move), so a bold
+   line's bar sits inside it, brightened, and settles back to its usual look as the wash fades. */
+.preview .locate { --wash: color-mix(in srgb, var(--jsal-fill) 30%, transparent); margin-inline: -22px; padding-inline: 22px; border-radius: var(--jsal-radius); background: var(--wash); animation: locate 2.6s ease-out forwards; }
+.preview > p[data-bold].locate::before { left: 8px; opacity: 1; background: var(--jsal-fill); animation: locate-bar 2.6s ease-out forwards; }
+@keyframes locate { 0%, 60% { background: var(--wash); } 100% { background: transparent; } }
+@keyframes locate-bar { 0%, 60% { opacity: 1; background: var(--jsal-fill); } 100% { opacity: 0.55; background: var(--jsal-accent); } }
+@media (prefers-reduced-motion: reduce) { .preview .locate, .preview > p[data-bold].locate::before { animation: none; } }
 /* Single column: after Show takes you down to the line, a way back up to the checks */
 .back-to-checks { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 20; translate: -50% 0; padding: 0 16px; min-height: 44px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 600; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
 .back-to-checks:hover { border-color: var(--jsal-hover-line); }
@@ -388,4 +390,13 @@ textarea.code[hidden] { display: none; }
   .toolbar button, .option-track button, .btn-primary, .btn-clear, .btn-link, .link-box button, .link-box a { min-height: 44px; }
   .toolbar button { min-width: 44px; }
   button.check { min-height: 44px; }
+}
+/* Phones: the toolbar in two even rows (formatting, then links, fixes and undo) instead of wrapping onto three */
+.tb-break { display: none; }
+@media (max-width: 599px) {
+  .toolbar { gap: 1px; padding: 4px 6px; }
+  #toolbar .tb-sep, #toolbar .tb-grow { display: none; }
+  #toolbar .tb-break { display: block; flex-basis: 100%; }
+  #toolbar button { flex: 1 1 0; min-width: 0; padding: 0; }
+  #toolbar .tb-wide { flex: none; padding: 0 12px; }
 }
