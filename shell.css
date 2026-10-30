@@ -149,6 +149,7 @@ html { scrollbar-gutter: stable; }
   box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
 .jsal-consent p { margin: 0; }
 .jsal-consent b { color: var(--jsal-ink); }
+.jsal-consent a { color: var(--jsal-accent); text-underline-offset: 2px; }
 .jsal-consent div { display: flex; gap: 8px; margin-top: 12px; }
 .jsal-consent button { min-height: 36px; padding: 0 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: none; color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); cursor: pointer; }
 .jsal-consent button:hover { border-color: var(--jsal-hover-line); }

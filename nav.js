@@ -23,10 +23,11 @@
     }
     track(t.dataset.track, params);
   });
-  // Analytics choice. Each page's head sets Consent Mode (off by default in the EU, EEA, UK and
-  // Switzerland); visitors whose browser time zone is in Europe get this card to allow or decline,
-  // and a [data-jsal-consent] button (the home page footer) brings it back for anyone. The choice is
-  // kept in this browser as "granted" or "denied". No card where there's no GA4 tag (the Playbook).
+  // Analytics choice. Each page's head sets the gtag queue and Consent Mode (off by default in the EU,
+  // EEA, UK and Switzerland); visitors whose browser time zone is in Europe get this card to allow or
+  // decline, and a [data-jsal-consent] button (the home page footer) brings it back for anyone. The
+  // choice is kept in this browser as "granted" or "denied". Basic Consent Mode: Google's script is only
+  // fetched where analytics may run (loadGA). No card or script where there's no GA4 tag (the Playbook).
   const CONSENT = 'jsal-analytics';
   const saved = () => { try { return localStorage.getItem(CONSENT); } catch (e) { return null; } };
   const europe = (() => {
@@ -41,13 +42,21 @@
     card = document.createElement('section');
     card.className = 'jsal-consent';
     card.setAttribute('aria-label', 'Analytics choice');
-    card.innerHTML = '<p><b>Can I count your visit?</b> Anonymous usage stats (Google Analytics) show me which tools get used. '
-      + 'Your files never leave your browser either way.</p><div><button type="button" class="jsal-consent-yes">Allow</button>'
+    card.innerHTML = '<p><b>Can I count your visit?</b> Basic usage stats (Google Analytics, no ads or profiles) show me which tools get used. '
+      + 'Your files never leave your browser either way. <a href="/privacy/">Privacy</a></p><div><button type="button" class="jsal-consent-yes">Allow</button>'
       + '<button type="button">No thanks</button></div>';
     card.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
       const v = b.classList.contains('jsal-consent-yes') ? 'granted' : 'denied';
       try { localStorage.setItem(CONSENT, v); } catch (e) {}
       window.gtag('consent', 'update', { analytics_storage: v });
+      if (v === 'granted') loadGA();
+      // Declining also removes any GA cookies already set (_ga, _ga_<id>), on this host and on .jsal.io
+      if (v === 'denied') {
+        document.cookie.split(';').map((c) => c.trim().split('=')[0]).filter((n) => n === '_ga' || n.startsWith('_ga_')).forEach((n) => {
+          [location.hostname, `.${location.hostname.replace(/^www\./, '')}`].forEach((d) => { document.cookie = `${n}=; Max-Age=0; path=/; domain=${d}`; });
+          document.cookie = `${n}=; Max-Age=0; path=/`;
+        });
+      }
       card.remove();
       card = null;
       document.documentElement.style.removeProperty('--jsal-consent-lift');
@@ -56,7 +65,22 @@
     // Achievement pop-ups (bottom centre) sit above the card while it's open
     document.documentElement.style.setProperty('--jsal-consent-lift', `${card.offsetHeight + 12}px`);
   };
-  const askConsent = () => { if (europe && !saved()) consentCard(); };
+  // Google's script: with a saved "granted", or outside Europe unless declined. In Europe it waits for
+  // Allow. Fetched once the page is idle (2 s after load at most), so its ~180 KB doesn't compete with it.
+  let gaLoaded = false;
+  function loadGA() {
+    const c = saved();
+    if (gaLoaded || typeof window.gtag !== 'function' || !(c === 'granted' || (!europe && c !== 'denied'))) return;
+    gaLoaded = true;
+    const fetchIt = () => (window.requestIdleCallback || setTimeout)(() => {
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-ND4L6CSD8S';
+      document.head.append(s);
+    }, { timeout: 2000 });
+    if (document.readyState === 'complete') fetchIt(); else addEventListener('load', fetchIt, { once: true });
+  }
+  const askConsent = () => { if (europe && !saved()) consentCard(); loadGA(); };
   const whenReady = (fn) => (document.body ? fn() : addEventListener('DOMContentLoaded', fn, { once: true }));
   if (document.prerendering) document.addEventListener('prerenderingchange', () => whenReady(askConsent), { once: true });
   else whenReady(askConsent);

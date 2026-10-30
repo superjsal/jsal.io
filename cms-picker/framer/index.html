@@ -7,7 +7,7 @@
   <title>Framer SEO: What You Can Change and Where | jsal.io</title>
   <meta name="description" content="Framer SEO answered: titles, URLs, redirects, schema, noindex and AI crawlers, each with where to find the setting, checked against Framer’s own docs." />
   <link rel="canonical" href="https://jsal.io/cms-picker/framer/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-30z" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-30za" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -72,7 +72,8 @@
     } catch (e) {}
   </script>
 
-  <!-- Google tag (gtag.js), fetched once the page has loaded and the browser is idle (2 s at most) -->
+  <!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
+       only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -83,12 +84,6 @@
     try { var jc = localStorage.getItem('jsal-analytics'); if (jc === 'granted' || jc === 'denied') gtag('consent', 'update', { analytics_storage: jc }); } catch (e) {}
     gtag('js', new Date());
     gtag('config', 'G-ND4L6CSD8S');
-    addEventListener('load', () => (window.requestIdleCallback || setTimeout)(() => {
-      const s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-ND4L6CSD8S';
-      document.head.append(s);
-    }, { timeout: 2000 }));
   </script>
 
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
@@ -194,6 +189,7 @@ padding: 14px 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--
 box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
 .jsal-consent p { margin: 0; }
 .jsal-consent b { color: var(--jsal-ink); }
+.jsal-consent a { color: var(--jsal-accent); text-underline-offset: 2px; }
 .jsal-consent div { display: flex; gap: 8px; margin-top: 12px; }
 .jsal-consent button { min-height: 36px; padding: 0 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: none; color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); cursor: pointer; }
 .jsal-consent button:hover { border-color: var(--jsal-hover-line); }
@@ -278,10 +274,10 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="../styles.css?v=2026-10-30z" />
-  <link rel="stylesheet" href="../platform.css?v=2026-10-30z" />
+  <link rel="stylesheet" href="../styles.css?v=2026-10-30za" />
+  <link rel="stylesheet" href="../platform.css?v=2026-10-30za" />
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-30z" defer></script>
+  <script src="/nav.js?v=2026-10-30za" defer></script>
 </head>
 <body>
   <main class="app">

@@ -12,6 +12,7 @@
 ## About
 
 - [Home](https://jsal.io/): Who John is and what he's working on.
+- [Privacy](https://jsal.io/privacy/): Files never leave the browser; basic Google Analytics usage stats, only with consent in Europe.
 - Contact: dev@jsal.io
 - Code: https://github.com/superjsal
 
