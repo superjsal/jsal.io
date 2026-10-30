@@ -351,7 +351,7 @@ textarea.code[hidden] { display: none; }
     flex-shrink: 0;
     display: grid;
     grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);   /* top bar, who it's for, then the checks and the editor */
     column-gap: 28px;
   }
   .app-header { grid-column: 1 / -1; }

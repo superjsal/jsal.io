@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzp";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzp";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzs";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzs";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -28,7 +28,12 @@ const ICONS = {
 const icon = (name, size = 14, stroke = 2.2) =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
 for (const el of document.querySelectorAll("[data-icon]")) el.innerHTML = icon(el.dataset.icon, +el.dataset.size || 14);
-if (/Mac|iPhone|iPad/.test(navigator.platform)) for (const k of document.querySelectorAll(".mod-key")) k.textContent = "⌘";
+// On a Mac the shortcuts use ⌘: the paste hints, and the toolbar's tooltips (redo there is ⌘⇧Z, not Ctrl+Y)
+const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+if (isMac) {
+  for (const k of document.querySelectorAll(".mod-key")) k.textContent = "⌘";
+  for (const b of document.querySelectorAll("[title*='Ctrl+']")) b.title = b.title.replace("Ctrl+Y", "⌘⇧Z").replace("Ctrl+", "⌘");
+}
 
 // Pasted content is never saved anywhere
 let input = null;     // { html, text } as pasted
@@ -452,7 +457,7 @@ function done(btn, msg) {
   clearTimeout(noteTimer);
   noteTimer = setTimeout(() => { btn.classList.remove("done"); $("copyNote").textContent = ""; }, 2200);
 }
-function failed() { $("copyNote").textContent = "Couldn't copy. Select the text and press Ctrl+C."; }
+function failed() { $("copyNote").textContent = `Couldn't copy. Select the text and press ${isMac ? "⌘C" : "Ctrl+C"}.`; }
 
 async function copyPlain(text) {
   try { await navigator.clipboard.writeText(text); return true; }

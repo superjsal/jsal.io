@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-29zzp";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-29zzp";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-29zzp";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-29zzp";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-29zzp";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-29zzp";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-29zzp";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-29zzp";
+} from "./state.js?v=2026-10-29zzs";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-29zzs";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-29zzs";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-29zzs";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-29zzs";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-29zzs";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-29zzs";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-29zzs";
 
 const $ = id => document.getElementById(id);
 
@@ -481,6 +481,7 @@ document.addEventListener("drop", e => {
 
 const isMac = /mac/i.test(navigator.userAgentData?.platform ?? navigator.platform ?? "");
 $("kbdHint").textContent = isMac ? "⌘⇧D" : "Ctrl+Shift+D";
+if (isMac) for (const k of document.querySelectorAll(".mod-key")) k.textContent = "⌘";   // the About section's shortcut
 document.addEventListener("keydown", e => {
   if ((isMac ? e.metaKey : e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "d") {
     e.preventDefault();

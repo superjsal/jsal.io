@@ -684,7 +684,7 @@ body {
   .app {
     display: grid;
     grid-template-columns: minmax(320px, 360px) 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);   /* top bar, who it's for, then the settings and preview */
     column-gap: 28px;
     padding-bottom: 18px;
   }

@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fast Image Resizer Online (JScale) | jsal.io</title>
-  <meta name="description" content="JScale on jsal.io resizes, crops and converts images in bulk, free and in your browser. Accepts JPG, PNG, WebP and HEIC; saves JPG or WebP.">
+  <title>Bulk Image Resizer: Resize and Crop Images to Exact Sizes | jsal.io</title>
+  <meta name="description" content="Resize, crop and convert many images at once to an exact size like 1200 × 628, free in your browser. Nothing is uploaded. JPG, PNG, WebP and HEIC in; JPG or WebP out.">
   <link rel="canonical" href="https://jsal.io/image-resizer/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-29zzp" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-29zzs" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -14,18 +14,19 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://jsal.io/image-resizer/" />
   <meta property="og:site_name" content="jsal.io" />
-  <meta property="og:title" content="Fast Image Resizer Online (JScale) | jsal.io" />
-  <meta property="og:description" content="Resize, crop, and convert images in bulk — free and entirely in your browser." />
+  <meta property="og:title" content="Bulk Image Resizer: Resize and Crop Images to Exact Sizes | jsal.io" />
+  <meta property="og:description" content="Resize, crop and convert many images at once to an exact size. Free and in your browser; nothing is uploaded." />
   <meta property="og:image" content="https://jsal.io/og/image-resizer.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="628">
-  <meta property="og:image:alt" content="Image Resizer: bulk resize, crop and convert JPG, PNG, WebP and HEIC">
+  <meta property="og:image:alt" content="Bulk Image Resizer: resize, crop and convert JPG, PNG, WebP and HEIC in bulk">
   <meta name="twitter:card" content="summary_large_image">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "JScale Image Resizer",
+    "name": "Bulk Image Resizer",
+    "alternateName": "JScale",
     "url": "https://jsal.io/image-resizer/",
     "description": "Bulk resize, crop and convert images in the browser. Accepts JPG, PNG, WebP and HEIC; saves JPG or WebP. Nothing is uploaded.",
     "applicationCategory": "MultimediaApplication",
@@ -213,29 +214,34 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about ul, .jsal-about ol { margin: 0 0 12px; padding-left: 1.3em; }
 .jsal-about li + li { margin-top: 4px; }
 .jsal-about a { color: var(--jsal-accent); text-underline-offset: 2px; }
+.jsal-for { grid-column: 1 / -1; margin: -8px 0 14px; color: var(--jsal-muted); font-size: 14px; line-height: 1.45; }
+.jsal-about dl { margin: 0 0 12px; }
+.jsal-about dt { margin-top: 14px; font-weight: 600; color: var(--jsal-ink); }
+.jsal-about dd { margin: 3px 0 0; }
+.jsal-about .jsal-feedback { margin-top: 24px; }
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-29zzp" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-29zzs" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":    "./js/main.js?v=2026-10-29zzp",
-        "./js/state.js":   "./js/state.js?v=2026-10-29zzp",
-        "./js/imaging.js": "./js/imaging.js?v=2026-10-29zzp",
-        "./js/export.js":  "./js/export.js?v=2026-10-29zzp",
-        "./js/editor.js":  "./js/editor.js?v=2026-10-29zzp",
-        "./js/grid.js":    "./js/grid.js?v=2026-10-29zzp",
-        "./js/ui.js":      "./js/ui.js?v=2026-10-29zzp",
-        "./js/zip.js":     "./js/zip.js?v=2026-10-29zzp",
-        "./js/folder.js":  "./js/folder.js?v=2026-10-29zzp",
+        "./js/main.js":    "./js/main.js?v=2026-10-29zzs",
+        "./js/state.js":   "./js/state.js?v=2026-10-29zzs",
+        "./js/imaging.js": "./js/imaging.js?v=2026-10-29zzs",
+        "./js/export.js":  "./js/export.js?v=2026-10-29zzs",
+        "./js/editor.js":  "./js/editor.js?v=2026-10-29zzs",
+        "./js/grid.js":    "./js/grid.js?v=2026-10-29zzs",
+        "./js/ui.js":      "./js/ui.js?v=2026-10-29zzs",
+        "./js/zip.js":     "./js/zip.js?v=2026-10-29zzs",
+        "./js/folder.js":  "./js/folder.js?v=2026-10-29zzs",
         "./vendor/heic-to/heic-to.min.js": "./vendor/heic-to/heic-to.min.js?v=1.6.6"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-29zzp"></script>
+  <script type="module" src="js/main.js?v=2026-10-29zzs"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-29zzp" defer></script>
+  <script src="/nav.js?v=2026-10-29zzs" defer></script>
 </head>
 <body>
   <main class="app">
@@ -243,13 +249,13 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
     <!-- Top bar shared by every jsal.io app (styles in /shell.css; the logo menu and theme button come from /nav.js) -->
     <header class="app-header jsal-top">
       <a class="jsal-brand" href="/" data-jsal-nav>jsal<span>.io</span><span class="jsal-caret"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></a>
-      <!-- Full title stays in the h1 for search engines; only "Image Resizer" is shown -->
-      <h1 class="jsal-title"><span class="sr-only">JScale – Fast </span>Image <span class="hl">Resizer</span><span class="sr-only"> Online</span></h1>
+      <h1 class="jsal-title">Bulk Image <span class="hl">Resizer</span></h1>
       <div class="jsal-actions">
         <a class="jsal-link" href="#about">About</a>
         <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"><svg class="i-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg><svg class="i-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
       </div>
     </header>
+    <p class="jsal-for">For bloggers and marketers who need many images at one exact size, fast.</p>
 
     <section class="controls" aria-label="Settings">
 
@@ -259,11 +265,11 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
       <div class="segment-group" role="group" aria-labelledby="sizeLabel">
         <button class="seg-btn active" data-size="1200x628">
           <span class="seg-label">1200 × 628</span>
-          <span class="seg-hint">LP Default</span>
+          <span class="seg-hint">Blog / social share</span>
         </button>
         <button class="seg-btn" data-size="640x420">
           <span class="seg-label">640 × 420</span>
-          <span class="seg-hint">SayNetwork</span>
+          <span class="seg-hint">Small feature image</span>
         </button>
         <button class="seg-btn" id="originalBtn" title="Keep each image's own dimensions — no resizing or cropping, just convert the format">
           <span class="seg-label">Original</span>
@@ -401,15 +407,15 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 
   <!-- About: below the app (which fills the first screen); styles in /shell.css -->
   <section class="jsal-about" id="about" aria-labelledby="about-h">
-    <h2 id="about-h">About the Image Resizer</h2>
-    <p>JScale is a free image resizer that works on many images at once. It crops and resizes every image to the exact size you pick, or keeps each image's own size and only converts the format. Everything happens in your browser: your images are never uploaded.</p>
+    <h2 id="about-h">About the Bulk Image Resizer</h2>
+    <p>The Bulk Image Resizer is free and works on many images at once. It crops and resizes every image to the exact size you pick, or keeps each image's own size and only converts the format. Everything happens in your browser: your images are never uploaded.</p>
 
     <h3>How to use it</h3>
     <ol>
-      <li>Pick an output size: <strong>1200 × 628</strong> (blog and landing page images), <strong>640 × 420</strong>, <strong>Original</strong> to keep each image's size, or type your own width and height.</li>
+      <li>Pick an output size: <strong>1200 × 628</strong> (blog posts and social share images), <strong>640 × 420</strong> (smaller feature images), <strong>Original</strong> to keep each image's size, or type your own width and height.</li>
       <li>Drop your images on the page, or click to browse.</li>
       <li>Check the crop. Click any image in the strip to edit it, then drag the crop box (or use the arrow keys) to choose which part is kept.</li>
-      <li>Choose quality and format, then <strong>Download All</strong> (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>). You can also save single images and rename files first.</li>
+      <li>Choose quality and format, then <strong>Download All</strong> (<kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>). You can also save single images and rename files first.</li>
     </ol>
 
     <h3>What it supports</h3>
@@ -423,6 +429,19 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
     <h3>Private by design</h3>
     <p>Resizing, cropping and converting all run on your own device, so it works with client and unreleased images, and it's fast even with large batches. Nothing is sent to a server.</p>
 
+    <h3>Common questions</h3>
+    <dl>
+      <dt>Is it free?</dt>
+      <dd>Yes. There's no sign-up, no watermark and no limit on how many images you resize.</dd>
+      <dt>Are my images uploaded anywhere?</dt>
+      <dd>No. Resizing, cropping and converting happen on your own device, and nothing is sent to a server or saved.</dd>
+      <dt>Which formats and sizes does it handle?</dt>
+      <dd>It opens JPG, PNG, WebP and HEIC (iPhone photos) and saves JPG or WebP. Pick a preset, keep each image's original size, or type any width and height from 32 to 20,000 pixels: your last five custom sizes are kept as shortcuts.</dd>
+      <dt>Does it work on a Mac or a phone?</dt>
+      <dd>Yes, in any up-to-date browser. On a Mac, Download All is <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>. Saving straight into a folder works in Chrome and Edge; elsewhere you get downloads or a ZIP.</dd>
+    </dl>
+
+    <p class="jsal-feedback">Useful? Ideas or problems? <a href="mailto:dev@jsal.io?subject=Bulk%20Image%20Resizer">Email me</a>.</p>
     <p>Made by <a href="/">John Salvador</a>. Also try <a href="/formatter/">Clean Paste</a> for turning Word and Google Docs content into clean HTML, or <a href="/cms-picker/">CMS Picker</a> to compare what each CMS can do.</p>
   </section>
 </body>
