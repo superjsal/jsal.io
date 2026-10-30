@@ -590,12 +590,14 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
   <main class="grid">
     <section class="intro">
       <div class="roles"><span>Technical SEO</span><span>Web Tools</span><span>Gaming</span></div>
-      <h1>John<br><em>Salvador</em></h1>
+      <h1>John <br><em>Salvador</em></h1>
       <p>I’m a web developer working in technical SEO, and I build small web tools on the side, mostly to make my own work less repetitive. The rest of the time I’m gaming.</p>
     </section>
 
     <section class="tile now-playing" aria-label="Currently">
-      <img class="art" src="/img/wow-forever.webp" width="1920" height="800" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" fetchpriority="high">
+      <!-- It covers a tall box, so it's drawn about 800px wide on phones and 1,050px on desktop: sizes says that,
+           and 2x screens still get the 1920px original -->
+      <img class="art" src="/img/wow-forever.webp" srcset="/img/wow-forever-1200.webp 1200w, /img/wow-forever.webp 1920w" sizes="(max-width: 1023px) 800px, 1050px" width="1920" height="800" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" fetchpriority="high">
       <div>
         <p class="label">currently</p>
         <p class="big">Getting ready for WoW Forever</p>
