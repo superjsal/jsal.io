@@ -42,6 +42,10 @@
           "label": "Run a blog"
         },
         {
+          "id": "members",
+          "label": "Sell memberships or paid posts"
+        },
+        {
           "id": "store",
           "label": "Sell online"
         },

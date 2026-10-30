@@ -37,7 +37,8 @@
   const TIP = {
     goal: [(a, y, x) => `${x} is made for that`, (a, y) => `${y} isn’t made for that`],
     kind: [(a, y, x) => `${x} is a natural fit`, null],
-    members: [(a, y, x) => `${x} has them built in`, null],
+    members: [(a, y, x) => `${x} has them built in`, (a, y) => `${y} needs more than its own tools for that`],
+    letters: [(a, y, x) => `${x} sends newsletters to them itself`, null],
     sellOnly: [null, (a, y) => `${y} is made only for selling`],
     frontEnd: [(a, y, x) => `${x} is built to feed a website and an app from one place`, null],
     ease: [(a, y, x) => (a.who === 'easy' ? `${x} is easier to run` : `${x} is easier to learn`), (a, y) => (a.who === 'easy' ? `${y} is harder to run` : `${y} is harder to learn`)],
@@ -63,6 +64,7 @@
     goal: (a) => ({ site: 'you’re making a site for your business or work', store: 'you’re making an online store', content: 'you’re making a blog, newsletter or publication', custom: 'you’re building an app or portal' })[a.what],
     kind: (a) => ({ local: 'you’re a local business or service', creative: 'you’re showing creative work', startup: 'you’re launching a product', b2b: 'you sell to other businesses', content: 'you’ll have lots of content' })[a.kind],
     members: () => 'you want paid members or a newsletter',
+    letters: () => 'you want paid members or a newsletter',
     sellOnly: () => 'you’re not making a store',
     frontEnd: () => 'you’re building an app or portal',
     ease: (a) => (a.who === 'easy' ? 'you’re not technical' : 'you’re building it yourself'),
@@ -97,7 +99,15 @@
     if ((pr.goals || []).includes(a.what)) add('goal', 4, WHAT[a.what]); else add('goal', -8);
     if (a.what !== 'store' && has('storeOnly')) add('sellOnly', -6);
     if (a.what === 'site' && ((Q.kind || {})[a.kind] || []).includes(p.id)) add('kind', 3, KINDS[a.kind]);
-    if (a.what === 'content' && a.members === 'yes' && has('members')) add('members', 3, 'Paid members and newsletters built in');
+    if (a.what === 'content' && a.members === 'yes') {
+      // The "Sell memberships or paid posts" row: built in beats an add-on (Wix, Squarespace and Duda have their
+      // own; Webflow retired its own in 2026). Until that row is published, quiz.members stands in for it.
+      const m = verdict('members');
+      if (m) add('members', { yes: 3, plugin: 0, code: -2, check: -2, no: -4 }[m] ?? 0, m === 'yes' && 'Paid memberships built in');
+      else if (has('members')) add('members', 3, 'Paid members and newsletters built in');
+      // quiz.members: newsletters sent to those members from the platform itself (Ghost), on top of the row
+      if (m && has('members')) add('letters', 2, 'Newsletters to your members built in');
+    }
     if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'One place to manage content for a website and an app');
     const ease = Q.ease[p.id] ?? 1;
     // Building it yourself: one that needs a developer counts as heavily as one not made for what you're making
@@ -162,7 +172,7 @@
   const LEVEL = { yes: 3, auto: 3, plugin: 2, code: 1, no: 0 };
   // Each table row as a short phrase for "Pick it over … if you want …"
   const PHRASE = {
-    blog: 'a blog', store: 'online selling', languages: 'more than one language', forms: 'contact and sign-up forms',
+    blog: 'a blog', store: 'online selling', members: 'paid memberships', languages: 'more than one language', forms: 'contact and sign-up forms',
     design: 'design control', meta_title: 'page titles and descriptions for search', urls: 'control over page addresses',
     gsc404: 'redirects for old links', schema: 'search details like prices and ratings', noindex: 'pages kept out of search',
     ai_crawlers: 'control over which AI bots read the site',
@@ -175,10 +185,11 @@
     if (row === 'languages') return a.lang === 'yes' ? 3 : 0;    // one language
     if (row === 'design') return a.look === 'template' ? 0 : 2;  // a good template is enough
     if (row === 'blog') return a.what === 'content' ? 3 : 1;
+    if (row === 'members') return a.members === 'yes' ? 3 : a.members === 'no' ? 0 : 1;   // "Just posts" rules it out
     return 1;
   }
   // Card tags about a row, left out of "is known for" when the answers rule that row out
-  const TAG_ABOUT = { design: /design control|canvas|animation/i, languages: /lingual|language|translat/i, store: /stor|sell|checkout|commerce/i };
+  const TAG_ABOUT = { members: /paid member/i, design: /design control|canvas|animation/i, languages: /lingual|language|translat/i, store: /stor|sell|checkout|commerce/i };
   const lowerFirst = (t) => t.charAt(0).toLowerCase() + t.slice(1);
   // A card tag inside a sentence: lower case, unless it starts with a name or an abbreviation (Figma, WooCommerce, SEO)
   const tagInSentence = (t) => (/^(Figma|[A-Z][a-z]*[A-Z]|[A-Z0-9]{2,})/.test(t) ? t : lowerFirst(t));

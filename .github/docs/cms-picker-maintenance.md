@@ -51,6 +51,9 @@ Shared by the page and the tests, so they always run the same code.
 - **Second and third:** both are compared with the first, unless the third would repeat the second (the
   same reasons, or the same box sentence). Then the third says "the same reasons as" the second and is
   compared with the second instead, falling back to what it's known for if that sentence still matches.
+- **Paid members** ("Will you have paid members or a newsletter?" → Yes) read the "Sell memberships or paid
+  posts" row: built in +3, plugin 0, needs code or check manually −2, no −4. Ghost gets +2 more for sending
+  newsletters to those members itself (`quiz.members`). HubSpot's card rules it out for paid members.
 - **A platform's own reason:** `quiz.leaveWhy` replaces "Easy to move to another platform later" where the
   card's "If you leave" says more (Sanity: "You own the site code and can export all your content").
 
