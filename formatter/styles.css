@@ -270,6 +270,8 @@ textarea.code[hidden] { display: none; }
 .preview h1, .preview h2, .preview h3, .preview h4, .preview h5, .preview h6 { line-height: 1.3; letter-spacing: -0.01em; margin-top: 1.4em; }
 .preview > :first-child { margin-top: 0; }
 .preview h1 { font-size: 26px; } .preview h2 { font-size: 21px; } .preview h3 { font-size: 18px; } .preview h4, .preview h5, .preview h6 { font-size: 15.5px; }
+/* Marks in the editor follow the site's colour roles: neutral for plain information (heading tags), blue for
+   links, orange for anything a check wants fixed, and gold only for what's selected or just shown */
 /* Small tag before each heading so the level is visible at a glance */
 .preview :is(h1, h2, h3, h4, h5, h6)::before {
   content: "H1";
@@ -279,25 +281,24 @@ textarea.code[hidden] { display: none; }
   border-radius: 4px;
   vertical-align: 3px;
   font: 700 10px/1.4 var(--jsal-font);
-  color: var(--jsal-accent);
-  background: var(--jsal-accent-soft);
+  color: var(--jsal-ink-2);
+  background: var(--jsal-sunk);
 }
 .preview h2::before { content: "H2"; } .preview h3::before { content: "H3"; } .preview h4::before { content: "H4"; }
 .preview h5::before { content: "H5"; } .preview h6::before { content: "H6"; }
 /* An H1 in the body is one of the checks, so its tag gets the dashed warning outline the [Image] note has,
-   which tells it apart from the other heading tags even where the orange and gold look alike */
+   which tells it apart from the other heading tags at a glance */
 .preview h1::before { padding: 0 4px; border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); }
-.preview a { color: var(--jsal-accent); text-underline-offset: 2px; }
+.preview a { color: var(--jsal-info); text-underline-offset: 2px; }
 .preview ul, .preview ol { padding-left: 1.5em; }
 .preview li + li, .preview li > ul, .preview li > ol { margin-top: 0.3em; }
 .preview table { border-collapse: collapse; width: 100%; font-size: 14px; }
 .preview td, .preview th { border: 1px solid var(--jsal-line-hi); padding: 6px 10px; text-align: left; vertical-align: top; }
-.preview blockquote { border-left: 3px solid var(--jsal-accent-ring); padding-left: 14px; color: var(--jsal-ink-2); }
+.preview blockquote { border-left: 3px solid var(--jsal-line-hi); padding-left: 14px; color: var(--jsal-ink-2); }
 .preview [data-image] { display: inline-block; padding: 4px 10px; border-radius: 6px; border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); font-size: 13px; font-weight: 600; }
-/* Bold-only lines: a gold bar in the margin (see the "only bold text" check) */
+/* Bold-only lines: an orange bar in the margin (see the "only bold text" check) */
 .preview > p[data-bold] { position: relative; }
-.preview > p[data-bold]::before { content: ""; position: absolute; left: -14px; top: 0.2em; bottom: 0.2em; width: 3px; border-radius: 2px; background: var(--jsal-accent); opacity: 0.55; }
-/* A check's line, just shown: a short gold flash (stays lit briefly, without motion, if animations are off) */
+.preview > p[data-bold]::before { content: ""; position: absolute; left: -14px; top: 0.2em; bottom: 0.2em; width: 3px; border-radius: 2px; background: var(--jsal-warn); opacity: 0.8; }
 /* Show: the line a check means gets a clear gold wash and a bar beside it, held, then fading out. With reduced
    motion it stays highlighted (no fade) until the next Show or edit. */
 /* The bright gold (--jsal-fill), so it reads as gold in light mode too (the darker text gold turned beige); text
@@ -310,7 +311,7 @@ textarea.code[hidden] { display: none; }
 .preview [data-image].locate { margin-inline: 0; padding-inline: 10px; }
 .preview > p[data-bold].locate::before { left: 8px; opacity: 1; background: var(--jsal-fill); animation: locate-bar 2.6s ease-out forwards; }
 @keyframes locate { 0%, 60% { background: var(--wash); } 100% { background: transparent; } }
-@keyframes locate-bar { 0%, 60% { opacity: 1; background: var(--jsal-fill); } 100% { opacity: 0.55; background: var(--jsal-accent); } }
+@keyframes locate-bar { 0%, 60% { opacity: 1; background: var(--jsal-fill); } 100% { opacity: 0.8; background: var(--jsal-warn); } }
 @media (prefers-reduced-motion: reduce) { .preview .locate, .preview > p[data-bold].locate::before { animation: none; } }
 /* Single column: after Show takes you down to the line, a way back up to the checks */
 .back-to-checks { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 20; translate: -50% 0; padding: 0 16px; min-height: 44px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 600; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
