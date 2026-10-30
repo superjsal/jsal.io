@@ -21,7 +21,7 @@ data.quiz = Object.fromEntries(Object.entries(cfg.quiz).filter(([k]) => !k.start
 const PERSONAS = [
   // Business or work sites (with "Which is closest to what you do?", agreed 2026-10-29)
   ['Local bakery, no tech help', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
-    { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'sanity', 'headless'] }],
+    { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'sanity'] }],
   ['Multilingual B2B SaaS marketing site, agency-built', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', lang: 'yes', look: 'pixel', leave: 'no' },
     { first: ['hubspot', 'webflow'], top3: ['hubspot', 'webflow'] }],   // HubSpot since Webflow's languages became a paid add-on (agreed)
   ['Agency-built local service site', { what: 'site', kind: 'local', who: 'agency', care: 'no', lang: 'no', look: 'visual', leave: 'no' },
@@ -29,14 +29,14 @@ const PERSONAS = [
   ['Design-led startup landing page', { what: 'site', kind: 'startup', who: 'learn', care: 'no', lang: 'no', look: 'pixel', leave: 'no' },
     { first: ['webflow', 'framer'], top3: ['webflow', 'framer'] }],
   ['Photographer portfolio, does it alone', { what: 'site', kind: 'creative', who: 'learn', care: 'no', lang: 'no', look: 'visual', leave: 'no' },
-    { first: ['squarespace', 'framer'], top3: ['squarespace'], not: ['magento', 'drupal', 'sanity', 'headless'] }],
+    { first: ['squarespace', 'framer'], top3: ['squarespace'], not: ['magento', 'drupal', 'sanity'] }],
   ['Learns as they go, local business (John’s answers)', { what: 'site', kind: 'local', who: 'learn', care: 'yes', lang: 'no', look: 'visual', leave: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'] }],
   // A close call agreed with John: HubSpot if sales run on its CRM, Webflow for design control
   ['Learns as they go, B2B company (John’s answers)', { what: 'site', kind: 'b2b', who: 'learn', care: 'yes', lang: 'no', look: 'visual', leave: 'no' },
     { first: ['webflow', 'hubspot'], top3: ['webflow', 'hubspot'] }],
   ['Freelance consultant, one-page site', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
-    { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'sanity', 'headless'] }],
+    { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'sanity'] }],
   ['Restaurant in a tourist town, two languages', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'yes', look: 'template', leave: 'no' },
     { first: ['wix'], top3: ['wix', 'squarespace'] }],
   ['B2B marketing team with lots of articles', { what: 'site', kind: 'content', who: 'learn', care: 'no', lang: 'no', look: 'visual', leave: 'no' },
@@ -47,7 +47,7 @@ const PERSONAS = [
     { first: ['wordpress', 'drupal'], top3: ['wordpress'] }],
   // Stores
   ['Etsy-style maker shop', { what: 'store', who: 'easy', care: 'no', size: 'small', lang: 'no', look: 'template', leave: 'no' },
-    { first: ['shopify'], top3: ['shopify'], not: ['magento', 'drupal', 'sanity', 'headless'] }],
+    { first: ['shopify'], top3: ['shopify'], not: ['magento', 'drupal', 'sanity'] }],
   ['5,000-product store with a dev team', { what: 'store', who: 'dev', care: 'yes', size: 'big', lang: 'no', look: 'pixel', leave: 'yes' },
     { first: ['magento'], top3: ['magento', 'shopify'], not: ['wix', 'squarespace'] }],
   ['Wholesale B2B store with a developer, two languages', { what: 'store', who: 'dev', care: 'yes', size: 'big', lang: 'yes', look: 'pixel', leave: 'no' },
@@ -76,7 +76,7 @@ const PERSONAS = [
   ['Nonprofit with news in two languages', { what: 'content', members: 'no', who: 'learn', care: 'no', lang: 'yes', look: 'template', leave: 'yes' },
     { first: ['hubspot', 'ghost'], top3: ['hubspot', 'ghost'] }],
   ['Developer building an app and a site', { what: 'custom', who: 'dev', care: 'yes', lang: 'no', look: 'pixel', leave: 'yes' },
-    { first: ['sanity', 'headless'], top3: ['sanity'] }],
+    { first: ['sanity'], top3: ['sanity'] }],
   // With "What can you spend each month?" (the "What it costs to start" bands)
   ['Local bakery, no budget yet', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no', budget: 'none' },
     { first: ['wix'], top3: ['wix'] }],
