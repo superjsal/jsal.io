@@ -2,9 +2,9 @@
 // the part that will be cropped away, and lets the crop window be dragged or
 // moved with arrow keys along whichever axis has room.
 
-import { state, outSizeFor } from "./state.js?v=2026-10-30x";
-import { getCropRect } from "./imaging.js?v=2026-10-30x";
-import { clamp } from "./ui.js?v=2026-10-30x";
+import { state, outSizeFor } from "./state.js?v=2026-10-30z";
+import { getCropRect } from "./imaging.js?v=2026-10-30z";
+import { clamp } from "./ui.js?v=2026-10-30z";
 
 const canvas      = document.getElementById("out");
 const ctx         = canvas.getContext("2d");

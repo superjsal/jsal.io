@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Platform Playbook | jsal.io</title>
-<link rel="icon" href="/favicon.svg?v=2026-10-30x" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-30z" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://kvdzluvhwxkrbatgskio.supabase.co" crossorigin>
@@ -98,7 +98,7 @@ html { scrollbar-gutter: stable; }
 ::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
 ::view-transition-old(jsal-brand), ::view-transition-old(jsal-theme) { display: none; }
 ::view-transition-new(jsal-brand), ::view-transition-new(jsal-theme) { animation: none; }
-.jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(340px, calc(100vw - 32px));
+.jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px) + var(--jsal-consent-lift, 0px)); width: min(340px, calc(100vw - 32px));
 display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink);
 border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font);
 transform: translate(-50%, 0); transition: opacity .3s ease, transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
@@ -107,6 +107,18 @@ transform: translate(-50%, 0); transition: opacity .3s ease, transform .3s cubic
 .jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
 .jsal-ach b { display: block; font-size: 15px; }
 .jsal-ach span.d { display: block; font-size: 12.5px; color: var(--jsal-muted); }
+.jsal-consent { position: fixed; z-index: 2147483000; left: 16px; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(380px, calc(100vw - 32px));
+padding: 14px 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink-2);
+box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
+.jsal-consent p { margin: 0; }
+.jsal-consent b { color: var(--jsal-ink); }
+.jsal-consent div { display: flex; gap: 8px; margin-top: 12px; }
+.jsal-consent button { min-height: 36px; padding: 0 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: none; color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); cursor: pointer; }
+.jsal-consent button:hover { border-color: var(--jsal-hover-line); }
+.jsal-consent button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-consent .jsal-consent-yes { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+@media (pointer: coarse) { .jsal-consent button { min-height: 44px; } }
+@media print { .jsal-consent { display: none; } }
 @keyframes jsal-fade-out { to { opacity: 0; } }
 @keyframes jsal-fade-in { from { opacity: 0; } }
 @keyframes jsal-home-out { to { opacity: 0; transform: scale(0.97); } }
@@ -748,7 +760,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-30x" defer></script>
+<script src="/nav.js?v=2026-10-30z" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script>
 // ---------- Config ----------

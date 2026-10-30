@@ -23,6 +23,44 @@
     }
     track(t.dataset.track, params);
   });
+  // Analytics choice. Each page's head sets Consent Mode (off by default in the EU, EEA, UK and
+  // Switzerland); visitors whose browser time zone is in Europe get this card to allow or decline,
+  // and a [data-jsal-consent] button (the home page footer) brings it back for anyone. The choice is
+  // kept in this browser as "granted" or "denied". No card where there's no GA4 tag (the Playbook).
+  const CONSENT = 'jsal-analytics';
+  const saved = () => { try { return localStorage.getItem(CONSENT); } catch (e) { return null; } };
+  const europe = (() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      return tz.startsWith('Europe/') || ['Atlantic/Reykjavik', 'Atlantic/Canary', 'Atlantic/Madeira', 'Atlantic/Azores', 'Atlantic/Faroe', 'Arctic/Longyearbyen'].includes(tz);
+    } catch (e) { return false; }
+  })();
+  let card = null;
+  const consentCard = () => {
+    if (card || typeof window.gtag !== 'function') return;
+    card = document.createElement('section');
+    card.className = 'jsal-consent';
+    card.setAttribute('aria-label', 'Analytics choice');
+    card.innerHTML = '<p><b>Can I count your visit?</b> Anonymous usage stats (Google Analytics) show me which tools get used. '
+      + 'Your files never leave your browser either way.</p><div><button type="button" class="jsal-consent-yes">Allow</button>'
+      + '<button type="button">No thanks</button></div>';
+    card.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+      const v = b.classList.contains('jsal-consent-yes') ? 'granted' : 'denied';
+      try { localStorage.setItem(CONSENT, v); } catch (e) {}
+      window.gtag('consent', 'update', { analytics_storage: v });
+      card.remove();
+      card = null;
+      document.documentElement.style.removeProperty('--jsal-consent-lift');
+    }));
+    document.body.append(card);
+    // Achievement pop-ups (bottom centre) sit above the card while it's open
+    document.documentElement.style.setProperty('--jsal-consent-lift', `${card.offsetHeight + 12}px`);
+  };
+  const askConsent = () => { if (europe && !saved()) consentCard(); };
+  const whenReady = (fn) => (document.body ? fn() : addEventListener('DOMContentLoaded', fn, { once: true }));
+  if (document.prerendering) document.addEventListener('prerenderingchange', () => whenReady(askConsent), { once: true });
+  else whenReady(askConsent);
+  addEventListener('click', (e) => { if (e.target.closest && e.target.closest('[data-jsal-consent]')) consentCard(); });
   if (matchMedia('(pointer: coarse)').matches) {
     for (const el of document.querySelectorAll('[data-touch]')) {
       if (el.dataset.touch) el.textContent = el.dataset.touch;
