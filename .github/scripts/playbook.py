@@ -191,6 +191,7 @@ def publish(backup_file=None):
     if errs:
         sys.exit('Stopped: the CMS Picker data doesn\'t fit cms-picker.schema.json. Nothing was published.\n  - ' + '\n  - '.join(errs[:20]))
     print('  ' + check_data.report(result).replace('\n', '\n  '))
+    check_data.annotate(result)
     out = json.dumps(result, ensure_ascii=False, separators=(',', ':'))
     if PUBLIC.exists() and PUBLIC.read_text(encoding='utf-8') == out:
         print(f'published: no changes ({len(public)} platforms, {len(result["items"])} items)')

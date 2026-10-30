@@ -8,7 +8,7 @@
 # Reported (not a failure): answers with no source, sources last checked over 90 days ago, and per
 # platform, answers marked "not verified" (scope C) or "Unclear" (verdict check). A headless answer
 # depends on the CMS chosen, so it has no single source to cite.
-import datetime, json, pathlib, re, sys
+import datetime, json, os, pathlib, re, sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 SCHEMA = json.loads((HERE / 'cms-picker.schema.json').read_text(encoding='utf-8'))
@@ -67,6 +67,14 @@ def not_ideal_unmatched(d):
     return [f'{cards[pid]["name"]}: "{n["if"]}…"' for pid, rules in quiz.get('notIdeal', {}).items() if pid in cards
             for n in rules if not any(l.startswith(n['if']) for l in cards[pid]['profile'].get('lessSuited', []))]
 
+def annotate(d):
+    """On GitHub Actions (the nightly publish, the push check), the same warning as a run annotation, so it shows on
+    the run's summary page rather than only deep in its log. The rule itself keeps applying either way: it matches
+    the quiz answers in "when", and the card text only labels it."""
+    if os.environ.get('GITHUB_ACTIONS'):
+        for g in not_ideal_unmatched(d):
+            print(f'::warning title=CMS Picker "Not ideal if" rule::{g} is no longer on the card; update cms-picker/quiz.json')
+
 def report(d, listing=False, today=None):
     today = today or datetime.date.today()
     names = {p['id']: p['name'] for p in d['platforms']}
@@ -117,3 +125,4 @@ if __name__ == '__main__':
         for e in errs[:40]: print('  - ' + e)
         sys.exit(1)
     print(report(d, listing='--list' in sys.argv))
+    annotate(d)
