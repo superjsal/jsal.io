@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-30b";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30b";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30b";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30b";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30b";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30b";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30b";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30b";
+} from "./state.js?v=2026-10-30d";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30d";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30d";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30d";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30d";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30d";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30d";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30d";
 
 const $ = id => document.getElementById(id);
 
@@ -46,6 +46,12 @@ function sizeSummary() {
     ? `Original sizes  ·  ${plural(state.images.length)}  ·  converting to ${state.format.ext.toUpperCase()}`
     : `${state.size.w} × ${state.size.h}  ·  ${plural(state.images.length)}`;
 }
+// The summary in the status bar, with a warning when some images are smaller than the output size (they get
+// enlarged and may look blurry); each one's card and the preview say so too
+function showSummary() {
+  const soft = state.keepOriginal ? 0 : state.images.filter(im => im.width < state.size.w || im.height < state.size.h).length;
+  setStatus(sizeSummary(), soft ? "warn" : "active", soft ? `⚠ ${soft} smaller than ${state.size.w} × ${state.size.h} may look blurry` : "");
+}
 
 // Full refresh after images or output size change.
 function refreshAll() {
@@ -56,7 +62,7 @@ function refreshAll() {
   prewarm(150);
   downloadBtn.disabled = false;
   app.classList.add("has-images");
-  setStatus(sizeSummary(), "active");
+  showSummary();
 }
 
 function resetUI() {
@@ -320,7 +326,7 @@ function encodingChanged() {
   savePrefs();
   updateCardMeta();
   prewarm();
-  if (state.images.length && !state.isExporting) setStatus(sizeSummary(), "active");
+  if (state.images.length && !state.isExporting) showSummary();
 }
 
 function setInputError(el, on) {

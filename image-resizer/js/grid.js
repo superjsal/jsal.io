@@ -1,9 +1,9 @@
 // Thumbnail cards for every loaded image: crop preview, rename, size, save, remove.
 
-import { state, outSizeFor } from "./state.js?v=2026-10-30b";
-import { drawCropped } from "./imaging.js?v=2026-10-30b";
-import { freshEntry, errorFor } from "./export.js?v=2026-10-30b";
-import { icon, formatBytes } from "./ui.js?v=2026-10-30b";
+import { state, outSizeFor } from "./state.js?v=2026-10-30d";
+import { drawCropped } from "./imaging.js?v=2026-10-30d";
+import { freshEntry, errorFor } from "./export.js?v=2026-10-30d";
+import { icon, formatBytes } from "./ui.js?v=2026-10-30d";
 
 const previewGrid = document.getElementById("previewGrid");
 const gridHeader  = document.getElementById("gridHeader");
@@ -93,12 +93,13 @@ function buildCard(item, i) {
   overlay.textContent = `${TAP} to ${state.keepOriginal ? "preview" : "edit crop"}`;
   thumbBtn.append(thumb, overlay);
 
-  // Source smaller than the output on either axis → the result is upscaled and looks soft.
+  // Source smaller than the output on either axis → the result is upscaled and may look blurry.
   if (item.width < w || item.height < h) {
+    card.classList.add("upscaled");
     const warn = document.createElement("span");
     warn.className = "thumb-warn";
     warn.textContent = "⚠ Upscaled";
-    warn.title = `Source (${item.width} × ${item.height}) is smaller than the output (${w} × ${h}) — result will look soft`;
+    warn.title = `Source (${item.width} × ${item.height}) is smaller than the output (${w} × ${h}) — it may look blurry`;
     thumbBtn.appendChild(warn);
   }
 

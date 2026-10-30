@@ -2,15 +2,16 @@
 // the part that will be cropped away, and lets the crop window be dragged or
 // moved with arrow keys along whichever axis has room.
 
-import { state, outSizeFor } from "./state.js?v=2026-10-30b";
-import { getCropRect } from "./imaging.js?v=2026-10-30b";
-import { clamp } from "./ui.js?v=2026-10-30b";
+import { state, outSizeFor } from "./state.js?v=2026-10-30d";
+import { getCropRect } from "./imaging.js?v=2026-10-30d";
+import { clamp } from "./ui.js?v=2026-10-30d";
 
 const canvas      = document.getElementById("out");
 const ctx         = canvas.getContext("2d");
 const canvasEmpty = document.getElementById("canvasEmpty");
 const canvasBadge = document.getElementById("canvasBadge");
 const cropHint    = document.getElementById("cropHint");
+const upscaleNote = document.getElementById("upscaleNote");
 
 const geom = { img: null, box: null, axis: null };
 let dragging = false;
@@ -105,6 +106,12 @@ export function drawEditor() {
     : axis === "y" ? "Drag the box or press ↑ ↓ to reposition the crop (Shift = bigger steps)"
     : "Image already matches the output ratio — nothing to crop";
   cropHint.classList.add("visible");
+  // Smaller than the output: it gets enlarged and may look blurry, so a warning takes the hint's place
+  const soft = !state.keepOriginal && (item.width < w || item.height < h);
+  cropHint.style.display = soft ? "none" : "";
+  upscaleNote.hidden = !soft;
+  if (soft) upscaleNote.innerHTML = `<span class="upscale-ico" aria-hidden="true">!</span><span><b>This one may look blurry.</b> It's ${item.width} × ${item.height}, smaller than ${w} × ${h}, so it gets enlarged to fit.</span>`;
+  const softSay = soft ? ` It's smaller than ${w} × ${h}, so it may look blurry.` : "";
 
   canvasBadge.textContent = state.keepOriginal
     ? `Original · ${item.width} × ${item.height}`
@@ -123,10 +130,10 @@ export function drawEditor() {
     canvas.setAttribute("aria-valuemax", "100");
     canvas.setAttribute("aria-valuenow", String(pct));
     canvas.setAttribute("aria-valuetext", `${pct}% from the ${axis === "x" ? "left" : "top"}`);
-    canvas.setAttribute("aria-label", `Crop position for ${name}, ${w} × ${h}. Use the arrow keys to move it (Shift for bigger steps).`);
+    canvas.setAttribute("aria-label", `Crop position for ${name}, ${w} × ${h}.${softSay} Use the arrow keys to move it (Shift for bigger steps).`);
   } else {
     for (const a of ["role", "aria-orientation", "aria-valuemin", "aria-valuemax", "aria-valuenow", "aria-valuetext"]) canvas.removeAttribute(a);
-    canvas.setAttribute("aria-label", `Preview of ${name}, ${w} × ${h}. ${cropHint.textContent}.`);
+    canvas.setAttribute("aria-label", `Preview of ${name}, ${w} × ${h}. ${cropHint.textContent}.${softSay}`);
   }
 }
 
@@ -137,6 +144,8 @@ export function clearEditor() {
   canvas.style.cursor = "default";
   canvasEmpty.classList.remove("hidden");
   cropHint.classList.remove("visible");
+  cropHint.style.display = "";
+  upscaleNote.hidden = true;
 }
 
 export function setBadge(text) {

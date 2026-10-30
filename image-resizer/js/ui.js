@@ -23,11 +23,17 @@ const statusBar  = document.getElementById("status");
 const statusText = document.getElementById("statusText");
 const statusDot  = document.getElementById("statusDot");
 
-// state: "idle" | "busy" | "active" | "error"
+// state: "idle" | "busy" | "active" | "warn" | "error"; warn: an optional warning shown after the message
 // The status bar stays hidden until there's something to report.
-export function setStatus(msg, state = "idle") {
+export function setStatus(msg, state = "idle", warn = "") {
   statusBar.hidden = false;
   statusText.textContent = msg;
+  if (warn) {
+    const w = document.createElement("span");
+    w.className = "status-warn";
+    w.textContent = warn;
+    statusText.append("  ·  ", w);
+  }
   statusDot.className = "status-dot" + (state !== "idle" ? ` ${state}` : "");
   statusBar.classList.remove("flash");
   void statusBar.offsetWidth;   // restart the flash animation
