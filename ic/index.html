@@ -341,6 +341,10 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pk-cell .v { cursor: pointer; }
 .pk-cell.wait::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--jsal-warn); }   /* waiting for the next publish */
 .pk-nosrc { font-size: 10.5px; color: var(--jsal-muted); }
+/* Section headings, as on the public CMS Picker: a row across the table, and a heading in a platform's list */
+.pk-table tr.pk-group th { background: var(--jsal-sunk); color: var(--jsal-info); font-size: 12.5px; font-weight: 700; letter-spacing: 0.02em; }
+.pk-table tr.pk-group th span { position: sticky; left: 10px; }
+.pk-sec { margin: 10px 0 0; color: var(--jsal-info); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
 .pk-col { font: inherit; font-weight: 600; color: var(--jsal-ink); background: none; border: 0; border-bottom: 2px solid transparent; padding: 0 0 1px; cursor: pointer; }
 .pk-col.on { border-bottom-color: var(--jsal-accent); }
 .pk-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -1396,10 +1400,17 @@ function pkProfileHtml(p, r) {
 }
 // The table of every public answer (wide screens): a column per public platform, a cell per answer.
 // A cell opens that answer below, in its platform's section.
+// The public page's sections, from the published data: a row starts one when its group differs from the row before
+const pkSectionStarts = (i) => !i || PK.items[i].group !== PK.items[i - 1].group;
+function pkSectionTitle(it) {
+  const g = ((PK.pub && PK.pub.groups) || []).find((x) => x.id === it.group);
+  return g ? `${g.title}${g.asOf ? ` · as of ${g.asOf}` : ''}` : it.group;
+}
 function pkTableHtml(on) {
   if (!on.length) return '';
   const head = `<thead><tr><th scope="col">Can you…</th>${on.map((p) => `<th scope="col"><button type="button" class="pk-col${p.id === PK.sel ? ' on' : ''}" data-pk-sel="${p.id}">${p.name}</button></th>`).join('')}</tr></thead>`;
-  const body = PK.items.map((it) => `<tr><th scope="row">${esc(it.label)}</th>${on.map((p) => {
+  // A heading row where each of the public page's sections starts (What it costs to start, Everyday, …)
+  const body = PK.items.map((it, i) => `${pkSectionStarts(i) ? `<tr class="pk-group"><th colspan="${on.length + 1}" scope="colgroup"><span>${esc(pkSectionTitle(it))}</span></th></tr>` : ''}<tr><th scope="row">${esc(it.label)}</th>${on.map((p) => {
     const r = PK.rows.get(p.id), [v, m, s] = pkAnswer(r, it.id), wait = pkAnswerWaiting(p, r, it.id), src = pkSource(r, it.id);
     const tip = `${plain(p.name)} · ${plain(it.label)}: ${vName(v)}${m && !PK_GENERIC.test(m.trim()) ? `, ${m}` : ''}${wait ? ' (waiting for publish)' : ''}${PK.sourcesOn && !src ? ' (no source)' : ''}`;
     return `<td><button type="button" class="pk-cell${wait ? ' wait' : ''}${PK.editing === `${p.id}~${it.id}` ? ' on' : ''}" data-pk-cell="${p.id}~${it.id}" title="${esc(tip)}" aria-label="${esc(tip)}. Edit">${pkPill(it, v, s)}${PK.sourcesOn && !src ? '<span class="pk-nosrc" aria-hidden="true">no source</span>' : ''}</button></td>`;
@@ -1415,7 +1426,7 @@ function pkPlatformHtml(p) {
   }
   return `<section class="pk-plat" id="pk-plat"><h3>${p.name}${pkSwitchWaiting(p) ? ` ${pkWaitTag}` : ''}</h3>
       ${(r.profile || {}).type ? '' : '<div class="warn"><div><b>Not shown yet:</b> it appears on the CMS Picker once its card has a type. Fill it in with Edit.</div></div>'}
-      ${pkProfileHtml(p, r)}${pkLogoHtml(p, r)}${PK.items.map((it) => pkRowHtml(p, r, it)).join('')}
+      ${pkProfileHtml(p, r)}${pkLogoHtml(p, r)}${PK.items.map((it, i) => `${pkSectionStarts(i) ? `<h4 class="pk-sec">${esc(pkSectionTitle(it))}</h4>` : ''}${pkRowHtml(p, r, it)}`).join('')}
       <p><button type="button" class="link-btn" data-pk-public="off">Take ${p.name} off the CMS Picker</button></p></section>`;
 }
 function renderPickerView() {
