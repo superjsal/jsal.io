@@ -1,22 +1,16 @@
 // CMS Picker persona tests: example people run through the real Find my fit scoring (cms-picker/score.js),
 // checked against the results John agreed (2026-10-29; 37 people since the business-site, members, budget and B2B questions). Run by build\check.ps1 (node .github/scripts/personas.test.js).
-// The answers come from cms-picker/data.json with this folder's cms-picker.json quiz values on top, so a
-// change to either is tested before the next publish. When a result should change, agree it first, then
+// The answers come from cms-picker/data.json and the quiz's own values from cms-picker/quiz.json, as on the
+// page, so a change to either is tested before it goes live. When a result should change, agree it first, then
 // update the expectation here.
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
 const site = path.join(__dirname, '..', '..');
 const { rank, explain } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
-const cfg = require(path.join(__dirname, 'cms-picker.json'));
-
-// The quiz values as the next publish will write them (public platforms only, no _notes; same three shapes
-// as playbook.py: a list of platforms, a value per platform, or lists of platforms per answer)
-const ids = new Set(data.platforms.map((p) => p.id));
-const onlyPublic = (v) => (Array.isArray(v) ? v.filter((p) => ids.has(p))
-  : Object.keys(v).some((k) => ids.has(k)) ? Object.fromEntries(Object.entries(v).filter(([p]) => ids.has(p)))
-  : Object.fromEntries(Object.entries(v).map(([k, x]) => [k, x.filter((p) => ids.has(p))])));
-data.quiz = Object.fromEntries(Object.entries(cfg.quiz).filter(([k]) => !k.startsWith('_')).map(([k, v]) => [k, onlyPublic(v)]));
+const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
+data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
+const ids = new Set(data.platforms.map((p) => p.id));   // platforms on the CMS Picker (a top-three check skips any that aren't)
 
 const PERSONAS = [
   // Business or work sites (with "Which is closest to what you do?", agreed 2026-10-29)

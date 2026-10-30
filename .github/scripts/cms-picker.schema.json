@@ -86,6 +86,7 @@
       }
     },
     "quiz": {
+      "$comment": "Not in data.json any more: cms-picker/quiz.json, which ships with the page code. check_data.py checks it against this part.",
       "type": "object",
       "required": ["ease", "look"],
       "properties": {

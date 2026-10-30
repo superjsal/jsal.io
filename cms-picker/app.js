@@ -1,5 +1,5 @@
 // CMS Picker: the Find my fit quiz, the platform cards and the platform × item grid, all from data.json
-// (answers, profiles and the quiz's own values, exported by build\playbook.py publish).
+// (answers and profiles, exported by build\playbook.py publish) and quiz.json (the quiz's own values).
 (() => {
   const $ = (s) => document.querySelector(s);
   const state = { goal: 'all', compare: new Set(), notes: false, open: new Set() };   // open: platforms expanded in the "Show all" list
@@ -644,7 +644,17 @@
     addEventListener('hashchange', () => { if (fromLink()) $('#quiz').scrollIntoView(); });
   }
 
-  // no-cache: always check with the server (a quick 304 if unchanged), so a publish shows straight away
-  fetch('data.json', { cache: 'no-cache' }).then((r) => r.json()).then((d) => { data = d; build(); })
+  // data.json (the answers, from the database) with no-cache: always check with the server (a quick 304 if
+  // unchanged), so a publish shows straight away. quiz.json (the quiz's own values) with this script's own
+  // ?v= number, so the scoring code and its values always arrive from the same release.
+  const VERSION = new URL(document.currentScript.src).searchParams.get('v') || '';
+  Promise.all([
+    fetch('data.json', { cache: 'no-cache' }).then((r) => r.json()),
+    fetch(`quiz.json?v=${VERSION}`).then((r) => r.json()),
+  ]).then(([d, quiz]) => {
+    data = d;
+    data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));
+    build();
+  })
     .catch(() => { $('#grid').replaceChildren(el('p', 'empty', 'Could not load the answers. Try reloading the page.')); });
 })();

@@ -10,7 +10,7 @@ data, scoring and tests. Real-device checks before a release: `manual-checks.md`
 | Each platform's answers (tag, public note, varies/not verified), profile, logo, public switch | Supabase `picker` table (its own answers, separate from the Playbook's) | John, on the Playbook's CMS Picker tab |
 | Each answer's source (official docs URL) and the date it was checked | `picker.sources` | John, on the CMS Picker tab (in the same form as the answer) |
 | The rows, their plain-language labels and SEO names, platform order | `.github/scripts/cms-picker.json` | code |
-| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker.json` → `quiz` | code |
+| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, `notIdeal`, and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker/quiz.json`, served with the page and loaded with the code's `?v=` number, so scoring code and values always change together. Run `build\bump-version.ps1` after editing it. | code |
 | What the page reads | `cms-picker/data.json`, written by `playbook.py publish` (nightly at 07:41 UTC, or Run workflow); never edit it by hand | the publish |
 | Its shape | `.github/scripts/cms-picker.schema.json`, checked by `check_data.py` before every publish and push | code |
 
@@ -77,7 +77,7 @@ Platforms change plans and features often. Every few months (or when a platform 
   ("What can you spend each month?") reads these rows: a platform loses 3 points for each band over the
   budget (`COST_LEVEL` and `BUDGET` in `score.js`; "Free software + hosting" counts as the lowest paid band),
   so a band change can move results: run the persona tests.
-- Recheck the **plugin and app library tiers** (`addOnsMany` / `addOnsSome` in `cms-picker.json`, for "Will you
+- Recheck the **plugin and app library tiers** (`addOnsMany` / `addOnsSome` in `cms-picker/quiz.json`, for "Will you
   add features as the site grows?") against each directory's own page; the `_about` note there says where
   each count came from and which are third-party estimates.
 - Recheck the **AI crawlers row**: the bots and how each platform lets you block them change fastest.

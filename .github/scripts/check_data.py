@@ -98,4 +98,11 @@ if __name__ == '__main__':
         print(f'cms-picker/data.json doesn\'t fit cms-picker.schema.json ({len(errs)}):')
         for e in errs[:40]: print('  - ' + e)
         sys.exit(1)
+    # The quiz's own values ship with the page code (cms-picker/quiz.json), so check them here too
+    quiz = json.loads((DATA.parent / 'quiz.json').read_text(encoding='utf-8'))
+    errs = validate({k: v for k, v in quiz.items() if not k.startswith('_')}, SCHEMA['properties']['quiz'], 'quiz')
+    if errs:
+        print(f'cms-picker/quiz.json doesn\'t fit cms-picker.schema.json ({len(errs)}):')
+        for e in errs[:40]: print('  - ' + e)
+        sys.exit(1)
     print(report(d, listing='--list' in sys.argv))
