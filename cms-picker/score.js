@@ -32,29 +32,55 @@
   const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
 
   // What each part of the score says when it's what put one match ahead of another: [the leader earned
-  // it, the runner-up lost it]. Keys match fitScore's parts; every phrase comes from the published data.
+  // it, the runner-up lost it], given (answers, runner-up's name, leader's name). Keys match fitScore's
+  // parts; every phrase comes from the published data.
   const TIP = {
-    goal: [(a) => `it’s ${WHAT[a.what].charAt(0).toLowerCase()}${WHAT[a.what].slice(1)}`, (a, y) => `${y} isn’t made for this`],
-    kind: [(a) => `it ${KINDS[a.kind].charAt(0).toLowerCase()}${KINDS[a.kind].slice(1)}`, null],
-    members: [() => 'paid members and newsletters are built in', null],
+    goal: [(a, y, x) => `${x} is made for that`, (a, y) => `${y} isn’t made for that`],
+    kind: [(a, y, x) => `${x} is a natural fit`, null],
+    members: [(a, y, x) => `${x} has them built in`, null],
     sellOnly: [null, (a, y) => `${y} is made only for selling`],
-    frontEnd: [() => 'it manages content for a website and an app from one place', null],
-    ease: [(a) => (a.who === 'easy' ? 'it’s easier to run without technical skills' : 'it’s easier to learn'), (a, y) => (a.who === 'easy' ? `${y} is harder to run without technical skills` : `${y} is harder to learn`)],
-    agency: [() => 'it’s a common choice for designers and agencies', null],
+    frontEnd: [(a, y, x) => `${x} is built to feed a website and an app from one place`, null],
+    ease: [(a, y, x) => (a.who === 'easy' ? `${x} is easier to run` : `${x} is easier to learn`), (a, y) => (a.who === 'easy' ? `${y} is harder to run` : `${y} is harder to learn`)],
+    agency: [(a, y, x) => `${x} is a common choice for them`, null],
     agencyOnly: [null, (a, y) => `${y} is mainly sold through agencies`],
-    dev: [() => 'it gives a developer full control', (a, y) => `${y} isn’t built to be coded`],
-    care: [() => 'hosting, updates and security are handled for you', (a, y) => `${y} leaves hosting and updates to you`],
-    sell: [() => 'selling is easier to set up', (a, y) => `selling is harder to set up on ${y}`],
-    sellFirst: [() => 'it’s made for selling first', null],
-    size: [() => 'it handles large catalogues', (a, y) => `${y} isn’t made for large catalogues`],
-    small: [() => 'it suits small shops', null],
-    b2b: [() => 'it suits selling to other businesses', null],
-    lang: [() => 'more than one language is easier to set up', (a, y) => `more than one language is harder to set up on ${y}`],
-    look: [(a) => ({ template: 'it has good templates to start from', visual: 'you can arrange your pages visually', pixel: 'it gives full control over the design' })[a.look], null],
-    leave: [() => 'moving to another platform later is easier', (a, y) => `moving off ${y} later is harder`],
-    grow: [() => 'it has more plugins and apps to add as you grow', (a, y) => `${y} has fewer plugins and apps to add as you grow`],
+    dev: [(a, y, x) => `${x} gives them full control`, (a, y) => `${y} isn’t built to be coded`],
+    care: [(a, y, x) => `${x} handles them for you`, (a, y) => `${y} leaves hosting and updates to you`],
+    sell: [(a, y, x) => `selling is easier to set up on ${x}`, (a, y) => `selling is harder to set up on ${y}`],
+    sellFirst: [(a, y, x) => `${x} is made for selling first`, null],
+    size: [(a, y, x) => `${x} handles large catalogues`, (a, y) => `${y} isn’t made for large catalogues`],
+    small: [(a, y, x) => `${x} suits that`, null],
+    b2b: [(a, y, x) => `${x} is built for B2B`, null],
+    lang: [(a, y, x) => `that’s easier to set up on ${x}`, (a, y) => `that’s harder to set up on ${y}`],
+    look: [(a, y, x) => ({ template: `${x} has good ones to start from`, visual: `${x} lets you do that`, pixel: `${x} gives you that` })[a.look], null],
+    leave: [(a, y, x) => `moving off ${x} later is easier`, (a, y) => `moving off ${y} later is harder`],
+    grow: [(a, y, x) => `${x} has more plugins and apps for that`, (a, y) => `${y} has fewer plugins and apps for that`],
     notIdeal: [null, (a, y) => `${y}’s own card says it isn’t ideal for answers like yours`],
-    budget: [(a) => (a.budget === 'none' ? 'it’s free to start' : 'it fits your budget'), (a, y) => `${y} costs more than you want to spend`],
+    budget: [(a, y, x) => (a.budget === 'none' ? `${x} is free to start` : `${x} fits it`), (a, y) => `${y} costs more than that`],
+  };
+  // The answer behind each part, said first so the reason reads as a reply to it: "you're building an app
+  // or portal, and Sanity is built to…". Null when the wording already names the answer.
+  const LEAD = {
+    goal: (a) => ({ site: 'you’re making a site for your business or work', store: 'you’re making an online store', content: 'you’re making a blog, newsletter or publication', custom: 'you’re building an app or portal' })[a.what],
+    kind: (a) => ({ local: 'you’re a local business or service', creative: 'you’re showing creative work', startup: 'you’re launching a product', b2b: 'you sell to other businesses', content: 'you’ll have lots of content' })[a.kind],
+    members: () => 'you want paid members or a newsletter',
+    sellOnly: () => 'you’re not making a store',
+    frontEnd: () => 'you’re building an app or portal',
+    ease: (a) => (a.who === 'easy' ? 'you’re not technical' : 'you’re building it yourself'),
+    agency: () => 'a designer or agency is building it',
+    agencyOnly: (a) => (a.who === 'dev' ? 'a developer is building it' : 'you’re building it yourself'),
+    dev: () => 'a developer is building it',
+    care: () => 'you want hosting, updates and security looked after',
+    sell: () => 'you’re making an online store',
+    sellFirst: () => 'you’re making an online store',
+    size: (a) => (a.size === 'b2b' ? 'you’re selling to other businesses' : 'you have hundreds of products'),
+    small: () => 'you have a small shop',
+    b2b: () => 'you’re selling to other businesses',
+    lang: () => 'you need more than one language',
+    look: (a) => ({ template: 'a good template is enough for you', visual: 'you want to arrange things visually', pixel: 'you want control over every detail' })[a.look],
+    leave: () => 'you want to own all of it',
+    grow: () => 'you’ll add features over time',
+    notIdeal: null,
+    budget: (a) => ({ none: 'you want to start free', low: 'you want to spend up to about $25 a month', mid: 'you want to spend up to about $100 a month' })[a.budget],
   };
 
   // The first of a platform's "Not ideal if" lines (quiz.notIdeal) these answers match: every key in "when" has one
@@ -188,13 +214,23 @@
     return [...new Set([...Object.keys(x.pts), ...Object.keys(y.pts)])]
       .map((k) => ({ k, d: (x.pts[k] || 0) - (y.pts[k] || 0) })).filter((g) => g.d > 0 && TIP[g.k]).sort((p, q) => q.d - p.d);
   }
-  // Up to two of them in plain words. Being able to move later is a secondary reason, so it always goes last.
+  // Up to two of them in plain words, each after the answer behind it; an answer behind both is said once.
+  // Being able to move later is a secondary reason, so it always goes last.
   function reasons(a, x, y) {
     const two = gaps(x, y).slice(0, 2).sort((p, q) => (p.k === 'leave') - (q.k === 'leave'));
-    const words = two.map(({ k }) => { const [plus, minus] = TIP[k], f = (x.pts[k] || 0) > 0 ? plus || minus : minus || plus; return f && f(a, y.p.name); }).filter(Boolean);
-    return words.length > 1 ? `${words[0]}, and ${words[1]}` : words[0];
+    let said = null;
+    const words = two.map(({ k }) => {
+      const [plus, minus] = TIP[k], f = (x.pts[k] || 0) > 0 ? plus || minus : minus || plus, w = f && f(a, y.p.name, x.p.name);
+      if (!w) return null;
+      const lead = LEAD[k] && LEAD[k](a);
+      if (!lead || lead === said) return w;
+      said = lead;
+      return `${lead}, and ${w}`;
+    }).filter(Boolean);
+    return words.length > 1 ? `${words[0]}; ${words[1]}` : words[0];
   }
-  // What put x ahead of y: "What tipped it: it's made for selling first, and it has more plugins…"
+  // What put x ahead of y: "What tipped it: you're making an online store, and Shopify is made for selling
+  // first; you'll add features over time, and Shopify has more plugins…"
   function tipped(a, x, y) {
     const w = reasons(a, x, y);
     return w ? `What tipped it: ${w}.` : null;
@@ -237,6 +273,6 @@
 
   // Answers that add and take nothing, used for questions an old shared link (v=1) didn't have
   const NEUTRAL = { grow: 'no', budget: 'any' };
-  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP, NEUTRAL, notIdealFor };
+  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

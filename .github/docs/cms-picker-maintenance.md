@@ -34,8 +34,10 @@ Shared by the page and the tests, so they always run the same code.
 - **Scoring:** `fitScore` builds the score from parts with `add(key, points, reason)`. The reason (if any)
   shows as a bullet on the card.
 - **"What tipped it":** every part's key has wording in `TIP`: `[what the leader earned, what the
-  runner-up lost]`. The clear winner's box names the part with the biggest gap. **A new part needs a
-  `TIP` entry**; the persona test fails without one.
+  runner-up lost]`, naming the platform rather than "it". Each one follows the answer that drove it, from
+  `LEAD` ("you're building an app or portal, and Sanity is built to…"), and two reasons are joined with a
+  semicolon. The clear winner's box names the part with the biggest gap. **A new part needs a `TIP` and a
+  `LEAD` entry**; the persona test fails without them.
 - **"Pick it over":** rows where a platform does better than its neighbour (built in beats a plugin beats
   code), described by `PHRASE` (a short phrase per table row; **a new row needs one**, the test checks).
   `weight` decides how much a row matters for the answers, and is 0 for rows the person ruled out

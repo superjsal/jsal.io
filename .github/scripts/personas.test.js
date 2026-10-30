@@ -114,7 +114,7 @@ console.log(failed ? `${failed} of ${PERSONAS.length} personas failed.` : `All $
 // The result cards, for every possible set of answers: each card says what sets it apart, without
 // mentioning anything the person ruled out; "the same reasons as" only when it's true; the top two
 // never show the same list; and a clear winner says what tipped it.
-const { QUESTIONS, PHRASE, weight, TIP, NEUTRAL, notIdealFor } = require(path.join(site, 'cms-picker', 'score.js'));
+const { QUESTIONS, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor } = require(path.join(site, 'cms-picker', 'score.js'));
 const unworded = new Set();   // parts of the score with no "What tipped it" wording in TIP (score.js)
 const sameSet = (x, y) => x.length === y.length && x.every((w) => y.includes(w));
 let combos = 0, clear = 0, fallback = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0;
@@ -152,6 +152,8 @@ const walk = (a, i) => {
 };
 walk({}, 0);
 unworded.forEach((k) => cardErrs.push(`score part "${k}" has no wording in TIP (score.js), so it can't say what tipped a result`));
+// Each part says the answer behind it first (LEAD); null only when its wording already names the answer
+Object.keys(TIP).forEach((k) => { if (!(k in LEAD)) cardErrs.push(`score part "${k}" has no answer lead-in in LEAD (score.js)`); });
 // Every mapped "Not ideal if" line must still be on its platform's card, or the rule matches a line nobody sees
 Object.entries(data.quiz.notIdeal || {}).forEach(([id, rules]) => {
   const lines = ((data.platforms.find((p) => p.id === id) || {}).profile || {}).lessSuited || [];
