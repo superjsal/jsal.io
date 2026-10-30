@@ -501,7 +501,7 @@ p, li { text-wrap: pretty; }
 /* Grouped by app: the CMS Picker on the left, the other apps stacked on the right (Site last) */
 .upd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; row-gap: 22px; align-items: start; }
 .upd-side { display: grid; gap: 22px; }
-.now h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+.now h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
 .now h3 time { font-size: 14px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now ul { margin: 0; padding: 0; list-style: none; }
 .now li { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--plain-line); }
@@ -785,14 +785,16 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     <!-- Site updates, newest first. "Currently" (the WoW tile) says what I'm up to; this lists what shipped. -->
     <section id="updates" class="tile now" aria-labelledby="updates-h">
       <h2 id="updates-h">Updates</h2>
-      <!-- One group per app, at most three entries each, newest first. The CMS Picker is the left column;
+      <!-- One group per app, newest first, at most five entries each. The CMS Picker is the left column;
            the others stack on the right, ordered by their newest entry, with Site last. -->
       <div class="upd">
         <div>
           <h3><a href="/cms-picker/">CMS Picker</a><time datetime="2026-10-30">· Oct 30</time></h3>
           <ul>
             <li><time datetime="2026-10-30">Oct 30</time><span>A page per platform with where to find each SEO setting, like <a href="/cms-picker/squarespace/">Squarespace</a></span></li>
+            <li><time datetime="2026-10-30">Oct 30</time><span>Each platform card links to its own page</span></li>
             <li><time datetime="2026-10-30">Oct 30</time><span>Results say which of your answers tipped them, and Sanity replaces the general “Headless CMS”</span></li>
+            <li><time datetime="2026-10-29">Oct 29</time><span>A “Sell memberships or paid posts” row, with quiz scoring to match</span></li>
             <li><time datetime="2026-10-29">Oct 29</time><span>Find your fit in a few questions</span></li>
           </ul>
         </div>
