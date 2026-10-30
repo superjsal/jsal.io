@@ -743,3 +743,12 @@ body {
   .recent-pill-apply, .folder-change, .card-dl-btn, .input-group { min-height: 44px; }
   .recent-pill-del, .card-remove { min-width: 44px; min-height: 44px; }
 }
+/* Phones and tablets in one column: the one-screen layout (made for a desktop sidebar) squeezed the preview to
+   a sliver under the 44px controls and let the image strip spill over the About section. Here the page scrolls
+   anyway, so the tool grows to fit: the preview keeps its full-width 3:2 shape and the strip sits below it */
+@media (max-width: 899px) and (pointer: coarse) {
+  .app { height: auto; min-height: 100dvh; }
+  .controls { flex: none; overflow: visible; }
+  .workspace { flex: none; min-height: 0; }
+  .canvas-wrap { flex: none; }
+}
