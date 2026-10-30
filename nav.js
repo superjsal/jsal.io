@@ -2,7 +2,15 @@
 // - the logo marked data-jsal-nav (a link to jsal.io) becomes a menu for moving between the apps
 //   (to add an app, add it to APPS)
 // - the button marked data-jsal-theme switches light/dark for all the apps
+// - on touch screens, text marked data-touch is swapped for that wording (data-touch="" removes it), so
+//   instructions say tap instead of click, drop or a keyboard shortcut; the HTML keeps the desktop wording
 (() => {
+  if (matchMedia('(pointer: coarse)').matches) {
+    for (const el of document.querySelectorAll('[data-touch]')) {
+      if (el.dataset.touch) el.textContent = el.dataset.touch;
+      else el.remove();
+    }
+  }
   const APPS = [   // the homepage's order: CMS Picker first, the team's Playbook last
     { href: '/cms-picker/', name: 'CMS Picker', desc: 'Which CMS fits, and what you can change for SEO',
       icon: '<path d="M3 5h18v14H3z"/><path d="M3 10h18M9 5v14"/>' },

@@ -2,9 +2,9 @@
 // the part that will be cropped away, and lets the crop window be dragged or
 // moved with arrow keys along whichever axis has room.
 
-import { state, outSizeFor } from "./state.js?v=2026-10-29zzzc";
-import { getCropRect } from "./imaging.js?v=2026-10-29zzzc";
-import { clamp } from "./ui.js?v=2026-10-29zzzc";
+import { state, outSizeFor } from "./state.js?v=2026-10-29zzzd";
+import { getCropRect } from "./imaging.js?v=2026-10-29zzzd";
+import { clamp } from "./ui.js?v=2026-10-29zzzd";
 
 const canvas      = document.getElementById("out");
 const ctx         = canvas.getContext("2d");
@@ -16,6 +16,7 @@ const geom = { img: null, box: null, axis: null };
 let dragging = false;
 let resizing = false;   // the window is being resized: draw fast, then once sharp when it stops
 let handlers = { onLive() {}, onCommit() {} };
+const TOUCH = matchMedia("(pointer: coarse)").matches;   // phones and tablets: no arrow keys to mention
 
 // Which axis the crop window can move along for this item (null = none).
 export function cropAxis(item) {
@@ -99,6 +100,7 @@ export function drawEditor() {
 
   cropHint.textContent = state.keepOriginal
     ? "Original mode — image keeps its own size, format conversion only"
+    : axis && TOUCH ? "Drag the box to reposition the crop"   // no arrow keys on phones and tablets
     : axis === "x" ? "Drag the box or press ← → to reposition the crop (Shift = bigger steps)"
     : axis === "y" ? "Drag the box or press ↑ ↓ to reposition the crop (Shift = bigger steps)"
     : "Image already matches the output ratio — nothing to crop";

@@ -1,15 +1,16 @@
 // Thumbnail cards for every loaded image: crop preview, rename, size, save, remove.
 
-import { state, outSizeFor } from "./state.js?v=2026-10-29zzzc";
-import { drawCropped } from "./imaging.js?v=2026-10-29zzzc";
-import { freshEntry, errorFor } from "./export.js?v=2026-10-29zzzc";
-import { icon, formatBytes } from "./ui.js?v=2026-10-29zzzc";
+import { state, outSizeFor } from "./state.js?v=2026-10-29zzzd";
+import { drawCropped } from "./imaging.js?v=2026-10-29zzzd";
+import { freshEntry, errorFor } from "./export.js?v=2026-10-29zzzd";
+import { icon, formatBytes } from "./ui.js?v=2026-10-29zzzd";
 
 const previewGrid = document.getElementById("previewGrid");
 const gridHeader  = document.getElementById("gridHeader");
 
 const THUMB_W = 160 * Math.min(2, Math.max(1, window.devicePixelRatio || 1));
 const THUMB_MAX_RATIO = 1.5;   // caps very tall thumbnails in Original mode
+const TAP = matchMedia("(pointer: coarse)").matches ? "Tap" : "Click";   // phones and tablets
 
 let handlers = { onSelect() {}, onRemove() {}, onSave() {} };
 
@@ -89,7 +90,7 @@ function buildCard(item, i) {
   const thumb = document.createElement("canvas");
   const overlay = document.createElement("span");
   overlay.className = "thumb-overlay";
-  overlay.textContent = state.keepOriginal ? "Click to preview" : "Click to edit crop";
+  overlay.textContent = `${TAP} to ${state.keepOriginal ? "preview" : "edit crop"}`;
   thumbBtn.append(thumb, overlay);
 
   // Source smaller than the output on either axis → the result is upscaled and looks soft.
@@ -105,7 +106,7 @@ function buildCard(item, i) {
   nameEl.type = "text";
   nameEl.className = "filename-edit";
   nameEl.value = label;
-  nameEl.title = "Click to rename";
+  nameEl.title = `${TAP} to rename`;
   nameEl.spellcheck = false;
   nameEl.autocomplete = "off";
   nameEl.setAttribute("aria-label", "File name");

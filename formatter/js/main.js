@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzzc";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzzc";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzzd";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzzd";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -551,7 +551,7 @@ function done(btn, msg) {
   clearTimeout(noteTimer);
   noteTimer = setTimeout(() => { btn.classList.remove("done"); $("copyNote").textContent = ""; }, 2200);
 }
-function failed() { $("copyNote").textContent = `Couldn't copy. Select the text and press ${isMac ? "⌘C" : "Ctrl+C"}.`; }
+function failed() { $("copyNote").textContent = touch ? "Couldn't copy. Select the text, then tap Copy." : `Couldn't copy. Select the text and press ${isMac ? "⌘C" : "Ctrl+C"}.`; }
 
 async function copyPlain(text) {
   try { await navigator.clipboard.writeText(text); return true; }

@@ -6,7 +6,7 @@
   <title>Image Resizer: Resize One or Many Images in Bulk | jsal.io</title>
   <meta name="description" content="Resize and crop one image or hundreds at once to an exact size, free and in your browser. JPG, PNG, WebP and HEIC in; JPG or WebP out. Nothing is uploaded.">
   <link rel="canonical" href="https://jsal.io/image-resizer/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-29zzzc" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-29zzzd" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -223,26 +223,26 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-29zzzc" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-29zzzd" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":    "./js/main.js?v=2026-10-29zzzc",
-        "./js/state.js":   "./js/state.js?v=2026-10-29zzzc",
-        "./js/imaging.js": "./js/imaging.js?v=2026-10-29zzzc",
-        "./js/export.js":  "./js/export.js?v=2026-10-29zzzc",
-        "./js/editor.js":  "./js/editor.js?v=2026-10-29zzzc",
-        "./js/grid.js":    "./js/grid.js?v=2026-10-29zzzc",
-        "./js/ui.js":      "./js/ui.js?v=2026-10-29zzzc",
-        "./js/zip.js":     "./js/zip.js?v=2026-10-29zzzc",
-        "./js/folder.js":  "./js/folder.js?v=2026-10-29zzzc",
+        "./js/main.js":    "./js/main.js?v=2026-10-29zzzd",
+        "./js/state.js":   "./js/state.js?v=2026-10-29zzzd",
+        "./js/imaging.js": "./js/imaging.js?v=2026-10-29zzzd",
+        "./js/export.js":  "./js/export.js?v=2026-10-29zzzd",
+        "./js/editor.js":  "./js/editor.js?v=2026-10-29zzzd",
+        "./js/grid.js":    "./js/grid.js?v=2026-10-29zzzd",
+        "./js/ui.js":      "./js/ui.js?v=2026-10-29zzzd",
+        "./js/zip.js":     "./js/zip.js?v=2026-10-29zzzd",
+        "./js/folder.js":  "./js/folder.js?v=2026-10-29zzzd",
         "./vendor/heic-to/heic-to.min.js": "./vendor/heic-to/heic-to.min.js?v=1.6.6"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-29zzzc"></script>
+  <script type="module" src="js/main.js?v=2026-10-29zzzd"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-29zzzc" defer></script>
+  <script src="/nav.js?v=2026-10-29zzzd" defer></script>
 </head>
 <body>
   <main class="app">
@@ -324,8 +324,8 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
         </span>
         <span class="drop-text">
-          <span class="drop-title">Drop images here</span>
-          <span class="drop-sub">or click to browse — JPG, PNG, WebP, HEIC</span>
+          <span class="drop-title" data-touch="Choose images">Drop images here</span>
+          <span class="drop-sub" data-touch="Tap to browse — JPG, PNG, WebP, HEIC">or click to browse — JPG, PNG, WebP, HEIC</span>
         </span>
       </button>
 
@@ -387,8 +387,8 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
           <span class="canvas-empty-icon" aria-hidden="true">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
           </span>
-          <span class="canvas-empty-title">Drop images here</span>
-          <span class="canvas-empty-sub">or click to browse — JPG, PNG, WebP, HEIC</span>
+          <span class="canvas-empty-title" data-touch="Choose images">Drop images here</span>
+          <span class="canvas-empty-sub" data-touch="Tap to browse — JPG, PNG, WebP, HEIC">or click to browse — JPG, PNG, WebP, HEIC</span>
         </button>
         <canvas id="out" tabindex="0" aria-label="Crop preview — use arrow keys to reposition the crop"></canvas>
         <div class="canvas-badge" id="canvasBadge"></div>
@@ -397,7 +397,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 
       <div class="grid-header" id="gridHeader" hidden>
         <h2 class="grid-title">Loaded images</h2>
-        <span class="grid-hint">Click to edit crop · Save downloads · Rename files</span>
+        <span class="grid-hint" data-touch="Tap to edit crop · Save downloads · Rename files">Click to edit crop · Save downloads · Rename files</span>
       </div>
 
       <div id="previewGrid" class="preview-grid"></div>
@@ -415,9 +415,9 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
     <h3>How to use it</h3>
     <ol>
       <li>Pick an output size: <strong>1200 × 628</strong> (blog posts and social share images), <strong>640 × 420</strong> (smaller feature images), <strong>Original</strong> to keep each image's size, or type your own width and height.</li>
-      <li>Drop your images on the page, or click to browse.</li>
-      <li>Check the crop. Click any image in the strip to edit it, then drag the crop box (or use the arrow keys) to choose which part is kept.</li>
-      <li>Choose quality and format, then <strong>Download All</strong> (<kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>). You can also save single images and rename files first.</li>
+      <li data-touch="Tap Choose images to pick them from your photos or files.">Drop your images on the page, or click to browse.</li>
+      <li>Check the crop. <span data-touch="Tap any image in the strip to edit it, then drag the crop box to choose which part is kept.">Click any image in the strip to edit it, then drag the crop box (or use the arrow keys) to choose which part is kept.</span></li>
+      <li>Choose quality and format, then <strong>Download All</strong><span data-touch=""> (<kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>)</span>. You can also save single images and rename files first.</li>
     </ol>
 
     <h3>What it supports</h3>
