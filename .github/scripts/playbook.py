@@ -413,6 +413,21 @@ SEO_HEAD = {'meta_title': 'Change the title and description in Google', 'urls': 
             'noindex': 'Hide a page from search (noindex)', 'ai_crawlers': 'Block AI crawlers'}
 
 
+# Who each platform page is about, for its structured data: the official site and, where Wikidata has a clear
+# item (looked up 2026-10-30; preferring the one English Wikipedia links to), that item, so search engines
+# and AI search know which "Squarespace" is meant. Framer and Duda have no reliable item, so site only.
+# BigCommerce's company item is now "Commerce.com", so it's the platform's own item.
+PLATFORM_ENTITY = {
+    'wordpress': ('https://wordpress.org/', 'Q13166'), 'shopify': ('https://www.shopify.com/', 'Q7501150'),
+    'wix': ('https://www.wix.com/', 'Q420506'), 'squarespace': ('https://www.squarespace.com/', 'Q7582097'),
+    'webflow': ('https://webflow.com/', 'Q20160951'), 'framer': ('https://www.framer.com/', None),
+    'hubspot': ('https://www.hubspot.com/', 'Q5926631'), 'bigcommerce': ('https://www.bigcommerce.com/', 'Q141009518'),
+    'magento': ('https://business.adobe.com/products/magento/magento-commerce.html', 'Q1884012'),
+    'drupal': ('https://www.drupal.org/', 'Q170855'), 'duda': ('https://www.duda.co/', None),
+    'ghost': ('https://ghost.org/', 'Q16251204'), 'sanity': ('https://www.sanity.io/', 'Q56242360'),
+}
+
+
 def platform_pages(d):
     e = lambda t: html.escape(str(t), quote=True)
     tpl = PLATFORM_TEMPLATE.read_text(encoding='utf-8')
@@ -468,8 +483,12 @@ def platform_pages(d):
         desc = (f'{name} SEO answered: titles, URLs, redirects, schema, noindex and AI crawlers, '
                 f'{"each with where to find the setting" if has_where else "and what each takes"}, checked against {name}’s own docs.')   # 134–160 characters
         url = f'https://jsal.io/cms-picker/{pid}/'
+        # A plain Thing (not SoftwareApplication or Organization), so it can't set off Google's rich-result checks
+        site, qid = PLATFORM_ENTITY.get(pid, (None, None))
+        about = {'@type': 'Thing', 'name': name, **({'url': site} if site else {}),
+                 **({'sameAs': f'https://www.wikidata.org/wiki/{qid}'} if qid else {})}
         ld = {'@context': 'https://schema.org', '@type': 'WebPage', 'name': f'{name} SEO: What You Can Change, and Where',
-              'url': url, 'description': desc, 'inLanguage': 'en', 'dateModified': date, 'about': {'@type': 'Thing', 'name': name},
+              'url': url, 'description': desc, 'inLanguage': 'en', 'dateModified': date, 'about': about,
               'author': {'@type': 'Person', '@id': 'https://jsal.io/#john', 'name': 'John Salvador', 'url': 'https://jsal.io/'},
               'isPartOf': {'@id': 'https://jsal.io/#website'},   # the WebSite node on the home page
               'breadcrumb': {'@type': 'BreadcrumbList', 'itemListElement': [
