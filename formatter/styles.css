@@ -297,9 +297,16 @@ textarea.code[hidden] { display: none; }
 /* A check's line, just shown: a short gold flash (stays lit briefly, without motion, if animations are off) */
 /* Show: the line a check means gets a clear gold wash and a bar beside it, held, then fading out. With reduced
    motion it stays highlighted (no fade) until the next Show or edit. */
-.preview .locate { border-radius: 4px; background: color-mix(in srgb, var(--jsal-accent) 22%, transparent); box-shadow: -6px 0 0 var(--jsal-accent), 0 0 0 4px color-mix(in srgb, var(--jsal-accent) 22%, transparent); animation: locate 2.4s ease-out forwards; }
-@keyframes locate { 0%, 60% { background: color-mix(in srgb, var(--jsal-accent) 22%, transparent); box-shadow: -6px 0 0 var(--jsal-accent), 0 0 0 4px color-mix(in srgb, var(--jsal-accent) 22%, transparent); } 100% { background: transparent; box-shadow: -6px 0 0 transparent, 0 0 0 4px transparent; } }
+/* The bright gold (--jsal-fill), so it reads as gold in light mode too (the darker text gold turned beige); text
+   on it stays above 4.5:1 in both themes. The bold-line bar steps aside while it shows. */
+.preview .locate { --wash: color-mix(in srgb, var(--jsal-fill) 38%, transparent); border-radius: 4px; background: var(--wash); box-shadow: -6px 0 0 var(--jsal-fill), 0 0 0 4px var(--wash); animation: locate 2.6s ease-out forwards; }
+.preview > p[data-bold].locate::before { opacity: 0; }
+@keyframes locate { 0%, 60% { background: var(--wash); box-shadow: -6px 0 0 var(--jsal-fill), 0 0 0 4px var(--wash); } 100% { background: transparent; box-shadow: -6px 0 0 transparent, 0 0 0 4px transparent; } }
 @media (prefers-reduced-motion: reduce) { .preview .locate { animation: none; } }
+/* Single column: after Show takes you down to the line, a way back up to the checks */
+.back-to-checks { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 20; translate: -50% 0; padding: 0 16px; min-height: 44px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 600; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.back-to-checks:hover { border-color: var(--jsal-hover-line); }
+@media (min-width: 900px) { .back-to-checks { display: none; } }
 .preview .flag { text-decoration-color: var(--jsal-warn); text-decoration-style: wavy; text-decoration-line: underline; }
 
 /* Link box: edit the address of the link the cursor is in */

@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzu";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzu";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzv";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzv";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -119,6 +119,7 @@ $("clearBtn").addEventListener("click", () => {
   hideLinkBox();
   editor.innerHTML = "";
   app.classList.remove("has-content");
+  $("backToChecks").hidden = true;
   $("pasteZone").focus();
 });
 
@@ -177,40 +178,64 @@ function showResult() {
   if (say !== $("checksSay").textContent) $("checksSay").textContent = say;
 }
 
-// ── Show a check's lines: scroll to it if needed, flash it, put the cursor there.
+// ── Show a check's lines: scroll to it if needed, then flash it and put the cursor there.
 // Clicking again moves on to the next one when a check covers several. ──
 let shownChecks = [];
 const located = new Map();   // check id → index of the line shown last
-function locate(check) {
+const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)");
+const ONE_COLUMN = matchMedia("(max-width: 899px)");
+// Resolves once scrolling has stopped (scrollend where the browser has it, else a short wait)
+const scrollSettled = () => new Promise((done) => {
+  let t = setTimeout(finish, 700);
+  function finish() { clearTimeout(t); removeEventListener("scrollend", onEnd, true); done(); }
+  function onEnd() { clearTimeout(t); t = setTimeout(finish, 60); }   // the editor and the page may both scroll
+  addEventListener("scrollend", onEnd, true);
+});
+async function locate(check, from) {
   if (editor.hidden) tabButton("page").click();
   const lines = check.find(editor);
   if (!lines.length) return;
   const i = ((located.get(check.id) ?? -1) + 1) % lines.length;
   located.set(check.id, i);
   const el = lines[i];
-  // Only scroll if it's not fully in view, and then bring it to the middle
+  for (const x of editor.querySelectorAll(".locate")) x.classList.remove("locate");   // one highlight at a time
+  // Scroll first if the line isn't fully in view, in the editor or (one column) on the page, and bring it to the
+  // middle; the highlight starts once it's there, so it isn't over before you see it
   const box = el.getBoundingClientRect(), view = editor.closest(".pane-body").getBoundingClientRect();
-  if (box.top < view.top || box.bottom > view.bottom) el.scrollIntoView({ block: "center" });
+  const hidden = box.top < Math.max(view.top, 0) || box.bottom > Math.min(view.bottom, innerHeight);
+  if (hidden) {
+    el.scrollIntoView({ block: "center", behavior: REDUCED_MOTION.matches ? "instant" : "smooth" });
+    await scrollSettled();
+  }
   editor.focus({ preventScroll: true });
   const range = document.createRange();
   range.selectNodeContents(el);
   range.collapse(true);
   getSelection().removeAllRanges();
   getSelection().addRange(range);
-  for (const x of editor.querySelectorAll(".locate")) x.classList.remove("locate");   // one highlight at a time
   void el.offsetWidth;   // restart the flash if it's already running
   el.classList.add("locate");
   // Fades out on its own; with reduced motion it stays (no fade) until the next Show or edit
-  if (!REDUCED_MOTION.matches) setTimeout(() => el.classList.remove("locate"), 2500);
+  if (!REDUCED_MOTION.matches) setTimeout(() => el.classList.remove("locate"), 2700);
   // Screen readers hear which line, as the cursor alone doesn't say it
   const text = el.textContent.trim().replace(/\s+/g, " ");
   $("checkSay").textContent = `${lines.length > 1 ? `${i + 1} of ${lines.length}: ` : ""}${text.length > 80 ? `${text.slice(0, 80)}…` : text}`;
+  // One column: the checks are now off-screen above, so offer the way back to the check that was used
+  if (ONE_COLUMN.matches) { backTo = from; $("backToChecks").hidden = false; }
 }
-const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)");
+let backTo = null;
+$("backToChecks").addEventListener("click", () => {
+  $("backToChecks").hidden = true;
+  const target = (backTo && document.contains(backTo)) ? backTo : $("checks");
+  target.scrollIntoView({ block: "center", behavior: REDUCED_MOTION.matches ? "instant" : "smooth" });
+  (backTo && document.contains(backTo) ? backTo : $("checks").querySelector("button"))?.focus({ preventScroll: true });
+});
+// The button goes once the checks are back on screen, or when the content is cleared
+new IntersectionObserver(([e]) => { if (e.isIntersecting) $("backToChecks").hidden = true; }).observe($("checks"));
 editor.addEventListener("input", () => { for (const x of editor.querySelectorAll(".locate")) x.classList.remove("locate"); });
 $("checks").addEventListener("click", (e) => {
   const b = e.target.closest("[data-check]");
-  if (b) locate(shownChecks[+b.dataset.check]);
+  if (b) locate(shownChecks[+b.dataset.check], b);
 });
 
 // Edits are re-cleaned shortly after typing stops, so the HTML stays tidy
