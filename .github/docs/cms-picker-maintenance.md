@@ -3,6 +3,29 @@
 `SETUP.md` (outside the repo) covers publishing and the Playbook day to day; this is the CMS Picker's
 data, scoring and tests. Real-device checks before a release: `manual-checks.md`, next to this file.
 
+## Status: maintenance mode (since 2026-10-30)
+
+The CMS Picker is finished for now. Change it only for:
+- the quarterly rechecks below ("Keeping the answers current"),
+- what the user tests (`user-test-script.md`) turn up,
+- problems real users report.
+
+The parked ideas are revisited only on their stated triggers: **two-step scoring** if the four rule tests start
+failing in new ways, and **partial fit** if people report Wix missing from content-site results (both under
+"Persona tests").
+
+**Baseline** (final review with Claude Reviewer, 2026-10-30): all four rule tests pass, all 37 personas pass, and
+241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
+B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
+and an old `v=1` link): tips start from the person's answers, ties are labelled honestly, costs match the
+table, and old links open on their results. A change to any of the three numbers is a result change: agree
+it with John first.
+
+**Accepted limitation:** old `v=1` links have no "Which is closest to what you do?" answer, so HubSpot's
+"You don't otherwise use HubSpot" rule (matched on that answer) can't apply, and HubSpot can show third on
+an old business-site link. The "newer questions can sharpen this" button above the results asks the missing
+question and fixes it, so it's left as is.
+
 ## Where everything lives
 
 | What | Where | Edited by |
