@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-30zj";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zj";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zj";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zj";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zj";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zj";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zj";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zj";
+} from "./state.js?v=2026-10-30zk";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zk";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zk";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zk";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zk";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zk";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zk";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zk";
 
 const $ = id => document.getElementById(id);
 
@@ -324,9 +324,16 @@ async function downloadAll() {
 
 // --- Output settings ---
 
+// The empty width and height boxes hint at the size in use, so they never suggest a different one
+function hintSize() {
+  widthInput.placeholder = state.size.w;
+  heightInput.placeholder = state.size.h;
+}
+
 function applySize(w, h) {
   state.keepOriginal = false;
   state.size = { w, h };
+  hintSize();
   savePrefs();
   setBadge(`${w} × ${h}`);
   if (state.images.length) refreshAll();
@@ -558,6 +565,7 @@ if (state.keepOriginal) {
   }
   setBadge(`${state.size.w} × ${state.size.h}`);
 }
+hintSize();
 
 if (state.dest === "folder" && !folderSupported) state.dest = "files";
 // Only offer saving to a folder where the browser can (Chrome and Edge; Brave behind a flag)
