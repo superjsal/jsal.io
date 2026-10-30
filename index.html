@@ -429,11 +429,12 @@ p, li { text-wrap: pretty; }
    tile and the line under the grid cycle through six agreed first places from the persona tests (a blog:
    WordPress, a small shop: Shopify, a local business: Wix, a paid newsletter: Ghost, a photographer: Framer,
    an app and a site: Sanity), so the match reads as depending on the visitor, not as a recommendation. On
-   load the tiles pop in, the big tile flicks through the other five and settles on the first pair, all within
-   about 2.6s: anything that moves on its own for over 5s needs a pause control (WCAG 2.2.2), and a card that is
-   one link can't hold one. Hovering or focusing the card plays the full cycle, 3s a pair, for as long as the
-   visitor stays. The featured platform's own small tile fades while it's in the big one, so no logo shows
-   twice. Reduced motion: the first pair, still. */
+   load the tiles pop in and the big tile flicks through all six, then rests on "?" and "Best fit for your
+   site?", about 3s in: no platform is left looking like the site's pick, and anything that moves on its own
+   for over 5s needs a pause control (WCAG 2.2.2), which a card that is one link can't hold. Hovering or
+   focusing the card plays the full cycle, 3s a pair, for as long as the visitor stays. The featured
+   platform's own small tile fades while it's in the big one, so no logo shows twice. Reduced motion: the "?",
+   still. */
 .m-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding: 14px; }
 .m-grid > span { aspect-ratio: 1; display: grid; place-items: center; border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); border: 1px solid var(--jsal-line); }
 .m-grid .logo { width: 46%; height: 46%; background: var(--plum-ink); opacity: 0.75; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
@@ -445,8 +446,9 @@ p, li { text-wrap: pretty; }
 .m-grid .tag { padding: 3px 10px; border-radius: var(--jsal-radius-pill); font: normal 600 12px/1.3 var(--jsal-font); white-space: nowrap; color: var(--jsal-ok); background: var(--jsal-ok-soft); }
 .m-grid .rot { display: inline-grid; }
 .m-grid .rot b { grid-area: 1 / 1; font-weight: 600; color: var(--jsal-ink); opacity: 0; white-space: nowrap; }
-.m-grid .hero .logo[style*="--k: 0"], .m-grid .rot b[style*="--k: 0"] { opacity: 1; }
-.m-grid > span:not(.hero) .logo[style*="--k: 0"] { opacity: 0.12; }
+.m-grid .hero { container-type: inline-size; }
+.m-grid .ask { grid-area: 1 / 1; font: 700 52cqi/1 "Lora", Georgia, serif; color: var(--plum-acc); }
+.m-grid .rot .you { opacity: 1; }
 /* Bigger tiles than on phones: lighter logos, a bigger line */
 @media (min-width: 521px) {
   .m-grid .logo { width: 36%; height: 36%; }
@@ -457,14 +459,14 @@ p, li { text-wrap: pretty; }
 @media (prefers-reduced-motion: no-preference) {
   .m-grid > span, .m-grid .fitline { animation: g-in 0.45s calc(0.15s + var(--n) * 55ms) cubic-bezier(0.2, 0.8, 0.2, 1) both; }
   .m-grid .hero { animation: g-in 0.45s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both, g-glow 0.7s 0.95s ease-out both; }
-  /* On load: pairs 1 to 5 flick past (0.35s each, from 0.6s), then the first pair lands at 2.35s and stays */
-  .m-grid .hero .logo, .m-grid .rot b { animation: g-flick 0.35s calc(0.25s + var(--k) * 0.35s) both; }
-  .m-grid > span:not(.hero) .logo[style*="--k:"] { animation: g-flick-away 0.35s calc(0.25s + var(--k) * 0.35s) both; }
-  .m-grid .hero .logo[style*="--k: 0"], .m-grid .rot b[style*="--k: 0"] { animation: g-land 0.3s 2.35s both; }
-  .m-grid > span:not(.hero) .logo[style*="--k: 0"] { animation: g-land-away 0.3s 2.35s both; }
+  /* On load: the six pairs flick past (0.35s each, from 0.6s), then the "?" lands at 2.7s and stays */
+  .m-grid .hero .logo, .m-grid .rot b { animation: g-flick 0.35s calc(0.6s + var(--k) * 0.35s) both; }
+  .m-grid > span:not(.hero) .logo[style*="--k:"] { animation: g-flick-away 0.35s calc(0.6s + var(--k) * 0.35s) both; }
+  .m-grid .ask, .m-grid .rot .you { animation: g-land 0.3s 2.7s both; }
   /* Hovered or focused: the full cycle, each pair 3 of the 18 seconds; the logo and its words change together */
   .tile:is(:hover, :focus-visible) .m-grid .hero .logo, .tile:is(:hover, :focus-visible) .m-grid .rot b { animation: g-rot 18s calc(var(--k) * 3s) infinite both; }
   .tile:is(:hover, :focus-visible) .m-grid > span:not(.hero) .logo[style*="--k:"] { animation: g-away 18s calc(var(--k) * 3s) infinite both; }
+  .tile:is(:hover, :focus-visible) .m-grid :is(.ask, .rot .you) { animation: none; opacity: 0; }
 }
 @keyframes g-in { from { opacity: 0; scale: 0.82; } to { opacity: 1; scale: 1; } }
 @keyframes g-glow { from { border-color: var(--jsal-line); box-shadow: none; background: var(--jsal-surface); } }
@@ -473,7 +475,6 @@ p, li { text-wrap: pretty; }
 @keyframes g-flick { 0%, 100% { opacity: 0; } 15%, 85% { opacity: 1; } }
 @keyframes g-flick-away { 0%, 100% { opacity: 0.75; } 15%, 85% { opacity: 0.12; } }
 @keyframes g-land { from { opacity: 0; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }
-@keyframes g-land-away { from { opacity: 0.75; } to { opacity: 0.12; } }
 
 /* Clean Paste: checks + copy buttons, then the editor with its toolbar */
 /* Clean Paste: what Word's formatting looks like going in, and the clean HTML coming out */
@@ -661,8 +662,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
          wide tile swaps sides each row. -->
     <a id="work" class="tile cms" href="/cms-picker/" data-app>
       <div class="mock m-grid" aria-hidden="true">
-        <span class="hero" style="--n: 0"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i></span><span style="--n: 1"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i></span><span style="--n: 2"><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i></span><span style="--n: 3"><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i></span><span style="--n: 4"><i class="logo" style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span style="--n: 5"><i class="logo" style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span style="--n: 6"><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i></span><span style="--n: 7"><i class="logo" style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span style="--n: 8"><i class="logo" style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span style="--n: 9"><i class="logo" style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span style="--n: 10"><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i></span><span style="--n: 11"><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i></span>
-        <p class="fitline" style="--n: 12"><em class="tag">Best fit</em><span>for <span class="rot"><b style="--k: 0">a blog</b><b style="--k: 1">a small shop</b><b style="--k: 2">a local business</b><b style="--k: 3">a paid newsletter</b><b style="--k: 4">a photographer</b><b style="--k: 5">an app and a site</b></span></span></p>
+        <span class="hero" style="--n: 0"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i><b class="ask">?</b></span><span style="--n: 1"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i></span><span style="--n: 2"><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i></span><span style="--n: 3"><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i></span><span style="--n: 4"><i class="logo" style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span style="--n: 5"><i class="logo" style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span style="--n: 6"><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i></span><span style="--n: 7"><i class="logo" style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span style="--n: 8"><i class="logo" style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span style="--n: 9"><i class="logo" style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span style="--n: 10"><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i></span><span style="--n: 11"><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i></span>
+        <p class="fitline" style="--n: 12"><em class="tag">Best fit</em><span>for <span class="rot"><b style="--k: 0">a blog</b><b style="--k: 1">a small shop</b><b style="--k: 2">a local business</b><b style="--k: 3">a paid newsletter</b><b style="--k: 4">a photographer</b><b style="--k: 5">an app and a site</b><b class="you">your site?</b></span></span></p>
       </div>
       <div class="foot">
         <div>
