@@ -348,17 +348,17 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches. The questions and the scoring live in score.js (shared
   // with the persona tests). The answers stay in the page address, so a result can be shared; nothing is stored.
-  const { QUESTIONS } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL } = window.cmsScore;
   // Shared result links carry the quiz version (v=2). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
   // people have already shared keep opening a result rather than an empty quiz.
   const LINK_VERSION = 2;
+  // Returns { answers, old } (old: a v1 link, made before some of today's questions), or null.
   function readLink(params) {
     const v = Number(params.get('v') || 1);
     params.delete('v');
     const answers = Object.fromEntries(params);
-    if (v === 1) return { grow: 'no', ...answers };   // v1 had no "add features" question; no answer scored like "No"
-    if (v === 2) return answers;
+    if (v === 1 || v === 2) return { answers, old: v === 1 };
     return null;   // a newer version than this page knows: start the quiz fresh
   }
   // Effort, from values already checked: the quiz's ease score and the profile's hosting line
@@ -411,6 +411,7 @@
     const box = $('#qz');
     if (!box) return;
     let step = 0, a = {};
+    const pending = new Set();   // questions an old link didn't have: answered neutrally (NEUTRAL) or not at all, and offered above the results
     const steps = (o = a) => QUESTIONS.filter((q) => !q.when || q.when(o));   // the questions these answers call for
     const valid = (o) => steps(o).every((q) => q.opts.some(([v]) => v === o[q.id]));
 
@@ -438,7 +439,16 @@
         b.type = 'button';
         b.setAttribute('aria-pressed', String(a[q.id] === v));
         b.append(el('b', null, title), el('small', null, sub));
-        b.addEventListener('click', () => { a[q.id] = v; if (resume && valid(a)) { resume = false; step = steps().length; } else step++; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+        b.addEventListener('click', () => {
+          a[q.id] = v;
+          pending.delete(q.id);
+          if (resume) {
+            const next = steps().findIndex((x) => pending.has(x.id) || !x.opts.some(([o]) => o === a[x.id]));
+            if (next < 0) { resume = false; step = steps().length; } else step = next;
+          } else step++;
+          ask();
+          box.querySelector('h3')?.focus({ preventScroll: true });
+        });
         opts.append(b);
       });
       box.append(top, h, el('p', 'qz-hint', 'Pick the closest one; you can go back and change it.'), opts);
@@ -461,7 +471,7 @@
       const bar = el('div', 'qz-ans');
       bar.append(el('p', 'qz-ans-l', 'Your answers · tap one to change it'));
       const chips = el('div', 'qz-ans-chips');
-      steps().forEach((q) => {
+      steps().filter((q) => !pending.has(q.id)).forEach((q) => {
         const opt = q.opts.find(([v]) => v === a[q.id]);
         // The answer on its own ("Two or more languages"), so it makes sense without remembering the question
         const b = el('button', 'chip', opt ? opt[3] : q.q);
@@ -485,6 +495,7 @@
           b.setAttribute('aria-pressed', String(a[q.id] === v));
           b.addEventListener('click', () => {
             a[q.id] = v;
+            pending.delete(q.id);
             editing = null;
             const missing = steps().findIndex((x) => !x.opts.some(([o]) => o === a[x.id]));
             if (missing >= 0) { step = missing; resume = true; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); return; }
@@ -505,7 +516,9 @@
       const tied = top[1] && top[1].s === best;
       const label = (r) => (r.s === best ? (tied ? 'Joint best match' : 'Best match') : r.s >= best - 4 ? 'Good match' : 'Worth a look');
       const told = window.cmsScore.explain(data, a, top);   // reasons without repeats, and what sets each apart
-      history.replaceState(null, '', `#quiz?v=${LINK_VERSION}&${new URLSearchParams(Object.entries(a).filter(([k]) => steps().some((q) => q.id === k)))}`);
+      // An old link stays v=1 (its own answers) until its newer questions are answered
+      const kept = Object.entries(a).filter(([k]) => steps().some((q) => q.id === k) && !pending.has(k));
+      history.replaceState(null, '', `#quiz?v=${pending.size ? 1 : LINK_VERSION}&${new URLSearchParams(kept)}`);
       window.jsalAchieve?.('decision');   // achievement (/nav.js)
       box.replaceChildren();
       const head = el('div', 'qz-top');
@@ -548,7 +561,14 @@
         if (skip) card.append(el('p', 'qz-warn', `Not ideal if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);
       });
-      box.append(head, h, answersBar(), list);
+      box.append(head, h);
+      if (pending.size) {
+        const more = el('button', 'btn qz-more', `${pending.size} newer question${pending.size === 1 ? '' : 's'} can sharpen this`);
+        more.type = 'button';
+        more.addEventListener('click', () => { step = steps().findIndex((q) => pending.has(q.id)); resume = true; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+        box.append(more);
+      }
+      box.append(answersBar(), list);
       // One first-steps panel under the cards, switched between the three matches
       const panel = el('section', 'qz-panel'), sw = el('div', 'qz-switch'), body = el('div');
       sw.setAttribute('role', 'group');
@@ -585,22 +605,32 @@
       });
       const again = el('button', 'btn', 'Start over');
       again.type = 'button';
-      again.addEventListener('click', () => { a = {}; step = 0; editing = null; resume = false; history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+      again.addEventListener('click', () => { a = {}; step = 0; editing = null; resume = false; pending.clear(); history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
       nav.append(cmp, copy, again);
       box.append(nav);
     }
 
-    // A shared result (#quiz?v=1&what=site&who=easy…) opens straight on it. One with an answer missing or
+    // A shared result (#quiz?v=2&what=site&who=easy…) opens straight on it. A v2 link with an answer missing or
     // unknown (cut short, or edited) keeps the good answers and asks the first question it lacks.
     // Returns false when the address holds no quiz answers.
     function fromLink() {
       const m = location.hash.match(/^#quiz\?(.+)$/);
-      const shared = m && readLink(new URLSearchParams(m[1]));
-      if (!shared) return false;
+      const link = m && readLink(new URLSearchParams(m[1]));
+      if (!link) return false;
+      const shared = link.answers;
       a = {};
       editing = null;
       resume = false;
+      pending.clear();
       QUESTIONS.forEach((q) => { if (q.opts.some(([v]) => v === shared[q.id])) a[q.id] = shared[q.id]; });
+      // An old link (v=1) opens on its result: questions it didn't have get an answer that scores nothing
+      // either way (NEUTRAL in score.js), or none, and are offered above the results
+      if (link.old && 'what' in a) {
+        steps().forEach((q) => { if (!(q.id in a)) { pending.add(q.id); if (q.id in NEUTRAL) a[q.id] = NEUTRAL[q.id]; } });
+        step = steps().length;
+        results();
+        return true;
+      }
       const missing = steps().findIndex((q) => !(q.id in a));
       if (missing < 0) { step = steps().length; results(); }
       else if (Object.keys(a).length) { step = missing; resume = true; ask(); }

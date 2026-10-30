@@ -1,5 +1,5 @@
 // CMS Picker persona tests: example people run through the real Find my fit scoring (cms-picker/score.js),
-// checked against the results John agreed (2026-10-29; 36 people since the business-site, members, budget and B2B questions). Run by build\check.ps1 (node .github/scripts/personas.test.js).
+// checked against the results John agreed (2026-10-29; 37 people since the business-site, members, budget and B2B questions). Run by build\check.ps1 (node .github/scripts/personas.test.js).
 // The answers come from cms-picker/data.json with this folder's cms-picker.json quiz values on top, so a
 // change to either is tested before the next publish. When a result should change, agree it first, then
 // update the expectation here.
@@ -67,6 +67,9 @@ const PERSONAS = [
     { first: ['wix', 'squarespace'], not: ['wordpress'] }],
   ['Blogger who will add features, happy to learn', { what: 'content', members: 'no', who: 'learn', care: 'yes', lang: 'no', look: 'template', leave: 'yes', grow: 'yes', budget: 'low' },
     { first: ['wordpress'], top3: ['wordpress', 'ghost'] }],
+  // Round 5: a non-technical local business that adds features isn't steered to a CRM-first platform
+  ['Local business, not technical, adding features', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no', grow: 'yes', budget: 'low' },
+    { first: ['wix'], top3: ['wix', 'squarespace'], not: ['hubspot'] }],
   // Blogs, publications and custom builds
   ['Newsletter writer with paid members', { what: 'content', members: 'yes', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes' },
     { first: ['ghost'], top3: ['ghost'] }],
@@ -117,10 +120,10 @@ console.log(failed ? `${failed} of ${PERSONAS.length} personas failed.` : `All $
 // The result cards, for every possible set of answers: each card says what sets it apart, without
 // mentioning anything the person ruled out; "the same reasons as" only when it's true; the top two
 // never show the same list; and a clear winner says what tipped it.
-const { QUESTIONS, PHRASE, weight, TIP } = require(path.join(site, 'cms-picker', 'score.js'));
+const { QUESTIONS, PHRASE, weight, TIP, NEUTRAL } = require(path.join(site, 'cms-picker', 'score.js'));
 const unworded = new Set();   // parts of the score with no "What tipped it" wording in TIP (score.js)
 const sameSet = (x, y) => x.length === y.length && x.every((w) => y.includes(w));
-let combos = 0, clear = 0, fallback = 0;
+let combos = 0, clear = 0, fallback = 0, boxes = 0, tagBoxes = 0;
 const cardErrs = [];
 const walk = (a, i) => {
   if (i < QUESTIONS.length) {
@@ -134,15 +137,26 @@ const walk = (a, i) => {
   ranked.forEach((x) => Object.keys(x.pts).forEach((k) => { if (!TIP[k]) unworded.add(k); }));
   told.forEach((t, k) => {
     if (!t.vs) return cardErrs.push(`${at}: nothing setting ${r[k].p.id} apart`);
+    boxes++;
+    if (/ is known for: /.test(t.vs.text)) tagBoxes++;
     Object.keys(PHRASE).forEach((row) => { if (weight(row, a) === 0 && t.vs.text.includes(PHRASE[row])) cardErrs.push(`${at}: ${r[k].p.id} mentions "${PHRASE[row]}", which these answers rule out`); });
     if (k && /same reasons as/.test(t.why[0]) && !sameSet(r[k].all, r[0].all)) cardErrs.push(`${at}: ${r[k].p.id} says "same reasons" but they differ`);
   });
   if (JSON.stringify(told[0].why) === JSON.stringify(told[1].why)) cardErrs.push(`${at}: ${r[0].p.id} and ${r[1].p.id} show the same reasons`);
   if (r[0].s > r[1].s) { clear++; if (!/^What tipped it/.test(told[0].vs.text)) fallback++; }
+  // Old shared links (v=1) get NEUTRAL answers for questions they didn't have: they must change no score,
+  // and leaving a question unanswered (kind, members) mustn't break the ranking
+  Object.entries(NEUTRAL).forEach(([q, v]) => {
+    if (a[q] !== v) return;
+    const without = { ...a }; delete without[q];
+    const s1 = ranked.map((x) => `${x.p.id}:${x.s}`).join(), s2 = rank(data, without).map((x) => `${x.p.id}:${x.s}`).join();
+    if (s1 !== s2) cardErrs.push(`${at}: the neutral answer ${q}=${v} changes the scores`);
+  });
+  ['kind', 'members'].forEach((q) => { if (q in a) { const without = { ...a }; delete without[q]; rank(data, without); } });
 };
 walk({}, 0);
 unworded.forEach((k) => cardErrs.push(`score part "${k}" has no wording in TIP (score.js), so it can't say what tipped a result`));
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
-console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it".`);
+console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it". ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%).`);
 process.exit(failed || cardErrs.length ? 1 : 0);

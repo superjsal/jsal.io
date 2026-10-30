@@ -2,8 +2,8 @@
 // the settings it was made with, so file sizes can be shown and single saves
 // are instant. Encodes run one at a time in idle time ("prewarming").
 
-import { state, outSizeFor } from "./state.js?v=2026-10-29zzd";
-import { exportImage } from "./imaging.js?v=2026-10-29zzd";
+import { state, outSizeFor } from "./state.js?v=2026-10-29zze";
+import { exportImage } from "./imaging.js?v=2026-10-29zze";
 
 export function blobKey(item) {
   const { w, h } = outSizeFor(item);

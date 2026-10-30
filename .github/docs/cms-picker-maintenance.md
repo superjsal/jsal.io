@@ -72,8 +72,14 @@ Platforms change plans and features often. Every few months (or when a platform 
   the research notes are in `private\playbook-research\cms-picker-pricing-*.md`). They're bands, not prices
   (Free to start, Under $25/mo, $25–$100/mo, Over $100/mo, Free software + hosting, Not for stores), so a
   small price change rarely matters; a free plan appearing or going, or a plan crossing $25 or $100, does.
+  Each band and its pricing-page source are edited on the Playbook's CMS Picker tab, like any answer.
   Update the section's `asOf` month in `cms-picker.json` when you recheck. The quiz's budget question
-  ("What can you spend each month?") reads these rows, so a band change can move results: run the persona tests.
+  ("What can you spend each month?") reads these rows: a platform loses 3 points for each band over the
+  budget (`COST_LEVEL` and `BUDGET` in `score.js`; "Free software + hosting" counts as the lowest paid band),
+  so a band change can move results: run the persona tests.
+- Recheck the **plugin and app library tiers** (`addOnsMany` / `addOnsSome` in `cms-picker.json`, for "Will you
+  add features as the site grows?") against each directory's own page; the `_about` note there says where
+  each count came from and which are third-party estimates.
 - Recheck the **AI crawlers row**: the bots and how each platform lets you block them change fastest.
   The row's SEO name (`term` in `cms-picker.json`) carries its "as of" month; update it when you recheck.
 - Update each answer's checked date in the Playbook when you confirm it, so `check_data.py` (sources

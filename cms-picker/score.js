@@ -54,6 +54,7 @@
     look: [(a) => ({ template: 'it has good templates to start from', visual: 'you can arrange your pages visually', pixel: 'it gives full control over the design' })[a.look], null],
     leave: [() => 'moving to another platform later is easier', (a, y) => `moving off ${y} later is harder`],
     grow: [() => 'it has more plugins and apps to add as you grow', (a, y) => `${y} has fewer plugins and apps to add as you grow`],
+    crm: [null, (a, y) => `${y} suits businesses already on its CRM`],
     budget: [(a) => (a.budget === 'none' ? 'it’s free to start' : 'it fits your budget'), (a, y) => `${y} costs more than you want to spend`],
   };
 
@@ -67,6 +68,9 @@
     if ((pr.goals || []).includes(a.what)) add('goal', 4, WHAT[a.what]); else add('goal', -8);
     if (a.what !== 'store' && has('storeOnly')) add('sellOnly', -6);
     if (a.what === 'site' && ((Q.kind || {})[a.kind] || []).includes(p.id)) add('kind', 3, KINDS[a.kind]);
+    // Platforms built around their own CRM (quiz.crmFirst): their cards say they're less suited if you don't already
+    // use it, which a local business or a creative rarely does
+    if (a.what === 'site' && (a.kind === 'local' || a.kind === 'creative') && has('crmFirst')) add('crm', -2);
     if (a.what === 'content' && a.members === 'yes' && has('members')) add('members', 3, 'Paid members and newsletters built in');
     if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'One place to manage content for a website and an app');
     const ease = Q.ease[p.id] ?? 1;
@@ -79,7 +83,7 @@
     if (a.who === 'dev') { if (has('devControl')) add('dev', 2, 'Gives a developer full control'); else add('dev', -1); }
     if (a.care === 'no') {
       const handled = /^Handled for you/.test(pr.hosting || '');
-      add('care', handled ? 2 : -6, handled &&'Hosting, updates and security are handled for you');
+      add('care', handled ? 2 : -6, handled && 'Hosting, updates and security are handled for you');
     }
     if (a.what === 'store') {
       add('sell', { yes: 2, plugin: 0, code: -3, no: -6 }[verdict('store')] ?? 0);
@@ -144,8 +148,12 @@
     return 1;
   }
   // Card tags about a row, left out of "stands out for" when the answers rule that row out
-  const TAG_ABOUT = { design: /design control/i, languages: /lingual|language|translat/i, store: /stor|sell|checkout|commerce/i };
+  const TAG_ABOUT = { design: /design control|canvas|animation/i, languages: /lingual|language|translat/i, store: /stor|sell|checkout|commerce/i };
   const lowerFirst = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+  // A card tag inside a sentence: lower case, unless it starts with a name or an abbreviation (Figma, WooCommerce, SEO)
+  const tagInSentence = (t) => (/^(Figma|[A-Z][a-z]*[A-Z]|[A-Z0-9]{2,})/.test(t) ? t : lowerFirst(t));
+  // "a, b, and c": the serial comma, as some tags already contain "and" ("Forms and leads")
+  const listOf = (xs) => (xs.length > 2 ? `${xs.slice(0, -1).join(', ')}, and ${xs[xs.length - 1]}` : xs.join(' and '));
   const joinAnd = (xs) => (xs.length > 1 ? `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}` : xs[0]);
   // The rows x does better than y and the person hasn't ruled out, most relevant first
   function edgeRows(data, a, x, y) {
@@ -157,8 +165,8 @@
   }
   // What sets x apart from y, most useful first: rows the person asked about ("Pick it over Wix if you want design
   // control and a blog: Squarespace makes both easier."), then what x offers that y's card doesn't list ("Shopify
-  // stands out for: App ecosystem · Built-in checkout", the card tags as written, since some are names like Figma
-  // or WooCommerce and some already contain "and"), then the smaller table rows (the technical SEO ones),
+  // is known for: app ecosystem, built-in checkout, and theme store", from the card tags), then the smaller
+  // table rows (the technical SEO ones),
   // then x's first "good fit" line. Null when there's nothing to go on.
   function pickOver(data, a, x, y) {
     const rows = edgeRows(data, a, x, y);
@@ -168,7 +176,7 @@
     const theirs = new Set(((y.p.profile || {}).tags || []).map((t) => t.toLowerCase()));
     const offers = ((x.p.profile || {}).tags || []).filter((t) => !theirs.has(t.toLowerCase())
       && !Object.keys(TAG_ABOUT).some((row) => weight(row, a) === 0 && TAG_ABOUT[row].test(t))).slice(0, 3);
-    if (offers.length) return `${x.p.name} stands out for: ${offers.join(' · ')}`;
+    if (offers.length) return `${x.p.name} is known for: ${listOf(offers.map(tagInSentence))}.`;
     if (rows.length) return rowsLine(rows);
     const fit = ((x.p.profile || {}).goodFit || [])[0];
     return fit ? `Pick it over ${y.p.name} for ${lowerFirst(fit)}.` : null;
@@ -205,7 +213,7 @@
       if (!i) {
         const next = top[1];
         let vs = null;
-        if (next && next.s === r.s) vs = { head: `A close call with ${next.p.name}`, text: ['Both fit your answers equally.', pickOver(data, a, r, next)].filter(Boolean).join(' ') };
+        if (next && next.s === r.s) vs = { head: `A close call with ${next.p.name}`, text: ['Both fit your answers equally.', better(a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' ') };
         else if (next) {
           const text = tipped(a, r, next) || pickOver(data, a, r, next);
           if (text) vs = { head: `Ahead of ${next.p.name}`, text };
@@ -218,6 +226,8 @@
     });
   }
 
-  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP };
+  // Answers that add and take nothing, used for questions an old shared link (v=1) didn't have
+  const NEUTRAL = { grow: 'no', budget: 'any' };
+  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP, NEUTRAL };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

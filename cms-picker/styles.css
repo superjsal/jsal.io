@@ -275,6 +275,8 @@ body {
 .qz-opt:hover { border-color: var(--jsal-accent); }
 .qz-opt[aria-pressed="true"] { border-color: var(--jsal-accent); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .qz-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+/* An old shared link: the questions added since, offered above its result */
+.qz-more { margin: 2px 0 10px; }
 .qz-ans { margin-bottom: 14px; }
 .qz-ans-l { margin-bottom: 6px; color: var(--jsal-muted); font-size: 13.5px; }
 .qz-ans-chips { display: flex; flex-wrap: wrap; gap: 6px; }
