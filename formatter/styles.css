@@ -75,7 +75,7 @@ body {
   transition: background 0.12s, color 0.12s;
 }
 .option-track button:hover { color: var(--jsal-ink); }
-.option-track button[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+.option-track button[aria-pressed="true"], .option-track [role="tab"][aria-selected="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 
 /* ── Checks ────────────────────────────────────────────────────────────── */
 
@@ -295,8 +295,11 @@ textarea.code[hidden] { display: none; }
 .preview > p[data-bold] { position: relative; }
 .preview > p[data-bold]::before { content: ""; position: absolute; left: -14px; top: 0.2em; bottom: 0.2em; width: 3px; border-radius: 2px; background: var(--jsal-accent); opacity: 0.55; }
 /* A check's line, just shown: a short gold flash (stays lit briefly, without motion, if animations are off) */
-.preview .locate { background: var(--jsal-accent-soft); border-radius: 4px; animation: locate 1.2s ease-out forwards; }
-@keyframes locate { 0%, 30% { background: var(--jsal-accent-soft); box-shadow: 0 0 0 4px var(--jsal-accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+/* Show: the line a check means gets a clear gold wash and a bar beside it, held, then fading out. With reduced
+   motion it stays highlighted (no fade) until the next Show or edit. */
+.preview .locate { border-radius: 4px; background: color-mix(in srgb, var(--jsal-accent) 22%, transparent); box-shadow: -6px 0 0 var(--jsal-accent), 0 0 0 4px color-mix(in srgb, var(--jsal-accent) 22%, transparent); animation: locate 2.4s ease-out forwards; }
+@keyframes locate { 0%, 60% { background: color-mix(in srgb, var(--jsal-accent) 22%, transparent); box-shadow: -6px 0 0 var(--jsal-accent), 0 0 0 4px color-mix(in srgb, var(--jsal-accent) 22%, transparent); } 100% { background: transparent; box-shadow: -6px 0 0 transparent, 0 0 0 4px transparent; } }
+@media (prefers-reduced-motion: reduce) { .preview .locate { animation: none; } }
 .preview .flag { text-decoration-color: var(--jsal-warn); text-decoration-style: wavy; text-decoration-line: underline; }
 
 /* Link box: edit the address of the link the cursor is in */
@@ -371,3 +374,11 @@ textarea.code[hidden] { display: none; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
+.paste-note:empty { display: none; }
+.paste-note { margin-top: 8px; color: var(--jsal-warn); font-size: 13px; }
+/* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact controls) */
+@media (pointer: coarse) {
+  .toolbar button, .option-track button, .btn-primary, .btn-clear, .btn-link, .link-box button, .link-box a { min-height: 44px; }
+  .toolbar button { min-width: 44px; }
+  button.check { min-height: 44px; }
+}

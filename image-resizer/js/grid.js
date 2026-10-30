@@ -1,9 +1,9 @@
 // Thumbnail cards for every loaded image: crop preview, rename, size, save, remove.
 
-import { state, outSizeFor } from "./state.js?v=2026-10-29zzs";
-import { drawCropped } from "./imaging.js?v=2026-10-29zzs";
-import { freshEntry, errorFor } from "./export.js?v=2026-10-29zzs";
-import { icon, formatBytes } from "./ui.js?v=2026-10-29zzs";
+import { state, outSizeFor } from "./state.js?v=2026-10-29zzu";
+import { drawCropped } from "./imaging.js?v=2026-10-29zzu";
+import { freshEntry, errorFor } from "./export.js?v=2026-10-29zzu";
+import { icon, formatBytes } from "./ui.js?v=2026-10-29zzu";
 
 const previewGrid = document.getElementById("previewGrid");
 const gridHeader  = document.getElementById("gridHeader");
@@ -20,7 +20,7 @@ export function initGrid(h) {
 export function cleanName(name) {
   return name
     .replace(/\.[^.]+$/, "")
-    .replace(/[^\w\-]+/g, "-")
+    .replace(/[^\p{L}\p{N}_-]+/gu, "-")   // letters and digits in any language stay (café, 日本); symbols and spaces become dashes
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "") || "image";
 }
@@ -83,7 +83,7 @@ function buildCard(item, i) {
 
   const thumbBtn = document.createElement("button");
   thumbBtn.className = "thumb-wrap";
-  thumbBtn.setAttribute("aria-label", `${state.keepOriginal ? "Preview" : "Edit crop for"} ${label}`);
+  thumbBtn.setAttribute("aria-label", `${state.keepOriginal ? "Preview" : "Edit crop for"} ${label}, ${item.width} × ${item.height}${item.width < w || item.height < h ? ", smaller than the output, so it will be upscaled" : ""}`);
   thumbBtn.addEventListener("click", () => handlers.onSelect(i));
 
   const thumb = document.createElement("canvas");

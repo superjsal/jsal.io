@@ -737,3 +737,9 @@ body {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
+/* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact controls) */
+@media (pointer: coarse) {
+  .seg-btn, .quality-btn, .format-btn, .dest-btn, .btn-apply, .btn-primary, .btn-accent, .btn-ghost, .btn-danger,
+  .recent-pill-apply, .folder-change, .card-dl-btn, .input-group { min-height: 44px; }
+  .recent-pill-del, .card-remove { min-width: 44px; min-height: 44px; }
+}

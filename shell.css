@@ -208,6 +208,8 @@ html { scrollbar-gutter: stable; }
 .jsal-about a { color: var(--jsal-accent); text-underline-offset: 2px; }
 /* A tool's one line under the top bar saying who it's for */
 .jsal-for { grid-column: 1 / -1; margin: -8px 0 14px; color: var(--jsal-muted); font-size: 14px; line-height: 1.45; }
+/* The About section's first line: what the tool does that others don't */
+.jsal-about .jsal-lead { font-size: 17px; line-height: 1.5; color: var(--jsal-ink); }
 /* The About section's common questions */
 .jsal-about dl { margin: 0 0 12px; }
 .jsal-about dt { margin-top: 14px; font-weight: 600; color: var(--jsal-ink); }

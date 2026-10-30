@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-29zzs";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-29zzs";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-29zzs";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-29zzs";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-29zzs";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-29zzs";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-29zzs";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-29zzs";
+} from "./state.js?v=2026-10-29zzu";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-29zzu";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-29zzu";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-29zzu";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-29zzu";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-29zzu";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-29zzu";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-29zzu";
 
 const $ = id => document.getElementById(id);
 
@@ -107,7 +107,8 @@ async function loadFiles(files) {
     } catch (err) {
       if (gen !== loadGeneration) return;
       console.warn("Skipped unreadable file:", file.name, err);
-      skipped.push(file.name);
+      // Say why where it's likely: a HEIC the converter couldn't read, or a file too big for this browser's memory
+      skipped.push(isHeicFile(file) ? `${file.name} (HEIC couldn't be converted)` : file.size > 40e6 ? `${file.name} (too large to open here)` : file.name);
     }
   }
   if (gen !== loadGeneration) return;
@@ -512,6 +513,10 @@ if (!CAN_WEBP) {
   webp.title = "This browser can't save WebP. Use Chrome, Edge or Firefox for WebP.";
   FORMATS.jpeg.hint = "WebP isn't available in this browser (Safari), so images save as JPG";
   $("formatHint").textContent = state.format.hint;
+  // JPG is the default (not every CMS takes WebP), so this only needs saying to someone who had chosen WebP before
+  let hadWebp = false;
+  try { hadWebp = (localStorage.getItem("resizer-format") || "").includes("webp"); } catch {}
+  if (hadWebp) setStatus("This browser can't save WebP, so your images will save as JPG.", "idle");
 }
 
 if (state.keepOriginal) {
@@ -528,6 +533,8 @@ if (state.keepOriginal) {
 }
 
 if (state.dest === "folder" && !folderSupported) state.dest = "files";
+// Only offer saving to a folder where the browser can (Chrome and Edge; Brave behind a flag)
+if (!folderSupported) destButtons.find(b => b.dataset.dest === "folder").hidden = true;
 renderDest();
 savedFolder().then(f => { folder = f; renderDest(); });
 

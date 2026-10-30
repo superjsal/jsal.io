@@ -1,0 +1,32 @@
+# Once a quarter (1 January, April, July and October), opens one issue as a reminder to run the manual
+# rechecks: the CMS Picker's cost bands, app tiers, "varies" answers and AI crawlers row, and the
+# real-device checks. GitHub emails the repo owner about new issues. Run by hand from the Actions tab too.
+name: Quarterly recheck reminder
+on:
+  schedule:
+    - cron: "0 9 1 1,4,7,10 *"
+  workflow_dispatch:
+permissions:
+  issues: write
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open the reminder issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          quarter="$(date -u +%Y) Q$(( ($(date -u +%-m) - 1) / 3 + 1 ))"
+          body="Time for the quarterly recheck ($quarter).
+
+          - [ ] CMS Picker: cost bands against each platform's pricing page, and the section's asOf month
+          - [ ] CMS Picker: the plugin and app library tiers (addOnsMany / addOnsSome in cms-picker/quiz.json)
+          - [ ] CMS Picker: the \"varies\" answers and the AI crawlers row
+          - [ ] Real-device checks for all three tools
+
+          How: https://github.com/$REPO/blob/main/.github/docs/cms-picker-maintenance.md#keeping-the-answers-current
+          Device checklist: https://github.com/$REPO/blob/main/.github/docs/manual-checks.md
+
+          Close this issue when done."
+          gh issue create --repo "$REPO" --title "Quarterly recheck: $quarter" --body "$body"

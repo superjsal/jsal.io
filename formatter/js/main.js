@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzs";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzs";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzu";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzu";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -63,6 +63,37 @@ function insertCleaned(data) {
 }
 
 $("pasteZone").addEventListener("click", (e) => { if (e.target === $("pasteZone")) $("pasteZone").focus(); });
+
+// Phones and tablets have no Ctrl/⌘+V: the paste area takes a tap-and-hold Paste (it's editable there, but
+// typing into it does nothing), and a button reads the clipboard where the browser allows it
+const touch = matchMedia("(pointer: coarse)").matches;
+if (touch) {
+  const zone = $("pasteZone");
+  zone.contentEditable = "true";
+  zone.inputMode = "none";   // no on-screen keyboard: it's only there to receive a paste
+  zone.addEventListener("beforeinput", (e) => { if (e.inputType !== "insertFromPaste") e.preventDefault(); });
+  document.querySelector(".paste-sub").textContent = "Copy from Word, Google Docs, a web page or HTML code, then tap and hold here and choose Paste.";
+}
+if (navigator.clipboard && (navigator.clipboard.read || navigator.clipboard.readText)) {
+  $("pasteBtn").hidden = $("pasteSep").hidden = false;
+  $("pasteBtn").addEventListener("click", async () => {
+    try {
+      let html = "", text = "";
+      if (navigator.clipboard.read) {
+        for (const item of await navigator.clipboard.read()) {
+          if (item.types.includes("text/html")) html = await (await item.getType("text/html")).text();
+          if (item.types.includes("text/plain")) text = await (await item.getType("text/plain")).text();
+        }
+      } else text = await navigator.clipboard.readText();
+      if (!html.trim() && !text.trim()) { $("pasteNote").textContent = "The clipboard is empty. Copy your content first."; return; }
+      $("pasteNote").textContent = "";
+      load({ html, text });
+    } catch {
+      $("pasteNote").textContent = touch ? "This browser didn't allow reading the clipboard. Tap and hold above, then choose Paste."
+        : `This browser didn't allow reading the clipboard. Press ${isMac ? "⌘" : "Ctrl"} + V instead.`;
+    }
+  });
+}
 $("sampleBtn").addEventListener("click", () => load({ html: SAMPLE_HTML, text: "" }));
 $("blankBtn").addEventListener("click", () => { load({ html: "", text: "" }, true); editor.focus(); });
 
@@ -140,6 +171,10 @@ function showResult() {
       ? `<li><button type="button" class="check ${c.level}" data-check="${i}" title="Show in the text">${body}<span class="check-show">Show</span></button></li>`
       : `<li class="check ${c.level}">${body}</li>`;
   }).join("");
+  // Screen readers hear the summary when it changes (not on every keystroke)
+  const warns = shownChecks.filter((c) => c.level === "warn").length;
+  const say = !n ? "" : warns ? `${warns} thing${warns === 1 ? "" : "s"} to check, listed under Checks.` : "No problems found.";
+  if (say !== $("checksSay").textContent) $("checksSay").textContent = say;
 }
 
 // ── Show a check's lines: scroll to it if needed, flash it, put the cursor there.
@@ -162,11 +197,17 @@ function locate(check) {
   range.collapse(true);
   getSelection().removeAllRanges();
   getSelection().addRange(range);
-  el.classList.remove("locate");
+  for (const x of editor.querySelectorAll(".locate")) x.classList.remove("locate");   // one highlight at a time
   void el.offsetWidth;   // restart the flash if it's already running
   el.classList.add("locate");
-  setTimeout(() => el.classList.remove("locate"), 1300);
+  // Fades out on its own; with reduced motion it stays (no fade) until the next Show or edit
+  if (!REDUCED_MOTION.matches) setTimeout(() => el.classList.remove("locate"), 2500);
+  // Screen readers hear which line, as the cursor alone doesn't say it
+  const text = el.textContent.trim().replace(/\s+/g, " ");
+  $("checkSay").textContent = `${lines.length > 1 ? `${i + 1} of ${lines.length}: ` : ""}${text.length > 80 ? `${text.slice(0, 80)}…` : text}`;
 }
+const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)");
+editor.addEventListener("input", () => { for (const x of editor.querySelectorAll(".locate")) x.classList.remove("locate"); });
 $("checks").addEventListener("click", (e) => {
   const b = e.target.closest("[data-check]");
   if (b) locate(shownChecks[+b.dataset.check]);
@@ -221,12 +262,22 @@ htmlEdit.addEventListener("keydown", (e) => {
 
 const VIEWS = { out: { page: "editor", code: "htmlEdit" } };
 const tabButton = (view) => document.querySelector(`[data-tab="out"][data-view="${view}"]`);
+// Text / HTML are tabs: one tab stop, the arrow keys (and Home / End) move between them
+document.querySelector('[role="tablist"]').addEventListener("keydown", (e) => {
+  const tabs = [...e.currentTarget.querySelectorAll('[role="tab"]')], i = tabs.indexOf(document.activeElement);
+  const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+  if (i < 0 || next === undefined) return;
+  e.preventDefault();
+  const t = tabs[(next + tabs.length) % tabs.length];
+  t.click();
+  t.focus();
+});
 for (const tab of document.querySelectorAll("[data-tab]")) {
   tab.addEventListener("click", () => {
     flush();
     hideLinkBox();
     const group = tab.dataset.tab;
-    for (const t of document.querySelectorAll(`[data-tab="${group}"]`)) t.setAttribute("aria-pressed", t === tab);
+    for (const t of document.querySelectorAll(`[data-tab="${group}"]`)) { t.setAttribute("aria-selected", t === tab); t.tabIndex = t === tab ? 0 : -1; }
     for (const [view, id] of Object.entries(VIEWS[group])) $(id).hidden = view !== tab.dataset.view;
     if (group === "out") {
       $("toolbar").hidden = tab.dataset.view !== "page";

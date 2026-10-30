@@ -2,9 +2,9 @@
 // the part that will be cropped away, and lets the crop window be dragged or
 // moved with arrow keys along whichever axis has room.
 
-import { state, outSizeFor } from "./state.js?v=2026-10-29zzs";
-import { getCropRect } from "./imaging.js?v=2026-10-29zzs";
-import { clamp } from "./ui.js?v=2026-10-29zzs";
+import { state, outSizeFor } from "./state.js?v=2026-10-29zzu";
+import { getCropRect } from "./imaging.js?v=2026-10-29zzu";
+import { clamp } from "./ui.js?v=2026-10-29zzu";
 
 const canvas      = document.getElementById("out");
 const ctx         = canvas.getContext("2d");
@@ -109,6 +109,23 @@ export function drawEditor() {
     : `${w} × ${h}`;
   canvasBadge.classList.add("visible");
   canvasEmpty.classList.add("hidden");
+
+  // For screen readers the crop is a slider along the axis it can move on: its position, from left (or top)
+  // to right (or bottom), and which image it belongs to
+  const name = item.customName || item.name;
+  if (axis) {
+    const pct = Math.round(item.cropAnchor[axis] * 100);
+    canvas.setAttribute("role", "slider");
+    canvas.setAttribute("aria-orientation", axis === "x" ? "horizontal" : "vertical");
+    canvas.setAttribute("aria-valuemin", "0");
+    canvas.setAttribute("aria-valuemax", "100");
+    canvas.setAttribute("aria-valuenow", String(pct));
+    canvas.setAttribute("aria-valuetext", `${pct}% from the ${axis === "x" ? "left" : "top"}`);
+    canvas.setAttribute("aria-label", `Crop position for ${name}, ${w} × ${h}. Use the arrow keys to move it (Shift for bigger steps).`);
+  } else {
+    for (const a of ["role", "aria-orientation", "aria-valuemin", "aria-valuemax", "aria-valuenow", "aria-valuetext"]) canvas.removeAttribute(a);
+    canvas.setAttribute("aria-label", `Preview of ${name}, ${w} × ${h}. ${cropHint.textContent}.`);
+  }
 }
 
 export function clearEditor() {

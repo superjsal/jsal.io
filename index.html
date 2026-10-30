@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>John Salvador: Free CMS Picker and Content Tools | jsal.io</title>
-<meta name="description" content="Free tools by John Salvador: CMS Picker finds the website builder or CMS that fits you, Clean Paste turns Word and Google Docs into clean HTML, and the Bulk Image Resizer sizes images in bulk. Nothing is uploaded.">
+<meta name="description" content="Free tools by John Salvador: CMS Picker finds the website builder or CMS that fits you, Clean Paste turns Word and Google Docs into clean HTML, and the Image Resizer resizes one image or a whole batch. Nothing is uploaded.">
 <link rel="canonical" href="https://jsal.io/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jsal.io/">
@@ -26,7 +26,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-29zzs" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-29zzu" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js), fetched once the page has loaded and the browser is idle (2 s at most),
      so its ~180 KB doesn't compete with the page itself. Calls queue up until it arrives. -->
@@ -198,6 +198,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about li + li { margin-top: 4px; }
 .jsal-about a { color: var(--jsal-accent); text-underline-offset: 2px; }
 .jsal-for { grid-column: 1 / -1; margin: -8px 0 14px; color: var(--jsal-muted); font-size: 14px; line-height: 1.45; }
+.jsal-about .jsal-lead { font-size: 17px; line-height: 1.5; color: var(--jsal-ink); }
 .jsal-about dl { margin: 0 0 12px; }
 .jsal-about dt { margin-top: 14px; font-weight: 600; color: var(--jsal-ink); }
 .jsal-about dd { margin: 3px 0 0; }
@@ -206,7 +207,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
 <style>
-/* Tile colours. The Bulk Image Resizer has the strongest contrast: cream on the dark
+/* Tile colours. The Image Resizer has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
    support it rather than compete, and so is the gold one. Updates and Email are plain, a neutral fill
    with no border, so the apps keep the colour. */
@@ -305,7 +306,7 @@ p, li { text-wrap: pretty; }
 .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
 
 .jscale { grid-column: 1 / 7; background: var(--cream); color: var(--cream-ink); padding: 14px; display: flex; flex-direction: column; gap: 16px; --arrow-bg: var(--cream-btn); --arrow-ink: var(--cream-btn-ink); }
-.jscale .shot { aspect-ratio: 16 / 8; }
+.jscale .shot { aspect-ratio: 16 / 8; min-width: 0; }   /* min-width: Safari otherwise sizes it to its content and it sticks out on phones */
 .jscale .foot { padding: 0 8px 6px; }
 .jscale .label, .jscale .desc { color: var(--cream-muted); }
 .desc { margin-top: 4px !important; font-size: 14.5px; }
@@ -637,8 +638,8 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
       <div class="foot">
         <div>
           <p class="label">03 · web app</p>
-          <h2>Bulk Image Resizer</h2>
-          <p class="desc">Bulk resize, crop and convert images in the browser. Nothing is uploaded.</p>
+          <h2>Image Resizer</h2>
+          <p class="desc">Resize, crop and convert one image or a whole batch in the browser. Nothing is uploaded.</p>
         </div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </div>
@@ -687,7 +688,8 @@ footer a { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
     <section id="updates" class="tile now" aria-labelledby="updates-h">
       <h2 id="updates-h">Updates</h2>
       <ul>
-        <li><time datetime="2026-10-30">Oct 30</time><span><a href="/formatter/">Clean Paste</a> and the <a href="/image-resizer/">Bulk Image Resizer</a> (its new name) say who they're for, answer common questions, and show Mac shortcuts</span></li>
+        <li><time datetime="2026-10-30">Oct 30</time><span>The <a href="/image-resizer/">Image Resizer</a> is the Image Resizer again (it works on one image too), and Clean Paste's Show makes the line it means easy to spot</span></li>
+        <li><time datetime="2026-10-30">Oct 30</time><span><a href="/formatter/">Clean Paste</a> and the <a href="/image-resizer/">Image Resizer</a> say who they're for, answer common questions, and show Mac shortcuts</span></li>
         <li><time datetime="2026-10-30">Oct 30</time><span><a href="/cms-picker/">CMS Picker</a>: a new question on adding features as your site grows, so plugin and app libraries count</span></li>
         <li><time datetime="2026-10-30">Oct 30</time><span><a href="/cms-picker/">CMS Picker</a>: Sanity replaces the general “Headless CMS”, with answers checked against its own docs</span></li>
         <li><time datetime="2026-10-29">Oct 29</time><span><a href="/cms-picker/">CMS Picker</a>: find your fit in a few questions, with first steps for each match and change answers from the results</span></li>
@@ -910,6 +912,6 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-29zzs" defer></script>
+<script src="/nav.js?v=2026-10-29zzu" defer></script>
 </body>
 </html>
