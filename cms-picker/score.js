@@ -132,6 +132,8 @@
     if (row === 'blog') return a.what === 'content' ? 3 : 1;
     return 1;
   }
+  // Card tags about a row, left out of "stands out for" when the answers rule that row out
+  const TAG_ABOUT = { design: /design control/i, languages: /lingual|language|translat/i, store: /stor|sell|checkout|commerce/i };
   const lowerFirst = (t) => t.charAt(0).toLowerCase() + t.slice(1);
   const joinAnd = (xs) => (xs.length > 1 ? `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}` : xs[0]);
   // The rows x does better than y and the person hasn't ruled out, most relevant first
@@ -142,11 +144,21 @@
       return { id: it.id, gap: lx - ly, w: weight(it.id, a), ly };
     }).filter((r) => r.gap > 0 && r.w > 0 && r.ly >= 0 && PHRASE[r.id]).sort((p, q) => q.w - p.w || q.gap - p.gap).slice(0, 2);
   }
-  // "Pick it over Wix if you want design control and a blog: Squarespace makes both easier." Without such
-  // rows, x's first "good fit" line. Null when there's nothing to go on.
+  // What sets x apart from y, most useful first: rows the person asked about ("Pick it over Wix if you want design
+  // control and a blog: Squarespace makes both easier."), then what x offers that y's card doesn't list ("Shopify
+  // stands out for: App ecosystem · Built-in checkout", the card tags as written, since some are names like Figma
+  // or WooCommerce and some already contain "and"), then the smaller table rows (the technical SEO ones),
+  // then x's first "good fit" line. Null when there's nothing to go on.
   function pickOver(data, a, x, y) {
     const rows = edgeRows(data, a, x, y);
-    if (rows.length) return `Pick it over ${y.p.name} if you want ${joinAnd(rows.map((r) => PHRASE[r.id]))}: ${x.p.name} makes ${rows.length > 1 ? 'both' : 'it'} easier.`;
+    const rowsLine = (rs) => `Pick it over ${y.p.name} if you want ${joinAnd(rs.map((r) => PHRASE[r.id]))}: ${x.p.name} makes ${rs.length > 1 ? 'both' : 'it'} easier.`;
+    const strong = rows.filter((r) => r.w > 1);
+    if (strong.length) return rowsLine(strong);
+    const theirs = new Set(((y.p.profile || {}).tags || []).map((t) => t.toLowerCase()));
+    const offers = ((x.p.profile || {}).tags || []).filter((t) => !theirs.has(t.toLowerCase())
+      && !Object.keys(TAG_ABOUT).some((row) => weight(row, a) === 0 && TAG_ABOUT[row].test(t))).slice(0, 3);
+    if (offers.length) return `${x.p.name} stands out for: ${offers.join(' · ')}`;
+    if (rows.length) return rowsLine(rows);
     const fit = ((x.p.profile || {}).goodFit || [])[0];
     return fit ? `Pick it over ${y.p.name} for ${lowerFirst(fit)}.` : null;
   }
