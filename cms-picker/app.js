@@ -132,7 +132,11 @@
     b.type = 'button';
     b.setAttribute('aria-expanded', String(open));
     b.setAttribute('aria-controls', body.id);
-    txt.append(el('span', 'mini-name', p.name), el('span', 'mini-sum', (p.profile && p.profile.summary) || ''));
+    // The name and summary sit on their own lines, so screen readers ran them together ("WordPressFor content…"):
+    // a hidden ": " (no-break space, which survives) between them
+    const sum = (p.profile && p.profile.summary) || '';
+    txt.append(el('span', 'mini-name', p.name));
+    if (sum) txt.append(el('span', 'sr-only', ': '), el('span', 'mini-sum', sum));
     const chev = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     chev.setAttribute('viewBox', '0 0 24 24');
     chev.setAttribute('aria-hidden', 'true');
