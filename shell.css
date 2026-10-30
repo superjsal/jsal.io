@@ -222,7 +222,8 @@ html { scrollbar-gutter: stable; }
 /* About section under an app: what it does and how to use it, for people and for search
    engines and AI answers. Sits below the app, which still fills the first screen. */
 .jsal-about {
-  width: min(100%, var(--jsal-col)); margin: 0 auto; padding: 40px 20px 64px;
+  /* The same edges as the page content above it (the column, with a 20px gutter on narrow screens) */
+  width: min(100% - 40px, var(--jsal-col)); margin: 0 auto; padding: 40px 0 64px;
   border-top: 1px solid var(--jsal-line);
   font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 }

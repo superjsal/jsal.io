@@ -92,13 +92,14 @@
     }
   }
   const APPS = [   // the homepage's order: CMS Picker first, the team's Playbook last
-    { href: '/cms-picker/', name: 'CMS Picker', desc: 'Which CMS fits, and what you can change for SEO',
+    // Descriptions stay under about 35 characters, so they fit on one line on a phone
+    { href: '/cms-picker/', name: 'CMS Picker', desc: 'Find the CMS that fits, and its SEO',
       icon: '<path d="M3 5h18v14H3z"/><path d="M3 10h18M9 5v14"/>' },
-    { href: '/formatter/', name: 'Clean Paste', desc: 'Clean up Word and Google Docs content',
+    { href: '/formatter/', name: 'Clean Paste', desc: 'Clean up Word and Google Docs text',
       icon: '<path d="M4 6h16M4 12h10M4 18h13"/>' },
     { href: '/image-resizer/', name: 'Image Resizer', desc: 'Resize, crop and convert images',
       icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 9"/>' },
-    { href: '/ic/', name: 'Platform Playbook', desc: 'Platform answers for the IC form', tag: 'Team',
+    { href: '/ic/', name: 'Platform Playbook', desc: 'SEO steps by platform, for my team', tag: 'Team',
       icon: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>' },
   ];
   const HOME = { href: '/', name: 'jsal.io home', icon: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>' };
@@ -270,7 +271,7 @@
     .jsal-menu a[aria-current="page"] { background: var(--jsal-accent-soft); }
     .jsal-menu .ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--jsal-sunk); color: var(--jsal-ink-2); }
     .jsal-menu b { display: block; font-weight: 600; }
-    .jsal-menu small { display: block; font-size: 12px; color: var(--jsal-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .jsal-menu small { display: block; font-size: 12px; line-height: 1.35; color: var(--jsal-muted); text-wrap: pretty; }   /* wraps rather than cutting off beside a tag on a phone */
     .jsal-menu .tag { font-size: 11px; font-weight: 700; color: var(--jsal-muted); border: 1px solid currentColor; border-radius: 99px; padding: 0 7px; }
     .jsal-menu .here { font-size: 11px; color: var(--jsal-muted); }
     .jsal-menu hr { border: 0; border-top: 1px solid var(--jsal-line); margin: 6px 4px; }
