@@ -429,7 +429,8 @@ p, li { text-wrap: pretty; }
    tile and the line under the grid cycle through six agreed first places from the persona tests (a blog:
    WordPress, a small shop: Shopify, a local business: Wix, a paid newsletter: Ghost, a photographer: Framer,
    an app and a site: Sanity), so the match reads as depending on the visitor, not as a recommendation. On
-   load the tiles pop in one by one. Reduced motion: the first pair, still. */
+   load the tiles pop in one by one. The featured platform's own small tile fades while it's in the big one, so
+   no logo shows twice. Reduced motion: the first pair, still. */
 .m-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding: 14px; }
 .m-grid > span { aspect-ratio: 1; display: grid; place-items: center; border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); border: 1px solid var(--jsal-line); }
 .m-grid .logo { width: 46%; height: 46%; background: var(--plum-ink); opacity: 0.75; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
@@ -437,29 +438,30 @@ p, li { text-wrap: pretty; }
   background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--plum-acc) 24%, var(--jsal-surface)), var(--jsal-surface) 72%);
   box-shadow: inset 0 0 0 1px var(--plum-acc), 0 0 0 5px color-mix(in srgb, var(--plum-acc) 16%, transparent), 0 10px 26px color-mix(in srgb, var(--plum-acc) 30%, transparent); }
 .m-grid .hero .logo { grid-area: 1 / 1; width: 46%; height: 46%; background: var(--plum-acc); opacity: 0; }
-.m-grid .more { border-style: dashed; border-color: var(--jsal-line-hi); background: none; font-size: 14px; font-weight: 700; color: var(--plum-acc); }
 .m-grid .fitline { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin: 4px 0 0 2px; font-size: 13px; color: var(--jsal-muted); }
 .m-grid .tag { padding: 3px 10px; border-radius: var(--jsal-radius-pill); font: normal 600 12px/1.3 var(--jsal-font); white-space: nowrap; color: var(--jsal-ok); background: var(--jsal-ok-soft); }
 .m-grid .rot { display: inline-grid; }
 .m-grid .rot b { grid-area: 1 / 1; font-weight: 600; color: var(--jsal-ink); opacity: 0; white-space: nowrap; }
 .m-grid .hero .logo[style*="--k: 0"], .m-grid .rot b[style*="--k: 0"] { opacity: 1; }
+.m-grid > span:not(.hero) .logo[style*="--k: 0"] { opacity: 0.12; }
 /* Bigger tiles than on phones: lighter logos, a bigger line */
 @media (min-width: 521px) {
   .m-grid .logo { width: 36%; height: 36%; }
   .m-grid .hero .logo { width: 40%; height: 40%; }
   .m-grid .fitline { font-size: 14px; }
   .m-grid .tag { padding: 4px 12px; font-size: 13px; }
-  .m-grid .more { font-size: 16px; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .m-grid > span, .m-grid .fitline { animation: g-in 0.45s calc(0.15s + var(--n) * 55ms) cubic-bezier(0.2, 0.8, 0.2, 1) both; }
   .m-grid .hero { animation: g-in 0.45s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both, g-glow 0.7s 0.95s ease-out both; }
   /* Each pair shows for 3 of the 18 seconds; the logo and its words change together */
   .m-grid .hero .logo, .m-grid .rot b { animation: g-rot 18s calc(var(--k) * 3s) infinite both; }
+  .m-grid > span:not(.hero) .logo[style*="--k:"] { animation: g-away 18s calc(var(--k) * 3s) infinite both; }
 }
 @keyframes g-in { from { opacity: 0; scale: 0.82; } to { opacity: 1; scale: 1; } }
 @keyframes g-glow { from { border-color: var(--jsal-line); box-shadow: none; background: var(--jsal-surface); } }
 @keyframes g-rot { 0% { opacity: 0; translate: 0 4px; } 2.5%, 14.5% { opacity: 1; translate: 0 0; } 16.67%, 100% { opacity: 0; translate: 0 0; } }
+@keyframes g-away { 0% { opacity: 0.75; } 2.5%, 14.5% { opacity: 0.12; } 16.67%, 100% { opacity: 0.75; } }
 
 /* Clean Paste: checks + copy buttons, then the editor with its toolbar */
 /* Clean Paste: what Word's formatting looks like going in, and the clean HTML coming out */
@@ -495,7 +497,7 @@ p, li { text-wrap: pretty; }
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(4) { animation-delay: 0.5s; }
   .tile:is(:hover, :focus-visible) .m-fmt .to { animation: m-nudge 3s ease-in-out infinite; }
   /* Negative delays: every tile's loop is already running, so the sweep starts at once */
-  .tile:is(:hover, :focus-visible) .m-grid > span:not(.hero, .more) { animation: g-try 2.2s calc(var(--n) * 0.2s - 2.2s) infinite; }
+  .tile:is(:hover, :focus-visible) .m-grid > span:not(.hero) { animation: g-try 2.2s calc(var(--n) * 0.2s - 2.2s) infinite; }
 }
 @keyframes m-line { 0%, 10% { opacity: 0; translate: -4px 0; } 25%, 85% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
 @keyframes m-rattle { 0%, 100% { rotate: 0deg; } 20% { rotate: -7deg; } 40% { rotate: 6deg; } 60% { rotate: -4deg; } 80% { rotate: 2deg; } }
@@ -646,7 +648,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
          the intro; the smaller tools in a row beneath it, the team's Playbook last -->
     <a id="work" class="tile cms" href="/cms-picker/" data-app>
       <div class="mock m-grid" aria-hidden="true">
-        <span class="hero" style="--n: 0"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i></span><span style="--n: 1"><i class="logo" style="--logo: url(/cms-picker/logos/shopify.svg)"></i></span><span style="--n: 2"><i class="logo" style="--logo: url(/cms-picker/logos/wix.svg)"></i></span><span style="--n: 3"><i class="logo" style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span style="--n: 4"><i class="logo" style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span style="--n: 5"><i class="logo" style="--logo: url(/cms-picker/logos/framer.svg)"></i></span><span style="--n: 6"><i class="logo" style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span style="--n: 7"><i class="logo" style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span style="--n: 8"><i class="logo" style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span style="--n: 9"><i class="logo" style="--logo: url(/cms-picker/logos/ghost.svg)"></i></span><span style="--n: 10"><i class="logo" style="--logo: url(/cms-picker/logos/sanity.svg)"></i></span><span class="more" style="--n: 11">+2</span>
+        <span class="hero" style="--n: 0"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i></span><span style="--n: 1"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i></span><span style="--n: 2"><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i></span><span style="--n: 3"><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i></span><span style="--n: 4"><i class="logo" style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span style="--n: 5"><i class="logo" style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span style="--n: 6"><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i></span><span style="--n: 7"><i class="logo" style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span style="--n: 8"><i class="logo" style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span style="--n: 9"><i class="logo" style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span style="--n: 10"><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i></span><span style="--n: 11"><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i></span>
         <p class="fitline" style="--n: 12"><em class="tag">Best fit</em><span>for <span class="rot"><b style="--k: 0">a blog</b><b style="--k: 1">a small shop</b><b style="--k: 2">a local business</b><b style="--k: 3">a paid newsletter</b><b style="--k: 4">a photographer</b><b style="--k: 5">an app and a site</b></span></span></p>
       </div>
       <div class="foot">
