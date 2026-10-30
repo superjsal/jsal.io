@@ -189,8 +189,9 @@ html { scrollbar-gutter: stable; }
   color: var(--jsal-ink); text-decoration: none; white-space: nowrap;
 }
 .jsal-brand span { color: var(--jsal-accent); }
-.jsal-title { margin: 0; font: 700 18px/1.2 var(--jsal-font); letter-spacing: -0.02em; color: var(--jsal-ink); }
-.jsal-title .hl { color: var(--jsal-accent); }
+/* Page titles in the home page's serif, the gold word in italic (as "one job" on the home page) */
+.jsal-title { margin: 0; font: 700 20px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
 .jsal-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .jsal-theme {
   width: 32px; height: 32px; flex-shrink: 0; display: grid; place-items: center; padding: 0;
@@ -226,7 +227,7 @@ html { scrollbar-gutter: stable; }
   font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 }
 .jsal-about > * { max-width: 680px; }
-.jsal-about h2 { margin: 0 0 10px; font-size: 22px; line-height: 1.25; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-about h2 { margin: 0 0 10px; font: 700 26px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
 .jsal-about h3 { margin: 28px 0 8px; font-size: 16px; color: var(--jsal-ink); }
 .jsal-about p { margin: 0 0 12px; }
 .jsal-about ul, .jsal-about ol { margin: 0 0 12px; padding-left: 1.3em; }
