@@ -283,7 +283,7 @@ a:not(.tile):focus-visible { border-radius: 6px; }   /* tiles keep their own rou
 .jsal-top nav a:hover { color: var(--jsal-ink); }
 
 /* Bento grid: 12 columns, one per tile row; stacks on narrow screens */
-.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 36px; grid-auto-flow: row dense; }   /* dense: Updates, last in the code so the Tab order runs left to right, goes up beside "Currently" and the backpack */
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
 .tile { border-radius: 22px; padding: 26px; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
 a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 /* With a mouse: the tile tilts toward the pointer and a soft light follows it (the script below sets
@@ -331,7 +331,7 @@ p, li { text-wrap: pretty; }
 /* Currently: WoW Forever art behind the text, scaled down but otherwise unaltered as Blizzard's fan-site policy
    requires (the darkening is a separate layer on top, and the copyright notice stays on the
    card). Same light text in both themes, since it sits on the picture. */
-.now-playing { grid-column: 1 / 8; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 280px; }   /* style: allow (WoW tile: dark green under the art) */
+.now-playing { grid-column: 1 / 9; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 380px; }   /* style: allow (WoW tile: dark green under the art) */
 /* Text over the sky at the top, so the dwarf and bear show in the lower half. The art is 2.4:1 and the
    card is taller than that, so it fills the height and object-position picks the slice with the dwarf
    and bear. It's drawn 18% taller than the card with the extra above it (sky), which lifts them clear
@@ -340,7 +340,7 @@ p, li { text-wrap: pretty; }
 .now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }   /* style: allow (WoW tile: shade over the art for the text) */
 .now-playing .label { margin-bottom: 10px; }
 .now-playing .label, .now-playing .pill { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
-.now-playing .big { font: 700 31px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
+.now-playing .big { font: 700 36px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
 .now-playing .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; }
 .now-playing .credit { font-size: 11px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
@@ -356,31 +356,25 @@ p, li { text-wrap: pretty; }
 .ic .desc { color: var(--blue-muted); }
 
 .fmt { grid-column: 8 / 13; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
-.fmt h2, .jscale h2, .ic h2 { font-size: 24px; }   /* the featured app keeps the biggest title */
+.fmt h2, .jscale h2 { font-size: 24px; }   /* the featured app keeps the biggest title */
+/* The team tiles (JSal UI, Platform Playbook) are text only and a step smaller than the live tools */
+.ui, .ic { padding: 22px 26px; }
+.ui h2, .ic h2 { font-size: 22px; }
 .fmt .label { color: var(--gold-acc); }
 .fmt .desc { color: var(--gold-muted); }
 
-.ui { grid-column: 1 / 6; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 22px; }   /* a narrow tile: the screen sits under the text and fills the rest of it */
+.ui { grid-column: 1 / 6; background: var(--green); color: var(--green-ink); }
 .ui .label { color: var(--green-acc); }
 .cms { grid-column: 6 / 13; background: var(--plum); color: var(--plum-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--plum-acc); --arrow-ink: var(--plum); }
 .cms h2 { font-size: 36px; }
 .cms .desc { font-size: 16px; max-width: 32em; }
 .cms .label { color: var(--plum-acc); }
 .cms .desc { color: var(--plum-muted); }
-.ui h2 { font-size: 34px; }
 .ui .desc { color: var(--green-muted); margin-top: 8px !important; }
 .ui .pill { margin-top: 14px; color: var(--green-acc); }
 /* Live projects are the default and carry no badge; what isn't ready yet is an outline with no fill */
 .tile.soon { background: none; border: 2px dashed var(--jsal-line-hi); }
-.ui.soon .screen { box-shadow: inset 0 0 0 1px var(--jsal-line-hi); }   /* the screen is near the dark page colour */
 .ic .pill { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; color: var(--blue-acc); }
-.ui .screen { border-radius: 14px; background: #111318; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }   /* style: allow (JSal UI tile: the in-game screen illustration) */
-.ui .frames { display: flex; flex-direction: column; gap: 6px; max-width: 170px; }
-.ui .frames span { height: 10px; border-radius: 2px; background: linear-gradient(90deg, var(--c) var(--w), #22262f var(--w)); }   /* style: allow (JSal UI tile: illustration) */
-.ui .frames span.mana { height: 5px; }
-.ui .frames span.target { margin-top: 6px; }
-.ui .bar { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px; }
-.ui .bar i { aspect-ratio: 1; border-radius: 3px; background: var(--c); }
 
 /* App mockups on the tiles: simplified versions of each app's real layout, in the apps' own
    page colours, so opening an app looks like the picture growing into it. Photos, links and
@@ -413,21 +407,6 @@ p, li { text-wrap: pretty; }
 
 /* Platform Playbook: a platform's answer card, redacted and blurred behind a lock (it's for the team;
    the markup holds only placeholder bars, no real answers) */
-.m-ic { position: relative; overflow: hidden; padding: 14px; }
-.m-ic .sealed { display: grid; gap: 7px; filter: blur(1.6px); opacity: 0.75; }
-.m-ic .ph { display: flex; align-items: center; gap: 9px; margin-bottom: 2px; }
-.m-ic .logo { flex: none; width: 28px; height: 28px; border-radius: var(--jsal-radius-lg); background: var(--blue-acc); }
-.m-ic .bar { height: 7px; border-radius: 4px; background: var(--jsal-line-hi); }
-.m-ic .ph .bar { height: 9px; background: var(--jsal-ink-2); }
-.m-ic .tabs { margin-left: auto; display: flex; gap: 2px; padding: 2px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
-.m-ic .tabs i { width: 34px; height: 14px; border-radius: var(--jsal-radius-sm); }
-.m-ic .tabs .on { background: var(--jsal-surface); }
-.m-ic .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 10px; }
-.m-ic .v { flex: none; width: 44px; height: 16px; border-radius: var(--jsal-radius-pill); }
-.m-ic .v.ok { background: var(--jsal-ok-soft); box-shadow: inset 0 0 0 1px var(--jsal-ok); }
-.m-ic .v.info { background: var(--jsal-info-soft); box-shadow: inset 0 0 0 1px var(--jsal-info); }
-.m-ic .v.warn { background: var(--jsal-warn-soft); box-shadow: inset 0 0 0 1px var(--jsal-warn); }
-.m-ic .lock { position: absolute; top: 50%; left: 50%; translate: -50% -50%; display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: var(--jsal-radius-pill); background: var(--blue-acc); color: var(--blue); font-size: 14px; font-weight: 700; box-shadow: 0 8px 22px rgb(0 0 0 / 0.3); }
 
 /* CMS Picker: the platforms it compares (the CMS Picker's own logo files; Duda and Magento have none). The big
    tile and the line under the grid cycle through six agreed first places from the persona tests (a blog:
@@ -497,7 +476,6 @@ p, li { text-wrap: pretty; }
 
 /* Hovering an app tile plays a short loop of what the app does:
    Image Resizer sends out the resized files one by one;
-   Platform Playbook's lock rattles (it's for the team);
    Clean Paste writes out the clean HTML line by line;
    CMS Picker tries the other platforms in turn while its match stays lit. */
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -507,8 +485,6 @@ p, li { text-wrap: pretty; }
   .tile:is(:hover, :focus-visible) .m-jscale .saved { animation-delay: 0.75s; }
   .tile:is(:hover, :focus-visible) .m-jscale .to { animation: m-nudge 3s ease-in-out infinite; }
 
-  .tile:is(:hover, :focus-visible) .m-ic .lock { animation: m-rattle 0.6s ease-in-out; }
-
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln { animation: m-line 3s ease-out infinite; }
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(3) { animation-delay: 0.25s; }
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(4) { animation-delay: 0.5s; }
@@ -517,15 +493,13 @@ p, li { text-wrap: pretty; }
   .tile:is(:hover, :focus-visible) .m-grid > span:not(.hero) { animation: g-try 2.2s calc(var(--n) * 0.2s - 2.2s) infinite; }
 }
 @keyframes m-line { 0%, 10% { opacity: 0; translate: -4px 0; } 25%, 85% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
-@keyframes m-rattle { 0%, 100% { rotate: 0deg; } 20% { rotate: -7deg; } 40% { rotate: 6deg; } 60% { rotate: -4deg; } 80% { rotate: 2deg; } }
 @keyframes m-nudge { 0%, 100% { translate: 0 0; } 15% { translate: 3px 0; } 30% { translate: 0 0; } }
 @keyframes g-try { 0%, 8% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } 12%, 100% { border-color: var(--jsal-line); box-shadow: none; } }
 
-.now { grid-column: 8 / 13; grid-row: span 2; background: var(--plain); }   /* beside "Currently" and the backpack, stacked */
+.now { grid-column: 1 / 13; background: var(--plain); }
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
-.now ul { margin: 0; padding: 0; list-style: none; }
+.now ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }   /* rows across, newest top left */
 .now li { padding: 10px 0; border-top: 1px solid var(--plain-line); }
-.now li:last-child { border-bottom: 1px solid var(--plain-line); }
 .now li { display: flex; gap: 12px; }
 .now li time { flex: none; min-width: 4em; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now li a { color: var(--jsal-accent); text-underline-offset: 2px; }
@@ -550,7 +524,7 @@ p, li { text-wrap: pretty; }
 @media (prefers-reduced-motion: reduce) { .ach-bar i { transition: none; } }
 
 /* Say hi (the backpack): a plain surface, so cream stays the Image Resizer's colour */
-.mail { grid-column: 1 / 8; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; gap: 4px; }
+.mail { grid-column: 9 / 13; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; gap: 4px; }
 .mail .label, .mail .desc { color: var(--jsal-muted); }
 /* Backpack: where to find me, as gear in a game bag. The tile is the bag (stitched leather, a portrait
    and title bar like a bag window) and keeps its look in both themes, like the WoW Forever tile. Items
@@ -577,7 +551,7 @@ p, li { text-wrap: pretty; }
 .portrait svg { display: block; width: 100%; height: 100%; }
 .pack-h .count { margin-left: auto; font: 600 12px "JetBrains Mono", Consolas, monospace; color: var(--pk-label); }
 .bag { position: relative; flex: 1; display: flex; flex-direction: column; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-pocket); box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.7), 0 1px 0 var(--pk-shine); }
-.slots { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: max-content; align-content: center; justify-content: center; gap: 8px; }   /* the script below fills it with empty slots */
+.slots { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: max-content; align-content: center; justify-content: center; gap: 8px; }   /* the script below fills it with empty slots */
 .slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: 6px; border: 2px solid var(--q); background: var(--pk-black); box-shadow: 0 0 0 1px var(--pk-black), 0 0 12px -3px var(--q); cursor: pointer; font: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
 .slot svg { display: block; width: 100%; height: 100%; }
 /* Bevel and gloss over the icon, like game icons */
@@ -609,7 +583,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
 @media (max-width: 860px) {
   .grid > * { grid-column: 1 / -1 !important; }
-  .now { grid-row: auto; }
+  .now ul { grid-template-columns: minmax(0, 1fr); }
   .intro { padding-top: 4px; }
   .intro p { font-size: 16px; }
 }
@@ -633,9 +607,10 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .m-fmt .to { justify-self: center; rotate: 90deg; }
   .m-jscale { gap: 10px; padding: 12px; }
   .m-jscale .out .photo { display: none; }
-  .tile h2, .ui h2 { font-size: 26px; }
-  .ui { gap: 20px; }
-  .now-playing { gap: 14px; }
+  .tile h2 { font-size: 26px; }
+  .ui h2, .ic h2 { font-size: 22px; }
+  .ui, .ic { padding: 20px; }
+  .now-playing { gap: 14px; min-height: 300px; }
   .now-playing .big { font-size: 27px; }
   .now h2 { font-size: 24px; }
   footer { margin-top: 32px; }
@@ -727,27 +702,9 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
         <p class="desc">A clean, minimal interface for raiding and everyday play. One import string, a few minutes.</p>
         <span class="pill">Coming soon</span>
       </div>
-      <div class="screen" aria-hidden="true">
-        <div class="frames">
-          <span style="--c:#3fae5a; --w:82%"></span>
-          <span class="mana" style="--c:#3a6fd1; --w:64%"></span>
-          <span class="target" style="--c:#c9483f; --w:45%"></span>
-        </div>
-        <div class="bar"><i style="--c:#7a4a9c"></i><i style="--c:#c9483f"></i><i style="--c:#3a6fd1"></i><i style="--c:#3fae5a"></i><i style="--c:#e3b04b"></i><i style="--c:#5b4a7a"></i><i style="--c:#3a6fd1"></i><i style="--c:#c9483f"></i></div>
-      </div>
     </section>
 
     <a class="tile ic" href="/ic/" data-app>
-      <div class="mock m-ic" aria-hidden="true">
-        <div class="sealed">
-          <div class="ph"><span class="logo"></span><i class="bar" style="width: 34%"></i><span class="tabs"><i class="on"></i><i></i></span></div>
-          <div class="row box"><i class="bar" style="width: 38%"></i><em class="v ok"></em></div>
-          <div class="row box"><i class="bar" style="width: 52%"></i><em class="v ok"></em></div>
-          <div class="row box"><i class="bar" style="width: 44%"></i><em class="v info"></em></div>
-          <div class="row box"><i class="bar" style="width: 48%"></i><em class="v warn"></em></div>
-        </div>
-        <span class="lock"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Team only</span>
-      </div>
       <div class="foot">
         <div>
           <p class="label">for my team</p>
@@ -759,7 +716,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
     </a>
 
-    <!-- What I'm up to, above the backpack (Updates runs down the right beside both) -->
+    <!-- What I'm up to, with the backpack beside it and Updates below -->
     <section class="tile now-playing" aria-label="Currently">
       <!-- It covers a tall box, so it's drawn about 800px wide whatever the screen: sizes says that,
            and 2x screens still get the 1920px original. Well below the first screen, so it loads late. -->
@@ -776,7 +733,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
          "Social butterfly". -->
     <section class="tile mail pack" aria-labelledby="hi-h">
       <div class="pack-h"><span class="portrait"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="pk-l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b97a42"/><stop offset="1" stop-color="#5a3216"/></linearGradient><radialGradient id="pk-bg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#6a4a2a"/><stop offset="1" stop-color="#1e1208"/></radialGradient></defs><rect width="48" height="48" fill="url(#pk-bg)"/><path d="M17 12a7 7 0 0 1 14 0" fill="none" stroke="#3a220e" stroke-width="3"/><path d="M11 20c0-5 4-8 13-8s13 3 13 8v17c0 3-2 5-5 5H16c-3 0-5-2-5-5Z" fill="url(#pk-l)" stroke="#2a1606" stroke-width="1.2"/><path d="M11 21c0 6 6 9 13 9s13-3 13-9c0-5-4-8-13-8s-13 3-13 8Z" fill="#8a5a2e" stroke="#2a1606" stroke-width="1.2"/><rect x="21" y="26" width="6" height="7" rx="1" fill="#e8b84a" stroke="#6a4810"/><path d="M15 34h18" stroke="#2a1606" stroke-width="1" stroke-dasharray="1.5 1.5" opacity="0.7"/></svg></span><div><p class="label">say hi</p><h2 id="hi-h">Backpack</h2></div><span class="count">5/15</span></div>
-      <p class="desc">Questions, ideas for a tool, or just to talk SEO or WoW. Inspect an item to see what it does.</p>
+      <p class="desc">Questions, tool ideas, SEO or WoW. Inspect an item to see what it does.</p>
       <div class="bag">
         <div class="slots">
           <a class="slot" href="mailto:dev@jsal.io" style="--q: var(--q-legendary)" data-item="email" aria-label="Email: dev@jsal.io"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="sc-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#a8482a"/><stop offset="1" stop-color="#2a0c06"/></radialGradient><radialGradient id="sc-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="sc-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset="0.35" stop-color="#e8b84a"/><stop offset="0.7" stop-color="#9a6a18"/><stop offset="1" stop-color="#f5cf68"/></linearGradient><linearGradient id="sc-paper" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d8bd80"/><stop offset="0.5" stop-color="#fbeec8"/><stop offset="1" stop-color="#cfae6c"/></linearGradient><linearGradient id="sc-roll" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3d79a"/><stop offset="0.5" stop-color="#b8893e"/><stop offset="1" stop-color="#6e4a18"/></linearGradient><radialGradient id="sc-wax" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#ff6a5a"/><stop offset="0.55" stop-color="#c0221a"/><stop offset="1" stop-color="#5e0c08"/></radialGradient></defs><rect width="48" height="48" fill="url(#sc-bg)"/><path d="M10 9h28v30H10z" fill="url(#sc-paper)"/>
@@ -930,7 +887,7 @@ document.querySelectorAll('.slot:not(.empty)').forEach((sl) => {
   });
 });
 document.addEventListener('pointerdown', (e) => { if (shown && !e.target.closest('.slot')) hide(); });
-// The bag fills the room left under "Currently" beside the Updates tile, which grows as the page narrows:
+// The bag fills the room beside "Currently":
 // fill whatever room there is with rows of empty slots, so it never shows a gap (on phones, one spare row)
 const slots = document.querySelector('.slots'), count = document.querySelector('.pack-h .count');
 const items = slots.querySelectorAll('.slot:not(.empty)').length;
@@ -955,15 +912,15 @@ function fitBag() {
   }
   if (rows * cols !== least) setTotal(rows * cols);
 }
-// Refit when the room changes (the pocket's size, the Updates tile's height, fonts arriving). Each fit
+// Refit when the room changes (the pocket's size, the Currently tile's height, fonts arriving). Each fit
 // notes the sizes it left behind, so its own changes don't set off another.
-const updatesTile = document.getElementById('updates');
-const sizes = () => `${slots.clientWidth}:${slots.clientHeight}:${updatesTile.offsetHeight}`;
+const nowTile = document.querySelector('.now-playing');
+const sizes = () => `${slots.clientWidth}:${slots.clientHeight}:${nowTile.offsetHeight}`;
 let fitted = '';
 const refit = () => { if (sizes() !== fitted) { fitBag(); fitted = sizes(); } };
 const watcher = new ResizeObserver(refit);
 watcher.observe(slots);
-watcher.observe(updatesTile);
+watcher.observe(nowTile);
 if (document.fonts) document.fonts.ready.then(() => { fitted = ''; refit(); });
 // Hearthstone: a cast bar fills, then the page goes back to the top
 const cast = document.getElementById('cast');
