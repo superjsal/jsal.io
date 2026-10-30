@@ -1,7 +1,8 @@
 # Publishes the CMS Picker from Supabase every night: Playbook answers (with admin edits) plus the
 # admin-only picker table, written to cms-picker/data.json, the plain-HTML copy in the page and one
 # page per platform (cms-picker/<platform>/index.html, listed in sitemap.xml).
-# Commits only when something changed, then asks GitHub Pages to rebuild.
+# Commits only when something changed, then asks GitHub Pages to rebuild and, once it's live, tells
+# IndexNow (Bing and others) which pages changed.
 #
 # Needs one repository secret: Settings → Secrets and variables → Actions → New repository secret,
 # name SUPABASE_SERVICE_ROLE_KEY, value the Supabase secret key (the same one you set in your terminal).
@@ -48,3 +49,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh api --method POST "repos/${{ github.repository }}/pages/builds"
+      # Tell Bing and the other IndexNow engines which pages changed, once the new build is live (up to ~5 minutes)
+      - name: Announce changed pages (IndexNow)
+        if: steps.commit.outputs.pushed == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 30); do
+            s=$(gh api "repos/${{ github.repository }}/pages/builds/latest" --jq .status)
+            [ "$s" = "built" ] && break
+            sleep 10
+          done
+          python .github/scripts/indexnow.py changed
