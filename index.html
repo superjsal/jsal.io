@@ -425,31 +425,10 @@ p, li { text-wrap: pretty; }
 .m-ic .v.warn { background: var(--jsal-warn-soft); box-shadow: inset 0 0 0 1px var(--jsal-warn); }
 .m-ic .lock { position: absolute; top: 50%; left: 50%; translate: -50% -50%; display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: var(--jsal-radius-pill); background: var(--blue-acc); color: var(--blue); font-size: 14px; font-weight: 700; box-shadow: 0 8px 22px rgb(0 0 0 / 0.3); }
 
-/* CMS Picker: the quiz's real first question with an answer picked, the top match that gives (WordPress's
-   own card tags), and the platforms it compares (the CMS Picker's own logo files; Duda and Magento have none) */
-.m-cms { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 20px; }
-.m-cms small { display: block; font: 600 11px/1 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
-.m-cms .q { margin: 8px 0 12px; font: 700 22px/1.2 "Lora", Georgia, serif; color: var(--jsal-ink); }
-.m-cms .opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-/* Flat, borderless answers so they read as part of the picture, not buttons (the whole card is one link) */
-.m-cms .opt { padding: 10px 12px; font-size: 13.5px; line-height: 1.35; color: var(--jsal-muted); border-color: transparent; background: var(--jsal-sunk); border-radius: var(--jsal-radius); }
-.m-cms .pick { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); }
-.m-cms .opt.pick { color: var(--jsal-ink); font-weight: 600; }
-.m-cms .res { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--jsal-radius-lg); }
-.m-cms .res > i { flex: none; width: 30px; height: 30px; }
-.m-cms .res span { flex: 1; min-width: 0; font-size: 12.5px; color: var(--jsal-muted); }
-.m-cms .res b { font-size: 15px; color: var(--jsal-ink); }
-.m-cms .fit { flex: none; font-style: normal; padding: 3px 10px; border-radius: var(--jsal-radius-pill); font-size: 12px; font-weight: 600; color: var(--jsal-ok); background: var(--jsal-ok-soft); }
-.m-cms .logos { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding-top: 4px; }
-.m-cms .logos i { width: 18px; height: 18px; opacity: 0.6; }
-.m-cms .more { font-size: 12px; font-weight: 700; color: var(--plum-acc); }
-.m-cms .logo { background: var(--plum-ink); -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
-.m-cms .res .logo { background: var(--plum-acc); }
-
-/* CMS Picker on phones: the full quiz picture would push the tile's title off the first screen, so phones get
-   the platforms it compares instead, WordPress as the big glowing match. On load the tiles pop in one by one
-   and the match lights up (reduced motion: the finished picture). */
-.m-grid { display: none; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding: 14px; }
+/* CMS Picker: the platforms it compares (the CMS Picker's own logo files; Duda and Magento have none), WordPress,
+   the most used, as the big glowing match. On load the tiles pop in one by one and the match lights up
+   (reduced motion: the finished picture). */
+.m-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding: 14px; }
 .m-grid > span { aspect-ratio: 1; display: grid; place-items: center; border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); border: 1px solid var(--jsal-line); }
 .m-grid .logo { width: 46%; height: 46%; background: var(--plum-ink); opacity: 0.75; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
 .m-grid .hero { position: relative; grid-column: span 2; grid-row: span 2; border-color: var(--plum-acc);
@@ -458,11 +437,14 @@ p, li { text-wrap: pretty; }
 .m-grid .hero .logo { width: 44%; height: 44%; margin-bottom: 14px; background: var(--plum-acc); opacity: 1; }
 .m-grid .tag { position: absolute; bottom: 10px; left: 50%; translate: -50% 0; padding: 3px 10px; border-radius: var(--jsal-radius-pill); font: normal 600 12px/1.3 var(--jsal-font); white-space: nowrap; color: var(--jsal-ok); background: var(--jsal-ok-soft); }
 .m-grid .more { border-style: dashed; border-color: var(--jsal-line-hi); background: none; font-size: 14px; font-weight: 700; color: var(--plum-acc); }
-@media (max-width: 520px) {
-  .cms .m-cms { display: none; }
-  .cms .m-grid { display: grid; }
+/* Bigger tiles than on phones: lighter logos, a bigger tag */
+@media (min-width: 521px) {
+  .m-grid .logo { width: 36%; height: 36%; }
+  .m-grid .hero .logo { width: 38%; height: 38%; margin-bottom: 18px; }
+  .m-grid .tag { bottom: 14px; padding: 4px 12px; font-size: 13.5px; }
+  .m-grid .more { font-size: 16px; }
 }
-@media (max-width: 520px) and (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) {
   .m-grid > span { animation: g-in 0.45s calc(0.15s + var(--n) * 55ms) cubic-bezier(0.2, 0.8, 0.2, 1) both; }
   .m-grid .hero { animation: g-in 0.45s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both, g-glow 0.7s 0.95s ease-out both; }
   .m-grid .tag { animation: g-pop 0.4s 1.35s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
@@ -470,13 +452,6 @@ p, li { text-wrap: pretty; }
 @keyframes g-in { from { opacity: 0; scale: 0.82; } to { opacity: 1; scale: 1; } }
 @keyframes g-glow { from { border-color: var(--jsal-line); box-shadow: none; background: var(--jsal-surface); } }
 @keyframes g-pop { from { opacity: 0; scale: 0.6; } to { opacity: 1; scale: 1; } }
-/* The words are blurred (like the Playbook tile's card) so the picture reads as a picture, not buttons to
-   press; the outlines and the platform logos stay sharp. Blurred by a text shadow in the text's own
-   colour, so only the letters soften. */
-.m-cms small, .m-cms .q, .m-cms .opt, .m-cms .res span, .m-cms .fit { color: transparent !important; text-shadow: 0 0 5px var(--blur-ink); --blur-ink: var(--jsal-muted); }
-.m-cms .q, .m-cms .opt.pick, .m-cms .res b { --blur-ink: var(--jsal-ink); }
-.m-cms .res b { color: transparent; text-shadow: 0 0 5px var(--blur-ink); }
-.m-cms .fit { --blur-ink: var(--jsal-ok); }
 
 /* Clean Paste: checks + copy buttons, then the editor with its toolbar */
 /* Clean Paste: what Word's formatting looks like going in, and the clean HTML coming out */
@@ -497,7 +472,7 @@ p, li { text-wrap: pretty; }
    Image Resizer sends out the resized files one by one;
    Platform Playbook's lock rattles (it's for the team);
    Clean Paste writes out the clean HTML line by line;
-   CMS Picker picks the answer, then shows the match. */
+   CMS Picker tries the other platforms in turn while its match stays lit. */
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .tile:is(:hover, :focus-visible) .m-jscale .out, .tile:is(:hover, :focus-visible) .m-jscale .saved { animation: m-line 3s ease-out infinite; }
   .tile:is(:hover, :focus-visible) .m-jscale .out:nth-child(2) { animation-delay: 0.25s; }
@@ -511,16 +486,13 @@ p, li { text-wrap: pretty; }
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(3) { animation-delay: 0.25s; }
   .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(4) { animation-delay: 0.5s; }
   .tile:is(:hover, :focus-visible) .m-fmt .to { animation: m-nudge 3s ease-in-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-cms .opt.pick { animation: m-pick 3s ease-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-cms .res { animation: m-match 3s ease-out infinite; }
+  /* Negative delays: every tile's loop is already running, so the sweep starts at once */
+  .tile:is(:hover, :focus-visible) .m-grid > span:not(.hero, .more) { animation: g-try 2.2s calc(var(--n) * 0.2s - 2.2s) infinite; }
 }
 @keyframes m-line { 0%, 10% { opacity: 0; translate: -4px 0; } 25%, 85% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
 @keyframes m-rattle { 0%, 100% { rotate: 0deg; } 20% { rotate: -7deg; } 40% { rotate: 6deg; } 60% { rotate: -4deg; } 80% { rotate: 2deg; } }
 @keyframes m-nudge { 0%, 100% { translate: 0 0; } 15% { translate: 3px 0; } 30% { translate: 0 0; } }
-/* One loop of the CMS Picker: the answer is picked, then its match appears, holds, and is gone again
-   before the answer resets (hidden from the first frame, so nothing flickers when the pointer arrives) */
-@keyframes m-pick { 0%, 8% { border-color: transparent; box-shadow: none; } 12%, 100% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } }
-@keyframes m-match { 0%, 15% { opacity: 0; translate: 0 6px; } 30%, 80% { opacity: 1; translate: 0 0; } 92%, 100% { opacity: 0; translate: 0 0; } }
+@keyframes g-try { 0%, 8% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } 12%, 100% { border-color: var(--jsal-line); box-shadow: none; } }
 
 .now { grid-column: 8 / 13; grid-row: span 2; background: var(--plain); }   /* beside "Currently" and the backpack, stacked */
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
@@ -626,10 +598,6 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .intro h1 { font-size: 40px; line-height: 1.05; }
   .intro p { margin: 16px 0 6px 2px; font-size: 15.5px; line-height: 1.55; }
   .cta { margin-top: 18px; }
-  .m-cms { padding: 14px; gap: 12px; }
-  .m-cms .q { font-size: 19px; }
-  .m-cms .opt { font-size: 13px; padding: 9px 10px; }
-  .m-cms .logos i { width: 15px; height: 15px; }
   .tile { padding: 20px; border-radius: 18px; }
   .jscale { padding: 12px; }
   .jscale .foot { padding: 0 6px 4px; }
@@ -671,12 +639,6 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     <a id="work" class="tile cms" href="/cms-picker/" data-app>
       <div class="mock m-grid" aria-hidden="true">
         <span class="hero" style="--n: 0"><i class="logo" style="--logo: url(/cms-picker/logos/wordpress.svg)"></i><em class="tag">Best fit</em></span><span style="--n: 1"><i class="logo" style="--logo: url(/cms-picker/logos/shopify.svg)"></i></span><span style="--n: 2"><i class="logo" style="--logo: url(/cms-picker/logos/wix.svg)"></i></span><span style="--n: 3"><i class="logo" style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span style="--n: 4"><i class="logo" style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span style="--n: 5"><i class="logo" style="--logo: url(/cms-picker/logos/framer.svg)"></i></span><span style="--n: 6"><i class="logo" style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span style="--n: 7"><i class="logo" style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span style="--n: 8"><i class="logo" style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span style="--n: 9"><i class="logo" style="--logo: url(/cms-picker/logos/ghost.svg)"></i></span><span style="--n: 10"><i class="logo" style="--logo: url(/cms-picker/logos/sanity.svg)"></i></span><span class="more" style="--n: 11">+2</span>
-      </div>
-      <div class="mock m-cms" aria-hidden="true">
-        <div><small>Question 1 of 9</small><b class="q">What are you making?</b>
-          <div class="opts"><span class="box opt">A site for my business</span><span class="box opt">An online store</span><span class="box opt pick">A blog or newsletter</span><span class="box opt">Something custom</span></div></div>
-        <div class="box res pick"><i class="logo" style="--logo: url(/cms-picker/logos/wordpress.svg)"></i><span><b>WordPress</b>Plugins for everything, most-used CMS</span><em class="fit">Best fit</em></div>
-        <div class="logos"><i class="logo" style="--logo: url(/cms-picker/logos/wordpress.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/shopify.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/wix.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/squarespace.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/webflow.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/framer.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/hubspot.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/drupal.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/ghost.svg)"></i><i class="logo" style="--logo: url(/cms-picker/logos/sanity.svg)"></i><span class="more">+2</span></div>
       </div>
       <div class="foot">
         <div>
