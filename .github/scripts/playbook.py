@@ -374,6 +374,8 @@ def prerender():
     parts = {'cards': '\n'.join(cards), 'grid': grid, 'peek': ''.join(peek),
              'count': str(len(plats)), 'asof': e(as_of or ''),
              'pages': ' · '.join(f'<a href="{e(p["id"])}/">{e(p["name"])}</a>' for p in plats if p.get('profile')),   # the platform pages
+             'seo-chips': ''.join(f'<a class="seo-chip" href="{e(p["id"])}/">{logo(p)}{e(p["name"])}<span class="sr-only"> SEO settings</span></a>'
+                                  for p in plats if p.get('profile')),   # the same, as logo chips under the table
              'peek-cap': f'{len(pr_rows)} of {len(d["items"])} rows, from the full table below'}
     for name, body in parts.items():
         start, end = f'<!-- prerender:{name} -->', f'<!-- /prerender:{name} -->'

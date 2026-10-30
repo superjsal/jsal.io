@@ -191,6 +191,16 @@ body {
 .tip .where { margin-top: 4px; }
 .empty { padding: 28px 12px; text-align: center; color: var(--jsal-muted); }
 
+/* Under the table: a logo chip per platform, linking to its own page */
+.seo-pages { margin-top: 22px; }
+.seo-pages-h { margin: 0 0 10px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.seo-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.seo-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px 0 10px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 600; text-decoration: none; }
+.seo-chip:hover { border-color: var(--jsal-hover-line); }
+.seo-chip:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.seo-chip .logo { width: 18px; height: 18px; }
+.seo-chip .logo.badge { border-radius: var(--jsal-radius-sm); font-size: 10px; }
+@media (pointer: coarse) { .seo-chip { min-height: 44px; } }
 .note { margin-top: 12px; max-width: 680px; color: var(--jsal-muted); font-size: 12.5px; }
 
 /* Narrow: no table. Each item is a card with one line per platform. */
