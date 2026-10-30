@@ -43,8 +43,8 @@ upload." Open https://jsal.io/image-resizer/ and point them to the images folder
 **Watch for**
 - How they add the images: dragging, clicking the drop area, or looking for a button.
 - Whether they notice the crop, and try to move it on the portrait photo (the subject is near the top).
-- Whether they notice that three images are too small (the orange "Upscaled" badges, the count in the status
-  bar, and "This one may look blurry" under the preview), and what they think it means.
+- Whether they notice that three images are too small (the orange "Upscaled" badges on the cards and "This one may
+  look blurry" under the preview), and what they think it means.
 - Whether they change Quality, Format or Save to, and why. Which format they'd pick for their CMS.
 - How they download: one by one, Download All, ZIP. Whether they find the files afterwards.
 - The transparent PNG saved as JPG gets a white background. Do they mind, or notice?

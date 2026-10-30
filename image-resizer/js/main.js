@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-30zd";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zd";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zd";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zd";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zd";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zd";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zd";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zd";
+} from "./state.js?v=2026-10-30ze";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30ze";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30ze";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30ze";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30ze";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30ze";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30ze";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30ze";
 
 const $ = id => document.getElementById(id);
 
@@ -48,11 +48,10 @@ function sizeSummary() {
     ? `Original sizes  ·  ${plural(state.images.length)}  ·  converting to ${state.format.ext.toUpperCase()}`
     : `${state.size.w} × ${state.size.h}  ·  ${plural(state.images.length)}`;
 }
-// The summary in the status bar, with a warning when some images are smaller than the output size (they get
-// enlarged and may look blurry); each one's card and the preview say so too
+// The summary in the status bar. Images smaller than the output size (enlarged, so they may look blurry) are
+// flagged on their own cards and under the preview; a third warning here only competed with those.
 function showSummary() {
-  const soft = state.keepOriginal ? 0 : state.images.filter(im => im.width < state.size.w || im.height < state.size.h).length;
-  setStatus(sizeSummary(), soft ? "warn" : "active", soft ? `⚠ ${soft} smaller than ${state.size.w} × ${state.size.h} may look blurry` : "");
+  setStatus(sizeSummary(), "active");
 }
 
 // Full refresh after images or output size change.
