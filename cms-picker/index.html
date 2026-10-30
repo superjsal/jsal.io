@@ -6,7 +6,7 @@
   <title>CMS Picker: Which Website Builder or CMS Fits You? | jsal.io</title>
   <meta name="description" content="Which website builder or CMS fits you? Answer a few quick questions, or compare 13 platforms including WordPress, Shopify, Wix, Squarespace and Webflow: who each suits, what’s built in, and getting found on Google and AI search." />
   <link rel="canonical" href="https://jsal.io/cms-picker/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-29zzze" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-30a" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -220,14 +220,26 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about dt { margin-top: 14px; font-weight: 600; color: var(--jsal-ink); }
 .jsal-about dd { margin: 3px 0 0; }
 .jsal-about .jsal-feedback { margin-top: 24px; }
+.jsal-about details { margin-top: 18px; border-top: 1px solid var(--jsal-line); }
+.jsal-about details:last-of-type { border-bottom: 1px solid var(--jsal-line); }
+.jsal-about details + details { margin-top: 0; }
+.jsal-about summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; border-radius: var(--jsal-radius-sm); }
+.jsal-about summary::-webkit-details-marker { display: none; }
+.jsal-about summary::before { content: ""; width: 7px; height: 7px; margin: 0 4px 0 2px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate 0.15s; }
+.jsal-about details[open] > summary::before { rotate: 45deg; }
+.jsal-about summary h3 { margin: 0; }
+.jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
+.jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-about details > ul { margin-bottom: 14px; }
+@media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-29zzze" />
-  <script src="score.js?v=2026-10-29zzze" defer></script>
-  <script src="app.js?v=2026-10-29zzze" defer></script>
+  <link rel="stylesheet" href="styles.css?v=2026-10-30a" />
+  <script src="score.js?v=2026-10-30a" defer></script>
+  <script src="app.js?v=2026-10-30a" defer></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-29zzze" defer></script>
+  <script src="/nav.js?v=2026-10-30a" defer></script>
 </head>
 <body>
   <main class="app">
@@ -337,21 +349,24 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 
   <section class="jsal-about" id="about" aria-labelledby="about-h">
     <h2 id="about-h">About CMS Picker</h2>
-    <p>CMS Picker helps you choose a website builder or CMS (content management system), and see what each means for getting found on Google and in AI search. It covers WordPress, Shopify, Wix, Squarespace, Webflow, Framer, HubSpot CMS, BigCommerce, Magento, Drupal, Duda, Ghost and Sanity (a headless CMS). It answers two questions that come up on almost every project: <em>which platform fits this business?</em> and <em>can we actually change that on it?</em></p>
+    <p>CMS Picker helps you choose a website builder or CMS (content management system) by answering two questions that come up on almost every project: <em>which platform fits this business?</em> and <em>can we actually change that on it?</em></p>
 
-    <h3>How to read it</h3>
-    <ul>
-      <li>Not sure where to start? <a href="#quiz">Find your fit</a> asks a few quick questions and ranks the platforms for you, with the reasons from the answers below. Nothing you choose is stored or sent anywhere; the result is in the page address, so you can share it.</li>
-      <li>Or pick what you’re building to narrow the list. Each card says what kind of platform it is, who it’s for, what it’s known for, and when it’s not the right choice.</li>
-      <li>Each card also says who looks after hosting and updates, and what you can take with you if you leave.</li>
-      <li>The comparison has two parts: <em>Everyday</em> (a blog, an online store, more than one language, forms, design control) and <em>Getting found on Google and AI search</em> (titles and descriptions, page addresses, redirects, structured data, keeping a page out of search, and AI crawlers). Each row is a plain question, with its SEO name in small text under it.</li>
-      <li>The tags run from <em>Built in</em> and <em>Automatic</em> through <em>Plugin/app</em> and <em>Needs code</em> to <em>Not possible</em>. <em>Unclear</em> means the platform’s docs don’t say.</li>
-    </ul>
+    <details>
+      <summary><h3>How to read it</h3></summary>
+      <ul>
+        <li><a href="#quiz">Find your fit</a> asks a few quick questions and ranks the platforms, with the reasons from the answers below. Nothing you choose is stored or sent anywhere; the result is in the page address, so you can share it.</li>
+        <li>Each card says what kind of platform it is, who it’s for, what it’s known for, who looks after hosting and updates, what you can take with you if you leave, and when it’s not the right choice.</li>
+        <li>Each row of the comparison is a plain question, with its SEO name in small text under it.</li>
+        <li>The tags run from <em>Built in</em> and <em>Automatic</em> through <em>Plugin/app</em> and <em>Needs code</em> to <em>Not possible</em>. <em>Unclear</em> means the platform’s docs don’t say.</li>
+      </ul>
+    </details>
 
     <h3>Good to know</h3>
+    <p>Answers come from each platform’s own documentation and are rechecked every few months. Anything not checked yet is marked <em>not verified</em>.</p>
     <p>The profiles and answers are general guidance. Plans, themes, apps and permissions change what is possible on a given site, and platforms update often. It says what is possible, not how to do it.</p>
     <p>Platform names and logos are trademarks of their owners and are used only to identify each platform. Logos from <a href="https://simpleicons.org/">Simple Icons</a>.</p>
 
+    <p class="jsal-feedback">Useful? Ideas or problems? <a href="mailto:dev@jsal.io?subject=CMS%20Picker">Email me</a>.</p>
     <p>Made by <a href="/">John Salvador</a>. Also try <a href="/formatter/">Clean Paste</a> or the <a href="/image-resizer/">Image Resizer</a>.</p>
   </section>
 </body>

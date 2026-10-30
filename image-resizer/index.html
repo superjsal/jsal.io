@@ -6,7 +6,7 @@
   <title>Image Resizer: Resize One or Many Images in Bulk | jsal.io</title>
   <meta name="description" content="Resize and crop one image or hundreds at once to an exact size, free and in your browser. JPG, PNG, WebP and HEIC in; JPG or WebP out. Nothing is uploaded.">
   <link rel="canonical" href="https://jsal.io/image-resizer/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-29zzze" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-30a" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -220,29 +220,41 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about dt { margin-top: 14px; font-weight: 600; color: var(--jsal-ink); }
 .jsal-about dd { margin: 3px 0 0; }
 .jsal-about .jsal-feedback { margin-top: 24px; }
+.jsal-about details { margin-top: 18px; border-top: 1px solid var(--jsal-line); }
+.jsal-about details:last-of-type { border-bottom: 1px solid var(--jsal-line); }
+.jsal-about details + details { margin-top: 0; }
+.jsal-about summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; border-radius: var(--jsal-radius-sm); }
+.jsal-about summary::-webkit-details-marker { display: none; }
+.jsal-about summary::before { content: ""; width: 7px; height: 7px; margin: 0 4px 0 2px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate 0.15s; }
+.jsal-about details[open] > summary::before { rotate: 45deg; }
+.jsal-about summary h3 { margin: 0; }
+.jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
+.jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-about details > ul { margin-bottom: 14px; }
+@media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-29zzze" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-30a" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":    "./js/main.js?v=2026-10-29zzze",
-        "./js/state.js":   "./js/state.js?v=2026-10-29zzze",
-        "./js/imaging.js": "./js/imaging.js?v=2026-10-29zzze",
-        "./js/export.js":  "./js/export.js?v=2026-10-29zzze",
-        "./js/editor.js":  "./js/editor.js?v=2026-10-29zzze",
-        "./js/grid.js":    "./js/grid.js?v=2026-10-29zzze",
-        "./js/ui.js":      "./js/ui.js?v=2026-10-29zzze",
-        "./js/zip.js":     "./js/zip.js?v=2026-10-29zzze",
-        "./js/folder.js":  "./js/folder.js?v=2026-10-29zzze",
+        "./js/main.js":    "./js/main.js?v=2026-10-30a",
+        "./js/state.js":   "./js/state.js?v=2026-10-30a",
+        "./js/imaging.js": "./js/imaging.js?v=2026-10-30a",
+        "./js/export.js":  "./js/export.js?v=2026-10-30a",
+        "./js/editor.js":  "./js/editor.js?v=2026-10-30a",
+        "./js/grid.js":    "./js/grid.js?v=2026-10-30a",
+        "./js/ui.js":      "./js/ui.js?v=2026-10-30a",
+        "./js/zip.js":     "./js/zip.js?v=2026-10-30a",
+        "./js/folder.js":  "./js/folder.js?v=2026-10-30a",
         "./vendor/heic-to/heic-to.min.js": "./vendor/heic-to/heic-to.min.js?v=1.6.6"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-29zzze"></script>
+  <script type="module" src="js/main.js?v=2026-10-30a"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-29zzze" defer></script>
+  <script src="/nav.js?v=2026-10-30a" defer></script>
 </head>
 <body>
   <main class="app">
@@ -410,7 +422,6 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
   <section class="jsal-about" id="about" aria-labelledby="about-h">
     <h2 id="about-h">About the Image Resizer</h2>
     <p class="jsal-lead">Exact sizes for one image or a batch, with a crop you control, and nothing ever leaves your device.</p>
-    <p>The Image Resizer is free and works on one image or many at once. It crops and resizes every image to the exact size you pick, or keeps each image's own size and only converts the format. Everything happens in your browser: your images are never uploaded.</p>
 
     <h3>How to use it</h3>
     <ol>
@@ -420,27 +431,22 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
       <li>Choose quality and format, then <strong>Download All</strong><span data-touch=""> (<kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>)</span>. You can also save single images and rename files first.</li>
     </ol>
 
-    <h3>What it supports</h3>
-    <ul>
-      <li><strong>Input:</strong> JPG, PNG, WebP and HEIC (iPhone photos).</li>
-      <li><strong>Output:</strong> JPG or WebP, at low, medium or high quality. Safari can't save WebP, so there it saves JPG.</li>
-      <li><strong>Sizes:</strong> presets, any custom size from 32 to 20,000 pixels (your last five are kept as shortcuts), or original size.</li>
-      <li><strong>Saving:</strong> one download per image, a single ZIP file, or straight into a folder you choose (Chrome and Edge).</li>
-    </ul>
-
-    <h3>Private by design</h3>
-    <p>Resizing, cropping and converting all run on your own device, so it works with client and unreleased images, and it's fast even with large batches. Nothing is sent to a server.</p>
+    <details>
+      <summary><h3>What it supports</h3></summary>
+      <ul>
+        <li><strong>Input:</strong> JPG, PNG, WebP and HEIC (iPhone photos).</li>
+        <li><strong>Output:</strong> JPG or WebP, at low, medium or high quality. Safari can't save WebP, so there it saves JPG.</li>
+        <li><strong>Sizes:</strong> presets, any custom size from 32 to 20,000 pixels (your last five are kept as shortcuts), or original size.</li>
+        <li><strong>Saving:</strong> one download per image, a single ZIP file, or straight into a folder you choose (Chrome and Edge).</li>
+      </ul>
+    </details>
 
     <h3>Common questions</h3>
     <dl>
       <dt>Is it free?</dt>
       <dd>Yes. There's no sign-up, no watermark and no limit on how many images you resize.</dd>
-      <dt>Are my images uploaded anywhere?</dt>
-      <dd>No. Resizing, cropping and converting happen on your own device, and nothing is sent to a server or saved.</dd>
-      <dt>Which formats and sizes does it handle?</dt>
-      <dd>It opens JPG, PNG, WebP and HEIC (iPhone photos) and saves JPG or WebP. Pick a preset, keep each image's original size, or type any width and height from 32 to 20,000 pixels: your last five custom sizes are kept as shortcuts.</dd>
-      <dt>Does it work on a Mac or a phone?</dt>
-      <dd>Yes, in any up-to-date browser. On a Mac, Download All is <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>. Saving straight into a folder works in Chrome and Edge; elsewhere you get downloads or a ZIP.</dd>
+      <dt>Does it work on a phone?</dt>
+      <dd>Yes, in any up-to-date browser on iPhone or Android. Pick images from your photos or files; they save as downloads or a ZIP.</dd>
     </dl>
 
     <p class="jsal-feedback">Useful? Ideas or problems? <a href="mailto:dev@jsal.io?subject=Image%20Resizer">Email me</a>.</p>

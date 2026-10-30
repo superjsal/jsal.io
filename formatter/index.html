@@ -6,7 +6,7 @@
   <title>Clean Paste: Word and Google Docs to Clean HTML | jsal.io</title>
   <meta name="description" content="Paste from Word or Google Docs and get clean HTML, formatted text or WordPress blocks for any CMS. Free, and it runs in your browser: nothing is uploaded." />
   <link rel="canonical" href="https://jsal.io/formatter/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-29zzze" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-30a" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -219,22 +219,34 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about dt { margin-top: 14px; font-weight: 600; color: var(--jsal-ink); }
 .jsal-about dd { margin: 3px 0 0; }
 .jsal-about .jsal-feedback { margin-top: 24px; }
+.jsal-about details { margin-top: 18px; border-top: 1px solid var(--jsal-line); }
+.jsal-about details:last-of-type { border-bottom: 1px solid var(--jsal-line); }
+.jsal-about details + details { margin-top: 0; }
+.jsal-about summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; border-radius: var(--jsal-radius-sm); }
+.jsal-about summary::-webkit-details-marker { display: none; }
+.jsal-about summary::before { content: ""; width: 7px; height: 7px; margin: 0 4px 0 2px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate 0.15s; }
+.jsal-about details[open] > summary::before { rotate: 45deg; }
+.jsal-about summary h3 { margin: 0; }
+.jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
+.jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-about details > ul { margin-bottom: 14px; }
+@media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-29zzze" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-30a" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":   "./js/main.js?v=2026-10-29zzze",
-        "./js/clean.js":  "./js/clean.js?v=2026-10-29zzze",
-        "./js/sample.js": "./js/sample.js?v=2026-10-29zzze"
+        "./js/main.js":   "./js/main.js?v=2026-10-30a",
+        "./js/clean.js":  "./js/clean.js?v=2026-10-30a",
+        "./js/sample.js": "./js/sample.js?v=2026-10-30a"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-29zzze"></script>
+  <script type="module" src="js/main.js?v=2026-10-30a"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-29zzze" defer></script>
+  <script src="/nav.js?v=2026-10-30a" defer></script>
 </head>
 <body>
   <main class="app">
@@ -349,7 +361,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
   <section class="jsal-about" id="about" aria-labelledby="about-h">
     <h2 id="about-h">About Clean Paste</h2>
     <p class="jsal-lead">Checks your post before it goes live (stray H1s, bold lines that should be headings, draft and "click here" links) and copies it for any editor, as HTML or as WordPress blocks.</p>
-    <p>Clean Paste turns content copied from Word, Google Docs or a web page into clean, minimal HTML that's ready for any CMS. It strips the hidden styles, fonts and leftover code that come along when you paste, keeps the real structure (headings, lists, links, tables, bold and italic), and points out anything worth fixing before you publish. It runs entirely in your browser: nothing you paste is uploaded or saved.</p>
+    <p>It turns content copied from Word, Google Docs or a web page into clean, minimal HTML, keeping the real structure: headings, lists, links, tables, bold and italic.</p>
 
     <h3>How to use it</h3>
     <ol>
@@ -359,34 +371,32 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
       <li>Copy the result: <strong>formatted</strong> for visual editors like Shopify, Squarespace and Wix, <strong>HTML</strong> for code views, <strong>plain text</strong>, or <strong>WordPress blocks</strong> for the block editor.</li>
     </ol>
 
-    <h3>What it cleans up</h3>
-    <ul>
-      <li>Inline styles, fonts, spans, classes and Word's hidden markup and comments.</li>
-      <li>Word's fake bullet and number paragraphs, rebuilt as real nested lists.</li>
-      <li>Google Docs redirect links, changed back to the real address, and links starting with www. given https://.</li>
-      <li>Images, marked as [Image] placeholders so you know where to upload them in the CMS.</li>
-    </ul>
+    <details>
+      <summary><h3>What it cleans up</h3></summary>
+      <ul>
+        <li>Inline styles, fonts, spans, classes and Word's hidden markup and comments.</li>
+        <li>Word's fake bullet and number paragraphs, rebuilt as real nested lists.</li>
+        <li>Google Docs redirect links, changed back to the real address, and links starting with www. given https://.</li>
+        <li>Images, marked as [Image] placeholders so you know where to upload them in the CMS.</li>
+      </ul>
+    </details>
 
-    <h3>What it checks</h3>
-    <ul>
-      <li>An H1 in the body (most CMSs already use the title as the H1) and skipped heading levels.</li>
-      <li>Lines that are only bold text and were probably meant as headings.</li>
-      <li>Links to drafts, file shares or local files, Word bookmark links, links that go nowhere, "click here" link text, the same page linked more than once, and http:// links.</li>
-      <li>Paragraphs over 150 words. It also shows the word count and reading time.</li>
-    </ul>
+    <details>
+      <summary><h3>What it checks</h3></summary>
+      <ul>
+        <li>An H1 in the body (most CMSs already use the title as the H1) and skipped heading levels.</li>
+        <li>Lines that are only bold text and were probably meant as headings.</li>
+        <li>Links to drafts, file shares or local files, Word bookmark links, links that go nowhere, "click here" link text, the same page linked more than once, and http:// links.</li>
+        <li>Paragraphs over 150 words. It also shows the word count and reading time.</li>
+      </ul>
+    </details>
 
     <h3>Common questions</h3>
     <dl>
       <dt>Is it free?</dt>
       <dd>Yes, with no sign-up and no limit.</dd>
-      <dt>Is my content uploaded or saved?</dt>
-      <dd>No. The cleaning runs in your browser, so nothing you paste leaves your device or is stored, and it's gone when you close the tab.</dd>
       <dt>Which CMSs does it work with?</dt>
-      <dd>Any that accepts formatted text or HTML: WordPress (including block editor markup), Shopify, Wix, Squarespace, Webflow, HubSpot and others. Copy as formatted text for visual editors, or as HTML for code views.</dd>
-      <dt>Does it work on a Mac?</dt>
-      <dd>Yes, in any up-to-date browser. Paste with <kbd>⌘</kbd> + <kbd>V</kbd>; the editing shortcuts use <kbd>⌘</kbd> too.</dd>
-      <dt>What happens to images?</dt>
-      <dd>Images aren't copied across. Each becomes an [Image] placeholder, so you know where to upload it in your CMS.</dd>
+      <dd>Any that accepts formatted text or HTML: WordPress (including block editor markup), Shopify, Wix, Squarespace, Webflow, HubSpot and others.</dd>
     </dl>
 
     <p class="jsal-feedback">Useful? Ideas or problems? <a href="mailto:dev@jsal.io?subject=Clean%20Paste">Email me</a>.</p>
