@@ -13,6 +13,7 @@ data, scoring and tests. Real-device checks before a release: `manual-checks.md`
 | The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, `notIdeal`, and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker/quiz.json`, served with the page and loaded with the code's `?v=` number, so scoring code and values always change together. Run `build\bump-version.ps1` after editing it. | code |
 | What the page reads | `cms-picker/data.json`, written by `playbook.py publish` (nightly at 07:41 UTC, or Run workflow); never edit it by hand | the publish |
 | Its shape | `.github/scripts/cms-picker.schema.json`, checked by `check_data.py` before every publish and push | code |
+| One page per platform (`/cms-picker/<platform>/`: its SEO answers with where to find each setting, then a short profile) | `cms-picker/<platform>/index.html`, written by the publish from `.github/scripts/platform-page.html` (markup), `cms-picker/platform.css` (look) and `platform_pages()` in `playbook.py` (the headings in `SEO_HEAD`). Pages for platforms taken off are removed, and `sitemap.xml` follows. Never edit the pages by hand; `playbook.py prerender` rebuilds them locally. | the publish (code for the template) |
 
 **Separate from the Playbook.** The CMS Picker's answers are its own. A topic both cover (meta titles, old links/redirects, structured data) is labelled on both sides ("Also in the Playbook" / "Also on the CMS Picker"); a correction to one should be checked against the other.
 

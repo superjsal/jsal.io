@@ -1,0 +1,55 @@
+/* CMS Picker platform pages (/cms-picker/<platform>/), written by playbook.py from
+   .github/scripts/platform-page.html. Tags (.tag, .sc) come from styles.css. */
+.pp-crumbs { margin: 18px 0 0; color: var(--jsal-muted); font-size: 13.5px; }
+.pp-crumbs a { color: var(--jsal-accent); text-underline-offset: 2px; }
+.pp-title { margin: 10px 0 10px; font-size: clamp(28px, 4.4vw, 40px); line-height: 1.12; letter-spacing: -0.02em; }
+.pp-title .hl { color: var(--jsal-accent); }
+.pp-lede { max-width: 680px; margin: 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.55; }
+.pp-meta { margin: 10px 0 0; color: var(--jsal-muted); font-size: 13.5px; }
+.pp-h { margin: 44px 0 6px; font-size: 22px; letter-spacing: -0.01em; }
+.pp-h3 { margin: 26px 0 10px; font-size: 16px; }
+.pp-sub { margin: 0 0 16px; color: var(--jsal-muted); font-size: 14px; }
+
+/* One card per SEO question: heading, answer, menu path, docs link */
+.pp-qs { display: grid; gap: 12px; }
+.pp-q { padding: 16px 18px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
+.pp-q h3 { margin: 0 0 8px; font-size: 17px; }
+.pp-ans { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; }
+.pp-note { color: var(--jsal-ink-2); font-size: 15px; }
+.pp-where { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; align-items: start; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--jsal-line); }
+.pp-where-l { padding-top: 3px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.pp-path { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 0; }
+.pp-path + .pp-path { margin-top: 6px; }
+.pp-path-l { margin-right: 2px; color: var(--jsal-muted); font-size: 13px; }
+.pp-step { padding: 2px 8px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); font-size: 13.5px; line-height: 1.45; }
+.pp-sep { color: var(--jsal-muted); font-size: 13px; }   /* the arrow; screen readers hear ", then" */
+.pp-src { display: inline-block; margin-top: 10px; color: var(--jsal-accent); font-size: 13.5px; text-underline-offset: 2px; }
+
+/* The short profile */
+.pp-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 0; }
+.pp-facts div { padding: 12px 14px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); }
+.pp-facts dt { color: var(--jsal-muted); font-size: 12.5px; }
+.pp-facts dd { margin: 4px 0 0; font-size: 14.5px; }
+.pp-fit { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.pp-fit > div { padding: 14px 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
+.pp-fit h3 { margin: 0 0 6px; font-size: 15px; }
+.pp-fit ul { margin: 0; padding-left: 1.2em; color: var(--jsal-ink-2); font-size: 14.5px; }
+.pp-built { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 14.5px; }
+.pp-built li { display: grid; grid-template-columns: 210px auto 1fr; gap: 4px 12px; align-items: baseline; }
+.pp-built .pp-note { font-size: 14px; }
+
+.pp-next { display: flex; flex-wrap: wrap; gap: 10px; margin: 36px 0 8px; }
+.pp-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); color: var(--jsal-ink); font-weight: var(--jsal-btn-weight); text-decoration: none; }
+.pp-btn:hover { border-color: var(--jsal-hover-line); }
+.pp-btn.main { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.pp-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.pp-others { margin: 18px 0 40px; color: var(--jsal-muted); font-size: 14px; }
+.pp-others a { color: var(--jsal-accent); text-underline-offset: 2px; }
+
+@media (max-width: 720px) {
+  .pp-facts { grid-template-columns: 1fr 1fr; }
+  .pp-fit { grid-template-columns: 1fr; }
+  .pp-where { grid-template-columns: 1fr; gap: 6px; }
+  .pp-built li { grid-template-columns: auto 1fr; }
+  .pp-built li > :first-child { grid-column: 1 / -1; font-weight: 600; }
+}

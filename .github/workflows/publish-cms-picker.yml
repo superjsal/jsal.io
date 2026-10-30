@@ -1,5 +1,6 @@
 # Publishes the CMS Picker from Supabase every night: Playbook answers (with admin edits) plus the
-# admin-only picker table, written to cms-picker/data.json and the plain-HTML copy in the page.
+# admin-only picker table, written to cms-picker/data.json, the plain-HTML copy in the page and one
+# page per platform (cms-picker/<platform>/index.html, listed in sitemap.xml).
 # Commits only when something changed, then asks GitHub Pages to rebuild.
 #
 # Needs one repository secret: Settings → Secrets and variables → Actions → New repository secret,
@@ -37,7 +38,7 @@ jobs:
           if [ -z "$(git status --porcelain)" ]; then echo "No changes to publish."; exit 0; fi
           git config user.name "superjsal"
           git config user.email "dev@jsal.io"
-          git add -A cms-picker/data.json cms-picker/index.html cms-picker/logos sitemap.xml
+          git add -A cms-picker/data.json cms-picker/index.html cms-picker/logos 'cms-picker/*/index.html' sitemap.xml
           git commit -m "CMS Picker: nightly publish from Playbook"
           git push
           echo "pushed=true" >> "$GITHUB_OUTPUT"
