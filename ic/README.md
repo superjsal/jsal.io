@@ -1,6 +1,6 @@
 # Platform Playbook
 
-Team reference for the Implement Check Form: what each CMS lets us change (Content and Tech items), by page type, with how-to steps, watch-outs and guides. It also feeds the public [CMS Picker](https://jsal.io/cms-picker/).
+Team reference for the Implement Check Form: what each CMS lets us change (Content and Tech items), by page type, with how-to steps, watch-outs and guides. Admins also edit the public [CMS Picker](https://jsal.io/cms-picker/) here, on its own tab; its answers are kept separately from the Playbook's.
 
 **Live:** https://jsal.io/ic/ (team sign-in required)
 
@@ -10,7 +10,7 @@ Team reference for the Implement Check Form: what each CMS lets us change (Conte
 - Sign-in is **Discord** through **Supabase Auth**. Anyone with a Discord account can sign in, but only people an admin approves on the **Team** page can see anything.
 - The content is **not in this repo**: the Supabase database is its source of truth, and it loads only for approved members. The tables, access rules and admin functions are all in [`supabase/schema.sql`](supabase/schema.sql):
   - **Members** read everything, and post requests, upvotes and comments.
-  - **Admins** also edit answers (saved in `edits`, layered over the base content in `app_data`), add and hide platforms, edit each platform's CMS Picker profile and logo, and approve, remove or promote people.
+  - **Admins** also edit answers (saved in `edits`, layered over the base content in `app_data`), add and hide platforms, edit the CMS Picker's answers, sources, cards and logos (the `picker` table), and approve, remove or promote people.
   - **Signed-out visitors and unapproved accounts** get nothing.
 - The Supabase URL and anon key at the top of the script are public by design. They only work within those rules.
 - The CMS Picker is published from the database every night by a GitHub Action (`.github/workflows/publish-cms-picker.yml`), into `cms-picker/data.json`.
@@ -26,6 +26,6 @@ Team reference for the Implement Check Form: what each CMS lets us change (Conte
 
 ## Updating content
 
-- **Day to day:** sign in as an admin. Use **Edit** on an item (Markdown works; edits apply to the page type you're viewing), and the **Team** page to add, hide or restore platforms.
+- **Day to day:** sign in as an admin. Use **Edit** on an item (Markdown works; edits apply to the page type you're viewing), the **Team** page to add, hide or restore platforms, and the **CMS Picker** tab for the public CMS Picker (changes go live with the next publish).
 - **Larger changes** (a new item, page type or guide): pull the base content with `.github/scripts/playbook.py`, edit it, and push it back. Team edits are kept.
 - **Keep-awake:** a scheduled GitHub Action (`.github/workflows/keep-playbook-awake.yml`) calls the database's `ping()` function twice a week so the free project never pauses.

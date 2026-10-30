@@ -9,6 +9,7 @@ Run it on **an iPhone (Safari)** and in **desktop Firefox**, once in light mode 
 ## 1. Quiz
 - [ ] Open https://jsal.io/cms-picker/ and take the quiz (pick "An online store" so the shop-size question shows).
 - [ ] On the results, tap one of the answer buttons above the cards, pick a different answer: the matches re-rank straight away.
+- [ ] Each card shows Skill needed, Hosting and updates, and Cost to start side by side (stacked on a phone).
 - [ ] Each of the three cards has a gold box ("A close call with…", "Ahead of…" or "Versus…") that makes sense for your answers.
 - [ ] Switch "Show steps for" between the three matches; open one "How on…" link (it opens the platform's own help in a new tab).
 

@@ -54,9 +54,9 @@ node .github/scripts/personas.test.js
 
 Also run by `build\check.ps1` before every push, and by the "Check CMS Picker data" Action on GitHub.
 
-- **11 personas** (bakery, maker shop, government site…) must keep the first places and top threes John
+- **33 personas** (bakery, maker shop, B2B wholesaler, government site…) must keep the first places and top threes John
   agreed. A failure means a result changed: agree the new result with John before editing the expectation.
-- **Every answer combination (480)**, for every result card:
+- **Every answer combination (4,224)**, for every result card:
   - it has a box saying what sets it apart, and never mentions a row those answers rule out;
   - "the same reasons as X" appears only when the reasons really are the same, and the top two never
     show an identical list;

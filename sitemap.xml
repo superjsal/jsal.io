@@ -2,7 +2,7 @@
 <!-- Public pages only. Platform Playbook (/ic/) is team-only and noindexed, so it's left out.
      Update lastmod when a page changes. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://jsal.io/</loc><lastmod>2026-10-28</lastmod></url>
+  <url><loc>https://jsal.io/</loc><lastmod>2026-10-30</lastmod></url>
   <url><loc>https://jsal.io/image-resizer/</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://jsal.io/formatter/</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://jsal.io/cms-picker/</loc><lastmod>2026-10-30</lastmod></url>
