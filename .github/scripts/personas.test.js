@@ -65,8 +65,9 @@ const PERSONAS = [
   ['Local business, not technical, adding features', { what: 'site', kind: 'local', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no', grow: 'yes', budget: 'low' },
     { first: ['wix'], top3: ['wix', 'squarespace'], not: ['hubspot'] }],
   // Blogs, publications and custom builds
+  // HubSpot has no paid memberships built in (agreed 2026-10-30: its card's line rules it out for paid members)
   ['Newsletter writer with paid members', { what: 'content', members: 'yes', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes' },
-    { first: ['ghost'], top3: ['ghost'] }],
+    { first: ['ghost'], top3: ['ghost'], not: ['hubspot'] }],
   ['Government multilingual content site', { what: 'content', members: 'no', who: 'dev', care: 'yes', lang: 'yes', look: 'pixel', leave: 'yes' },
     { first: ['drupal'], top3: ['drupal', 'wordpress'], not: ['wix', 'squarespace', 'webflow'] }],
   ['Small blog that wants to own everything', { what: 'content', members: 'no', who: 'learn', care: 'yes', lang: 'no', look: 'template', leave: 'yes' },
@@ -74,9 +75,9 @@ const PERSONAS = [
   ['Hobby blog, not technical', { what: 'content', members: 'no', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
     { first: ['squarespace', 'ghost'], top3: ['squarespace', 'ghost'] }],
   ['Online course creator with members', { what: 'content', members: 'yes', who: 'easy', care: 'no', lang: 'no', look: 'template', leave: 'no' },
-    { first: ['ghost'], top3: ['ghost', 'squarespace'] }],
+    { first: ['ghost'], top3: ['ghost', 'squarespace'], not: ['hubspot'] }],
   ['Paid newsletter, not technical, two languages', { what: 'content', members: 'yes', who: 'easy', care: 'no', lang: 'yes', look: 'template', leave: 'no' },
-    { first: ['ghost'], top3: ['ghost'] }],
+    { first: ['ghost'], top3: ['ghost'], not: ['hubspot'] }],
   ['Nonprofit with news in two languages', { what: 'content', members: 'no', who: 'learn', care: 'no', lang: 'yes', look: 'template', leave: 'yes' },
     { first: ['hubspot', 'ghost'], top3: ['hubspot', 'ghost'] }],
   ['Developer building an app and a site', { what: 'custom', who: 'dev', care: 'yes', lang: 'no', look: 'pixel', leave: 'yes' },
@@ -91,7 +92,7 @@ const PERSONAS = [
   ['Photographer, no budget yet', { what: 'site', kind: 'creative', who: 'learn', care: 'no', lang: 'no', look: 'visual', leave: 'no', budget: 'none' },
     { first: ['framer'], top3: ['framer'] }],
   ['Newsletter with paid members, up to $25 a month', { what: 'content', members: 'yes', who: 'learn', care: 'no', lang: 'no', look: 'template', leave: 'yes', budget: 'low' },
-    { first: ['ghost'], top3: ['ghost'] }],
+    { first: ['ghost'], top3: ['ghost'], not: ['hubspot'] }],
   ['5,000-product store with a dev team, cost no object', { what: 'store', who: 'dev', care: 'yes', size: 'big', lang: 'no', look: 'pixel', leave: 'yes', budget: 'any' },
     { first: ['magento'], top3: ['magento'] }],
 ];
