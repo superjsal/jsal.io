@@ -34,7 +34,7 @@ body {
   color: var(--jsal-ink); font-size: 14px; font-weight: var(--jsal-btn-weight); text-decoration: none;
   transition: border-color 0.15s;
 }
-.btn:hover { border-color: var(--jsal-accent); }
+.btn:hover { border-color: var(--jsal-muted); }   /* hover is neutral; gold means selected, focused or the main action */
 .btn.primary { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .btn.primary:hover { filter: brightness(1.06); }
 /* A few real rows of the table (app.js), so the hero shows what the page does */
@@ -96,7 +96,7 @@ body {
   background: transparent; color: var(--jsal-muted); font-size: 13px; font-weight: 600;
   transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
-.chip:hover { color: var(--jsal-ink); }
+.chip:hover { border-color: var(--jsal-muted); color: var(--jsal-ink); }
 .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
 .chip-link { padding: 3px 6px; color: var(--jsal-accent); font-size: 13px; text-decoration: underline; text-underline-offset: 2px; }
 
@@ -131,40 +131,50 @@ body {
   position: sticky; top: 0; z-index: 3; overflow: hidden;
   border: 1px solid var(--jsal-line); border-bottom: 0; border-radius: var(--jsal-radius) var(--jsal-radius) 0 0;
   background: var(--jsal-sunk); box-shadow: 0 1px 0 var(--jsal-line);
+  transition: box-shadow 0.15s;
 }
+/* Pinned to the top of the window: a firmer line and a soft shadow, so it clearly sits over the rows */
+.thead.stuck { box-shadow: 0 1px 0 var(--jsal-line-hi), 0 8px 14px -10px rgba(0, 0, 0, 0.45); }
 .thead:not([hidden]) + .scroll { border-top: 0; border-radius: 0 0 var(--jsal-radius) var(--jsal-radius); }
 /* overflow-y: hidden, so the box can never scroll up and down itself: with display scaling a
    1px rounding overflow made it catch the mouse wheel, and the page wouldn't scroll over it */
 .scroll { overflow-x: auto; overflow-y: hidden; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); }
 /* A handful of platforms at a time (the cards' "Add to compare"), so columns are wide enough to read */
-.grid { --n: 4; min-width: calc(200px + var(--n) * 160px); }
-.row { display: grid; grid-template-columns: 200px repeat(var(--n), minmax(0, 1fr)); border-top: 1px solid var(--jsal-line); }
+/* The question column is wide enough for most questions on one line, so rows keep an even height */
+.grid { --n: 4; min-width: calc(340px + var(--n) * 160px); }
+.row { display: grid; grid-template-columns: 340px repeat(var(--n), minmax(0, 1fr)); border-top: 1px solid var(--jsal-line); }
 .row:first-child { border-top: 0; }
 .row.head { background: var(--jsal-sunk); font-weight: 700; font-size: 14px; }
-.row.head > * { padding: 9px 12px; }
+.row.head > * { padding: 10px 16px; }
 .hcell { min-width: 0; }
-/* A faint line between platform columns (the item column already has its own) */
-.hcell + .hcell, .cell + .cell { border-left: 1px solid var(--jsal-line); }
+/* No lines between platform columns: the spacing separates them, and hairlines between rows carry the eye across */
 .pname { font-weight: 700; font-size: 15px; color: var(--jsal-ink); }
 .htype { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 12.5px; font-weight: 500; line-height: 1.3; }
 .item {
-  position: sticky; left: 0; z-index: 1; padding: 10px 14px;
-  background: var(--jsal-surface); font-size: 15px; font-weight: 600; border-right: 1px solid var(--jsal-line);
+  position: sticky; left: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: 10px 16px;
+  background: var(--jsal-surface); font-size: 14.5px; font-weight: 600; line-height: 1.35; border-right: 1px solid var(--jsal-line);
 }
 .row.head .item { background: var(--jsal-sunk); }
-.cell { padding: 10px 12px; min-width: 0; }
+/* Every answer row is at least 44px, its content centred, so rows line up whether a cell has a note or not */
+.row:not(.head):not(.group) { min-height: 44px; }
+.cell { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 10px 16px; min-width: 0; }
+/* The column under the pointer or focus, and the quiz's best match when you compare from it: a faint wash,
+   the platform's name in gold. No strong fills: the tags stay the loudest thing in a cell. */
+.cell.col-on, .cell.col-pick { background: color-mix(in srgb, var(--jsal-accent) 6%, transparent); }
+.hcell.col-on .pname, .hcell.col-pick .pname { color: var(--jsal-accent); }
 /* The platform's name, for screen readers on wide screens (the column header says it) and shown on phones */
 .cell .plat { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .line { display: inline-flex; align-items: center; gap: 7px; }
 .sc { color: var(--jsal-muted); font-size: 12.5px; font-weight: 600; white-space: nowrap; }   /* "varies" / "not verified" after a tag */
 .mark { display: block; margin-top: 4px; color: var(--jsal-ink-2); font-size: 14px; line-height: 1.4; }
 /* Section heading row inside the table: Built in, SEO (spans every column) */
-.row.group { display: block; padding: 9px 14px; background: var(--jsal-sunk); color: var(--jsal-info); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
+/* A quiet label, not a filled bar: the sections are signposts, not content */
+.row.group { display: block; padding: 16px 14px 6px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 .row.group > span { position: sticky; left: 14px; }
 /* "Show notes" off: tags only, so far more rows fit on screen; hovering a cell shows its note in .tip */
 .grid.compact .mark { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }   /* still read out */
 .grid.compact .cell[data-note], .grid.compact .cell[data-scope] { cursor: help; }
-.grid.compact .cell:hover, .grid.compact .cell:focus-visible { background: var(--jsal-sunk); }
+.grid.compact .cell:hover, .grid.compact .cell:focus-visible { background: color-mix(in srgb, var(--jsal-accent) 10%, transparent); }
 .cell:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: -2px; }
 .tip {
   position: fixed; z-index: 20; max-width: 280px; padding: 8px 11px; pointer-events: none;
@@ -186,8 +196,8 @@ body {
   .row.head { display: none; }
   .row { display: block; margin-bottom: 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); overflow: hidden; }
   .item { position: static; border-right: 0; background: var(--jsal-sunk); }
+  .row.group { padding: 14px 2px 6px; border: 0; background: none; }
   .cell { display: grid; grid-template-columns: 96px 1fr; gap: 2px 10px; align-items: start; border-top: 1px solid var(--jsal-line); }
-  .cell + .cell { border-left: 0; }
   .cell .plat { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; display: block; grid-row: 1 / span 2; color: var(--jsal-ink-2); font-weight: 600; font-size: 14px; }
   .cell > :not(.plat) { grid-column: 2; justify-self: start; }
   .cell .mark { margin-top: 0; }
@@ -269,11 +279,18 @@ body {
 .qz h3 { color: var(--jsal-ink); font-size: 20px; outline: none; }
 .qz-hint { margin: 4px 0 14px; color: var(--jsal-muted); font-size: 14px; }
 .qz-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
-.qz-opt { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: inherit; text-align: left; cursor: pointer; }
+.qz-opt { position: relative; display: grid; gap: 2px; padding: 12px 34px 12px 14px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: inherit; text-align: left; cursor: pointer; }
 .qz-opt b { font-size: 15px; font-weight: 600; }
 .qz-opt small { color: var(--jsal-muted); font-size: 13px; }
-.qz-opt:hover { border-color: var(--jsal-accent); }
+.qz-opt:hover { border-color: var(--jsal-muted); }
 .qz-opt[aria-pressed="true"] { border-color: var(--jsal-accent); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+/* Selected: a small tick, the same mark wherever a choice is made */
+.qz-opt[aria-pressed="true"]::after { content: ""; position: absolute; top: 13px; right: 12px; width: 14px; height: 14px; background: var(--jsal-accent); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }
+.qz-opt, .qz-ans-chips .chip { transition: border-color 0.12s, background 0.12s, color 0.12s; }
+.qz { --tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
+/* Each question, and the results, fade in from just below (off with reduced motion, below) */
+.qz.qz-in > * { animation: qz-in 0.18s ease-out; }
+@keyframes qz-in { from { opacity: 0; transform: translateY(6px); } }
 .qz-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 /* An old shared link: the questions added since, offered above its result */
 .qz-more { margin: 2px 0 10px; }
@@ -286,17 +303,24 @@ body {
 .qz-ans-ed p { flex-basis: 100%; margin-bottom: 2px; color: var(--jsal-ink); font-size: 14.5px; font-weight: 600; }
 .qz-res { display: grid; gap: 12px; }
 .qz-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; padding: 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); color: var(--jsal-ink-2); }
-.qz-card.top { border-color: var(--jsal-accent); box-shadow: var(--jsal-selected-ring); }
+.qz-card.top { border-color: var(--jsal-line-hi); }   /* the green badge says which wins; gold stays for interaction */
 .qz-card .logo { grid-row: span 2; width: 34px; height: 34px; }
 .qz-card h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--jsal-ink); font-size: 18px; }
 .fitp { padding: 2px 9px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
 .qz-card .sum { color: var(--jsal-muted); font-size: 14.5px; }
-.qz-card ul { grid-column: 2; margin: 6px 0 0; padding-left: 1.1em; font-size: 14.5px; }
-.qz-card li + li { margin-top: 3px; }
-/* What sets it apart from its neighbour: a soft gold box, so it stands out from the reasons */
-.qz-vs { grid-column: 2; margin-top: 10px; padding: 10px 12px; border-radius: var(--jsal-radius); background: var(--jsal-accent-soft); color: var(--jsal-ink); font-size: 14.5px; line-height: 1.45; }
-.qz-vs-h { margin-bottom: 2px; color: var(--jsal-accent); font-weight: 700; }
-.qz-warn { grid-column: 2; margin-top: 4px; color: var(--jsal-warn); font-size: 14px; }
+/* "Why it fits": a small label, then the reasons with quiet ticks */
+.qz-sec { grid-column: 2; margin-top: 10px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.qz-why { grid-column: 2; margin: 4px 0 0; padding: 0; list-style: none; font-size: 14.5px; }
+.qz-why li { position: relative; padding-left: 22px; }
+.qz-why li + li { margin-top: 3px; }
+.qz-why li::before { content: ""; position: absolute; left: 0; top: 4px; width: 14px; height: 14px; background: var(--jsal-muted); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }
+/* What sets it apart from its neighbour: one gold rule and label, no fill, so it reads as the one insight */
+.qz-vs { grid-column: 2; margin-top: 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); color: var(--jsal-ink); font-size: 14.5px; line-height: 1.45; }
+.qz-vs-h { margin-bottom: 2px; color: var(--jsal-accent); font-size: 13px; font-weight: 700; }
+/* "Less suited if…": context, not an alarm (a platform its own card rules out never reaches the top three) */
+.qz-lim { grid-column: 2; display: flex; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13.5px; }
+.qz-lim::before { content: ""; flex: none; width: 15px; height: 15px; margin-top: 2px; background: var(--jsal-muted); -webkit-mask: var(--info) center / contain no-repeat; mask: var(--info) center / contain no-repeat; }
+.qz { --info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5M12 8h.01'/%3E%3C/svg%3E"); }
 /* The key facts as a strip of labelled boxes, side by side; stacked on a phone */
 .qz-facts { grid-column: 2; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); margin: 8px 0 2px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); overflow: hidden; }
 .qz-facts div { padding: 8px 12px; }
@@ -335,7 +359,6 @@ body {
   .scroll { overflow: visible; }
   .grid { min-width: 0; }
   .row, .qz-card, .qz-panel, .card { break-inside: avoid; }
-  .qz-card.top { box-shadow: none; }
   .cards.list .cbody[hidden] { display: flex; }   /* the whole card on paper */
   .mini-btn svg { display: none; }
   .qz-steps a::after, .qz-later a::after { content: " (" attr(href) ")"; white-space: normal; word-break: break-all; color: var(--jsal-muted); }

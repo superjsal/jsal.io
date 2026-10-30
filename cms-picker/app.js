@@ -46,11 +46,13 @@
 
   function setGoal(g) {
     state.goal = g;
+    state.pick = null;
     state.compare = new Set(g === 'all' ? DEFAULT_COMPARE : data.platforms.filter(fits).map((p) => p.id));
     renderCards();
     render();
   }
   function toggleCompare(id) {
+    state.pick = null;
     if (state.compare.has(id)) state.compare.delete(id); else { state.compare.add(id); window.jsalAchieve?.('compare'); }   // achievement (/nav.js)
     renderCards();
     render();
@@ -159,6 +161,11 @@
     placeBar();
   }
   // Shown while the cards are on screen and the table isn't yet, and only with something picked
+  // The table's header row: lifted (line and shadow) only while it's pinned to the top of the window
+  function liftHead() {
+    const h = $('#thead');
+    h.classList.toggle('stuck', !h.hidden && h.getBoundingClientRect().top <= 0 && $('#seo .scroll').getBoundingClientRect().bottom > h.offsetHeight);
+  }
   function placeBar() {
     const fit = $('#fit').getBoundingClientRect(), table = $('#seo .scroll').getBoundingClientRect();
     const on = state.compare.size > 0 && fit.top < innerHeight * 0.5 && table.top > innerHeight - 60;
@@ -183,8 +190,9 @@
     }
     const head = el('div', 'row head');
     head.append(el('div', 'item', 'Can you…'));
-    plats.forEach((p) => {
-      const c = el('div', 'hcell');
+    plats.forEach((p, i) => {
+      const c = el('div', `hcell${p.id === state.pick ? ' col-pick' : ''}`);
+      c.dataset.col = i;
       c.append(el('span', 'pname', p.name));
       if (p.profile) c.append(el('span', 'htype', p.profile.type));
       head.append(c);
@@ -206,8 +214,9 @@
       const label = el('div', 'item', it.label);
       if (it.term) label.append(el('small', 'term', it.term));   // the SEO name, small, under the plain question
       row.append(label);
-      plats.forEach((p) => {
-        const c = data.answers[p.id][it.id], cell = el('div', 'cell');
+      plats.forEach((p, i) => {
+        const c = data.answers[p.id][it.id], cell = el('div', `cell${p.id === state.pick ? ' col-pick' : ''}`);
+        cell.dataset.col = i;
         const [word, scope] = SCOPE[c.scope] || ['', ''];
         const line = el('span', 'line');
         line.append(el('span', `tag ${c.verdict}`, SHORT[c.verdict] || data.verdicts[c.verdict] || c.verdict));
@@ -258,6 +267,15 @@
 
     // Keep the pinned header in line with the table when it scrolls sideways
     $('#seo .scroll').addEventListener('scroll', (e) => { $('#thead').scrollLeft = e.target.scrollLeft; }, { passive: true });
+    // The column under the pointer or keyboard focus is marked, header included, so a platform's answers
+    // are easy to follow down the table
+    const markCol = (i) => document.querySelectorAll('#seo [data-col]').forEach((c) => c.classList.toggle('col-on', c.dataset.col === i));
+    ['#grid', '#ghead'].forEach((sel) => {
+      $(sel).addEventListener('pointerover', (e) => markCol(e.target.closest('[data-col]')?.dataset.col ?? null));
+      $(sel).addEventListener('pointerleave', () => markCol(null));
+    });
+    $('#grid').addEventListener('focusin', (e) => markCol(e.target.closest('[data-col]')?.dataset.col ?? null));
+    $('#grid').addEventListener('focusout', () => markCol(null));
     // Hero: platform count, when the answers were last checked, and a few real rows of the table
     document.querySelectorAll('.n-plats').forEach((n) => { n.textContent = data.platforms.length; });
     const asOf = data.asOf;
@@ -316,7 +334,7 @@
     addEventListener('scroll', () => {
       if (barTick) return;
       barTick = true;
-      requestAnimationFrame(() => { barTick = false; placeBar(); });
+      requestAnimationFrame(() => { barTick = false; placeBar(); liftHead(); });
     }, { passive: true });
     addEventListener('resize', updateBar, { passive: true });
 
@@ -439,7 +457,12 @@
         b.type = 'button';
         b.setAttribute('aria-pressed', String(a[q.id] === v));
         b.append(el('b', null, title), el('small', null, sub));
-        b.addEventListener('click', () => {
+        b.addEventListener('click', async () => {
+          if (opts.dataset.busy) return;
+          // The choice shows as selected for a moment, so it's clear it registered, before the next question
+          opts.dataset.busy = '1';
+          opts.querySelectorAll('.qz-opt').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+          await new Promise((r) => setTimeout(r, 150));
           a[q.id] = v;
           pending.delete(q.id);
           if (resume) {
@@ -452,6 +475,7 @@
         opts.append(b);
       });
       box.append(top, h, el('p', 'qz-hint', 'Pick the closest one; you can go back and change it.'), opts);
+      box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');
       if (step) {
         const nav = el('div', 'qz-nav'), back = el('button', 'btn', 'Back');
         back.type = 'button';
@@ -521,6 +545,7 @@
       history.replaceState(null, '', `#quiz?v=${pending.size ? 1 : LINK_VERSION}&${new URLSearchParams(kept)}`);
       window.jsalAchieve?.('decision');   // achievement (/nav.js)
       box.replaceChildren();
+      box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');   // fades in, like a new question
       const head = el('div', 'qz-top');
       head.append(el('span', null, 'Your best matches'));
       const bar = el('span', 'qz-bar'), fill = el('i');
@@ -549,7 +574,8 @@
             fx.append(f);
           });
         card.append(fx);
-        const ul = el('ul');
+        card.append(el('p', 'qz-sec', 'Why it fits'));
+        const ul = el('ul', 'qz-why');
         told[i].why.forEach((w) => ul.append(el('li', null, w)));
         card.append(ul);
         if (told[i].vs) {
@@ -558,7 +584,7 @@
           card.append(vs);
         }
         const skip = (pr.lessSuited || [])[0];
-        if (skip) card.append(el('p', 'qz-warn', `Not ideal if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
+        if (skip) card.append(el('p', 'qz-lim', `Less suited if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);
       });
       box.append(head, h);
@@ -594,6 +620,7 @@
       cmp.type = 'button';
       cmp.addEventListener('click', () => {
         state.compare = new Set(top.map((r) => r.p.id));
+        state.pick = top[0].p.id;
         renderCards();
         render();
         $('#seo').scrollIntoView();
