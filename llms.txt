@@ -1,6 +1,6 @@
 # jsal.io
 
-> Personal site of John Salvador, who works in SEO and builds small, free web tools that run entirely in the browser (nothing is uploaded).
+> Personal site of John Salvador, a web developer who works in technical SEO and builds small, free web tools that run entirely in the browser (nothing is uploaded).
 
 ## Tools
 
