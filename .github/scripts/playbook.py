@@ -331,7 +331,7 @@ def prerender():
         on = p['id'] in DEFAULT_COMPARE
         c.append(f'<div class="cfoot"><button class="chip cmp" type="button" aria-pressed="{str(on).lower()}">'
                  f'{"✓ Comparing" if on else "+ Add to compare"}</button>'
-                 f'<a class="cseo" href="{e(p["id"])}/" aria-label="{e(p["name"])} SEO settings, and where to find each one">SEO settings<span aria-hidden="true"> →</span></a></div></article>')
+                 f'<a class="cseo" href="{e(p["id"])}/" data-track="platform_page_open" data-track-platform="{e(p["id"])}" data-track-from="card" aria-label="{e(p["name"])} SEO settings, and where to find each one">SEO settings<span aria-hidden="true"> →</span></a></div></article>')
         cards.append(''.join(c))
 
     # The table: every platform (the live page starts with four), with notes, so nothing is left out
@@ -373,7 +373,7 @@ def prerender():
     grid = f'<div class="grid" style="--n: {len(plats)}">' + '\n'.join(rows) + '</div>'
     parts = {'cards': '\n'.join(cards), 'grid': grid, 'peek': ''.join(peek),
              'count': str(len(plats)), 'asof': e(as_of or ''),
-             'seo-chips': ''.join(f'<a class="seo-chip" href="{e(p["id"])}/">{logo(p)}{e(p["name"])}<span class="sr-only"> SEO settings</span></a>'
+             'seo-chips': ''.join(f'<a class="seo-chip" href="{e(p["id"])}/" data-track="platform_page_open" data-track-platform="{e(p["id"])}" data-track-from="chips">{logo(p)}{e(p["name"])}<span class="sr-only"> SEO settings</span></a>'
                                   for p in plats if p.get('profile')),   # the platform pages, as logo chips under the table
              'peek-cap': f'{len(pr_rows)} of {len(d["items"])} rows, from the full table below'}
     for name, body in parts.items():
@@ -452,7 +452,7 @@ def platform_pages(d):
         for r in rows:
             a = ans[r]
             where = f'<div class="pp-where"><span class="pp-where-l">Where</span><div>{paths(a["where"])}</div></div>' if a.get('where') else ''
-            src = (f'<a class="pp-src" href="{e(a["sourceUrl"])}" target="_blank" rel="noopener">{e(name)}’s help page'
+            src = (f'<a class="pp-src" href="{e(a["sourceUrl"])}" target="_blank" rel="noopener" data-track="docs_click" data-track-platform="{pid}" data-track-question="{r}">{e(name)}’s help page'
                    f'<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>') if a.get('sourceUrl') else ''
             qs.append(f'        <article class="pp-q" id="{r}"><h3>{e(SEO_HEAD.get(r, items[r]["label"]))}</h3>'
                       f'<div class="pp-ans">{tag(a)}{note(a)}</div>{where}{src}</article>')

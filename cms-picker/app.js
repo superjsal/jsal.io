@@ -53,7 +53,8 @@
   }
   function toggleCompare(id) {
     state.pick = null;
-    if (state.compare.has(id)) state.compare.delete(id); else { state.compare.add(id); window.jsalAchieve?.('compare'); }   // achievement (/nav.js)
+    if (state.compare.has(id)) state.compare.delete(id);
+    else { state.compare.add(id); window.jsalAchieve?.('compare'); window.jsalTrack?.('compare_add', { platform: id }); }   // achievement and GA4 event (/nav.js)
     renderCards();
     render();
   }
@@ -108,6 +109,7 @@
       // Its own page: each SEO answer with where to find the setting (written by the publish)
       const seo = el('a', 'cseo', 'SEO settings');
       seo.href = `${p.id}/`;
+      Object.assign(seo.dataset, { track: 'platform_page_open', trackPlatform: p.id, trackFrom: 'card' });   // GA4 event (/nav.js)
       seo.setAttribute('aria-label', `${p.name} SEO settings, and where to find each one`);
       seo.append(el('span', null, ' →'));
       seo.lastChild.setAttribute('aria-hidden', 'true');
@@ -450,7 +452,7 @@
 
     function ask() {
       const list = steps();
-      if (step >= list.length) return results();
+      if (step >= list.length) return results('quiz');
       const q = list[step];
       box.replaceChildren();
       const top = el('div', 'qz-top');
@@ -548,7 +550,9 @@
       return bar;
     }
 
-    function results() {
+    // source: 'quiz' (the last question answered) or 'link' (a shared result opened), sent as a GA4
+    // event; re-showing the result after an answer is changed sends nothing
+    function results(source) {
       const ranked = window.cmsScore.rank(data, a);
       const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
       // A tie for first is shown as one: list order alone mustn't crown a "Best match". When even the first
@@ -561,6 +565,7 @@
       const kept = Object.entries(a).filter(([k]) => steps().some((q) => q.id === k) && !pending.has(k));
       history.replaceState(null, '', `#quiz?v=${pending.size ? 1 : LINK_VERSION}&${new URLSearchParams(kept)}`);
       window.jsalAchieve?.('decision');   // achievement (/nav.js)
+      if (source) window.jsalTrack?.('quiz_result', { top_match: ranked[0].p.id, fit: weak ? 'closest' : 'best', source });
       box.replaceChildren();
       box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');   // fades in, like a new question
       const head = el('div', 'qz-top');
@@ -691,11 +696,11 @@
       if (link.old && 'what' in a) {
         steps().forEach((q) => { if (!(q.id in a)) { pending.add(q.id); if (q.id in NEUTRAL) a[q.id] = NEUTRAL[q.id]; } });
         step = steps().length;
-        results();
+        results('link');
         return true;
       }
       const missing = steps().findIndex((q) => !(q.id in a));
-      if (missing < 0) { step = steps().length; results(); }
+      if (missing < 0) { step = steps().length; results('link'); }
       else if (Object.keys(a).length) { step = missing; resume = true; ask(); }
       else { step = 0; ask(); }
       return true;

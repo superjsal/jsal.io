@@ -4,7 +4,25 @@
 // - the button marked data-jsal-theme switches light/dark for all the apps
 // - on touch screens, text marked data-touch is swapped for that wording (data-touch="" removes it), so
 //   instructions say tap instead of click, drop or a keyboard shortcut; the HTML keeps the desktop wording
+// - window.jsalTrack('name', { params }) sends a GA4 event; a link or button can carry data-track="name"
+//   with data-track-* params instead (data-track-platform="wix" → platform: "wix")
 (() => {
+  // Analytics events, on the GA4 tag every public page already has (the team Playbook has none, so
+  // nothing is sent there). A page loaded ahead on hover only sends once it's actually shown.
+  const track = (name, params = {}) => {
+    const send = () => { try { if (typeof window.gtag === 'function') window.gtag('event', name, params); } catch (e) {} };
+    if (document.prerendering) document.addEventListener('prerenderingchange', send, { once: true }); else send();
+  };
+  window.jsalTrack = track;
+  addEventListener('click', (e) => {
+    const t = e.target.closest && e.target.closest('[data-track]');
+    if (!t) return;
+    const params = {};
+    for (const [k, v] of Object.entries(t.dataset)) {
+      if (k.startsWith('track') && k !== 'track') params[k.slice(5).replace(/^./, (c) => c.toLowerCase()).replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`)] = v;
+    }
+    track(t.dataset.track, params);
+  });
   if (matchMedia('(pointer: coarse)').matches) {
     for (const el of document.querySelectorAll('[data-touch]')) {
       if (el.dataset.touch) el.textContent = el.dataset.touch;
