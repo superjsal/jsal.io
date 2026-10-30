@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzx";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzx";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-29zzz";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-29zzz";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -184,14 +184,29 @@ let shownChecks = [];
 const located = new Map();   // check id → index of the line shown last
 const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)");
 const ONE_COLUMN = matchMedia("(max-width: 899px)");
-// Resolves once scrolling has stopped (scrollend where the browser has it, else a short wait)
-const scrollSettled = () => new Promise((done) => {
-  let t = setTimeout(finish, 700);
-  function finish() { clearTimeout(t); removeEventListener("scrollend", onEnd, true); done(); }
-  function onEnd() { clearTimeout(t); t = setTimeout(finish, 60); }   // the editor and the page may both scroll
-  addEventListener("scrollend", onEnd, true);
+// Resolves once the page and the editor have stopped moving for a few frames (scrollend isn't in every
+// Safari, and a long smooth scroll on a phone can outlast any fixed wait), or after 1.5s at most
+const scrollSettled = (el) => new Promise((done) => {
+  const pane = editor.closest(".pane-body"), start = performance.now();
+  let last = "", still = 0;
+  (function frame() {
+    const now = `${scrollX},${scrollY},${pane.scrollTop},${Math.round(el.getBoundingClientRect().top)}`;
+    still = now === last ? still + 1 : 0;
+    last = now;
+    if (still >= 4 || performance.now() - start > 1500) done();
+    else requestAnimationFrame(frame);
+  })();
 });
+// Whether the line sits where you can see it: inside the editor's scroll area and the screen, clear of the
+// browser's own bars and, in one column, the Back to checks button floating at the bottom
+function inView(el) {
+  const box = el.getBoundingClientRect(), view = editor.closest(".pane-body").getBoundingClientRect();
+  const screen = visualViewport?.height || innerHeight, clear = ONE_COLUMN.matches ? 96 : 8;
+  return box.top >= Math.max(view.top, clear) && box.bottom <= Math.min(view.bottom, screen - clear);
+}
+let locating = 0, fadeTimer;
 async function locate(check, from) {
+  const run = ++locating;   // a newer Show press takes over from one still scrolling
   if (editor.hidden) tabButton("page").click();
   const lines = check.find(editor);
   if (!lines.length) return;
@@ -201,11 +216,10 @@ async function locate(check, from) {
   for (const x of editor.querySelectorAll(".locate")) x.classList.remove("locate");   // one highlight at a time
   // Scroll first if the line isn't fully in view, in the editor or (one column) on the page, and bring it to the
   // middle; the highlight starts once it's there, so it isn't over before you see it
-  const box = el.getBoundingClientRect(), view = editor.closest(".pane-body").getBoundingClientRect();
-  const hidden = box.top < Math.max(view.top, 0) || box.bottom > Math.min(view.bottom, innerHeight);
-  if (hidden) {
+  if (!inView(el)) {
     el.scrollIntoView({ block: "center", behavior: REDUCED_MOTION.matches ? "instant" : "smooth" });
-    await scrollSettled();
+    await scrollSettled(el);
+    if (run !== locating) return;
   }
   editor.focus({ preventScroll: true });
   const range = document.createRange();
@@ -213,10 +227,14 @@ async function locate(check, from) {
   range.collapse(true);
   getSelection().removeAllRanges();
   getSelection().addRange(range);
+  // Placing the cursor can make a phone browser scroll on its own; if the line moved away, put it back
+  if (!inView(el)) el.scrollIntoView({ block: "center", behavior: "instant" });
   void el.offsetWidth;   // restart the flash if it's already running
   el.classList.add("locate");
-  // Fades out on its own; with reduced motion it stays (no fade) until the next Show or edit
-  if (!REDUCED_MOTION.matches) setTimeout(() => el.classList.remove("locate"), 2700);
+  // Fades out on its own; with reduced motion it stays (no fade) until the next Show or edit. A new Show
+  // cancels the old timer, so it can't cut the new highlight short
+  clearTimeout(fadeTimer);
+  if (!REDUCED_MOTION.matches) fadeTimer = setTimeout(() => el.classList.remove("locate"), 2700);
   // Screen readers hear which line, as the cursor alone doesn't say it
   const text = el.textContent.trim().replace(/\s+/g, " ");
   $("checkSay").textContent = `${lines.length > 1 ? `${i + 1} of ${lines.length}: ` : ""}${text.length > 80 ? `${text.slice(0, 80)}…` : text}`;
