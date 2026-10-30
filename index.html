@@ -26,7 +26,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-30zc" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-30zd" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
      only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
@@ -279,7 +279,7 @@ a:not(.tile):focus-visible { border-radius: 6px; }   /* tiles keep their own rou
 .jsal-top nav a:hover { color: var(--jsal-ink); }
 
 /* Bento grid: 12 columns, one per tile row; stacks on narrow screens */
-.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 36px; grid-auto-flow: row dense; }   /* dense: Updates, last in the code so the Tab order runs left to right, goes up beside "Currently" and the backpack */
 .tile { border-radius: 22px; padding: 26px; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
 a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 /* With a mouse: the tile tilts toward the pointer and a soft light follows it (the script below sets
@@ -327,7 +327,7 @@ p, li { text-wrap: pretty; }
 /* Currently: WoW Forever art behind the text, scaled down but otherwise unaltered as Blizzard's fan-site policy
    requires (the darkening is a separate layer on top, and the copyright notice stays on the
    card). Same light text in both themes, since it sits on the picture. */
-.now-playing { grid-column: 6 / 13; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 280px; }   /* style: allow (WoW tile: dark green under the art) */
+.now-playing { grid-column: 1 / 8; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 280px; }   /* style: allow (WoW tile: dark green under the art) */
 /* Text over the sky at the top, so the dwarf and bear show in the lower half. The art is 2.4:1 and the
    card is taller than that, so it fills the height and object-position picks the slice with the dwarf
    and bear. It's drawn 18% taller than the card with the extra above it (sky), which lifts them clear
@@ -341,22 +341,22 @@ p, li { text-wrap: pretty; }
 .now-playing .credit { font-size: 11px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
 
-.jscale { grid-column: 6 / 13; background: var(--cream); color: var(--cream-ink); padding: 14px; display: flex; flex-direction: column; gap: 16px; --arrow-bg: var(--cream-btn); --arrow-ink: var(--cream-btn-ink); }
+.jscale { grid-column: 1 / 8; background: var(--cream); color: var(--cream-ink); padding: 14px; display: flex; flex-direction: column; gap: 16px; --arrow-bg: var(--cream-btn); --arrow-ink: var(--cream-btn-ink); }
 .jscale .shot { aspect-ratio: 16 / 8; min-width: 0; }   /* min-width: Safari otherwise sizes it to its content and it sticks out on phones */
 .jscale .foot { padding: 0 8px 6px; }
 .jscale .label, .jscale .desc { color: var(--cream-muted); }
 .desc { margin-top: 4px !important; font-size: 14.5px; }
 
-.ic { grid-column: 1 / 8; background: var(--blue); color: var(--blue-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 28px; --arrow-bg: var(--blue-acc); --arrow-ink: var(--blue); }
+.ic { grid-column: 6 / 13; background: var(--blue); color: var(--blue-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 28px; --arrow-bg: var(--blue-acc); --arrow-ink: var(--blue); }
 .ic .label { color: var(--blue-acc); }
 .ic .desc { color: var(--blue-muted); }
 
-.fmt { grid-column: 1 / 6; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
+.fmt { grid-column: 8 / 13; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
 .fmt h2, .jscale h2, .ic h2 { font-size: 24px; }   /* the featured app keeps the biggest title */
 .fmt .label { color: var(--gold-acc); }
 .fmt .desc { color: var(--gold-muted); }
 
-.ui { grid-column: 8 / 13; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr); align-content: space-between; gap: 22px; }   /* a narrow tile: the screen sits under the text */
+.ui { grid-column: 1 / 6; background: var(--green); color: var(--green-ink); display: grid; grid-template-columns: minmax(0, 1fr); align-content: space-between; gap: 22px; }   /* a narrow tile: the screen sits under the text */
 .ui .label { color: var(--green-acc); }
 .cms { grid-column: 6 / 13; background: var(--plum); color: var(--plum-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--plum-acc); --arrow-ink: var(--plum); }
 .cms h2 { font-size: 36px; }
@@ -486,7 +486,7 @@ p, li { text-wrap: pretty; }
 @keyframes m-nudge { 0%, 100% { translate: 0 0; } 15% { translate: 3px 0; } 30% { translate: 0 0; } }
 @keyframes m-pick { 0%, 8% { border-color: var(--jsal-line); box-shadow: none; } 12%, 100% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } }
 
-.now { grid-column: 1 / 6; grid-row: span 2; background: var(--plain); }   /* beside "Currently" and the backpack, stacked */
+.now { grid-column: 8 / 13; grid-row: span 2; background: var(--plain); }   /* beside "Currently" and the backpack, stacked */
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
 .now ul { margin: 0; padding: 0; list-style: none; }
 .now li { padding: 10px 0; border-top: 1px solid var(--plain-line); }
@@ -515,7 +515,7 @@ p, li { text-wrap: pretty; }
 @media (prefers-reduced-motion: reduce) { .ach-bar i { transition: none; } }
 
 /* Plain surface, so the cream/ink contrast stays with the featured app */
-.mail { grid-column: 6 / 13; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; gap: 4px; }
+.mail { grid-column: 1 / 8; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; gap: 4px; }
 .mail .label, .mail .desc { color: var(--jsal-muted); }
 /* Backpack: where to find me, as gear in a game bag. The tile is the bag (stitched leather, a portrait
    and title bar like a bag window) and keeps its look in both themes, like the WoW Forever tile. Items
@@ -572,9 +572,6 @@ footer nav { display: flex; gap: 4px; }
 footer a, footer .foot-btn { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
 
-/* Small laptops: Image Resizer's output list keeps the sizes but drops the thumbnails, so it doesn't
-   squeeze in the narrower tile */
-@media (min-width: 861px) and (max-width: 1100px) { .m-jscale .out .photo { display: none; } }
 @media (max-width: 860px) {
   .grid > * { grid-column: 1 / -1 !important; }
   .now { grid-row: auto; }
@@ -652,22 +649,6 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
     </a>
 
-    <a class="tile fmt" href="/formatter/" data-app>
-      <div class="mock m-fmt" aria-hidden="true">
-        <div class="doc box word"><small>From Word</small><b>Spring menu</b><p>Our <mark>new dishes</mark> are&nbsp;&nbsp; here, with <span class="odd">seasonal</span> picks.</p></div>
-        <span class="to"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-        <div class="doc box html"><small>Clean HTML</small><span class="ln"><span class="t">&lt;h2&gt;</span>Spring menu<span class="t">&lt;/h2&gt;</span></span><span class="ln"><span class="t">&lt;p&gt;</span>Our new dishes are here,</span><span class="ln">with seasonal picks.<span class="t">&lt;/p&gt;</span></span></div>
-      </div>
-      <div class="foot">
-        <div>
-          <p class="label">02 · web app</p>
-          <h2>Clean Paste</h2>
-          <p class="desc">Paste from Word or Google Docs, get clean HTML. Works both ways: HTML to formatted text, and back.</p>
-        </div>
-        <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-      </div>
-    </a>
-
     <a class="tile jscale" href="/image-resizer/" data-app>
       <div class="shot mock m-jscale" aria-hidden="true">
         <div class="pile">
@@ -685,7 +666,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
       <div class="foot">
         <div>
-          <p class="label">03 · web app</p>
+          <p class="label">02 · web app</p>
           <h2>Image Resizer</h2>
           <p class="desc">Resize, crop and convert one image or a whole batch in the browser. Nothing is uploaded.</p>
         </div>
@@ -693,23 +674,17 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
     </a>
 
-    <a class="tile ic" href="/ic/" data-app>
-      <div class="mock m-ic" aria-hidden="true">
-        <div class="sealed">
-          <div class="ph"><span class="logo"></span><i class="bar" style="width: 34%"></i><span class="tabs"><i class="on"></i><i></i></span></div>
-          <div class="row box"><i class="bar" style="width: 38%"></i><em class="v ok"></em></div>
-          <div class="row box"><i class="bar" style="width: 52%"></i><em class="v ok"></em></div>
-          <div class="row box"><i class="bar" style="width: 44%"></i><em class="v info"></em></div>
-          <div class="row box"><i class="bar" style="width: 48%"></i><em class="v warn"></em></div>
-        </div>
-        <span class="lock"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Team only</span>
+    <a class="tile fmt" href="/formatter/" data-app>
+      <div class="mock m-fmt" aria-hidden="true">
+        <div class="doc box word"><small>From Word</small><b>Spring menu</b><p>Our <mark>new dishes</mark> are&nbsp;&nbsp; here, with <span class="odd">seasonal</span> picks.</p></div>
+        <span class="to"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        <div class="doc box html"><small>Clean HTML</small><span class="ln"><span class="t">&lt;h2&gt;</span>Spring menu<span class="t">&lt;/h2&gt;</span></span><span class="ln"><span class="t">&lt;p&gt;</span>Our new dishes are here,</span><span class="ln">with seasonal picks.<span class="t">&lt;/p&gt;</span></span></div>
       </div>
       <div class="foot">
         <div>
-          <p class="label">04 · for my team</p>
-          <h2>Platform Playbook</h2>
-          <p class="desc">SEO checks across website platforms, with how-to steps and guides.</p>
-          <span class="pill"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Sign-in, approved team only</span>
+          <p class="label">03 · web app</p>
+          <h2>Clean Paste</h2>
+          <p class="desc">Paste from Word or Google Docs, get clean HTML. Works both ways: HTML to formatted text, and back.</p>
         </div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </div>
@@ -717,7 +692,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
     <section class="tile ui soon" aria-labelledby="ui-h">
       <div>
-        <p class="label">05 · for WoW Forever</p>
+        <p class="label">04 · for WoW Forever</p>
         <h2 id="ui-h">JSal UI</h2>
         <p class="desc">A clean, minimal interface for raiding and everyday play. One import string, a few minutes.</p>
         <span class="pill">Coming soon</span>
@@ -732,19 +707,29 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
     </section>
 
-    <!-- Site updates, newest first. "Currently" (the WoW tile) says what I'm up to; this lists what shipped. -->
-    <section id="updates" class="tile now" aria-labelledby="updates-h">
-      <h2 id="updates-h">Updates</h2>
-      <ul>
-        <li><time datetime="2026-10-30">Oct 30</time><span><a href="/cms-picker/">CMS Picker</a>: a page per platform with its SEO settings and where to find each one, like <a href="/cms-picker/squarespace/">Squarespace</a></span></li>
-        <li><time datetime="2026-10-30">Oct 30</time><span><a href="/cms-picker/">CMS Picker</a>: Sanity replaces the general “Headless CMS”, a new question on adding features as your site grows, and results now say which of your answers tipped them, or when nothing fits your answers well</span></li>
-        <li><time datetime="2026-10-30">Oct 30</time><span><a href="/formatter/">Clean Paste</a> and the <a href="/image-resizer/">Image Resizer</a> work better on phones, point out what to fix more clearly, and warn when an image may look blurry</span></li>
-        <li><time datetime="2026-10-30">Oct 30</time><span>A new home page with the <a href="/cms-picker/">CMS Picker</a> up front, plus clearer colours and shorter About sections across the site</span></li>
-        <li><time datetime="2026-10-29">Oct 29</time><span><a href="/cms-picker/">CMS Picker</a>: find your fit in a few questions. Plus <a href="#ach-h">achievements</a> and a <a href="#hi-h">backpack</a> with where to find me</span></li>
-      </ul>
-    </section>
+    <a class="tile ic" href="/ic/" data-app>
+      <div class="mock m-ic" aria-hidden="true">
+        <div class="sealed">
+          <div class="ph"><span class="logo"></span><i class="bar" style="width: 34%"></i><span class="tabs"><i class="on"></i><i></i></span></div>
+          <div class="row box"><i class="bar" style="width: 38%"></i><em class="v ok"></em></div>
+          <div class="row box"><i class="bar" style="width: 52%"></i><em class="v ok"></em></div>
+          <div class="row box"><i class="bar" style="width: 44%"></i><em class="v info"></em></div>
+          <div class="row box"><i class="bar" style="width: 48%"></i><em class="v warn"></em></div>
+        </div>
+        <span class="lock"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Team only</span>
+      </div>
+      <div class="foot">
+        <div>
+          <p class="label">05 · for my team</p>
+          <h2>Platform Playbook</h2>
+          <p class="desc">SEO checks across website platforms, with how-to steps and guides.</p>
+          <span class="pill"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Sign-in, approved team only</span>
+        </div>
+        <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+      </div>
+    </a>
 
-    <!-- What I'm up to, above the backpack (Updates runs down beside both) -->
+    <!-- What I'm up to, above the backpack (Updates runs down the right beside both) -->
     <section class="tile now-playing" aria-label="Currently">
       <!-- It covers a tall box, so it's drawn about 800px wide whatever the screen: sizes says that,
            and 2x screens still get the 1920px original. Well below the first screen, so it loads late. -->
@@ -804,6 +789,18 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
         <div class="tip" id="tip" hidden></div>
         <div class="cast" id="cast" hidden><span class="cast-fill"></span><span class="cast-name">Hearthstone</span></div>
       </div>
+    </section>
+
+    <!-- Site updates, newest first. "Currently" (the WoW tile) says what I'm up to; this lists what shipped. -->
+    <section id="updates" class="tile now" aria-labelledby="updates-h">
+      <h2 id="updates-h">Updates</h2>
+      <ul>
+        <li><time datetime="2026-10-30">Oct 30</time><span><a href="/cms-picker/">CMS Picker</a>: a page per platform with its SEO settings and where to find each one, like <a href="/cms-picker/squarespace/">Squarespace</a></span></li>
+        <li><time datetime="2026-10-30">Oct 30</time><span><a href="/cms-picker/">CMS Picker</a>: Sanity replaces the general “Headless CMS”, a new question on adding features as your site grows, and results now say which of your answers tipped them, or when nothing fits your answers well</span></li>
+        <li><time datetime="2026-10-30">Oct 30</time><span><a href="/formatter/">Clean Paste</a> and the <a href="/image-resizer/">Image Resizer</a> work better on phones and point out what to fix more clearly. The Image Resizer uses far less memory and never overwrites a file when saving to a folder</span></li>
+        <li><time datetime="2026-10-30">Oct 30</time><span>A new home page with the <a href="/cms-picker/">CMS Picker</a> up front, plus clearer colours and shorter About sections across the site</span></li>
+        <li><time datetime="2026-10-29">Oct 29</time><span><a href="/cms-picker/">CMS Picker</a>: find your fit in a few questions. Plus <a href="#ach-h">achievements</a> and a <a href="#hi-h">backpack</a> with where to find me</span></li>
+      </ul>
     </section>
 
     <section class="tile ach" aria-labelledby="ach-h">
@@ -966,6 +963,6 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-30zc" defer></script>
+<script src="/nav.js?v=2026-10-30zd" defer></script>
 </body>
 </html>
