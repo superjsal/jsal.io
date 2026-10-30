@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-30zn";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zn";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zn";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zn";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zn";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zn";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zn";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zn";
+} from "./state.js?v=2026-10-30zo";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zo";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zo";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zo";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zo";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zo";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zo";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zo";
 
 const $ = id => document.getElementById(id);
 
@@ -325,9 +325,10 @@ async function downloadAll() {
 // --- Output settings ---
 
 // The empty width and height boxes hint at the size in use, so they never suggest a different one
+// In Original mode each image keeps its own size, so the boxes say "Auto"
 function hintSize() {
-  widthInput.placeholder = state.size.w;
-  heightInput.placeholder = state.size.h;
+  widthInput.placeholder = state.keepOriginal ? "Auto" : state.size.w;
+  heightInput.placeholder = state.keepOriginal ? "Auto" : state.size.h;
 }
 
 function applySize(w, h) {
@@ -342,6 +343,7 @@ function applySize(w, h) {
 
 function applyOriginalMode() {
   state.keepOriginal = true;
+  hintSize();
   savePrefs();
   setBadge("Original sizes");
   if (state.images.length) refreshAll();
