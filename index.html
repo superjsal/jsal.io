@@ -429,8 +429,11 @@ p, li { text-wrap: pretty; }
    tile and the line under the grid cycle through six agreed first places from the persona tests (a blog:
    WordPress, a small shop: Shopify, a local business: Wix, a paid newsletter: Ghost, a photographer: Framer,
    an app and a site: Sanity), so the match reads as depending on the visitor, not as a recommendation. On
-   load the tiles pop in one by one. The featured platform's own small tile fades while it's in the big one, so
-   no logo shows twice. Reduced motion: the first pair, still. */
+   load the tiles pop in, the big tile flicks through the other five and settles on the first pair, all within
+   about 2.6s: anything that moves on its own for over 5s needs a pause control (WCAG 2.2.2), and a card that is
+   one link can't hold one. Hovering or focusing the card plays the full cycle, 3s a pair, for as long as the
+   visitor stays. The featured platform's own small tile fades while it's in the big one, so no logo shows
+   twice. Reduced motion: the first pair, still. */
 .m-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding: 14px; }
 .m-grid > span { aspect-ratio: 1; display: grid; place-items: center; border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); border: 1px solid var(--jsal-line); }
 .m-grid .logo { width: 46%; height: 46%; background: var(--plum-ink); opacity: 0.75; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
@@ -454,14 +457,23 @@ p, li { text-wrap: pretty; }
 @media (prefers-reduced-motion: no-preference) {
   .m-grid > span, .m-grid .fitline { animation: g-in 0.45s calc(0.15s + var(--n) * 55ms) cubic-bezier(0.2, 0.8, 0.2, 1) both; }
   .m-grid .hero { animation: g-in 0.45s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both, g-glow 0.7s 0.95s ease-out both; }
-  /* Each pair shows for 3 of the 18 seconds; the logo and its words change together */
-  .m-grid .hero .logo, .m-grid .rot b { animation: g-rot 18s calc(var(--k) * 3s) infinite both; }
-  .m-grid > span:not(.hero) .logo[style*="--k:"] { animation: g-away 18s calc(var(--k) * 3s) infinite both; }
+  /* On load: pairs 1 to 5 flick past (0.35s each, from 0.6s), then the first pair lands at 2.35s and stays */
+  .m-grid .hero .logo, .m-grid .rot b { animation: g-flick 0.35s calc(0.25s + var(--k) * 0.35s) both; }
+  .m-grid > span:not(.hero) .logo[style*="--k:"] { animation: g-flick-away 0.35s calc(0.25s + var(--k) * 0.35s) both; }
+  .m-grid .hero .logo[style*="--k: 0"], .m-grid .rot b[style*="--k: 0"] { animation: g-land 0.3s 2.35s both; }
+  .m-grid > span:not(.hero) .logo[style*="--k: 0"] { animation: g-land-away 0.3s 2.35s both; }
+  /* Hovered or focused: the full cycle, each pair 3 of the 18 seconds; the logo and its words change together */
+  .tile:is(:hover, :focus-visible) .m-grid .hero .logo, .tile:is(:hover, :focus-visible) .m-grid .rot b { animation: g-rot 18s calc(var(--k) * 3s) infinite both; }
+  .tile:is(:hover, :focus-visible) .m-grid > span:not(.hero) .logo[style*="--k:"] { animation: g-away 18s calc(var(--k) * 3s) infinite both; }
 }
 @keyframes g-in { from { opacity: 0; scale: 0.82; } to { opacity: 1; scale: 1; } }
 @keyframes g-glow { from { border-color: var(--jsal-line); box-shadow: none; background: var(--jsal-surface); } }
 @keyframes g-rot { 0% { opacity: 0; translate: 0 4px; } 2.5%, 14.5% { opacity: 1; translate: 0 0; } 16.67%, 100% { opacity: 0; translate: 0 0; } }
 @keyframes g-away { 0% { opacity: 0.75; } 2.5%, 14.5% { opacity: 0.12; } 16.67%, 100% { opacity: 0.75; } }
+@keyframes g-flick { 0%, 100% { opacity: 0; } 15%, 85% { opacity: 1; } }
+@keyframes g-flick-away { 0%, 100% { opacity: 0.75; } 15%, 85% { opacity: 0.12; } }
+@keyframes g-land { from { opacity: 0; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }
+@keyframes g-land-away { from { opacity: 0.75; } to { opacity: 0.12; } }
 
 /* Clean Paste: checks + copy buttons, then the editor with its toolbar */
 /* Clean Paste: what Word's formatting looks like going in, and the clean HTML coming out */
