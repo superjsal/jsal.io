@@ -459,12 +459,17 @@
       // Until "What are you making?" is answered, count the longest path (its follow-up question included),
       // so the total doesn't jump from 6 to 7 after the first answer
       const first = QUESTIONS[0], total = first.id in a ? list.length : Math.max(...first.opts.map(([v]) => steps({ ...a, [first.id]: v }).length));
-      top.append(el('span', null, `Question ${step + 1} of ${total}`));
+      const progress = `Question ${step + 1} of ${total}`;
+      const shown = el('span', null, progress);
+      shown.setAttribute('aria-hidden', 'true');   // screen readers get it from the heading below
+      top.append(shown);
       const bar = el('span', 'qz-bar'), fill = el('i');
       fill.style.width = `${(step / total) * 100}%`;
       bar.append(fill);
       top.append(bar);
-      const h = el('h3', null, q.q);
+      // Focus moves to this heading after each answer, so it carries the progress too ("Question 2 of 9: …")
+      const h = el('h3');
+      h.append(el('span', 'sr-only', `${progress}: `), q.q);
       h.tabIndex = -1;
       const opts = el('div', 'qz-opts');
       opts.setAttribute('role', 'group');
