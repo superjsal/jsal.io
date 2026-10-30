@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-30ze";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-30ze";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-30zg";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-30zg";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -28,11 +28,15 @@ const ICONS = {
 const icon = (name, size = 14, stroke = 2.2) =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
 for (const el of document.querySelectorAll("[data-icon]")) el.innerHTML = icon(el.dataset.icon, +el.dataset.size || 14);
-// On a Mac the shortcuts use ⌘: the paste hints, and the toolbar's tooltips (redo there is ⌘⇧Z, not Ctrl+Y)
-const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+// On a Mac the shortcuts use ⌘ and ⌥: the paste hints, the About section's list, and the toolbar's tooltips
+// (redo there is ⌘⇧Z, not Ctrl+Y)
+const isMac = /Mac|iPhone|iPad/i.test(navigator.userAgentData?.platform ?? navigator.platform ?? "");
 if (isMac) {
   for (const k of document.querySelectorAll(".mod-key")) k.textContent = "⌘";
-  for (const b of document.querySelectorAll("[title*='Ctrl+']")) b.title = b.title.replace("Ctrl+Y", "⌘⇧Z").replace("Ctrl+", "⌘");
+  for (const k of document.querySelectorAll(".alt-key")) k.textContent = "⌥";
+  for (const b of document.querySelectorAll("[title*='Ctrl+']")) {
+    b.title = b.title.replace("Ctrl+Y", "⌘⇧Z").replace("Ctrl+Alt+", "⌘⌥").replace("Ctrl+Shift+", "⌘⇧").replace("Ctrl+", "⌘");
+  }
 }
 
 // Pasted content is never saved anywhere
@@ -43,11 +47,11 @@ let source = "";      // "Word", "Google Docs"… for the pane title
 
 // ── Paste ────────────────────────────────────────────────────────────────
 
-// Pasting into the editor inserts cleaned content at the cursor; pasting into the HTML
-// box is normal text; pasting anywhere else replaces everything with the new content.
+// Pasting into the editor inserts cleaned content at the cursor; pasting into a text box (the HTML box,
+// the link box's address) is a normal paste; pasting anywhere else replaces everything with the new content.
 document.addEventListener("paste", (e) => {
   const cd = e.clipboardData;
-  if (!cd || e.target === htmlEdit) return;
+  if (!cd || e.target.closest?.("input, textarea")) return;
   e.preventDefault();
   const data = { html: cd.getData("text/html"), text: cd.getData("text/plain") };
   if (editor.contains(e.target) && input) insertCleaned(data);
@@ -266,6 +270,9 @@ let timer = null, pending = null;
 function schedule(fn) { pending = fn; clearTimeout(timer); timer = setTimeout(flush, 250); }
 function flush() { clearTimeout(timer); if (pending) { const fn = pending; pending = null; fn(); } }
 
+// Text typed straight into an empty editor, or left by turning a list off, isn't in a paragraph, and the
+// browser's commands then misplace what comes next: wrap each loose run in a <p> as soon as it appears
+editor.addEventListener("input", () => wrapLoose());
 editor.addEventListener("input", () => schedule(() => { result = clean({ html: editor.innerHTML }); showResult(); }));
 htmlEdit.addEventListener("input", () => schedule(() => {
   result = clean({ html: htmlEdit.value });
@@ -289,10 +296,16 @@ function formatHtml() {
 htmlEdit.addEventListener("blur", formatHtml);
 document.querySelector("[data-format]").addEventListener("mousedown", (e) => e.preventDefault());
 document.querySelector("[data-format]").addEventListener("click", () => { formatHtml(); htmlEdit.focus(); });
+htmlEdit.addEventListener("blur", () => { tabLeaves = false; });
+let tabLeaves = false;   // Esc was just pressed: the next Tab or Shift+Tab moves on, so the box isn't a keyboard trap
 htmlEdit.addEventListener("keydown", (e) => {
-  if (e.shiftKey && e.altKey && e.key.toLowerCase() === "f") { e.preventDefault(); formatHtml(); return; }
+  if (e.key === "Escape") { tabLeaves = true; return; }
+  const leaving = tabLeaves;
+  tabLeaves = false;
+  // e.code, not e.key: on a Mac Option+Shift+F types Ï
+  if (e.shiftKey && e.altKey && e.code === "KeyF") { e.preventDefault(); formatHtml(); return; }
   // Tab indents (two spaces) instead of leaving the box; Shift+Tab un-indents
-  if (e.key === "Tab" && !e.ctrlKey && !e.altKey && !e.metaKey) {
+  if (e.key === "Tab" && !leaving && !e.ctrlKey && !e.altKey && !e.metaKey) {
     e.preventDefault();
     const { selectionStart: s, selectionEnd: end, value } = htmlEdit;
     if (e.shiftKey) {
@@ -389,8 +402,8 @@ const COMMANDS = {
   h3: () => document.execCommand("formatBlock", false, "h3"),
   h4: () => document.execCommand("formatBlock", false, "h4"),
   p: () => document.execCommand("formatBlock", false, "p"),
-  ul: () => document.execCommand("insertUnorderedList"),
-  ol: () => document.execCommand("insertOrderedList"),
+  ul: () => { document.execCommand("insertUnorderedList"); unnestLists(); },
+  ol: () => { document.execCommand("insertOrderedList"); unnestLists(); },
   link: () => {
     const a = linkAt();
     const sel = getSelection();
@@ -413,6 +426,35 @@ const COMMANDS = {
   undo: () => { if (!undoOwn()) document.execCommand("undo"); },
   redo: () => document.execCommand("redo"),
 };
+
+// The browser's list command puts the new list inside the paragraph it came from (<p><ul>…</ul></p>), and
+// turning a list off can leave paragraphs inside a paragraph; neither is valid HTML, and later lines and the
+// Markdown shortcuts would land inside them too: unwrap the outer paragraph, cursor kept
+function unnestLists() {
+  const sel = getSelection(), node = sel.anchorNode, offset = sel.anchorOffset;
+  for (const p of [...editor.querySelectorAll("p")].reverse()) {
+    if (p.querySelector(":scope > :is(p, ul, ol, h1, h2, h3, h4, h5, h6, table, blockquote)")) p.replaceWith(...p.childNodes);
+  }
+  wrapLoose();
+  if (node && editor.contains(node)) sel.collapse(node, offset);
+}
+const BLOCK_TAGS = /^(P|H[1-6]|UL|OL|TABLE|BLOCKQUOTE|PRE|DIV)$/;
+function wrapLoose() {
+  const loose = (n) => n.nodeType === 1 ? !BLOCK_TAGS.test(n.tagName) : n.nodeType === 3 && !!n.data.trim();
+  if (![...editor.childNodes].some(loose)) return;
+  const sel = getSelection(), node = sel.anchorNode, offset = sel.anchorOffset;
+  let p = null;
+  for (const n of [...editor.childNodes]) {
+    if (n.nodeType === 1 && BLOCK_TAGS.test(n.tagName)) { p = null; continue; }
+    if (!p) {
+      if (!loose(n)) continue;   // blank text between blocks stays where it is
+      p = document.createElement("p");
+      n.before(p);
+    }
+    p.append(n);
+  }
+  if (node && editor.contains(node)) sel.collapse(node, offset);
+}
 
 // Undo for "Remove all bold": only while nothing else has changed since
 let ownUndo = null;
@@ -437,6 +479,57 @@ editor.addEventListener("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); COMMANDS.link(); }
   if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "b") { e.preventDefault(); toggleBold(); updateToolbar(); }
   if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z" && undoOwn()) e.preventDefault();
+});
+
+// The heading and list keys of WordPress's block editor and Google Docs: Ctrl+Alt+2, 3, 4 for H2 to H4 and
+// Ctrl+Alt+0 for a paragraph (⌘⌥ or ⌃⌥ on a Mac); Ctrl+Shift+8 for a bulleted list and Ctrl+Shift+7 for a
+// numbered one. Ctrl+Alt+1 (H1) does nothing: the post title is the H1. Read from e.code, as on a Mac
+// Option+2 types ™
+const KEYS = {
+  alt: { Digit0: "p", Numpad0: "p", Digit2: "h2", Numpad2: "h2", Digit3: "h3", Numpad3: "h3", Digit4: "h4", Numpad4: "h4" },
+  shift: { Digit7: "ol", Digit8: "ul" },
+};
+editor.addEventListener("keydown", (e) => {
+  if (!(e.ctrlKey || e.metaKey)) return;
+  const cmd = e.altKey && !e.shiftKey ? KEYS.alt[e.code] : e.shiftKey && !e.altKey ? KEYS.shift[e.code] : null;
+  if (!cmd) return;
+  e.preventDefault();
+  COMMANDS[cmd]();
+  updateToolbar();
+});
+
+// Markdown typed at the start of a paragraph, as in WordPress's block editor: "## " makes it an H2 ("### " H3,
+// "#### " H4), "- " or "* " a bulleted list, "1. " a numbered one. Through the browser's own commands, so
+// Ctrl+Z brings the typed characters back. "# " is left alone: no H1 in the body.
+const MARKDOWN = [[/^##[  ]$/, "h2"], [/^###[  ]$/, "h3"], [/^####[  ]$/, "h4"], [/^[-*][  ]$/, "ul"], [/^1[.)][  ]$/, "ol"]];
+editor.addEventListener("input", (e) => {
+  if (e.inputType !== "insertText" || e.data !== " ") return;
+  const sel = getSelection();
+  if (!sel.isCollapsed || !sel.rangeCount) return;
+  const at = sel.anchorNode;
+  const block = (at.nodeType === 1 ? at : at.parentElement).closest("p");
+  if (!block || block.parentElement !== editor) return;   // not in lists, tables or headings
+  const typed = document.createRange();
+  typed.setStart(block, 0);
+  typed.setEnd(at, sel.anchorOffset);
+  const prefix = typed.toString();
+  const hit = MARKDOWN.find(([re]) => re.test(prefix));
+  if (!hit) return;
+  // Change the line first, then delete what was typed: the browser's list command nests the list inside an
+  // emptied paragraph, but converts a paragraph with text in it cleanly
+  COMMANDS[hit[1]]();
+  const now = getSelection().anchorNode;
+  const line = now && (now.nodeType === 1 ? now : now.parentElement).closest("li, h2, h3, h4");
+  const first = line && document.createTreeWalker(line, NodeFilter.SHOW_TEXT).nextNode();
+  if (first && first.data.startsWith(prefix.replace(/ /g, " ")) || first && first.data.startsWith(prefix)) {
+    const r = document.createRange();
+    r.setStart(first, 0);
+    r.setEnd(first, prefix.length);
+    sel.removeAllRanges();
+    sel.addRange(r);
+    document.execCommand("delete");
+  }
+  updateToolbar();
 });
 
 // Highlight Bold / Italic / heading buttons for where the cursor is
@@ -496,8 +589,8 @@ function placeLinkBox() {
 
 // Runs through the browser's own link commands, so Ctrl+Z undoes it like any other edit
 function selectTarget() {
+  let r = linkTarget;   // read first: focusing the editor closes a new-link box, which clears linkTarget
   editor.focus({ preventScroll: true });
-  let r = linkTarget;
   if (r instanceof Element) { const a = r; r = document.createRange(); r.selectNodeContents(a); }
   const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
 }

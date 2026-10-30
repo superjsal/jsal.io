@@ -208,6 +208,9 @@ kbd { font: 600 11.5px var(--jsal-font); padding: 1px 6px; border-radius: 4px; b
 .pane-title { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pane-meta { font-weight: 400; color: var(--jsal-muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
 .pane-body { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; background: var(--jsal-surface); }
+/* The editor and the HTML box have no outline of their own (a ring round a long scrolling text reads badly), so
+   the area they sit in shows the focus ring while you're typing in either */
+.pane-body:has(> #editor:focus, > #htmlEdit:focus) { box-shadow: inset 0 0 0 2px var(--jsal-accent); }
 
 .code {
   margin: 0;

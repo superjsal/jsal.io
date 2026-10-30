@@ -6,7 +6,7 @@
   <title>Clean Paste: Word and Google Docs to Clean HTML | jsal.io</title>
   <meta name="description" content="Paste from Word or Google Docs and get clean HTML, formatted text or WordPress blocks for any CMS. Free, and it runs in your browser: nothing is uploaded." />
   <link rel="canonical" href="https://jsal.io/formatter/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-30ze" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-30zg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -250,19 +250,19 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-30ze" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-30zg" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":   "./js/main.js?v=2026-10-30ze",
-        "./js/clean.js":  "./js/clean.js?v=2026-10-30ze",
-        "./js/sample.js": "./js/sample.js?v=2026-10-30ze"
+        "./js/main.js":   "./js/main.js?v=2026-10-30zg",
+        "./js/clean.js":  "./js/clean.js?v=2026-10-30zg",
+        "./js/sample.js": "./js/sample.js?v=2026-10-30zg"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-30ze"></script>
+  <script type="module" src="js/main.js?v=2026-10-30zg"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-30ze" defer></script>
+  <script src="/nav.js?v=2026-10-30zg" defer></script>
 </head>
 <body>
   <main class="app">
@@ -333,13 +333,13 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
           <button data-cmd="bold" title="Bold (Ctrl+B)" aria-label="Bold"><b>B</b></button>
           <button data-cmd="italic" title="Italic (Ctrl+I)" aria-label="Italic"><i>I</i></button>
           <span class="tb-sep"></span>
-          <button data-cmd="h2" title="Heading 2">H2</button>
-          <button data-cmd="h3" title="Heading 3">H3</button>
-          <button data-cmd="h4" title="Heading 4">H4</button>
-          <button data-cmd="p" title="Normal paragraph" aria-label="Paragraph">¶</button>
+          <button data-cmd="h2" title="Heading 2 (Ctrl+Alt+2, or type ## and a space)">H2</button>
+          <button data-cmd="h3" title="Heading 3 (Ctrl+Alt+3, or type ### and a space)">H3</button>
+          <button data-cmd="h4" title="Heading 4 (Ctrl+Alt+4)">H4</button>
+          <button data-cmd="p" title="Normal paragraph (Ctrl+Alt+0)" aria-label="Paragraph">¶</button>
           <span class="tb-sep"></span>
-          <button data-cmd="ul" title="Bulleted list" aria-label="Bulleted list"><span class="ico" data-icon="ul"></span></button>
-          <button data-cmd="ol" title="Numbered list" aria-label="Numbered list"><span class="ico" data-icon="ol"></span></button>
+          <button data-cmd="ul" title="Bulleted list (Ctrl+Shift+8, or type - and a space)" aria-label="Bulleted list"><span class="ico" data-icon="ul"></span></button>
+          <button data-cmd="ol" title="Numbered list (Ctrl+Shift+7, or type 1. and a space)" aria-label="Numbered list"><span class="ico" data-icon="ol"></span></button>
           <span class="tb-break"></span>
           <button data-cmd="link" title="Add or change link (Ctrl+K)" aria-label="Link"><span class="ico" data-icon="link"></span></button>
           <button data-cmd="unlink" title="Remove link" aria-label="Remove link"><span class="ico" data-icon="unlink"></span></button>
@@ -359,7 +359,8 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 
         <div class="pane-body">
           <article class="preview" id="editor" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true" aria-label="Clean content, editable" aria-describedby="tabPage"></article>
-          <textarea class="code" id="htmlEdit" spellcheck="false" aria-label="HTML, editable" hidden></textarea>
+          <textarea class="code" id="htmlEdit" spellcheck="false" aria-label="HTML, editable" aria-describedby="htmlEditKeys" hidden></textarea>
+          <span class="sr-only" id="htmlEditKeys">Tab indents. To leave the box, press Escape, then Tab.</span>
         </div>
 
         <!-- Link box: shows under a link when the cursor is in it, or on Ctrl+K (see main.js) -->
@@ -394,6 +395,17 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
         <li>Word's fake bullet and number paragraphs, rebuilt as real nested lists.</li>
         <li>Google Docs redirect links, changed back to the real address, and links starting with www. given https://.</li>
         <li>Images, marked as [Image] placeholders so you know where to upload them in the CMS.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary><h3>Keyboard shortcuts</h3></summary>
+      <p>The same keys as WordPress's block editor and Google Docs, in the <strong>Text</strong> tab:</p>
+      <ul>
+        <li>Headings: <kbd class="mod-key">Ctrl</kbd> + <kbd class="alt-key">Alt</kbd> + <kbd>2</kbd>, <kbd>3</kbd> or <kbd>4</kbd> for H2 to H4, and <kbd class="mod-key">Ctrl</kbd> + <kbd class="alt-key">Alt</kbd> + <kbd>0</kbd> for a normal paragraph. Or type <kbd>##</kbd> and a space at the start of a line (<kbd>###</kbd> for H3).</li>
+        <li>Lists: <kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>8</kbd> for bullets and <kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>7</kbd> for numbers, or type <kbd>-</kbd> or <kbd>1.</kbd> and a space at the start of a line.</li>
+        <li>Bold <kbd class="mod-key">Ctrl</kbd> + <kbd>B</kbd>, italic <kbd class="mod-key">Ctrl</kbd> + <kbd>I</kbd>, link <kbd class="mod-key">Ctrl</kbd> + <kbd>K</kbd>, undo <kbd class="mod-key">Ctrl</kbd> + <kbd>Z</kbd>.</li>
+        <li>In the <strong>HTML</strong> tab: <kbd>Tab</kbd> indents, <kbd>Shift</kbd> + <kbd>Tab</kbd> un-indents, <kbd>Esc</kbd> then <kbd>Tab</kbd> leaves the box, and <kbd>Shift</kbd> + <kbd class="alt-key">Alt</kbd> + <kbd>F</kbd> tidies the code.</li>
       </ul>
     </details>
 
