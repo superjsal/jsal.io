@@ -105,6 +105,13 @@ Platforms change plans and features often. Every few months (or when a platform 
   ("What can you spend each month?") reads these rows: a platform loses 3 points for each band over the
   budget (`COST_LEVEL` and `BUDGET` in `score.js`; "Free software + hosting" counts as the lowest paid band),
   so a band change can move results: run the persona tests.
+- Recheck the **membership apps** behind "Start a site with paid members" more often than the platforms'
+  own plans, since third-party prices change faster. The band includes the cheapest add-on paid members need,
+  from the app's own pricing page (notes in `private\playbook-research\cms-picker-pricing-*.md`):
+  Memberstack for Webflow (memberstack.com/pricing), Thenty for Framer (thenty.io/pricing), Zendra for
+  Shopify (apps.shopify.com/zendra), Paid Member Subscriptions for WordPress
+  (wordpress.org/plugins/paid-member-subscriptions/), and Duda's own Membership add-on (duda.co/membership).
+  A change can move a band: Webflow ($15 + $25) and Framer ($10 + $24) sit just over $25.
 - Recheck the **plugin and app library tiers** (`addOnsMany` / `addOnsSome` in `cms-picker/quiz.json`, for "Will you
   add features as the site grows?") against each directory's own page; the `_about` note there says where
   each count came from and which are third-party estimates.
