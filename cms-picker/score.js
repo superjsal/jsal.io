@@ -10,20 +10,20 @@
   const QUESTIONS = [
     // Each option: [value, title, hint, its answer on its own] (the last is the answer button above the results, so it reads without the question)
     { id: 'what', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact', 'A business or work site'], ['store', 'An online store', 'Products, checkout and payments', 'An online store'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing', 'A blog, newsletter or publication'], ['custom', 'Something custom', 'An app or portal, built with a developer', 'Something custom, with a developer']] },
-    { id: 'kind', q: 'Which is closest to what you do?', when: (a) => a.what === 'site', opts: [['local', 'A local business or services', 'Shops, trades, salons, clinics, consultants', 'A local business or services'], ['creative', 'Creative work or a portfolio', 'Photography, design, art, music', 'Creative work or a portfolio'], ['startup', 'A startup or product launch', 'A product, an app or a launch page', 'A startup or product launch'], ['b2b', 'A B2B company with a sales team', 'Leads, demos and a CRM', 'A B2B company with a sales team'], ['content', 'Lots of content', 'Articles, guides and resources', 'A site with lots of content']] },
+    { id: 'kind', q: 'Which is closest to what you do?', when: (a) => a.what === 'site', opts: [['local', 'A local business or services', 'Shops, trades, salons, clinics, consultants', 'A local business or services'], ['creative', 'Creative work or a portfolio', 'Photography, design, art, music', 'Creative work or a portfolio'], ['startup', 'A startup or product launch', 'A product, an app or a launch page', 'A startup or product launch'], ['b2b', 'A company selling to other businesses', 'B2B: leads, demos and a sales team', 'A company selling to other businesses (B2B)'], ['content', 'Lots of content', 'Articles, guides and resources', 'A site with lots of content']] },
     { id: 'members', q: 'Will you have paid members or a newsletter?', when: (a) => a.what === 'content', opts: [['yes', 'Yes', 'Subscribers, paid posts or a newsletter', 'Paid members or a newsletter'], ['no', 'No', 'Just the posts', 'Just posts, no members']] },
     { id: 'who', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple', 'I’ll build it, not technical'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine', 'I’ll build it and learn'], ['agency', 'A designer or agency', 'They build it; I might edit', 'A designer or agency builds it'], ['dev', 'A developer', 'Code is fine', 'A developer builds it']] },
-    { id: 'care', q: 'Do you want to look after hosting, updates and security?', opts: [['no', 'No, handle it for me', 'Everything included', 'Hosting and updates handled for me'], ['yes', 'That’s fine', 'Or someone will do it for me', 'Fine looking after hosting and updates']] },
+    { id: 'care', q: 'Who should look after hosting, updates and security?', opts: [['no', 'The platform', 'Everything included, nothing to install', 'Hosting and updates handled for me'], ['yes', 'Me, or someone I’ll ask', 'A web host and updates now and then', 'Fine looking after hosting and updates']] },
     { id: 'size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few dozen products', 'A small shop', 'A small shop, up to a few dozen products'], ['big', 'Hundreds of products', 'A large catalogue', 'Hundreds of products'], ['b2b', 'Selling to other businesses (B2B)', 'Wholesale, trade accounts or bulk orders', 'Selling to other businesses (B2B)']] },
     { id: 'lang', q: 'Will it be in more than one language?', opts: [['no', 'No', 'One language', 'One language'], ['yes', 'Yes', 'Two or more', 'Two or more languages']] },
     { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go', 'A good template is enough'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust', 'Arrange the design visually'], ['pixel', 'Every detail', 'Exactly as designed', 'Control every detail of the design']] },
-    { id: 'leave', q: 'How important is taking everything with you if you switch later?', opts: [['yes', 'Very important', 'I want to own all of it', 'Taking everything with me matters'], ['no', 'Not a big concern', 'I’ll probably stay', 'Not planning to switch']] },
+    { id: 'leave', q: 'How important is being able to move to another platform later?', opts: [['yes', 'Very important', 'I want to own all of it', 'Being able to move later matters'], ['no', 'Not a big concern', 'I’ll probably stay', 'Not planning to switch']] },
     { id: 'grow', q: 'Will you add features as the site grows?', opts: [['yes', 'Yes, I’ll keep adding things', 'Bookings, memberships, reviews, CRM links…', 'Adding features as it grows'], ['no', 'No, what’s built in is enough', 'Keep it simple', 'What’s built in is enough']] },
-    { id: 'budget', q: 'What can you spend each month?', opts: [['none', 'Nothing for now', 'Start free, upgrade later', 'Nothing for now: free to start'], ['low', 'Up to about $25', 'A basic plan', 'Up to about $25 a month'], ['mid', 'Up to about $100', 'Room for a store or more features', 'Up to about $100 a month'], ['any', 'More, or I’ll pay a developer', 'Cost isn’t the deciding factor', 'Cost isn’t the deciding factor']] },
+    { id: 'budget', q: 'What can you spend each month?', opts: [['none', 'Nothing for now', 'Start free, upgrade later', 'Nothing for now: free to start'], ['low', 'Up to about $25', 'A basic plan', 'Up to about $25 a month'], ['mid', 'Up to about $100', 'Room for a store or more features', 'Up to about $100 a month'], ['any', 'Over $100, or it doesn’t matter', 'Cost isn’t the deciding factor', 'Cost isn’t the deciding factor']] },
   ];
   const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
   // "Which is closest to what you do?": the reason a matching platform gets (quiz.kind in cms-picker.json lists them)
-  const KINDS = { local: 'Suits local businesses and services', creative: 'Suits creative work and portfolios', startup: 'Suits startups and product launches', b2b: 'Suits B2B companies with a sales team', content: 'Suits sites with lots of content' };
+  const KINDS = { local: 'Suits local businesses and services', creative: 'Suits creative work and portfolios', startup: 'Suits startups and product launches', b2b: 'Suits companies selling to other businesses', content: 'Suits sites with lots of content' };
   // "What can you spend each month?" against the "What it costs to start" bands (from each platform's own
   // pricing page): a platform over budget drops 3 points for each band over; one within it isn't boosted.
   // Free software still needs paid hosting, so it counts as the lowest paid band.
@@ -38,7 +38,7 @@
     kind: [(a) => `it ${KINDS[a.kind].charAt(0).toLowerCase()}${KINDS[a.kind].slice(1)}`, null],
     members: [() => 'paid members and newsletters are built in', null],
     sellOnly: [null, (a, y) => `${y} is made only for selling`],
-    frontEnd: [() => 'it feeds an app or any front end from one place', null],
+    frontEnd: [() => 'it manages content for a website and an app from one place', null],
     ease: [(a) => (a.who === 'easy' ? 'it’s easier to run without technical skills' : 'it’s easier to learn'), (a, y) => (a.who === 'easy' ? `${y} is harder to run without technical skills` : `${y} is harder to learn`)],
     agency: [() => 'it’s a common choice for designers and agencies', null],
     agencyOnly: [null, (a, y) => `${y} is mainly sold through agencies`],
@@ -52,8 +52,8 @@
     b2b: [() => 'it suits selling to other businesses', null],
     lang: [() => 'more than one language is easier to set up', (a, y) => `more than one language is harder to set up on ${y}`],
     look: [(a) => ({ template: 'it has good templates to start from', visual: 'you can arrange your pages visually', pixel: 'it gives full control over the design' })[a.look], null],
-    leave: [() => 'you can take more of your site with you', (a, y) => `${y} doesn’t let you take everything with you`],
-    grow: [() => 'it has more plugins and apps to add later', (a, y) => `${y} has fewer plugins and apps to add later`],
+    leave: [() => 'moving to another platform later is easier', (a, y) => `moving off ${y} later is harder`],
+    grow: [() => 'it has more plugins and apps to add as you grow', (a, y) => `${y} has fewer plugins and apps to add as you grow`],
     budget: [(a) => (a.budget === 'none' ? 'it’s free to start' : 'it fits your budget'), (a, y) => `${y} costs more than you want to spend`],
   };
 
@@ -68,7 +68,7 @@
     if (a.what !== 'store' && has('storeOnly')) add('sellOnly', -6);
     if (a.what === 'site' && ((Q.kind || {})[a.kind] || []).includes(p.id)) add('kind', 3, KINDS[a.kind]);
     if (a.what === 'content' && a.members === 'yes' && has('members')) add('members', 3, 'Paid members and newsletters built in');
-    if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'Feeds an app or any front end from one place');
+    if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'One place to manage content for a website and an app');
     const ease = Q.ease[p.id] ?? 1;
     // Building it yourself: one that needs a developer counts as heavily as one not made for what you're making
     if (a.who === 'easy') add('ease', ease === 0 ? -8 : ease * 2 - 3, ease === 3 && 'Easy to run without technical skills');
@@ -97,7 +97,7 @@
     }
     if ((Q.look[p.id] || []).includes(a.look)) add('look', 2, LOOKS[a.look]);
     if (a.leave === 'yes') {
-      if (/^Everything/.test(pr.export || '')) add('leave', 2, 'You can take everything with you');
+      if (/^Everything/.test(pr.export || '')) add('leave', 2, 'Easy to move to another platform later');
       else if (/API/.test(pr.export || '')) add('leave', 1, 'Your content stays yours, through the API');
       else add('leave', -1);
     }
@@ -173,21 +173,32 @@
     const fit = ((x.p.profile || {}).goodFit || [])[0];
     return fit ? `Pick it over ${y.p.name} for ${lowerFirst(fit)}.` : null;
   }
-  // What put x ahead of y: the part of the score with the biggest gap, in plain words
+  // The parts of the score where x beat y, biggest gap first, with wording in TIP
+  function gaps(x, y) {
+    return [...new Set([...Object.keys(x.pts), ...Object.keys(y.pts)])]
+      .map((k) => ({ k, d: (x.pts[k] || 0) - (y.pts[k] || 0) })).filter((g) => g.d > 0 && TIP[g.k]).sort((p, q) => q.d - p.d);
+  }
+  // Up to two of them in plain words. Being able to move later is a secondary reason, so it always goes last.
+  function reasons(a, x, y) {
+    const two = gaps(x, y).slice(0, 2).sort((p, q) => (p.k === 'leave') - (q.k === 'leave'));
+    const words = two.map(({ k }) => { const [plus, minus] = TIP[k], f = (x.pts[k] || 0) > 0 ? plus || minus : minus || plus; return f && f(a, y.p.name); }).filter(Boolean);
+    return words.length > 1 ? `${words[0]}, and ${words[1]}` : words[0];
+  }
+  // What put x ahead of y: "What tipped it: it's made for selling first, and it has more plugins…"
   function tipped(a, x, y) {
-    let best = null, gap = 0;
-    new Set([...Object.keys(x.pts), ...Object.keys(y.pts)]).forEach((k) => {
-      const d = (x.pts[k] || 0) - (y.pts[k] || 0);
-      if (d > gap && TIP[k]) { gap = d; best = k; }
-    });
-    if (!best) return null;
-    const [plus, minus] = TIP[best], f = (x.pts[best] || 0) > 0 ? plus || minus : minus || plus;
-    return f ? `What tipped it: ${f(a, y.p.name)}.` : null;
+    const w = reasons(a, x, y);
+    return w ? `What tipped it: ${w}.` : null;
+  }
+  // For a match behind the first: what it scored better on for these answers, if anything
+  function better(a, x, y) {
+    const w = reasons(a, x, y);
+    return w ? `Where ${x.p.name} does better for you: ${w}.` : null;
   }
   const sameSet = (xs, ys) => xs.length === ys.length && xs.every((w) => ys.includes(w));
   // For the top matches: the reasons to show and vs, a heading and a sentence on what sets each apart
   // from its neighbour (null if there's nothing to say). The second and third show their own reasons,
-  // collapsed to "the same reasons as …" only when they're exactly the first's.
+  // collapsed to "the same reasons as …" only when they're exactly the first's; their box says where they
+  // did better than the first for these answers, or else what they offer (pickOver).
   function explain(data, a, top) {
     const lead = top[0];
     return top.map((r, i) => {
@@ -202,7 +213,7 @@
         return { why: r.why, vs };
       }
       const why = sameSet(r.all, lead.all) ? [`Fits your answers for the same reasons as ${lead.p.name}`] : r.why;
-      const text = pickOver(data, a, r, lead);
+      const text = better(a, r, lead) || pickOver(data, a, r, lead);
       return { why, vs: text ? { head: `Versus ${lead.p.name}`, text } : null };
     });
   }
