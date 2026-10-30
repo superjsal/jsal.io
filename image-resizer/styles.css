@@ -208,7 +208,7 @@ body {
   border: 1px dashed var(--jsal-line-hi);
   color: var(--jsal-ink-2);
 }
-.folder-row svg { flex-shrink: 0; color: var(--jsal-accent); }
+.folder-row svg { flex-shrink: 0; color: var(--jsal-muted); }
 .folder-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--jsal-ink); }
 .folder-name.empty { color: var(--jsal-muted); font-weight: 400; }
 .folder-change {
@@ -269,8 +269,8 @@ body {
   margin-top: 6px;
   padding: 10px 12px;
   border-radius: var(--jsal-radius);
-  background: var(--jsal-accent-soft);
-  border: 1px solid var(--jsal-accent-ring);
+  background: var(--jsal-surface);   /* neutral, so the gold Add button reads as the suggested choice */
+  border: 1px solid var(--jsal-line-hi);
   animation: fadeIn 0.15s ease;
 }
 
@@ -373,7 +373,7 @@ body {
   transition: background 0.2s, box-shadow 0.2s;
 }
 .status-dot.active { background: var(--jsal-ok); box-shadow: 0 0 6px var(--jsal-ok); }
-.status-dot.busy { background: var(--jsal-accent); box-shadow: 0 0 6px var(--jsal-accent); }
+.status-dot.busy { background: var(--jsal-info); box-shadow: 0 0 6px var(--jsal-info); }
 .status-dot.error { background: var(--jsal-bad); box-shadow: 0 0 6px var(--jsal-bad); }
 
 @keyframes statusIn {

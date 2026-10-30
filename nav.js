@@ -186,10 +186,10 @@
     .jsal-menu a { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 8px; color: inherit; text-decoration: none; outline: none; }
     .jsal-menu a:hover, .jsal-menu a:focus-visible { background: var(--jsal-sunk); }
     .jsal-menu a[aria-current="page"] { background: var(--jsal-accent-soft); }
-    .jsal-menu .ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--jsal-sunk); color: var(--jsal-accent); }
+    .jsal-menu .ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--jsal-sunk); color: var(--jsal-ink-2); }
     .jsal-menu b { display: block; font-weight: 600; }
     .jsal-menu small { display: block; font-size: 12px; color: var(--jsal-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .jsal-menu .tag { font-size: 11px; font-weight: 700; color: var(--jsal-accent); border: 1px solid currentColor; border-radius: 99px; padding: 0 7px; }
+    .jsal-menu .tag { font-size: 11px; font-weight: 700; color: var(--jsal-muted); border: 1px solid currentColor; border-radius: 99px; padding: 0 7px; }
     .jsal-menu .here { font-size: 11px; color: var(--jsal-muted); }
     .jsal-menu hr { border: 0; border-top: 1px solid var(--jsal-line); margin: 6px 4px; }
     .jsal-menu .home { grid-template-columns: 32px minmax(0, 1fr); }
