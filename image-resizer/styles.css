@@ -761,3 +761,9 @@ body {
   .workspace { flex: none; min-height: 0; }
   .canvas-wrap { flex: none; }
 }
+/* Phones, and sidebars under 480px: Quality and Format don't fit side by side (Quality's label wrapped above
+   its buttons), so each gets its own line, laid out like Save to */
+@media (max-width: 899px) and (pointer: coarse), (max-width: 479px) {
+  .controls > .option-row { flex-basis: 100%; flex-wrap: nowrap; }
+  .controls > .option-row .option-label { flex: none; width: 72px; }
+}
