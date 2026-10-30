@@ -318,9 +318,9 @@ p, li { text-wrap: pretty; }
 .cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0 2px; }
 .cta a { display: inline-flex; align-items: center; padding: 11px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; }
 .cta .main { background: var(--jsal-fill); color: var(--jsal-on-fill); }
-.cta .alt { border: 1px solid var(--jsal-line-hi); color: var(--jsal-ink); }
+.cta .alt { border: 1px solid var(--jsal-muted); color: var(--jsal-ink); }   /* muted, not line-hi: the outline is the button's edge, so 3:1 */
 .cta a:hover { transform: translateY(-2px); }
-.cta .alt:hover { border-color: var(--jsal-hover-line); }
+.cta .alt:hover { border-color: var(--jsal-ink); }
 .cta a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 @media (pointer: coarse) { .cta a { min-height: 44px; } }
 
@@ -532,7 +532,7 @@ p, li { text-wrap: pretty; }
 @media (max-width: 340px) { .ach-list { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .ach-bar i { transition: none; } }
 
-/* Plain surface, so the cream/ink contrast stays with the featured app */
+/* Say hi (the backpack): a plain surface, so cream stays the Image Resizer's colour */
 .mail { grid-column: 1 / 8; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; gap: 4px; }
 .mail .label, .mail .desc { color: var(--jsal-muted); }
 /* Backpack: where to find me, as gear in a game bag. The tile is the bag (stitched leather, a portrait
@@ -645,7 +645,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     </section>
 
     <!-- App tiles: data-app opens that app with the tile-to-app transition. CMS Picker is the big one beside
-         the intro; the smaller tools in a row beneath it, the team's Playbook last -->
+         the intro; then Image Resizer (wide) and Clean Paste, then JSal UI and the team's Playbook (wide). The
+         wide tile swaps sides each row. -->
     <a id="work" class="tile cms" href="/cms-picker/" data-app>
       <div class="mock m-grid" aria-hidden="true">
         <span class="hero" style="--n: 0"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i></span><span style="--n: 1"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i></span><span style="--n: 2"><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i></span><span style="--n: 3"><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i></span><span style="--n: 4"><i class="logo" style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span style="--n: 5"><i class="logo" style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span style="--n: 6"><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i></span><span style="--n: 7"><i class="logo" style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span style="--n: 8"><i class="logo" style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span style="--n: 9"><i class="logo" style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span style="--n: 10"><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i></span><span style="--n: 11"><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i></span>
@@ -905,8 +906,8 @@ document.querySelectorAll('.slot:not(.empty)').forEach((sl) => {
   });
 });
 document.addEventListener('pointerdown', (e) => { if (shown && !e.target.closest('.slot')) hide(); });
-// The bag is as tall as the Updates tile beside it, which grows as the page narrows: fill whatever
-// room there is with rows of empty slots, so it never shows a gap (on phones, one spare row)
+// The bag fills the room left under "Currently" beside the Updates tile, which grows as the page narrows:
+// fill whatever room there is with rows of empty slots, so it never shows a gap (on phones, one spare row)
 const slots = document.querySelector('.slots'), count = document.querySelector('.pack-h .count');
 const items = slots.querySelectorAll('.slot:not(.empty)').length;
 function fitBag() {
