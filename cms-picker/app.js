@@ -48,11 +48,13 @@
     state.goal = g;
     state.pick = null;
     state.compare = new Set(g === 'all' ? DEFAULT_COMPARE : data.platforms.filter(fits).map((p) => p.id));
+    state.touched = false;
     renderCards();
     render();
   }
   function toggleCompare(id) {
     state.pick = null;
+    state.touched = true;
     if (state.compare.has(id)) state.compare.delete(id);
     else { state.compare.add(id); window.jsalUsed?.(); window.jsalAchieve?.('compare'); window.jsalTrack?.('compare_add', { platform: id }); }   // achievements and GA4 event (/nav.js)
     renderCards();
@@ -158,7 +160,8 @@
   let barShown = new Set();
   function updateBar() {
     const picked = data.platforms.filter((p) => state.compare.has(p.id));
-    $('#cbar-count').textContent = `Comparing ${picked.length}`;
+    // Until the set is changed, "Show all" starts with popular picks, and the bar says so
+    $('#cbar-count').textContent = state.goal === 'all' && !state.touched ? `${picked.length} popular picks to start` : `Comparing ${picked.length}`;
     $('#cbar').setAttribute('aria-label', `Your comparison: ${picked.map((p) => p.name).join(', ') || 'none'}`);
     const room = innerWidth < 500 ? 4 : 7;
     const logos = $('#cbar-logos');
@@ -265,11 +268,11 @@
     });
     const all = el('button', 'chip-link', 'All');
     all.type = 'button';
-    all.addEventListener('click', () => { data.platforms.forEach((p) => state.compare.add(p.id)); renderCards(); render(); });
+    all.addEventListener('click', () => { data.platforms.forEach((p) => state.compare.add(p.id)); state.touched = true; renderCards(); render(); });
     plats.append(all);
     const none = el('button', 'chip-link', 'Deselect all');
     none.type = 'button';
-    none.addEventListener('click', () => { state.compare.clear(); renderCards(); render(); });
+    none.addEventListener('click', () => { state.compare.clear(); state.touched = true; renderCards(); render(); });
     plats.append(none);
 
     const types = $('#types');
@@ -380,6 +383,8 @@
     const used = new Set(Object.values(data.answers).flatMap((a) => Object.values(a).map((c) => c.verdict)));
     const legend = $('#legend');
     Object.keys(SHORT).filter((k) => used.has(k) && !(k in COST)).forEach((k) => legend.append(el('span', `tag ${k}`, SHORT[k])));
+    // The two words that follow a tag, explained where the tags are (not only in the note under the table)
+    Object.values(SCOPE).forEach(([word, meaning]) => { const s = el('span', 'sc', word); s.title = meaning; legend.append(s); });
     setGoal('all');
     setupQuiz();
   }
@@ -618,6 +623,8 @@
           vs.append(el('p', 'qz-vs-h', head), el('p', null, told[i].vs.text));
           card.append(vs);
         }
+        // Where it counts against an answer given (score.js "but"), so the pick never hides it
+        if (r.but && r.but.length) card.append(el('p', 'qz-lim', `Worth knowing: ${r.but.join('; ')}.`));
         const skip = (pr.lessSuited || [])[0];
         if (skip) card.append(el('p', 'qz-lim', `Less suited if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);
@@ -672,6 +679,7 @@
       cmp.type = 'button';
       cmp.addEventListener('click', () => {
         state.compare = new Set(top.map((r) => r.p.id));
+        state.touched = true;
         state.pick = top[0].p.id;
         renderCards();
         render();

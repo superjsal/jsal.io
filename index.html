@@ -26,7 +26,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-30zzh" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-30zzi" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -799,11 +799,11 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
         <div>
           <h3><a href="/cms-picker/">CMS Picker</a> <time datetime="2026-10-30">· Oct 30</time></h3>
           <ul>
+            <li><time datetime="2026-10-30">Oct 30</time> <span>Results also say what counts against your answers, and the key explains “varies”</span></li>
             <li><time datetime="2026-10-30">Oct 30</time> <span>A “Sell memberships or paid posts” row, with quiz scoring to match</span></li>
             <li><time datetime="2026-10-30">Oct 30</time> <span>Each platform card links to its own page</span></li>
             <li><time datetime="2026-10-30">Oct 30</time> <span>Results say which of your answers tipped them, and Sanity replaces the general “Headless CMS”</span></li>
             <li><time datetime="2026-10-30">Oct 30</time> <span>A page per platform with where to find each SEO setting, like <a href="/cms-picker/squarespace/">Squarespace</a></span></li>
-            <li><time datetime="2026-10-29">Oct 29</time> <span>Find your fit in a few questions</span></li>
           </ul>
         </div>
         <div class="upd-side">
@@ -1002,6 +1002,6 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-30zzh" defer></script>
+<script src="/nav.js?v=2026-10-30zzi" defer></script>
 </body>
 </html>

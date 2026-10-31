@@ -56,7 +56,10 @@ Shared by the page and the tests, so they always run the same code.
   answer button on the results. Changing the questions means raising `LINK_VERSION` in `app.js` and
   translating older answers in `readLink`, so shared links keep working.
 - **Scoring:** `fitScore` builds the score from parts with `add(key, points, reason)`. The reason (if any)
-  shows as a bullet on the card.
+  shows as a bullet on the card. Where a part counts *against* an answer the person gave (moving later,
+  languages, running it yourself, hosting, budget), `fitScore` also pushes a plain line to `but`, which the
+  card shows as "Worth knowing: …" so a top match never hides it. It changes no score; a new negative part
+  that answers a question should add its line there too.
 - **"What tipped it":** every part's key has wording in `TIP`: `[what the leader earned, what the
   runner-up lost]`, naming the platform rather than "it". Each one follows the answer that drove it, from
   `LEAD` ("you're building an app or portal, and Sanity is built to…"), and two reasons are joined with a

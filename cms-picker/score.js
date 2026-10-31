@@ -96,7 +96,7 @@
   const notIdealFor = (Q, id, a) => ((Q.notIdeal || {})[id] || []).find((n) => Object.entries(n.when).every(([q, vs]) => vs.includes(a[q])));
 
   function fitScore(data, p, a) {
-    const Q = data.quiz, pr = p.profile || {}, why = [], pts = {};
+    const Q = data.quiz, pr = p.profile || {}, why = [], but = [], pts = {};   // but: where it counts against an answer, shown as "Worth knowing"
     const has = (list) => (Q[list] || []).includes(p.id);
     const verdict = (row) => ((data.answers[p.id] || {})[row] || {}).verdict;
     let s = 0;
@@ -116,7 +116,10 @@
     if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'One place to manage content for a website and an app');
     const ease = Q.ease[p.id] ?? 1;
     // Building it yourself: one that needs a developer counts as heavily as one not made for what you're making
-    if (a.who === 'easy') add('ease', ease === 0 ? -8 : ease * 2 - 3, ease === 3 && 'Easy to run without technical skills');
+    if (a.who === 'easy') {
+      add('ease', ease === 0 ? -8 : ease * 2 - 3, ease === 3 && 'Easy to run without technical skills');
+      if (ease === 0) but.push('it needs a developer to build and run'); else if (ease === 1) but.push('it takes more learning to run without technical help');
+    }
     if (a.who === 'learn') add('ease', ease >= 1 ? 1 : -8);
     if (a.who === 'agency' && has('agency')) add('agency', 2, 'A common choice for designers and agencies');
     if (a.who !== 'agency' && has('agencyOnly')) add('agencyOnly', -2);
@@ -125,6 +128,7 @@
     if (a.care === 'no') {
       const handled = /^Handled for you/.test(pr.hosting || '');
       add('care', handled ? 2 : -6, handled && 'Hosting, updates and security are handled for you');
+      if (!handled) but.push('hosting, updates and security are on you');
     }
     if (a.what === 'store') {
       add('sell', { yes: 2, plugin: 0, code: -3, no: -6 }[verdict('store')] ?? 0);
@@ -138,6 +142,8 @@
       const l = verdict('languages');
       // Needing an add-on for it counts a little against (Ghost's and Squarespace's own cards say so)
       add('lang', { yes: 2, plugin: -1, code: -2, no: -4 }[l] ?? 0, l === 'yes' && 'More than one language is built in');
+      const w = { plugin: 'more than one language needs an add-on', code: 'more than one language needs custom code', no: 'it doesn’t do more than one language' }[l];
+      if (w) but.push(w);
     }
     if ((Q.look[p.id] || []).includes(a.look)) add('look', 2, LOOKS[a.look]);
     if (a.leave === 'yes') {
@@ -145,7 +151,7 @@
       // says the website's code is already yours)
       if (/^Everything/.test(pr.export || '')) add('leave', 2, (Q.leaveWhy || {})[p.id] || 'Easy to move to another platform later');
       else if (/API/.test(pr.export || '')) add('leave', 1, 'Your content stays yours, through the API');
-      else add('leave', -1);
+      else { add('leave', -1); but.push(`moving to another platform later is harder${pr.export ? ` (${lowerFirst(pr.export)})` : ''}`); }
     }
     // Adding features later: the platforms with the biggest plugin and app libraries (quiz.addOnsMany: tens of
     // thousands; quiz.addOnsSome: about a thousand or more)
@@ -160,12 +166,14 @@
       const level = COST_LEVEL[verdict(costRow(a))];
       if (level !== undefined) {
         const over = level - BUDGET[a.budget];
-        if (over > 0) add('budget', -3 * over); else add('budget', 0, a.budget === 'none' ? 'Free to start' : 'Fits your budget');
+        if (over > 0) { add('budget', -3 * over); but.push('it costs more to start than you planned to spend'); } else add('budget', 0, a.budget === 'none' ? 'Free to start' : 'Fits your budget');
       }
     }
-    // Every reason is shown (seven at most), so two cards' lists match only when their reasons really do
+    // Every reason is shown (seven at most), so two cards' lists match only when their reasons really do.
+    // "but" is what counted against an answer the person gave, so a top match never hides that (moving
+    // later, languages, running it yourself, hosting, budget); it changes no score.
     const all = why.filter(Boolean);
-    return { p, s, why: all, all, pts };
+    return { p, s, why: all, all, but, pts };
   }
 
   // Every platform, best fit first

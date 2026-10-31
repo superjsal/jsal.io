@@ -118,10 +118,8 @@ body {
 .tag.check { background: var(--jsal-sunk); color: var(--jsal-ink-2); }
 .tag.indirect { background: var(--jsal-info-soft); color: var(--jsal-info); }   /* not directly, but there is a way round it (blue like Plugin/app: possible with an extra step) */
 /* "What it costs to start" bands: green to amber as they rise; free software and "not for stores" stay neutral */
-.tag.free { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
-.tag.low { background: var(--jsal-info-soft); color: var(--jsal-info); }
-.tag.mid, .tag.high { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
-.tag.software, .tag.na { background: var(--jsal-sunk); color: var(--jsal-ink-2); }
+/* Cost bands are labels, not verdicts, so they're neutral: a price isn't a warning (orange) or an add-on (blue) */
+.tag.free, .tag.low, .tag.mid, .tag.high, .tag.software, .tag.na { background: var(--jsal-sunk); color: var(--jsal-ink-2); }
 
 /* ── Grid ──────────────────────────────────────────────────────────────── */
 
