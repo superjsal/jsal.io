@@ -572,7 +572,7 @@
     // A question's tick (q.also): a checkbox that goes with whichever choice is picked, kept under its own id
     function alsoBox(q, onChange) {
       if (!q.also) return null;
-      const lab = el('label', 'qz-also'), input = el('input');
+      const lab = el('label', 'qz-tick'), input = el('input');
       input.type = 'checkbox';
       input.checked = a[q.also.id] === 'yes';
       input.addEventListener('change', () => { a[q.also.id] = input.checked ? 'yes' : 'no'; onChange(); });
@@ -908,7 +908,23 @@
       panel.append(sw, body);
       show(top[0].p.id);
       box.append(panel);
-      if (also.length) box.append(el('p', 'qz-also', `Also worth a look: ${also.map((r) => r.p.name).join(', ')}`));
+      // Also worth a look: each name opens "Had a platform in mind?" on that platform
+      if (also.length) {
+        const p = el('p', 'qz-also', 'Also worth a look: ');
+        also.forEach((r, i) => {
+          const b = el('button', 'qz-also-b', r.p.name);
+          b.type = 'button';
+          b.addEventListener('click', () => {
+            checking = r.p.id;
+            results();
+            const c = box.querySelector('.qz-check');
+            c?.scrollIntoView();
+            c?.querySelector('.chip[aria-pressed="true"], select')?.focus({ preventScroll: true });
+          });
+          p.append(i ? ', ' : '', b);
+        });
+        box.append(p);
+      }
       const nav = el('div', 'qz-nav');
       const cmp = el('button', 'btn primary', 'Compare these side by side');
       cmp.type = 'button';

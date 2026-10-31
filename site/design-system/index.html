@@ -153,7 +153,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
 .chip-link { padding: 3px 6px; border: 0; background: none; color: var(--jsal-info); font: 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
-/* A tick that goes with a choice: a checkbox row, selected like a pressed chip (cms-picker .qz-also) */
+/* A tick that goes with a choice: a checkbox row, selected like a pressed chip (cms-picker .qz-tick) */
 .tick { display: flex; align-items: center; gap: 12px; width: max-content; max-width: 100%; padding: 8px 14px 8px 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); cursor: pointer; transition: border-color 0.12s, background 0.12s; }
 .tick:hover { border-color: var(--jsal-hover-line); }
 .tick:has(:checked) { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
@@ -497,7 +497,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <div class="row"><span class="track"><button type="button" class="seg">Low</button><button type="button" class="seg">Med</button><button type="button" class="seg active">High</button></span><span class="track"><button type="button" class="seg active">JPG</button><button type="button" class="seg">PNG</button><button type="button" class="seg">WebP</button></span></div>
       </div>
       <div class="demo">
-        <span class="src">A tick that goes with a choice · cms-picker/styles.css .qz-also (selected like a pressed chip; the box in the accent)</span>
+        <span class="src">A tick that goes with a choice · cms-picker/styles.css .qz-tick (selected like a pressed chip; the box in the accent)</span>
         <div class="row"><label class="tick"><input type="checkbox" checked><span><b>In two or more languages</b><small>Tick it, then pick below</small></span></label><label class="tick"><input type="checkbox"><span><b>In two or more languages</b><small>Tick it, then pick below</small></span></label></div>
         <span class="src">An index of links · index.html .guides (a bordered pill means a choice, so links get equal tiles, never pills)</span>
         <div class="ltiles"><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/hubspot/">HubSpot CMS</a><a href="/cms-picker/ghost/">Ghost</a></div>
