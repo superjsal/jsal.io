@@ -6,7 +6,7 @@
   <title>CMS Picker: Which Website Builder or CMS Fits You? | jsal.io</title>
   <meta name="description" content="Which website builder or CMS fits you? Take a short quiz or compare 13 platforms, from WordPress to Webflow: who each suits, what’s built in, and SEO." />
   <link rel="canonical" href="https://jsal.io/cms-picker/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-31d" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-31f" type="image/svg+xml">
   <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
   <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -260,11 +260,11 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-31d" />
-  <script src="score.js?v=2026-10-31d" defer></script>
-  <script src="app.js?v=2026-10-31d" defer></script>
+  <link rel="stylesheet" href="styles.css?v=2026-10-31f" />
+  <script src="score.js?v=2026-10-31f" defer></script>
+  <script src="app.js?v=2026-10-31f" defer></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-31d" defer></script>
+  <script src="/nav.js?v=2026-10-31f" defer></script>
 </head>
 <body>
   <main class="app">
@@ -279,29 +279,11 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
       </div>
     </header>
 
-    <!-- Hero: headline beside a live slice of the comparison table (filled from data.json by app.js),
-         then numbered links to the page's three sections -->
+    <!-- Hero: the question and one line; the quiz under it is where the page starts -->
     <section class="hero" id="top" aria-labelledby="hero-h">
       <p class="byline">Updated <span id="asof"><!-- prerender:asof -->October 2026<!-- /prerender:asof --></span></p>
-      <div class="hero-main">
-        <div>
-          <h2 class="hero-title" id="hero-h">Which website platform fits you?</h2>
-          <p class="lede"><span class="n-plats"><!-- prerender:count -->13<!-- /prerender:count --></span> website builders and CMSs compared on what matters: how easy they are, who looks after them, selling online, leaving later, and getting found on Google and AI search.</p>
-          <div class="cta">
-            <a class="btn primary" href="#quiz">Find my fit</a>
-            <a class="btn" href="#seo">Compare all <span class="n-plats"><!-- prerender:count -->13<!-- /prerender:count --></span></a>
-          </div>
-        </div>
-        <figure class="peek">
-          <div id="peek" role="table" aria-label="A few rows from the comparison table"><!-- prerender:peek --><div role="row"><span role="columnheader"></span><span role="columnheader">WordPress</span><span role="columnheader">Shopify</span><span role="columnheader">Wix</span></div><div role="row"><span role="rowheader">Run a blog</span><span role="cell"><span class="tag yes">Built in</span></span><span role="cell"><span class="tag yes">Built in</span></span><span role="cell"><span class="tag yes">Built in</span></span></div><div role="row"><span role="rowheader">Sell online</span><span role="cell"><span class="tag plugin">Plugin</span></span><span role="cell"><span class="tag yes">Built in</span></span><span role="cell"><span class="tag yes">Built in</span></span></div><div role="row"><span role="rowheader">Keep old links</span><span role="cell"><span class="tag plugin">Plugin</span></span><span role="cell"><span class="tag yes">Built in</span></span><span role="cell"><span class="tag yes">Built in</span></span></div><div role="row"><span role="rowheader">Custom design</span><span role="cell"><span class="tag code">Needs code</span></span><span role="cell"><span class="tag code">Needs code</span></span><span role="cell"><span class="tag yes">Built in</span></span></div><!-- /prerender:peek --></div>
-          <figcaption id="peek-cap"><!-- prerender:peek-cap -->4 of 15 rows, from the full table below<!-- /prerender:peek-cap --></figcaption>
-        </figure>
-      </div>
-      <nav class="sections" aria-label="On this page">
-        <a href="#quiz"><span>01</span><b>Find your fit</b><small>A few quick questions</small></a>
-        <a href="#seo"><span>02</span><b>Compare platforms</b><small>Everyday, Google and AI</small></a>
-        <a href="#about"><span>03</span><b>About these answers</b><small>How they’re checked</small></a>
-      </nav>
+      <h2 class="hero-title" id="hero-h">Which website platform fits you?</h2>
+      <p class="lede"><span class="n-plats"><!-- prerender:count -->13<!-- /prerender:count --></span> website builders and CMSs compared on what matters: how easy they are, who looks after them, selling online, leaving later, and getting found on Google and AI search.</p>
     </section>
 
     <section class="block" id="quiz" aria-labelledby="quiz-h">
@@ -309,7 +291,14 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
       <div class="qz" id="qz"></div>
     </section>
 
-    <section class="block" id="fit" aria-labelledby="fit-h">
+    <!-- The platform cards and the comparison table: closed until asked for (app.js opens them; links to #fit or
+         #seo and find-in-page open them too) -->
+    <div class="more" id="more">
+      <button type="button" class="more-btn" aria-expanded="false" aria-controls="fit" data-panel="fit"><span><b>Browse all <span class="n-plats"><!-- prerender:count -->13<!-- /prerender:count --></span> platforms</b><small>One card each: who it suits and what it costs to start</small></span><span class="chev" aria-hidden="true"></span></button>
+      <button type="button" class="more-btn" aria-expanded="false" aria-controls="seo" data-panel="seo"><span><b>Compare what each can do</b><small>Every question, side by side, with each platform’s own docs</small></span><span class="chev" aria-hidden="true"></span></button>
+    </div>
+
+    <section class="block panel" id="fit" aria-labelledby="fit-h" hidden="until-found">
       <h2 id="fit-h"><span class="num">All <span class="n-plats"><!-- prerender:count -->13<!-- /prerender:count --></span> platforms<span class="sr-only">:&nbsp;</span></span>Or browse by what you’re building</h2>
       <div class="types" id="types" role="group" aria-labelledby="fit-h"></div>
       <p class="count" id="count" aria-live="polite"></p>
@@ -329,7 +318,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 <article class="card"><div class="ctop"><span class="logo" style="--logo: url(&quot;logos/sanity.svg?v=c65bc51e&quot;)" aria-hidden="true"></span><h3>Sanity</h3></div><p class="ptype">Headless CMS</p><p class="summary">For developer-built sites and apps that share one content source.</p><div class="ktags" role="group" aria-label="Known for"><span class="ktag">Content via API</span><span class="ktag">Visual editing</span><span class="ktag">Real-time collaboration</span></div><div class="aitags"><span class="ailabel">AI</span><span class="aitag">AI Assist (paid plans)</span></div><dl class="run"><div class="r-host"><dt>Hosting and updates</dt><dd><span>Sanity hosts the content; a developer hosts the website</span></dd></div><div class="r-exit"><dt>If you leave</dt><dd><span>Everything: your content and files in one archive with the Sanity CLI; the website’s code is already yours</span></dd></div><div class="r-skip"><dt>Not ideal if</dt><dd><span>There&#x27;s no developer</span><span>Marketers need to change layout or SEO settings without developer help (unless the site was built for it)</span></dd></div></dl><div class="cfoot"><button class="chip cmp" type="button" aria-pressed="false">+ Add to compare</button><a class="cseo" href="sanity/" data-track="platform_page_open" data-track-platform="sanity" data-track-from="card" aria-label="Sanity SEO settings, and where to find each one">SEO settings<span aria-hidden="true"> →</span></a></div></article><!-- /prerender:cards --></div>
     </section>
 
-    <section class="block" id="seo" aria-labelledby="seo-h">
+    <section class="block panel" id="seo" aria-labelledby="seo-h" hidden="until-found">
       <h2 id="seo-h"><span class="num">02 · Compare platforms<span class="sr-only">:&nbsp;</span></span>What can each one do?</h2>
       <div class="plats-head"><span class="plats-label">Compare</span><span class="plats-count" id="plats-count"></span><span class="plats-acts" id="plats-acts"></span></div>
       <div class="plats" id="plats" role="group" aria-label="Platforms to compare"></div>

@@ -293,9 +293,6 @@ SHORT = {'yes': 'Built in', 'auto': 'Automatic', 'plugin': 'Plugin/app', 'code':
 SCOPE = {'V': 'varies', 'C': 'not verified'}   # only the exceptions are marked
 BADGE = {'magento': 'M', 'duda': 'D', 'headless': '{ }'}
 DEFAULT_COMPARE = ['wordpress', 'shopify', 'wix', 'squarespace']
-PEEK_PLATS = ['wordpress', 'shopify', 'wix']
-PEEK_ROWS = [('blog', 'Run a blog'), ('store', 'Sell online'), ('gsc404', 'Keep old links'), ('design', 'Custom design')]
-PEEK_SHORT = {**SHORT, 'plugin': 'Plugin', 'no': 'No'}
 GENERIC = re.compile(r'^(yes|no|check|automatic|built in)$|^yes, with (an? )?(seo |redirect )?(plugin|module|extension|app|custom code)$', re.I)
 
 
@@ -358,24 +355,15 @@ def prerender():
         term = f'<small class="term">{e(it["term"])}</small>' if it.get('term') else ''
         rows.append(f'<div class="row"><div class="item">{e(it["label"])}{term}</div>{"".join(cells)}</div>')
 
-    names = {p['id']: p['name'] for p in plats}
-    pp = [i for i in PEEK_PLATS if i in d['answers']]
-    pr_rows = [(i, l) for i, l in PEEK_ROWS if any(x['id'] == i for x in d['items'])]
-    peek = ['<div role="row"><span role="columnheader"></span>' + ''.join(f'<span role="columnheader">{e(names[i])}</span>' for i in pp) + '</div>']
-    for iid, label in pr_rows:
-        peek.append(f'<div role="row"><span role="rowheader">{label}</span>' + ''.join(
-            f'<span role="cell"><span class="tag {d["answers"][i][iid]["verdict"]}">{e(PEEK_SHORT.get(d["answers"][i][iid]["verdict"], ""))}</span></span>' for i in pp) + '</div>')
-
     page_p = SITE / 'cms-picker' / 'index.html'
     s = before = page_p.read_text(encoding='utf-8')
     as_of = d.get('asOf')
     # Its own .grid sized for every platform (the outer one is sized by app.js for the ones it shows)
     grid = f'<div class="grid" style="--n: {len(plats)}">' + '\n'.join(rows) + '</div>'
-    parts = {'cards': '\n'.join(cards), 'grid': grid, 'peek': ''.join(peek),
+    parts = {'cards': '\n'.join(cards), 'grid': grid,
              'count': str(len(plats)), 'asof': e(as_of or ''),
              'seo-chips': ''.join(f'<a class="seo-chip" href="{e(p["id"])}/" data-track="platform_page_open" data-track-platform="{e(p["id"])}" data-track-from="chips">{logo(p)}{e(p["name"])}<span class="sr-only"> SEO settings</span></a>'
-                                  for p in plats if p.get('profile')),   # the platform pages, as logo chips under the table
-             'peek-cap': f'{len(pr_rows)} of {len(d["items"])} rows, from the full table below'}
+                                  for p in plats if p.get('profile'))}   # the platform pages, as logo chips under the table
     for name, body in parts.items():
         start, end = f'<!-- prerender:{name} -->', f'<!-- /prerender:{name} -->'
         n = s.count(start)

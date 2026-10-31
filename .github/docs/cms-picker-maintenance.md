@@ -3,12 +3,11 @@
 `SETUP.md` (outside the repo) covers publishing and the Playbook day to day; this is the CMS Picker's
 data, scoring and tests. Real-device checks before a release: `manual-checks.md`, next to this file.
 
-## Status: maintenance mode (since 2026-10-30)
+## Status: in development again (since 2026-10-31)
 
-The CMS Picker is finished for now. Change it only for:
-- the quarterly rechecks below ("Keeping the answers current"),
-- what the user tests (`user-test-script.md`) turn up,
-- problems real users report.
+It was in maintenance mode from 2026-10-30. On 2026-10-31 John reopened it to make the page less dense: the quiz
+becomes the focus, and the comparison table and the platform cards show only on demand. The scoring and the data
+stay as they are; the quarterly rechecks below ("Keeping the answers current") still apply.
 
 The parked ideas are revisited only on their stated triggers: **two-step scoring** if the four rule tests start
 failing in new ways, and **partial fit** if people report Wix missing from content-site results (both under

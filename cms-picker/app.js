@@ -183,10 +183,21 @@
   }
   function placeBar() {
     const fit = $('#fit').getBoundingClientRect(), table = $('#seo .scroll').getBoundingClientRect();
-    const on = state.compare.size > 0 && fit.top < innerHeight * 0.5 && table.top > innerHeight - 60;
+    // the table closed counts as "not on screen yet"
+    const on = state.compare.size > 0 && !$('#fit').hidden && fit.top < innerHeight * 0.5 && fit.bottom > 0 && ($('#seo').hidden || table.top > innerHeight - 60);
     $('#cbar').classList.toggle('show', on);
     document.body.classList.toggle('cbar-on', on);
   }
+  // The cards (#fit) and the table (#seo) stay closed until asked for: their button, a link to them, the quiz's
+  // "Compare these" or find-in-page (hidden="until-found" lets the browser open them itself)
+  function setPanel(id, open) {
+    const s = $('#' + id);
+    if (open) s.hidden = false; else s.setAttribute('hidden', 'until-found');
+    $(`.more-btn[data-panel="${id}"]`).setAttribute('aria-expanded', String(open));
+    if (open && id === 'seo') render();   // the pinned header measures the table, which had no size while closed
+    placeBar();
+  }
+  function openPanel(id) { if ($('#' + id).hidden) setPanel(id, true); }
 
   function render() {
     const plats = data.platforms.filter((p) => state.compare.has(p.id));
@@ -317,33 +328,10 @@
     });
     $('#grid').addEventListener('focusin', (e) => markCol(e.target.closest('[data-col]')?.dataset.col ?? null));
     $('#grid').addEventListener('focusout', () => markCol(null));
-    // Hero: platform count, when the answers were last checked, and a few real rows of the table
+    // Hero: platform count and when the answers were last checked
     document.querySelectorAll('.n-plats').forEach((n) => { n.textContent = data.platforms.length; });
     const asOf = data.asOf;
     if (asOf) $('#asof').textContent = asOf;
-    const PEEK_PLATS = ['wordpress', 'shopify', 'wix'].filter((id) => data.answers[id]);
-    const PEEK_ROWS = [['blog', 'Run a blog'], ['store', 'Sell online'], ['gsc404', 'Keep old links'], ['design', 'Custom design']]   // short, so three columns fit on a phone
-      .filter(([id]) => data.items.some((i) => i.id === id));
-    const PEEK_SHORT = { plugin: 'Plugin', no: 'No' };   // shorter still, so three columns fit on a phone
-    const peek = $('#peek');
-    peek.replaceChildren();                     // drop the plain-HTML copy (build\playbook.py prerender)
-    const prow = () => { const r = el('div'); r.setAttribute('role', 'row'); return r; };
-    const pcell = (r, role, x) => { const c = typeof x === 'string' ? el('span', null, x) : x; c.setAttribute('role', role); r.append(c); };
-    const head = prow();
-    pcell(head, 'columnheader', '');
-    PEEK_PLATS.forEach((id) => pcell(head, 'columnheader', data.platforms.find((p) => p.id === id).name));
-    peek.append(head);
-    PEEK_ROWS.forEach(([id, label]) => {
-      const r = prow();
-      pcell(r, 'rowheader', label);
-      PEEK_PLATS.forEach((pid) => {
-        const v = data.answers[pid][id].verdict, c = el('span');
-        c.append(el('span', `tag ${v}`, PEEK_SHORT[v] || SHORT[v] || v));
-        pcell(r, 'cell', c);
-      });
-      peek.append(r);
-    });
-    $('#peek-cap').textContent = `${PEEK_ROWS.length} of ${data.items.length} rows, from the full table below`;
     // Notes off: hovering, tapping or tabbing to an answer shows its note and scope in a tooltip at once.
     // It sits outside the table, fixed to the window, so the table's scroll box can't clip it. Screen
     // readers get the note from the cell itself (.mark, hidden only visually), so the tooltip is aria-hidden.
@@ -405,6 +393,13 @@
     Object.values(SCOPE).forEach(([word, meaning]) => { const s = el('span', 'sc', word); s.title = meaning; legend.append(s); });
     setGoal('all');
     setupQuiz();
+    document.querySelectorAll('.more-btn').forEach((b) => b.addEventListener('click', () => setPanel(b.dataset.panel, b.getAttribute('aria-expanded') !== 'true')));
+    ['fit', 'seo'].forEach((id) => $('#' + id).addEventListener('beforematch', () => requestAnimationFrame(() => setPanel(id, true))));
+    // Links to #fit or #seo (the compare bar, the platform pages) open the panel before the browser scrolls to it
+    const fromHash = () => { const id = location.hash.slice(1); if (id === 'fit' || id === 'seo') { openPanel(id); $('#' + id).scrollIntoView(); } };
+    document.addEventListener('click', (e) => { const a = e.target.closest('a[href="#fit"], a[href="#seo"]'); if (a) openPanel(a.getAttribute('href').slice(1)); }, true);
+    addEventListener('hashchange', fromHash);
+    fromHash();
   }
 
   // ---------- Find my fit: a short guided quiz ----------
@@ -700,6 +695,7 @@
         state.touched = true;
         state.pick = top[0].p.id;
         renderCards();
+        openPanel('seo');
         render();
         $('#seo').scrollIntoView();
       });
