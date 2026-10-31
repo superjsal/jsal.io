@@ -47,13 +47,13 @@ flowchart TB
     a4["Action: Quarterly recheck reminder<br>1 Jan/Apr/Jul/Oct: opens an issue<br>(cost bands, add-on tiers, 'varies', devices)"]
   end
   a1 --> pub
-  data & pp & logos & pre & smap -->|commit "CMS Picker: nightly publish"| main
+  data & pp & logos & pre & smap -->|"commit: CMS Picker: nightly publish"| main
   main --> pages
   main --> a2
   a3 --> DB
 
   subgraph DEV["Working on this PC (before a push)"]
-    edit["edit site\\ (shell.css, nav.js, a tool's CSS/JS, pages)"]
+    edit["edit the site: shell.css, nav.js, a tool's CSS/JS, pages"]
     bump["bump-version.ps1<br>bumps ?v= on every page, the shell.css link<br>and the apps' module imports"]
     check["check.ps1 → check.py<br>top bar identical, ?v= in step, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults"]
     bcheck["browser-check.mjs (Playwright on Edge/WebKit)<br>axe on every page, 375/390px, each tool's main flow"]
@@ -74,7 +74,7 @@ flowchart TB
   idx["indexnow.py<br>by hand after a content change,<br>or by the publish Action"] --> bing["Bing and other IndexNow engines"]
   smap -.->|only addresses in the sitemap| idx
 
-  priv["private\\ (never committed)<br>backups of every table,<br>SQL waiting for John, research notes"]
+  priv["the private folder (never committed)<br>backups of every table,<br>SQL waiting for John, research notes"]
   pub -.->|"playbook.py backup"| priv
 ```
 
