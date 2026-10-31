@@ -1,11 +1,9 @@
-# Bumps the ?v= cache number on every page, so browsers fetch fresh CSS and JS after a change,
-# and copies shell.css into every page. Run after editing shell.css, nav.js or an app's CSS/JS:
+# Bumps the ?v= cache number on every page, so browsers fetch fresh CSS and JS after a change.
+# Run after editing shell.css, nav.js or an app's CSS/JS:
 #   powershell -ExecutionPolicy Bypass -File C:\Users\JSAL\Desktop\jsal.io\site\.github\build\bump-version.ps1
 # Numbers are the date plus letters: 2026-10-28o → 2026-10-28p, …z → …za, or 2026-10-29a on a new day.
-#
-# shell.css is inlined (a <style data-jsal-shell> block in each page's <head>) rather than linked,
-# so nothing blocks the first paint. Edit shell.css, never the copies: this script rewrites them,
-# without the comments, and check.py fails if a copy no longer matches.
+# Every page links /shell.css with the same number (one identical <link> line, which check.py looks for),
+# so the bump covers it like the other files.
 $site = Join-Path $PSScriptRoot "..\.." | Resolve-Path   # site\.github\build -> site\
 $home_ = [IO.File]::ReadAllText((Join-Path $site "index.html"))
 $old = [regex]::Match($home_, 'nav\.js\?v=([\w-]+)').Groups[1].Value
@@ -21,27 +19,12 @@ if ($old -match "^$today([a-z]+)$") {
   $new = $today + "a"
 }
 
-# shell.css without comments, indentation or blank lines
-$shell = [IO.File]::ReadAllText((Join-Path $site "shell.css"))
-$shell = [regex]::Replace($shell, '/\*[\s\S]*?\*/', '')
-$lines = $shell -split "\r?\n" | ForEach-Object { $_.Trim() } | Where-Object { $_ }
-
 $pages = Get-ChildItem $site -Recurse -Filter *.html | Where-Object { $_.FullName -notmatch '\\vendor\\|\\\.github\\build\\' }
 foreach ($p in $pages) {
   $t = [IO.File]::ReadAllText($p.FullName)
-  $before = $t
-  $nl = if ($t.Contains("`r`n")) { "`r`n" } else { "`n" }
-  $css = $lines -join $nl
-  # A page still linking shell.css gets the block in the link's place (keeping its indent)
-  $t = [regex]::Replace($t, '(?m)^([ \t]*)<link rel="stylesheet" href="/shell\.css[^"]*"\s*/?>', {
-    param($m) $m.Groups[1].Value + '<style data-jsal-shell></style>'
-  })
-  $t = [regex]::Replace($t, '<style data-jsal-shell>[\s\S]*?</style>', {
-    param($m) "<style data-jsal-shell>$nl$css$nl</style>"
-  })
-  $t = $t.Replace("v=$old", "v=$new")
-  if ($t -ne $before) {
-    [IO.File]::WriteAllText($p.FullName, $t)
+  $u = $t.Replace("v=$old", "v=$new")
+  if ($u -ne $t) {
+    [IO.File]::WriteAllText($p.FullName, $u)
     Write-Output "  $($p.FullName.Substring($site.Path.Length + 1))"
   }
 }

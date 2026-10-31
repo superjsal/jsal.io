@@ -1,7 +1,7 @@
 # Pre-push checks for the site (the repo root, two folders up). Run via check.ps1 (or: python -I check.py);
 # the "Site checks" GitHub Action runs it on every push too. Exits 1 if anything needs fixing.
 #  - the top bar is identical on every page (so it never moves between pages)
-#  - every page uses the same ?v= cache number, and has an up-to-date copy of shell.css
+#  - every page uses the same ?v= cache number, and links /shell.css with it
 #  - internal links, scripts, styles and images point at files that exist
 #  - structured data (JSON-LD) parses
 #  - no unused CSS classes, keyframes or variables
@@ -50,15 +50,14 @@ home_v = re.search(r'nav\.js\?v=([\w-]+)', html['index.html']).group(1)
 for p, v in vers.items():
     if v - {home_v}: fail(f'{p}: cache number {", ".join(sorted(v - {home_v}))} (home page uses {home_v}); run bump-version.ps1')
 
-# shell.css is copied into every page by bump-version.ps1 (so it doesn't block the first paint);
-# each copy must match it, ignoring comments and whitespace.
-def squash(c): return re.sub(r'\s+', '', re.sub(r'/\*.*?\*/', '', c, flags=re.S))
-shell = squash(read('shell.css'))
+# Every page links the shared stylesheet with one identical line, in <head> before its own styles
+# (so shell.css loses to a page's own rules, as the inline copies used to)
+SHELL = f'<link rel="stylesheet" href="/shell.css?v={home_v}">'
 for p, t in html.items():
-    if re.search(r'<link[^>]*href="/shell\.css', t): fail(f'{p}: links /shell.css instead of having it copied in; run bump-version.ps1')
-    copies = re.findall(r'<style data-jsal-shell>(.*?)</style>', t, re.S)
-    if len(copies) != 1: fail(f'{p}: needs one <style data-jsal-shell> copy of shell.css; run bump-version.ps1')
-    elif squash(copies[0]) != shell: fail(f'{p}: its copy of shell.css is out of date; run bump-version.ps1')
+    head = t[:t.find('</head>')]
+    i = head.find(SHELL)
+    if i < 0 or head.count('/shell.css?') != 1: fail(f'{p}: needs exactly this line in <head>: {SHELL}')
+    elif re.search(r'<style[\s>]|<link[^>]*stylesheet', head[:i]): fail(f'{p}: the shell.css link must come before the page\'s own styles')
 
 # Internal references
 def exists(base, ref):
@@ -97,8 +96,7 @@ for p, t in html.items():
 # silently (it happened once, through a class that shell.css named)
 for f in files(['**/*.html', '**/*.css', '**/*.js']):
     if f.name == 'shell.css' or 'vendor' in f.parts: continue
-    own = re.sub(r'<style data-jsal-shell>.*?</style>', '', f.read_text(encoding='utf-8'), flags=re.S)
-    if re.search(r'view-transition-name|viewTransitionName', own):
+    if re.search(r'view-transition-name|viewTransitionName', f.read_text(encoding='utf-8')):
         fail(f'{f.relative_to(SITE)}: sets a view-transition name; only shell.css names page transitions')
 
 # Unused CSS
@@ -116,7 +114,7 @@ def css_check(name, css, usage):
 shared_usage = read('nav.js')
 css_check('shell.css', read('shell.css'), everything)
 for p, t in html.items():
-    css = '\n'.join(re.findall(r'<style(?![^>]*data-jsal-shell)[^>]*>(.*?)</style>', t, re.S))   # shell.css is checked on its own
+    css = '\n'.join(re.findall(r'<style[^>]*>(.*?)</style>', t, re.S))   # the page's own styles (shell.css is checked above)
     extra = files(APP_FILES.get(p, []))
     css += '\n'.join(f.read_text(encoding='utf-8') for f in extra if f.suffix == '.css')
     usage = re.sub(r'<style[^>]*>.*?</style>', '', t, flags=re.S) + shared_usage + '\n'.join(f.read_text(encoding='utf-8') for f in extra if f.suffix == '.js')
@@ -158,7 +156,7 @@ def stylesheets():
     out = [('shell.css', read('shell.css'), 1)]
     out += [(str(f.relative_to(SITE)), f.read_text(encoding='utf-8'), 1) for f in files(['*/styles.css', 'cms-picker/platform.css'])]
     for p, t in html.items():
-        for m in re.finditer(r'<style(?![^>]*data-jsal-shell)[^>]*>(.*?)</style>', t, re.S):
+        for m in re.finditer(r'<style[^>]*>(.*?)</style>', t, re.S):
             out.append((p, m.group(1), t.count('\n', 0, m.start(1)) + 1))
     return out
 NEUTRAL = re.compile(r'rgba?\(\s*(0[ ,]+0[ ,]+0|255[ ,]+255[ ,]+255)\s*(/|,)\s*[\d.]+\s*\)')

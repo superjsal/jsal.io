@@ -420,9 +420,8 @@ def platform_pages(d):
     e = lambda t: html.escape(str(t), quote=True)
     tpl = PLATFORM_TEMPLATE.read_text(encoding='utf-8')
     main = (SITE / 'cms-picker' / 'index.html').read_text(encoding='utf-8')
-    # Same cache number, shell.css copy and top bar as the CMS Picker page (bump-version.ps1 updates both)
+    # Same cache number and top bar as the CMS Picker page (bump-version.ps1 updates both, and the template's shell.css link)
     v = re.search(r'nav\.js\?v=([\w-]+)', main).group(1)
-    shell = re.search(r'<style data-jsal-shell>.*?</style>', main, re.S).group(0)
     top = re.search(r'[ \t]*<header class="app-header jsal-top">.*?</header>', main, re.S).group(0)
     top = re.sub(r'<h1 class="jsal-title">(.*?)<span class="sr-only">.*?</span></h1>', r'<p class="jsal-title">\1</p>', top, flags=re.S)
     items = {i['id']: i for i in d['items']}
@@ -502,8 +501,7 @@ def platform_pages(d):
             'BUILT': '\n'.join(built),
             'OTHERS': ' · '.join(f'<a href="../{o["id"]}/">{e(o["name"])}</a>' for o in plats if o['id'] != pid),
         }
-        page = re.sub(r'<style data-jsal-shell>.*?</style>', lambda m: shell, tpl, flags=re.S)
-        return re.sub(r'\{\{([A-Z_]+)\}\}', lambda m: parts[m.group(1)], page)
+        return re.sub(r'\{\{([A-Z_]+)\}\}', lambda m: parts[m.group(1)], tpl)
 
     sm_p = SITE / 'sitemap.xml'
     sm = sm_p.read_text(encoding='utf-8')
