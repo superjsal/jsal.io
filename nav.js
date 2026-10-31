@@ -234,15 +234,9 @@
     const root = document.documentElement;
     const system = matchMedia('(prefers-color-scheme: dark)');
     const current = () => root.dataset.theme || (system.matches ? 'dark' : 'light');
-    // Pages carry both icons in their HTML (/shell.css shows the right one); this only fills
-    // the button in for a page that doesn't
-    const hasIcons = !!themeBtn.querySelector('.i-sun');
+    // Both icons are in each page's HTML (/shell.css shows the right one); only the label changes here
     const paint = () => {
-      const dark = current() === 'dark';
-      if (!hasIcons) themeBtn.innerHTML = dark
-        ? svg('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>')
-        : svg('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/>');
-      const label = dark ? 'Switch to light theme' : 'Switch to dark theme';
+      const label = current() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
       themeBtn.title = label;
       themeBtn.setAttribute('aria-label', label);
     };

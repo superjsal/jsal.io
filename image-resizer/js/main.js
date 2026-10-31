@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-31f";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-31f";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-31f";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-31f";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-31f";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-31f";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-31f";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-31f";
+} from "./state.js?v=2026-10-31h";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-31h";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-31h";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-31h";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-31h";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-31h";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-31h";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-31h";
 
 const $ = id => document.getElementById(id);
 
@@ -520,7 +520,7 @@ document.addEventListener("drop", e => {
   e.preventDefault();
   dragDepth = 0;
   dropZone.classList.remove("drag");
-    canvasWrap.classList.remove("drag");
+  canvasWrap.classList.remove("drag");
   if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
 });
 

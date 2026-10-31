@@ -169,11 +169,11 @@
         if (over > 0) { add('budget', -3 * over); but.push('it costs more to start than you planned to spend'); } else add('budget', 0, a.budget === 'none' ? 'Free to start' : 'Fits your budget');
       }
     }
-    // Every reason is shown (seven at most), so two cards' lists match only when their reasons really do.
-    // "but" is what counted against an answer the person gave, so a top match never hides that (moving
-    // later, languages, running it yourself, hosting, budget); it changes no score.
-    const all = why.filter(Boolean);
-    return { p, s, why: all, all, but, pts };
+    // Every reason is shown (seven at most), so two cards' lists match only when their reasons really do
+    // ("all", compared by explain and the tests, is the same list). "but" is what counted against an answer the
+    // person gave, so a top match never hides that (moving later, languages, running it yourself, hosting,
+    // budget); it changes no score.
+    return { p, s, why, all: why, but, pts };
   }
 
   // Every platform, best fit first
@@ -189,7 +189,7 @@
     design: 'design control', meta_title: 'page titles and descriptions for search', urls: 'control over page addresses',
     gsc404: 'redirects for old links', schema: 'search details like prices and ratings', noindex: 'pages kept out of search',
     ai_crawlers: 'control over which AI bots read the site',
-    cost_site: 'a cheaper start', cost_store: 'a cheaper store', cost_members: 'a cheaper start with paid members',   // not used: cost isn't a "can it do it" row (weight 0)
+    cost_site: 'a cheaper start', cost_store: 'a cheaper store', cost_members: 'a cheaper start with paid members',   // never shown (weight 0: the budget question covers cost), but every row needs one (the persona test checks)
   };
   // How much a row matters for these answers; 0 when the person has ruled it out
   function weight(row, a) {

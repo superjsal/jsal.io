@@ -2,7 +2,9 @@
 // (answers and profiles, exported by build\playbook.py publish) and quiz.json (the quiz's own values).
 (() => {
   const $ = (s) => document.querySelector(s);
-  const state = { goal: 'all', compare: new Set(), notes: false, open: new Set() };   // open: platforms expanded in the "Show all" list
+  // pick: the quiz's best match, marked in the table; touched: the comparison was changed by hand; open: platforms
+  // expanded in the "Show all" list; folded: the table's groups folded on a phone (set on the first render)
+  const state = { goal: 'all', compare: new Set(), notes: false, pick: null, touched: false, open: new Set(), folded: null };
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Needs code', hosting: 'Hosting/DNS', check: 'Unclear', indirect: 'Indirectly', no: 'Not possible' };
   // "What it costs to start": bands from each platform's own pricing page, never a price (not in the key above the table)
@@ -175,12 +177,12 @@
     barShown = new Set(picked.map((p) => p.id));
     placeBar();
   }
-  // Shown while the cards are on screen and the table isn't yet, and only with something picked
   // The table's header row: lifted (line and shadow) only while it's pinned to the top of the window
   function liftHead() {
     const h = $('#thead');
     h.classList.toggle('stuck', !h.hidden && h.getBoundingClientRect().top <= 0 && $('#seo .scroll').getBoundingClientRect().bottom > h.offsetHeight);
   }
+  // Shown while the cards are on screen and the table isn't yet, and only with something picked
   function placeBar() {
     const fit = $('#fit').getBoundingClientRect(), table = $('#seo .scroll').getBoundingClientRect();
     // the table closed counts as "not on screen yet"
@@ -330,8 +332,7 @@
     $('#grid').addEventListener('focusout', () => markCol(null));
     // Hero: platform count and when the answers were last checked
     document.querySelectorAll('.n-plats').forEach((n) => { n.textContent = data.platforms.length; });
-    const asOf = data.asOf;
-    if (asOf) $('#asof').textContent = asOf;
+    if (data.asOf) $('#asof').textContent = data.asOf;
     // Notes off: hovering, tapping or tabbing to an answer shows its note and scope in a tooltip at once.
     // It sits outside the table, fixed to the window, so the table's scroll box can't clip it. Screen
     // readers get the note from the cell itself (.mark, hidden only visually), so the tooltip is aria-hidden.
@@ -405,7 +406,7 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches. The questions and the scoring live in score.js (shared
   // with the persona tests). The answers stay in the page address, so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, explain, conflict, costRow } = window.cmsScore;
   // Shared result links carry the quiz version (v=2). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
   // people have already shared keep opening a result rather than an empty quiz.
@@ -582,14 +583,14 @@
     // source: 'quiz' (the last question answered) or 'link' (a shared result opened), sent as a GA4
     // event; re-showing the result after an answer is changed sends nothing
     function results(source) {
-      const ranked = window.cmsScore.rank(data, a);
+      const ranked = rank(data, a);
       const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
       // A tie for first is shown as one: list order alone mustn't crown a "Best match". When even the first
       // fits poorly (cmsScore.LOW_FIT), it's only the closest, and the others are worth a look at most.
-      const tied = top[1] && top[1].s === best, weak = best < window.cmsScore.LOW_FIT;
+      const tied = top[1] && top[1].s === best, weak = best < LOW_FIT;
       const first = weak ? 'closest match' : 'best match';
       const label = (r) => (r.s === best ? (tied ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : r.s >= best - 4 && !weak ? 'Good match' : 'Worth a look');
-      const told = window.cmsScore.explain(data, a, top);   // reasons without repeats, and what sets each apart
+      const told = explain(data, a, top);   // reasons without repeats, and what sets each apart
       // An old link stays v=1 (its own answers) until its newer questions are answered
       const kept = Object.entries(a).filter(([k]) => steps().some((q) => q.id === k) && !pending.has(k));
       history.replaceState(null, '', `#quiz?v=${pending.size ? 1 : LINK_VERSION}&${new URLSearchParams(kept)}`);
@@ -614,7 +615,7 @@
         // The key facts people compare first: skill, hosting and updates, and what it costs to start for what
         // you're making (a store's band for a store), with a note where a developer is needed
         const fx = el('dl', 'qz-facts'), ease = data.quiz.ease[r.p.id] ?? 1;
-        const cost = ((data.answers[r.p.id] || {})[window.cmsScore.costRow(a)] || {}).verdict;
+        const cost = ((data.answers[r.p.id] || {})[costRow(a)] || {}).verdict;
         [['Skill needed', SKILL[ease]], ['Hosting and updates', pr.hosting],
           ['Cost to start', COST[cost] && cost !== 'na' ? COST[cost] : '', ease === 0 ? 'Plus developer time to build and maintain' : '']]
           .filter(([, v]) => v).forEach(([k, v, note]) => {
@@ -652,7 +653,7 @@
       box.append(answersBar());
       // Above the cards, why they're only the closest: answers that pull against each other (with the question to
       // change, opening its answer as the chip above does), or else that nothing fits them well
-      const clash = window.cmsScore.conflict(a);
+      const clash = conflict(a);
       if (clash || weak) {
         // The sentence in one span, so the info icon (::before) is the note's only other flex item
         const note = el('p', 'qz-note'), say = el('span');
