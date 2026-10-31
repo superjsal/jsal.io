@@ -32,7 +32,7 @@ question and fixes it, so it's left as is.
 | Each platform's answers (tag, public note, varies/not verified), profile, logo, public switch | Supabase `picker` table (its own answers, separate from the Playbook's) | John, on the Playbook's CMS Picker tab |
 | Each answer's source (official docs URL) and the date it was checked | `picker.sources` | John, on the CMS Picker tab (in the same form as the answer) |
 | The rows, their plain-language labels and SEO names, platform order | `.github/scripts/cms-picker.json` | code |
-| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, `notIdeal`, and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker/quiz.json`, served with the page with its own `?v=` content hash (`data-quiz-v` on the `app.js` script tag), so a browser never keeps an old copy. Run `.github\build\bump-version.ps1` after editing it. | code |
+| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, `notIdeal`, `fitFor` (which "Good fit" lines answer which quiz answer, for ties), and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker/quiz.json`, served with the page with its own `?v=` content hash (`data-quiz-v` on the `app.js` script tag), so a browser never keeps an old copy. Run `.github\build\bump-version.ps1` after editing it. | code |
 | What the page reads | `cms-picker/data.json`, written by `playbook.py publish` (nightly at 07:41 UTC, or Run workflow); never edit it by hand | the publish |
 | Its shape | `.github/scripts/cms-picker.schema.json`, checked by `check_data.py` before every publish and push | code |
 | One page per platform (`/cms-picker/<platform>/`: its SEO answers with where to find each setting, then a short profile) | `cms-picker/<platform>/index.html`, written by the publish from `.github/scripts/platform-page.html` (markup), `cms-picker/platform.css` (look) and `platform_pages()` in `playbook.py` (the headings in `SEO_HEAD`). Pages for platforms taken off are removed, and `sitemap.xml` follows. Never edit the pages by hand; `playbook.py prerender` rebuilds them locally. Each has its own share image, `og/cms-picker-<id>.png` (name and six SEO tags, text only), made by `build\og\make-og.ps1`; re-run it after adding a platform or changing an SEO tag. Until it's re-run, a new platform's page uses `og/cms-picker.png`. | the publish (code for the template) |
@@ -84,6 +84,21 @@ Shared by the page and the tests, so they always run the same code.
   `score.js` picks the row for the score, the "costs less to start" box and the card alike.
 - **A platform's own reason:** `quiz.leaveWhy` replaces "Easy to move to another platform later" where the
   card's "If you leave" says more (Sanity: "You own the site code and can export all your content").
+- **Ties** (since 2026-10-31): two platforms level on points are ordered by how many of their card's "Good fit"
+  lines answer what the person is making, from `quiz.fitFor`: each tagged line as it reads on the card (`line`)
+  with the answers it answers (`when`, the same shape as `notIdeal`; a line that answers two questions is listed
+  twice). Only lines that plainly name the goal are tagged: a business site's kind ("Startups and landing pages"
+  → `kind: startup`), a store's size ("Larger catalogues" → `size: big`), a publication ("Writers, creators and
+  publishers") or a custom build; never who builds it or how it's hosted. `rank` sorts by score, then by that
+  count (`tb`); `tied(x, y)` is true only when both are equal, and that's what the page calls "Joint best
+  match". A first place level on points says why in its box ("Level on points, but Framer's own card says it
+  suits startups and landing pages.") and in the "how sure" line. Before it, a fifth of all answer sets were
+  ties, and the "Best match" among them was simply the first in the platform list. The persona test checks every
+  tagged line is still on its card and every `when` names a real question and answer.
+- **Order of the reasons:** each top card lists its reasons with the ones the other two top cards don't share
+  first (`explain`; the words don't change), so the first two cards rarely open with the same line (they did
+  in 96% of answer sets before). A second or third card whose reasons are exactly the first's still collapses to
+  "Fits your answers for the same reasons as …".
 
 ## Persona tests
 
@@ -100,8 +115,10 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
   - "the same reasons as X" appears only when the reasons really are the same, the top two never
     show an identical list, and the second and third never show the same box;
   - every score part has `TIP` wording and every row a `PHRASE`;
-  - it reports how many clear winners fall back from "What tipped it" (0 today), and how many show a
+  - it reports how many clear winners fall back from "What tipped it" (0 today), how many first places are
+    level on points but ahead on their card's "Good fit" lines (their box must say so) or tied, and how many show a
     "Closest match" (first scores under `LOW_FIT`, 4: 241 today). No persona may get only a closest match.
+  - every tagged "Good fit" line (`fitFor`) is still on its card and answers a real question and answer.
 - **Four rules** that must hold for every answer set (a failure names the first few):
   - the first match is made for what they're making, unless the page shows the "Closest match" notice;
   - someone not technical never gets a "Needs a developer" platform first;

@@ -486,7 +486,7 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches. The questions and the scoring live in score.js (shared
   // with the persona tests). The answers stay in the page address, so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, explain, conflict, costRow, weight, TIP } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, explain, tied, conflict, costRow, weight, TIP } = window.cmsScore;
   // Shared result links carry the quiz version (v=2). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
   // people have already shared keep opening a result rather than an empty quiz.
@@ -698,14 +698,16 @@
     function results(source) {
       const ranked = rank(data, a);
       const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
-      // A tie for first is shown as one: list order alone mustn't crown a "Best match". When even the first
-      // fits poorly (cmsScore.LOW_FIT), it's only the closest, and the others are worth a look at most.
-      const tied = top[1] && top[1].s === best, weak = best < LOW_FIT;
+      // A tie for first is shown as one: list order alone mustn't crown a "Best match". Level points go to the
+      // card with more "Good fit" lines answering what's being made (score.js: tied, fit); only a tie on both is
+      // joint. When even the first fits poorly (cmsScore.LOW_FIT), it's only the closest, and the others are
+      // worth a look at most.
+      const isTop = (r) => r === top[0] || tied(r, top[0]), joint = !!top[1] && isTop(top[1]), weak = best < LOW_FIT;
       // How sure the result is: the gap between first and second. Within two points it's a close call and the second
       // is a close second, not merely good; six or more is a clear winner.
       const gap = top[1] ? best - top[1].s : 99, close = gap <= 2;
       const first = weak ? 'closest match' : 'best match';
-      const label = (r) => (r.s === best ? (tied ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : close && !weak && r === top[1] ? 'Close second' : r.s >= best - 4 && !weak ? 'Good match' : 'Worth a look');
+      const label = (r) => (isTop(r) ? (joint ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : close && !weak && r === top[1] ? 'Close second' : r.s >= best - 4 && !weak ? 'Good match' : 'Worth a look');
       const told = explain(data, a, top);   // reasons without repeats, and what sets each apart
       // An old link stays v=1 (its own answers) until its newer questions are answered
       const kept = Object.entries(a).filter(([k]) => steps().some((q) => q.id === k) && !pending.has(k));
@@ -721,14 +723,16 @@
       if (top[1] && !weak) {
         head.append(el('span', `qz-sure${close ? ' close' : ''}`, close ? 'A close call' : gap <= 5 ? 'A clear lead' : 'A clear winner'));
         const [x, y] = [top[0].p.name, top[1].p.name];
-        sure = el('p', 'qz-sure-why', tied ? `${x} and ${y} score the same on your answers: either would do, and the box under each says what sets it apart.`
+        const fitLine = top[0].fit[0] && `${top[0].fit[0].charAt(0).toLowerCase()}${top[0].fit[0].slice(1)}`;
+        sure = el('p', 'qz-sure-why', joint ? `${x} and ${y} score the same on your answers: either would do, and the box under each says what sets it apart.`
+          : top[1].s === best ? `${x} and ${y} score the same on your answers: ${x} comes first because its own card says it suits ${fitLine}, and the box under each says what sets it apart.`
           : close ? `${x} is ${gap === 1 ? 'one point' : 'two points'} ahead of ${y} on your answers: either would do, and the box under each says what sets it apart.`
           : `${x} is ${gap} points ahead of ${y} on your answers.`);
       }
       h.tabIndex = -1;
       const list = el('div', 'qz-res');
       top.forEach((r, i) => {
-        const card = el('article', `qz-card${r.s === best ? ' top' : ''}`), pr = r.p.profile || {};
+        const card = el('article', `qz-card${isTop(r) ? ' top' : ''}`), pr = r.p.profile || {};
         const name = el('h4', null, r.p.name);
         name.append(el('span', `fitp${weak ? ' low' : ''}`, label(r)));
         card.append(logo(r.p), name, el('p', 'sum', pr.summary || ''));

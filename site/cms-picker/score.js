@@ -91,9 +91,13 @@
     budget: (a) => ({ none: 'you want to start free', low: 'you want to spend up to about $25 a month', mid: 'you want to spend up to about $100 a month' })[a.budget],
   };
 
-  // The first of a platform's "Not ideal if" lines (quiz.notIdeal) these answers match: every key in "when" has one
-  // of its listed answers
-  const notIdealFor = (Q, id, a) => ((Q.notIdeal || {})[id] || []).find((n) => Object.entries(n.when).every(([q, vs]) => vs.includes(a[q])));
+  // Every key in "when" has one of its listed answers (quiz.notIdeal, quiz.fitFor)
+  const matches = (when, a) => Object.entries(when).every(([q, vs]) => vs.includes(a[q]));
+  // The first of a platform's "Not ideal if" lines (quiz.notIdeal) these answers match
+  const notIdealFor = (Q, id, a) => ((Q.notIdeal || {})[id] || []).find((n) => matches(n.when, a));
+  // The "Good fit" lines on a platform's card that answer these answers (quiz.fitFor tags each line with the answers
+  // it answers), in card order. They break an exact tie: list order alone mustn't crown a "Best match".
+  const fitLines = (Q, id, a) => [...new Set(((Q.fitFor || {})[id] || []).filter((f) => matches(f.when, a)).map((f) => f.line))];
 
   function fitScore(data, p, a) {
     const Q = data.quiz, pr = p.profile || {}, why = [], but = [], pts = {};   // but: where it counts against an answer, shown as "Worth knowing"
@@ -173,11 +177,14 @@
     // ("all", compared by explain and the tests, is the same list). "but" is what counted against an answer the
     // person gave, so a top match never hides that (moving later, languages, running it yourself, hosting,
     // budget); it changes no score.
-    return { p, s, why, all: why, but, pts };
+    const fit = fitLines(Q, p.id, a);
+    return { p, s, why, all: why, but, pts, fit, tb: fit.length };
   }
 
-  // Every platform, best fit first
-  const rank = (data, a) => data.platforms.map((p) => fitScore(data, p, a)).sort((x, y) => y.s - x.s);
+  // Every platform, best fit first; an exact tie goes to the one whose card has more "Good fit" lines answering
+  // what's being made (fit), and stays a tie when that count is the same too
+  const rank = (data, a) => data.platforms.map((p) => fitScore(data, p, a)).sort((x, y) => y.s - x.s || y.tb - x.tb);
+  const tied = (x, y) => x.s === y.s && x.tb === y.tb;
 
   // ---------- Telling the top matches apart ----------
   // Only from what's already published: the table's checked answers and each profile's "good fit" list.
@@ -277,25 +284,31 @@
   // A box's sentence with its own platform's name taken out, to tell whether two boxes say the same thing
   const generic = (text, name) => text.split(name).join('·');
   // For the top matches: the reasons to show and vs, a heading and a sentence on what sets each apart
-  // from its neighbour (null if there's nothing to say). The second and third show their own reasons,
-  // collapsed to "the same reasons as …" only when they're exactly the first's; their box says where they
-  // did better than the first for these answers, or else what they offer (pickOver). When the third would
-  // repeat the second (the same reasons, or the same box against the first), it's compared with the second
-  // instead, so the two read differently.
+  // from its neighbour (null if there's nothing to say). Each card's reasons come with the ones the other
+  // top cards don't share first (the words don't change), so three cards don't all open the same way. The
+  // second and third show their own reasons, collapsed to "the same reasons as" only when they're exactly
+  // the first's; their box says where they did better than the first for these answers, or else what they
+  // offer (pickOver). When the third would repeat the second (the same reasons, or the same box against the
+  // first), it's compared with the second instead, so the two read differently. A first place level on
+  // points but ahead on its card's "Good fit" lines says so (quiz.fitFor).
   function explain(data, a, top) {
     const lead = top[0];
+    const shared = (r, w) => top.filter((o) => o !== r && o.all.includes(w)).length;
+    const order = (r) => [...r.why].sort((u, v) => shared(r, u) - shared(r, v));
     const out = top.map((r, i) => {
       if (!i) {
         const next = top[1];
         let vs = null;
-        if (next && next.s === r.s) vs = { head: `A close call with ${next.p.name}`, text: ['Both fit your answers equally.', better(data, a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' ') };
-        else if (next) {
+        if (next && next.s === r.s) {
+          const level = tied(r, next) ? 'Both fit your answers equally.' : `Level on points, but ${r.p.name}’s own card says it suits ${lowerFirst(r.fit[0])}.`;
+          vs = { head: tied(r, next) ? `A close call with ${next.p.name}` : `Ahead of ${next.p.name}`, text: [level, better(data, a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' ') };
+        } else if (next) {
           const text = tipped(a, r, next) || pickOver(data, a, r, next);
           if (text) vs = { head: `Ahead of ${next.p.name}`, text };
         }
-        return { why: r.why, vs };
+        return { why: order(r), vs };
       }
-      const why = sameSet(r.all, lead.all) ? [`Fits your answers for the same reasons as ${lead.p.name}`] : r.why;
+      const why = sameSet(r.all, lead.all) ? [`Fits your answers for the same reasons as ${lead.p.name}`] : order(r);
       const text = better(data, a, r, lead) || pickOver(data, a, r, lead);
       return { why, vs: text ? { head: `Versus ${lead.p.name}`, text } : null };
     });
@@ -323,6 +336,6 @@
   // Answers that pull against each other, with the question to change: a custom app or portal built by
   // someone not technical
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, rank, explain, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
+  const api = { QUESTIONS, rank, explain, tied, fitLines, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -6,7 +6,7 @@
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
 const site = path.join(__dirname, '..', '..', 'site');
-const { rank, explain, QUESTIONS, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
+const { rank, explain, tied, QUESTIONS, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
@@ -104,8 +104,8 @@ for (const [name, answers, want] of PERSONAS) {
   if (want.first && !want.first.includes(top[0])) errs.push(`first is ${top[0]}, expected ${want.first.join(' or ')}`);
   (want.top3 || []).forEach((id) => { if (ids.has(id) && !top.includes(id)) errs.push(`${id} not in the top three`); });
   (want.not || []).forEach((id) => { if (top.includes(id)) errs.push(`${id} in the top three`); });
-  // A tie for first means the page shows a "Best match" it can't back up
-  if (r[1] && r[0].s === r[1].s && want.first && want.first.length === 1) errs.push(`tied for first: ${r[0].p.id} and ${r[1].p.id}`);
+  // A tie for first (level on points and on matching "Good fit" lines) means the page shows a "Best match" it can't back up
+  if (r[1] && tied(r[0], r[1]) && want.first && want.first.length === 1) errs.push(`tied for first: ${r[0].p.id} and ${r[1].p.id}`);
   // Every agreed person gets a real "Best match", never only the closest
   if (r[0].s < LOW_FIT) errs.push(`first scores ${r[0].s}: only a "Closest match"`);
   const line = r.slice(0, 3).map((x) => `${x.p.name} ${x.s}`).join(', ');
@@ -126,7 +126,7 @@ const broke = { made: 0, dev: 0, named: 0 };
 const ruleErr = (rule, msg) => { if (++broke[rule] <= 3) cardErrs.push(`rule "${rule}": ${msg}`); };
 const unworded = new Set();   // parts of the score with no "What tipped it" wording in TIP (score.js)
 const sameSet = (x, y) => x.length === y.length && x.every((w) => y.includes(w));
-let combos = 0, clear = 0, fallback = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0, weak = 0;
+let combos = 0, clear = 0, fallback = 0, byCard = 0, ties = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0, weak = 0;
 const cardErrs = [];
 const walk = (a, i) => {
   if (i < QUESTIONS.length) {
@@ -162,6 +162,8 @@ const walk = (a, i) => {
     if (!leads.some((l) => said.startsWith(l))) ruleErr('named', `${at}: "${told[0].vs.text}" doesn't start from an answer`);
   }
   if (r[0].s > r[1].s) { clear++; if (!/^What tipped it/.test(told[0].vs.text)) fallback++; }
+  // Level on points: first by its card's "Good fit" lines (the box must say so), or a tie
+  else if (!tied(r[0], r[1])) { byCard++; if (!/^Level on points, but /.test(told[0].vs.text)) cardErrs.push(`${at}: ${r[0].p.id} is first on its card's lines, but the box doesn't say so`); } else ties++;
   // Old shared links (v=1) get NEUTRAL answers for questions they didn't have: they must change no score,
   // and leaving a question unanswered (kind, members) mustn't break the ranking
   Object.entries(NEUTRAL).forEach(([q, v]) => {
@@ -181,8 +183,20 @@ Object.entries(data.quiz.notIdeal || {}).forEach(([id, rules]) => {
   const lines = ((data.platforms.find((p) => p.id === id) || {}).profile || {}).lessSuited || [];
   rules.forEach((n) => { if (!lines.some((l) => l.startsWith(n.if))) cardErrs.push(`notIdeal for ${id}: "${n.if}" isn't a "Not ideal if" line on its card any more`); });
 });
+// Every tagged "Good fit" line (quiz.fitFor, the tie-break) must still be on its card, and its "when" must name real
+// questions and answers
+Object.entries(data.quiz.fitFor || {}).forEach(([id, tags]) => {
+  const lines = ((data.platforms.find((p) => p.id === id) || {}).profile || {}).goodFit || [];
+  tags.forEach((f) => {
+    if (!lines.some((l) => l.startsWith(f.line))) cardErrs.push(`fitFor for ${id}: "${f.line}" isn't a "Good fit" line on its card any more`);
+    Object.entries(f.when).forEach(([qid, vs]) => {
+      const q = QUESTIONS.find((x) => x.id === qid);
+      if (!q || vs.some((v) => !q.opts.some(([o]) => o === v))) cardErrs.push(`fitFor for ${id}: "${f.line}" answers ${qid}=${vs.join('|')}, which isn't a question and answer`);
+    });
+  });
+});
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
-console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it". ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal. ${weak} show a "Closest match" (first scores under ${LOW_FIT}).`);
+console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it"; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal. ${weak} show a "Closest match" (first scores under ${LOW_FIT}).`);
 console.log(`Rules: first is made for what they're making ${broke.made ? `FAILS ${broke.made}` : 'ok'}; not technical never gets "Needs a developer" first ${broke.dev ? `FAILS ${broke.dev}` : 'ok'}; no "Not ideal if" in the top three ${notIdealTop ? `FAILS ${notIdealTop}` : 'ok'}; every "What tipped it" names an answer ${broke.named ? `FAILS ${broke.named}` : 'ok'}.`);
 process.exit(failed || cardErrs.length ? 1 : 0);
