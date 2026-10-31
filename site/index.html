@@ -145,7 +145,7 @@ p, li { text-wrap: pretty; }
 .guides a:hover { border-color: var(--jsal-hover-line); }
 .guides a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 /* The last tile ("Compare all") stretches across whatever is left of its row, so the grid ends even at any platform count */
-.guides .all { justify-content: space-between; color: var(--jsal-ink-2); }
+.guides .all { gap: 6px; }   /* full ink and centred like the platform tiles; the arrow alone says it goes elsewhere */
 .guides a:last-child:nth-child(3n+1) { grid-column: span 3; }
 .guides a:last-child:nth-child(3n+2) { grid-column: span 2; }
 .cta a { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; }

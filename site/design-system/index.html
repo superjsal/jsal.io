@@ -164,7 +164,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .tick small { display: block; color: var(--jsal-muted); font-size: 13px; }
 /* An index of links: equal tiles, never pills (home .guides) */
 .ltiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: 100%; }
-.ltiles .all { justify-content: space-between; color: var(--jsal-ink-2); }
+.ltiles .all { gap: 6px; }   /* full ink and centred like the platform tiles; the arrow alone says it goes elsewhere */
 .ltiles a:last-child:nth-child(3n+1) { grid-column: span 3; }
 .ltiles a:last-child:nth-child(3n+2) { grid-column: span 2; }
 .ltiles a { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: border-color 0.15s; }
