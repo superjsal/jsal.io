@@ -15,6 +15,11 @@ const BASE = 'http://localhost:8765';
 const AXE = fs.readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
 const PAGES = ['/', '/cms-picker/', '/cms-picker/squarespace/', '/cms-picker/sanity/', '/privacy/', '/play/', '/changelog/', '/formatter/', '/image-resizer/', '/404.html'];   // two platform pages: a full one and a sparse one
 const axeOnly = process.argv.includes('--axe');
+// Chromium runs on the installed Edge here (Playwright's own build doesn't start on this PC); on a machine without
+// Edge, such as the GitHub runner, Playwright's own Chromium does the same job
+const launch = async (type, opts = {}) => {
+  try { return await type.launch(opts); } catch (e) { if (!opts.channel) throw e; return type.launch(); }
+};
 let failed = 0;
 const log = (s) => console.log(s);
 
@@ -89,8 +94,8 @@ async function showCheck(page, narrow) {
 
 // --- axe: every page, light and dark, plus each tool with content in it
 let axeBrowser = null;
-try { axeBrowser = await chromium.launch({ channel: 'msedge' }); }
-catch (e) { log(`axe: couldn't start Edge here (${e.message.split('\n')[0]}); skipped`); }
+try { axeBrowser = await launch(chromium, { channel: 'msedge' }); }
+catch (e) { log(`axe: couldn't start Chromium here (${e.message.split('\n')[0]}); skipped`); }
 if (axeBrowser) {
   const browser = axeBrowser;
   for (const scheme of ['light', 'dark']) {
@@ -123,7 +128,7 @@ if (axeBrowser) {
 if (!axeOnly) {
   for (const [name, type, opts] of [['chromium (Edge)', chromium, { channel: 'msedge' }], ['webkit', webkit, {}], ['firefox', firefox, {}]]) {
     let browser;
-    try { browser = await type.launch(opts); } catch (e) { log(`${name}: couldn't start here (${e.message.split('\n')[0]}); check it by hand`); continue; }
+    try { browser = await launch(type, opts); } catch (e) { log(`${name}: couldn't start here (${e.message.split('\n')[0]}); check it by hand`); continue; }
     for (const width of [375, 390]) {
       const ctx = await browser.newContext({ viewport: { width, height: 800 }, hasTouch: true, isMobile: !name.startsWith('firefox'), colorScheme: width === 375 ? 'light' : 'dark' });
       const page = await ctx.newPage();
@@ -166,7 +171,7 @@ if (!axeOnly) {
   }
 
   // --- A very long document in Clean Paste (Chromium): how long the clean and the checks take
-  const browser = await chromium.launch({ channel: 'msedge' });
+  const browser = await launch(chromium, { channel: 'msedge' });
   const page = await browser.newPage();
   await page.goto(BASE + '/formatter/', { waitUntil: 'networkidle' });
   const ms = await page.evaluate(async () => {

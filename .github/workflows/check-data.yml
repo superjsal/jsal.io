@@ -1,8 +1,8 @@
-# Runs the site's checks after every push to main: check.py (the same pre-push checks as .github\build\check.ps1,
-# minus the browser part, which needs Edge and WebKit and stays local), the CMS Picker data against
-# cms-picker.schema.json with a list of what isn't sourced yet, and the persona tests. A failure shows as a red X
-# on the commit; GitHub Pages still deploys (main is the live site), so .github\build\check.ps1 before pushing
-# stays the real gate.
+# Runs the site's checks after every push to main: check.py (the same pre-push checks as .github\build\check.ps1),
+# the CMS Picker data against cms-picker.schema.json with a list of what isn't sourced yet, the persona tests, and
+# the browser checks (axe on every page, the phone widths, each tool's main flow) on Playwright's own Chromium,
+# WebKit and Firefox. A failure shows as a red X on the commit; GitHub Pages still deploys (main is the live site),
+# so .github\build\check.ps1 before pushing stays the first gate and this is the one that holds from any machine.
 name: Site checks
 
 on:
@@ -30,3 +30,27 @@ jobs:
         run: python .github/scripts/check_data.py --list
       - name: Persona tests (the agreed Find my fit results)
         run: node .github/scripts/personas.test.js
+
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: .github/build/package-lock.json
+      - name: Install Playwright and its browsers
+        working-directory: .github/build
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium webkit firefox
+      - name: Serve the site on port 8765
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 --directory . > server.log 2>&1 &
+          for i in $(seq 1 20); do curl -fsS -o /dev/null http://localhost:8765/ && break; sleep 1; done
+      - name: Browser checks (axe on every page, 375/390px, each tool's main flow)
+        run: node .github/build/browser-check.mjs
