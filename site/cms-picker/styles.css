@@ -308,7 +308,10 @@ body {
 .run .r-skip { --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8.5 8.5l7 7M15.5 8.5l-7 7'/%3E%3C/svg%3E"); }
 .run dt { color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.02em; }
 .run dd span { display: block; }
-.run dd span + span { margin-top: 3px; }
+/* Two or more lines under one label ("Not ideal if") each get a dot, so they read as separate reasons */
+.run dd:has(span + span) span { position: relative; padding-left: 14px; }
+.run dd:has(span + span) span::before { content: ""; position: absolute; left: 2px; top: 0.62em; width: 5px; height: 5px; border-radius: 50%; background: var(--jsal-muted); }
+.run dd span + span { margin-top: 4px; }
 .run dd { margin-top: 1px; color: var(--jsal-ink); font-size: 15px; line-height: 1.4; }
 .cfoot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: auto; padding-top: 16px; }
 .cmp { padding: 6px 12px; font-size: 14px; }
