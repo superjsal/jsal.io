@@ -515,6 +515,8 @@
     { row: 'gsc404', text: 'Moving from an old site? Point the old links to the new pages' },
   ];
   const LATER = [['noindex', 'hide pages from search'], ['ai_crawlers', 'choose which AI bots may read the site']];
+  // Reasons the scoring takes from a sourced table row (score.js), so the card can link the platform's own docs for them
+  const EVIDENCE = { 'More than one language is built in': 'languages', 'Paid memberships built in': 'members' };
   function docLink(url, text) {
     const a = el('a', null, text);
     a.href = url;
@@ -778,7 +780,14 @@
         card.append(fx);
         card.append(el('p', 'qz-sec', 'Why it fits'));
         const ul = el('ul', 'qz-why');
-        told[i].why.forEach((w) => ul.append(el('li', null, w)));
+        told[i].why.forEach((w) => {
+          const li = el('li', null, w);
+          // A reason that comes from a sourced table row links to the platform's own page on it: evidence, not a claim
+          const row = EVIDENCE[w] || (/^(Free to start|Fits your budget)$/.test(w) ? costRow(a) : null);
+          const src = row && ((data.answers[r.p.id] || {})[row] || {}).sourceUrl;
+          if (src) li.append(' · ', docLink(src, 'docs'));
+          ul.append(li);
+        });
         card.append(ul);
         if (told[i].vs) {
           const vs = el('div', 'qz-vs');

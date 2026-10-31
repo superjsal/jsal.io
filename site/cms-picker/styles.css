@@ -390,6 +390,7 @@ body {
 .qz-why { grid-column: 2; margin: 4px 0 0; padding: 0; list-style: none; font-size: 15px; }
 .qz-why li { position: relative; padding-left: 22px; }
 .qz-why li + li { margin-top: 3px; }
+.qz-why a { color: var(--jsal-info); font-size: 13px; text-underline-offset: 2px; }   /* the platform's own docs: a link inside the result's content, so blue */
 .qz-why li::before { content: ""; position: absolute; left: 0; top: 4px; width: 14px; height: 14px; background: var(--jsal-muted); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }
 /* What sets it apart from its neighbour: one gold rule and label, no fill, so it reads as the one insight */
 .qz-vs { grid-column: 2; margin-top: 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-gold-line); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
