@@ -264,7 +264,7 @@ textarea.code {
   background: transparent;
 }
 
-/* Clean preview: plain article typography */
+/* Clean preview: plain reading typography for the editor */
 .preview { padding: 20px 26px 40px; font-size: 15px; line-height: 1.7; color: var(--jsal-ink); max-width: 760px; }
 .preview[contenteditable] { outline: none; min-height: 100%; cursor: text; caret-color: var(--jsal-accent); }
 .preview:empty::before { content: "Start typing or paste here…"; color: var(--jsal-muted); }
