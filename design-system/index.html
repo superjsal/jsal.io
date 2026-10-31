@@ -89,14 +89,15 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="r
 html { scrollbar-gutter: stable; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 @view-transition { navigation: auto; }
-.app { view-transition-name: jsal-app; }
 ::view-transition-group(*) { animation-duration: 0.3s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
-::view-transition-image-pair(jsal-app) { overflow: hidden; }
-::view-transition-old(jsal-app), ::view-transition-new(jsal-app) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-::view-transition-old(jsal-app) { animation: jsal-fade-out 0.12s ease both; }
-::view-transition-new(jsal-app) { animation: jsal-fade-in 0.2s ease 0.08s both; }
-::view-transition-old(root) { animation: jsal-home-out 0.15s ease both; }
-::view-transition-new(root) { animation: jsal-fade-in 0.2s ease both; }
+::view-transition-old(root) { animation: jsal-out-up 0.16s ease both; }
+::view-transition-new(root) { animation: jsal-in-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both; }
+html[data-jsal-back]::view-transition-old(root) { animation-name: jsal-out-down; }
+html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; }
+.jsal-top { view-transition-name: jsal-top; }
+::view-transition-group(jsal-top) { animation: none; }
+::view-transition-old(jsal-top) { animation: jsal-fade-out 0.12s ease both; }
+::view-transition-new(jsal-top) { animation: jsal-fade-in 0.18s ease 0.06s both; }
 .jsal-brand { view-transition-name: jsal-brand; }
 .jsal-theme { view-transition-name: jsal-theme; }
 ::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
@@ -134,7 +135,10 @@ box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
 @media print { .jsal-consent { display: none; } }
 @keyframes jsal-fade-out { to { opacity: 0; } }
 @keyframes jsal-fade-in { from { opacity: 0; } }
-@keyframes jsal-home-out { to { opacity: 0; transform: scale(0.97); } }
+@keyframes jsal-out-up { to { opacity: 0; transform: translateY(-12px); } }
+@keyframes jsal-in-up { from { opacity: 0; transform: translateY(18px); } }
+@keyframes jsal-out-down { to { opacity: 0; transform: translateY(12px); } }
+@keyframes jsal-in-down { from { opacity: 0; transform: translateY(-18px); } }
 @media (prefers-reduced-motion: reduce) {
 ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 .jsal-ach, .jsal-ach[data-hide] { transition: none; }
@@ -780,6 +784,6 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <span>Decisions about suggested changes are marked in blue.</span>
   </footer>
 </div>
-<script src="/nav.js?v=2026-10-31l" defer></script>
+<script src="/nav.js?v=2026-10-31p" defer></script>
 </body>
 </html>

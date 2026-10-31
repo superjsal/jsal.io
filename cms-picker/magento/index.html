@@ -7,7 +7,7 @@
   <title>Magento 2 SEO: What You Can Change and Where | jsal.io</title>
   <meta name="description" content="Magento 2 SEO answered: titles, URLs, redirects, schema, noindex and AI crawlers, each with where to find the setting, checked against Magento 2’s own docs." />
   <link rel="canonical" href="https://jsal.io/cms-picker/magento/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-31l" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-31p" type="image/svg+xml">
   <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
   <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -166,14 +166,15 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="r
 html { scrollbar-gutter: stable; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 @view-transition { navigation: auto; }
-.app { view-transition-name: jsal-app; }
 ::view-transition-group(*) { animation-duration: 0.3s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
-::view-transition-image-pair(jsal-app) { overflow: hidden; }
-::view-transition-old(jsal-app), ::view-transition-new(jsal-app) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-::view-transition-old(jsal-app) { animation: jsal-fade-out 0.12s ease both; }
-::view-transition-new(jsal-app) { animation: jsal-fade-in 0.2s ease 0.08s both; }
-::view-transition-old(root) { animation: jsal-home-out 0.15s ease both; }
-::view-transition-new(root) { animation: jsal-fade-in 0.2s ease both; }
+::view-transition-old(root) { animation: jsal-out-up 0.16s ease both; }
+::view-transition-new(root) { animation: jsal-in-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both; }
+html[data-jsal-back]::view-transition-old(root) { animation-name: jsal-out-down; }
+html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; }
+.jsal-top { view-transition-name: jsal-top; }
+::view-transition-group(jsal-top) { animation: none; }
+::view-transition-old(jsal-top) { animation: jsal-fade-out 0.12s ease both; }
+::view-transition-new(jsal-top) { animation: jsal-fade-in 0.18s ease 0.06s both; }
 .jsal-brand { view-transition-name: jsal-brand; }
 .jsal-theme { view-transition-name: jsal-theme; }
 ::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
@@ -211,7 +212,10 @@ box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
 @media print { .jsal-consent { display: none; } }
 @keyframes jsal-fade-out { to { opacity: 0; } }
 @keyframes jsal-fade-in { from { opacity: 0; } }
-@keyframes jsal-home-out { to { opacity: 0; transform: scale(0.97); } }
+@keyframes jsal-out-up { to { opacity: 0; transform: translateY(-12px); } }
+@keyframes jsal-in-up { from { opacity: 0; transform: translateY(18px); } }
+@keyframes jsal-out-down { to { opacity: 0; transform: translateY(12px); } }
+@keyframes jsal-in-down { from { opacity: 0; transform: translateY(-18px); } }
 @media (prefers-reduced-motion: reduce) {
 ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 .jsal-ach, .jsal-ach[data-hide] { transition: none; }
@@ -286,10 +290,10 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 @media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
 </style>
-  <link rel="stylesheet" href="../styles.css?v=2026-10-31l" />
-  <link rel="stylesheet" href="../platform.css?v=2026-10-31l" />
+  <link rel="stylesheet" href="../styles.css?v=2026-10-31p" />
+  <link rel="stylesheet" href="../platform.css?v=2026-10-31p" />
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-31l" defer></script>
+  <script src="/nav.js?v=2026-10-31p" defer></script>
 </head>
 <body>
   <main class="app">

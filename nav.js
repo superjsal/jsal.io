@@ -116,7 +116,15 @@
     addEventListener('pointerdown', press, { capture: true });
     vt.finished.catch(() => {}).finally(() => removeEventListener('pointerdown', press, { capture: true }));
   };
-  addEventListener('pagereveal', (e) => watch(e.viewTransition));   // arriving from another page
+  addEventListener('pagereveal', (e) => {   // arriving from another page
+    // Browser back slides the other way (/shell.css): the attribute must be on before the transition's first frame
+    const a = window.navigation && navigation.activation;
+    if (e.viewTransition && a && a.navigationType === 'traverse' && a.from && a.entry.index < a.from.index) {
+      document.documentElement.dataset.jsalBack = '';
+      e.viewTransition.finished.catch(() => {}).finally(() => { delete document.documentElement.dataset.jsalBack; });
+    }
+    watch(e.viewTransition);
+  });
   addEventListener('pageswap', (e) => { if (e.viewTransition) quiet(e.viewTransition); });   // leaving: a click meanwhile aborts it
   watch(document.activeViewTransition);                              // already running when this loaded
   addEventListener('click', (e) => {

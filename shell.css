@@ -106,25 +106,24 @@ html { scrollbar-gutter: stable; }
    A script that wants a jump passes behavior: 'instant'. */
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
-/* Page transitions (browsers that support them; others just navigate). Opening an app from
-   its home page tile grows the tile into the app: both are named "jsal-app" (the home page
-   names the tile being opened, each app's .app container is named here). */
+/* Page transitions (browsers that support them; Firefox just navigates). The same move on every
+   page: the old page fades as it drifts up a little, the new one rises into place; going back
+   (nav.js sets data-jsal-back on <html> when the browser is travelling backwards) runs it the
+   other way. Kept short so a click feels instant: done by 0.3s. */
 @view-transition { navigation: auto; }
-.app { view-transition-name: jsal-app; }
-/* Kept short so a click feels instant: the new page usually renders within ~0.15s, and the
-   whole transition is done by 0.3s (it used to take ~0.5s, with the new page waiting to start). */
 ::view-transition-group(*) { animation-duration: 0.3s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
-::view-transition-image-pair(jsal-app) { overflow: hidden; }
-::view-transition-old(jsal-app), ::view-transition-new(jsal-app) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-::view-transition-old(jsal-app) { animation: jsal-fade-out 0.12s ease both; }
-::view-transition-new(jsal-app) { animation: jsal-fade-in 0.2s ease 0.08s both; }
-::view-transition-old(root) { animation: jsal-home-out 0.15s ease both; }
-::view-transition-new(root) { animation: jsal-fade-in 0.2s ease both; }
-/* The logo and theme button are the same on every page and in the same spot, so they get
-   their own names: they stay put and sharp while the rest of the page changes around them,
-   instead of fading and shrinking with it. Only the new page's copy is shown, already in
-   place: no movement either, or the logo would slide in from above the screen when leaving
-   a page that was scrolled down. */
+::view-transition-old(root) { animation: jsal-out-up 0.16s ease both; }
+::view-transition-new(root) { animation: jsal-in-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both; }
+html[data-jsal-back]::view-transition-old(root) { animation-name: jsal-out-down; }
+html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; }
+/* The top bar sits in the same spot on every page, so it's lifted out of the sliding page and
+   cross-fades in place (its title and links differ by page). Within it, the logo and theme
+   button are identical everywhere and don't even fade: only the new page's copy is shown,
+   already in place, so nothing up there moves. */
+.jsal-top { view-transition-name: jsal-top; }
+::view-transition-group(jsal-top) { animation: none; }
+::view-transition-old(jsal-top) { animation: jsal-fade-out 0.12s ease both; }
+::view-transition-new(jsal-top) { animation: jsal-fade-in 0.18s ease 0.06s both; }
 .jsal-brand { view-transition-name: jsal-brand; }
 .jsal-theme { view-transition-name: jsal-theme; }
 ::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
@@ -171,7 +170,10 @@ html { scrollbar-gutter: stable; }
 @media print { .jsal-consent { display: none; } }
 @keyframes jsal-fade-out { to { opacity: 0; } }
 @keyframes jsal-fade-in { from { opacity: 0; } }
-@keyframes jsal-home-out { to { opacity: 0; transform: scale(0.97); } }
+@keyframes jsal-out-up { to { opacity: 0; transform: translateY(-12px); } }
+@keyframes jsal-in-up { from { opacity: 0; transform: translateY(18px); } }
+@keyframes jsal-out-down { to { opacity: 0; transform: translateY(12px); } }
+@keyframes jsal-in-down { from { opacity: 0; transform: translateY(-18px); } }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
   .jsal-ach, .jsal-ach[data-hide] { transition: none; }
