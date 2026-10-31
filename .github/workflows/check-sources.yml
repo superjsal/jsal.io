@@ -1,7 +1,8 @@
 # Once a month, asks every help page the CMS Picker links to (data.json sources, quiz.json guides) whether it still
 # answers, and opens an issue listing the dead ones so they can be fixed on the Playbook's CMS Picker tab. Sites
-# that refuse scripts (403, 429) are listed for a check by hand, not counted as dead. Run by hand from the Actions
-# tab too. The script is .github/scripts/check_sources.py.
+# that refuse scripts (403, 429) get a second pass in a real browser (check_sources_browser.mjs); what's still refused
+# is listed for a check by hand, not counted as dead. Run by hand from the Actions tab too. Scripts: .github/scripts/
+# check_sources.py and check_sources_browser.mjs.
 name: Source links
 on:
   schedule:
@@ -24,8 +25,19 @@ jobs:
           set +e
           python -I .github/scripts/check_sources.py | tee report.txt
           echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"   # the script's exit code, not tee's
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Open the refused pages in a real browser
+        id: browser
+        run: |
+          set +e
+          (cd .github/build && npm ci --silent && npx playwright install --with-deps chromium > /dev/null)
+          echo "" >> report.txt
+          node .github/scripts/check_sources_browser.mjs blocked.json | tee -a report.txt
+          echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
       - name: Open an issue if any source is dead
-        if: steps.run.outputs.status != '0'
+        if: steps.run.outputs.status != '0' || steps.browser.outputs.status != '0'
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}

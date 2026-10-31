@@ -6,6 +6,8 @@
 #   moved    a redirect to a different page (the link still works; the new address is shown so it can be updated)
 #   python check_sources.py            check and report; exits 1 if anything is dead
 #   python check_sources.py --quick    the first 20 only (a smoke test of the script itself)
+# Addresses a site refused (blocked) are also written to blocked.json next to the working directory, for the
+# browser pass in check_sources_browser.mjs (the Action runs it; a real browser gets past most refusals).
 # No packages needed. Addresses from the same host go one after another with a short pause, as a browser would.
 import json, pathlib, sys, time, urllib.error, urllib.request
 from collections import defaultdict
@@ -77,6 +79,7 @@ def main():
             elif status in BLOCKED: blocked.append((u, status))
             elif not same_page(u, final): moved.append((u, final))
             time.sleep(0.5)
+    pathlib.Path('blocked.json').write_text(json.dumps([u for u, _ in blocked], indent=1), encoding='utf-8')
     print(f'{len(urls)} source links checked: {len(dead)} dead, {len(blocked)} blocked (check by hand), {len(moved)} moved.')
     for u, st, final in dead: print(f'  DEAD {st or "no connection"}  {u}\n       used by: {", ".join(sorted(used[u]))}' + (f'\n       {final}' if not st else ''))
     # Blocked pages come in whole help centres (Shopify, Webflow and Duda refuse scripts), so they're counted per host
