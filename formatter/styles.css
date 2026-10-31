@@ -1,6 +1,5 @@
-/* ── Colours ───────────────────────────────────────────────────────────────
-   Colours, corners and the font are the shared --jsal-* tokens in /shell.css
-   (light and dark), used directly. Only this app's own values are here. */
+/* Clean Paste. Colours, corners and the font are the shared --jsal-* tokens in /shell.css (light and dark),
+   used directly; only this app's own values are here. */
 
 :root {
   --mono: ui-monospace, "Cascadia Code", Consolas, "SF Mono", monospace;
@@ -45,13 +44,13 @@ body {
 .app-header { margin-bottom: 24px; }
 
 .section-label {
+  margin-bottom: 8px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: var(--jsal-muted);
 }
-.section-label { margin-bottom: 8px; }
 
 /* ── Sidebar ───────────────────────────────────────────────────────────── */
 
@@ -172,7 +171,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
   padding: 32px 20px;
   text-align: center;
   border: 1.5px dashed var(--jsal-line-hi);
-  border-radius: 8px;
+  border-radius: var(--jsal-radius-lg);
   background: var(--jsal-surface);
   cursor: text;
   transition: border-color 0.12s, background 0.12s;
@@ -184,7 +183,9 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .paste-sub { max-width: 34em; color: var(--jsal-ink-2); line-height: 1.5; }
 .paste-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; align-items: center; color: var(--jsal-muted); }   /* wraps whole links on phones, never a link's words */
 .paste-privacy { margin-top: 10px; font-size: 12px; color: var(--jsal-muted); }
-kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-bg); }
+.paste-note { margin-top: 8px; color: var(--jsal-warn); font-size: 13px; }
+.paste-note:empty { display: none; }
+kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-bg); }
 
 .pane {
   display: flex;
@@ -192,7 +193,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
   min-height: 0;
   height: 70vh;
   border: 1px solid var(--jsal-line);
-  border-radius: 8px;
+  border-radius: var(--jsal-radius-lg);
   background: var(--jsal-surface);
   overflow: hidden;
 }
@@ -232,7 +233,6 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
   border-bottom: 1px solid var(--jsal-line);
   background: var(--jsal-surface);
 }
-.toolbar[hidden] { display: none; }
 .toolbar button {
   min-width: 30px;
   height: 28px;
@@ -247,14 +247,12 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 }
 .toolbar button:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
 .toolbar button.on { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
-.toolbar button b { font-weight: 800; } .toolbar button i { font-family: Georgia, serif; font-size: 14px; }
+.toolbar button b { font-weight: 800; }
+.toolbar button i { font-family: Georgia, serif; font-size: 14px; }
 .toolbar .tb-wide { padding: 0 10px; font-weight: 500; border: 1px solid var(--jsal-line); display: inline-flex; gap: 2px; }
 .toolbar .toolbar-hint { margin-left: 8px; }
 .tb-sep { width: 1px; height: 18px; margin: 0 4px; background: var(--jsal-line); }
 .tb-grow { flex: 1; }
-
-.preview[contenteditable] { outline: none; min-height: 100%; cursor: text; caret-color: var(--jsal-accent); }
-.preview:empty::before { content: "Start typing or paste here…"; color: var(--jsal-muted); }
 
 textarea.code {
   display: block;
@@ -265,10 +263,11 @@ textarea.code {
   outline: none;
   background: transparent;
 }
-textarea.code[hidden] { display: none; }
 
 /* Clean preview: plain article typography */
 .preview { padding: 20px 26px 40px; font-size: 15px; line-height: 1.7; color: var(--jsal-ink); max-width: 760px; }
+.preview[contenteditable] { outline: none; min-height: 100%; cursor: text; caret-color: var(--jsal-accent); }
+.preview:empty::before { content: "Start typing or paste here…"; color: var(--jsal-muted); }
 .preview > * + * { margin-top: 0.9em; }
 .preview h1, .preview h2, .preview h3, .preview h4, .preview h5, .preview h6 { line-height: 1.3; letter-spacing: -0.01em; margin-top: 1.4em; }
 .preview > :first-child { margin-top: 0; }
@@ -283,7 +282,7 @@ textarea.code[hidden] { display: none; }
   display: inline-block;
   margin-right: 8px;
   padding: 1px 6px;
-  border-radius: 4px;
+  border-radius: var(--jsal-radius-sm);
   vertical-align: 3px;
   font: 700 10px/1.4 var(--jsal-font);
   color: var(--jsal-ink-2);
@@ -300,7 +299,8 @@ textarea.code[hidden] { display: none; }
 .preview table { border-collapse: collapse; width: 100%; font-size: 14px; }
 .preview td, .preview th { border: 1px solid var(--jsal-line-hi); padding: 6px 10px; text-align: left; vertical-align: top; }
 .preview blockquote { border-left: 3px solid var(--jsal-line-hi); padding-left: 14px; color: var(--jsal-ink-2); }
-.preview [data-image] { display: inline-block; padding: 4px 10px; border-radius: 6px; border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); font-size: 13px; font-weight: 600; }
+.preview [data-image] { display: inline-block; padding: 4px 10px; border-radius: var(--jsal-radius); border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); font-size: 13px; font-weight: 600; }
+.preview .flag { text-decoration-color: var(--jsal-warn); text-decoration-style: wavy; text-decoration-line: underline; }   /* a word a check points at */
 /* Bold-only lines: an orange bar in the margin (see the "only bold text" check) */
 .preview > p[data-bold] { position: relative; }
 .preview > p[data-bold]::before { content: ""; position: absolute; left: -14px; top: 0.2em; bottom: 0.2em; width: 3px; border-radius: 2px; background: var(--jsal-warn); opacity: 0.8; }
@@ -322,7 +322,6 @@ textarea.code[hidden] { display: none; }
 .back-to-checks { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 20; translate: -50% 0; padding: 0 16px; min-height: 44px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 600; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
 .back-to-checks:hover { border-color: var(--jsal-hover-line); }
 @media (min-width: 900px) { .back-to-checks { display: none; } }
-.preview .flag { text-decoration-color: var(--jsal-warn); text-decoration-style: wavy; text-decoration-line: underline; }
 
 /* Link box: edit the address of the link the cursor is in */
 .link-box {
@@ -397,12 +396,6 @@ textarea.code[hidden] { display: none; }
   .option-track button { padding: 6px 8px; }
   .pane { height: 75vh; }
 }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-}
-
-.paste-note:empty { display: none; }
-.paste-note { margin-top: 8px; color: var(--jsal-warn); font-size: 13px; }
 /* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact controls) */
 @media (pointer: coarse) {
   .toolbar button, .option-track button, .btn-primary, .btn-clear, .btn-link, .link-box button, .link-box a { min-height: 44px; }
@@ -423,4 +416,8 @@ textarea.code[hidden] { display: none; }
   #toolbar .tb-break { display: block; flex-basis: 100%; }
   #toolbar button { flex: 1 1 0; min-width: 0; padding: 0; }
   #toolbar .tb-wide { flex: none; padding: 0 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }

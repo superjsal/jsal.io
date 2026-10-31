@@ -1,6 +1,5 @@
-/* ── Colours ───────────────────────────────────────────────────────────────
-   Colours, corners and the font are the shared --jsal-* tokens in /shell.css
-   (light and dark), used directly. Only this app's own values are here. */
+/* Image Resizer. Colours, corners and the font are the shared --jsal-* tokens in /shell.css (light and dark),
+   used directly; only this app's own values are here. */
 
 :root {
   --crop: #e3b04b;                /* crop box on photos: needs to stay bright in both themes */
@@ -15,7 +14,6 @@
 /* Elements marked data-needs-images only appear once images are loaded */
 .app:not(.has-images) [data-needs-images] { display: none !important; }
 
-/* Visually hidden but still read by search engines and screen readers */
 button, input { font: inherit; color: inherit; }
 button { cursor: pointer; background: none; border: none; }
 
@@ -32,11 +30,10 @@ body {
   align-items: center;
 }
 
-
 /* ── Header + steps ────────────────────────────────────────────────────── */
 
 /* The top bar itself (.jsal-top) is styled by /shell.css */
-.app-header { margin-bottom: 24px; }
+.app-header { flex-shrink: 0; margin-bottom: 24px; }
 
 .section-label,
 .grid-title,
@@ -75,12 +72,11 @@ body {
   position: relative;
   transition: background 0.12s, color 0.12s;
 }
+.seg-btn:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
 .seg-btn:focus-visible { outline-offset: -2px; }
+.seg-btn.active { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .seg-label { font-weight: 600; font-variant-numeric: tabular-nums; }
 .seg-hint { font-size: 12px; color: var(--jsal-muted); }
-.seg-btn:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
-
-.seg-btn.active { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 
 .custom-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
 
@@ -255,9 +251,9 @@ body {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s;
 }
-.drop-zone:hover .drop-icon, .drop-zone.drag .drop-icon { transform: translateY(-1px); box-shadow: none; }
+.drop-zone:hover .drop-icon, .drop-zone.drag .drop-icon { transform: translateY(-1px); }
 
 .drop-text { display: flex; flex-direction: column; gap: 2px; }
 .drop-title { font-weight: 500; color: var(--jsal-ink); }
@@ -285,7 +281,7 @@ body {
 
 .btn-choice {
   flex: 1;
-  padding: 8px 8px;
+  padding: 8px;
   border-radius: var(--jsal-radius-sm);
   font-weight: 600;
   border: 1px solid transparent;
@@ -385,8 +381,12 @@ body {
 
 /* ── Crop editor ───────────────────────────────────────────────────────── */
 
+/* Keeps a photo-like 3:2 shape and only shrinks when the window is short: it never stretches to fill a tall one */
 .canvas-wrap {
   position: relative;
+  flex: 0 1 auto;
+  aspect-ratio: 3 / 2;
+  min-height: 80px;
   border-radius: var(--jsal-radius);
   overflow: hidden;
   background: var(--jsal-surface);
@@ -449,12 +449,12 @@ body {
   right: 16px;
   padding: 2px 8px;
   border-radius: 20px;
-  background: rgba(0,0,0,0.65);
+  background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.10);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: rgba(255,255,255,0.88);
+  color: rgba(255, 255, 255, 0.88);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s;
@@ -527,14 +527,14 @@ body {
   overflow: hidden;
   margin-bottom: 6px;
   height: var(--thumb-h);
-  background: rgba(0,0,0,0.18);
+  background: rgba(0, 0, 0, 0.18);
 }
 .thumb-wrap canvas { width: 100%; height: 100%; display: block; object-fit: contain; }
 
 .thumb-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -558,13 +558,12 @@ body {
   background: var(--jsal-warn);   /* orange: a genuine warning (gold is for selected) */
   color: var(--jsal-bg);
   pointer-events: none;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 .preview-item.upscaled:not(.selected) { border-color: var(--jsal-warn); }
 
 /* Under the preview, in place of the crop hint, when the image is smaller than the output size */
 .upscale-note { display: flex; align-items: center; gap: 10px; margin: 0; padding: 8px 12px; border: 1px solid var(--jsal-warn); border-radius: var(--jsal-radius); background: var(--jsal-warn-soft); color: var(--jsal-ink); font-size: 13px; line-height: 1.45; }
-.upscale-note[hidden] { display: none; }
 .upscale-note b { color: var(--jsal-warn); }
 .upscale-ico { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--jsal-warn); color: var(--jsal-bg); font-weight: 700; font-size: 13px; }
 
@@ -576,9 +575,9 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: rgba(0,0,0,0.65);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.85);
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 15px;
   line-height: 1;
   display: grid;
@@ -597,7 +596,7 @@ body {
   width: 100%;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: var(--jsal-radius-sm);
   padding: 1px 4px;
   color: var(--jsal-ink-2);
   text-overflow: ellipsis;
@@ -639,7 +638,7 @@ body {
   font-weight: 500;
   transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
-.card-dl-btn:hover { background: var(--jsal-sunk); border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
+.card-dl-btn:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .card-dl-btn.saved { background: var(--jsal-ok-soft); border-color: var(--jsal-ok); color: var(--jsal-ok); }
 
 .divider { height: 1px; background: var(--jsal-line); margin: 12px 0; }
@@ -661,7 +660,6 @@ body {
   flex-direction: column;
   padding: 0 max(20px, env(safe-area-inset-left, 0px)) 12px;   /* same sides as the home page */
 }
-.app-header { flex-shrink: 0; }
 
 .controls {
   flex: 0 1 auto;
@@ -683,9 +681,6 @@ body {
   gap: 6px;
   margin-top: 10px;
 }
-/* Preview keeps a photo-like 3:2 shape and only shrinks when the window is
-   short — it never stretches to fill a tall window */
-.canvas-wrap { flex: 0 1 auto; aspect-ratio: 3 / 2; min-height: 80px; }
 /* The tool fills the window even before images are loaded (leaving room for the card strip): on purpose, so
    the About section stays below the fold and out of the way while someone is using the tool */
 
@@ -738,7 +733,6 @@ body {
 
 /* Short windows (small laptop screens): tighten spacing too */
 @media (max-height: 820px) {
-  .seg-btn { padding: 8px 6px; }
   .input-group, .btn-apply, .btn-primary, .btn-ghost { height: 34px; }
   .app { --thumb-h: 60px; }
 }

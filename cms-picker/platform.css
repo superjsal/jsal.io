@@ -3,7 +3,7 @@
 .pp-crumbs { margin: 18px 0 0; color: var(--jsal-muted); font-size: 13px; }
 .pp-crumbs a { color: var(--jsal-accent); text-underline-offset: 2px; }
 /* Headings in the home page's serif, like the page titles and the CMS Picker's own headings; the gold word italic */
-.pp-title { margin: 10px 0 10px; font-family: "Lora", Georgia, serif; font-size: clamp(28px, 4.4vw, 40px); line-height: 1.12; letter-spacing: -0.02em; }
+.pp-title { margin: 10px 0; font-family: "Lora", Georgia, serif; font-size: clamp(28px, 4.4vw, 40px); line-height: 1.12; letter-spacing: -0.02em; }
 .pp-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
 .pp-lede { max-width: 680px; margin: 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.55; }
 .pp-meta { margin: 10px 0 0; color: var(--jsal-muted); font-size: 13px; }
