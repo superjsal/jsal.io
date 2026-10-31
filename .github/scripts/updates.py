@@ -8,7 +8,7 @@
 # Each line should fit on one row at 1024px and up: about 40 characters, a warning past that.
 import html, pathlib, re, sys
 
-SITE = pathlib.Path(__file__).resolve().parents[2]   # site\.github\scripts\updates.py -> site\
+SITE = pathlib.Path(__file__).resolve().parents[2] / 'site'   # .github\scripts\updates.py -> site\
 CHANGELOG = 'changelog/index.html'
 HOME = 'index.html'
 START = '<!-- updates:start'   # the whole comment: <!-- updates:start (written by ...) -->

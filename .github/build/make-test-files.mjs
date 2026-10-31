@@ -7,12 +7,12 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const HERE = path.dirname(fileURLToPath(import.meta.url));   // site\.github\build
+const HERE = path.dirname(fileURLToPath(import.meta.url));   // .github\build
 
 const OUT = path.resolve(HERE, '..', 'docs', 'test-files');
 fs.mkdirSync(OUT, { recursive: true });
 
-const sample = fs.readFileSync(path.resolve(HERE, '..', '..', 'formatter', 'js', 'sample.js'), 'utf8').match(/`([\s\S]*)`/)[1];
+const sample = fs.readFileSync(path.resolve(HERE, '..', '..', 'site', 'formatter', 'js', 'sample.js'), 'utf8').match(/`([\s\S]*)`/)[1];
 fs.writeFileSync(path.join(OUT, 'messy-word-post.html'), sample);
 
 const browser = await chromium.launch({ channel: 'msedge' });

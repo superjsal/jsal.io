@@ -7,8 +7,9 @@
 #   python -I versions.py --check   list stale references and exit 1 if there are any (check.py imports this)
 import hashlib, os, pathlib, re, sys
 
-SITE = pathlib.Path(__file__).resolve().parents[2]   # site\.github\build\versions.py -> site\
-TEMPLATE = SITE / '.github' / 'scripts' / 'platform-page.html'   # served as cms-picker/<platform>/index.html
+ROOT = pathlib.Path(__file__).resolve().parents[2]   # .github\build\versions.py -> the project folder
+SITE = ROOT / 'site'
+TEMPLATE = ROOT / '.github' / 'scripts' / 'platform-page.html'   # served as cms-picker/<platform>/index.html
 SKIP = {'vendor', 'node_modules', '.github', '.git'}
 
 # What counts as a reference: a quoted path ending in .css or .js, or favicon.svg, followed by ?v=…

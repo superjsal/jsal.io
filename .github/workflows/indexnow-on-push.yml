@@ -11,7 +11,7 @@ on:
 
 permissions:
   contents: read
-  pages: read
+  actions: read               # watch the Pages deploy for this push
 
 concurrency:
   group: indexnow
@@ -33,7 +33,7 @@ jobs:
         run: |
           before="${{ github.event.before }}"
           git cat-file -e "$before" 2>/dev/null || before="${{ github.sha }}~1"
-          urls=$(git diff --name-only "$before" "${{ github.sha }}" | grep -E '^(index\.html|[^/]+/index\.html|cms-picker/[^/]+/index\.html)$' | sed -E 's#^index\.html$#https://jsal.io/#; s#^(.*)/index\.html$#https://jsal.io/\1/#' | sort -u | tr '\n' ' ')
+          urls=$(git diff --name-only "$before" "${{ github.sha }}" | grep -E '^site/(index\.html|[^/]+/index\.html|cms-picker/[^/]+/index\.html)$' | sed -E 's#^site/index\.html$#https://jsal.io/#; s#^site/(.*)/index\.html$#https://jsal.io/\1/#' | sort -u | tr '\n' ' ')
           echo "urls=$urls" >> "$GITHUB_OUTPUT"
           echo "Changed pages: ${urls:-none}"
       - name: Wait for the Pages build to be live (up to ~5 minutes)
@@ -41,9 +41,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          for i in $(seq 1 30); do
-            s=$(gh api "repos/${{ github.repository }}/pages/builds/latest" --jq .status 2>/dev/null || echo unknown)
-            [ "$s" = "built" ] && break
+          for i in $(seq 1 40); do
+            s=$(gh run list --workflow=deploy-pages.yml --commit "${{ github.sha }}" --json status,conclusion --jq '.[0] | "\(.status) \(.conclusion)"' 2>/dev/null)
+            [ "$s" = "completed success" ] && break
             sleep 10
           done
       - name: Announce them

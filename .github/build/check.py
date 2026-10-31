@@ -10,8 +10,9 @@
 #  - Updates on the home page is what .github/scripts/updates.py would write from the changelog
 import json, pathlib, re, sys
 
-SITE = pathlib.Path(__file__).resolve().parents[2]   # site\.github\build\check.py -> site\
-BUILD = SITE / '.github' / 'build'                      # this folder: scripts, node_modules and the share-image templates, not site content
+ROOT = pathlib.Path(__file__).resolve().parents[2]   # .github\build\check.py -> the project folder
+SITE = ROOT / 'site'                                   # what jsal.io serves
+BUILD = ROOT / '.github' / 'build'                      # this folder: scripts, node_modules and the share-image templates, not site content
 PAGES = ['index.html', '404.html', 'formatter/index.html', 'image-resizer/index.html', 'cms-picker/index.html', 'ic/index.html', 'privacy/index.html', 'play/index.html', 'changelog/index.html']
 # CMS Picker platform pages, written by playbook.py publish (cms-picker/<platform>/index.html)
 PLATFORM_PAGES = sorted(str(p.relative_to(SITE)).replace('\\', '/') for p in SITE.glob('cms-picker/*/index.html'))
@@ -199,7 +200,7 @@ for name, css, first in stylesheets():
                     fail(f'{where}: font size {s}px (whole pixels only: 11, 12, 13, 14, 15, 16, 17…)')
 
 # CMS Picker data fits cms-picker.schema.json (the same check runs before every publish, and on GitHub)
-sys.path.insert(0, str(SITE / '.github' / 'scripts'))
+sys.path.insert(0, str(ROOT / '.github' / 'scripts'))
 import check_data
 picker_data = json.loads(read('cms-picker/data.json'))
 for e in check_data.problems(picker_data): fail(f'cms-picker/data.json: {e}')
@@ -212,7 +213,7 @@ for w in updates.warnings(): print('Note: ' + w)
 # CMS Picker persona tests: example people still get the agreed Find my fit results (needs Node)
 import shutil, subprocess
 if shutil.which('node'):
-    run = subprocess.run(['node', str(SITE / '.github' / 'scripts' / 'personas.test.js')], capture_output=True, text=True, encoding='utf-8')
+    run = subprocess.run(['node', str(ROOT / '.github' / 'scripts' / 'personas.test.js')], capture_output=True, text=True, encoding='utf-8')
     if run.returncode:
         fail('CMS Picker persona tests:\n      ' + '\n      '.join(l for l in run.stdout.splitlines() if l.startswith('FAIL')) + (run.stderr.strip() and '\n      ' + run.stderr.strip()))
 else:
@@ -227,4 +228,4 @@ if problems:
     for p in problems: print('  - ' + p)
     sys.exit(1)
 print(f'All checks passed ({len(PAGES)} pages, every cache number current).')
-print(check_data.report(picker_data) + '  (details: python site\\.github\\scripts\\check_data.py --list)')
+print(check_data.report(picker_data) + '  (details: python .github\\scripts\\check_data.py --list)')

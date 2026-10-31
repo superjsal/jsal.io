@@ -15,7 +15,7 @@ on:
 
 permissions:
   contents: write             # commit the published files
-  pages: write                # ask Pages to rebuild after that commit
+  actions: write              # start the Pages deploy for that commit and watch it
 
 concurrency:
   group: publish-cms-picker
@@ -39,16 +39,16 @@ jobs:
           if [ -z "$(git status --porcelain)" ]; then echo "No changes to publish."; exit 0; fi
           git config user.name "superjsal"
           git config user.email "dev@jsal.io"
-          git add -A cms-picker/data.json cms-picker/index.html cms-picker/logos 'cms-picker/*/index.html' sitemap.xml
+          git add -A site/cms-picker/data.json site/cms-picker/index.html site/cms-picker/logos 'site/cms-picker/*/index.html' site/sitemap.xml
           git commit -m "CMS Picker: nightly publish from Playbook"
           git push
           echo "pushed=true" >> "$GITHUB_OUTPUT"
-      # Pushes made with the workflow's own token don't start the Pages build by themselves
-      - name: Rebuild GitHub Pages
+      # A push made with the workflow's own token starts no other workflow, so the Pages deploy is started here
+      - name: Deploy Pages
         if: steps.commit.outputs.pushed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"
+        run: gh workflow run deploy-pages.yml --ref main
       # Tell Bing and the other IndexNow engines which pages changed, once the new build is live (up to ~5 minutes)
       - name: Announce changed pages (IndexNow)
         if: steps.commit.outputs.pushed == 'true'
@@ -56,9 +56,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          for i in $(seq 1 30); do
-            s=$(gh api "repos/${{ github.repository }}/pages/builds/latest" --jq .status)
-            [ "$s" = "built" ] && break
+          sleep 20
+          for i in $(seq 1 40); do
+            s=$(gh run list --workflow=deploy-pages.yml --limit 1 --json status,conclusion --jq '.[0] | "\(.status) \(.conclusion)"' 2>/dev/null)
+            [ "$s" = "completed success" ] && break
             sleep 10
           done
           python .github/scripts/indexnow.py changed

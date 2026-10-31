@@ -5,7 +5,7 @@
 // update the expectation here.
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
-const site = path.join(__dirname, '..', '..');
+const site = path.join(__dirname, '..', '..', 'site');
 const { rank, explain, QUESTIONS, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));

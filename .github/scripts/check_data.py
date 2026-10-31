@@ -12,7 +12,7 @@ import datetime, json, os, pathlib, re, sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 SCHEMA = json.loads((HERE / 'cms-picker.schema.json').read_text(encoding='utf-8'))
-DATA = HERE.parents[1] / 'cms-picker' / 'data.json'
+DATA = HERE.parents[1] / 'site' / 'cms-picker' / 'data.json'
 STALE_DAYS = 90
 
 TYPES = {'object': dict, 'array': list, 'string': str, 'boolean': bool}

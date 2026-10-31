@@ -7,7 +7,7 @@
 # Only addresses listed in sitemap.xml are sent. Run it after the change is live, not before.
 import json, pathlib, re, subprocess, sys, urllib.error, urllib.request
 
-SITE = pathlib.Path(__file__).resolve().parents[2]
+SITE = pathlib.Path(__file__).resolve().parents[2] / 'site' / 'site'
 KEY = '184d9b76996d8751c72b4a5a062f80d7'
 HOST = 'jsal.io'
 
@@ -17,9 +17,9 @@ def sitemap():
 
 
 def changed():
-    """Pages changed by the last commit, as addresses (cms-picker/wix/index.html → https://jsal.io/cms-picker/wix/)."""
+    """Pages changed by the last commit, as addresses (site/cms-picker/wix/index.html → https://jsal.io/cms-picker/wix/)."""
     files = subprocess.run(['git', 'diff', '--name-only', 'HEAD~1', 'HEAD'], cwd=SITE, capture_output=True, text=True, check=True).stdout.split()
-    return [f'https://{HOST}/' + f[:-len('index.html')] for f in files if f.endswith('index.html')]
+    return [f'https://{HOST}/' + f[len('site/'):-len('index.html')] for f in files if f.startswith('site/') and f.endswith('index.html')]
 
 
 def submit(urls):
