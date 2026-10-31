@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page not found | jsal.io</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="/favicon.svg?v=2026-10-31r" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=22915abb" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -30,7 +30,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours and top bar: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=2026-10-31r">
+<link rel="stylesheet" href="/shell.css?v=f5fceb15">
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
@@ -68,6 +68,6 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     </ul>
   </main>
 </div>
-<script src="/nav.js?v=2026-10-31r" defer></script>
+<script src="/nav.js?v=fcee8135" defer></script>
 </body>
 </html>

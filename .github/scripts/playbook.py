@@ -421,8 +421,7 @@ def platform_pages(d):
     e = lambda t: html.escape(str(t), quote=True)
     tpl = PLATFORM_TEMPLATE.read_text(encoding='utf-8')
     main = (SITE / 'cms-picker' / 'index.html').read_text(encoding='utf-8')
-    # Same cache number and top bar as the CMS Picker page (bump-version.ps1 updates both, and the template's shell.css link)
-    v = re.search(r'nav\.js\?v=([\w-]+)', main).group(1)
+    # Same top bar as the CMS Picker page (the template carries the cache numbers; bump-version.ps1 keeps them current)
     top = re.search(r'[ \t]*<header class="app-header jsal-top">.*?</header>', main, re.S).group(0)
     top = re.sub(r'<h1 class="jsal-title">(.*?)<span class="sr-only">.*?</span></h1>', r'<p class="jsal-title">\1</p>', top, flags=re.S)
     items = {i['id']: i for i in d['items']}
@@ -488,7 +487,7 @@ def platform_pages(d):
             'OG_ALT': e(f'{name} SEO on CMS Picker: its six SEO settings, marked built in, plugin or needs code'
                         if (SITE / 'og' / f'cms-picker-{pid}.png').exists() else
                         'CMS Picker: which website platform fits you, what’s built in, and getting found on Google and AI search'),
-            'ID': pid, 'NAME': e(name), 'NAME_URL': urllib.parse.quote(name), 'V': v, 'DESCRIPTION': e(desc),
+            'ID': pid, 'NAME': e(name), 'NAME_URL': urllib.parse.quote(name), 'DESCRIPTION': e(desc),
             'JSONLD': '\n'.join('  ' + line for line in json.dumps(ld, ensure_ascii=False, indent=2).splitlines()),
             'TOPBAR': top,
             # Platforms with no menus to point to (a headless CMS: the developer builds the fields) say what each takes instead

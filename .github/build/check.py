@@ -1,7 +1,7 @@
 # Pre-push checks for the site (the repo root, two folders up). Run via check.ps1 (or: python -I check.py);
 # the "Site checks" GitHub Action runs it on every push too. Exits 1 if anything needs fixing.
 #  - the top bar is identical on every page (so it never moves between pages)
-#  - every page uses the same ?v= cache number, and links /shell.css with it
+#  - every ?v= cache number is its file's current content hash (versions.py), and every page links /shell.css
 #  - internal links, scripts, styles and images point at files that exist
 #  - structured data (JSON-LD) parses
 #  - no unused CSS classes, keyframes or variables
@@ -44,16 +44,18 @@ for p, t in html.items():
     if b != ref[0]: fail(f'{p}: logo markup differs from the home page')
     if th != ref[1]: fail(f'{p}: theme button markup differs from the home page')
 
-# Cache numbers
-# Only the site's CSS and JS; CMS Picker logos carry their own content hash (?v= from playbook.py publish)
-vers = {p: set(re.findall(r'\.(?:css|js)\?v=([\w.-]+)', t)) - {'1.6.6'} for p, t in html.items()}   # 1.6.6 = the HEIC library's own version
-home_v = re.search(r'nav\.js\?v=([\w-]+)', html['index.html']).group(1)
-for p, v in vers.items():
-    if v - {home_v}: fail(f'{p}: cache number {", ".join(sorted(v - {home_v}))} (home page uses {home_v}); run bump-version.ps1')
+# Cache numbers: every reference to one of the site's CSS or JS files, the favicon or quiz.json carries that
+# file's current content hash, on every page, in the apps' module imports and in the publish template
+# (versions.py next to this script is the one place that knows what counts as a reference)
+sys.path.insert(0, str(BUILD))
+sys.dont_write_bytecode = True   # no __pycache__ folder inside the site repo
+import versions
+for f, shown, v, h in versions.stale():
+    fail(f'{f.relative_to(SITE)}: {shown}?v={v} is out of date (the file hashes to {h}); run bump-version.ps1')
 
 # Every page links the shared stylesheet with one identical line, in <head> before its own styles
 # (so shell.css loses to a page's own rules, as the inline copies used to)
-SHELL = f'<link rel="stylesheet" href="/shell.css?v={home_v}">'
+SHELL = f'<link rel="stylesheet" href="/shell.css?v={versions.hash_of(SITE / "shell.css")}">'
 for p, t in html.items():
     head = t[:t.find('</head>')]
     i = head.find(SHELL)
@@ -134,12 +136,13 @@ for p, t in html.items():
     if 'wow-forever' in t and 'Art © Blizzard Entertainment' not in t:
         fail(f'{p}: the WoW Forever art is missing its "Art © Blizzard Entertainment" credit')
 
-# The apps' modules import each other with the page's cache number (bump-version.ps1 keeps them in step)
+# The apps' modules import each other with the imported file's cache number (checked above); an import
+# without one would load a second, uncached copy of the module
 for f in files(['*/js/*.js']):
     for line_no, line in enumerate(f.read_text(encoding='utf-8').splitlines(), 1):
         for spec in re.findall(r'from\s+"(\./[^"]+)"', line):
-            if f'?v={home_v}' not in spec:
-                fail(f'{f.relative_to(SITE)}:{line_no}: import "{spec}" should end in ?v={home_v}; run bump-version.ps1')
+            if '?v=' not in spec:
+                fail(f'{f.relative_to(SITE)}:{line_no}: import "{spec}" needs ?v=<hash>; add ?v=0 and run bump-version.ps1')
 
 # Style rules, so the apps keep looking like one site (shared values are in shell.css). A deliberate
 # exception carries a "style: allow (reason)" comment on the same line.
@@ -197,7 +200,6 @@ for name, css, first in stylesheets():
 
 # CMS Picker data fits cms-picker.schema.json (the same check runs before every publish, and on GitHub)
 sys.path.insert(0, str(SITE / '.github' / 'scripts'))
-sys.dont_write_bytecode = True   # no __pycache__ folder inside the site repo
 import check_data
 picker_data = json.loads(read('cms-picker/data.json'))
 for e in check_data.problems(picker_data): fail(f'cms-picker/data.json: {e}')
@@ -224,5 +226,5 @@ if problems:
     print(f'{len(problems)} thing(s) to fix:')
     for p in problems: print('  - ' + p)
     sys.exit(1)
-print(f'All checks passed ({len(PAGES)} pages, cache number {home_v}).')
+print(f'All checks passed ({len(PAGES)} pages, every cache number current).')
 print(check_data.report(picker_data) + '  (details: python site\\.github\\scripts\\check_data.py --list)')

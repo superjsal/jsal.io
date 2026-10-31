@@ -6,7 +6,7 @@
   <title>CMS Picker: Which Website Builder or CMS Fits You? | jsal.io</title>
   <meta name="description" content="Which website builder or CMS fits you? Take a short quiz or compare 13 platforms, from WordPress to Webflow: who each suits, what’s built in, and SEO." />
   <link rel="canonical" href="https://jsal.io/cms-picker/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-31r" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=22915abb" type="image/svg+xml">
   <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
   <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -63,14 +63,14 @@
   </script>
 
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
-  <!-- Version numbers (?v=) make browsers fetch fresh files after an update. To bump them on
-       every page at once, run site\.github\build\bump-version.ps1 (see SETUP.md). -->
-  <link rel="stylesheet" href="/shell.css?v=2026-10-31r">
-  <link rel="stylesheet" href="styles.css?v=2026-10-31r" />
-  <script src="score.js?v=2026-10-31r" defer></script>
-  <script src="app.js?v=2026-10-31r" defer></script>
+  <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update. After
+       editing CSS or JS, run site\.github\build\bump-version.ps1 to update them (see SETUP.md). -->
+  <link rel="stylesheet" href="/shell.css?v=f5fceb15">
+  <link rel="stylesheet" href="styles.css?v=f1dfe8f5" />
+  <script src="score.js?v=78e6e1d0" defer></script>
+  <script src="app.js?v=42791b38" data-quiz-v="1f7e5126" defer></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-31r" defer></script>
+  <script src="/nav.js?v=fcee8135" defer></script>
 </head>
 <body>
   <main class="app">

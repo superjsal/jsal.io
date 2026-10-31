@@ -6,7 +6,7 @@
   <title>Clean Paste: Word and Google Docs to Clean HTML | jsal.io</title>
   <meta name="description" content="Turn Word or Google Docs text into clean HTML, or HTML back into formatted text. WordPress blocks too. Free, in your browser, nothing uploaded." />
   <link rel="canonical" href="https://jsal.io/formatter/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-31r" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=22915abb" type="image/svg+xml">
   <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
   <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -63,22 +63,22 @@
   </script>
 
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
-  <!-- Version numbers (?v=) make browsers fetch fresh files after an update. To bump them on
-       every page at once, run site\.github\build\bump-version.ps1 (see SETUP.md). -->
-  <link rel="stylesheet" href="/shell.css?v=2026-10-31r">
-  <link rel="stylesheet" href="styles.css?v=2026-10-31r" />
+  <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update. After
+       editing CSS or JS, run site\.github\build\bump-version.ps1 to update them (see SETUP.md). -->
+  <link rel="stylesheet" href="/shell.css?v=f5fceb15">
+  <link rel="stylesheet" href="styles.css?v=dc39cf8f" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":   "./js/main.js?v=2026-10-31r",
-        "./js/clean.js":  "./js/clean.js?v=2026-10-31r",
-        "./js/sample.js": "./js/sample.js?v=2026-10-31r"
+        "./js/main.js":   "./js/main.js?v=c7746365",
+        "./js/clean.js":  "./js/clean.js?v=d1d7e6e4",
+        "./js/sample.js": "./js/sample.js?v=b060f559"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-31r"></script>
+  <script type="module" src="js/main.js?v=c7746365"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-31r" defer></script>
+  <script src="/nav.js?v=fcee8135" defer></script>
 </head>
 <body>
   <main class="app">
