@@ -1,0 +1,52 @@
+# After a push to main by hand, tells Bing and the other IndexNow engines which pages changed, once the new Pages
+# build is live, so nobody has to remember to run indexnow.py. A page counts when its index.html changed (the home
+# page's, or a folder's); only addresses in sitemap.xml are sent (indexnow.py keeps to those). The nightly publish
+# announces its own pages, so its commits are skipped here. Text or metadata changes are what search engines care
+# about, but a push can't tell those from a code change, so any changed page is sent: a wasted ping costs nothing.
+name: IndexNow for changed pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: read
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  announce:
+    if: ${{ !startsWith(github.event.head_commit.message, 'CMS Picker: nightly publish') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Pages whose index.html changed in this push
+        id: pages
+        run: |
+          before="${{ github.event.before }}"
+          git cat-file -e "$before" 2>/dev/null || before="${{ github.sha }}~1"
+          urls=$(git diff --name-only "$before" "${{ github.sha }}" | grep -E '^(index\.html|[^/]+/index\.html|cms-picker/[^/]+/index\.html)$' | sed -E 's#^index\.html$#https://jsal.io/#; s#^(.*)/index\.html$#https://jsal.io/\1/#' | sort -u | tr '\n' ' ')
+          echo "urls=$urls" >> "$GITHUB_OUTPUT"
+          echo "Changed pages: ${urls:-none}"
+      - name: Wait for the Pages build to be live (up to ~5 minutes)
+        if: steps.pages.outputs.urls != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 30); do
+            s=$(gh api "repos/${{ github.repository }}/pages/builds/latest" --jq .status 2>/dev/null || echo unknown)
+            [ "$s" = "built" ] && break
+            sleep 10
+          done
+      - name: Announce them
+        if: steps.pages.outputs.urls != ''
+        continue-on-error: true
+        run: python .github/scripts/indexnow.py ${{ steps.pages.outputs.urls }}
