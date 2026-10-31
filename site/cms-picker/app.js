@@ -460,8 +460,24 @@
       if (open) $('#' + b.dataset.panel).scrollIntoView();
     }));
     ['fit', 'seo'].forEach((id) => $('#' + id).addEventListener('beforematch', () => requestAnimationFrame(() => setPanel(id, true))));
-    // Links to #fit or #seo (the compare bar, the platform pages) open the panel before the browser scrolls to it
-    const fromHash = () => { const id = location.hash.slice(1); if (id === 'fit' || id === 'seo') { openPanel(id); $('#' + id).scrollIntoView(); } };
+    // Links to #fit or #seo (the compare bar, the platform pages) open the panel before the browser scrolls to it.
+    // A platform page's "Compare X with others" link is #seo?with=<id>: that platform joins the comparison, marked
+    // as the column to follow, beside the usual starting four.
+    const fromHash = () => {
+      const [id, query] = location.hash.slice(1).split('?');
+      if (id !== 'fit' && id !== 'seo') return;
+      const withId = new URLSearchParams(query || '').get('with');
+      if (id === 'seo' && withId && data.platforms.some((p) => p.id === withId)) {
+        state.compare = new Set([withId, ...DEFAULT_COMPARE]);
+        state.pick = withId;
+        state.touched = true;
+        state.quiz = null;
+        renderCards();
+        render();
+      }
+      openPanel(id);
+      $('#' + id).scrollIntoView();
+    };
     document.addEventListener('click', (e) => { const a = e.target.closest('a[href="#fit"], a[href="#seo"]'); if (a) openPanel(a.getAttribute('href').slice(1)); }, true);
     addEventListener('hashchange', fromHash);
     fromHash();
