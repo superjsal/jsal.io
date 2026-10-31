@@ -89,10 +89,47 @@ def pull():
     print(f'  {len(edits)} live edits sit on top of this and are kept when you push.')
 
 
+# The Playbook shows its built-in text as HTML, so a stray "<" in prose becomes a tag the page swallows (a how-to once
+# lost "<theme>", a note "<table>"). Prose may carry only these tags, balanced; a guide block's code sample ("code") is
+# shown as text and may hold anything. push refuses the file until it's clean; "check" lints it without pushing.
+PROSE_TAGS = {'b', 'i', 'em', 'strong', 'code', 'a', 'br', 'p', 'ul', 'ol', 'li', 'span', 'kbd', 'small'}
+def bad_html(data):
+    out = []
+    def walk(x, path, in_code):
+        if isinstance(x, dict):
+            for k, v in x.items(): walk(v, f'{path}.{k}', in_code or k == 'code')
+        elif isinstance(x, list):
+            for i, v in enumerate(x): walk(v, f'{path}[{i}]', in_code)
+        elif isinstance(x, str) and not in_code and '<' in x:
+            tags = re.findall(r'<(/?)([a-zA-Z][a-zA-Z0-9-]*)', x)
+            odd = sorted({t for _, t in tags if t.lower() not in PROSE_TAGS})
+            if odd: out.append(f'{path}: <{">, <".join(odd)}> in prose (write &lt; for a literal "<")')
+            if re.search(r'<(?![/a-zA-Z!])', x): out.append(f'{path}: a bare "<" (write &lt;)')
+            depth = {}
+            for close, t in tags:
+                t = t.lower()
+                if t in PROSE_TAGS and t != 'br': depth[t] = depth.get(t, 0) + (-1 if close else 1)
+            open_ = [f'<{t}>' for t, v in depth.items() if v]
+            if open_: out.append(f'{path}: unbalanced {", ".join(open_)}')
+    walk(data, '', False)
+    return out
+
+
+def check():
+    if not DEFAULTS.exists():
+        sys.exit(f'Nothing to check: run "python playbook.py pull" first.')
+    errs = bad_html(json.loads(DEFAULTS.read_text(encoding='utf-8')))
+    print('\n'.join(errs) if errs else f'{DEFAULTS}: no stray HTML in the prose')
+    sys.exit(1 if errs else 0)
+
+
 def push():
     if not DEFAULTS.exists():
         sys.exit(f'Nothing to push: run "python playbook.py pull" first, then edit {DEFAULTS}.')
     new = json.loads(DEFAULTS.read_text(encoding='utf-8'))
+    errs = bad_html(new)
+    if errs:
+        sys.exit('Refusing to push: stray HTML in the prose (the page would swallow it as tags):\n  ' + '\n  '.join(errs))
     current = api('GET', 'app_data?id=eq.defaults&select=data')
     if current:
         missing = set(current[0]['data']) - set(new)
@@ -393,7 +430,7 @@ def prerender():
 # was checked against, then a short profile. Written from platform-page.html (next to this script)
 # on every publish; pages for platforms taken off the CMS Picker are removed, and sitemap.xml follows.
 PLATFORM_TEMPLATE = HERE / 'platform-page.html'
-GENERATED = '<!-- generated from a template by the publish'   # the marker on line 2 of platform-page.html
+GENERATED = '<meta name="generator" content="jsal.io publish"'   # how the publish knows a page is its own (platform-page.html's head)
 SEO_ROWS = ['meta_title', 'urls', 'gsc404', 'schema', 'noindex', 'ai_crawlers']
 BUILT_ROWS = ['blog', 'members', 'store', 'languages', 'forms', 'design']   # the Everyday rows, in the table's order
 # Each SEO row as a heading, worded the way people search for it (the table's label is a "Can you…" question)
@@ -512,7 +549,7 @@ def platform_pages(d):
             sys.exit(f'platform pages: "{p["id"]}" is not a safe folder name')
         out = SITE / 'cms-picker' / p['id'] / 'index.html'
         old = out.read_text(encoding='utf-8') if out.exists() else ''
-        if old and GENERATED not in old:
+        if old and GENERATED not in old and '<!-- generated from a template by the publish' not in old:   # the second: pages written before the meta tag
             sys.exit(f'platform pages: {out} exists and was not written by playbook.py; nothing was overwritten')
         was = re.search(r'"dateModified": "([\d-]+)"', old)
         page = build(p, was.group(1) if was else today)   # unchanged content keeps its date
@@ -538,11 +575,11 @@ def platform_pages(d):
 
 if __name__ == '__main__':
     cmd = sys.argv[1] if len(sys.argv) > 1 else ''
-    if cmd == 'prerender':
-        prerender()
+    if cmd in ('prerender', 'check'):
+        prerender() if cmd == 'prerender' else check()
         sys.exit()
     if cmd not in ('backup', 'pull', 'push', 'publish'):
-        sys.exit('Usage: python playbook.py backup | pull | push | publish [--from-backup <file>] | prerender')
+        sys.exit('Usage: python playbook.py backup | pull | push | publish [--from-backup <file>] | prerender | check')
     flag = lambda name: sys.argv[sys.argv.index(name) + 1] if name in sys.argv[2:-1] else None
     if cmd == 'publish' and flag('--from-backup'):
         publish(flag('--from-backup'))
