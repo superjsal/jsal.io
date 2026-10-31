@@ -46,4 +46,6 @@ jobs:
           npx --yes http-server site -p 8765 -a 127.0.0.1 -s &
           for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:8765/ && break; sleep 1; done
       - name: Browser checks (axe on every page, 375/390px, each tool's main flow)
+        env:
+          HOME: /root   # Firefox won't start when HOME is owned by another user, which the container's default is
         run: node .github/build/browser-check.mjs
