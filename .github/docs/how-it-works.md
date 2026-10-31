@@ -59,8 +59,8 @@ flowchart TB
   subgraph DEV["Working on this PC (before a push)"]
     edit["edit the site: shell.css, nav.js, a tool's CSS/JS, pages"]
     upd["updates.py<br>rewrites Updates on the home page from the<br>changelog's data-short lines"]
-    bump["bump-version.ps1<br>bumps ?v= on every page, the shell.css link<br>and the apps' module imports"]
-    check["check.ps1 → check.py<br>top bar identical, ?v= in step, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults,<br>Updates matches the changelog"]
+    bump["bump-version.ps1 → versions.py<br>each file's ?v= is its content hash; rewrites only<br>the references to the files that changed"]
+    check["check.ps1 → check.py<br>top bar identical, every ?v= current, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults,<br>Updates matches the changelog"]
     bcheck["browser-check.mjs (Playwright: Edge or Chromium, WebKit, Firefox)<br>axe on every page, 375/390px, each tool's main flow"]
     personas["personas.test.js<br>37 agreed quiz results still hold"]
     commit["git pull --ff-only, stage by name, commit, push"]
@@ -89,7 +89,7 @@ flowchart TB
 - **Two keys, two trust levels.** The browser uses the public anon key with row-level security (members read, admins write). The publish and backup scripts use the service_role key, which lives only in John's terminal (`SUPABASE_SERVICE_ROLE_KEY`) and in the Action's secrets.
 - **The quiz is code plus data.** `score.js` (questions, scoring, wording) and `quiz.json` (per-platform values the published answers don't carry) ship with the page; everything else the quiz says comes from `data.json`. The personas test pins the agreed results.
 - **A change is described once.** The changelog is the record; an entry with a `data-short` leads its section in Updates on the home page, which `updates.py` writes between two marker comments in `index.html`. `check.py` fails when that block is out of date, so nobody edits it by hand.
-- **Cache numbers, not a build.** There's no bundler. `bump-version.ps1` rewrites `?v=` so browsers fetch changed files; `check.py` fails a page whose numbers are out of step.
+- **Cache numbers, not a build.** There's no bundler. Every `?v=` is its file's content hash (8 hex characters of its SHA-256, line endings as LF so Windows and GitHub agree); `bump-version.ps1` (`versions.py`) recomputes them and rewrites only the references to the files that changed, in the pages, the apps' module imports and the platform-page template, which carries real hashes rather than a placeholder. `quiz.json` has its own, `data-quiz-v` on the CMS Picker's `app.js` tag. `check.py` fails any reference whose hash isn't the file's current one.
 - **The Action is the full gate.** `check.py`, `check_data.py`, the personas and the browser checks (axe, phone widths, each tool's flow on Chromium, WebKit and Firefox) all run on every push; the PC runs the same before pushing, Firefox excepted (it won't start there).
 - **Keep-awake reads the Supabase URL and anon key from the repository's Actions variables** (`SUPABASE_URL`, `SUPABASE_ANON_KEY`; the same public values `ic/app.js` carries). A new Supabase project means updating both.
 - **Backups live in two places:** `playbook.py backup` on the PC (plain JSON in `private\backups`), and the Sunday Action's encrypted artifact on GitHub (90 days; `gh run download <run id> -n playbook-backup`, then `gpg --decrypt` with the passphrase John set as the `BACKUP_PASSPHRASE` secret). The repo is public and its artifacts are downloadable by any GitHub account, which is why the file is encrypted.
