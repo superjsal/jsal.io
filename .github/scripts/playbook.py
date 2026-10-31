@@ -395,7 +395,7 @@ def prerender():
 PLATFORM_TEMPLATE = HERE / 'platform-page.html'
 GENERATED = '<!-- generated from a template by the publish'   # the marker on line 2 of platform-page.html
 SEO_ROWS = ['meta_title', 'urls', 'gsc404', 'schema', 'noindex', 'ai_crawlers']
-BUILT_ROWS = ['blog', 'store', 'languages', 'forms', 'design']
+BUILT_ROWS = ['blog', 'members', 'store', 'languages', 'forms', 'design']   # the Everyday rows, in the table's order
 # Each SEO row as a heading, worded the way people search for it (the table's label is a "Can you…" question)
 SEO_HEAD = {'meta_title': 'Change the title and description in Google', 'urls': 'Choose page addresses (URLs)',
             'gsc404': 'Redirect old links (301s)', 'schema': 'Add structured data (schema)',
