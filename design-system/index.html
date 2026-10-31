@@ -162,6 +162,7 @@ background: transparent; color: var(--jsal-muted); cursor: pointer;
 transition: background 0.12s, color 0.12s;
 }
 .jsal-theme:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
+.jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 .jsal-caret { display: inline-block; margin-left: 6px; opacity: .55; transition: transform .15s; vertical-align: middle; }
 [data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
 [data-jsal-nav]:hover .jsal-caret { opacity: .9; }
@@ -205,9 +206,8 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
 .jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .jsal-about details > ul { margin-bottom: 14px; }
+.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 @media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
-.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
-.jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
@@ -218,7 +218,7 @@ a { color: inherit; }
 :focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)) 64px; }
 .jsal-top nav { display: flex; gap: 2px; font-size: 14px; }
-.jsal-top nav a { padding: 8px 10px; line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: 6px; }
+.jsal-top nav a { padding: 8px 10px; line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }
 .jsal-top nav a:hover { color: var(--jsal-ink); }
 
 /* Hero */
@@ -245,10 +245,11 @@ a { color: inherit; }
 .sec h3:first-of-type { margin-top: 0; }
 .sec p { margin: 0 0 12px; max-width: 42em; color: var(--jsal-ink-2); }
 .sec p.note { font-size: 13px; color: var(--jsal-muted); }
-.sec ul { margin: 0 0 12px; padding-left: 1.2em; color: var(--jsal-ink-2); } .sec li + li { margin-top: 5px; }
+.sec ul { margin: 0 0 12px; padding-left: 1.2em; color: var(--jsal-ink-2); }
+.sec li + li { margin-top: 5px; }
 code, .mono { font: 500 12px/1.6 "JetBrains Mono", Consolas, monospace; }
 code { padding: 1px 6px; border-radius: var(--jsal-radius-sm); background: var(--jsal-sunk); color: var(--jsal-ink); }
-kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
+kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 /* A recorded decision about a suggested change: blue, information */
 .suggest { display: flex; gap: 10px; margin: 20px 0 0; padding: 12px 14px; border-left: 3px solid var(--jsal-info); border-radius: var(--jsal-radius-sm); background: var(--jsal-info-soft); color: var(--jsal-ink); font-size: 15px; line-height: 1.5; max-width: 52em; }
 .suggest b { color: var(--jsal-info); font-weight: 700; white-space: nowrap; }
@@ -319,7 +320,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .radii i { display: block; width: 64px; height: 44px; border: 1px solid var(--jsal-line-hi); background: var(--jsal-surface); }
 .bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
 .bento i { display: block; height: 42px; border-radius: 10px; background: var(--jsal-sunk); border: 1px solid var(--jsal-line); }
-.bento .big { grid-column: span 8; } .bento .sm { grid-column: span 4; } .bento .full { grid-column: 1 / -1; }
+.bento .big { grid-column: span 8; }
+.bento .sm { grid-column: span 4; }
+.bento .full { grid-column: 1 / -1; }
 
 /* Components (06): the real rules, copied from the apps' stylesheets, named by their source */
 .demo { display: grid; gap: 14px; padding: 20px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
@@ -336,13 +339,14 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .cta { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; cursor: pointer; border: 0; font-family: inherit; }
 .cta.main { background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .cta.alt { background: none; border: 1px solid var(--jsal-muted); color: var(--jsal-ink); }
-.cta:hover { transform: translateY(-2px); } .cta.alt:hover { border-color: var(--jsal-ink); }
+.cta:hover { transform: translateY(-2px); }
+.cta.alt:hover { border-color: var(--jsal-ink); }
 .cta:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-.chip { padding: 3px 10px; border: 1px solid var(--jsal-line-hi); border-radius: 999px; background: transparent; color: var(--jsal-muted); font: 600 13px var(--jsal-font); cursor: pointer; transition: background 0.12s, color 0.12s, border-color 0.12s; }
+.chip { padding: 3px 10px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: transparent; color: var(--jsal-muted); font: 600 13px var(--jsal-font); cursor: pointer; transition: background 0.12s, color 0.12s, border-color 0.12s; }
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
 .chip-link { padding: 3px 6px; border: 0; background: none; color: var(--jsal-info); font: 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
-.tag { display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: 13px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
+.tag { display: inline-block; padding: 2px 10px; border-radius: var(--jsal-radius-sm); font-size: 13px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
 .tag.yes { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 .tag.plugin { background: var(--jsal-info-soft); color: var(--jsal-info); }
 .tag.code { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
@@ -361,7 +365,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .chk:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
 .chk .ico { flex: none; margin-top: 1px; width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 800; }
 .chk.ok .ico { color: var(--jsal-ok); background: var(--jsal-ok-soft); }
-.chk.warn { border-color: var(--jsal-warn-soft); } .chk.warn .ico { color: var(--jsal-warn); background: var(--jsal-warn-soft); }
+.chk.warn { border-color: var(--jsal-warn-soft); }
+.chk.warn .ico { color: var(--jsal-warn); background: var(--jsal-warn-soft); }
 .chk .show { margin-left: auto; align-self: center; font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
 .card { padding: 16px 18px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); max-width: 420px; }
 .card h4 { margin: 0 0 4px; font: 700 18px/1.2 "Lora", Georgia, serif; }
@@ -371,7 +376,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .ach { display: flex; align-items: center; gap: 12px; width: min(340px, 100%); padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink); border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font); }
 .ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
-.ach b { display: block; font-size: 15px; } .ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
+.ach b { display: block; font-size: 15px; }
+.ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
 .topbar-demo { padding: 0 18px; border: 1px dashed var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); }
 .topbar-demo .jsal-top { padding: 14px 0; }
 .insight { padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); font-size: 15px; line-height: 1.45; max-width: 36em; }
@@ -774,6 +780,6 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <span>Decisions about suggested changes are marked in blue.</span>
   </footer>
 </div>
-<script src="/nav.js?v=2026-10-31f" defer></script>
+<script src="/nav.js?v=2026-10-31h" defer></script>
 </body>
 </html>

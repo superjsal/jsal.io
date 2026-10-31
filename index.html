@@ -26,7 +26,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-31f" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-31h" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -196,6 +196,7 @@ background: transparent; color: var(--jsal-muted); cursor: pointer;
 transition: background 0.12s, color 0.12s;
 }
 .jsal-theme:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
+.jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 .jsal-caret { display: inline-block; margin-left: 6px; opacity: .55; transition: transform .15s; vertical-align: middle; }
 [data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
 [data-jsal-nav]:hover .jsal-caret { opacity: .9; }
@@ -239,9 +240,8 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
 .jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .jsal-about details > ul { margin-bottom: 14px; }
+.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 @media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
-.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
-.jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
 <style>
 /* Tile colours. The Image Resizer has the strongest contrast: cream on the dark
@@ -279,13 +279,13 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
-a:not(.tile):focus-visible { border-radius: 6px; }   /* tiles keep their own rounded corners, and the outline follows them */
+a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles keep their own rounded corners, and the outline follows them */
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)) 56px; }
 .label { margin: 0; font: 12px/1.5 "JetBrains Mono", Consolas, monospace; }
 
 /* Top bar: the shared one (/shell.css), with section links */
 .jsal-top nav { display: flex; gap: 2px; font-size: 14px; }
-.jsal-top nav a { padding: 8px 10px; line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: 6px; }   /* 36px tall, like the apps' controls */
+.jsal-top nav a { padding: 8px 10px; line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }   /* 36px tall, like the apps' controls */
 .jsal-top nav a:hover { color: var(--jsal-ink); }
 
 /* Bento grid: 12 columns, one per tile row; stacks on narrow screens */
@@ -349,7 +349,7 @@ p, li { text-wrap: pretty; }
 .now-playing .big { font: 700 36px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
 .now-playing .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; }
 .now-playing .credit { font-size: 11px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
-.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: var(--jsal-radius-pill); border: 1px solid currentColor; white-space: nowrap; }
 
 .jscale { grid-column: 1 / 8; background: var(--cream); color: var(--cream-ink); padding: 14px; display: flex; flex-direction: column; gap: 16px; --arrow-bg: var(--cream-btn); --arrow-ink: var(--cream-btn-ink); }
 .jscale .shot { aspect-ratio: 16 / 8; min-width: 0; }   /* min-width: Safari otherwise sizes it to its content and it sticks out on phones */
@@ -363,37 +363,37 @@ p, li { text-wrap: pretty; }
 
 .fmt { grid-column: 8 / 13; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
 .fmt h2, .jscale h2 { font-size: 24px; }   /* the featured app keeps the biggest title */
-/* The team tiles (JSal UI, Platform Playbook) are text only and a step smaller than the live tools */
-.ui, .ic { padding: 22px 26px; }
-.ui h2, .ic h2 { font-size: 22px; }
 .fmt .label { color: var(--gold-acc); }
 .fmt .desc { color: var(--gold-muted); }
 
-.ui { grid-column: 1 / 6; background: var(--green); color: var(--green-ink); }
-.ui .label { color: var(--green-acc); }
 .cms { grid-column: 6 / 13; background: var(--plum); color: var(--plum-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--plum-acc); --arrow-ink: var(--plum); }
 .cms h2 { font-size: 36px; }
-.cms .desc { font-size: 16px; max-width: 32em; }
 .cms .label { color: var(--plum-acc); }
-.cms .desc { color: var(--plum-muted); }
+.cms .desc { font-size: 16px; max-width: 32em; color: var(--plum-muted); }
+
+/* The team tiles (JSal UI, Platform Playbook) are text only and a step smaller than the live tools */
+.ui, .ic { padding: 22px 26px; }
+.ui h2, .ic h2 { font-size: 22px; }
+.ui { grid-column: 1 / 6; background: var(--green); color: var(--green-ink); }
+.ui .label { color: var(--green-acc); }
 .ui .desc { color: var(--green-muted); margin-top: 8px !important; }
 .ui .pill { margin-top: 14px; color: var(--green-acc); }
+.ic .pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: var(--blue-acc); }
 /* Live projects are the default and carry no badge; what isn't ready yet is an outline with no fill */
 .tile.soon { background: none; border: 2px dashed var(--jsal-line-hi); }
-.ic .pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: var(--blue-acc); }
 
 /* App mockups on the tiles: simplified versions of each app's real layout, in the apps' own
    page colours, so opening an app looks like the picture growing into it. Photos, links and
    highlights keep some colour. Bars stand in for text. */
 .mock { display: grid; gap: 10px; padding: 12px; border-radius: 12px; background: var(--jsal-bg); border: 1px solid var(--jsal-line); }
 .mock i, .mock b { display: block; }
-.mock .box { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 4px; }
+.mock .box { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-sm); }
 
 /* Image Resizer: camera photos in (a pile, with crop corners), web-ready files out */
 .m-jscale { grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1fr); align-items: center; gap: 14px; padding: 18px; }
 .m-jscale .to { background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .m-jscale .pile { position: relative; aspect-ratio: 4 / 3; }
-.m-jscale .pile .photo { position: absolute; inset: 0; border-radius: 6px; box-shadow: 0 4px 12px rgb(0 0 0 / 0.25); }
+.m-jscale .pile .photo { position: absolute; inset: 0; border-radius: var(--jsal-radius); box-shadow: 0 4px 12px rgb(0 0 0 / 0.25); }
 .m-jscale .pile .back { rotate: -7deg; translate: -4% 2%; }
 .m-jscale .pile .back2 { rotate: 5deg; translate: 4% -2%; }
 .m-jscale .corner { position: absolute; width: 14px; height: 14px; border: 3px solid var(--jsal-fill); }
@@ -407,12 +407,9 @@ p, li { text-wrap: pretty; }
 .m-jscale .out .photo { flex: none; width: 38px; aspect-ratio: 4 / 3; border-radius: 3px; }
 .m-jscale .out b { color: var(--jsal-ink); font-weight: 600; }
 .m-jscale .saved { font-size: 12px; font-weight: 700; color: var(--jsal-ok); text-align: center; }
-.photo { position: relative; overflow: hidden; border-radius: 4px;
+.photo { position: relative; overflow: hidden; border-radius: var(--jsal-radius-sm);
   background: radial-gradient(130% 55% at 15% 100%, #2f5f4c 50%, transparent 51%), radial-gradient(90% 45% at 90% 100%, #2b4866 50%, transparent 51%),   /* style: allow (Image Resizer tile: the photo illustration) */
     radial-gradient(9% 16% at 70% 34%, #ffe1a1 70%, transparent 74%), linear-gradient(#f2ad6c, #cf6f7c 58%, #6f5aa3); }
-
-/* Platform Playbook: a platform's answer card, redacted and blurred behind a lock (it's for the team;
-   the markup holds only placeholder bars, no real answers) */
 
 /* CMS Picker: the platforms it compares (the CMS Picker's own logo files; Duda and Magento have none). The big
    tile and the line under the grid cycle through six agreed first places from the persona tests (a blog:
@@ -427,15 +424,14 @@ p, li { text-wrap: pretty; }
 .m-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding: 14px; }
 .m-grid > span { aspect-ratio: 1; display: grid; place-items: center; border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); border: 1px solid var(--jsal-line); }
 .m-grid .logo { width: 46%; height: 46%; background: var(--plum-ink); opacity: 0.75; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
-.m-grid .hero { grid-column: span 2; grid-row: span 2; border-color: var(--plum-acc);
+.m-grid .hero { grid-column: span 2; grid-row: span 2; container-type: inline-size; border-color: var(--plum-acc);
   background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--plum-acc) 24%, var(--jsal-surface)), var(--jsal-surface) 72%);
   box-shadow: inset 0 0 0 1px var(--plum-acc), 0 0 0 5px color-mix(in srgb, var(--plum-acc) 16%, transparent), 0 10px 26px color-mix(in srgb, var(--plum-acc) 30%, transparent); }
-.m-grid .hero .logo { grid-area: 1 / 1; width: 46%; height: 46%; background: var(--plum-acc); opacity: 0; }
+.m-grid .hero .logo { grid-area: 1 / 1; background: var(--plum-acc); opacity: 0; }
 .m-grid .fitline { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin: 4px 0 0 2px; font-size: 13px; color: var(--jsal-muted); }
 .m-grid .tag { padding: 3px 10px; border-radius: var(--jsal-radius-pill); font: normal 600 12px/1.3 var(--jsal-font); white-space: nowrap; color: var(--jsal-ok); background: var(--jsal-ok-soft); }
 .m-grid .rot { display: inline-grid; }
 .m-grid .rot b { grid-area: 1 / 1; font-weight: 600; color: var(--jsal-ink); opacity: 0; white-space: nowrap; }
-.m-grid .hero { container-type: inline-size; }
 .m-grid .ask { grid-area: 1 / 1; font: 700 52cqi/1 "Lora", Georgia, serif; color: var(--plum-acc); }
 .m-grid .rot .you { opacity: 1; }
 /* Bigger tiles than on phones: lighter logos, a bigger line */
@@ -465,10 +461,9 @@ p, li { text-wrap: pretty; }
 @keyframes g-flick-away { 0%, 100% { opacity: 0.75; } 15%, 85% { opacity: 0.12; } }
 @keyframes g-land { from { opacity: 0; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }
 
-/* Clean Paste: checks + copy buttons, then the editor with its toolbar */
 /* Clean Paste: what Word's formatting looks like going in, and the clean HTML coming out */
 .m-fmt { flex: 1; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
-.m-fmt .doc { padding: 10px 10px; font-size: 13px; line-height: 1.5; overflow: hidden; }
+.m-fmt .doc { padding: 10px; font-size: 13px; line-height: 1.5; overflow: hidden; }
 .m-fmt small { display: block; margin-bottom: 8px; font: 600 10px/1 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
 .m-fmt .word b { font: 700 15px "Times New Roman", Times, serif; color: var(--blue-acc); }
 .m-fmt .word p { margin-top: 3px; font-family: Calibri, Carlito, sans-serif; color: var(--jsal-ink-2); }
@@ -519,7 +514,7 @@ p, li { text-wrap: pretty; }
 .ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .ach h2 { margin: 0; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
 .ach-count { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
-.ach-bar { height: 6px; margin: 12px 0 16px; border-radius: 99px; background: var(--plain-line); overflow: hidden; }
+.ach-bar { height: 6px; margin: 12px 0 16px; border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
 .ach-bar i { display: block; height: 100%; background: var(--jsal-fill); border-radius: inherit; transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }   /* a transform, so filling it doesn't re-lay-out the page */
 .ach-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
 .ach-list li { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 12px; background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
@@ -562,22 +557,22 @@ p, li { text-wrap: pretty; }
 .pack-h .count { margin-left: auto; font: 600 12px "JetBrains Mono", Consolas, monospace; color: var(--pk-label); }
 .bag { position: relative; flex: 1; display: flex; flex-direction: column; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-pocket); box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.7), 0 1px 0 var(--pk-shine); }
 .slots { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: max-content; align-content: center; justify-content: center; gap: 8px; }   /* the script below fills it with empty slots */
-.slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: 6px; border: 2px solid var(--q); background: var(--pk-black); box-shadow: 0 0 0 1px var(--pk-black), 0 0 12px -3px var(--q); cursor: pointer; font: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
+.slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: var(--jsal-radius); border: 2px solid var(--q); background: var(--pk-black); box-shadow: 0 0 0 1px var(--pk-black), 0 0 12px -3px var(--q); cursor: pointer; font: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
 .slot svg { display: block; width: 100%; height: 100%; }
 /* Bevel and gloss over the icon, like game icons */
-.slot::after { content: ""; position: absolute; inset: 0; border-radius: 4px; pointer-events: none; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18), inset 0 0 10px rgb(0 0 0 / 0.6); background: linear-gradient(to bottom, rgb(255 255 255 / 0.16), transparent 42%); }
+.slot::after { content: ""; position: absolute; inset: 0; border-radius: var(--jsal-radius-sm); pointer-events: none; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18), inset 0 0 10px rgb(0 0 0 / 0.6); background: linear-gradient(to bottom, rgb(255 255 255 / 0.16), transparent 42%); }
 .slot:hover, .slot:focus-visible, .slot.on { transform: translateY(-2px) scale(1.04); filter: brightness(1.15) saturate(1.1); box-shadow: 0 0 0 1px var(--pk-black), 0 0 20px -1px var(--q); outline: none; z-index: 1; }
 .slot.empty { border: 1px solid var(--pk-empty-line); background: radial-gradient(circle at 50% 40%, var(--pk-empty-hi), var(--pk-empty-low)); box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.7); cursor: default; }
 .slot.empty::after { display: none; }
 /* The tooltip floats over the bag next to the item, like in game */
-.tip { position: absolute; z-index: 2; width: 250px; padding: 10px 12px; border-radius: 6px; background: var(--tip-bg); border: 1px solid var(--tip-line); box-shadow: 0 8px 24px rgb(0 0 0 / 0.5); font-size: 13px; line-height: 1.5; color: var(--tip-ink); }   /* takes the pointer, so it can be hovered (WCAG 1.4.13) */
+.tip { position: absolute; z-index: 2; width: 250px; padding: 10px 12px; border-radius: var(--jsal-radius); background: var(--tip-bg); border: 1px solid var(--tip-line); box-shadow: 0 8px 24px rgb(0 0 0 / 0.5); font-size: 13px; line-height: 1.5; color: var(--tip-ink); }   /* takes the pointer, so it can be hovered (WCAG 1.4.13) */
 .tip .t { font-size: 15px; font-weight: 700; }
 .tip .w { color: var(--tip-name); }
 .tip .s { color: var(--tip-muted); }
 .tip .u { color: var(--tip-use); }
 .tip .f { color: var(--tip-flavor); font-style: italic; }
 /* Hearthstone's cast bar, then back to the top */
-.cast { position: absolute; z-index: 3; left: 50%; bottom: 16px; translate: -50% 0; width: min(70%, 260px); height: 22px; overflow: hidden; border-radius: 4px; border: 1px solid var(--pk-gold); background: var(--pk-black); box-shadow: 0 4px 14px rgb(0 0 0 / 0.6); }
+.cast { position: absolute; z-index: 3; left: 50%; bottom: 16px; translate: -50% 0; width: min(70%, 260px); height: 22px; overflow: hidden; border-radius: var(--jsal-radius-sm); border: 1px solid var(--pk-gold); background: var(--pk-black); box-shadow: 0 4px 14px rgb(0 0 0 / 0.6); }
 .cast-fill { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(var(--cast-hi), var(--cast-lo)); }
 .cast.go .cast-fill { animation: cast 1.5s linear forwards; }
 .cast-name { position: relative; display: block; font: 600 12px/20px var(--jsal-font); text-align: center; color: var(--tip-name); text-shadow: 0 1px 2px var(--pk-black); }
@@ -1011,6 +1006,6 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-31f" defer></script>
+<script src="/nav.js?v=2026-10-31h" defer></script>
 </body>
 </html>
