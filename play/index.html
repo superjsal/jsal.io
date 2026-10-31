@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mostly Warcraft: Off the Clock | jsal.io</title>
+<meta name="description" content="Off the clock with John Salvador: WoW Forever, the game UI I play with, a backpack of ways to say hi, and the achievements hidden around jsal.io.">
+<link rel="canonical" href="https://jsal.io/play/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jsal.io/play/">
+<meta property="og:site_name" content="jsal.io">
+<meta property="og:title" content="Mostly Warcraft: Off the Clock">
+<meta property="og:description" content="WoW Forever, the game UI I play with, a backpack of ways to say hi, and the achievements hidden around jsal.io.">
+<meta property="og:image" content="https://jsal.io/og/play.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="628">
+<meta property="og:image:alt" content="Mostly Warcraft: off the clock with John Salvador, with WoW Forever art">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://jsal.io/play/#page",
+  "url": "https://jsal.io/play/",
+  "name": "Mostly Warcraft: Off the Clock",
+  "isPartOf": { "@id": "https://jsal.io/#website" },
+  "author": { "@id": "https://jsal.io/#john" }
+}
+</script>
+<link rel="icon" href="/favicon.svg?v=2026-10-31i" type="image/svg+xml">
+<!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
+<script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
+     only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  // Consent Mode v2: analytics stays off in the EU, EEA, UK and Switzerland until the visitor allows it
+  // (the card from /nav.js); ads storage is never used. A choice saved earlier applies straight away.
+  gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'] });
+  gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+  try { var jc = localStorage.getItem('jsal-analytics'); if (jc === 'granted' || jc === 'denied') gtag('consent', 'update', { analytics_storage: jc }); } catch (e) {}
+  gtag('js', new Date());
+  gtag('config', 'G-ND4L6CSD8S');
+</script>
+<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/lora.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/lora-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
+<script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<!-- Colours, top bar, column width and page transitions: shared styles from /shell.css, copied in by build\bump-version.ps1 so nothing blocks the first paint (edit shell.css, not this copy) -->
+<style data-jsal-shell>
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap; src: url(/fonts/inter.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Lora"; font-style: normal; font-weight: 400 700; font-display: swap; src: url(/fonts/lora.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Lora"; font-style: italic; font-weight: 400 700; font-display: swap; src: url(/fonts/lora-italic.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: swap; src: url(/fonts/jetbrains-mono.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+:root {
+--jsal-bg: #f5efe2;
+--jsal-surface: #fbf8f0;
+--jsal-sunk: #ece4d3;
+--jsal-ink: #1f1a12;
+--jsal-ink-2: #3d362a;
+--jsal-muted: #6b6253;
+--jsal-line: #e2d8c4;
+--jsal-line-hi: #cfc3a9;
+--jsal-accent: #835c0e;
+--jsal-accent-soft: #f1e3c2;
+--jsal-accent-ring: rgba(131, 92, 14, 0.35);
+--jsal-fill: #e3b04b;
+--jsal-on-fill: #1f1a12;
+--jsal-ok: #3f6b3a;   --jsal-ok-soft: #e3eedb;
+--jsal-warn: #8a4f0a; --jsal-warn-soft: #f6e2c8;
+--jsal-bad: #a8352b;  --jsal-bad-soft: #f6dfda;
+--jsal-info: #3b5a9a; --jsal-info-soft: #e1e7f3;
+--jsal-shadow: 0 1px 2px rgba(60, 40, 10, 0.08);
+--jsal-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+--jsal-radius: 6px;
+color-scheme: light;
+}
+@media screen and (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) {
+--jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
+--jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
+--jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
+--jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
+--jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
+--jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+--jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+color-scheme: dark;
+}
+}
+@media screen {
+:root[data-theme="dark"] {
+--jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
+--jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
+--jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
+--jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
+--jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
+--jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+--jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+color-scheme: dark;
+}
+}
+body { background: var(--jsal-bg); }
+:root {
+--jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-pill: 999px;
+--jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
+--jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
+--jsal-btn-weight: 600;
+--jsal-hover-line: var(--jsal-muted);
+--jsal-focus-ring: 0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent);
+}
+@media (pointer: coarse) {
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]), select, textarea { font-size: 16px !important; }
+.jsal-brand, .jsal-link, .jsal-theme { position: relative; }
+.jsal-brand::after, .jsal-link::after, .jsal-theme::after { content: ""; position: absolute; inset: -6px; }
+.jsal-theme::after { inset: -7px; }
+}
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:root { --jsal-col: 840px; }
+@media (min-width: 1280px) { :root { --jsal-col: 1120px; } }
+@media (min-width: 1800px) { :root { --jsal-col: 1240px; } }
+html { scrollbar-gutter: stable; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+@view-transition { navigation: auto; }
+.app { view-transition-name: jsal-app; }
+::view-transition-group(*) { animation-duration: 0.3s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
+::view-transition-image-pair(jsal-app) { overflow: hidden; }
+::view-transition-old(jsal-app), ::view-transition-new(jsal-app) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+::view-transition-old(jsal-app) { animation: jsal-fade-out 0.12s ease both; }
+::view-transition-new(jsal-app) { animation: jsal-fade-in 0.2s ease 0.08s both; }
+::view-transition-old(root) { animation: jsal-home-out 0.15s ease both; }
+::view-transition-new(root) { animation: jsal-fade-in 0.2s ease both; }
+.jsal-brand { view-transition-name: jsal-brand; }
+.jsal-theme { view-transition-name: jsal-theme; }
+::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
+::view-transition-old(jsal-brand), ::view-transition-old(jsal-theme) { display: none; }
+::view-transition-new(jsal-brand), ::view-transition-new(jsal-theme) { animation: none; }
+.jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px) + var(--jsal-consent-lift, 0px)); width: min(340px, calc(100vw - 32px));
+display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink);
+border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font);
+transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
+.jsal-ach[data-hide] { opacity: 0; transform: translate(-50%, 16px); visibility: hidden; transition: opacity .3s ease, transform .3s ease, visibility 0s .3s; }
+@media (min-width: 900px) {
+.jsal-ach { left: auto; right: max(20px, env(safe-area-inset-right, 0px)); transform: none; }
+.jsal-ach[data-hide] { transform: translateY(16px); }
+}
+@media (pointer: coarse) and (max-width: 899px) {
+.jsal-ach { top: max(12px, env(safe-area-inset-top, 0px)); bottom: auto; }
+.jsal-ach[data-hide] { transform: translate(-50%, -16px); }
+}
+.jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
+.jsal-ach b { display: block; font-size: 15px; }
+.jsal-ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
+.jsal-consent { position: fixed; z-index: 2147483000; left: 16px; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(380px, calc(100vw - 32px));
+padding: 14px 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink-2);
+box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
+.jsal-consent p { margin: 0; }
+.jsal-consent b { color: var(--jsal-ink); }
+.jsal-consent a { color: var(--jsal-accent); text-underline-offset: 2px; }
+.jsal-consent div { display: flex; gap: 8px; margin-top: 12px; }
+.jsal-consent button { min-height: 36px; padding: 0 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: none; color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); cursor: pointer; }
+.jsal-consent button:hover { border-color: var(--jsal-hover-line); }
+.jsal-consent button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-consent .jsal-consent-yes { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+@media (pointer: coarse) { .jsal-consent button { min-height: 44px; } }
+@media print { .jsal-consent { display: none; } }
+@keyframes jsal-fade-out { to { opacity: 0; } }
+@keyframes jsal-fade-in { from { opacity: 0; } }
+@keyframes jsal-home-out { to { opacity: 0; transform: scale(0.97); } }
+@media (prefers-reduced-motion: reduce) {
+::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+.jsal-ach, .jsal-ach[data-hide] { transition: none; }
+}
+.jsal-top {
+width: min(100%, var(--jsal-col)); margin-inline: auto;
+display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
+padding-top: calc(40px - (36px - 18px * 1.65) / 2);
+font-family: var(--jsal-font);
+}
+@media (max-width: 520px) { .jsal-top { padding-top: 14px; } }
+.jsal-brand {
+display: inline-flex; align-items: center; height: 36px; flex-shrink: 0;
+font-weight: 700; font-size: 18px; line-height: 1.65; letter-spacing: -0.02em;
+color: var(--jsal-ink); text-decoration: none; white-space: nowrap;
+}
+.jsal-brand span { color: var(--jsal-accent); }
+.jsal-title { margin: 0; font: 700 20px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
+.jsal-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.jsal-theme {
+width: 32px; height: 32px; flex-shrink: 0; display: grid; place-items: center; padding: 0;
+border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius);
+background: transparent; color: var(--jsal-muted); cursor: pointer;
+transition: background 0.12s, color 0.12s;
+}
+.jsal-theme:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
+.jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
+.jsal-caret { display: inline-block; margin-left: 6px; opacity: .55; transition: transform .15s; vertical-align: middle; }
+[data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
+[data-jsal-nav]:hover .jsal-caret { opacity: .9; }
+.jsal-theme .i-sun { display: none; }
+:root[data-theme="dark"] .jsal-theme .i-sun { display: block; }
+:root[data-theme="dark"] .jsal-theme .i-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) .jsal-theme .i-sun { display: block; }
+:root:not([data-theme="light"]) .jsal-theme .i-moon { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .jsal-caret { transition: none; } }
+.jsal-link { padding: 8px 10px; line-height: 20px; font-size: 14px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }
+.jsal-link:hover { color: var(--jsal-ink); }
+.jsal-link:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
+.jsal-about {
+width: min(100% - 40px, var(--jsal-col)); margin: 0 auto; padding: 40px 0 64px;
+border-top: 1px solid var(--jsal-line);
+font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
+}
+.jsal-about > * { max-width: 680px; }
+.jsal-about h2 { margin: 0 0 10px; font: 700 26px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-about h3 { margin: 28px 0 8px; font-size: 16px; color: var(--jsal-ink); }
+.jsal-about p { margin: 0 0 12px; }
+.jsal-about ul, .jsal-about ol { margin: 0 0 12px; padding-left: 1.3em; }
+.jsal-about li + li { margin-top: 4px; }
+.jsal-about a { color: var(--jsal-accent); text-underline-offset: 2px; }
+.jsal-for { grid-column: 1 / -1; margin: -8px 0 14px; color: var(--jsal-muted); font-size: 14px; line-height: 1.45; }
+.jsal-about .jsal-lead { font-size: 17px; line-height: 1.5; color: var(--jsal-ink); }
+.jsal-about dl { margin: 0 0 12px; }
+.jsal-about dt { margin-top: 14px; font-weight: 600; color: var(--jsal-ink); }
+.jsal-about dd { margin: 3px 0 0; }
+.jsal-about .jsal-feedback { margin-top: 24px; }
+.jsal-about details { margin-top: 18px; border-top: 1px solid var(--jsal-line); }
+.jsal-about details:last-of-type { border-bottom: 1px solid var(--jsal-line); }
+.jsal-about details + details { margin-top: 0; }
+.jsal-about summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; border-radius: var(--jsal-radius-sm); }
+.jsal-about summary::-webkit-details-marker { display: none; }
+.jsal-about summary::before { content: ""; width: 7px; height: 7px; margin: 0 4px 0 2px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate 0.15s; }
+.jsal-about details[open] > summary::before { rotate: 45deg; }
+.jsal-about summary h3 { margin: 0; }
+.jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
+.jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-about details > ul { margin-bottom: 14px; }
+.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
+@media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
+</style>
+<style>
+/* Tile colours. The Image Resizer has the strongest contrast: cream on the dark
+   page, ink on the light one. The blue and moss tiles are toned closer to the page so they
+   support it rather than compete, and so is the gold one. Updates and Email are plain, a neutral fill
+   with no border, so the apps keep the colour. */
+:root {
+  --cream: #1f1a12; --cream-ink: #f5efe2; --cream-muted: #b8b2a3; --cream-btn: #e3b04b; --cream-btn-ink: #1f1a12;
+  --blue: #e6e9f0; --blue-ink: #1f1a12; --blue-muted: #3d362a; --blue-acc: #3b5a9a;
+  --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
+  --gold: #f0e4c6; --gold-ink: #1f1a12; --gold-muted: #3d362a; --gold-acc: #835c0e;
+  --plain: #e8e5dd; --plain-line: #cfc3a9;
+  --plum: #ece4f1; --plum-ink: #1f1a12; --plum-muted: #3d362a; --plum-acc: #674690;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
+    --blue: #1a2034; --blue-ink: #ece6d6; --blue-muted: #c4bfb2; --blue-acc: #8fb1ff;
+    --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
+    --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
+    --plain: #1c1f27; --plain-line: #3d424e;
+    --plum: #221a2b; --plum-ink: #ece6d6; --plum-muted: #c4bfb2; --plum-acc: #c7a3f0;
+  }
+}
+:root[data-theme="dark"] {
+  --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
+  --blue: #1a2034; --blue-ink: #ece6d6; --blue-muted: #c4bfb2; --blue-acc: #8fb1ff;
+  --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
+  --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
+  --plain: #1c1f27; --plain-line: #3d424e;
+  --plum: #221a2b; --plum-ink: #ece6d6; --plum-muted: #c4bfb2; --plum-acc: #c7a3f0;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
+a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles keep their own rounded corners, and the outline follows them */
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)) 56px; }
+.label { margin: 0; font: 12px/1.5 "JetBrains Mono", Consolas, monospace; }
+
+/* Top bar: the shared one (/shell.css), with section links */
+.jsal-top nav { display: flex; gap: 2px; font-size: 14px; }
+.jsal-top nav a { padding: 8px 10px; line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }   /* 36px tall, like the apps' controls */
+.jsal-top nav a:hover { color: var(--jsal-ink); }
+
+/* Bento grid: 12 columns, one per tile row; stacks on narrow screens */
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
+.tile { border-radius: 22px; padding: 26px; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
+/* With a mouse: the tile tilts toward the pointer and a soft light follows it (the script below sets
+   --rx/--ry and --mx/--my). Not on touch screens, and not with reduced motion (the plain lift above). */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  a.tile { position: relative; isolation: isolate; }
+  a.tile::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.2), transparent 65%); }
+  :root[data-theme="dark"] a.tile::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 65%); }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) a.tile::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 65%); }
+}
+.tile h2 { margin: 2px 0 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
+.tile p { margin: 0; }
+
+/* Even line breaks: headings split into balanced lines, paragraphs avoid a lone last word */
+h1, h2, .big { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+
+/* Top padding lines the small line up with the picture's top edge in the CMS Picker tile beside it
+   (tile padding 26px + 1px border) */
+.intro { grid-column: 1 / 6; padding: 28px 0 0; }
+.roles { display: flex; flex-wrap: wrap; margin: 0 0 18px 4px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+.roles span + span::before { content: "·"; margin: 0 10px; color: var(--jsal-muted); }
+.intro h1 { margin: 0; font: 700 clamp(44px, 5vw, 62px)/1.02 "Lora", Georgia, serif; letter-spacing: -0.03em; }
+.intro h1 em { font-weight: 600; color: var(--jsal-accent); }
+.intro p { margin: 28px 0 0 4px; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
+
+/* Currently: WoW Forever art behind the text, scaled down but otherwise unaltered as Blizzard's fan-site policy
+   requires (the darkening is a separate layer on top, and the copyright notice stays on the
+   card). Same light text in both themes, since it sits on the picture. */
+.now-playing { grid-column: 1 / 9; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 380px; }   /* style: allow (WoW tile: dark green under the art) */
+/* Text over the sky at the top, so the dwarf and bear show in the lower half. The art is 2.4:1 and the
+   card is taller than that, so it fills the height and object-position picks the slice with the dwarf
+   and bear. It's drawn 18% taller than the card with the extra above it (sky), which lifts them clear
+   of the credit row at the bottom. The file itself is untouched. */
+.now-playing .art { position: absolute; top: -18%; left: 0; z-index: -2; width: 100%; height: 118%; object-fit: cover; object-position: 12% 50%; }
+.now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }   /* style: allow (WoW tile: shade over the art for the text) */
+.now-playing .label { margin-bottom: 10px; }
+.now-playing .label, .now-playing .pill { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
+.now-playing .big { font: 700 36px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
+.now-playing .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; }
+.now-playing .credit { font-size: 11px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: var(--jsal-radius-pill); border: 1px solid currentColor; white-space: nowrap; }
+.desc { margin-top: 4px !important; font-size: 15px; }
+
+/* The team tiles (JSal UI, Platform Playbook) are text only and a step smaller than the live tools */
+.ui { padding: 22px 26px; }
+.ui h2 { font-size: 22px; }
+.ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); }
+.ui .label { color: var(--green-acc); }
+.ui .desc { color: var(--green-muted); margin-top: 8px !important; }
+.ui .pill { margin-top: 14px; color: var(--green-acc); }
+/* Live projects are the default and carry no badge; what isn't ready yet is an outline with no fill */
+.tile.soon { background: none; border: 2px dashed var(--jsal-line-hi); }
+
+.now { grid-column: 1 / 13; background: var(--plain); }
+.now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
+.now h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
+.now h3 time { font-size: 14px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
+.now ul { margin: 0; padding: 0; list-style: none; }
+.now li { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--plain-line); }
+.now li time { flex: none; min-width: 4em; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
+.now a { color: var(--jsal-accent); text-underline-offset: 2px; }
+
+/* Achievements (/nav.js unlocks them and keeps them in this browser; the script below lists them) */
+.ach { grid-column: 1 / 13; background: var(--plain); }
+.ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.ach h2 { margin: 0; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
+.ach-count { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
+.ach-bar { height: 6px; margin: 12px 0 16px; border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
+.ach-bar i { display: block; height: 100%; background: var(--jsal-fill); border-radius: inherit; transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }   /* a transform, so filling it doesn't re-lay-out the page */
+.ach-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.ach-list li { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 12px; background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
+.ach-list .medal { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.ach-list b { display: block; font-weight: 600; }
+.ach-list small { display: block; font-size: 13px; color: var(--jsal-muted); }
+.ach-list li.locked { background: transparent; border: 1px dashed var(--plain-line); }
+.ach-list li.locked b { color: var(--jsal-muted); }
+.ach-list li.locked .medal { background: none; color: var(--jsal-muted); border: 1px dashed var(--plain-line); }
+@media (max-width: 760px) { .ach-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 340px) { .ach-list { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .ach-bar i { transition: none; } }
+
+/* Say hi (the backpack): a plain surface, so cream stays the Image Resizer's colour */
+.mail { grid-column: 9 / 13; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; gap: 4px; }
+.mail .label, .mail .desc { color: var(--jsal-muted); }
+/* Backpack: where to find me, as gear in a game bag. The tile is the bag (stitched leather, a portrait
+   and title bar like a bag window) and keeps its look in both themes, like the WoW Forever tile. Items
+   are painted icons in WoW's item-quality colours; hover, focus or tap one for its tooltip. */
+.mail.pack {
+  --q-legendary: #ff8000; --q-epic: #a335ee; --q-rare: #0070dd; --q-uncommon: #1eff00; --q-common: #ffffff;
+  --cast-hi: #ffd84a; --cast-lo: #b8820f;
+  --pk-hi: #7a4e2a; --pk-top: #5c3a20; --pk-mid: #3a2412; --pk-low: #24160a; --pk-edge: #1a0f06;
+  --pk-shine: rgb(255 220 160 / 0.15); --pk-stitch: rgb(240 205 140 / 0.4);
+  --pk-ink: #f5e6c8; --pk-title: #fbeccd; --pk-text: #f1e4c9; --pk-label: #f4dca8;
+  --pk-gold: #d4a94a; --pk-gold-edge: #3a2206; --pk-pocket: rgb(14 9 5 / 0.82);
+  --pk-empty-line: #2a1a0c; --pk-empty-hi: #2a1d12; --pk-empty-low: #150d06;
+  --pk-black: #000; --tip-bg: rgb(8 10 16 / 0.96); --tip-name: #fff; --tip-line: #5a6b8a; --tip-ink: #e8e8e8; --tip-muted: #8a8f9c; --tip-use: #1eff00; --tip-flavor: #ffd100;
+  position: relative; isolation: isolate; color: var(--pk-ink);
+  background: radial-gradient(120% 90% at 30% 0%, var(--pk-hi), transparent 60%), linear-gradient(160deg, var(--pk-top), var(--pk-mid) 55%, var(--pk-low));
+  box-shadow: inset 0 0 0 1px var(--pk-edge), inset 0 2px 0 var(--pk-shine), 0 10px 24px -14px rgb(0 0 0 / 0.6);
+}
+.mail.pack::before { content: ""; position: absolute; inset: 9px; z-index: -1; border-radius: 15px; border: 1.5px dashed var(--pk-stitch); pointer-events: none; }
+.mail.pack .label { color: var(--pk-label); }
+.mail.pack .desc { color: var(--pk-text); margin-top: 12px !important; }
+.pack-h { display: flex; align-items: center; gap: 14px; }
+.pack-h h2 { margin: 0; font: 700 26px/1.1 "Lora", Georgia, serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black); }
+.portrait { flex: none; width: 54px; height: 54px; border-radius: 50%; overflow: hidden; border: 3px solid var(--pk-gold); box-shadow: 0 0 0 1px var(--pk-gold-edge), 0 3px 8px rgb(0 0 0 / 0.5); }
+.portrait svg { display: block; width: 100%; height: 100%; }
+.pack-h .count { margin-left: auto; font: 600 12px "JetBrains Mono", Consolas, monospace; color: var(--pk-label); }
+.bag { position: relative; flex: 1; display: flex; flex-direction: column; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-pocket); box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.7), 0 1px 0 var(--pk-shine); }
+.slots { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: max-content; align-content: center; justify-content: center; gap: 8px; }   /* the script below fills it with empty slots */
+.slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: var(--jsal-radius); border: 2px solid var(--q); background: var(--pk-black); box-shadow: 0 0 0 1px var(--pk-black), 0 0 12px -3px var(--q); cursor: pointer; font: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
+.slot svg { display: block; width: 100%; height: 100%; }
+/* Bevel and gloss over the icon, like game icons */
+.slot::after { content: ""; position: absolute; inset: 0; border-radius: var(--jsal-radius-sm); pointer-events: none; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18), inset 0 0 10px rgb(0 0 0 / 0.6); background: linear-gradient(to bottom, rgb(255 255 255 / 0.16), transparent 42%); }
+.slot:hover, .slot:focus-visible, .slot.on { transform: translateY(-2px) scale(1.04); filter: brightness(1.15) saturate(1.1); box-shadow: 0 0 0 1px var(--pk-black), 0 0 20px -1px var(--q); outline: none; z-index: 1; }
+.slot.empty { border: 1px solid var(--pk-empty-line); background: radial-gradient(circle at 50% 40%, var(--pk-empty-hi), var(--pk-empty-low)); box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.7); cursor: default; }
+.slot.empty::after { display: none; }
+/* The tooltip floats over the bag next to the item, like in game */
+.tip { position: absolute; z-index: 2; width: 250px; padding: 10px 12px; border-radius: var(--jsal-radius); background: var(--tip-bg); border: 1px solid var(--tip-line); box-shadow: 0 8px 24px rgb(0 0 0 / 0.5); font-size: 13px; line-height: 1.5; color: var(--tip-ink); }   /* takes the pointer, so it can be hovered (WCAG 1.4.13) */
+.tip .t { font-size: 15px; font-weight: 700; }
+.tip .w { color: var(--tip-name); }
+.tip .s { color: var(--tip-muted); }
+.tip .u { color: var(--tip-use); }
+.tip .f { color: var(--tip-flavor); font-style: italic; }
+/* Hearthstone's cast bar, then back to the top */
+.cast { position: absolute; z-index: 3; left: 50%; bottom: 16px; translate: -50% 0; width: min(70%, 260px); height: 22px; overflow: hidden; border-radius: var(--jsal-radius-sm); border: 1px solid var(--pk-gold); background: var(--pk-black); box-shadow: 0 4px 14px rgb(0 0 0 / 0.6); }
+.cast-fill { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(var(--cast-hi), var(--cast-lo)); }
+.cast.go .cast-fill { animation: cast 1.5s linear forwards; }
+.cast-name { position: relative; display: block; font: 600 12px/20px var(--jsal-font); text-align: center; color: var(--tip-name); text-shadow: 0 1px 2px var(--pk-black); }
+@keyframes cast { to { width: 100%; } }
+@media (max-width: 860px) { .slots { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); } }   /* full width: as many slots as fit */
+@media (max-width: 520px) { .slots { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .cast.go .cast-fill { animation-duration: 0.3s; } .slot { transition: none; } .slot:hover, .slot:focus-visible, .slot.on { transform: none; } }
+
+footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
+footer nav { display: flex; gap: 4px; }
+footer a, footer .foot-btn { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
+footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
+/* Touch screens: the footer links and button at finger size (they're 37px tall with the 8px padding alone) */
+@media (pointer: coarse) { footer a, footer .foot-btn { min-height: 44px; display: inline-flex; align-items: center; } }
+
+@media (max-width: 860px) {
+  .grid > * { grid-column: 1 / -1 !important; }
+  .intro { padding-top: 4px; }
+  .intro p { font-size: 16px; }
+}
+#work, #updates, #hi-h { scroll-margin-top: 16px; }   /* #hi-h: where "Say hi" lands */
+/* Phones: the editorial type scaled down rather than squeezed. A smaller name with a shorter
+   indent, one spacing step (14 / 20px) for the grid and tile padding, a smaller corner radius,
+   and only the Work link kept in the top bar (Updates and Email are a short scroll away). */
+@media (max-width: 520px) {
+  .jsal-top nav a:not([href="#work"]) { display: none; }
+  .grid { margin-top: 22px; gap: 14px; }
+  .roles { margin: 0 0 12px 2px; font-size: 11px; letter-spacing: 0.05em; }
+  .roles span + span::before { margin: 0 8px; }
+  .intro h1 { font-size: 40px; line-height: 1.05; }
+  .intro p { margin: 16px 0 6px 2px; font-size: 16px; line-height: 1.55; }
+  .tile { padding: 20px; border-radius: 18px; }
+  .tile h2 { font-size: 26px; }
+  .ui h2 { font-size: 22px; }
+  .ui { padding: 20px; }
+  .now-playing { gap: 14px; min-height: 300px; }
+  .now-playing .big { font-size: 27px; }
+  .now h2 { font-size: 24px; }
+  footer { margin-top: 32px; }
+}
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } a.tile:hover { transform: none; } }
+/* This page's intro runs across the grid */
+.intro { grid-column: 1 / 13; max-width: 640px; padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="jsal-top">
+    <a class="jsal-brand" href="/" data-jsal-nav>jsal<span>.io</span><span class="jsal-caret"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></a>
+    <div class="jsal-actions">
+      <nav aria-label="Sections"><a href="/" data-jsal-nav>Tools</a><a href="#ach-h">Achievements</a><a href="mailto:dev@jsal.io">Email</a></nav>
+      <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"><svg class="i-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg><svg class="i-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="intro">
+      <div class="roles"><span>Off the clock</span></div>
+      <h1>Mostly <em>Warcraft</em>.</h1>
+      <p>Warcraft, my game UI, a backpack of ways to say hi, and the achievements hidden around the site.</p>
+    </section>
+    <section class="tile ui soon" aria-labelledby="ui-h">
+      <div>
+        <p class="label">for WoW Forever</p>
+        <h2 id="ui-h">JSal UI</h2>
+        <p class="desc">A clean, minimal interface for raiding and everyday play. One import string, a few minutes.</p>
+        <span class="pill">Coming soon</span>
+      </div>
+    </section>
+    <section class="tile now-playing" aria-label="Currently">
+      <!-- It covers a tall box, so it's drawn about 800px wide whatever the screen: sizes says that,
+           and 2x screens still get the 1920px original. Well below the first screen, so it loads late. -->
+      <img class="art" src="/img/wow-forever.webp" srcset="/img/wow-forever-1200.webp 1200w, /img/wow-forever.webp 1920w" sizes="800px" width="1920" height="800" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" loading="lazy" decoding="async">
+      <div>
+        <p class="label">currently</p>
+        <p class="big">Getting ready for WoW Forever</p>
+      </div>
+      <div class="row"><span class="pill">Coming soon</span><span class="credit">Art © Blizzard Entertainment</span></div>
+    </section>
+    <section class="tile mail pack" aria-labelledby="hi-h">
+      <div class="pack-h"><span class="portrait"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="pk-l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b97a42"/><stop offset="1" stop-color="#5a3216"/></linearGradient><radialGradient id="pk-bg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#6a4a2a"/><stop offset="1" stop-color="#1e1208"/></radialGradient></defs><rect width="48" height="48" fill="url(#pk-bg)"/><path d="M17 12a7 7 0 0 1 14 0" fill="none" stroke="#3a220e" stroke-width="3"/><path d="M11 20c0-5 4-8 13-8s13 3 13 8v17c0 3-2 5-5 5H16c-3 0-5-2-5-5Z" fill="url(#pk-l)" stroke="#2a1606" stroke-width="1.2"/><path d="M11 21c0 6 6 9 13 9s13-3 13-9c0-5-4-8-13-8s-13 3-13 8Z" fill="#8a5a2e" stroke="#2a1606" stroke-width="1.2"/><rect x="21" y="26" width="6" height="7" rx="1" fill="#e8b84a" stroke="#6a4810"/><path d="M15 34h18" stroke="#2a1606" stroke-width="1" stroke-dasharray="1.5 1.5" opacity="0.7"/></svg></span><div><p class="label">say hi</p><h2 id="hi-h">Backpack</h2></div><span class="count">5/15</span></div>
+      <p class="desc">Questions, tool ideas, SEO or WoW. Inspect an item to see what it does.</p>
+      <div class="bag">
+        <div class="slots">
+          <a class="slot" href="mailto:dev@jsal.io" style="--q: var(--q-legendary)" data-item="email" aria-label="Email: dev@jsal.io"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="sc-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#a8482a"/><stop offset="1" stop-color="#2a0c06"/></radialGradient><radialGradient id="sc-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="sc-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset="0.35" stop-color="#e8b84a"/><stop offset="0.7" stop-color="#9a6a18"/><stop offset="1" stop-color="#f5cf68"/></linearGradient><linearGradient id="sc-paper" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d8bd80"/><stop offset="0.5" stop-color="#fbeec8"/><stop offset="1" stop-color="#cfae6c"/></linearGradient><linearGradient id="sc-roll" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3d79a"/><stop offset="0.5" stop-color="#b8893e"/><stop offset="1" stop-color="#6e4a18"/></linearGradient><radialGradient id="sc-wax" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#ff6a5a"/><stop offset="0.55" stop-color="#c0221a"/><stop offset="1" stop-color="#5e0c08"/></radialGradient></defs><rect width="48" height="48" fill="url(#sc-bg)"/><path d="M10 9h28v30H10z" fill="url(#sc-paper)"/>
+  <path d="M14 15h20M14 19h20M14 23h16M14 27h11" stroke="#8a6a36" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <rect x="5" y="4" width="38" height="8" rx="4" fill="url(#sc-roll)"/><ellipse cx="5.5" cy="8" rx="2.2" ry="4" fill="#5a3a12"/><ellipse cx="42.5" cy="8" rx="2.2" ry="4" fill="#5a3a12"/>
+  <rect x="5" y="36" width="38" height="8" rx="4" fill="url(#sc-roll)"/><ellipse cx="5.5" cy="40" rx="2.2" ry="4" fill="#5a3a12"/><ellipse cx="42.5" cy="40" rx="2.2" ry="4" fill="#5a3a12"/>
+  <path d="M30 37l-2 7 4-3 4 3-2-7" fill="#8a1410"/>
+  <circle cx="32" cy="30" r="9" fill="url(#sc-wax)"/>
+  <circle cx="32" cy="30" r="6.6" fill="none" stroke="#5e0c08" stroke-width="1" opacity="0.6"/>
+  <path d="M28 27.3h8v5.6h-8zM28 27.3l4 3.1 4-3.1" fill="none" stroke="#ffd9d2" stroke-width="1.3" stroke-linejoin="round"/>
+  <ellipse cx="29" cy="25.5" rx="3" ry="1.6" fill="#fff" opacity="0.35"/><rect width="48" height="48" fill="url(#sc-vig)"/></svg></a>
+          <button class="slot" type="button" style="--q: var(--q-epic)" data-item="discord" aria-label="Discord: copy my username, jsal"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="am-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#5a3cc0"/><stop offset="1" stop-color="#100a2c"/></radialGradient><radialGradient id="am-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="am-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset="0.35" stop-color="#e8b84a"/><stop offset="0.7" stop-color="#9a6a18"/><stop offset="1" stop-color="#f5cf68"/></linearGradient><radialGradient id="am-gem" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#b9c0ff"/><stop offset="0.45" stop-color="#5865f2"/><stop offset="1" stop-color="#1a1f6e"/></radialGradient><radialGradient id="am-glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#8f9bff" stop-opacity="0.8"/><stop offset="1" stop-color="#8f9bff" stop-opacity="0"/></radialGradient></defs><rect width="48" height="48" fill="url(#am-bg)"/><circle cx="24" cy="29" r="19" fill="url(#am-glow)"/>
+  <path d="M8 1 24 15 40 1" fill="none" stroke="url(#am-gold)" stroke-width="2.6" stroke-dasharray="3 1.6"/>
+  <circle cx="24" cy="15.5" r="2.8" fill="none" stroke="url(#am-gold)" stroke-width="2.2"/>
+  <circle cx="24" cy="30" r="15" fill="url(#am-gold)"/>
+  <circle cx="24" cy="30" r="15" fill="none" stroke="#5a3a08" stroke-width="0.8"/>
+  <circle cx="24" cy="30" r="11.6" fill="url(#am-gem)" stroke="#6a4810" stroke-width="1"/>
+  <g transform="translate(17.5 24.0) scale(0.5416666666666666)"><path fill="#ffffff" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></g>
+  <path d="M15.5 25a10 10 0 0 1 6-5.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.55"/>
+  <path d="M39 13l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z" fill="#fff" opacity="0.9"/><rect width="48" height="48" fill="url(#am-vig)"/></svg></button>
+          <a class="slot" href="https://steamcommunity.com/id/jsalx87/" style="--q: var(--q-rare)" data-item="steam" aria-label="Steam: profile jsalx87"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="sh-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#2a6aa8"/><stop offset="1" stop-color="#06122a"/></radialGradient><radialGradient id="sh-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="sh-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset="0.35" stop-color="#e8b84a"/><stop offset="0.7" stop-color="#9a6a18"/><stop offset="1" stop-color="#f5cf68"/></linearGradient><linearGradient id="sh-field" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f8ed6"/><stop offset="0.55" stop-color="#1f4d86"/><stop offset="1" stop-color="#0c2448"/></linearGradient></defs><rect width="48" height="48" fill="url(#sh-bg)"/><path d="M24 2.5 43 8.5V24c0 11-8.4 18.2-19 22C13.4 42.2 5 35 5 24V8.5Z" fill="url(#sh-gold)"/>
+  <path d="M24 2.5 43 8.5V24c0 11-8.4 18.2-19 22C13.4 42.2 5 35 5 24V8.5Z" fill="none" stroke="#4a3006" stroke-width="0.8"/>
+  <path d="M24 6.5 39.5 11.4V24c0 9-6.8 15-15.5 18.2C15.3 39 8.5 33 8.5 24V11.4Z" fill="url(#sh-field)"/>
+  <path d="M24 6.5 8.5 11.4V24c0 9 6.8 15 15.5 18.2Z" fill="#fff" opacity="0.08"/>
+  <g transform="translate(15.5 15.0) scale(0.7083333333333334)"><path fill="#ffffff" d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></g>
+  <circle cx="9.5" cy="10" r="1.3" fill="#fff3c0"/><circle cx="38.5" cy="10" r="1.3" fill="#fff3c0"/><circle cx="24" cy="5" r="1.3" fill="#fff3c0"/>
+  <path d="M11 13c2-1.4 5-2.4 8-2.9" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity="0.5" fill="none"/><rect width="48" height="48" fill="url(#sh-vig)"/></svg></a>
+          <a class="slot" href="https://github.com/superjsal" style="--q: var(--q-uncommon)" data-item="github" aria-label="GitHub: superjsal"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="to-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#3f7a32"/><stop offset="1" stop-color="#081806"/></radialGradient><radialGradient id="to-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="to-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset="0.35" stop-color="#e8b84a"/><stop offset="0.7" stop-color="#9a6a18"/><stop offset="1" stop-color="#f5cf68"/></linearGradient><linearGradient id="to-cover" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a6436"/><stop offset="0.6" stop-color="#5a3216"/><stop offset="1" stop-color="#2e180a"/></linearGradient><radialGradient id="to-glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffe08a" stop-opacity="0.75"/><stop offset="1" stop-color="#ffe08a" stop-opacity="0"/></radialGradient></defs><rect width="48" height="48" fill="url(#to-bg)"/><path d="M12 5h30v39H12z" fill="#efe1bd"/><path d="M40 7v35M38 7v35" stroke="#c9b48a" stroke-width="0.8"/>
+  <rect x="6" y="3" width="33" height="40" rx="2.5" fill="url(#to-cover)"/>
+  <rect x="6" y="3" width="6" height="40" rx="2" fill="#3a1f0c"/><path d="M8 8h3M8 38h3" stroke="url(#to-gold)" stroke-width="2"/>
+  <rect x="15" y="7" width="20" height="32" rx="1.5" fill="none" stroke="url(#to-gold)" stroke-width="1.2" opacity="0.8"/>
+  <path d="M31 3h8v8M39 35v8h-8" fill="none" stroke="url(#to-gold)" stroke-width="2.6"/>
+  <circle cx="25" cy="23" r="10" fill="url(#to-glow)"/>
+  <g transform="translate(17.5 15.5) scale(0.625)"><path fill="url(#to-gold)" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></g>
+  <path d="M38 21h5v6h-5z" fill="url(#to-gold)"/>
+  <path d="M10 6c4-1 9-1.5 14-1.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity="0.35" fill="none"/><rect width="48" height="48" fill="url(#to-vig)"/></svg></a>
+          <button class="slot" type="button" style="--q: var(--q-common)" data-item="hearth" aria-label="Hearthstone: back to the top of the page"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="hs-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#3f5a72"/><stop offset="1" stop-color="#0a1118"/></radialGradient><radialGradient id="hs-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="hs-stone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c3c8cf"/><stop offset="0.45" stop-color="#7b8189"/><stop offset="1" stop-color="#2f3338"/></linearGradient><radialGradient id="hs-glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#8fe3ff" stop-opacity="0.9"/><stop offset="1" stop-color="#8fe3ff" stop-opacity="0"/></radialGradient><filter id="hs-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.1"/></filter></defs><rect width="48" height="48" fill="url(#hs-bg)"/><ellipse cx="24" cy="41" rx="15" ry="3" fill="#000" opacity="0.45"/><path d="M10 26c0-11 6-19 15-19 8.5 0 14 7 14 17 0 10-6 16-15 16S10 35 10 26Z" fill="url(#hs-stone)" stroke="#1d2024" stroke-width="1"/><path d="M14 18c2-5 6-8 11-8" stroke="#fff" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.45"/><circle cx="24.5" cy="25" r="11" fill="url(#hs-glow)"/><g filter="url(#hs-blur)" opacity="0.9"><path d="M24.5 17.5c4.5 0 7 3 7 6.5s-3 6-6.5 6-5.5-2.5-5.5-5 2-4 4-4 3.5 1.5 3.5 3-1 2.5-2.5 2.5" fill="none" stroke="#4fc8ff" stroke-width="3" stroke-linecap="round"/></g><path d="M24.5 17.5c4.5 0 7 3 7 6.5s-3 6-6.5 6-5.5-2.5-5.5-5 2-4 4-4 3.5 1.5 3.5 3-1 2.5-2.5 2.5" fill="none" stroke="#e6faff" stroke-width="1.4" stroke-linecap="round"/><path d="M37 9l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z" fill="#dff6ff"/><rect width="48" height="48" fill="url(#hs-vig)"/></svg></button>
+          <span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span>
+        </div>
+        <div class="tip" id="tip" hidden></div>
+        <div class="cast" id="cast" hidden><span class="cast-fill"></span><span class="cast-name">Hearthstone</span></div>
+      </div>
+    </section>
+    <section class="tile ach" aria-labelledby="ach-h">
+      <div class="ach-top"><h2 id="ach-h">Achievements</h2><span class="ach-count" id="ach-count"></span></div>
+      <div class="ach-bar" aria-hidden="true"><i id="ach-bar"></i></div>
+      <ul class="ach-list" id="ach-list"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <span>© <span id="y">2026</span> John Salvador</span>
+    <nav aria-label="Elsewhere"><a href="https://github.com/superjsal">GitHub</a><a href="mailto:dev@jsal.io">Email</a><a href="/privacy/">Privacy</a><button type="button" class="foot-btn" data-jsal-consent>Analytics</button></nav>
+  </footer>
+</div>
+<script>
+document.getElementById('y').textContent = new Date().getFullYear();
+// Backpack: hovering, focusing or tapping an item shows its tooltip. On a touch screen the first tap
+// inspects, the second uses it. Using any item unlocks "Social butterfly".
+const ITEMS = {
+  email: { q: 'legendary', name: 'Sealed Letter of Inquiry', kind: 'Email · dev@jsal.io', use: 'Opens an email to me.', flavor: 'Questions, ideas for a tool, or just to talk SEO.' },
+  discord: { q: 'epic', name: 'Amulet of Many Voices', kind: 'Discord · jsal', use: 'Copies my username.', flavor: 'Add me and say hi.' },
+  steam: { q: 'rare', name: 'Aegis of the Backlog', kind: 'Steam · jsalx87', use: 'Opens my Steam profile.', flavor: 'Friend requests welcome.' },
+  github: { q: 'uncommon', name: 'Tome of Open Source', kind: 'GitHub · superjsal', use: 'Opens the code behind these tools.', flavor: 'Every tool here, page by page.' },
+  hearth: { q: 'common', name: 'Hearthstone', bind: 'Binds when picked up', kind: 'jsal.io', use: 'Returns you to the top of the page.', flavor: 'Home is just a scroll away.' },
+};
+// "Bag inspector" (a secret): every item looked at, on one visit
+const inspected = new Set();
+const bag = document.querySelector('.bag'), tip = document.getElementById('tip');
+let shown = null, touch = false;
+function inspect(sl) {
+  const i = ITEMS[sl.dataset.item];
+  document.querySelectorAll('.slot.on').forEach((x) => x.classList.remove('on'));
+  sl.classList.add('on');
+  shown = sl;
+  inspected.add(sl.dataset.item);
+  if (inspected.size === Object.keys(ITEMS).length && window.jsalAchieve) jsalAchieve('inspector');
+  tip.innerHTML = `<div class="t" style="color: var(--q-${i.q})">${i.name}</div><div class="w">${i.bind || 'Binds when used'}</div><div class="s">${i.kind}</div><div class="u">Use: ${i.use}</div><div class="f">"${i.flavor}"</div>`;
+  tip.hidden = false;
+  // Below the item, or above it when the bag is too short (phones), kept inside the bag's width
+  const b = bag.getBoundingClientRect(), r = sl.getBoundingClientRect();
+  const left = Math.min(Math.max(r.left - b.left, 8), b.width - tip.offsetWidth - 8);
+  const below = r.bottom - b.top + 12;
+  tip.style.left = left + 'px';
+  tip.style.top = (below + tip.offsetHeight <= b.height ? below : r.top - b.top - tip.offsetHeight - 12) + 'px';
+}
+function hide() { clearTimeout(hideTimer); tip.hidden = true; shown = null; document.querySelectorAll('.slot.on').forEach((x) => x.classList.remove('on')); }
+// WCAG 1.4.13: the tooltip stays while the pointer moves from an item onto it (a short grace period), and
+// Esc closes it without moving focus
+let hideTimer = 0;
+const hideSoon = () => { clearTimeout(hideTimer); hideTimer = setTimeout(hide, 200); };
+tip.addEventListener('pointerenter', () => clearTimeout(hideTimer));
+tip.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') { clearTimeout(handTimer); hideSoon(); } });
+// The tooltip can cover other items: resting on one through it (or clicking there) switches to that item
+let handTimer = 0;
+const itemUnder = (e) => document.elementsFromPoint(e.clientX, e.clientY).find((x) => x.matches('.slot:not(.empty)') && x !== shown);
+tip.addEventListener('pointermove', (e) => {
+  clearTimeout(handTimer);
+  const sl = itemUnder(e);
+  if (sl) handTimer = setTimeout(() => inspect(sl), 250);
+});
+tip.addEventListener('click', (e) => { const sl = itemUnder(e); if (sl) { clearTimeout(handTimer); inspect(sl); } });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && shown) hide(); });
+document.querySelectorAll('.slot:not(.empty)').forEach((sl) => {
+  sl.addEventListener('pointerdown', (e) => { touch = e.pointerType === 'touch'; });
+  sl.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch') { clearTimeout(hideTimer); inspect(sl); } });
+  sl.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') hideSoon(); });
+  sl.addEventListener('focus', () => inspect(sl));
+  sl.addEventListener('blur', hide);
+  sl.addEventListener('click', async (e) => {
+    if (touch && shown !== sl) { e.preventDefault(); inspect(sl); return; }
+    if (sl.dataset.item === 'hearth') { hearth(); return; }
+    window.jsalAchieve && jsalAchieve('social');
+    if (sl.dataset.item === 'discord') {
+      let ok = true;
+      try { await navigator.clipboard.writeText('jsal'); } catch (err) { ok = false; }
+      inspect(sl);
+      tip.querySelector('.u').textContent = ok ? 'Copied: jsal' : 'Username: jsal';
+    }
+  });
+});
+document.addEventListener('pointerdown', (e) => { if (shown && !e.target.closest('.slot, #tip')) hide(); });
+// The bag fills the room beside "Currently":
+// fill whatever room there is with rows of empty slots, so it never shows a gap (on phones, one spare row)
+const slots = document.querySelector('.slots'), count = document.querySelector('.pack-h .count');
+const items = slots.querySelectorAll('.slot:not(.empty)').length;
+function fitBag() {
+  slots.style.gridTemplateColumns = '';   // back to the stylesheet's columns before counting them
+  const cols = getComputedStyle(slots).gridTemplateColumns.split(' ').length;
+  const least = (Math.ceil(items / cols) + 1) * cols;
+  const setTotal = (n) => {
+    slots.querySelectorAll('.slot.empty').forEach((x) => x.remove());
+    slots.insertAdjacentHTML('beforeend', '<span class="slot empty" aria-hidden="true"></span>'.repeat(n - items));
+    count.textContent = `${items}/${n}`;
+  };
+  setTotal(least);   // smallest bag first, so it only grows into room the tile already has
+  const gap = parseFloat(getComputedStyle(slots).rowGap), size = slots.querySelector('.slot').offsetWidth, h = slots.clientHeight;
+  let rows = Math.max(least / cols, Math.floor((h + gap) / (size + gap)));
+  // Whole rows rarely fit exactly: either leave the spare height as a gap, or add a row and make the
+  // slots a little smaller to fit it, whichever wastes less room
+  const spare = h - (rows * (size + gap) - gap), smaller = (h - gap * rows) / (rows + 1);
+  if (h > least / cols * (size + gap) && cols * (size - smaller) < spare) {
+    rows += 1;
+    slots.style.gridTemplateColumns = `repeat(${cols}, ${smaller}px)`;
+  }
+  if (rows * cols !== least) setTotal(rows * cols);
+}
+// Refit when the room changes (the pocket's size, the Currently tile's height, fonts arriving). Each fit
+// notes the sizes it left behind, so its own changes don't set off another.
+const nowTile = document.querySelector('.now-playing');
+const sizes = () => `${slots.clientWidth}:${slots.clientHeight}:${nowTile.offsetHeight}`;
+let fitted = '';
+const refit = () => { if (sizes() !== fitted) { fitBag(); fitted = sizes(); } };
+const watcher = new ResizeObserver(refit);
+watcher.observe(slots);
+watcher.observe(nowTile);
+if (document.fonts) document.fonts.ready.then(() => { fitted = ''; refit(); });
+// Hearthstone: a cast bar fills, then the page goes back to the top
+const cast = document.getElementById('cast');
+function hearth() {
+  if (!cast.hidden) return;
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  hide();
+  cast.hidden = false;
+  cast.classList.add('go');
+  setTimeout(() => {
+    cast.hidden = true;
+    cast.classList.remove('go');
+    scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' });
+  }, calm ? 300 : 1500);
+}
+// Achievements: drawn from /nav.js's list (it loads after this, so wait for it), redrawn on each unlock
+const LOCK = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
+function drawAchievements() {
+  const A = window.jsalAchievements;
+  if (!A) return;
+  const got = A.got(), n = A.list.filter((a) => got[a.id]).length;
+  const icon = (p) => `<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  document.getElementById('ach-count').textContent = `${n} of ${A.list.length}`;
+  document.getElementById('ach-bar').style.setProperty('--p', String(n / A.list.length));
+  document.getElementById('ach-list').innerHTML = A.list.map((a) => {
+    const on = !!got[a.id], hidden = a.secret && !on;
+    return `<li class="${on ? '' : 'locked'}"><span class="medal">${icon(hidden ? LOCK : a.icon)}</span><span><b>${hidden ? '???' : a.name}</b><small>${on ? a.done : a.todo}</small></span><span class="sr-only">${on ? ' (unlocked)' : ' (locked)'}</span></li>`;
+  }).join('');
+}
+addEventListener('DOMContentLoaded', drawAchievements);
+addEventListener('jsal-achievement', drawAchievements);
+addEventListener('pageshow', drawAchievements);   // back from a tool: show what was unlocked there
+</script>
+<script src="/nav.js?v=2026-10-31i" defer></script>
+</body>
+</html>

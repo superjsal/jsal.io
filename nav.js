@@ -103,6 +103,7 @@
       icon: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>' },
   ];
   const HOME = { href: '/', name: 'jsal.io home', icon: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>' };
+  const PLAY = { href: '/play/', name: 'Off the clock', icon: '<path d="M6 11h4M8 9v4"/><circle cx="15.5" cy="10.5" r=".8"/><circle cx="17.5" cy="13" r=".8"/><path d="M7 5h10a5 5 0 0 1 4.6 7l-1.4 3.6a2.6 2.6 0 0 1-4.6.6L14 14h-4l-1.6 2.2a2.6 2.6 0 0 1-4.6-.6L2.4 12A5 5 0 0 1 7 5z"/>' };
   // Page transitions (/shell.css): while one plays, the page is a picture the browser can't click
   // into, so a click straight after arriving (on the logo, a link) did nothing. A press during a
   // transition now ends it at once, and the click goes to whatever is under the pointer.
@@ -288,7 +289,7 @@
   menu.setAttribute('role', 'menu');
   menu.setAttribute('aria-label', 'jsal.io apps');
   menu.hidden = true;
-  menu.innerHTML = APPS.map((a) => item(a)).join('') + '<hr>' + item(HOME, true);
+  menu.innerHTML = APPS.map((a) => item(a)).join('') + '<hr>' + item(HOME, true) + item(PLAY, true);
   document.body.append(menu);
 
   if (!trigger.querySelector('.jsal-caret')) trigger.insertAdjacentHTML('beforeend', `<span class="jsal-caret">${svg('<path d="m6 9 6 6 6-6"/>', 12)}</span>`);
@@ -311,7 +312,7 @@
   function warm() {
     if (warmed || !(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'))) return;
     warmed = true;
-    const urls = [...APPS.map((a) => a.href), HOME.href].filter((h) => h !== '/ic/' && h !== here && !isHere(h));
+    const urls = [...APPS.map((a) => a.href), HOME.href, PLAY.href].filter((h) => h !== '/ic/' && h !== here && !isHere(h));
     const rules = document.createElement('script');
     rules.type = 'speculationrules';
     rules.textContent = JSON.stringify({ prerender: [{ urls, eagerness: 'immediate' }] });
