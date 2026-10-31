@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-30zw";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-30zw";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-30zz";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-30zz";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -112,6 +112,8 @@ function load(data, blank = false) {
   // the start of the page, so it goes to the Checks heading instead
   const focusLost = !document.activeElement || document.activeElement === document.body || $("pasteZone").contains(document.activeElement);
   input = data;
+  cleared = null;   // a new paste replaces what Clear removed
+  showUndoClear(false);
   app.classList.add("has-content");
   source = blank ? "" : detectSource(input.html, input.text);
   result = clean(input);
@@ -134,13 +136,37 @@ function load(data, blank = false) {
 }
 
 $("clearBtn").addEventListener("click", () => {
+  // Kept for "Undo clear" in the paste area (the editor's own undo can't reach back past this)
+  cleared = { html: editor.innerHTML, input, source };
   input = result = null;
   fixes = [];
   hideLinkBox();
   editor.innerHTML = "";
   app.classList.remove("has-content");
   $("backToChecks").hidden = true;
+  showUndoClear(true);
   $("pasteZone").focus();
+});
+
+// Undo clear: the post comes back as it was, edits included, without counting as a new paste
+let cleared = null;
+function showUndoClear(on) { $("undoClearBtn").hidden = $("undoSep").hidden = !on; }
+function undoClear() {
+  if (!cleared) return;
+  ({ input, source } = cleared);
+  result = clean({ html: cleared.html });
+  fixes = result.checks.filter((c) => c.fix);
+  editor.innerHTML = result.html;
+  htmlEdit.value = result.html;
+  app.classList.add("has-content");
+  showResult();
+  cleared = null;
+  showUndoClear(false);
+  editor.focus();
+}
+$("undoClearBtn").addEventListener("click", undoClear);
+$("pasteZone").addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z" && cleared) { e.preventDefault(); undoClear(); }
 });
 
 const kb = (n) => (n < 1024 ? `${n} B` : `${(n / 1024).toFixed(n < 10240 ? 1 : 0)} KB`);

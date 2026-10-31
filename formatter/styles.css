@@ -182,7 +182,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .paste-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--jsal-accent-soft); color: var(--jsal-accent); border: 1px solid var(--jsal-accent-ring); margin-bottom: 4px; }
 .paste-title { font-size: 15px; font-weight: 600; }
 .paste-sub { max-width: 34em; color: var(--jsal-ink-2); line-height: 1.5; }
-.paste-links { display: flex; gap: 10px; align-items: center; color: var(--jsal-muted); }
+.paste-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; align-items: center; color: var(--jsal-muted); }   /* wraps whole links on phones, never a link's words */
 .paste-privacy { margin-top: 10px; font-size: 12px; color: var(--jsal-muted); }
 kbd { font: 600 11.5px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-bg); }
 
@@ -413,6 +413,8 @@ textarea.code[hidden] { display: none; }
   .paste-zone { font-size: 16px; }
   .paste-sub, .paste-links { font-size: 13px; }
 }
+/* Phones: the link row wraps, so the dots between links go (one would start the second line) and spacing does the job */
+@media (max-width: 599px) { .paste-links [aria-hidden] { display: none; } .paste-links { gap: 4px 18px; } }
 /* Phones: the toolbar in two even rows (formatting, then links, fixes and undo) instead of wrapping onto three */
 .tb-break { display: none; }
 @media (max-width: 599px) {
