@@ -16,9 +16,15 @@ failing in new ways, and **partial fit** if people report Wix missing from conte
 **Quiz v3** (2026-10-31): the questions on languages, paid members, moving later and adding features became "Anything
 you'll need from day one?" and "Moving from somewhere?" (eight questions at most). The audit behind it is in the
 code-tidy session's notes (`scoring-v2-report.md`): "adding features" measured plugin-library size and flipped 15% of
-results, "moving later" rewarded self-hosting. Known since: exact ties for first are about 13% of answer sets (4.4%
-before), nearly all Wix against Squarespace for a local business, which the data genuinely can't separate; the result
-says "Joint best match" and the box under each card does the work. Revisit only if visitors say so.
+results, "moving later" rewarded self-hosting. It left exact ties for first at about 13% of answer sets (4.4%
+before), nearly all Wix against Squarespace for a local business.
+
+**Quiz v4** (2026-10-31, the same day): languages became a tick beside whichever need is picked (`also` on the needs
+question, `lang=yes` in links) instead of one of its choices, so a restaurant can say bookings *and* two languages; the
+members choice reads "Paid subscribers or members" so a plain email newsletter doesn't pick it; and a tie between two
+builders is settled by the design control their card leads with (`quiz.lookBest`, below under Ties). Ties for first
+fell to 5% of answer sets (moving=no, languages both ways), 530 of the settled ones Wix against Squarespace; the rest
+say "Joint best match" and the box under each card does the work.
 
 **Baseline** (final review with Claude Reviewer, 2026-10-30, before v3): all four rule tests pass, all 37 personas pass, and
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
@@ -66,11 +72,14 @@ Shared by the page and the tests, so they always run the same code.
   adds the 13 platforms from the data (each with its platform object as a sixth item, which the page draws as a
   logo chip). The page and the test both go through it. Changing the questions means raising `LINK_VERSION` in
   `app.js` and translating older answers in `readLink`, so shared links keep working (v3 translates the old
-  language, members and moving-later answers; see the comment there).
-- **Needs** ("Anything you'll need from day one?", one choice): paid members and languages score as before (below),
-  selling too reads the "Sell online" row (+2 / 0 / −2 / −4, and the budget reads the store band), a blog reads the
-  "Add a blog" row the same way, bookings read `quiz.bookings` (+3 built in or first-party, else −1 and a "worth
-  knowing" line). Nothing special scores nothing.
+  members and moving-later answers, v4 the languages choice into the tick; see the comment there). A question can
+  carry a tick (`also`: id, title, hint, and `own`, the answer on its own) that goes with whichever choice is picked:
+  the page draws it as a checkbox above the choices and again in the answers editor, and the test walks it both ways.
+- **Needs** ("Anything you'll need from day one?", one choice, plus the languages tick): paid members score as
+  before (below), selling too reads the "Sell online" row (+2 / 0 / −2 / −4, and the budget reads the store band), a
+  blog reads the "Add a blog" row the same way, bookings read `quiz.bookings` (+3 built in or first-party, else −1 and
+  a "worth knowing" line). Nothing special scores nothing. The tick (`lang=yes`) reads the "More than one language"
+  row: built in +2, plugin −1, code −2, no −4, with a "worth knowing" line when it isn't built in.
 - **Moving from** ("Moving from somewhere?"): no points. The result shows what the old platform lets you take (its
   profile's "If you leave" line) above the cards, a match whose own docs describe an import from it gets a 0-point
   reason linked to those docs (`quiz.imports`, through `links` on the score), and the platform being left is never
@@ -100,7 +109,7 @@ Shared by the page and the tests, so they always run the same code.
 - **Second and third:** both are compared with the first, unless the third would repeat the second (the
   same reasons, or the same box sentence). Then the third says "the same reasons as" the second and is
   compared with the second instead, falling back to what it's known for if that sentence still matches.
-- **Paid members** (the "Paid members or a newsletter" need) read the "Sell memberships or paid
+- **Paid members** (the "Paid subscribers or members" need) read the "Sell memberships or paid
   posts" row: built in +3, plugin 0, needs code or check manually −2, no −4. Ghost gets +2 more for sending
   newsletters to those members itself (`quiz.members`). HubSpot's card rules it out for paid members.
   Their budget reads "Start a site with paid members" (`cost_members`: the plan that includes paid
@@ -113,12 +122,17 @@ Shared by the page and the tests, so they always run the same code.
   with the answers it answers (`when`, the same shape as `notIdeal`; a line that answers two questions is listed
   twice). Only lines that plainly name the goal are tagged: a business site's kind ("Startups and landing pages"
   → `kind: startup`), a store's size ("Larger catalogues" → `size: big`), a publication ("Writers, creators and
-  publishers") or a custom build; never who builds it or how it's hosted. `rank` sorts by score, then by that
-  count (`tb`); `tied(x, y)` is true only when both are equal, and that's what the page calls "Joint best
-  match". A first place level on points says why in its box ("Level on points, but Framer's own card says it
-  suits startups and landing pages.") and in the "how sure" line. Before it, a fifth of all answer sets were
-  ties, and the "Best match" among them was simply the first in the platform list. The persona test checks every
-  tagged line is still on its card and every `when` names a real question and answer.
+  publishers") or a custom build; never who builds it or how it's hosted. Level on that too, the design control
+  decides (`quiz.lookBest`: the answer to "How much control over the design do you want?" that a platform's card
+  leads with, and the tag as it reads there; Wix's "Drag-and-drop editor" for arranging it yourself, Squarespace's
+  "Designer templates" for a template; only where a card says so). `rank` sorts by score, then by the line count
+  (`tb`), then by that (`tb2`); `tied(x, y)` is true only when all three are equal, and that's what the page calls
+  "Joint best match". A first place level on points says why in its box ("Level on points, but Framer's own card
+  says it suits startups and landing pages." / "Level on points, but you want to arrange things yourself, and
+  Wix's card leads with “Drag-and-drop editor”.") and in the "how sure" line. Before the card lines, a fifth of
+  all answer sets were ties, and the "Best match" among them was simply the first in the platform list; before
+  the design control, 13%. The persona test checks every tagged line is still on its card, every `when` names a
+  real question and answer, and every `lookBest` tag is on its card.
 - **Order of the reasons:** each top card lists its reasons with the ones the other two top cards don't share
   first (`explain`; the words don't change), so the first two cards rarely open with the same line (they did
   in 96% of answer sets before). A second or third card whose reasons are exactly the first's still collapses to

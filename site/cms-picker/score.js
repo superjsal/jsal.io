@@ -16,8 +16,9 @@
     { id: 'size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few dozen products', 'A small shop', 'A small shop, up to a few dozen products'], ['big', 'Hundreds of products', 'A large catalogue', 'Hundreds of products'], ['b2b', 'Selling to other businesses (B2B)', 'Wholesale, trade accounts or bulk orders', 'Selling to other businesses (B2B)']] },
     // One need, the one that matters most (an option's fifth item says when it's offered: selling is only a need
     // for something that isn't a store, a blog for something that isn't a publication). The hint replaces the usual
-    // "Pick the closest one".
-    { id: 'needs', q: 'Anything you’ll need from day one?', hint: 'Pick the one that matters most; the rest can come later.', opts: [['bookings', 'Bookings or appointments', 'Clients book a time online', 'Bookings or appointments from day one'], ['members', 'Paid members or a newsletter', 'Subscribers, paid posts or a newsletter', 'Paid members or a newsletter'], ['sell', 'Selling online too', 'A few products or services to buy', 'Selling online too', (a) => a.what !== 'store'], ['lang', 'More than one language', 'Two or more', 'Two or more languages'], ['blog', 'A blog or news section', 'Posts alongside the main pages', 'A blog or news section', (a) => a.what !== 'content'], ['none', 'Nothing special', 'The usual pages are enough', 'Nothing special from day one']] },
+    // "Pick the closest one". Languages are a tick on the same question (also), not one of the choices: they're a
+    // constraint that goes with any need, so someone who needs bookings in two languages says both.
+    { id: 'needs', q: 'Anything you’ll need from day one?', hint: 'Pick the one that matters most; the rest can come later.', also: { id: 'lang', title: 'In two or more languages', hint: 'Tick it, then pick below', own: 'Two or more languages' }, opts: [['bookings', 'Bookings or appointments', 'Clients book a time online', 'Bookings or appointments from day one'], ['members', 'Paid subscribers or members', 'Paid posts, memberships or a paid newsletter', 'Paid subscribers or members'], ['sell', 'Selling online too', 'A few products or services to buy', 'Selling online too', (a) => a.what !== 'store'], ['blog', 'A blog or news section', 'Posts alongside the main pages', 'A blog or news section', (a) => a.what !== 'content'], ['none', 'Nothing special', 'The usual pages are enough', 'Nothing special from day one']] },
     { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go', 'A good template is enough'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust', 'Arrange the design visually'], ['pixel', 'Every detail', 'Exactly as designed', 'Control every detail of the design']] },
     // Where the site is now: these two answers, then every platform on the picker (plats: options() adds them from
     // the data, each as [id, name, '', 'Moving from <name>', undefined, platform]). No points; the result says what
@@ -78,8 +79,8 @@
   const LEAD = {
     goal: (a) => ({ site: 'you’re making a site for your business or work', store: 'you’re making an online store', content: 'you’re making a blog, newsletter or publication', custom: 'you’re building an app or portal' })[a.what],
     kind: (a) => ({ local: 'you’re a local business or service', creative: 'you’re showing creative work', startup: 'you’re launching a product', b2b: 'you sell to other businesses', content: 'you’ll have lots of content' })[a.kind],
-    members: () => 'you want paid members or a newsletter',
-    letters: () => 'you want paid members or a newsletter',
+    members: () => 'you want paid subscribers or members',
+    letters: () => 'you want paid subscribers or members',
     sellOnly: () => 'you’re not making a store',
     frontEnd: () => 'you’re building an app or portal',
     ease: (a) => (a.who === 'easy' ? 'you’re not technical' : 'you’re building it yourself'),
@@ -161,7 +162,7 @@
       if (a.size === 'b2b' && has('b2b')) add('b2b', 3, 'Suits selling to other businesses (B2B)');
       if (a.size === 'small' && has('smallShop')) add('small', 1);
     }
-    if (a.needs === 'lang') {
+    if (a.lang === 'yes') {
       const l = verdict('languages');
       // Needing an add-on for it counts a little against (Ghost's and Squarespace's own cards say so)
       add('lang', { yes: 2, plugin: -1, code: -2, no: -4 }[l] ?? 0, l === 'yes' && 'More than one language is built in');
@@ -199,12 +200,17 @@
     // person gave, so a top match never hides that (moving later, languages, running it yourself, hosting,
     // budget); it changes no score.
     const fit = fitLines(Q, p.id, a);
-    return { p, s, why, all: why, but, pts, fit, tb: fit.length, links };
+    // A second tie-break, after the card lines: the builder whose card leads with the design control asked for
+    // (quiz.lookBest: Wix's drag-and-drop editor for arranging it yourself, Squarespace's designer templates for a
+    // template), so the commonest tie, Wix against Squarespace for a local business, is settled by an answer
+    const lb = (Q.lookBest || {})[p.id] || null;
+    return { p, s, why, all: why, but, pts, fit, tb: fit.length, tb2: lb && lb.look === a.look ? 1 : 0, lookTag: lb && lb.tag, links };
   }
 
   // Every platform, best fit first; an exact tie goes to the one whose card has more "Good fit" lines answering
-  // what's being made (fit), and stays a tie when that count is the same too
-  const rank = (data, a) => data.platforms.map((p) => fitScore(data, p, a)).sort((x, y) => y.s - x.s || y.tb - x.tb);
+  // what's being made (fit), then to the one whose card leads with the design control asked for (lookBest), and
+  // stays a tie when those are the same too
+  const rank = (data, a) => data.platforms.map((p) => fitScore(data, p, a)).sort((x, y) => y.s - x.s || y.tb - x.tb || y.tb2 - x.tb2);
   // The matches: every platform but the one you're moving from (it still ranks, under "Had a platform in mind?"), with
   // those whose own card says they aren't ideal for these answers behind every other, so taking the origin out never
   // lets a ruled-out platform into the top three while three others fit (the persona test's rule; with fewer, the
@@ -214,7 +220,9 @@
     const ok = rs.filter((r) => !notIdealFor(data.quiz, r.p.id, a));
     return [...ok, ...rs.filter((r) => !ok.includes(r))];
   }
-  const tied = (x, y) => x.s === y.s && x.tb === y.tb;
+  const tied = (x, y) => x.s === y.s && x.tb === y.tb && x.tb2 === y.tb2;
+  // The design-control answer, as the start of the sentence that settles a tie on it
+  const LOOK_WANT = { template: 'you want a good template', visual: 'you want to arrange things yourself', pixel: 'you want control over every detail' };
 
   // ---------- Telling the top matches apart ----------
   // Only from what's already published: the table's checked answers and each profile's "good fit" list.
@@ -232,7 +240,7 @@
   function weight(row, a) {
     if (row.startsWith('cost_')) return 0;   // the budget question covers cost
     if (row === 'store') return a.what === 'store' || a.needs === 'sell' ? 3 : 0;   // not selling
-    if (row === 'languages') return a.needs === 'lang' ? 3 : 0;   // one language
+    if (row === 'languages') return a.lang === 'yes' ? 3 : 0;   // one language
     if (row === 'design') return a.look === 'template' ? 0 : 2;  // a good template is enough
     if (row === 'blog') return a.what === 'content' || a.needs === 'blog' ? 3 : 1;
     if (row === 'members') return a.needs === 'members' ? 3 : 1;
@@ -320,7 +328,8 @@
   // the first's; their box says where they did better than the first for these answers, or else what they
   // offer (pickOver). When the third would repeat the second (the same reasons, or the same box against the
   // first), it's compared with the second instead, so the two read differently. A first place level on
-  // points but ahead on its card's "Good fit" lines says so (quiz.fitFor).
+  // points but ahead on its card's "Good fit" lines, or on the design control its card leads with, says so (quiz.fitFor,
+  // quiz.lookBest).
   function explain(data, a, top) {
     const lead = top[0];
     const shared = (r, w) => top.filter((o) => o !== r && o.all.includes(w)).length;
@@ -330,7 +339,7 @@
         const next = top[1];
         let vs = null;
         if (next && next.s === r.s) {
-          const level = tied(r, next) ? 'Both fit your answers equally.' : `Level on points, but ${r.p.name}’s own card says it suits ${lowerFirst(r.fit[0])}.`;
+          const level = tied(r, next) ? 'Both fit your answers equally.' : r.tb !== next.tb ? `Level on points, but ${r.p.name}’s own card says it suits ${lowerFirst(r.fit[0])}.` : `Level on points, but ${LOOK_WANT[a.look]}, and ${r.p.name}’s card leads with “${r.lookTag}”.`;
           vs = { head: tied(r, next) ? `A close call with ${next.p.name}` : `Ahead of ${next.p.name}`, text: [level, better(data, a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' ') };
         } else if (next) {
           const text = tipped(a, r, next) || pickOver(data, a, r, next);

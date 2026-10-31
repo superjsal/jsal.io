@@ -1,7 +1,8 @@
 // CMS Picker persona tests: example people run through the real Find my fit scoring (cms-picker/score.js),
 // checked against the results John agreed (2026-10-29; 37 people since the business-site, members, budget and B2B questions;
 // quiz v3 on 2026-10-31 replaced the language, members, moving-later and adding-features questions with "Anything you'll
-// need from day one?" (needs) and "Moving from somewhere?" (moving), and added the hard cases at the end). Run by
+// need from day one?" (needs) and "Moving from somewhere?" (moving), and added the hard cases at the end; quiz v4 the same
+// day made languages a tick on the needs question, lang=yes, beside whichever need is picked). Run by
 // .github\build\check.py (node .github/scripts/personas.test.js), locally and on GitHub.
 // The answers come from cms-picker/data.json and the quiz's own values from cms-picker/quiz.json, as on the
 // page, so a change to either is tested before it goes live. When a result should change, agree it first, then
@@ -19,7 +20,7 @@ const PERSONAS = [
   // Business or work sites (with "Which is closest to what you do?", agreed 2026-10-29)
   ['Local bakery, no tech help', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', look: 'template', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'sanity'] }],
-  ['Multilingual B2B SaaS marketing site, agency-built', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', needs: 'lang', look: 'pixel', moving: 'no' },
+  ['Multilingual B2B SaaS marketing site, agency-built', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', needs: 'none', lang: 'yes', look: 'pixel', moving: 'no' },
     { first: ['hubspot', 'webflow'], top3: ['hubspot', 'webflow'] }],   // HubSpot since Webflow's languages became a paid add-on (agreed)
   ['Agency-built local service site', { what: 'site', kind: 'local', who: 'agency', care: 'no', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['duda'], top3: ['duda'] }],
@@ -34,7 +35,7 @@ const PERSONAS = [
     { first: ['webflow', 'hubspot'], top3: ['webflow', 'hubspot'] }],
   ['Freelance consultant, one-page site', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', look: 'template', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'sanity'] }],
-  ['Restaurant in a tourist town, two languages', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'lang', look: 'template', moving: 'no' },
+  ['Restaurant in a tourist town, two languages', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', lang: 'yes', look: 'template', moving: 'no' },
     { first: ['wix'], top3: ['wix', 'squarespace'] }],
   ['B2B marketing team with lots of articles', { what: 'site', kind: 'content', who: 'learn', care: 'no', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['webflow', 'hubspot'], top3: ['webflow', 'hubspot'] }],
@@ -47,7 +48,7 @@ const PERSONAS = [
     { first: ['shopify'], top3: ['shopify'], not: ['magento', 'drupal', 'sanity'] }],
   ['5,000-product store with a dev team', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', look: 'pixel', moving: 'no' },
     { first: ['magento'], top3: ['magento', 'shopify'], not: ['wix', 'squarespace'] }],
-  ['Wholesale B2B store with a developer, two languages', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'lang', look: 'pixel', moving: 'no' },
+  ['Wholesale B2B store with a developer, two languages', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', lang: 'yes', look: 'pixel', moving: 'no' },
     { first: ['magento'], top3: ['magento', 'shopify', 'bigcommerce'] }],
   ['Clothing brand, about 50 products, wants design control', { what: 'store', who: 'learn', care: 'no', size: 'small', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['shopify', 'wix', 'squarespace'], top3: ['shopify'] }],   // a three-way tie: the store questions don't ask about design
@@ -71,7 +72,7 @@ const PERSONAS = [
   // HubSpot has no paid memberships built in (agreed 2026-10-30: its card's line rules it out for paid members)
   ['Newsletter writer with paid members', { what: 'content', who: 'learn', care: 'no', needs: 'members', look: 'template', moving: 'no' },
     { first: ['ghost'], top3: ['ghost'], not: ['hubspot'] }],
-  ['Government multilingual content site', { what: 'content', who: 'dev', care: 'yes', needs: 'lang', look: 'pixel', moving: 'no' },
+  ['Government multilingual content site', { what: 'content', who: 'dev', care: 'yes', needs: 'none', lang: 'yes', look: 'pixel', moving: 'no' },
     { first: ['drupal'], top3: ['drupal', 'wordpress'], not: ['wix', 'squarespace', 'webflow'] }],
   ['Small blog that wants to own everything', { what: 'content', who: 'learn', care: 'yes', needs: 'none', look: 'template', moving: 'no' },
     { first: ['ghost', 'wordpress'], top3: ['ghost', 'wordpress'] }],
@@ -79,9 +80,9 @@ const PERSONAS = [
     { first: ['squarespace', 'ghost'], top3: ['squarespace', 'ghost'] }],
   ['Online course creator with members', { what: 'content', who: 'easy', care: 'no', needs: 'members', look: 'template', moving: 'no' },
     { first: ['ghost'], top3: ['ghost', 'squarespace'], not: ['hubspot'] }],
-  ['Paid newsletter, not technical, two languages', { what: 'content', who: 'easy', care: 'no', needs: 'members', look: 'template', moving: 'no' },
+  ['Paid newsletter, not technical, two languages', { what: 'content', who: 'easy', care: 'no', needs: 'members', lang: 'yes', look: 'template', moving: 'no' },
     { first: ['ghost'], top3: ['ghost'], not: ['hubspot'] }],
-  ['Nonprofit with news in two languages', { what: 'content', who: 'learn', care: 'no', needs: 'lang', look: 'template', moving: 'no' },
+  ['Nonprofit with news in two languages', { what: 'content', who: 'learn', care: 'no', needs: 'none', lang: 'yes', look: 'template', moving: 'no' },
     { first: ['hubspot', 'ghost'], top3: ['hubspot', 'ghost'] }],
   ['Developer building an app and a site', { what: 'custom', who: 'dev', care: 'yes', needs: 'none', look: 'pixel', moving: 'no' },
     { first: ['sanity'], top3: ['sanity'] }],
@@ -103,7 +104,7 @@ const PERSONAS = [
   // match), and a store that is also a publication
   ['Not technical, wants a blog beside the site, hosting handled', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'blog', look: 'template', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['wordpress', 'drupal', 'sanity'] }],
-  ['Publication with paid members (two languages wanted too)', { what: 'content', who: 'learn', care: 'no', needs: 'members', look: 'template', moving: 'no' },
+  ['Publication with paid members, two languages', { what: 'content', who: 'learn', care: 'no', needs: 'members', lang: 'yes', look: 'template', moving: 'no' },
     { first: ['ghost'], top3: ['ghost', 'squarespace'], not: ['hubspot'] }],
   ['Agency-built B2B site on a small budget', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', needs: 'none', look: 'visual', moving: 'no', budget: 'low' },
     { first: ['hubspot', 'webflow'], top3: ['hubspot', 'webflow'] }],
@@ -121,7 +122,7 @@ const PERSONAS = [
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'] }],
   ['Store moving from Shopify, hundreds of products', { what: 'store', who: 'learn', care: 'no', size: 'big', needs: 'none', look: 'template', moving: 'shopify' },
     { first: ['bigcommerce'], top3: ['bigcommerce'], not: ['shopify'] }],
-  ['B2B site with two languages, built in-house', { what: 'site', kind: 'b2b', who: 'learn', care: 'no', needs: 'lang', look: 'visual', moving: 'no' },
+  ['B2B site with two languages, built in-house', { what: 'site', kind: 'b2b', who: 'learn', care: 'no', needs: 'none', lang: 'yes', look: 'visual', moving: 'no' },
     { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
 ];
 
@@ -163,7 +164,9 @@ const walk = (a, i) => {
   if (i < QUESTIONS.length) {
     const q = QUESTIONS[i];
     if (q.when && !q.when(a)) return walk(a, i + 1);
-    options(q, a, data).forEach(([v]) => walk({ ...a, [q.id]: v }, i + 1));
+    // A question's tick (q.also: two or more languages) is a yes or no beside every choice
+    const ticks = q.also ? [{}, { [q.also.id]: 'yes' }] : [{}];
+    ticks.forEach((x) => options(q, { ...a, ...x }, data).forEach(([v]) => walk({ ...a, ...x, [q.id]: v }, i + 1)));
     return;
   }
   combos++;
@@ -214,6 +217,11 @@ walk({}, 0);
 unworded.forEach((k) => cardErrs.push(`score part "${k}" has no wording in TIP (score.js), so it can't say what tipped a result`));
 // Each part says the answer behind it first (LEAD); null only when its wording already names the answer
 Object.keys(TIP).forEach((k) => { if (!(k in LEAD)) cardErrs.push(`score part "${k}" has no answer lead-in in LEAD (score.js)`); });
+// A design-control tie-break (quiz.lookBest) must quote a tag that is on its platform's card
+Object.entries(data.quiz.lookBest || {}).forEach(([id, lb]) => {
+  const p = data.platforms.find((x) => x.id === id);
+  if (!p || !((p.profile || {}).tags || []).includes(lb.tag)) cardErrs.push(`lookBest for ${id}: "${lb.tag}" isn't a tag on its card`);
+});
 // Every mapped "Not ideal if" line must still be on its platform's card, or the rule matches a line nobody sees
 Object.entries(data.quiz.notIdeal || {}).forEach(([id, rules]) => {
   const lines = ((data.platforms.find((p) => p.id === id) || {}).profile || {}).lessSuited || [];

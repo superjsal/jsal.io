@@ -490,25 +490,28 @@
   // One question at a time, then the best matches. The questions and the scoring live in score.js (shared
   // with the persona tests). The answers stay in the page address, so a result can be shared; nothing is stored.
   const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, tied, conflict, costRow, weight, TIP, options } = window.cmsScore;
-  // Shared result links carry the quiz version (v=3). Links from before versions (no v) are version 1.
+  // Shared result links carry the quiz version (v=4). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
   // people have already shared keep opening a result rather than an empty quiz.
-  const LINK_VERSION = 3;
+  const LINK_VERSION = 4;
   // Returns { answers, old } (old: a link made before some of today's questions, which are then answered neutrally
   // or offered above the result), or null. Version 3 (2026-10-31) replaced the language, paid-members, moving-later
   // and adding-features questions with "Anything you'll need from day one?" and "Moving from somewhere?":
-  // lang=yes → needs=lang, members=yes → needs=members (members first, as it was asked of publications only), neither →
-  // needs=none; leave=no → moving=no, leave=yes → moving left to answer; grow dropped.
+  // members=yes → needs=members (members first, as it was asked of publications only), else needs=none; leave=no →
+  // moving=no, leave=yes → moving left to answer; grow dropped. Version 4 (2026-10-31) made languages a tick on the
+  // needs question (lang=yes, as version 1 had it) instead of one of its choices: needs=lang → needs=none, lang=yes.
   function readLink(params) {
     const v = Number(params.get('v') || 1);
     params.delete('v');
     const answers = Object.fromEntries(params);
     if (v > LINK_VERSION) return null;   // a newer version than this page knows: start the quiz fresh
     if (v < 3) {
-      if (!answers.needs) answers.needs = answers.members === 'yes' ? 'members' : answers.lang === 'yes' ? 'lang' : 'none';
+      if (!answers.needs) answers.needs = answers.members === 'yes' ? 'members' : 'none';
       if (!answers.moving && answers.leave === 'no') answers.moving = 'no';
-      ['lang', 'members', 'leave', 'grow'].forEach((k) => delete answers[k]);
+      ['members', 'leave', 'grow'].forEach((k) => delete answers[k]);
     }
+    if (v < 4 && answers.needs === 'lang') { answers.needs = 'none'; answers.lang = 'yes'; }
+    if (answers.lang !== 'yes') delete answers.lang;
     return { answers, old: v < 3 };
   }
   // Effort, from values already checked: the quiz's ease score and the profile's hosting line
@@ -591,6 +594,20 @@
     const steps = (o = a) => QUESTIONS.filter((q) => !q.when || q.when(o));   // the questions these answers call for
     const valid = (o) => steps(o).every((q) => options(q, o, data).some(([v]) => v === o[q.id]));
 
+    // A question's tick (q.also: "In two or more languages" on the needs question): a checkbox that goes with
+    // whichever choice is picked, kept in the answers under its own id as yes or no
+    function alsoBox(q, onChange) {
+      if (!q.also) return null;
+      const lab = el('label', 'qz-also'), input = el('input');
+      input.type = 'checkbox';
+      input.checked = a[q.also.id] === 'yes';
+      input.addEventListener('change', () => { a[q.also.id] = input.checked ? 'yes' : 'no'; onChange(); });
+      const text = el('span');
+      text.append(el('b', null, q.also.title), el('small', null, q.also.hint));
+      lab.append(input, text);
+      return lab;
+    }
+
     function ask() {
       const list = steps();
       if (step >= list.length) return results('quiz');
@@ -644,7 +661,7 @@
         b.addEventListener('click', () => pick(v, b));
         (plat ? from : opts).append(b);
       });
-      box.append(top, h, el('p', 'qz-hint', q.hint || 'Pick the closest one; you can go back and change it.'), opts);
+      box.append(top, h, el('p', 'qz-hint', q.hint || 'Pick the closest one; you can go back and change it.'), ...[alsoBox(q, () => {}), opts].filter(Boolean));
       if (from) box.append(el('p', 'qz-from-l', 'Yes, from one of these'), from);
       box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');
       if (step) {
@@ -679,6 +696,17 @@
         b.setAttribute('aria-label', `${opt ? opt[3] : ''}. Change your answer to: ${q.q}`);
         b.addEventListener('click', () => { editing = editing === q.id ? null : q.id; results(); box.querySelector(`.qz-ans-chips [data-q="${q.id}"]`)?.focus({ preventScroll: true }); });
         chips.append(b);
+        // A ticked "also" (two or more languages) is an answer of its own; it opens the same question's choices, where
+        // the tick can be taken off
+        if (q.also && a[q.also.id] === 'yes') {
+          const t = el('button', 'chip', q.also.own);
+          t.type = 'button';
+          t.dataset.q = q.also.id;
+          t.setAttribute('aria-expanded', String(editing === q.id));
+          t.setAttribute('aria-label', `${q.also.own}. Change your answer to: ${q.q}`);
+          t.addEventListener('click', () => { editing = editing === q.id ? null : q.id; results(); box.querySelector(`.qz-ans-chips [data-q="${q.id}"]`)?.focus({ preventScroll: true }); });
+          chips.append(t);
+        }
       });
       bar.append(chips);
       const q = steps().find((x) => x.id === editing);
@@ -702,11 +730,14 @@
           });
           ed.append(b);
         });
+        const also = alsoBox(q, () => { results(); box.querySelector('.qz-ans-ed input')?.focus({ preventScroll: true }); });
+        if (also) ed.append(also);
         bar.append(ed);
       }
       if (!PHONE.matches) return bar;
       const fold = el('details', 'qz-ans-fold'), sum = el('summary');
-      sum.append(el('b', null, 'Your answers'), el('span', null, ` · ${answered.length} · ${tap} to change one`));
+      const count = answered.length + answered.filter((q) => q.also && a[q.also.id] === 'yes').length;   // a tick counts as an answer
+      sum.append(el('b', null, 'Your answers'), el('span', null, ` · ${count} · ${tap} to change one`));
       fold.open = ansOpen || editing !== null;   // stays open while an answer is being changed
       fold.addEventListener('toggle', () => { ansOpen = fold.open; });
       fold.append(sum, bar);
@@ -732,7 +763,7 @@
       const label = (r) => (isTop(r) ? (joint ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : close && !weak && r === top[1] ? 'Close second' : r.s >= best - 4 && !weak ? 'Good match' : 'Worth a look');
       const told = explain(data, a, top);   // reasons without repeats, and what sets each apart
       // An old link stays v=1 (its own answers) until its newer questions are answered
-      const kept = Object.entries(a).filter(([k]) => steps().some((q) => q.id === k) && !pending.has(k));
+      const kept = Object.entries(a).filter(([k, v]) => (steps().some((q) => q.id === k) && !pending.has(k)) || (v === 'yes' && steps().some((q) => q.also && q.also.id === k)));
       history.replaceState(null, '', `#quiz?v=${pending.size ? 1 : LINK_VERSION}&${new URLSearchParams(kept)}`);
       window.jsalAchieve?.('decision');   // achievement (/nav.js)
       if (source) window.jsalTrack?.('quiz_result', { top_match: ranked[0].p.id, fit: weak ? 'closest' : 'best', source });

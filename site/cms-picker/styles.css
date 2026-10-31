@@ -341,6 +341,19 @@ body {
 .qz h3 { color: var(--jsal-ink); font-size: 20px; outline: none; }
 .qz-hint { margin: 4px 0 14px; color: var(--jsal-muted); font-size: 14px; }
 .qz-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+/* A question's tick ("In two or more languages"): a checkbox row above the choices, selected like one of them */
+.qz-also { display: flex; align-items: center; gap: 12px; width: max-content; max-width: 100%; margin: 0 0 12px; padding: 8px 14px 8px 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); cursor: pointer; transition: border-color 0.12s, background 0.12s; }
+.qz-also:hover { border-color: var(--jsal-hover-line); }
+.qz-also:has(:checked) { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+.qz-also:has(:focus-visible) { box-shadow: var(--jsal-focus-ring); }
+.qz-also input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: var(--jsal-accent); cursor: pointer; }
+.qz-also input:focus-visible { outline: none; }
+.qz-also b { display: block; font-size: 15px; font-weight: 600; }
+.qz-also small { display: block; color: var(--jsal-muted); font-size: 13px; }
+.qz-ans-ed .qz-also { margin: 8px 0 0; padding: 6px 12px 6px 10px; }
+.qz-ans-ed .qz-also b { font-size: 14px; }
+.qz-ans-ed .qz-also small { display: none; }
+@media (pointer: coarse) { .qz-also { min-height: 44px; } }
 .qz-opt { position: relative; display: grid; gap: 2px; padding: 12px 34px 12px 14px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: inherit; text-align: left; cursor: pointer; }
 .qz-opt b { font-size: 15px; font-weight: 600; }
 .qz-opt small { color: var(--jsal-muted); font-size: 13px; }
@@ -468,7 +481,7 @@ body {
 /* Printing: the quiz result and the table on paper, with every note written out and the docs links'
    addresses shown; buttons and floating bits are left off */
 @media print {
-  .jsal-top, .jsal-about, .more, .qz-hint, .qz-nav, .qz-switch, .qz-check, .qz-ans-l, .qz-ans-ed, .qz-opts, .types, .plats, .plats-head, .trks, .cbar, .totop, .tip, .cfoot { display: none !important; }
+  .jsal-top, .jsal-about, .more, .qz-hint, .qz-nav, .qz-switch, .qz-check, .qz-ans-l, .qz-ans-ed, .qz-opts, .qz-also, .types, .plats, .plats-head, .trks, .cbar, .totop, .tip, .cfoot { display: none !important; }
   .grid.compact .mark, .grid.compact .where { position: static; width: auto; height: auto; margin: 4px 0 0; overflow: visible; clip-path: none; white-space: normal; }
   .thead { position: static; overflow: visible; }
   .scroll { overflow: visible; }
