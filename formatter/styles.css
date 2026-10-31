@@ -80,7 +80,7 @@ body {
 /* ── Checks ────────────────────────────────────────────────────────────── */
 
 .results { min-height: 0; }
-.stats { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
 .stat {
   padding: 3px 10px;
   border-radius: 20px;
@@ -96,7 +96,7 @@ body {
 .checks { list-style: none; display: grid; gap: 5px; }
 .check {
   display: flex;
-  gap: 9px;
+  gap: 10px;
   align-items: flex-start;
   padding: 8px 10px;
   border-radius: var(--jsal-radius);
@@ -128,7 +128,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
   padding: 0 14px;
   height: 40px;
   border-radius: var(--jsal-radius);
@@ -154,7 +154,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .btn-accent.done { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 
 .toolbar-hint { font-size: 12px; color: var(--jsal-muted); }
-.btn-clear { display: inline-flex; align-items: center; gap: 5px; padding: 4px 6px; color: var(--jsal-bad); font-weight: 500; border-radius: var(--jsal-radius-sm); }
+.btn-clear { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px; color: var(--jsal-bad); font-weight: 500; border-radius: var(--jsal-radius-sm); }
 .btn-clear:hover { background: var(--jsal-bad-soft); }
 .btn-link { padding: 4px 0; color: var(--jsal-info); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }   /* 24px tall: easier to hit (WCAG 2.5.8); blue: link-styled controls inside the tool, gold is for the main action */
 
@@ -202,7 +202,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 7px 8px 7px 12px;
+  padding: 8px 8px 8px 12px;
   border-bottom: 1px solid var(--jsal-line);
 }
 .pane-title { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }   /* wraps rather than hiding "· from Word · 1.6 KB" behind "…" when text is spaced out (WCAG 1.4.12) */
@@ -228,7 +228,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
   flex-wrap: wrap;
   align-items: center;
   gap: 2px;
-  padding: 5px 8px;
+  padding: 6px 8px;
   border-bottom: 1px solid var(--jsal-line);
   background: var(--jsal-surface);
 }
@@ -236,7 +236,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .toolbar button {
   min-width: 30px;
   height: 28px;
-  padding: 0 7px;
+  padding: 0 8px;
   display: inline-grid;
   place-items: center;
   border-radius: var(--jsal-radius-sm);
@@ -282,7 +282,7 @@ textarea.code[hidden] { display: none; }
   content: "H1" / "";
   display: inline-block;
   margin-right: 8px;
-  padding: 1px 5px;
+  padding: 1px 6px;
   border-radius: 4px;
   vertical-align: 3px;
   font: 700 10px/1.4 var(--jsal-font);
@@ -356,7 +356,7 @@ textarea.code[hidden] { display: none; }
 .link-box button, .link-box a {
   height: 28px;
   min-width: 28px;
-  padding: 0 7px;
+  padding: 0 8px;
   display: inline-grid;
   place-items: center;
   border-radius: var(--jsal-radius-sm);
@@ -394,7 +394,7 @@ textarea.code[hidden] { display: none; }
   /* Before anything is pasted the paste box stretches to the bottom of the first screen, so the space reads as
      room for your content rather than the page running out */
   .app:not(.has-content) .work { flex: 1 1 auto; }
-  .option-track button { padding: 5px 8px; }
+  .option-track button { padding: 6px 8px; }
   .pane { height: 75vh; }
 }
 @media (prefers-reduced-motion: reduce) {

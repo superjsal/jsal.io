@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Platform Playbook | jsal.io</title>
-<link rel="icon" href="/favicon.svg?v=2026-10-31a" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-31d" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -160,7 +160,7 @@ background: transparent; color: var(--jsal-muted); cursor: pointer;
 transition: background 0.12s, color 0.12s;
 }
 .jsal-theme:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
-.jsal-caret { display: inline-block; margin-left: 5px; opacity: .55; transition: transform .15s; vertical-align: middle; }
+.jsal-caret { display: inline-block; margin-left: 6px; opacity: .55; transition: transform .15s; vertical-align: middle; }
 [data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
 [data-jsal-nav]:hover .jsal-caret { opacity: .9; }
 .jsal-theme .i-sun { display: none; }
@@ -221,9 +221,10 @@ h1, h2, h3, h4 { font-family: var(--jsal-font); font-weight: 700; margin: 0; tex
 h2 { font-size: 20px; }
 h3 { font-size: 16px; }
 p { margin: 0; }
-code { font-family: var(--mono); font-size: 0.86em; background: var(--jsal-sunk); padding: 1px 5px; border-radius: 4px; }
+code { font-family: var(--mono); font-size: 0.86em; background: var(--jsal-sunk); padding: 1px 6px; border-radius: 4px; }
 .muted { color: var(--jsal-muted); }
 .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--jsal-accent); }
+button { color: inherit; }   /* Safari draws button text in its system blue unless told otherwise */
 button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 
 /* App: slim header, platform list on the left, toolbar and cards on the right */
@@ -245,7 +246,7 @@ header.top p { flex: 1 1 360px; font-size: 14px; color: var(--jsal-muted); }
 }
 .plist button:hover { background: var(--jsal-sunk); }
 .plist button[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); font-weight: 700; }
-.plist .cnt { flex: none; font-size: 12px; font-weight: 700; color: var(--jsal-warn); background: var(--jsal-warn-soft); border-radius: 99px; padding: 0 7px; font-variant-numeric: tabular-nums; }
+.plist .cnt { flex: none; font-size: 12px; font-weight: 700; color: var(--jsal-warn); background: var(--jsal-warn-soft); border-radius: 99px; padding: 0 8px; font-variant-numeric: tabular-nums; }
 .plist .cnt.zero { color: var(--jsal-ok); background: var(--jsal-ok-soft); }
 .side-note { font-size: 12px; color: var(--jsal-muted); padding: 4px 10px 0; }
 
@@ -257,7 +258,7 @@ header.top p { flex: 1 1 360px; font-size: 14px; color: var(--jsal-muted); }
 .tb-row { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; }
 .tb-sub { gap: 6px 18px; font-size: 13px; }
 .seg { display: inline-flex; flex-wrap: wrap; background: var(--jsal-sunk); border-radius: var(--jsal-radius); padding: 3px; gap: 2px; }
-.seg button { font: 600 13px var(--jsal-font); color: var(--jsal-muted); background: transparent; border: 0; border-radius: 4px; padding: 6px 13px; cursor: pointer; white-space: nowrap; }
+.seg button { font: 600 13px var(--jsal-font); color: var(--jsal-muted); background: transparent; border: 0; border-radius: 4px; padding: 6px 12px; cursor: pointer; white-space: nowrap; }
 .seg button:hover { color: var(--jsal-ink); }
 .seg button[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .seg.switch button[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }   /* selected looks the same everywhere */
@@ -266,7 +267,7 @@ header.top p { flex: 1 1 360px; font-size: 14px; color: var(--jsal-muted); }
 .picksel select, .mobile-only { font: 600 14px var(--jsal-font); color: var(--jsal-ink); background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); padding: 6px 8px; }
 .picksel[hidden] { display: none; }
 .mobile-only { display: none; }
-.toggle { display: inline-flex; gap: 7px; align-items: center; font-weight: 600; font-size: 13px; color: var(--jsal-ink); cursor: pointer; }
+.toggle { display: inline-flex; gap: 8px; align-items: center; font-weight: 600; font-size: 13px; color: var(--jsal-ink); cursor: pointer; }
 .toggle input { width: 15px; height: 15px; accent-color: var(--jsal-accent); margin: 0; }
 .search { position: relative; flex: 1 1 220px; max-width: 320px; margin-left: auto; }
 .search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--jsal-muted); pointer-events: none; }
@@ -281,12 +282,13 @@ details.fold > * + * { margin-top: 14px; }
 details.fold .scroll { max-width: 100%; }
 details.fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; }
 details.fold > summary::-webkit-details-marker { display: none; }
-details.fold > summary::before { content: "▸"; color: var(--jsal-muted); font-size: 14px; transition: transform .15s; }
-details.fold[open] > summary::before { transform: rotate(90deg); }
+/* the same chevron as the About sections' folds, sized for a heading */
+details.fold > summary::before { content: ""; flex: none; width: 8px; height: 8px; margin: 0 2px 0 4px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate .15s; }
+details.fold[open] > summary::before { rotate: 45deg; }
 @media (prefers-reduced-motion: reduce) { details.fold > summary::before { transition: none; } }
 
 /* Status: one pill. Colour = what it takes; "· varies" or "· not verified" when it isn't the same on every site */
-.v { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px 2px 8px; border-radius: 99px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.v { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px 2px 8px; border-radius: 99px; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .v.yes, .v.auto { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 .v.plugin, .v.code, .v.hosting { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
 .v.no { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
@@ -316,9 +318,9 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
   border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); padding: 6px 12px; cursor: pointer; white-space: nowrap;
 }
 .btn:hover { border-color: var(--jsal-hover-line); }
-.btn.primary { background: var(--jsal-fill); border-color: var(--jsal-fill); color: var(--jsal-on-fill); font-size: 14px; padding: 9px 18px; }
+.btn.primary { background: var(--jsal-fill); border-color: var(--jsal-fill); color: var(--jsal-on-fill); font-size: 14px; padding: 10px 18px; }
 .btn.primary:hover { filter: brightness(1.05); }
-.card { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); padding: 13px 16px; display: grid; gap: 7px; min-width: 0; }
+.card { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); padding: 12px 16px; display: grid; gap: 8px; min-width: 0; }
 .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px 16px; }
 .card .item { flex: 1 1 auto; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; min-width: 0; }
 .card .item small { display: block; font-weight: 400; color: var(--jsal-muted); font-size: 13px; letter-spacing: 0; margin-top: 1px; }
@@ -357,10 +359,10 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .edit-form { display: grid; gap: 10px; min-width: 0; }
 .edit-form label { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
 .edit-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
-.edit-form input, .edit-form select, .edit-form textarea { font: 14px var(--jsal-font); color: var(--jsal-ink); background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 4px; padding: 7px 9px; width: 100%; min-width: 0; }
+.edit-form input, .edit-form select, .edit-form textarea { font: 14px var(--jsal-font); color: var(--jsal-ink); background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 4px; padding: 8px 10px; width: 100%; min-width: 0; }
 .edit-form textarea { resize: vertical; line-height: 1.45; }.edit-form input:focus-visible, .edit-form select:focus-visible, .edit-form textarea:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 1px; }
 .edit-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.edit-actions .btn.primary { font-size: 13px; padding: 7px 14px; }
+.edit-actions .btn.primary { font-size: 13px; padding: 8px 14px; }
 .edit-hint { font-size: 12px; }
 .edit-conflict { margin: 0; padding: 8px 10px; border-radius: var(--jsal-radius); background: var(--jsal-warn-soft); color: var(--jsal-ink); font-size: 14px; line-height: 1.45; }
 /* How-to steps under a row */
@@ -400,6 +402,11 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pk-chip { font: 600 13px var(--jsal-font); color: var(--jsal-muted); background: var(--jsal-sunk); border: 1px solid transparent; border-radius: var(--jsal-radius-pill); padding: 4px 12px; cursor: pointer; }
 .pk-chip:hover { color: var(--jsal-ink); }
 .pk-chip.on { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+/* The platform chooser: those on the public CMS Picker, then those hidden from it (dashed: not on the site) */
+.pk-grp + .pk-grp { margin-top: 12px; }
+.pk-grp-t { margin: 0 0 6px; font-size: 13px; font-weight: 600; color: var(--jsal-ink); }
+.pk-grp-t span { color: var(--jsal-muted); font-weight: 400; }
+.pk-grp.off .pk-chip:not(.on) { background: transparent; border: 1px dashed var(--jsal-line-hi); }
 .pk-plat { display: grid; gap: 8px; }
 .pk-plat > h3 { margin: 6px 0 0; font-size: 18px; color: var(--jsal-ink); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .pk-wait { padding: 1px 8px; border-radius: var(--jsal-radius-pill); background: var(--jsal-info-soft); color: var(--jsal-info); font-size: 12px; font-weight: 600; white-space: nowrap; }
@@ -438,13 +445,13 @@ a.pk-twin { color: var(--jsal-info); text-decoration: underline; text-underline-
 @media (max-width: 720px) { .pk-table { display: none; } }
 @media (max-width: 480px) {   /* all four tabs on one row, counts included */
   .pk-long { display: none; }
-  #viewnav button { padding-inline: 5px; font-size: 12px; }
+  #viewnav button { padding-inline: 6px; font-size: 12px; }
   #viewnav .count { min-width: 16px; padding: 0 4px; }
 }
 .pk-src { margin: 6px 0 0; font-size: 13px; color: var(--jsal-muted); overflow-wrap: anywhere; }
 .pk-src a { color: var(--jsal-info); }
 .pk-src-field { margin-top: 10px; }
-.pk-profile dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 16px; margin: 0; font-size: 14px; }
+.pk-profile dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin: 0; font-size: 14px; }
 .pk-profile dt { color: var(--jsal-muted); font-weight: 600; }
 .pk-profile dd { margin: 0; min-width: 0; }
 .pk-goals { display: flex; flex-wrap: wrap; gap: 6px 14px; }
@@ -482,12 +489,12 @@ a.pk-twin { color: var(--jsal-info); text-decoration: underline; text-underline-
 .how summary::before { content: ""; width: 0; height: 0; border-left: 5px solid currentColor; border-block: 4px solid transparent; transition: transform .15s; }
 .how[open] summary::before { transform: rotate(90deg); }
 .how summary:hover { text-decoration: underline; text-underline-offset: 3px; }
-.how ol { margin: 6px 0 0; padding: 10px 14px 10px 32px; display: grid; gap: 5px; background: var(--jsal-sunk); border-radius: 6px; }
+.how ol { margin: 6px 0 0; padding: 10px 14px 10px 32px; display: grid; gap: 6px; background: var(--jsal-sunk); border-radius: 6px; }
 .how li::marker { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .how code { font-size: 0.9em; }
 .how .how-note { margin: 6px 0 0; font-size: 13px; color: var(--jsal-muted); }
 .card.slim .how summary { font-weight: 500; }
-.card.slim:has(.how[open]) { padding-block: 13px; }
+.card.slim:has(.how[open]) { padding-block: 12px; }
 /* Compare grid */
 .compare { display: grid; gap: 10px; }
 .scroll { overflow-x: auto; background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); }
@@ -510,7 +517,7 @@ footer a { color: var(--jsal-accent); }
 
 #toast {
   position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
-  background: var(--jsal-ink); color: var(--jsal-bg); padding: 9px 14px; border-radius: 8px; font-weight: 600; font-size: 14px;
+  background: var(--jsal-ink); color: var(--jsal-bg); padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 14px;
   opacity: 0; transition: opacity .2s; pointer-events: none; max-width: calc(100% - 32px);
 }
 #toast.show { opacity: 1; }
@@ -535,7 +542,7 @@ footer a { color: var(--jsal-accent); }
 #guide-backdrop[hidden], #guide[hidden] { display: none; }
 #guide { position: fixed; top: 0; right: 0; bottom: 0; z-index: 21; width: min(620px, 100%); background: var(--jsal-surface); border-left: 1px solid var(--jsal-line); box-shadow: -12px 0 40px rgb(0 0 0 / 0.2); display: flex; flex-direction: column; }
 .guide-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 20px 12px; border-bottom: 1px solid var(--jsal-line); }
-.guide-head h2 { font-size: 20px; }
+.guide-head h2 { font-size: 20px; text-wrap: balance; }
 .guide-head .eyebrow { display: block; margin-bottom: 2px; }
 .guide-close { flex: none; font: 600 20px/1 var(--jsal-font); color: var(--jsal-muted); background: var(--jsal-sunk); border: 0; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; }
 .guide-close:hover { color: var(--jsal-ink); }
@@ -548,10 +555,11 @@ footer a { color: var(--jsal-accent); }
 .guide-body .tip { font-size: 14px; padding: 8px 12px; border-radius: 6px; background: var(--jsal-sunk); color: var(--jsal-ink); }
 .guide-body .tip::before { content: "Tip: "; font-weight: 700; color: var(--jsal-ink); }
 .snippet { border: 1px solid var(--jsal-line); border-radius: 8px; overflow: hidden; }
-.snippet-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; background: var(--jsal-sunk); font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
+.snippet-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 8px 6px 12px; background: var(--jsal-sunk); font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
 .snippet pre { margin: 0; padding: 12px; overflow-x: auto; font: 13px/1.55 var(--mono); background: var(--jsal-surface); color: var(--jsal-ink); }
 .snippet pre code { background: none; padding: 0; font-size: inherit; }
 .snippet pre { tab-size: 2; }
+.snippet pre:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: -2px; }   /* focusable, so a keyboard can scroll a long line (WCAG 2.1.1) */
 code, pre { font-variant-ligatures: none; }
 .snippet .btn { padding: 4px 10px; font-size: 12px; }
 .guide-body .unverified { font-size: 13px; color: var(--jsal-muted); font-style: italic; }
@@ -796,7 +804,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-31a" defer></script>
+<script src="/nav.js?v=2026-10-31d" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script>
 // ---------- Config ----------
@@ -1639,7 +1647,8 @@ function renderPickerView() {
     <a href="${PUBLISH_URL}" target="_blank" rel="noopener">Publish now on GitHub</a>${pubAt ? ` <span class="muted">· answers dated ${esc(pubAt)}</span>` : ''}`;
   const chip = (x) => `<button type="button" class="pk-chip${x.id === PK.sel ? ' on' : ''}" data-pk-sel="${x.id}" aria-pressed="${x.id === PK.sel}">${x.name}</button>`;
   $('#pk-body').innerHTML = `${pkAttentionHtml()}${pkTableHtml(on)}
-    <div class="pk-chips" role="group" aria-label="Platform"><span class="muted">On the CMS Picker</span>${on.map(chip).join('')}${off.length ? `<span class="muted">Not on it</span>${off.map(chip).join('')}` : ''}</div>
+    <div class="pk-grp"><p class="pk-grp-t" id="pk-grp-on">On the CMS Picker <span>· ${on.length}</span></p><div class="pk-chips" role="group" aria-labelledby="pk-grp-on">${on.map(chip).join('')}</div></div>
+    ${off.length ? `<div class="pk-grp off"><p class="pk-grp-t" id="pk-grp-off">Hidden from the CMS Picker <span>· ${off.length} · their answers are kept</span></p><div class="pk-chips" role="group" aria-labelledby="pk-grp-off">${off.map(chip).join('')}</div></div>` : ''}
     ${pkPlatformHtml(p)}`;
   const f = $('#pk-view .edit-form[data-pk-form]');
   if (f) f.querySelector('.pk-hints').innerHTML = pkHints(f);
@@ -1777,7 +1786,7 @@ function guideBlock(b, i) {
   if (b.note) return `<p class="tip">${b.note}</p>`;
   if (b.ol) return `<ol>${b.ol.map((x) => `<li>${x}</li>`).join('')}</ol>`;
   if (b.ul) return `<ul>${b.ul.map((x) => `<li>${x}</li>`).join('')}</ul>`;
-  if (b.code) return `<div class="snippet"><div class="snippet-head"><span>${esc(b.label || b.lang || 'Code')}</span><button type="button" class="btn" data-snippet="${i}">Copy</button></div><pre><code>${esc(b.code)}</code></pre></div>`;
+  if (b.code) return `<div class="snippet"><div class="snippet-head"><span>${esc(b.label || b.lang || 'Code')}</span><button type="button" class="btn" data-snippet="${i}">Copy</button></div><pre tabindex="0" aria-label="${esc(b.label || b.lang || 'Code')}"><code>${esc(b.code)}</code></pre></div>`;
   return '';
 }
 let openGuideId = null, guideOpener = null;
@@ -1787,7 +1796,7 @@ function openGuide(id, opener) {
   openGuideId = id;
   guideOpener = opener || document.activeElement;
   $('#guide-group').textContent = g.group;
-  $('#guide-title').innerHTML = g.title;
+  $('#guide-title').innerHTML = g.title.replace(/(\w)-(\w)/g, '$1‑$2');   // "JSON-LD" doesn't break at its hyphen on a phone
   $('#guide-body').innerHTML = `<p class="intro">${g.intro}</p>` +
     (g.unverified ? '<p class="unverified">These steps haven’t been checked in a live admin yet.</p>' : '') +
     g.blocks.map(guideBlock).join('');

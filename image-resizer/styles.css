@@ -68,7 +68,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1px;
-  padding: 7px 6px;
+  padding: 8px 6px;
   border-radius: var(--jsal-radius-sm);
   color: var(--jsal-ink-2);
   text-align: center;
@@ -129,7 +129,7 @@ body {
 .input-sep { color: var(--jsal-muted); flex-shrink: 0; }
 
 /* Recent sizes: each pill is two buttons — apply, and × to remove */
-.recent-sizes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.recent-sizes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 
 .recent-pill {
   display: inline-flex;
@@ -147,7 +147,7 @@ body {
 .recent-pill-apply { padding: 4px 4px 4px 10px; border-radius: 20px 0 0 20px; }
 .recent-pill-apply:hover { color: var(--jsal-ink); }
 .recent-pill-del {
-  padding: 2px 9px 2px 5px;
+  padding: 2px 10px 2px 6px;
   font-size: 15px;
   line-height: 1;
   color: var(--jsal-muted);
@@ -163,7 +163,7 @@ body {
   align-items: center;
   gap: 6px 10px;
   margin-top: 6px;
-  padding: 9px 12px;
+  padding: 10px 12px;
   background: var(--jsal-surface);
   border: 1px solid var(--jsal-line);
   border-radius: var(--jsal-radius);
@@ -281,11 +281,11 @@ body {
 }
 
 .load-choice-msg { color: var(--jsal-ink); }
-.load-choice-btns { display: flex; gap: 5px; }
+.load-choice-btns { display: flex; gap: 6px; }
 
 .btn-choice {
   flex: 1;
-  padding: 7px 8px;
+  padding: 8px 8px;
   border-radius: var(--jsal-radius-sm);
   font-weight: 600;
   border: 1px solid transparent;
@@ -340,7 +340,7 @@ body {
 .btn-ghost {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   padding: 0 10px;
   height: 40px;
   border-radius: var(--jsal-radius);
@@ -357,7 +357,7 @@ body {
   align-items: center;
   gap: 8px;
   margin-top: 8px;
-  padding: 9px 12px;
+  padding: 10px 12px;
   border-radius: var(--jsal-radius);
   background: var(--jsal-surface);
   border: 1px solid var(--jsal-line);
@@ -508,7 +508,7 @@ body {
   background: var(--jsal-surface);
   border: 1px solid var(--jsal-line);
   border-radius: var(--jsal-radius);
-  padding: 7px;
+  padding: 8px;
   text-align: center;
   position: relative;
   box-shadow: var(--jsal-shadow);
@@ -551,7 +551,7 @@ body {
   position: absolute;
   top: 6px;
   left: 6px;
-  padding: 2px 7px;
+  padding: 2px 8px;
   border-radius: 5px;
   font-size: 11px;
   font-weight: 600;
@@ -715,7 +715,7 @@ body {
   .option-hint { display: none; }
   .option-track { flex: 1; }
   /* Slim enough that "QUALITY  Low Med High" stays on one line with Windows scrollbars (~200px) */
-  .quality-btn, .format-btn, .dest-btn { flex: 1; padding: 5px 4px; }
+  .quality-btn, .format-btn, .dest-btn { flex: 1; padding: 6px 4px; }
   .app { --thumb-h: 64px; }
   .preview-item { flex-basis: 140px; }   /* three cards across in a narrow window */
   .src-dims { font-size: 11px; }
@@ -733,12 +733,12 @@ body {
   .drop-zone { padding: 8px 12px; }
   .drop-icon { width: 28px; height: 28px; }
   .folder-row { padding-top: 3px; padding-bottom: 3px; }
-  .option-row { padding-top: 5px; padding-bottom: 5px; }
+  .option-row { padding-top: 6px; padding-bottom: 6px; }
 }
 
 /* Short windows (small laptop screens): tighten spacing too */
 @media (max-height: 820px) {
-  .seg-btn { padding: 7px 6px; }
+  .seg-btn { padding: 8px 6px; }
   .input-group, .btn-apply, .btn-primary, .btn-ghost { height: 34px; }
   .app { --thumb-h: 60px; }
 }
