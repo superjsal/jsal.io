@@ -68,8 +68,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - **The top bar never moves between pages:** the same `.jsal-top` markup everywhere (`check.py` compares it).
 - **One distance under the top bar:** pages that open with a heading (home, Off the clock, the CMS Picker and
   its platform pages, Privacy, Changelog, 404) start their first thing at `--jsal-page-top` from `shell.css`
-  (30px, 22px at 720px and under); a new page of that kind uses it too. The tools' "for" line sits 16px under
-  the bar, so the work area fills the first screen.
+  (30px, 22px at 720px and under), and starts flush with the logo's left edge (no optical indent on the mono
+  line); a new page of that kind uses it too. The tools' "for" line sits 16px under the bar, so the work area
+  fills the first screen.
 - **Tools fill the first screen;** the About section sits below the fold, reached by the top bar's About link.
   On phones the empty work box stretches to the bottom of the screen until there's content.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
