@@ -521,7 +521,7 @@
     let editing = null, resume = false;   // resume: answering a question a change brought in goes straight back to the results
     function answersBar() {
       const bar = el('div', 'qz-ans');
-      bar.append(el('p', 'qz-ans-l', 'Your answers · tap one to change it'));
+      bar.append(el('p', 'qz-ans-l', `Your answers · ${matchMedia('(pointer: coarse)').matches ? 'tap' : 'click'} one to change it`));
       const chips = el('div', 'qz-ans-chips');
       steps().filter((q) => !pending.has(q.id)).forEach((q) => {
         const opt = q.opts.find(([v]) => v === a[q.id]);
