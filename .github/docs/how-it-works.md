@@ -54,13 +54,14 @@ flowchart TB
 
   subgraph DEV["Working on this PC (before a push)"]
     edit["edit the site: shell.css, nav.js, a tool's CSS/JS, pages"]
+    upd["updates.py<br>rewrites Updates on the home page from the<br>changelog's data-short lines"]
     bump["bump-version.ps1<br>bumps ?v= on every page, the shell.css link<br>and the apps' module imports"]
-    check["check.ps1 → check.py<br>top bar identical, ?v= in step, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults"]
+    check["check.ps1 → check.py<br>top bar identical, ?v= in step, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults,<br>Updates matches the changelog"]
     bcheck["browser-check.mjs (Playwright on Edge/WebKit)<br>axe on every page, 375/390px, each tool's main flow"]
     personas["personas.test.js<br>37 agreed quiz results still hold"]
     commit["git pull --ff-only, stage by name, commit, push"]
   end
-  edit --> bump --> check --> bcheck --> personas --> commit --> main
+  edit --> upd --> bump --> check --> bcheck --> personas --> commit --> main
 
   subgraph VIS["In the visitor's browser"]
     shell["shell.css (one link on every page)<br>tokens, top bar, transitions, pop-ups"]
@@ -83,6 +84,7 @@ flowchart TB
 - **Content flows one way out of Supabase.** Admins edit on the live Playbook; `playbook.py publish` reads the `picker` table and writes the CMS Picker's files; the Action commits them. Nobody edits `data.json`, the platform pages, the uploaded logos or the plain-HTML copy by hand. Structural changes to the Playbook (a new item, page type or guide) go through `playbook.py pull` → edit `private\playbook\defaults.json` → `push`.
 - **Two keys, two trust levels.** The browser uses the public anon key with row-level security (members read, admins write). The publish and backup scripts use the service_role key, which lives only in John's terminal (`SUPABASE_SERVICE_ROLE_KEY`) and in the Action's secrets.
 - **The quiz is code plus data.** `score.js` (questions, scoring, wording) and `quiz.json` (per-platform values the published answers don't carry) ship with the page; everything else the quiz says comes from `data.json`. The personas test pins the agreed results.
+- **A change is described once.** The changelog is the record; an entry with a `data-short` leads its section in Updates on the home page, which `updates.py` writes between two marker comments in `index.html`. `check.py` fails when that block is out of date, so nobody edits it by hand.
 - **Cache numbers, not a build.** There's no bundler. `bump-version.ps1` rewrites `?v=` so browsers fetch changed files; `check.py` fails a page whose numbers are out of step.
 - **What the Actions can and can't check.** `check.py`, `check_data.py` and the personas run on every push. The browser checks (axe, phone widths, each tool's flow) need Playwright on a real browser, so they run on the PC before a push.
 - **Keep-awake reads the Supabase URL and anon key from the Playbook's source** (`ic/app.js`); if that file moves or the constants are renamed, the workflow's `grep` must follow.
