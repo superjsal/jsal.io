@@ -194,7 +194,7 @@
     "webflow": {
       "wordpress": {
         "what": "content as CSV into a CMS collection",
-        "url": "https://help.webflow.com/hc/en-us/articles/33961236268435"
+        "url": "https://help.webflow.com/hc/en-us/articles/33961193662739-Migrate-your-site-from-WordPress-to-Webflow"
       }
     },
     "hubspot": {
@@ -210,15 +210,15 @@
     "bigcommerce": {
       "shopify": {
         "what": "products, customers and orders",
-        "url": "https://www.bigcommerce.com/apps/data-migration-services-shopify"
+        "url": "https://www.bigcommerce.com/apps/bigcommerce-data-migration/"
       },
       "wordpress": {
         "what": "WooCommerce products, customers and orders",
-        "url": "https://www.bigcommerce.com/apps/data-migration-services-woocommerce"
+        "url": "https://www.bigcommerce.com/apps/bigcommerce-data-migration/"
       },
       "magento": {
         "what": "products, customers and orders",
-        "url": "https://www.bigcommerce.com/apps/data-migration-services-magento"
+        "url": "https://www.bigcommerce.com/apps/bigcommerce-data-migration/"
       }
     },
     "drupal": {
