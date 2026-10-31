@@ -64,7 +64,7 @@ flowchart TB
     check["check.ps1 → check.py<br>top bar identical, every ?v= current, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults,<br>Updates matches the changelog"]
     bcheck["browser-check.mjs (Playwright: Edge or Chromium, WebKit, Firefox)<br>axe on every page, 375/390px, each tool's main flow"]
     personas["personas.test.js<br>37 agreed quiz results still hold"]
-    commit["git pull --ff-only, stage by name, commit, push"]
+    commit["in a worktree of your own: merge main,<br>stage by name, commit, push"]
   end
   edit --> upd --> bump --> check --> bcheck --> personas --> commit --> main
 
