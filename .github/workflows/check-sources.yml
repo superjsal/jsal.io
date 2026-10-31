@@ -23,7 +23,7 @@ jobs:
         run: |
           set +e
           python -I .github/scripts/check_sources.py | tee report.txt
-          echo "status=$?" >> "$GITHUB_OUTPUT"
+          echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"   # the script's exit code, not tee's
       - name: Open an issue if any source is dead
         if: steps.run.outputs.status != '0'
         env:

@@ -1,8 +1,8 @@
 # Are the CMS Picker's source links still alive? Every answer links the platform's own help page (data.json
 # sourceUrl), and quiz.json links domain guides and import guides. Help centres move pages often, so once a
 # month (the "Source links" Action) and by hand this asks each unique address for its page and reports:
-#   dead     404, 410 or a 5xx twice in a row, or no connection: fix the source on the Playbook's CMS Picker tab
-#   blocked  401, 403, 429 or 999: the site refuses scripts; open it in a browser to check by hand
+#   dead     404, 410 or a 5xx twice in a row, or no such host: fix the source on the Playbook's CMS Picker tab
+#   blocked  401, 403, 429 or 999, or no answer within the time limit twice: the site refuses or stalls scripts; open it in a browser
 #   moved    a redirect to a different page (the link still works; the new address is shown so it can be updated)
 #   python check_sources.py            check and report; exits 1 if anything is dead
 #   python check_sources.py --quick    the first 20 only (a smoke test of the script itself)
@@ -46,7 +46,10 @@ def fetch(url):
             return r.status, r.geturl()
     except urllib.error.HTTPError as e:
         return e.code, e.geturl() or url
-    except Exception as e:   # DNS, TLS, timeout, reset
+    except TimeoutError:
+        return -1, 'no answer in time'
+    except Exception as e:   # DNS, TLS, reset
+        if 'timed out' in str(e).lower(): return -1, 'no answer in time'
         return 0, f'{type(e).__name__}: {e}'
 
 
@@ -66,16 +69,20 @@ def main():
     for host, group in sorted(by_host.items()):
         for u in group:
             status, final = fetch(strip_fragment(u))
-            if status == 0 or status in (404, 410) or status >= 500:
+            if status <= 0 or status in (404, 410) or status >= 500:
                 time.sleep(2)
                 status, final = fetch(strip_fragment(u))   # once more: help centres hiccup
             if status == 0 or status in (404, 410) or status >= 500: dead.append((u, status, final))
+            elif status == -1: blocked.append((u, 'no answer in time'))
             elif status in BLOCKED: blocked.append((u, status))
             elif not same_page(u, final): moved.append((u, final))
             time.sleep(0.5)
     print(f'{len(urls)} source links checked: {len(dead)} dead, {len(blocked)} blocked (check by hand), {len(moved)} moved.')
     for u, st, final in dead: print(f'  DEAD {st or "no connection"}  {u}\n       used by: {", ".join(sorted(used[u]))}' + (f'\n       {final}' if not st else ''))
-    for u, st in blocked: print(f'  blocked {st}  {u}')
+    # Blocked pages come in whole help centres (Shopify, Webflow and Duda refuse scripts), so they're counted per host
+    per_host = defaultdict(list)
+    for u, st in blocked: per_host[urlsplit(u).netloc].append(st)
+    for host, sts in sorted(per_host.items()): print(f'  blocked  {host}: {len(sts)} page(s) ({", ".join(sorted(set(map(str, sts))))}); open one in a browser now and then')
     for u, final in moved: print(f'  moved  {u}\n       now: {final}')
     return 1 if dead else 0
 
