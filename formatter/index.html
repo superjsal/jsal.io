@@ -6,7 +6,7 @@
   <title>Clean Paste: Word and Google Docs to Clean HTML | jsal.io</title>
   <meta name="description" content="Turn Word or Google Docs text into clean HTML, or HTML back into formatted text. WordPress blocks too. Free, in your browser, nothing uploaded." />
   <link rel="canonical" href="https://jsal.io/formatter/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-30zv" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-30zw" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -160,6 +160,10 @@ transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 
 .jsal-ach { left: auto; right: max(20px, env(safe-area-inset-right, 0px)); transform: none; }
 .jsal-ach[data-hide] { transform: translateY(16px); }
 }
+@media (pointer: coarse) and (max-width: 899px) {
+.jsal-ach { top: max(12px, env(safe-area-inset-top, 0px)); bottom: auto; }
+.jsal-ach[data-hide] { transform: translate(-50%, -16px); }
+}
 .jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
 .jsal-ach b { display: block; font-size: 15px; }
@@ -254,19 +258,19 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-30zv" />
+  <link rel="stylesheet" href="styles.css?v=2026-10-30zw" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":   "./js/main.js?v=2026-10-30zv",
-        "./js/clean.js":  "./js/clean.js?v=2026-10-30zv",
-        "./js/sample.js": "./js/sample.js?v=2026-10-30zv"
+        "./js/main.js":   "./js/main.js?v=2026-10-30zw",
+        "./js/clean.js":  "./js/clean.js?v=2026-10-30zw",
+        "./js/sample.js": "./js/sample.js?v=2026-10-30zw"
       }
     }
   </script>
-  <script type="module" src="js/main.js?v=2026-10-30zv"></script>
+  <script type="module" src="js/main.js?v=2026-10-30zw"></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-30zv" defer></script>
+  <script src="/nav.js?v=2026-10-30zw" defer></script>
 </head>
 <body>
   <main class="app">

@@ -26,7 +26,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-30zv" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-30zw" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
      only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
@@ -142,6 +142,10 @@ transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 
 @media (min-width: 900px) {
 .jsal-ach { left: auto; right: max(20px, env(safe-area-inset-right, 0px)); transform: none; }
 .jsal-ach[data-hide] { transform: translateY(16px); }
+}
+@media (pointer: coarse) and (max-width: 899px) {
+.jsal-ach { top: max(12px, env(safe-area-inset-top, 0px)); bottom: auto; }
+.jsal-ach[data-hide] { transform: translate(-50%, -16px); }
 }
 .jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
@@ -817,6 +821,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
           <div>
             <h3>Site <time datetime="2026-10-30">· Oct 30</time></h3>
             <ul>
+              <li><time datetime="2026-10-30">Oct 30</time> <span>On phones the achievement pop-up shows at the top, clear of the buttons</span></li>
               <li><time datetime="2026-10-30">Oct 30</time> <span>A new home page, clearer colours, shorter About sections and accessibility fixes</span></li>
               <li><time datetime="2026-10-29">Oct 29</time> <span><a href="#ach-h">Achievements</a> and a <a href="#hi-h">backpack</a> with where to find me</span></li>
             </ul>
@@ -992,6 +997,6 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-30zv" defer></script>
+<script src="/nav.js?v=2026-10-30zw" defer></script>
 </body>
 </html>

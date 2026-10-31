@@ -145,6 +145,13 @@ html { scrollbar-gutter: stable; }
   .jsal-ach { left: auto; right: max(20px, env(safe-area-inset-right, 0px)); transform: none; }
   .jsal-ach[data-hide] { transform: translateY(16px); }
 }
+/* Phones: the top of the screen, sliding down. The bottom is where every tool's action buttons sit
+   (Copy, Download All, the quiz's Next), and the card hid them for its four seconds; the top holds
+   checks and headings, which nobody needs to tap right then. --jsal-ach-lift doesn't apply up here. */
+@media (pointer: coarse) and (max-width: 899px) {
+  .jsal-ach { top: max(12px, env(safe-area-inset-top, 0px)); bottom: auto; }
+  .jsal-ach[data-hide] { transform: translate(-50%, -16px); }
+}
 .jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
 .jsal-ach b { display: block; font-size: 15px; }

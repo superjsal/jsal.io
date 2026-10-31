@@ -13,7 +13,7 @@
 <meta property="og:description" content="Your files never leave your browser. Basic Google Analytics usage stats, only with your consent in Europe.">
 <meta property="og:image" content="https://jsal.io/og/home.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.svg?v=2026-10-30zv" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-30zw" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
      only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
@@ -129,6 +129,10 @@ transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 
 @media (min-width: 900px) {
 .jsal-ach { left: auto; right: max(20px, env(safe-area-inset-right, 0px)); transform: none; }
 .jsal-ach[data-hide] { transform: translateY(16px); }
+}
+@media (pointer: coarse) and (max-width: 899px) {
+.jsal-ach { top: max(12px, env(safe-area-inset-top, 0px)); bottom: auto; }
+.jsal-ach[data-hide] { transform: translate(-50%, -16px); }
 }
 .jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
@@ -290,6 +294,6 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     <p>Email <a href="mailto:dev@jsal.io">dev@jsal.io</a>. Made by <a href="/">John Salvador</a>.</p>
   </main>
 </div>
-<script src="/nav.js?v=2026-10-30zv" defer></script>
+<script src="/nav.js?v=2026-10-30zw" defer></script>
 </body>
 </html>
