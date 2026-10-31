@@ -1,0 +1,42 @@
+# Once a month, asks every help page the CMS Picker links to (data.json sources, quiz.json guides) whether it still
+# answers, and opens an issue listing the dead ones so they can be fixed on the Playbook's CMS Picker tab. Sites
+# that refuse scripts (403, 429) are listed for a check by hand, not counted as dead. Run by hand from the Actions
+# tab too. The script is .github/scripts/check_sources.py.
+name: Source links
+on:
+  schedule:
+    - cron: "17 6 3 * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Ask every source page
+        id: run
+        run: |
+          set +e
+          python -I .github/scripts/check_sources.py | tee report.txt
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+      - name: Open an issue if any source is dead
+        if: steps.run.outputs.status != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          title="Source links: $(head -1 report.txt)"
+          body="The monthly source check found links that no longer answer. Fix each source on the Playbook's CMS Picker tab (an official docs page only; never guess one), then run \"Publish CMS Picker\".
+
+          \`\`\`
+          $(cat report.txt)
+          \`\`\`
+
+          Run: https://github.com/$REPO/actions/runs/$GITHUB_RUN_ID"
+          gh issue create --repo "$REPO" --title "$title" --body "$body"
+          exit 1

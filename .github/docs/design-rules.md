@@ -67,6 +67,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   edge and tint. A set of links is not a choice, so it never wears pills: an index of links (the home page's
   Platform guides) is a grid of equal-width tiles with the plain `--jsal-line` border, surface background and
   500 weight, or a text list. Uneven pills stagger; equal tiles don't.
+- **An index of links ends even.** Its last tile is the link that covers the whole set (the guides' "Compare all 13
+  →"), set exactly like the others (full ink, centred, the arrow after the words) and stretched across whatever is
+  left of its row by `:last-child:nth-child(…)` rules for each column count, so the grid stays even at any count
+  and adding an entry is adding its link. It never takes gold: the arrow alone says it goes elsewhere.
 - **A tick that goes with a choice** (the quiz's "In two or more languages") is a checkbox in a bordered row above
   the choices, selected with the same `--jsal-selected-*` tokens and gold edge as a pressed chip, the box itself in
   `accent-color: var(--jsal-accent)`; one focus ring on the row.
@@ -87,7 +91,13 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   picture tiles (the team Playbook as a slim text tile), Updates (one line per section) and a plain "Say hi"
   row. From 1100px down the guides take the full width under both; on phones they follow the tile. Tab order
   follows the screen. Gaming parts live on `/play/`.
-- **The CMS Picker is quiz first:** the platform cards and the comparison table open on request.
+- **The CMS Picker is quiz first:** the platform cards and the comparison table open on request. The quiz box
+  reserves its first question's height (`.qz` min-height per column count) so the rows under it don't move at
+  load or between questions.
+- **A result card says everything it knows.** Each match lists every reason with its docs link, the facts, what
+  tipped it and what counts against it, even when two cards repeat reasons and a card runs past a phone screen.
+  Decided on purpose: the reasons are the evidence the pick stands on, and two platforms fitting for the same
+  reasons is the honest answer. Don't fold or dedupe them.
 
 ## Motion
 
