@@ -168,12 +168,13 @@ body {
 /* After the quiz's "Compare these": its fit label beside each name, one gold line on what put the best match ahead
    (the one insight line), and the rows its answers rule out dimmed, with a word saying so */
 .hcell .fitp { display: inline-block; margin-left: 8px; vertical-align: 2px; }
-.qz-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0 0 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
+.qz-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0 0 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; scroll-margin-top: 16px; }
 .qz-line b { color: var(--jsal-accent); font-size: 13px; }
 .qz-line a { color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; white-space: nowrap; }
 .row.off .item, .row.off .mark, .row.off .where, .row.off .plat { color: var(--jsal-muted); }
 .row.off .tag { background: var(--jsal-sunk); color: var(--jsal-muted); }
 .item .off-note { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 12px; font-weight: 500; }
+@media (pointer: coarse) { .qz-line a { display: inline-flex; align-items: center; min-height: 44px; } }
 /* The platform's name, for screen readers on wide screens (the column header says it) and shown on phones */
 .cell .plat { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .line { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; max-width: 100%; }   /* "varies" drops under a long tag rather than past the cell */
@@ -184,17 +185,20 @@ body {
 /* Section heading row inside the table (Built in, SEO): a quiet label, not a filled bar, as the sections are
    signposts, not content */
 .row.group { display: block; padding: 16px 14px 6px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-.row.group .gtitle { position: sticky; left: 14px; }
+.row.group > .gtitle { position: sticky; left: 14px; }
+.row.group .gnote { margin-left: 8px; font-weight: 500; letter-spacing: 0; text-transform: none; }   /* the qualifiers, quietly */
+.row.group > .gtitle .gnote::before { content: "· "; }
 /* Phones: each group's rows fold behind its heading, a button (the first group starts open), so the comparison
    stays a screen or two instead of 4,800px. Desktop shows every row under the plain heading. */
 .row.group .gfold { display: none; }
 @media (max-width: 720px) {
   .row.group { padding: 0; margin: 4px 0 10px; }
-  .row.group .gtitle { display: none; }
+  .row.group > .gtitle { display: none; }
   .row.group .gfold { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; min-height: 44px; padding: 10px 14px;
     border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; text-align: left; cursor: pointer; }
   .row.group .gfold:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
   .gfold .gcount { flex: none; letter-spacing: 0; text-transform: none; }
+  .gfold .gnote { display: block; margin: 2px 0 0; }   /* under the heading, not wrapped into it */
   .gfold .gcount::after { content: " ▾"; }
   .gfold[aria-expanded="true"] .gcount::after { content: " ▴"; }
   .grows.folded { display: none; }
@@ -238,6 +242,10 @@ body {
   .cell { display: grid; grid-template-columns: 96px 1fr; gap: 2px 10px; align-items: start; border-top: 1px solid var(--jsal-line); }
   .cell .plat { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; display: block; grid-row: 1 / span 2; color: var(--jsal-ink-2); font-weight: 600; font-size: 14px; }
   .cell.col-pick .plat { color: var(--jsal-accent); }   /* the quiz's best match, named in gold on every row (its column is underlined on desktop) */
+  /* A ruled-out row folds to its label (app.js makes it a button); open, it's an ordinary row */
+  .row.off button.item { width: 100%; border: 0; background: var(--jsal-sunk); font: inherit; text-align: left; cursor: pointer; }
+  .row.off button.item:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+  .row.off:not(.open) .cell { display: none; }
   .cell > :not(.plat) { grid-column: 2; justify-self: start; }
   .cell .mark { margin-top: 0; }
   .hero { margin-top: 22px; }
@@ -341,6 +349,17 @@ body {
 .qz-ans-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .qz-ans-chips .chip { text-align: left; }   /* a long answer wraps on a phone */
 .qz-ans-chips .chip[aria-expanded="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
+/* Phones: the answers fold under one row, so the first match follows the heading (app.js wraps them) */
+.qz-ans-fold { margin-bottom: 14px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
+.qz-ans-fold > summary { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; list-style: none; cursor: pointer; font-size: 14px; color: var(--jsal-ink); border-radius: var(--jsal-radius); }
+.qz-ans-fold > summary::-webkit-details-marker { display: none; }
+.qz-ans-fold > summary b { font-weight: 600; }
+.qz-ans-fold > summary span { color: var(--jsal-muted); }
+.qz-ans-fold > summary::after { content: ""; flex: none; margin-left: auto; width: 7px; height: 7px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: 45deg; transition: rotate 0.15s; }
+.qz-ans-fold[open] > summary::after { rotate: -135deg; }
+.qz-ans-fold > summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.qz-ans-fold .qz-ans { margin: 0; padding: 0 12px 12px; }
+.qz-ans-fold .qz-ans-l { display: none; }
 .qz-ans-ed { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; padding: 12px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
 .qz-ans-ed p { flex-basis: 100%; margin-bottom: 2px; color: var(--jsal-ink); font-size: 15px; font-weight: 600; }
 .qz-res { display: grid; gap: 12px; }

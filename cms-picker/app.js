@@ -21,6 +21,7 @@
   // With "Show all", the grid starts with these; any other choice starts with the platforms that fit it
   const DEFAULT_COMPARE = ['wordpress', 'shopify', 'wix', 'squarespace'];
   let data;
+  const PHONE = matchMedia('(max-width: 720px)');   // the table's phone layout (styles.css): a card per row
 
   function el(tag, cls, text) {
     const e = document.createElement(tag);
@@ -257,14 +258,18 @@
     let lastGroup = null, body = grid;
     shown.forEach((it) => {
       if (it.group !== lastGroup && groups[it.group]) {
-        const g = groups[it.group], id = it.group, title = `${g.title}${g.asOf ? ` · as of ${g.asOf}` : ''}`;
+        // The heading proper, then its qualifiers quietly: "What it costs to start (approx., billed yearly)" and the
+        // as-of date become "WHAT IT COSTS TO START · approx., billed yearly · as of October 2026"
+        const g = groups[it.group], id = it.group, [, main, extra] = g.title.match(/^(.*?)(?:\s*\((.*)\))?$/);
+        const note = [extra, g.asOf && `as of ${g.asOf}`].filter(Boolean).join(' · ');
+        const heading = () => { const s = el('span', 'gtitle', main); if (note) s.append(el('small', 'gnote', note)); return s; };
         const gr = el('div', 'row group');
-        gr.append(el('span', 'gtitle', title));
+        gr.append(heading());
         const fold = el('button', 'gfold');
         fold.type = 'button';
         fold.setAttribute('aria-expanded', String(!state.folded.has(id)));
         fold.setAttribute('aria-controls', `grows-${id}`);
-        fold.append(el('span', null, title), el('span', 'gcount', `${shown.filter((x) => x.group === id).length} rows`));
+        fold.append(heading(), el('span', 'gcount', `${shown.filter((x) => x.group === id).length} rows`));
         fold.addEventListener('click', () => {
           state.folded.has(id) ? state.folded.delete(id) : state.folded.add(id);
           render();
@@ -279,9 +284,23 @@
       lastGroup = it.group;
       const off = ruledOut(it);
       const row = el('div', `row${off ? ' off' : ''}`);
-      const label = el('div', 'item', it.label);
+      // On a phone a ruled-out row folds to its label (each row is a card there, ~200px tall for three platforms)
+      const fold = off && PHONE.matches;
+      const label = el(fold ? 'button' : 'div', 'item', it.label);
       if (it.term) label.append(el('small', 'term', it.term));   // the SEO name, small, under the plain question
-      if (off) label.append(el('small', 'off-note', 'Not for your answers'));
+      if (off) {
+        const note = el('small', 'off-note', fold ? 'Not for your answers · show' : 'Not for your answers');
+        label.append(note);
+        if (fold) {
+          label.type = 'button';
+          label.setAttribute('aria-expanded', 'false');
+          label.addEventListener('click', () => {
+            const open = row.classList.toggle('open');
+            label.setAttribute('aria-expanded', String(open));
+            note.textContent = `Not for your answers · ${open ? 'hide' : 'show'}`;
+          });
+        }
+      }
       row.append(label);
       plats.forEach((p, i) => {
         const c = data.answers[p.id][it.id], cell = el('div', `cell${p.id === state.pick ? ' col-pick' : ''}`);
@@ -391,6 +410,7 @@
       requestAnimationFrame(() => { barTick = false; placeBar(); liftHead(); });
     }, { passive: true });
     addEventListener('resize', updateBar, { passive: true });
+    PHONE.addEventListener('change', () => { if (state.quiz) render(); });   // ruled-out rows fold only on phones
 
     // Back to top, once the hero is out of view
     const totop = $('#totop');
@@ -572,11 +592,13 @@
     // On the results: each answer as a button; tapping one opens its choices, and picking another
     // re-ranks straight away (or asks a question the change brings in, such as the shop's size)
     let editing = null, resume = false;   // resume: answering a question a change brought in goes straight back to the results
+    let ansOpen = false;   // phones: the answers fold away under the heading, so the first match is right there; this keeps the fold as left
     function answersBar() {
-      const bar = el('div', 'qz-ans');
-      bar.append(el('p', 'qz-ans-l', `Your answers · ${matchMedia('(pointer: coarse)').matches ? 'tap' : 'click'} one to change it`));
+      const bar = el('div', 'qz-ans'), tap = matchMedia('(pointer: coarse)').matches ? 'tap' : 'click';
+      bar.append(el('p', 'qz-ans-l', `Your answers · ${tap} one to change it`));
       const chips = el('div', 'qz-ans-chips');
-      steps().filter((q) => !pending.has(q.id)).forEach((q) => {
+      const answered = steps().filter((q) => !pending.has(q.id));
+      answered.forEach((q) => {
         const opt = q.opts.find(([v]) => v === a[q.id]);
         // The answer on its own ("Two or more languages"), so it makes sense without remembering the question
         const b = el('button', 'chip', opt ? opt[3] : q.q);
@@ -611,7 +633,13 @@
         });
         bar.append(ed);
       }
-      return bar;
+      if (!PHONE.matches) return bar;
+      const fold = el('details', 'qz-ans-fold'), sum = el('summary');
+      sum.append(el('b', null, 'Your answers'), el('span', null, ` · ${answered.length} · ${tap} to change one`));
+      fold.open = ansOpen || editing !== null;   // stays open while an answer is being changed
+      fold.addEventListener('toggle', () => { ansOpen = fold.open; });
+      fold.append(sum, bar);
+      return fold;
     }
 
     // source: 'quiz' (the last question answered) or 'link' (a shared result opened), sent as a GA4
@@ -633,11 +661,7 @@
       box.replaceChildren();
       box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');   // fades in, like a new question
       const head = el('div', 'qz-top');
-      head.append(el('span', null, `Your ${first}es`));
-      const bar = el('span', 'qz-bar'), fill = el('i');
-      fill.style.width = '100%';
-      bar.append(fill);
-      head.append(bar);
+      head.append(el('span', null, `Your ${first}es`));   // no progress bar here: it would only be full
       const h = el('h3', 'sr-only', `Your ${first}es`);
       h.tabIndex = -1;
       const list = el('div', 'qz-res');
@@ -736,10 +760,12 @@
         const line = !vs ? '' : tipped ? `${top[0].p.name} came out ahead because ${vs.text.slice(16)}`
           : `${weak ? vs.head.replace(/^Ahead of /, 'Versus ') : vs.head}: ${vs.text.replace(/^Both fit/, 'both fit')}`;
         state.quiz = { fit: Object.fromEntries(top.map((r) => [r.p.id, { label: label(r), low: weak }])), line, eyebrow: `Your ${first}`, answers: { ...a }, cost: costRow(a) };
+        state.folded = new Set();   // every group open: three platforms and folded ruled-out rows keep a phone's table short
         renderCards();
         openPanel('seo');
         render();
-        $('#seo').scrollIntoView();
+        // Straight to the result line and the first rows, past the platform chips and the key
+        ($('#qz-line').hidden ? $('#seo') : $('#qz-line')).scrollIntoView();
       });
       const copy = el('button', 'btn', 'Copy link to this result');
       copy.type = 'button';
@@ -748,7 +774,7 @@
       });
       const again = el('button', 'btn', 'Start over');
       again.type = 'button';
-      again.addEventListener('click', () => { a = {}; step = 0; editing = null; resume = false; pending.clear(); history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+      again.addEventListener('click', () => { a = {}; step = 0; editing = null; resume = false; ansOpen = false; pending.clear(); history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
       nav.append(cmp, copy, again);
       box.append(nav);
     }
