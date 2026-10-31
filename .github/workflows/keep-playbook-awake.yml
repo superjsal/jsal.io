@@ -1,6 +1,8 @@
 # Free Supabase projects pause after about a week without activity, which would take Platform
 # Playbook offline. This calls the database's ping() function (it only returns the time) twice a
-# week. The project URL and anon key are read from ic/app.js, where they're public by design.
+# week. The project URL and anon key (public by design; the same values ic/app.js carries) are the
+# repository's Actions variables SUPABASE_URL and SUPABASE_ANON_KEY: Settings → Secrets and variables
+# → Actions → Variables, or `gh variable set`. A new Supabase project means updating them.
 name: Keep Platform Playbook awake
 
 on:
@@ -8,21 +10,18 @@ on:
     - cron: "17 9 * * 1,4"   # Mondays and Thursdays, 09:17 UTC
   workflow_dispatch:          # "Run workflow" button for a manual check
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-        with:
-          sparse-checkout: ic/app.js
-          sparse-checkout-cone-mode: false
       - name: Ping Supabase
+        env:
+          URL: ${{ vars.SUPABASE_URL }}
+          KEY: ${{ vars.SUPABASE_ANON_KEY }}
         run: |
-          url=$(grep -oP "const SUPABASE_URL = '\K[^']+" ic/app.js)
-          key=$(grep -oP "const SUPABASE_ANON_KEY = '\K[^']+" ic/app.js)
-          curl --fail --silent --show-error -X POST "$url/rest/v1/rpc/ping" \
-            -H "apikey: $key" -H "Authorization: Bearer $key" -H "Content-Type: application/json" -d '{}'
+          [ -n "$URL" ] && [ -n "$KEY" ] || { echo "SUPABASE_URL or SUPABASE_ANON_KEY isn't set as a repository variable"; exit 1; }
+          curl --fail --silent --show-error -X POST "$URL/rest/v1/rpc/ping" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d '{}'
           echo
