@@ -33,24 +33,17 @@ jobs:
 
   browser:
     runs-on: ubuntu-latest
+    # Playwright's own image for the version in .github/build/package.json: its browsers and their system
+    # libraries are already there (installing them on the runner fails on Ubuntu 24.04's package names)
+    container: mcr.microsoft.com/playwright:v1.48.2-jammy
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-      - uses: actions/setup-node@v5
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: .github/build/package-lock.json
-      - name: Install Playwright and its browsers
+      - name: Install the checks' packages
         working-directory: .github/build
-        run: |
-          npm ci
-          npx playwright install --with-deps chromium webkit firefox
+        run: npm ci
       - name: Serve the site on port 8765
         run: |
-          python -m http.server 8765 --bind 127.0.0.1 --directory . > server.log 2>&1 &
-          for i in $(seq 1 20); do curl -fsS -o /dev/null http://localhost:8765/ && break; sleep 1; done
+          npx --yes http-server . -p 8765 -a 127.0.0.1 -s &
+          for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:8765/ && break; sleep 1; done
       - name: Browser checks (axe on every page, 375/390px, each tool's main flow)
         run: node .github/build/browser-check.mjs
