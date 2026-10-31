@@ -88,8 +88,8 @@ def bump():
 if __name__ == '__main__':
     if '--check' in sys.argv:
         bad = stale()
-        for f, shown, v, h in bad: print(f'{f.relative_to(SITE)}: {shown}?v={v} should be {h}')
+        for f, shown, v, h in bad: print(f'{f.relative_to(ROOT)}: {shown}?v={v} should be {h}')
         sys.exit(1 if bad else 0)
     changed = bump()
-    for f in changed: print(f'  {f.relative_to(SITE)}')
+    for f in changed: print(f'  {f.relative_to(ROOT)}')
     print(f'{len(changed)} file(s) updated' if changed else 'Every reference is up to date.')

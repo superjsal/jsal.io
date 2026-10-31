@@ -15,7 +15,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=f5fceb15">
+<link rel="stylesheet" href="/shell.css?v=f5978175">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -74,8 +74,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .theme { padding: 18px; border-radius: var(--jsal-radius-lg); border: 1px solid var(--t-line); background: var(--t-bg); color: var(--t-ink); }
 .theme h4 { margin: 0 0 14px; font: 700 16px/1.2 "Lora", Georgia, serif; }
 .theme h4 small { display: block; margin-top: 3px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
-.theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #ece4d3; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #e2d8c4; --t-linehi: #cfc3a9; --t-accent: #835c0e; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-onfill: #1f1a12; --t-ok: #3f6b3a; --t-oksoft: #e3eedb; --t-warn: #8a4f0a; --t-warnsoft: #f6e2c8; --t-bad: #a8352b; --t-badsoft: #f6dfda; --t-info: #3b5a9a; --t-infosoft: #e1e7f3; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
-.theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-onfill: #16130c; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #f0a860; --t-warnsoft: #33261a; --t-bad: #ff8f84; --t-badsoft: #3a1d1a; --t-info: #8fb1ff; --t-infosoft: #1d2540; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
+.theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #e8e0d1; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #d8cfc0; --t-linehi: #bdb3a3; --t-accent: #7e5a00; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-onfill: #1f1a12; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
+.theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-onfill: #16130c; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #f0956a; --t-warnsoft: #34231b; --t-bad: #ff8c96; --t-badsoft: #3a1b22; --t-info: #8fb1ff; --t-infosoft: #1d2540; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
 .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
 .sw { display: grid; gap: 6px; }
 .sw i { display: block; height: 56px; border-radius: var(--jsal-radius); border: 1px solid var(--t-line); }
@@ -138,20 +138,20 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .demos { display: grid; gap: 18px; }
 .btn { display: inline-block; height: 40px; padding: 0 18px; line-height: 38px; text-align: center; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: none; color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); text-decoration: none; cursor: pointer; transition: border-color 0.15s; }
 .btn:hover { border-color: var(--jsal-hover-line); }
-.btn.primary { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.btn.primary { border-color: var(--jsal-fill-edge); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .btn.primary:hover { filter: brightness(1.06); }   /* style: allow (the main action keeps its gold) */
 .btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .btn-danger { color: var(--jsal-bad); border-color: transparent; }
 .btn-danger:hover { background: var(--jsal-bad-soft); border-color: var(--jsal-bad); }
 .cta { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; cursor: pointer; border: 0; font-family: inherit; }
-.cta.main { background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.cta.main { background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); }
 .cta.alt { background: none; border: 1px solid var(--jsal-muted); color: var(--jsal-ink); }
 .cta:hover { transform: translateY(-2px); }
 .cta.alt:hover { border-color: var(--jsal-ink); }
 .cta:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .chip { padding: 3px 10px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: transparent; color: var(--jsal-muted); font: 600 13px var(--jsal-font); cursor: pointer; transition: background 0.12s, color 0.12s, border-color 0.12s; }
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
-.chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
+.chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
 .chip-link { padding: 3px 6px; border: 0; background: none; color: var(--jsal-info); font: 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .tag { display: inline-block; padding: 2px 10px; border-radius: var(--jsal-radius-sm); font-size: 13px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
 .tag.yes { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
@@ -187,7 +187,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
 .topbar-demo { padding: 0 18px; border: 1px dashed var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); }
 .topbar-demo .jsal-top { padding: 14px 0; }
-.insight { padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); font-size: 15px; line-height: 1.45; max-width: 36em; }
+.insight { padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-gold-line); font-size: 15px; line-height: 1.45; max-width: 36em; }
 .insight b { display: block; margin-bottom: 2px; color: var(--jsal-accent); font-size: 13px; font-weight: 700; }
 .worth { display: flex; gap: 8px; font-size: 13px; color: var(--jsal-muted); max-width: 36em; }
 
@@ -290,9 +290,9 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <div class="swatches">
           <div class="sw"><i style="background:var(--t-bg)"></i><b>Background</b><code>--jsal-bg</code><code>#f5efe2</code></div>
           <div class="sw"><i style="background:var(--t-surface)"></i><b>Surface</b><code>--jsal-surface</code><code>#fbf8f0</code></div>
-          <div class="sw"><i style="background:var(--t-sunk)"></i><b>Sunk</b><code>--jsal-sunk</code><code>#ece4d3</code></div>
-          <div class="sw"><i style="background:var(--t-line)"></i><b>Line</b><code>--jsal-line</code><code>#e2d8c4</code></div>
-          <div class="sw"><i style="background:var(--t-linehi)"></i><b>Line, firm</b><code>--jsal-line-hi</code><code>#cfc3a9</code></div>
+          <div class="sw"><i style="background:var(--t-sunk)"></i><b>Sunk</b><code>--jsal-sunk</code><code>#e8e0d1</code></div>
+          <div class="sw"><i style="background:var(--t-line)"></i><b>Line</b><code>--jsal-line</code><code>#d8cfc0</code></div>
+          <div class="sw"><i style="background:var(--t-linehi)"></i><b>Line, firm</b><code>--jsal-line-hi</code><code>#bdb3a3</code></div>
         </div>
         <p class="group">Text</p>
         <div class="swatches">
@@ -302,22 +302,22 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         </div>
         <p class="group">Gold</p>
         <div class="swatches">
-          <div class="sw"><i style="background:var(--t-accent)"></i><b>Accent</b><code>--jsal-accent</code><code>#835c0e</code><small>text and links, 4.5:1</small></div>
+          <div class="sw"><i style="background:var(--t-accent)"></i><b>Accent</b><code>--jsal-accent</code><code>#7e5a00</code><small>text and links, 4.5:1</small></div>
           <div class="sw"><i style="background:var(--t-fill)"></i><b>Fill</b><code>--jsal-fill</code><code>#e3b04b</code><small>main buttons, text on images</small></div>
           <div class="sw"><i style="background:var(--t-accentsoft)"></i><b>Accent, soft</b><code>--jsal-accent-soft</code><code>#f1e3c2</code><small>selected tint</small></div>
         </div>
         <p class="group">Meaning</p>
         <div class="swatches">
-          <div class="sw"><i style="background:var(--t-ok)"></i><b>Green</b><code>--jsal-ok</code><code>#3f6b3a</code></div>
-          <div class="sw"><i style="background:var(--t-info)"></i><b>Blue</b><code>--jsal-info</code><code>#3b5a9a</code></div>
-          <div class="sw"><i style="background:var(--t-warn)"></i><b>Orange</b><code>--jsal-warn</code><code>#8a4f0a</code></div>
-          <div class="sw"><i style="background:var(--t-bad)"></i><b>Red</b><code>--jsal-bad</code><code>#a8352b</code></div>
+          <div class="sw"><i style="background:var(--t-ok)"></i><b>Green</b><code>--jsal-ok</code><code>#296d36</code></div>
+          <div class="sw"><i style="background:var(--t-info)"></i><b>Blue</b><code>--jsal-info</code><code>#2f5db5</code></div>
+          <div class="sw"><i style="background:var(--t-warn)"></i><b>Terracotta</b><code>--jsal-warn</code><code>#9a4a1c</code></div>
+          <div class="sw"><i style="background:var(--t-bad)"></i><b>Red</b><code>--jsal-bad</code><code>#b32d2a</code></div>
         </div>
         <div class="swatches" style="margin-top:10px">
-          <div class="sw"><i style="background:var(--t-oksoft)"></i><code>--jsal-ok-soft</code><code>#e3eedb</code></div>
-          <div class="sw"><i style="background:var(--t-infosoft)"></i><code>--jsal-info-soft</code><code>#e1e7f3</code></div>
-          <div class="sw"><i style="background:var(--t-warnsoft)"></i><code>--jsal-warn-soft</code><code>#f6e2c8</code></div>
-          <div class="sw"><i style="background:var(--t-badsoft)"></i><code>--jsal-bad-soft</code><code>#f6dfda</code></div>
+          <div class="sw"><i style="background:var(--t-oksoft)"></i><code>--jsal-ok-soft</code><code>#dfeedb</code></div>
+          <div class="sw"><i style="background:var(--t-infosoft)"></i><code>--jsal-info-soft</code><code>#dfe6f5</code></div>
+          <div class="sw"><i style="background:var(--t-warnsoft)"></i><code>--jsal-warn-soft</code><code>#f5e0d0</code></div>
+          <div class="sw"><i style="background:var(--t-badsoft)"></i><code>--jsal-bad-soft</code><code>#f7dcd9</code></div>
         </div>
       </article>
       <article class="theme dark">
@@ -346,14 +346,14 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <div class="swatches">
           <div class="sw"><i style="background:var(--t-ok)"></i><b>Green</b><code>--jsal-ok</code><code>#7fbf7a</code></div>
           <div class="sw"><i style="background:var(--t-info)"></i><b>Blue</b><code>--jsal-info</code><code>#8fb1ff</code></div>
-          <div class="sw"><i style="background:var(--t-warn)"></i><b>Orange</b><code>--jsal-warn</code><code>#f0a860</code></div>
-          <div class="sw"><i style="background:var(--t-bad)"></i><b>Red</b><code>--jsal-bad</code><code>#ff8f84</code></div>
+          <div class="sw"><i style="background:var(--t-warn)"></i><b>Terracotta</b><code>--jsal-warn</code><code>#f0956a</code></div>
+          <div class="sw"><i style="background:var(--t-bad)"></i><b>Red</b><code>--jsal-bad</code><code>#ff8c96</code></div>
         </div>
         <div class="swatches" style="margin-top:10px">
           <div class="sw"><i style="background:var(--t-oksoft)"></i><code>--jsal-ok-soft</code><code>#1c2a1d</code></div>
           <div class="sw"><i style="background:var(--t-infosoft)"></i><code>--jsal-info-soft</code><code>#1d2540</code></div>
-          <div class="sw"><i style="background:var(--t-warnsoft)"></i><code>--jsal-warn-soft</code><code>#33261a</code></div>
-          <div class="sw"><i style="background:var(--t-badsoft)"></i><code>--jsal-bad-soft</code><code>#3a1d1a</code></div>
+          <div class="sw"><i style="background:var(--t-warnsoft)"></i><code>--jsal-warn-soft</code><code>#34231b</code></div>
+          <div class="sw"><i style="background:var(--t-badsoft)"></i><code>--jsal-bad-soft</code><code>#3a1b22</code></div>
         </div>
       </article>
     </div>
@@ -366,7 +366,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <tr><td><span class="dot" style="background:var(--jsal-accent)"></span>Gold</td><td>The site's accent: selected states, the main action, the one insight line, brand touches and the site's own text links. Never hover; focus is the ring, not a gold fill.</td><td>A pressed chip, "Find your CMS", "What tipped it", the gold word in each title, ".io", About links</td></tr>
         <tr><td><span class="dot" style="background:var(--jsal-ok)"></span>Green</td><td>Fit, or success.</td><td>"Built in", a Copy button after it copied, "Best match"</td></tr>
         <tr><td><span class="dot" style="background:var(--jsal-info)"></span>Blue</td><td>Information, something in flight, and links inside a tool's content.</td><td>"Plugin/app", a note, "waiting for publish", links in Clean Paste's editor and in a quiz result's steps</td></tr>
-        <tr><td><span class="dot" style="background:var(--jsal-warn)"></span>Orange</td><td>A genuine warning.</td><td>"Needs code", a missing or stale source, "may look blurry", a bold-only line that may be a heading</td></tr>
+        <tr><td><span class="dot" style="background:var(--jsal-warn)"></span>Terracotta</td><td>A genuine warning.</td><td>"Needs code", a missing or stale source, "may look blurry", a bold-only line that may be a heading</td></tr>
         <tr><td><span class="dot" style="background:var(--jsal-bad)"></span>Red</td><td>Not possible, and destructive actions.</td><td>"Not possible", Clear, Remove, Replace, an invalid size</td></tr>
         <tr><td><span class="dot" style="background:var(--jsal-muted)"></span>Neutral</td><td>Everything else: labels, type badges, icons, cost bands, states such as "not verified".</td><td>"Unclear", "$25–$100/mo", "varies"</td></tr>
       </tbody>
@@ -542,7 +542,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h2>Built in, and checked before every push.</h2>
     <p class="intro">Accessibility here is a set of rules in the code and scripts that enforce them, not a review done once. The latest independent audit (axe-core 4.10 against WCAG 2.2 AA, both themes, 320 to 1440px) found no failures; John's own keyboard and NVDA testing covers what automated checks can't.</p>
     <ul class="a11y">
-      <li><b>Contrast</b>Every text/background pair at least 4.5:1, graphics people need to see at 3:1. Light-mode gold text is <code>#835c0e</code> for that reason; the brighter <code>#e3b04b</code> is only a fill or text over images.<small>tokens · axe</small></li>
+      <li><b>Contrast</b>Every text/background pair at least 4.5:1, graphics people need to see at 3:1. Light-mode gold text is <code>#7e5a00</code> for that reason; the brighter <code>#e3b04b</code> is only a fill or text over images.<small>tokens · axe</small></li>
       <li><b>Touch targets</b>On touch screens every control is at least 44px tall; the top bar's 32px theme button carries a 44px tap area. Desktop targets are at least 24px.<small>pointer: coarse</small></li>
       <li><b>No zoom surprises</b>Text fields are 16px on touch screens, so iPhones don't zoom into them and leave the page zoomed.<small>shell.css</small></li>
       <li><b>Keyboard</b>Every control reachable, one visible focus ring, Esc closes menus and tooltips, Ctrl+Enter saves, Tab order follows the screen on the home page's bento.<small>NVDA-tested 30 Oct 2026</small></li>

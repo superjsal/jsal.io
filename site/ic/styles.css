@@ -106,7 +106,7 @@ details.fold[open] > summary::before { rotate: 45deg; }
   border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); padding: 6px 12px; cursor: pointer; white-space: nowrap;
 }
 .btn:hover { border-color: var(--jsal-hover-line); }
-.btn.primary { background: var(--jsal-fill); border-color: var(--jsal-fill); color: var(--jsal-on-fill); font-size: 14px; padding: 10px 18px; }
+.btn.primary { background: var(--jsal-fill); border-color: var(--jsal-fill-edge); color: var(--jsal-on-fill); font-size: 14px; padding: 10px 18px; }
 .btn.primary:hover { filter: brightness(1.05); }
 .card { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); padding: 12px 16px; display: grid; gap: 8px; min-width: 0; container-type: inline-size; }
 .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px 16px; }
@@ -174,7 +174,7 @@ details.fold[open] > summary::before { rotate: 45deg; }
 .pk-table td { padding: 4px 6px; }
 .pk-cell { position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 3px; border: 1px solid transparent; border-radius: var(--jsal-radius-sm); background: none; font: inherit; cursor: pointer; }   /* relative: keeps the pills' screen-reader text inside the scroll box */
 .pk-cell:hover { border-color: var(--jsal-hover-line); }
-.pk-cell.on { border-color: var(--jsal-accent); }   /* the answer open below */
+.pk-cell.on { border-color: var(--jsal-gold-line); }   /* the answer open below */
 .pk-cell .v { cursor: pointer; }
 .pk-cell.wait::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--jsal-info); }   /* waiting for the next publish: in flight (blue), not a warning */
 .pk-nosrc { font-size: 11px; color: var(--jsal-muted); }
@@ -414,7 +414,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 .vote { align-self: start; display: grid; justify-items: center; gap: 2px; padding: 8px 4px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-muted); cursor: pointer; }
 .vote b { font-size: 17px; color: var(--jsal-ink); font-variant-numeric: tabular-nums; }
 .vote:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
-.vote[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
+.vote[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
 .vote[aria-pressed="true"] b { color: var(--jsal-accent); }
 .req-body { display: grid; gap: 6px; min-width: 0; }
 .req-body h3 { font-size: 16px; overflow-wrap: anywhere; }

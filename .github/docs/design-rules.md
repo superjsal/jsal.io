@@ -40,16 +40,16 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 
 - Colours come from the `--jsal-*` tokens in `shell.css`, light and dark. Every text/background pair is at
   least 4.5:1; icons and other graphics people need to see at least 3:1. Light-mode gold text is
-  `--jsal-accent` (#835c0e); `--jsal-fill` (#e3b04b) is for fills and for text on images. The home tiles' own
+  `--jsal-accent` (#7e5a00); `--jsal-fill` (#e3b04b) is for fills and for text on images. The home tiles' own
   tint tokens stay in `index.html`, where they're used.
 - **Gold is the site's accent: loud, and spent only where it matters.** Selected states, the main action, the
   one insight line, brand touches (".io", each title's gold word, the home page name and role line, section
   numbers, eyebrow labels, achievements) and the site's own text links (About sections, footers, notes).
   Never hover. Focus is the focus ring, not a gold fill.
 - **The answer ramp**, for tags that say how well a platform does something: green = built in or automatic,
-  blue = with an add-on or indirectly, orange = needs code, red = not possible. It reads as one scale
+  blue = with an add-on or indirectly, terracotta = needs code, red = not possible. It reads as one scale
   wherever it appears, so a single tag's colour isn't a warning or information on its own.
-- **Other roles:** green = fit or success; orange = a genuine warning (a missing or stale source, "may look
+- **Other roles:** green = fit or success; terracotta = a genuine warning (a missing or stale source, "may look
   blurry"); red (`--jsal-bad`) = not possible, and destructive actions (Clear, Remove); blue = information (a
   note, something in flight such as "waiting for publish") and links inside a tool's content (Clean Paste's
   editor, the Playbook's "How to" and sources); neutral for everything else (labels, type badges, icons, cost

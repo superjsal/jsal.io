@@ -42,7 +42,7 @@
 .pp-next { display: flex; flex-wrap: wrap; gap: 10px; margin: 36px 0 8px; }
 .pp-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); color: var(--jsal-ink); font-weight: var(--jsal-btn-weight); text-decoration: none; }
 .pp-btn:hover { border-color: var(--jsal-hover-line); }
-.pp-btn.main { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.pp-btn.main { border-color: var(--jsal-fill-edge); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .pp-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .pp-others { margin: 18px 0 40px; color: var(--jsal-muted); font-size: 14px; }
 .pp-others a { color: var(--jsal-accent); text-underline-offset: 2px; }

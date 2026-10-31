@@ -14,21 +14,23 @@
 :root {
   --jsal-bg: #f5efe2;
   --jsal-surface: #fbf8f0;
-  --jsal-sunk: #ece4d3;
+  --jsal-sunk: #e8e0d1;        /* wells and lines are a few degrees cooler than the page, so gold has something less gold behind it */
   --jsal-ink: #1f1a12;
   --jsal-ink-2: #3d362a;
   --jsal-muted: #6b6253;
-  --jsal-line: #e2d8c4;
-  --jsal-line-hi: #cfc3a9;
-  --jsal-accent: #835c0e;      /* gold for text and links (dark enough for 4.5:1 on every light surface) */
+  --jsal-line: #d8cfc0;
+  --jsal-line-hi: #bdb3a3;
+  --jsal-accent: #7e5a00;      /* gold for text and links: the lightest gold that keeps 4.5:1 on every light surface (5.5:1 on the page) */
   --jsal-accent-soft: #f1e3c2;
-  --jsal-accent-ring: rgba(131, 92, 14, 0.35);
-  --jsal-fill: #e3b04b;        /* gold for main buttons */
+  --jsal-accent-ring: rgba(126, 90, 0, 0.4);
+  --jsal-fill: #e3b04b;        /* the gold itself, for main buttons and (in light mode) lines and rings, which only need 3:1 */
   --jsal-on-fill: #1f1a12;
-  --jsal-ok: #3f6b3a;   --jsal-ok-soft: #e3eedb;
-  --jsal-warn: #8a4f0a; --jsal-warn-soft: #f6e2c8;
-  --jsal-bad: #a8352b;  --jsal-bad-soft: #f6dfda;
-  --jsal-info: #3b5a9a; --jsal-info-soft: #e1e7f3;   /* arcane blue */
+  --jsal-gold-line: var(--jsal-fill);   /* gold as a graphic: the insight line's bar, a selected border, a column's underline */
+  --jsal-fill-edge: var(--jsal-accent); /* a gold button's edge, so it has a shape on cream; the fill itself in dark mode */
+  --jsal-ok: #296d36;   --jsal-ok-soft: #dfeedb;
+  --jsal-warn: #9a4a1c; --jsal-warn-soft: #f5e0d0;   /* terracotta, twenty degrees off the gold, so a warning never reads as gold */
+  --jsal-bad: #b32d2a;  --jsal-bad-soft: #f7dcd9;
+  --jsal-info: #2f5db5; --jsal-info-soft: #dfe6f5;   /* arcane blue */
   --jsal-shadow: 0 1px 2px rgba(60, 40, 10, 0.08);
   --jsal-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --jsal-radius: 6px;
@@ -41,8 +43,9 @@
     --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
     --jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
     --jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
-    --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
-    --jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+    --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0956a; --jsal-warn-soft: #34231b;
+    --jsal-bad: #ff8c96; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+    --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill);
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
     color-scheme: dark;
   }
@@ -53,8 +56,9 @@
     --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
     --jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
     --jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
-    --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
-    --jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+    --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0956a; --jsal-warn-soft: #34231b;
+    --jsal-bad: #ff8c96; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+    --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill);
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
     color-scheme: dark;
   }

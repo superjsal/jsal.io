@@ -33,7 +33,7 @@ body {
   transition: border-color 0.15s;
 }
 .btn:hover { border-color: var(--jsal-hover-line); }   /* hover is neutral; gold means selected, focused or the main action */
-.btn.primary { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.btn.primary { border-color: var(--jsal-fill-edge); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .btn.primary:hover { filter: brightness(1.06); }
 
 /* Under the quiz: the cards and the table, each behind a button (app.js opens them) */
@@ -91,7 +91,7 @@ body {
   transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
-.chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
+.chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
 /* Compare: a line above the chips with the count and the two actions; a picked chip shows a tick, not only gold */
 .plats-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .plats-head .plats-label { color: var(--jsal-ink); font-size: 14px; margin: 0; }
@@ -163,12 +163,12 @@ body {
    so the tags remain the loudest thing in a cell. Only with two or more columns (app.js). */
 .cell, .hcell { transition: background-color 0.18s ease; }
 .cell.col-on, .cell.col-pick { background: color-mix(in srgb, var(--jsal-ink) 3%, transparent); }
-.hcell .pname { display: inline-block; padding-bottom: 2px; background: linear-gradient(var(--jsal-accent), var(--jsal-accent)) left bottom / 0 2px no-repeat; transition: background-size 0.18s ease, color 0.18s ease; }
+.hcell .pname { display: inline-block; padding-bottom: 2px; background: linear-gradient(var(--jsal-gold-line), var(--jsal-gold-line)) left bottom / 0 2px no-repeat; transition: background-size 0.18s ease, color 0.18s ease; }
 .hcell.col-on .pname, .hcell.col-pick .pname { color: var(--jsal-accent); background-size: 100% 2px; }
 /* After the quiz's "Compare these": its fit label beside each name, one gold line on what put the best match ahead
    (the one insight line), and the rows its answers rule out dimmed, with a word saying so */
 .hcell .fitp { display: inline-block; margin-left: 8px; vertical-align: 2px; }
-.qz-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0 0 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; scroll-margin-top: 16px; }
+.qz-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0 0 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-gold-line); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; scroll-margin-top: 16px; }
 .qz-line b { color: var(--jsal-accent); font-size: 13px; }
 .qz-line a { color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; white-space: nowrap; }
 .row.off .item, .row.off .mark, .row.off .where, .row.off .plat { color: var(--jsal-muted); }
@@ -334,7 +334,7 @@ body {
 .qz-opt b { font-size: 15px; font-weight: 600; }
 .qz-opt small { color: var(--jsal-muted); font-size: 13px; }
 .qz-opt:hover { border-color: var(--jsal-hover-line); }
-.qz-opt[aria-pressed="true"] { border-color: var(--jsal-accent); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+.qz-opt[aria-pressed="true"] { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 /* Selected: a small tick, the same mark wherever a choice is made */
 .qz-opt[aria-pressed="true"]::after { content: ""; position: absolute; top: 13px; right: 12px; width: 14px; height: 14px; background: var(--jsal-accent); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }
 .qz-opt, .qz-ans-chips .chip { transition: border-color 0.12s, background 0.12s, color 0.12s; }
@@ -348,7 +348,7 @@ body {
 .qz-ans-l { margin-bottom: 6px; color: var(--jsal-muted); font-size: 13px; }
 .qz-ans-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .qz-ans-chips .chip { text-align: left; }   /* a long answer wraps on a phone */
-.qz-ans-chips .chip[aria-expanded="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
+.qz-ans-chips .chip[aria-expanded="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
 /* Phones: the answers fold under one row, so the first match follows the heading (app.js wraps them) */
 .qz-ans-fold { margin-bottom: 14px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
 .qz-ans-fold > summary { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; list-style: none; cursor: pointer; font-size: 14px; color: var(--jsal-ink); border-radius: var(--jsal-radius); }
@@ -381,7 +381,7 @@ body {
 .qz-why li + li { margin-top: 3px; }
 .qz-why li::before { content: ""; position: absolute; left: 0; top: 4px; width: 14px; height: 14px; background: var(--jsal-muted); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }
 /* What sets it apart from its neighbour: one gold rule and label, no fill, so it reads as the one insight */
-.qz-vs { grid-column: 2; margin-top: 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
+.qz-vs { grid-column: 2; margin-top: 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-gold-line); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
 .qz-vs-h { margin-bottom: 2px; color: var(--jsal-accent); font-size: 13px; font-weight: 700; }
 /* "Less suited if…": context, not an alarm (a platform its own card rules out never reaches the top three) */
 .qz-lim { grid-column: 2; display: flex; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }

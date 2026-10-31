@@ -52,7 +52,7 @@ sys.path.insert(0, str(BUILD))
 sys.dont_write_bytecode = True   # no __pycache__ folder inside the site repo
 import versions
 for f, shown, v, h in versions.stale():
-    fail(f'{f.relative_to(SITE)}: {shown}?v={v} is out of date (the file hashes to {h}); run bump-version.ps1')
+    fail(f'{f.relative_to(ROOT)}: {shown}?v={v} is out of date (the file hashes to {h}); run bump-version.ps1')
 
 # Every page links the shared stylesheet with one identical line, in <head> before its own styles
 # (so shell.css loses to a page's own rules, as the inline copies used to)

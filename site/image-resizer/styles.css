@@ -325,12 +325,12 @@ body {
 
 .btn-accent {
   background: var(--jsal-fill);
-  border-color: transparent;
+  border-color: var(--jsal-fill-edge);
   color: var(--jsal-on-fill);
   font-weight: 600;
   box-shadow: none;
 }
-.btn-accent:hover { background: var(--jsal-fill); border-color: transparent; filter: brightness(1.08); }   /* style: allow (the main action keeps its gold) */
+.btn-accent:hover { background: var(--jsal-fill); border-color: var(--jsal-fill-edge); filter: brightness(1.08); }   /* style: allow (the main action keeps its gold) */
 .btn-accent:disabled { box-shadow: none; filter: none; }
 
 .btn-ghost {

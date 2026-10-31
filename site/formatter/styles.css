@@ -143,12 +143,12 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .btn-primary:active { transform: scale(0.98); }
 .btn-accent {
   background: var(--jsal-fill);
-  border-color: transparent;
+  border-color: var(--jsal-fill-edge);
   color: var(--jsal-on-fill);
   font-weight: 600;
   box-shadow: none;
 }
-.btn-accent:hover { background: var(--jsal-fill); border-color: transparent; filter: brightness(1.08); }   /* style: allow (the main action keeps its gold) */
+.btn-accent:hover { background: var(--jsal-fill); border-color: var(--jsal-fill-edge); filter: brightness(1.08); }   /* style: allow (the main action keeps its gold) */
 .btn-primary.done { border-color: var(--jsal-ok); }
 .btn-accent.done { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 
