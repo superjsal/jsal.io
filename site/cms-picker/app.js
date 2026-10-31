@@ -419,24 +419,28 @@
 
     // "Show notes" (remembered in this browser). Off by default: just the tags, so the table can be
     // scanned; each note is still in the cell's tooltip.
+    // Each is one side of a two-button track: the other side is its sibling, pressed when it isn't
+    const setPair = (btn, on) => { btn.setAttribute('aria-pressed', String(on)); btn.previousElementSibling.setAttribute('aria-pressed', String(!on)); };
     const notes = $('#notes');
+    $('#notes-off').addEventListener('click', () => { if (state.notes) notes.click(); });
     try { state.notes = localStorage.getItem('cms-picker-notes') === 'on'; } catch (e) { /* storage blocked: notes stay off */ }
-    notes.setAttribute('aria-pressed', String(state.notes));
+    setPair(notes, state.notes);
     notes.addEventListener('click', () => {
       state.notes = !state.notes;
       hideTip();
-      notes.setAttribute('aria-pressed', String(state.notes));
+      setPair(notes, state.notes);
       try { localStorage.setItem('cms-picker-notes', state.notes ? 'on' : 'off'); } catch (e) { /* not remembered */ }
       render();
     });
     // "Only differences" (remembered too): rows where every compared platform has the same tag are left out
     const diffs = $('#diffs');
+    $('#diffs-off').addEventListener('click', () => { if (state.diffs) diffs.click(); });
     try { state.diffs = localStorage.getItem('cms-picker-diffs') === 'on'; } catch (e) { /* storage blocked: off */ }
-    diffs.setAttribute('aria-pressed', String(state.diffs));
+    setPair(diffs, state.diffs);
     diffs.addEventListener('click', () => {
       state.diffs = !state.diffs;
       hideTip();
-      diffs.setAttribute('aria-pressed', String(state.diffs));
+      setPair(diffs, state.diffs);
       try { localStorage.setItem('cms-picker-diffs', state.diffs ? 'on' : 'off'); } catch (e) { /* not remembered */ }
       render();
     });
@@ -448,7 +452,13 @@
     Object.values(SCOPE).forEach(([word, meaning]) => { const s = el('span', 'sc', word); s.title = meaning; legend.append(s); });
     setGoal('all');
     setupQuiz();
-    document.querySelectorAll('.more-btn').forEach((b) => b.addEventListener('click', () => setPanel(b.dataset.panel, b.getAttribute('aria-expanded') !== 'true')));
+    // Opening a panel brings its heading into view (closing stays put): with the cards already open, the table would
+    // otherwise appear far below and the tap seem to do nothing
+    document.querySelectorAll('.more-btn').forEach((b) => b.addEventListener('click', () => {
+      const open = b.getAttribute('aria-expanded') !== 'true';
+      setPanel(b.dataset.panel, open);
+      if (open) $('#' + b.dataset.panel).scrollIntoView();
+    }));
     ['fit', 'seo'].forEach((id) => $('#' + id).addEventListener('beforematch', () => requestAnimationFrame(() => setPanel(id, true))));
     // Links to #fit or #seo (the compare bar, the platform pages) open the panel before the browser scrolls to it
     const fromHash = () => { const id = location.hash.slice(1); if (id === 'fit' || id === 'seo') { openPanel(id); $('#' + id).scrollIntoView(); } };

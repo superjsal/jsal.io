@@ -66,9 +66,9 @@
   <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update. After
        editing CSS or JS, run site\.github\build\bump-version.ps1 to update them (see SETUP.md). -->
   <link rel="stylesheet" href="/shell.css?v=f5978175">
-  <link rel="stylesheet" href="styles.css?v=4e0b4aaf" />
+  <link rel="stylesheet" href="styles.css?v=855393e3" />
   <script src="score.js?v=78e6e1d0" defer></script>
-  <script src="app.js?v=42791b38" data-quiz-v="1f7e5126" defer></script>
+  <script src="app.js?v=df49deee" data-quiz-v="1f7e5126" defer></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
   <script src="/nav.js?v=fcee8135" defer></script>
 </head>
@@ -130,8 +130,16 @@
       <div class="plats" id="plats" role="group" aria-label="Platforms to compare"></div>
       <div class="keyrow">
         <div class="legend" id="legend" role="group" aria-label="Key"></div>
-        <button type="button" class="chip" id="diffs" aria-pressed="false" title="Hide the rows where every compared platform has the same answer">Only differences</button>
-        <button type="button" class="chip" id="notes" aria-pressed="false">Show notes</button>
+        <div class="trks">
+          <div class="trk" role="group" aria-label="Which rows to show">
+            <button type="button" id="diffs-off" aria-pressed="true">All rows</button>
+            <button type="button" id="diffs" aria-pressed="false" title="Only the rows where the compared platforms differ">Differences</button>
+          </div>
+          <div class="trk" role="group" aria-label="What each cell shows">
+            <button type="button" id="notes-off" aria-pressed="true">Tags</button>
+            <button type="button" id="notes" aria-pressed="false" title="Each answer's note under its tag">Notes</button>
+          </div>
+        </div>
       </div>
 
       <!-- After the quiz's "Compare these": what put the best match ahead (app.js fills it) -->

@@ -103,10 +103,17 @@ body {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
 
-/* Key and Show notes share one row */
+/* Key and the table's two switches share one row. A switch is a track with two sides (the building block the other tools
+   use), so it reads as a control for the table, not as another platform chip */
 .keyrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 14px; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--jsal-muted); font-size: 13px; }
 .legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.trks { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
+.trk { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
+.trk button { padding: 4px 10px; border-radius: var(--jsal-radius-sm); color: var(--jsal-muted); font-size: 13px; font-weight: 600; transition: color 0.12s; }
+.trk button:hover { color: var(--jsal-ink); }
+.trk button[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+.trk button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 
 /* ── Verdict tags ──────────────────────────────────────────────────────── */
 
@@ -183,10 +190,11 @@ body {
 .mark { display: block; margin-top: 4px; color: var(--jsal-ink-2); font-size: 14px; line-height: 1.4; }
 .where { display: block; margin-top: 3px; color: var(--jsal-muted); font-size: 13px; line-height: 1.4; }   /* menu path to the setting, under the note */
 /* Section heading row inside the table (Built in, SEO): a quiet label, not a filled bar, as the sections are
-   signposts, not content */
-.row.group { display: block; padding: 16px 14px 6px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+   signposts, not content; a step darker than a ruled-out row, so the two never read alike
+   */
+.row.group { display: block; padding: 16px 14px 6px; color: var(--jsal-ink-2); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 .row.group > .gtitle { position: sticky; left: 14px; }
-.row.group .gnote { margin-left: 8px; font-weight: 500; letter-spacing: 0; text-transform: none; }   /* the qualifiers, quietly */
+.row.group .gnote { margin-left: 8px; color: var(--jsal-muted); font-weight: 500; letter-spacing: 0; text-transform: none; }   /* the qualifiers, quietly */
 .row.group > .gtitle .gnote::before { content: "· "; }
 /* Phones: each group's rows fold behind its heading, a button (the first group starts open), so the comparison
    stays a screen or two instead of 4,800px. Desktop shows every row under the plain heading. */
@@ -411,7 +419,7 @@ body {
 
 /* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact chips) */
 @media (pointer: coarse) {
-  .chip, .qz-opt, .btn { min-height: 44px; }
+  .chip, .qz-opt, .btn, .trk button { min-height: 44px; }
   /* the Compare chips and actions look 36px tall; the tap area reaches 44px (the rows are 8px apart) */
   .plats { row-gap: 8px; }
   .plats .chip, .plats-act { position: relative; min-height: 36px; }
@@ -421,7 +429,7 @@ body {
 /* Printing: the quiz result and the table on paper, with every note written out and the docs links'
    addresses shown; buttons and floating bits are left off */
 @media print {
-  .jsal-top, .jsal-about, .more, .qz-hint, .qz-nav, .qz-switch, .qz-ans-l, .qz-ans-ed, .qz-opts, .types, .plats, .plats-head, #notes, .cbar, .totop, .tip, .cfoot { display: none !important; }
+  .jsal-top, .jsal-about, .more, .qz-hint, .qz-nav, .qz-switch, .qz-ans-l, .qz-ans-ed, .qz-opts, .types, .plats, .plats-head, .trks, .cbar, .totop, .tip, .cfoot { display: none !important; }
   .grid.compact .mark, .grid.compact .where { position: static; width: auto; height: auto; margin: 4px 0 0; overflow: visible; clip-path: none; white-space: normal; }
   .thead { position: static; overflow: visible; }
   .scroll { overflow: visible; }
