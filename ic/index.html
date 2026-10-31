@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Platform Playbook | jsal.io</title>
-<link rel="icon" href="/favicon.svg?v=2026-10-30zzf" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-30zzh" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
-<script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();window.jsalEarlyClick={x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()};}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
+<script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://kvdzluvhwxkrbatgskio.supabase.co" crossorigin>
@@ -771,7 +771,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-30zzf" defer></script>
+<script src="/nav.js?v=2026-10-30zzh" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script>
 // ---------- Config ----------

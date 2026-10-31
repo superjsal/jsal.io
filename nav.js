@@ -361,7 +361,9 @@
   });
   // Esc also works after a mouse click, when focus is still on the logo
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden && !menu.contains(e.target)) close(true); });
-  document.addEventListener('pointerdown', (e) => { if (!menu.hidden && !menu.contains(e.target) && !trigger.contains(e.target)) close(); });
+  // Not for a press that lands on a page transition's picture (replay is set): that click is about to be replayed on
+  // whatever is under it, which may be the menu
+  document.addEventListener('pointerdown', (e) => { if (!replay && !menu.hidden && !menu.contains(e.target) && !trigger.contains(e.target)) close(); });
   addEventListener('resize', () => { if (!menu.hidden) place(); });
   addEventListener('scroll', () => { if (!menu.hidden) place(); }, { passive: true });
 
@@ -370,32 +372,35 @@
   // · after an app was picked but before the new page took over, the old page holds it in sessionStorage.
   // Either way the new page replays it here: the logo opens the menu, anything else is clicked, with the
   // transition cut short. A page loaded ahead (prerendered) looks again when it's shown.
-  const KEY = 'jsal-early-click';
+  // Held clicks are a queue, replayed in order: logo, then the menu item picked from the menu it opened.
+  const KEY = 'jsal-early-clicks';
   let leaving = false;
+  const heldHere = [];
   menu.addEventListener('click', (e) => { if (e.target.closest('a[href]')) leaving = true; });
   addEventListener('click', (e) => {
     if (!leaving) return;
     const l = e.target.closest && e.target.closest('[data-jsal-nav]');
-    if (!l && e.target !== document.documentElement && e.target !== document.body) return;
+    if (!l && !heldHere.length && e.target !== document.documentElement && e.target !== document.body) return;
     e.preventDefault(); e.stopPropagation();
+    heldHere.push({ x: e.clientX, y: e.clientY, logo: !!l, at: Date.now() });
     // Both stores: a page loaded ahead keeps the session storage it started with, but reads local storage live
-    const held = JSON.stringify({ x: e.clientX, y: e.clientY, logo: !!l, at: Date.now() });
-    try { sessionStorage.setItem(KEY, held); localStorage.setItem(KEY, held); } catch (err) {}
+    try { sessionStorage.setItem(KEY, JSON.stringify(heldHere)); localStorage.setItem(KEY, JSON.stringify(heldHere)); } catch (err) {}
   }, true);
   function replayEarly() {
-    let early = window.jsalEarlyClick;
-    delete window.jsalEarlyClick;
+    let early = window.jsalEarlyClicks || [];
+    delete window.jsalEarlyClicks;
     try {
       const held = sessionStorage.getItem(KEY) || localStorage.getItem(KEY);
-      if (!early && held) early = JSON.parse(held);
+      if (!early.length && held) early = JSON.parse(held);
       sessionStorage.removeItem(KEY); localStorage.removeItem(KEY);
     } catch (err) {}
-    if (!early || Date.now() - early.at > 3000) return;
+    early = early.filter((c) => Date.now() - c.at < 3000);
+    if (!early.length) return;
     const vt = document.activeViewTransition;
     if (vt) { quiet(vt); vt.skipTransition(); }
-    if (early.logo) open(false);
-    else {
-      const t = document.elementFromPoint(early.x, early.y);
+    for (const c of early) {
+      if (c.logo) { menu.hidden ? open(false) : close(); continue; }
+      const t = document.elementFromPoint(c.x, c.y);
       const hit = t && t.closest('a[href], button, summary, label, input, select, textarea, [role="button"], [tabindex]');
       if (hit) hit.click();
     }
