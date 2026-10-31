@@ -314,7 +314,10 @@
           cell.dataset.scope = scope;
           line.append(s);
         }
-        cell.append(el('span', 'plat', p.name), line);
+        const plat = el('span', 'plat', p.name);
+        const fitLabel = state.quiz && state.quiz.fit[p.id];
+        if (fitLabel && PHONE.matches) plat.append(' ', el('span', `fitp${fitLabel.low ? ' low' : ''}`, fitLabel.label));   // phones: the label on each row, as the header isn't shown
+        cell.append(plat, line);
         if (c.mark && !GENERIC.test(c.mark.trim())) {
           cell.append(el('span', 'mark', c.mark));
           cell.dataset.note = c.mark;
@@ -718,6 +721,29 @@
       box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');   // fades in, like a new question
       const head = el('div', 'qz-top');
       head.append(el('span', null, `Your ${first}es`));   // no progress bar here: it would only be full
+      const compareThese = () => {
+        state.compare = new Set(top.map((r) => r.p.id));
+        state.touched = true;
+        state.pick = top[0].p.id;
+        // The table carries the result along: each column's label, and the first card's "what sets it apart" box as
+        // one line ("Wix came out ahead because …"; a tie or a closest match keeps the box's own heading)
+        const vs = told[0].vs;
+        const tipped = vs && vs.text.startsWith('What tipped it: ');
+        const line = !vs ? '' : tipped ? `${top[0].p.name} came out ahead because ${vs.text.slice(16)}`
+          : `${weak ? vs.head.replace(/^Ahead of /, 'Versus ') : vs.head}: ${vs.text.replace(/^Both fit/, 'both fit')}`;
+        state.quiz = { fit: Object.fromEntries(top.map((r) => [r.p.id, { label: label(r), low: weak }])), line, eyebrow: `Your ${first}`, answers: { ...a }, cost: costRow(a) };
+        state.folded = new Set();   // every group open: three platforms and folded ruled-out rows keep a phone's table short
+        renderCards();
+        openPanel('seo');
+        render();
+        // Straight to the result line and the first rows, past the platform chips and the key
+        ($('#qz-line').hidden ? $('#seo') : $('#qz-line')).scrollIntoView();
+      };
+      // The result is four screens tall on a phone: the compare action is at the top as well as the bottom
+      const jump = el('button', 'qz-jump', 'Compare these side by side ↓');
+      jump.type = 'button';
+      jump.addEventListener('click', compareThese);
+      head.append(jump);
       const h = el('h3', 'sr-only', `Your ${first}es`);
       let sure = null;
       if (top[1] && !weak) {
@@ -855,24 +881,7 @@
       const nav = el('div', 'qz-nav');
       const cmp = el('button', 'btn primary', 'Compare these side by side');
       cmp.type = 'button';
-      cmp.addEventListener('click', () => {
-        state.compare = new Set(top.map((r) => r.p.id));
-        state.touched = true;
-        state.pick = top[0].p.id;
-        // The table carries the result along: each column's label, and the first card's "what sets it apart" box as
-        // one line ("Wix came out ahead because …"; a tie or a closest match keeps the box's own heading)
-        const vs = told[0].vs;
-        const tipped = vs && vs.text.startsWith('What tipped it: ');
-        const line = !vs ? '' : tipped ? `${top[0].p.name} came out ahead because ${vs.text.slice(16)}`
-          : `${weak ? vs.head.replace(/^Ahead of /, 'Versus ') : vs.head}: ${vs.text.replace(/^Both fit/, 'both fit')}`;
-        state.quiz = { fit: Object.fromEntries(top.map((r) => [r.p.id, { label: label(r), low: weak }])), line, eyebrow: `Your ${first}`, answers: { ...a }, cost: costRow(a) };
-        state.folded = new Set();   // every group open: three platforms and folded ruled-out rows keep a phone's table short
-        renderCards();
-        openPanel('seo');
-        render();
-        // Straight to the result line and the first rows, past the platform chips and the key
-        ($('#qz-line').hidden ? $('#seo') : $('#qz-line')).scrollIntoView();
-      });
+      cmp.addEventListener('click', compareThese);
       const copy = el('button', 'btn', 'Copy link to this result');
       copy.type = 'button';
       copy.addEventListener('click', async () => {

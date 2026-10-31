@@ -205,7 +205,7 @@ body {
   .row.group .gfold { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; min-height: 44px; padding: 10px 14px;
     border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; text-align: left; cursor: pointer; }
   .row.group .gfold:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-  .gfold .gcount { flex: none; letter-spacing: 0; text-transform: none; }
+  .gfold .gcount { flex: none; margin-right: 52px; letter-spacing: 0; text-transform: none; }   /* clear of the floating Top button */
   .gfold .gnote { display: block; margin: 2px 0 0; }   /* under the heading, not wrapped into it */
   .gfold .gcount::after { content: " ▾"; }
   .gfold[aria-expanded="true"] .gcount::after { content: " ▴"; }
@@ -247,9 +247,10 @@ body {
   .row { display: block; margin-bottom: 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); overflow: hidden; }
   .item { position: static; border-right: 0; background: var(--jsal-sunk); }
   .row.group { padding: 14px 2px 6px; border: 0; background: none; }
-  .cell { display: grid; grid-template-columns: 96px 1fr; gap: 2px 10px; align-items: start; border-top: 1px solid var(--jsal-line); }
+  .cell { display: grid; grid-template-columns: 104px 1fr; gap: 2px 10px; align-items: start; border-top: 1px solid var(--jsal-line); }
   .cell .plat { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; display: block; grid-row: 1 / span 2; color: var(--jsal-ink-2); font-weight: 600; font-size: 14px; }
   .cell.col-pick .plat { color: var(--jsal-accent); }   /* the quiz's best match, named in gold on every row (its column is underlined on desktop) */
+  .cell .plat .fitp { display: block; width: max-content; max-width: 100%; margin: 3px 0 0; padding: 1px 8px; }   /* under the name, never wrapped mid-label */
   /* A ruled-out row folds to its label (app.js makes it a button); open, it's an ordinary row */
   .row.off button.item { width: 100%; border: 0; background: var(--jsal-sunk); font: inherit; text-align: left; cursor: pointer; }
   .row.off button.item:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
@@ -422,6 +423,8 @@ body {
 /* How sure the result is, beside the heading: a close call is neutral, a clear lead or winner green */
 .qz-sure { margin-left: 10px; padding: 2px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
 .qz-sure.close { background: var(--jsal-sunk); color: var(--jsal-ink-2); }
+.qz-jump { margin-left: auto; padding: 4px 0; border: 0; background: none; color: var(--jsal-accent); font: 600 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; white-space: nowrap; }
+.qz-jump:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius-sm); }
 .qz-sure-why { margin: -6px 0 14px; color: var(--jsal-muted); font-size: 14px; }
 /* "Had a platform in mind?": any platform ranked for these answers, with what counted for and against it */
 .qz-check { margin-top: 12px; padding: 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
