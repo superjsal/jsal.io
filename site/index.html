@@ -125,7 +125,7 @@ p, li { text-wrap: pretty; }
 
 /* Top padding lines the small line up with the picture's top edge in the CMS Picker tile beside it
    (tile padding 26px + 1px border) */
-.intro { grid-column: 1 / 6; padding: 28px 0 0; }
+.intro { grid-column: 1 / 6; }   /* its label level with the tile, at the shared distance under the top bar */
 .roles { display: flex; flex-wrap: wrap; margin: 0 0 18px 4px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 .roles span + span::before { content: "·"; margin: 0 10px; color: var(--jsal-muted); }
 .intro h1 { margin: 0; font: 700 clamp(44px, 5vw, 62px)/1.02 "Lora", Georgia, serif; letter-spacing: -0.03em; }
@@ -301,7 +301,6 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
 @media (max-width: 860px) {
   .grid > * { grid-column: 1 / -1 !important; }
-  .intro { padding-top: 0; }
   .intro p { font-size: 16px; }
 }
 #work, #updates, #hi-h { scroll-margin-top: 16px; }   /* #hi-h: where "Say hi" lands */
