@@ -63,20 +63,30 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 Corners `--jsal-radius-sm` / `-` / `-lg` / `-pill`; selected `--jsal-selected-*`; hover `--jsal-hover-line`;
 focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead of new values.
 
+- **A bordered pill is a choice** (compare chips, pickers, quiz answers): it toggles, and selected is the gold
+  edge and tint. A set of links is not a choice, so it never wears pills: an index of links (the home page's
+  Platform guides) is a grid of equal-width tiles with the plain `--jsal-line` border, surface background and
+  500 weight, or a text list. Uneven pills stagger; equal tiles don't.
+- **A tick that goes with a choice** (the quiz's "In two or more languages") is a checkbox in a bordered row above
+  the choices, selected with the same `--jsal-selected-*` tokens and gold edge as a pressed chip, the box itself in
+  `accent-color: var(--jsal-accent)`; one focus ring on the row.
+
 ## Layout
 
 - **The top bar never moves between pages:** the same `.jsal-top` markup everywhere (`check.py` compares it).
 - **One distance under the top bar:** pages that open with a heading (home, Off the clock, the CMS Picker and
   its platform pages, Privacy, Changelog, 404) start their first thing at `--jsal-page-top` from `shell.css`
-  (30px, 22px at 720px and under), and starts flush with the logo's left edge (no optical indent on the mono
-  line); a new page of that kind uses it too. The tools' "for" line sits 16px under the bar, so the work area
+  (30px, 22px at 720px and under), flush with the logo's left edge: no optical indent on the mono line, the
+  heading or the text under it; a new page of that kind uses it too. The tools' "for" line sits 16px under the bar, so the work area
   fills the first screen.
 - **Tools fill the first screen;** the About section sits below the fold, reached by the top bar's About link.
   On phones the empty work box stretches to the bottom of the screen until there's content.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
-- **Home page:** tools only. The intro beside the CMS Picker's big tile, then the other tools as picture tiles
-  (the team Playbook as a slim text tile), then Updates (one line per section) and a plain "Say hi" row.
-  Tab order follows the screen. Gaming parts live on `/play/`.
+- **Home page:** tools only. The intro beside the CMS Picker's big tile, with the Platform guides (a link tile
+  per platform, three even columns) under the intro and level with the tile's bottom; then the other tools as
+  picture tiles (the team Playbook as a slim text tile), Updates (one line per section) and a plain "Say hi"
+  row. From 1100px down the guides take the full width under both; on phones they follow the tile. Tab order
+  follows the screen. Gaming parts live on `/play/`.
 - **The CMS Picker is quiz first:** the platform cards and the comparison table open on request.
 
 ## Motion
