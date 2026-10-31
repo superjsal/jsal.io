@@ -128,7 +128,12 @@ if (axeBrowser) {
 if (!axeOnly) {
   for (const [name, type, opts] of [['chromium (Edge)', chromium, { channel: 'msedge' }], ['webkit', webkit, {}], ['firefox', firefox, {}]]) {
     let browser;
-    try { browser = await launch(type, opts); } catch (e) { log(`${name}: couldn't start here (${e.message.split('\n')[0]}); check it by hand`); continue; }
+    try { browser = await launch(type, opts); } catch (e) {
+      // The whole message, so a failure on the GitHub runner (where this is the only evidence) can be read in the log
+      log(`${name}: couldn't start here (${e.message.split('\n')[0]}); check it by hand`);
+      if (process.env.GITHUB_ACTIONS) log(`    ${name} launch error in full:\n${String(e.stack || e.message).split('\n').map((l) => '    ' + l).join('\n')}`);
+      continue;
+    }
     for (const width of [375, 390]) {
       const ctx = await browser.newContext({ viewport: { width, height: 800 }, hasTouch: true, isMobile: !name.startsWith('firefox'), colorScheme: width === 375 ? 'light' : 'dark' });
       const page = await ctx.newPage();
