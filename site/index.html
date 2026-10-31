@@ -130,14 +130,14 @@ p, li { text-wrap: pretty; }
 .roles span + span::before { content: "·"; margin: 0 10px; color: var(--jsal-muted); }
 .intro h1 { margin: 0; font: 700 clamp(44px, 5vw, 62px)/1.02 "Lora", Georgia, serif; letter-spacing: -0.03em; }
 .intro h1 em { font-weight: 600; color: var(--jsal-accent); }
-.intro p { margin: 28px 0 0 4px; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
+.intro p { margin: 28px 0 0; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
 /* The first click: the CMS Picker (gold, the main action), or the backpack's ways to get in touch */
-.cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0 2px; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; }
 /* The platform guides: a mono label and a quiet tile per platform in even columns (a bordered pill means a choice
    elsewhere on the site, and uneven pills stagger), under the intro with its bottom level with the big tile's (the
    tile spans both rows); from 1100px down the intro's free space is too short for it, so it takes the full width
    under the intro and the tile instead of stretching the tile */
-.guides { grid-column: 1 / 6; align-self: end; margin: 0 0 0 2px; padding-top: 32px; }
+.guides { grid-column: 1 / 6; align-self: end; margin: 0; padding-top: 32px; }
 .cms { grid-row: 1 / 3; }
 .guides .label { margin: 0 0 10px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); letter-spacing: 0.06em; text-transform: uppercase; }
 .guides div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
@@ -333,7 +333,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .roles { margin: 0 0 12px; }
   .roles span + span::before { margin: 0 8px; }
   .intro h1 { font-size: 40px; line-height: 1.05; }
-  .intro p { margin: 16px 0 6px 2px; font-size: 16px; line-height: 1.55; }
+  .intro p { margin: 16px 0 6px; font-size: 16px; line-height: 1.55; }
   .cta { margin-top: 18px; }
   .guides div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .guides a { min-height: 44px; }
