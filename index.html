@@ -584,13 +584,15 @@ footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-l
 footer nav { display: flex; gap: 4px; }
 footer a, footer .foot-btn { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
+/* Touch screens: the footer links and button at finger size (they're 37px tall with the 8px padding alone) */
+@media (pointer: coarse) { footer a, footer .foot-btn { min-height: 44px; display: inline-flex; align-items: center; } }
 
 @media (max-width: 860px) {
   .grid > * { grid-column: 1 / -1 !important; }
   .intro { padding-top: 4px; }
   .intro p { font-size: 16px; }
 }
-#work, #updates { scroll-margin-top: 16px; }
+#work, #updates, #hi-h { scroll-margin-top: 16px; }   /* #hi-h: where "Say hi" lands */
 /* Phones: the editorial type scaled down rather than squeezed. A smaller name with a shorter
    indent, one spacing step (14 / 20px) for the grid and tile padding, a smaller corner radius,
    and only the Work link kept in the top bar (Updates and Email are a short scroll away). */
