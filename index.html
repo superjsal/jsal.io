@@ -26,7 +26,9 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-30zz" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-30zzf" type="image/svg+xml">
+<!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
+<script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();window.jsalEarlyClick={x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()};}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
      only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
@@ -808,6 +810,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
           <div>
             <h3><a href="/formatter/">Clean Paste</a> <time datetime="2026-10-30">· Oct 30</time></h3>
             <ul>
+              <li><time datetime="2026-10-30">Oct 30</time> <span>The Copy buttons say Copied for a moment</span></li>
               <li><time datetime="2026-10-30">Oct 30</time> <span>Clear can be undone: an Undo clear link in the paste area, or Ctrl+Z</span></li>
               <li><time datetime="2026-10-30">Oct 30</time> <span>The heading and list shortcuts of WordPress and Google Docs</span></li>
             </ul>
@@ -822,6 +825,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
           <div>
             <h3>Site <time datetime="2026-10-30">· Oct 30</time></h3>
             <ul>
+              <li><time datetime="2026-10-30">Oct 30</time> <span>Quick clicks through the logo menu no longer get lost</span></li>
               <li><time datetime="2026-10-30">Oct 30</time> <span>On phones the achievement pop-up shows at the top, clear of the buttons</span></li>
               <li><time datetime="2026-10-30">Oct 30</time> <span>A new home page, clearer colours, shorter About sections and accessibility fixes</span></li>
               <li><time datetime="2026-10-29">Oct 29</time> <span><a href="#ach-h">Achievements</a> and a <a href="#hi-h">backpack</a> with where to find me</span></li>
@@ -851,7 +855,7 @@ const tileFor = (url) => url && [...document.querySelectorAll('[data-app]')].fin
 const nameTile = (tile, vt) => {
   if (!tile || !vt) return;
   tile.style.viewTransitionName = 'jsal-app';
-  vt.finished.finally(() => { tile.style.viewTransitionName = ''; });
+  vt.finished.catch(() => {}).finally(() => { tile.style.viewTransitionName = ''; });   // a skipped transition rejects
 };
 // Tiles tilt toward the mouse (up to 4°) with a light that follows it; the CSS decides when it applies
 if (matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
@@ -998,6 +1002,6 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-30zz" defer></script>
+<script src="/nav.js?v=2026-10-30zzf" defer></script>
 </body>
 </html>

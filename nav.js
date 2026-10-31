@@ -107,13 +107,16 @@
   // into, so a click straight after arriving (on the logo, a link) did nothing. A press during a
   // transition now ends it at once, and the click goes to whatever is under the pointer.
   let replay = false;
+  const quiet = (vt) => { for (const p of [vt.ready, vt.finished, vt.updateCallbackDone]) p.catch(() => {}); };   // a skipped transition rejects them all
   const watch = (vt) => {
     if (!vt) return;
+    quiet(vt);
     const press = () => { vt.skipTransition(); replay = true; setTimeout(() => { replay = false; }, 1000); };
     addEventListener('pointerdown', press, { capture: true });
-    vt.finished.finally(() => removeEventListener('pointerdown', press, { capture: true }));
+    vt.finished.catch(() => {}).finally(() => removeEventListener('pointerdown', press, { capture: true }));
   };
   addEventListener('pagereveal', (e) => watch(e.viewTransition));   // arriving from another page
+  addEventListener('pageswap', (e) => { if (e.viewTransition) quiet(e.viewTransition); });   // leaving: a click meanwhile aborts it
   watch(document.activeViewTransition);                              // already running when this loaded
   addEventListener('click', (e) => {
     if (!replay) return;
@@ -256,7 +259,7 @@
   }
 
   const trigger = document.querySelector('[data-jsal-nav]');
-  if (!trigger) return;
+  if (!trigger) { window.jsalNavReady = true; return; }
   const here = location.pathname;
 
   document.head.insertAdjacentHTML('beforeend', `<style>
@@ -308,9 +311,22 @@
     menu.style.left = `${Math.round(Math.max(12, Math.min(r.left, innerWidth - w - 12)))}px`;
   }
   const links = () => [...menu.querySelectorAll('a')];
+  // Opening the menu is a stronger signal than a hover: the pages it lists load ahead now (Chrome family), so
+  // picking one swaps at once and a quick next click has a page to land on. Not the Playbook (it signs in).
+  let warmed = false;
+  function warm() {
+    if (warmed || !(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'))) return;
+    warmed = true;
+    const urls = [...APPS.map((a) => a.href), HOME.href].filter((h) => h !== '/ic/' && h !== here && !isHere(h));
+    const rules = document.createElement('script');
+    rules.type = 'speculationrules';
+    rules.textContent = JSON.stringify({ prerender: [{ urls, eagerness: 'immediate' }] });
+    document.head.append(rules);
+  }
   function open(focusFirst) {
     menu.hidden = false;
     place();
+    warm();
     trigger.setAttribute('aria-expanded', 'true');
     if (focusFirst) (menu.querySelector('[aria-current]') || links()[0]).focus();
   }
@@ -348,4 +364,42 @@
   document.addEventListener('pointerdown', (e) => { if (!menu.hidden && !menu.contains(e.target) && !trigger.contains(e.target)) close(); });
   addEventListener('resize', () => { if (!menu.hidden) place(); });
   addEventListener('scroll', () => { if (!menu.hidden) place(); }, { passive: true });
+
+  // Quick clicks while pages change hands used to be lost (or the logo, still a plain link, went home):
+  // · before this file ran on the new page, the one-line script in each page's <head> holds the click;
+  // · after an app was picked but before the new page took over, the old page holds it in sessionStorage.
+  // Either way the new page replays it here: the logo opens the menu, anything else is clicked, with the
+  // transition cut short. A page loaded ahead (prerendered) looks again when it's shown.
+  const KEY = 'jsal-early-click';
+  let leaving = false;
+  menu.addEventListener('click', (e) => { if (e.target.closest('a[href]')) leaving = true; });
+  addEventListener('click', (e) => {
+    if (!leaving) return;
+    const l = e.target.closest && e.target.closest('[data-jsal-nav]');
+    if (!l && e.target !== document.documentElement && e.target !== document.body) return;
+    e.preventDefault(); e.stopPropagation();
+    // Both stores: a page loaded ahead keeps the session storage it started with, but reads local storage live
+    const held = JSON.stringify({ x: e.clientX, y: e.clientY, logo: !!l, at: Date.now() });
+    try { sessionStorage.setItem(KEY, held); localStorage.setItem(KEY, held); } catch (err) {}
+  }, true);
+  function replayEarly() {
+    let early = window.jsalEarlyClick;
+    delete window.jsalEarlyClick;
+    try {
+      const held = sessionStorage.getItem(KEY) || localStorage.getItem(KEY);
+      if (!early && held) early = JSON.parse(held);
+      sessionStorage.removeItem(KEY); localStorage.removeItem(KEY);
+    } catch (err) {}
+    if (!early || Date.now() - early.at > 3000) return;
+    const vt = document.activeViewTransition;
+    if (vt) { quiet(vt); vt.skipTransition(); }
+    if (early.logo) open(false);
+    else {
+      const t = document.elementFromPoint(early.x, early.y);
+      const hit = t && t.closest('a[href], button, summary, label, input, select, textarea, [role="button"], [tabindex]');
+      if (hit) hit.click();
+    }
+  }
+  window.jsalNavReady = true;
+  if (document.prerendering) document.addEventListener('prerenderingchange', replayEarly, { once: true }); else replayEarly();
 })();
