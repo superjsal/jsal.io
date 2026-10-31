@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Platform Playbook | jsal.io</title>
-<link rel="icon" href="/favicon.svg?v=2026-10-30zzk" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-31a" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -116,7 +116,7 @@ transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 
 .jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
 .jsal-ach b { display: block; font-size: 15px; }
-.jsal-ach span.d { display: block; font-size: 12.5px; color: var(--jsal-muted); }
+.jsal-ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
 .jsal-consent { position: fixed; z-index: 2147483000; left: 16px; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(380px, calc(100vw - 32px));
 padding: 14px 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink-2);
 box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
@@ -237,7 +237,7 @@ header.top .hl { color: var(--jsal-accent); }
 header.top p { flex: 1 1 360px; font-size: 14px; color: var(--jsal-muted); }
 
 .side { grid-area: side; position: sticky; top: 14px; align-self: start; display: grid; gap: 6px; margin-left: -10px; }   /* its text lines up with the logo, like the apps' left columns; hover backgrounds use the page margin */
-.side-title { font-size: 11.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--jsal-muted); padding: 0 10px 2px; }
+.side-title { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--jsal-muted); padding: 0 10px 2px; }
 .plist { display: grid; gap: 1px; }
 .plist button {
   display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; text-align: left;
@@ -245,7 +245,7 @@ header.top p { flex: 1 1 360px; font-size: 14px; color: var(--jsal-muted); }
 }
 .plist button:hover { background: var(--jsal-sunk); }
 .plist button[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); font-weight: 700; }
-.plist .cnt { flex: none; font-size: 11.5px; font-weight: 700; color: var(--jsal-warn); background: var(--jsal-warn-soft); border-radius: 99px; padding: 0 7px; font-variant-numeric: tabular-nums; }
+.plist .cnt { flex: none; font-size: 12px; font-weight: 700; color: var(--jsal-warn); background: var(--jsal-warn-soft); border-radius: 99px; padding: 0 7px; font-variant-numeric: tabular-nums; }
 .plist .cnt.zero { color: var(--jsal-ok); background: var(--jsal-ok-soft); }
 .side-note { font-size: 12px; color: var(--jsal-muted); padding: 4px 10px 0; }
 
@@ -257,7 +257,7 @@ header.top p { flex: 1 1 360px; font-size: 14px; color: var(--jsal-muted); }
 .tb-row { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; }
 .tb-sub { gap: 6px 18px; font-size: 13px; }
 .seg { display: inline-flex; flex-wrap: wrap; background: var(--jsal-sunk); border-radius: var(--jsal-radius); padding: 3px; gap: 2px; }
-.seg button { font: 600 13.5px var(--jsal-font); color: var(--jsal-muted); background: transparent; border: 0; border-radius: 4px; padding: 6px 13px; cursor: pointer; white-space: nowrap; }
+.seg button { font: 600 13px var(--jsal-font); color: var(--jsal-muted); background: transparent; border: 0; border-radius: 4px; padding: 6px 13px; cursor: pointer; white-space: nowrap; }
 .seg button:hover { color: var(--jsal-ink); }
 .seg button[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .seg.switch button[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }   /* selected looks the same everywhere */
@@ -321,7 +321,7 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .card { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); padding: 13px 16px; display: grid; gap: 7px; min-width: 0; }
 .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px 16px; }
 .card .item { flex: 1 1 auto; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; min-width: 0; }
-.card .item small { display: block; font-weight: 400; color: var(--jsal-muted); font-size: 12.5px; letter-spacing: 0; margin-top: 1px; }
+.card .item small { display: block; font-weight: 400; color: var(--jsal-muted); font-size: 13px; letter-spacing: 0; margin-top: 1px; }
 .answer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 8px; align-items: center; max-width: 72%; }
 /* A narrow card (phone, or a slim column) puts the answer under the title on every card alike */
 .card { container-type: inline-size; }
@@ -336,7 +336,7 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .answer-word.a-some { color: var(--jsal-warn); }
 .answer-word.a-no { color: var(--jsal-bad); }
 .answer-word.a-check { color: var(--jsal-info); }
-.edit-form .was { margin: -4px 0 0; font-size: 12.5px; color: var(--jsal-muted); }
+.edit-form .was { margin: -4px 0 0; font-size: 13px; color: var(--jsal-muted); }
 /* Settled with nothing to add: one compact, muted line */
 .card.slim { padding-block: 8px; gap: 4px; }
 .card.slim .item { font-weight: 500; color: var(--jsal-muted); }
@@ -347,7 +347,7 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .note a, .warn a, .how a { color: var(--jsal-info); text-underline-offset: 2px; }   /* links inside the content are blue; gold is kept for selected states and the main action */
 .note code, .warn code { font-size: 0.9em; }
 .md-hint { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-size: 12px; color: var(--jsal-muted); }
-.md-hint code { font-size: 11.5px; background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 3px; padding: 0 4px; }
+.md-hint code { font-size: 12px; background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 3px; padding: 0 4px; }
 .copy-icon { display: inline-flex; vertical-align: -2px; margin-left: 6px; padding: 3px; border: 0; border-radius: 4px; background: transparent; color: var(--jsal-muted); cursor: pointer; }
 .copy-icon:hover { color: var(--jsal-ink); background: var(--jsal-sunk); }
 /* Shared edits */
@@ -362,9 +362,9 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .edit-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .edit-actions .btn.primary { font-size: 13px; padding: 7px 14px; }
 .edit-hint { font-size: 12px; }
-.edit-conflict { margin: 0; padding: 8px 10px; border-radius: var(--jsal-radius); background: var(--jsal-warn-soft); color: var(--jsal-ink); font-size: 13.5px; line-height: 1.45; }
+.edit-conflict { margin: 0; padding: 8px 10px; border-radius: var(--jsal-radius); background: var(--jsal-warn-soft); color: var(--jsal-ink); font-size: 14px; line-height: 1.45; }
 /* How-to steps under a row */
-.warn { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; line-height: 1.45; padding: 8px 10px; border-radius: 6px; background: var(--jsal-warn-soft); color: var(--jsal-ink); }
+.warn { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; line-height: 1.45; padding: 8px 10px; border-radius: 6px; background: var(--jsal-warn-soft); color: var(--jsal-ink); }
 .warn::before { content: "!"; flex: none; display: grid; place-items: center; width: 17px; height: 17px; margin-top: 1px; border-radius: 50%; background: var(--jsal-warn); color: var(--jsal-surface); font-size: 11px; font-weight: 800; }
 .warn b { color: var(--jsal-warn); }
 .warn > div { min-width: 0; }
@@ -379,7 +379,7 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .app.pk-wide .side { display: none; }
 #pk-view, .pk-body { min-width: 0; }   /* the wide table scrolls in its own box, never the page */
 .pk-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-.pk-status { margin: 0; font-size: 13.5px; color: var(--jsal-ink-2); }
+.pk-status { margin: 0; font-size: 13px; color: var(--jsal-ink-2); }
 .pk-status a, #pk-view .about a, .pk-twin a, a.pk-twin { color: var(--jsal-info); }
 .pk-table td { padding: 4px 6px; }
 .pk-cell { position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 3px;   /* relative: keeps the pills' screen-reader text inside the scroll box */ border: 1px solid transparent; border-radius: var(--jsal-radius-sm); background: none; font: inherit; cursor: pointer; }
@@ -387,9 +387,9 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pk-cell.on { border-color: var(--jsal-accent); }   /* the answer open below */
 .pk-cell .v { cursor: pointer; }
 .pk-cell.wait::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--jsal-info); }   /* waiting for the next publish: in flight (blue), not a warning */
-.pk-nosrc { font-size: 10.5px; color: var(--jsal-muted); }
+.pk-nosrc { font-size: 11px; color: var(--jsal-muted); }
 /* Section headings, as on the public CMS Picker: a row across the table, and a heading in a platform's list */
-.pk-table tr.pk-group th { background: var(--jsal-sunk); color: var(--jsal-info); font-size: 12.5px; font-weight: 700; letter-spacing: 0.02em; }
+.pk-table tr.pk-group th { background: var(--jsal-sunk); color: var(--jsal-info); font-size: 12px; font-weight: 700; letter-spacing: 0.02em; }
 .pk-table tr.pk-group th span { position: sticky; left: 10px; }
 .pk-sec { margin: 10px 0 0; color: var(--jsal-info); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
 .pk-col { font: inherit; font-weight: 600; color: var(--jsal-ink); background: none; border: 0; border-bottom: 2px solid transparent; padding: 0 0 1px; cursor: pointer; }
@@ -402,7 +402,7 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pk-chip.on { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .pk-plat { display: grid; gap: 8px; }
 .pk-plat > h3 { margin: 6px 0 0; font-size: 18px; color: var(--jsal-ink); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.pk-wait { padding: 1px 8px; border-radius: var(--jsal-radius-pill); background: var(--jsal-info-soft); color: var(--jsal-info); font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.pk-wait { padding: 1px 8px; border-radius: var(--jsal-radius-pill); background: var(--jsal-info-soft); color: var(--jsal-info); font-size: 12px; font-weight: 600; white-space: nowrap; }
 /* Needs attention (CMS Picker tab): orange = data to fix (no source, a stale one), blue = waiting for publish,
    neutral = states to settle (not verified, unclear). Under six items it's one line with "Show them". */
 .pk-attn { margin-bottom: 14px; }
@@ -432,19 +432,19 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 a.pk-twin { color: var(--jsal-info); text-decoration: underline; text-underline-offset: 2px; }
 .pk-recheck { color: var(--jsal-warn); font-weight: 600; }
 .pk-hints:empty { display: none; }
-.pk-hints p { margin: 0; font-size: 12.5px; color: var(--jsal-warn); }
+.pk-hints p { margin: 0; font-size: 13px; color: var(--jsal-warn); }
 .pk-hints p + p { margin-top: 2px; }
 /* Phones: one platform at a time (the chips), no table */
 @media (max-width: 720px) { .pk-table { display: none; } }
 @media (max-width: 480px) {   /* all four tabs on one row, counts included */
   .pk-long { display: none; }
-  #viewnav button { padding-inline: 5px; font-size: 12.5px; }
+  #viewnav button { padding-inline: 5px; font-size: 12px; }
   #viewnav .count { min-width: 16px; padding: 0 4px; }
 }
-.pk-src { margin: 6px 0 0; font-size: 12.5px; color: var(--jsal-muted); overflow-wrap: anywhere; }
+.pk-src { margin: 6px 0 0; font-size: 13px; color: var(--jsal-muted); overflow-wrap: anywhere; }
 .pk-src a { color: var(--jsal-info); }
 .pk-src-field { margin-top: 10px; }
-.pk-profile dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 16px; margin: 0; font-size: 13.5px; }
+.pk-profile dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 16px; margin: 0; font-size: 14px; }
 .pk-profile dt { color: var(--jsal-muted); font-weight: 600; }
 .pk-profile dd { margin: 0; min-width: 0; }
 .pk-goals { display: flex; flex-wrap: wrap; gap: 6px 14px; }
@@ -454,7 +454,7 @@ a.pk-twin { color: var(--jsal-info); text-decoration: underline; text-underline-
 .pk-logo-show { display: flex; align-items: center; gap: 14px; }
 .pk-logo-img { flex: none; width: 40px; height: 40px; background: var(--jsal-ink); -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
 .pk-logo-img.sm { width: 20px; height: 20px; }
-.pk-hint { font-size: 12.5px; }
+.pk-hint { font-size: 13px; }
 .pk-off { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
 /* Team page: platforms */
 .person .plat-badge { display: grid; place-items: center; font-weight: 700; color: var(--jsal-muted); }
@@ -485,13 +485,13 @@ a.pk-twin { color: var(--jsal-info); text-decoration: underline; text-underline-
 .how ol { margin: 6px 0 0; padding: 10px 14px 10px 32px; display: grid; gap: 5px; background: var(--jsal-sunk); border-radius: 6px; }
 .how li::marker { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .how code { font-size: 0.9em; }
-.how .how-note { margin: 6px 0 0; font-size: 12.5px; color: var(--jsal-muted); }
+.how .how-note { margin: 6px 0 0; font-size: 13px; color: var(--jsal-muted); }
 .card.slim .how summary { font-weight: 500; }
 .card.slim:has(.how[open]) { padding-block: 13px; }
 /* Compare grid */
 .compare { display: grid; gap: 10px; }
 .scroll { overflow-x: auto; background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); }
-table { border-collapse: collapse; font-size: 12.5px; }
+table { border-collapse: collapse; font-size: 13px; }
 th, td { padding: 8px 10px; border-bottom: 1px solid var(--jsal-line); text-align: left; vertical-align: middle; }
 thead th { position: sticky; top: 0; background: var(--jsal-sunk); font-weight: 600; white-space: nowrap; }
 tbody th { font-weight: 600; min-width: 190px; position: sticky; left: 0; background: var(--jsal-surface); }
@@ -539,17 +539,17 @@ footer a { color: var(--jsal-accent); }
 .guide-head .eyebrow { display: block; margin-bottom: 2px; }
 .guide-close { flex: none; font: 600 20px/1 var(--jsal-font); color: var(--jsal-muted); background: var(--jsal-sunk); border: 0; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; }
 .guide-close:hover { color: var(--jsal-ink); }
-.guide-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px 20px 32px; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; }
+.guide-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px 20px 32px; display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
 .guide-body > * { flex: none; min-width: 0; }
 .guide-body h3 { font-size: 15px; margin-top: 8px; }
 .guide-body ol, .guide-body ul { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
 .guide-body a { color: var(--jsal-info); }
 .guide-body .intro { color: var(--jsal-muted); }
-.guide-body .tip { font-size: 13.5px; padding: 8px 12px; border-radius: 6px; background: var(--jsal-sunk); color: var(--jsal-ink); }
+.guide-body .tip { font-size: 14px; padding: 8px 12px; border-radius: 6px; background: var(--jsal-sunk); color: var(--jsal-ink); }
 .guide-body .tip::before { content: "Tip: "; font-weight: 700; color: var(--jsal-ink); }
 .snippet { border: 1px solid var(--jsal-line); border-radius: 8px; overflow: hidden; }
 .snippet-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; background: var(--jsal-sunk); font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
-.snippet pre { margin: 0; padding: 12px; overflow-x: auto; font: 12.5px/1.55 var(--mono); background: var(--jsal-surface); color: var(--jsal-ink); }
+.snippet pre { margin: 0; padding: 12px; overflow-x: auto; font: 13px/1.55 var(--mono); background: var(--jsal-surface); color: var(--jsal-ink); }
 .snippet pre code { background: none; padding: 0; font-size: inherit; }
 .snippet pre { tab-size: 2; }
 code, pre { font-variant-ligatures: none; }
@@ -590,7 +590,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 @media (max-width: 760px) { .viewnav { margin-left: 0; order: 9; flex: 1 1 100%; } .viewnav button { flex: 1; } .account { margin-left: auto; border-left: 0; padding-left: 0; } }
 .link-btn { font: 600 13px var(--jsal-font); color: var(--jsal-info); background: none; border: 0; padding: 0; cursor: pointer; }
 .link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
-.count { display: inline-block; min-width: 18px; padding: 0 6px; border-radius: 99px; background: var(--jsal-warn-soft); color: var(--jsal-warn); font-size: 11.5px; text-align: center; }
+.count { display: inline-block; min-width: 18px; padding: 0 6px; border-radius: 99px; background: var(--jsal-warn-soft); color: var(--jsal-warn); font-size: 12px; text-align: center; }
 .count:empty { display: none; }
 .team-view { display: grid; gap: 10px; }
 .team-h { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jsal-muted); margin-top: 8px; }
@@ -628,7 +628,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 .vote[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
 .vote[aria-pressed="true"] b { color: var(--jsal-accent); }
 .req-body { display: grid; gap: 6px; min-width: 0; }
-.req-body h3 { font-size: 15.5px; overflow-wrap: anywhere; }
+.req-body h3 { font-size: 16px; overflow-wrap: anywhere; }
 .req-meta { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); color: var(--jsal-muted); }
 .st { font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 99px; }
@@ -639,7 +639,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 .st.declined { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
 .req-details { color: var(--jsal-muted); font-size: 14px; overflow-wrap: anywhere; }
 .req-details ul, .req-details ol { margin: 4px 0; padding-left: 20px; }
-.req-foot { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 12.5px; color: var(--jsal-muted); }
+.req-foot { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 13px; color: var(--jsal-muted); }
 .req-foot select { font: 13px var(--jsal-font); color: var(--jsal-ink); background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: 4px; padding: 2px 6px; margin-left: 4px; }
 .suggest { font: 600 12px var(--jsal-font); color: var(--jsal-muted); background: none; border: 0; padding: 1px 4px; cursor: pointer; }
 .suggest:hover { color: var(--jsal-ink); text-decoration: underline; text-underline-offset: 3px; }
@@ -796,7 +796,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 </aside>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=2026-10-30zzk" defer></script>
+<script src="/nav.js?v=2026-10-31a" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
 <script>
 // ---------- Config ----------

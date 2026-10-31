@@ -192,6 +192,7 @@
     const plats = data.platforms.filter((p) => state.compare.has(p.id));
     const items = data.items;
     document.querySelectorAll('.chip[data-pid]').forEach((b) => b.setAttribute('aria-pressed', String(state.compare.has(b.dataset.pid))));
+    $('#plats-count').textContent = `${plats.length} of ${data.platforms.length}`;
 
     const grid = $('#grid'), ghead = $('#ghead');
     grid.replaceChildren();
@@ -283,14 +284,14 @@
       b.addEventListener('click', () => toggleCompare(p.id));
       plats.append(b);
     });
-    const all = el('button', 'chip-link', 'All');
+    // Select all and Clear sit on the line above the chips, beside "Compare · 4 of 13"
+    const all = el('button', 'plats-act', 'Select all');
     all.type = 'button';
     all.addEventListener('click', () => { data.platforms.forEach((p) => state.compare.add(p.id)); state.touched = true; renderCards(); render(); });
-    plats.append(all);
-    const none = el('button', 'chip-link', 'Deselect all');
+    const none = el('button', 'plats-act', 'Clear');
     none.type = 'button';
     none.addEventListener('click', () => { state.compare.clear(); state.touched = true; renderCards(); render(); });
-    plats.append(none);
+    $('#plats-acts').append(all, none);
 
     const types = $('#types');
     GOALS.forEach(([g, label]) => {

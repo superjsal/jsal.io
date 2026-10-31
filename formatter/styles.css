@@ -110,7 +110,7 @@ body {
 button.check { width: 100%; font: inherit; text-align: left; transition: border-color 0.12s, background 0.12s; }
 button.check:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
 button.check:focus-visible { outline-offset: -2px; }
-.check-show { flex-shrink: 0; align-self: center; font-size: 11.5px; font-weight: 600; color: var(--jsal-muted); }
+.check-show { flex-shrink: 0; align-self: center; font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
 button.check:hover .check-show, button.check:focus-visible .check-show { color: var(--jsal-ink); }
 .check .ico { margin-top: 1px; width: 16px; height: 16px; border-radius: 50%; }
 .check.ok .ico { color: var(--jsal-ok); background: var(--jsal-ok-soft); }
@@ -184,7 +184,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .paste-sub { max-width: 34em; color: var(--jsal-ink-2); line-height: 1.5; }
 .paste-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; align-items: center; color: var(--jsal-muted); }   /* wraps whole links on phones, never a link's words */
 .paste-privacy { margin-top: 10px; font-size: 12px; color: var(--jsal-muted); }
-kbd { font: 600 11.5px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-bg); }
+kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-bg); }
 
 .pane {
   display: flex;
@@ -215,7 +215,7 @@ kbd { font: 600 11.5px var(--jsal-font); padding: 1px 6px; border-radius: 4px; b
 .code {
   margin: 0;
   padding: 14px 16px;
-  font: 12.5px/1.65 var(--mono);
+  font: 13px/1.65 var(--mono);
   white-space: pre-wrap;
   word-break: break-word;
   color: var(--jsal-ink-2);
@@ -242,7 +242,7 @@ kbd { font: 600 11.5px var(--jsal-font); padding: 1px 6px; border-radius: 4px; b
   border-radius: var(--jsal-radius-sm);
   color: var(--jsal-ink-2);
   font-weight: 600;
-  font-size: 12.5px;
+  font-size: 12px;
   transition: background 0.12s, color 0.12s;
 }
 .toolbar button:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
@@ -272,7 +272,7 @@ textarea.code[hidden] { display: none; }
 .preview > * + * { margin-top: 0.9em; }
 .preview h1, .preview h2, .preview h3, .preview h4, .preview h5, .preview h6 { line-height: 1.3; letter-spacing: -0.01em; margin-top: 1.4em; }
 .preview > :first-child { margin-top: 0; }
-.preview h1 { font-size: 26px; } .preview h2 { font-size: 21px; } .preview h3 { font-size: 18px; } .preview h4, .preview h5, .preview h6 { font-size: 15.5px; }
+.preview h1 { font-size: 26px; } .preview h2 { font-size: 21px; } .preview h3 { font-size: 18px; } .preview h4, .preview h5, .preview h6 { font-size: 16px; }
 /* Marks in the editor follow the site's colour roles: neutral for plain information (heading tags), blue for
    links, orange for anything a check wants fixed, and gold only for what's selected or just shown */
 /* Small tag before each heading so the level is visible at a glance. Screen readers already say "heading level 2",
@@ -347,7 +347,7 @@ textarea.code[hidden] { display: none; }
   border-radius: var(--jsal-radius-sm);
   background: var(--jsal-bg);
   color: var(--jsal-ink);
-  font: 12.5px var(--mono);
+  font: 13px var(--mono);
   outline: none;
 }
 /* iPhones zoom the whole page into any text box under 16px and stay zoomed, so touch screens get 16px */
@@ -362,7 +362,7 @@ textarea.code[hidden] { display: none; }
   border-radius: var(--jsal-radius-sm);
   color: var(--jsal-ink-2);
   font-weight: 600;
-  font-size: 12.5px;
+  font-size: 13px;
   transition: background 0.12s, color 0.12s;
 }
 .link-box button:hover, .link-box a:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }

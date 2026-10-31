@@ -1,12 +1,12 @@
 /* CMS Picker platform pages (/cms-picker/<platform>/), written by playbook.py from
    .github/scripts/platform-page.html. Tags (.tag, .sc) come from styles.css. */
-.pp-crumbs { margin: 18px 0 0; color: var(--jsal-muted); font-size: 13.5px; }
+.pp-crumbs { margin: 18px 0 0; color: var(--jsal-muted); font-size: 13px; }
 .pp-crumbs a { color: var(--jsal-accent); text-underline-offset: 2px; }
 /* Headings in the home page's serif, like the page titles and the CMS Picker's own headings; the gold word italic */
 .pp-title { margin: 10px 0 10px; font-family: "Lora", Georgia, serif; font-size: clamp(28px, 4.4vw, 40px); line-height: 1.12; letter-spacing: -0.02em; }
 .pp-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
 .pp-lede { max-width: 680px; margin: 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.55; }
-.pp-meta { margin: 10px 0 0; color: var(--jsal-muted); font-size: 13.5px; }
+.pp-meta { margin: 10px 0 0; color: var(--jsal-muted); font-size: 13px; }
 .pp-h { margin: 44px 0 6px; font-family: "Lora", Georgia, serif; font-size: 24px; letter-spacing: -0.01em; }
 .pp-h3 { margin: 26px 0 10px; font-size: 16px; }
 .pp-sub { margin: 0 0 16px; color: var(--jsal-muted); font-size: 14px; }
@@ -22,20 +22,20 @@
 .pp-path { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 0; }
 .pp-path + .pp-path { margin-top: 6px; }
 .pp-path-l { margin-right: 2px; color: var(--jsal-muted); font-size: 13px; }
-.pp-step { padding: 2px 8px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); font-size: 13.5px; line-height: 1.45; }
+.pp-step { padding: 2px 8px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); font-size: 13px; line-height: 1.45; }
 .pp-sep { color: var(--jsal-muted); font-size: 13px; }   /* the arrow; screen readers hear ", then" */
-.pp-src { display: inline-block; margin-top: 10px; color: var(--jsal-info); font-size: 13.5px; text-underline-offset: 2px; }   /* a source link inside the content, blue like the Playbook's */
+.pp-src { display: inline-block; margin-top: 10px; color: var(--jsal-info); font-size: 13px; text-underline-offset: 2px; }   /* a source link inside the content, blue like the Playbook's */
 
 /* The short profile */
 .pp-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 0; }
 .pp-facts div { padding: 12px 14px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); }
-.pp-facts dt { color: var(--jsal-muted); font-size: 12.5px; }
-.pp-facts dd { margin: 4px 0 0; font-size: 14.5px; }
+.pp-facts dt { color: var(--jsal-muted); font-size: 12px; }
+.pp-facts dd { margin: 4px 0 0; font-size: 15px; }
 .pp-fit { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
 .pp-fit > div { padding: 14px 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
 .pp-fit h3 { margin: 0 0 6px; font-size: 15px; }
-.pp-fit ul { margin: 0; padding-left: 1.2em; color: var(--jsal-ink-2); font-size: 14.5px; }
-.pp-built { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 14.5px; }
+.pp-fit ul { margin: 0; padding-left: 1.2em; color: var(--jsal-ink-2); font-size: 15px; }
+.pp-built { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 15px; }
 .pp-built li { display: grid; grid-template-columns: 210px auto 1fr; gap: 4px 12px; align-items: baseline; }
 .pp-built .pp-note { font-size: 14px; }
 

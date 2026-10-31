@@ -15,7 +15,200 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css">
+<style data-jsal-shell>
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap; src: url(/fonts/inter.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Lora"; font-style: normal; font-weight: 400 700; font-display: swap; src: url(/fonts/lora.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Lora"; font-style: italic; font-weight: 400 700; font-display: swap; src: url(/fonts/lora-italic.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: swap; src: url(/fonts/jetbrains-mono.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+:root {
+--jsal-bg: #f5efe2;
+--jsal-surface: #fbf8f0;
+--jsal-sunk: #ece4d3;
+--jsal-ink: #1f1a12;
+--jsal-ink-2: #3d362a;
+--jsal-muted: #6b6253;
+--jsal-line: #e2d8c4;
+--jsal-line-hi: #cfc3a9;
+--jsal-accent: #835c0e;
+--jsal-accent-soft: #f1e3c2;
+--jsal-accent-ring: rgba(131, 92, 14, 0.35);
+--jsal-fill: #e3b04b;
+--jsal-on-fill: #1f1a12;
+--jsal-ok: #3f6b3a;   --jsal-ok-soft: #e3eedb;
+--jsal-warn: #8a4f0a; --jsal-warn-soft: #f6e2c8;
+--jsal-bad: #a8352b;  --jsal-bad-soft: #f6dfda;
+--jsal-info: #3b5a9a; --jsal-info-soft: #e1e7f3;
+--jsal-shadow: 0 1px 2px rgba(60, 40, 10, 0.08);
+--jsal-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+--jsal-radius: 6px;
+color-scheme: light;
+}
+@media screen and (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) {
+--jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
+--jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
+--jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
+--jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
+--jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
+--jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+--jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+color-scheme: dark;
+}
+}
+@media screen {
+:root[data-theme="dark"] {
+--jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
+--jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
+--jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
+--jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
+--jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
+--jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+--jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+color-scheme: dark;
+}
+}
+body { background: var(--jsal-bg); }
+:root {
+--jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-pill: 999px;
+--jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
+--jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
+--jsal-btn-weight: 600;
+--jsal-hover-line: var(--jsal-muted);
+--jsal-focus-ring: 0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent);
+}
+@media (pointer: coarse) {
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]), select, textarea { font-size: 16px !important; }
+.jsal-brand, .jsal-link, .jsal-theme { position: relative; }
+.jsal-brand::after, .jsal-link::after, .jsal-theme::after { content: ""; position: absolute; inset: -6px; }
+.jsal-theme::after { inset: -7px; }
+}
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:root { --jsal-col: 840px; }
+@media (min-width: 1280px) { :root { --jsal-col: 1120px; } }
+@media (min-width: 1800px) { :root { --jsal-col: 1240px; } }
+html { scrollbar-gutter: stable; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+@view-transition { navigation: auto; }
+.app { view-transition-name: jsal-app; }
+::view-transition-group(*) { animation-duration: 0.3s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
+::view-transition-image-pair(jsal-app) { overflow: hidden; }
+::view-transition-old(jsal-app), ::view-transition-new(jsal-app) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+::view-transition-old(jsal-app) { animation: jsal-fade-out 0.12s ease both; }
+::view-transition-new(jsal-app) { animation: jsal-fade-in 0.2s ease 0.08s both; }
+::view-transition-old(root) { animation: jsal-home-out 0.15s ease both; }
+::view-transition-new(root) { animation: jsal-fade-in 0.2s ease both; }
+.jsal-brand { view-transition-name: jsal-brand; }
+.jsal-theme { view-transition-name: jsal-theme; }
+::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
+::view-transition-old(jsal-brand), ::view-transition-old(jsal-theme) { display: none; }
+::view-transition-new(jsal-brand), ::view-transition-new(jsal-theme) { animation: none; }
+.jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px) + var(--jsal-consent-lift, 0px)); width: min(340px, calc(100vw - 32px));
+display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink);
+border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font);
+transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
+.jsal-ach[data-hide] { opacity: 0; transform: translate(-50%, 16px); visibility: hidden; transition: opacity .3s ease, transform .3s ease, visibility 0s .3s; }
+@media (min-width: 900px) {
+.jsal-ach { left: auto; right: max(20px, env(safe-area-inset-right, 0px)); transform: none; }
+.jsal-ach[data-hide] { transform: translateY(16px); }
+}
+@media (pointer: coarse) and (max-width: 899px) {
+.jsal-ach { top: max(12px, env(safe-area-inset-top, 0px)); bottom: auto; }
+.jsal-ach[data-hide] { transform: translate(-50%, -16px); }
+}
+.jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
+.jsal-ach b { display: block; font-size: 15px; }
+.jsal-ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
+.jsal-consent { position: fixed; z-index: 2147483000; left: 16px; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(380px, calc(100vw - 32px));
+padding: 14px 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink-2);
+box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
+.jsal-consent p { margin: 0; }
+.jsal-consent b { color: var(--jsal-ink); }
+.jsal-consent a { color: var(--jsal-accent); text-underline-offset: 2px; }
+.jsal-consent div { display: flex; gap: 8px; margin-top: 12px; }
+.jsal-consent button { min-height: 36px; padding: 0 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: none; color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); cursor: pointer; }
+.jsal-consent button:hover { border-color: var(--jsal-hover-line); }
+.jsal-consent button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-consent .jsal-consent-yes { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+@media (pointer: coarse) { .jsal-consent button { min-height: 44px; } }
+@media print { .jsal-consent { display: none; } }
+@keyframes jsal-fade-out { to { opacity: 0; } }
+@keyframes jsal-fade-in { from { opacity: 0; } }
+@keyframes jsal-home-out { to { opacity: 0; transform: scale(0.97); } }
+@media (prefers-reduced-motion: reduce) {
+::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+.jsal-ach, .jsal-ach[data-hide] { transition: none; }
+}
+.jsal-top {
+width: min(100%, var(--jsal-col)); margin-inline: auto;
+display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
+padding-top: calc(40px - (36px - 18px * 1.65) / 2);
+font-family: var(--jsal-font);
+}
+@media (max-width: 520px) { .jsal-top { padding-top: 14px; } }
+.jsal-brand {
+display: inline-flex; align-items: center; height: 36px; flex-shrink: 0;
+font-weight: 700; font-size: 18px; line-height: 1.65; letter-spacing: -0.02em;
+color: var(--jsal-ink); text-decoration: none; white-space: nowrap;
+}
+.jsal-brand span { color: var(--jsal-accent); }
+.jsal-title { margin: 0; font: 700 20px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
+.jsal-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.jsal-theme {
+width: 32px; height: 32px; flex-shrink: 0; display: grid; place-items: center; padding: 0;
+border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius);
+background: transparent; color: var(--jsal-muted); cursor: pointer;
+transition: background 0.12s, color 0.12s;
+}
+.jsal-theme:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
+.jsal-caret { display: inline-block; margin-left: 5px; opacity: .55; transition: transform .15s; vertical-align: middle; }
+[data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
+[data-jsal-nav]:hover .jsal-caret { opacity: .9; }
+.jsal-theme .i-sun { display: none; }
+:root[data-theme="dark"] .jsal-theme .i-sun { display: block; }
+:root[data-theme="dark"] .jsal-theme .i-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) .jsal-theme .i-sun { display: block; }
+:root:not([data-theme="light"]) .jsal-theme .i-moon { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .jsal-caret { transition: none; } }
+.jsal-link { padding: 8px 10px; line-height: 20px; font-size: 14px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }
+.jsal-link:hover { color: var(--jsal-ink); }
+.jsal-link:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
+.jsal-about {
+width: min(100% - 40px, var(--jsal-col)); margin: 0 auto; padding: 40px 0 64px;
+border-top: 1px solid var(--jsal-line);
+font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
+}
+.jsal-about > * { max-width: 680px; }
+.jsal-about h2 { margin: 0 0 10px; font: 700 26px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-about h3 { margin: 28px 0 8px; font-size: 16px; color: var(--jsal-ink); }
+.jsal-about p { margin: 0 0 12px; }
+.jsal-about ul, .jsal-about ol { margin: 0 0 12px; padding-left: 1.3em; }
+.jsal-about li + li { margin-top: 4px; }
+.jsal-about a { color: var(--jsal-accent); text-underline-offset: 2px; }
+.jsal-for { grid-column: 1 / -1; margin: -8px 0 14px; color: var(--jsal-muted); font-size: 14px; line-height: 1.45; }
+.jsal-about .jsal-lead { font-size: 17px; line-height: 1.5; color: var(--jsal-ink); }
+.jsal-about dl { margin: 0 0 12px; }
+.jsal-about dt { margin-top: 14px; font-weight: 600; color: var(--jsal-ink); }
+.jsal-about dd { margin: 3px 0 0; }
+.jsal-about .jsal-feedback { margin-top: 24px; }
+.jsal-about details { margin-top: 18px; border-top: 1px solid var(--jsal-line); }
+.jsal-about details:last-of-type { border-bottom: 1px solid var(--jsal-line); }
+.jsal-about details + details { margin-top: 0; }
+.jsal-about summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; border-radius: var(--jsal-radius-sm); }
+.jsal-about summary::-webkit-details-marker { display: none; }
+.jsal-about summary::before { content: ""; width: 7px; height: 7px; margin: 0 4px 0 2px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate 0.15s; }
+.jsal-about details[open] > summary::before { rotate: 45deg; }
+.jsal-about summary h3 { margin: 0; }
+.jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
+.jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-about details > ul { margin-bottom: 14px; }
+@media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
+.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
+.jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
+</style>
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -30,15 +223,15 @@ a { color: inherit; }
 
 /* Hero */
 .hero { padding: 56px 0 40px; border-bottom: 1px solid var(--jsal-line); }
-.eyebrow { margin: 0 0 12px; font: 500 12.5px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+.eyebrow { margin: 0 0 12px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 .hero h1 { margin: 0; max-width: 14em; font: 700 clamp(40px, 6vw, 64px)/1.05 "Lora", Georgia, serif; letter-spacing: -0.03em; text-wrap: balance; }
 .hero h1 em { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
 .hero .lede { margin: 24px 0 0; max-width: 36em; font-size: 17px; line-height: 1.6; color: var(--jsal-ink-2); text-wrap: pretty; }
 .facts { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 28px 0 0; padding: 0; list-style: none; }
 .facts li { display: grid; gap: 2px; }
 .facts b { font: 700 26px/1.1 "Lora", Georgia, serif; letter-spacing: -0.01em; }
-.facts span { font-size: 12.5px; color: var(--jsal-muted); }
-.toc { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 28px 0 0; padding: 0; list-style: none; font-size: 13.5px; }
+.facts span { font-size: 13px; color: var(--jsal-muted); }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 28px 0 0; padding: 0; list-style: none; font-size: 13px; }
 .toc a { color: var(--jsal-muted); text-decoration: none; }
 .toc a:hover { color: var(--jsal-ink); text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
 .toc b { font: 500 12px "JetBrains Mono", Consolas, monospace; color: var(--jsal-accent); margin-right: 6px; }
@@ -47,17 +240,17 @@ a { color: inherit; }
 .sec { padding: 56px 0 8px; scroll-margin-top: 16px; }
 .sec + .sec { border-top: 1px solid var(--jsal-line); }
 .sec h2 { margin: 0 0 10px; font: 700 clamp(28px, 3.4vw, 36px)/1.15 "Lora", Georgia, serif; letter-spacing: -0.02em; text-wrap: balance; }
-.sec .intro { margin: 0 0 32px; max-width: 42em; font-size: 16.5px; line-height: 1.6; color: var(--jsal-ink-2); text-wrap: pretty; }
+.sec .intro { margin: 0 0 32px; max-width: 42em; font-size: 17px; line-height: 1.6; color: var(--jsal-ink-2); text-wrap: pretty; }
 .sec h3 { margin: 36px 0 12px; font-size: 16px; font-weight: 600; color: var(--jsal-ink); }
 .sec h3:first-of-type { margin-top: 0; }
 .sec p { margin: 0 0 12px; max-width: 42em; color: var(--jsal-ink-2); }
-.sec p.note { font-size: 13.5px; color: var(--jsal-muted); }
+.sec p.note { font-size: 13px; color: var(--jsal-muted); }
 .sec ul { margin: 0 0 12px; padding-left: 1.2em; color: var(--jsal-ink-2); } .sec li + li { margin-top: 5px; }
-code, .mono { font: 500 12.5px/1.6 "JetBrains Mono", Consolas, monospace; }
+code, .mono { font: 500 12px/1.6 "JetBrains Mono", Consolas, monospace; }
 code { padding: 1px 5px; border-radius: var(--jsal-radius-sm); background: var(--jsal-sunk); color: var(--jsal-ink); }
 kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 /* A suggestion, as distinct from how the site is today: blue, information */
-.suggest { display: flex; gap: 10px; margin: 20px 0 0; padding: 12px 14px; border-left: 3px solid var(--jsal-info); border-radius: var(--jsal-radius-sm); background: var(--jsal-info-soft); color: var(--jsal-ink); font-size: 14.5px; line-height: 1.5; max-width: 52em; }
+.suggest { display: flex; gap: 10px; margin: 20px 0 0; padding: 12px 14px; border-left: 3px solid var(--jsal-info); border-radius: var(--jsal-radius-sm); background: var(--jsal-info-soft); color: var(--jsal-ink); font-size: 15px; line-height: 1.5; max-width: 52em; }
 .suggest b { color: var(--jsal-info); font-weight: 700; white-space: nowrap; }
 .suggest p { margin: 0; max-width: none; color: inherit; }
 
@@ -66,22 +259,22 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .principles li { padding: 18px 18px 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
 .principles b { display: block; margin-bottom: 6px; font: 700 18px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
 .principles span { display: block; font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
-.principles small { display: block; margin-top: 10px; font: 500 11.5px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
+.principles small { display: block; margin-top: 10px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 
 /* Colour (03): the swatch board shows both themes at once, so it carries literal values on purpose */
 .themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
 .theme { padding: 18px; border-radius: var(--jsal-radius-lg); border: 1px solid var(--t-line); background: var(--t-bg); color: var(--t-ink); }
 .theme h4 { margin: 0 0 14px; font: 700 16px/1.2 "Lora", Georgia, serif; }
-.theme h4 small { display: block; margin-top: 3px; font: 500 11.5px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.theme h4 small { display: block; margin-top: 3px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
 .theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #ece4d3; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #e2d8c4; --t-linehi: #cfc3a9; --t-accent: #835c0e; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-onfill: #1f1a12; --t-ok: #3f6b3a; --t-oksoft: #e3eedb; --t-warn: #8a4f0a; --t-warnsoft: #f6e2c8; --t-bad: #a8352b; --t-badsoft: #f6dfda; --t-info: #3b5a9a; --t-infosoft: #e1e7f3; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
 .theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-onfill: #16130c; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #f0a860; --t-warnsoft: #33261a; --t-bad: #ff8f84; --t-badsoft: #3a1d1a; --t-info: #8fb1ff; --t-infosoft: #1d2540; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
 .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
 .sw { display: grid; gap: 6px; }
 .sw i { display: block; height: 56px; border-radius: var(--jsal-radius); border: 1px solid var(--t-line); }
-.sw b { font-size: 12.5px; font-weight: 600; }
-.sw code { display: block; padding: 0; background: none; color: var(--t-muted); font-size: 11.5px; }
-.sw small { display: block; font-size: 11.5px; line-height: 1.35; color: var(--t-muted); }
-.theme .group { margin: 18px 0 8px; font: 600 11.5px/1.4 var(--jsal-font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--t-muted); }
+.sw b { font-size: 13px; font-weight: 600; }
+.sw code { display: block; padding: 0; background: none; color: var(--t-muted); font-size: 12px; }
+.sw small { display: block; font-size: 12px; line-height: 1.35; color: var(--t-muted); }
+.theme .group { margin: 18px 0 8px; font: 600 12px/1.4 var(--jsal-font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--t-muted); }
 .theme .group:first-of-type { margin-top: 0; }
 /* The answer ramp and the roles, drawn in the live theme */
 .ramp { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 8px; }
@@ -96,7 +289,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 /* Typography (04) */
 .spec { display: grid; gap: 22px; }
 .spec > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; padding-bottom: 22px; border-bottom: 1px solid var(--jsal-line); }
-.spec .who { font: 500 11.5px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
+.spec .who { font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
 .t-h1 { font: 700 clamp(44px, 5vw, 62px)/1.02 "Lora", Georgia, serif; letter-spacing: -0.03em; }
 .t-h1 em { font-weight: 600; color: var(--jsal-accent); }
 .t-tile { font: 700 30px/1.1 "Lora", Georgia, serif; }
@@ -104,14 +297,14 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .t-h3 { font: 600 16px/1.4 var(--jsal-font); }
 .t-body { font: 15px/1.6 var(--jsal-font); color: var(--jsal-ink-2); max-width: 40em; }
 .t-lede { font: 17px/1.6 var(--jsal-font); color: var(--jsal-ink-2); max-width: 36em; }
-.t-small { font: 12.5px/1.5 var(--jsal-font); color: var(--jsal-muted); }
-.t-mono { font: 500 12.5px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+.t-small { font: 13px/1.5 var(--jsal-font); color: var(--jsal-muted); }
+.t-mono { font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 .weights { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 20px; }
-.weights span small { display: block; font-size: 11.5px; color: var(--jsal-muted); }
+.weights span small { display: block; font-size: 12px; color: var(--jsal-muted); }
 .scale { width: 100%; border-collapse: collapse; font-size: 14px; }
 .scale th, .scale td { padding: 8px 12px; border-bottom: 1px solid var(--jsal-line); text-align: left; }
 .scale th { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
-.scale td:nth-child(2), .scale td:nth-child(3) { font-family: "JetBrains Mono", Consolas, monospace; font-size: 12.5px; white-space: nowrap; }
+.scale td:nth-child(2), .scale td:nth-child(3) { font-family: "JetBrains Mono", Consolas, monospace; font-size: 12px; white-space: nowrap; }
 
 /* Spacing & layout (05) */
 .cols { display: grid; gap: 10px; }
@@ -119,10 +312,10 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .col-demo i { position: absolute; inset: 0 auto 0 0; border-radius: var(--jsal-radius-sm); background: var(--jsal-accent-soft); border: 1px solid var(--jsal-accent-ring); }
 .col-demo span { position: absolute; left: 10px; top: 50%; translate: 0 -50%; font: 500 12px "JetBrains Mono", Consolas, monospace; color: var(--jsal-ink-2); }
 .steps { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; }
-.steps div { display: grid; gap: 6px; justify-items: center; font: 500 11.5px "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
+.steps div { display: grid; gap: 6px; justify-items: center; font: 500 12px "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 .steps i { display: block; width: var(--s); height: var(--s); background: var(--jsal-accent); border-radius: 2px; opacity: 0.85; }
 .radii { display: flex; flex-wrap: wrap; gap: 14px; }
-.radii div { display: grid; gap: 6px; justify-items: center; font: 500 11.5px "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
+.radii div { display: grid; gap: 6px; justify-items: center; font: 500 12px "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 .radii i { display: block; width: 64px; height: 44px; border: 1px solid var(--jsal-line-hi); background: var(--jsal-surface); }
 .bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
 .bento i { display: block; height: 42px; border-radius: 10px; background: var(--jsal-sunk); border: 1px solid var(--jsal-line); }
@@ -131,7 +324,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 /* Components (06): the real rules, copied from the apps' stylesheets, named by their source */
 .demo { display: grid; gap: 14px; padding: 20px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
 .demo .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.demo .src { font: 500 11.5px/1.5 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
+.demo .src { font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 .demos { display: grid; gap: 18px; }
 .btn { display: inline-block; height: 40px; padding: 0 18px; line-height: 38px; text-align: center; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: none; color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); text-decoration: none; cursor: pointer; transition: border-color 0.15s; }
 .btn:hover { border-color: var(--jsal-hover-line); }
@@ -155,7 +348,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .tag.code { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
 .tag.no { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
 .tag.check, .tag.cost { background: var(--jsal-sunk); color: var(--jsal-ink-2); }
-.sc { color: var(--jsal-muted); font-size: 12.5px; font-weight: 600; }
+.sc { color: var(--jsal-muted); font-size: 13px; font-weight: 600; }
 .track { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
 .seg { padding: 4px 12px; border: 0; background: none; border-radius: var(--jsal-radius-sm); color: var(--jsal-muted); font: 600 14px var(--jsal-font); cursor: pointer; transition: color 0.12s; }
 .seg:hover { color: var(--jsal-ink); }
@@ -169,7 +362,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .chk .ico { flex: none; margin-top: 1px; width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 800; }
 .chk.ok .ico { color: var(--jsal-ok); background: var(--jsal-ok-soft); }
 .chk.warn { border-color: var(--jsal-warn-soft); } .chk.warn .ico { color: var(--jsal-warn); background: var(--jsal-warn-soft); }
-.chk .show { margin-left: auto; align-self: center; font-size: 11.5px; font-weight: 600; color: var(--jsal-muted); }
+.chk .show { margin-left: auto; align-self: center; font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
 .card { padding: 16px 18px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); max-width: 420px; }
 .card h4 { margin: 0 0 4px; font: 700 18px/1.2 "Lora", Georgia, serif; }
 .card p { margin: 0; font-size: 14px; color: var(--jsal-ink-2); }
@@ -178,18 +371,18 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .ach { display: flex; align-items: center; gap: 12px; width: min(340px, 100%); padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink); border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font); }
 .ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
-.ach b { display: block; font-size: 15px; } .ach span.d { display: block; font-size: 12.5px; color: var(--jsal-muted); }
+.ach b { display: block; font-size: 15px; } .ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
 .topbar-demo { padding: 0 18px; border: 1px dashed var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); }
 .topbar-demo .jsal-top { padding: 14px 0; }
-.insight { padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); font-size: 14.5px; line-height: 1.45; max-width: 36em; }
+.insight { padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); font-size: 15px; line-height: 1.45; max-width: 36em; }
 .insight b { display: block; margin-bottom: 2px; color: var(--jsal-accent); font-size: 13px; font-weight: 700; }
-.worth { display: flex; gap: 8px; font-size: 13.5px; color: var(--jsal-muted); max-width: 36em; }
+.worth { display: flex; gap: 8px; font-size: 13px; color: var(--jsal-muted); max-width: 36em; }
 
 /* Motion (07) */
 .motion { width: 100%; border-collapse: collapse; font-size: 14px; }
 .motion th, .motion td { padding: 9px 12px; border-bottom: 1px solid var(--jsal-line); text-align: left; vertical-align: top; }
 .motion th { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
-.motion td:nth-child(2) { font-family: "JetBrains Mono", Consolas, monospace; font-size: 12.5px; white-space: nowrap; }
+.motion td:nth-child(2) { font-family: "JetBrains Mono", Consolas, monospace; font-size: 12px; white-space: nowrap; }
 .focus-demo { display: inline-grid; gap: 14px; grid-template-columns: auto auto; align-items: center; }
 .ring { box-shadow: var(--jsal-focus-ring); }
 
@@ -197,7 +390,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: 4px; bor
 .a11y { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
 .a11y li { padding: 16px 18px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
 .a11y b { display: block; margin-bottom: 4px; color: var(--jsal-ink); font-size: 15px; }
-.a11y small { display: block; margin-top: 8px; font: 500 11.5px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
+.a11y small { display: block; margin-top: 8px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 
 /* In practice (09) */
 .shots { display: grid; gap: 28px; }
@@ -383,7 +576,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div><span class="who">Inter 400 · lede · 17px / 1.6</span><div class="t-lede">Start with the CMS Picker: answer a few questions to see which website platform fits you, and what it lets you change for SEO.</div></div>
       <div><span class="who">Inter 400 · body · 15px / 1.6 · ink-2</span><div class="t-body">It turns content copied from Word, Google Docs or a web page into clean, minimal HTML, keeping the real structure: headings, lists, links, tables, bold and italic.</div></div>
       <div><span class="who">Inter 400 · small labels · 12.5–14px · muted</span><div class="t-small">For writers and editors pasting from Word or Google Docs into WordPress, Shopify, Wix or any CMS.</div></div>
-      <div><span class="who">JetBrains Mono 500 · eyebrow · 12.5px · 0.06em · uppercase · gold</span><div class="t-mono">John Salvador · Technical SEO · Gaming</div></div>
+      <div><span class="who">JetBrains Mono 500 · eyebrow · 12px · 0.06em · uppercase · gold</span><div class="t-mono">John Salvador · Technical SEO · Gaming</div></div>
     </div>
     <h3>Weights in use</h3>
     <div class="weights">
@@ -407,7 +600,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <tr><td>H3</td><td>16–17px</td><td>Inter 600</td><td>How to use it, quiz questions</td></tr>
         <tr><td>Body</td><td>15px / 1.6</td><td>Inter 400</td><td>Everywhere</td></tr>
         <tr><td>Interface</td><td>13–14px</td><td>Inter 600 (controls) or 400</td><td>Buttons, chips, tags, top-bar links</td></tr>
-        <tr><td>Small labels</td><td>11–12.5px</td><td>Inter or JetBrains Mono</td><td>Hints, eyebrows, "varies"</td></tr>
+        <tr><td>Small labels</td><td>11–12px</td><td>Inter or JetBrains Mono</td><td>Hints, eyebrows, "varies"</td></tr>
       </tbody>
     </table></div>
     <div class="suggest"><b>Suggestion</b><p>The scale is consistent but set per page (the home title clamps from 44px, Privacy's from 40px). Naming four or five sizes as tokens (<code>--jsal-size-title</code>, <code>-h2</code>, <code>-body</code>…) would let a new page pick from the scale instead of re-deriving it. The values above are the scale; only the names are missing.</p></div>
@@ -581,6 +774,6 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <span>Suggestions are marked in blue and are not yet in the code.</span>
   </footer>
 </div>
-<script src="/nav.js?v=2026-10-30zzk" defer></script>
+<script src="/nav.js?v=2026-10-31a" defer></script>
 </body>
 </html>

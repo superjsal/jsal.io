@@ -23,7 +23,7 @@ body {
 /* ── Hero ──────────────────────────────────────────────────────────────── */
 
 .hero { margin: 30px 0 40px; }
-.byline { margin-bottom: 4px; color: var(--jsal-accent); font: 500 12.5px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }   /* the home page's small gold label above the heading */
+.byline { margin-bottom: 4px; color: var(--jsal-accent); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }   /* the home page's small gold label above the heading */
 .hero-main { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 36px; align-items: end; margin-top: 14px; }
 .hero-title { color: var(--jsal-ink); font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the home page's serif, like the page title */
 .lede { max-width: 520px; margin-top: 20px; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.6; }
@@ -42,7 +42,7 @@ body {
 .peek [role="row"] { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(0, 1fr)); gap: 8px; align-items: center; padding: 9px 14px; border-top: 1px solid var(--jsal-line); color: var(--jsal-ink-2); }
 .peek [role="row"]:first-child { border-top: 0; color: var(--jsal-muted); font-weight: 700; }
 .peek .tag { padding: 1px 7px; font-size: 12px; }
-.peek figcaption { padding: 8px 14px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 12.5px; }
+.peek figcaption { padding: 8px 14px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
 /* 01 · 02 · 03, like the numbered tiles on the home page */
 .sections { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 32px; border-top: 1px solid var(--jsal-line-hi); }
 .sections a { display: block; padding: 14px 18px 2px; color: var(--jsal-ink); text-decoration: none; }
@@ -50,7 +50,7 @@ body {
 .sections a + a { border-left: 1px solid var(--jsal-line); }
 .sections span { color: var(--jsal-accent); font-size: 13px; font-weight: 700; }
 .sections b { display: block; margin-top: 3px; font-size: 16px; }
-.sections small { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 13.5px; }
+.sections small { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 13px; }
 .sections a:hover b { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Back to top: appears once the hero is out of view */
@@ -98,7 +98,16 @@ body {
 }
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
-.chip-link { padding: 3px 6px; color: var(--jsal-info); font-size: 13px; text-decoration: underline; text-underline-offset: 2px; }   /* link-styled controls inside the tool are blue; gold stays for selected and the main action */
+/* Compare: a line above the chips with the count and the two actions; a picked chip shows a tick, not only gold */
+.plats-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.plats-head .plats-label { color: var(--jsal-ink); font-size: 14px; margin: 0; }
+.plats-count { color: var(--jsal-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.plats-acts { display: flex; gap: 2px; margin-left: auto; }
+.plats-act { padding: 4px 8px; border-radius: var(--jsal-radius-sm); color: var(--jsal-muted); font-size: 13px; font-weight: 600; }
+.plats-act:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
+.plats .chip[aria-pressed="true"]::before { content: ""; display: inline-block; width: 12px; height: 12px; margin: 0 5px 0 -2px; vertical-align: -1px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }   /* link-styled controls inside the tool are blue; gold stays for selected and the main action */
 
 /* Key and Show notes share one row */
 .keyrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 14px; }
@@ -147,10 +156,10 @@ body {
 .hcell { min-width: 0; }
 /* No lines between platform columns: the spacing separates them, and hairlines between rows carry the eye across */
 .pname { font-weight: 700; font-size: 15px; color: var(--jsal-ink); }
-.htype { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 12.5px; font-weight: 500; line-height: 1.3; }
+.htype { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 12px; font-weight: 500; line-height: 1.3; }
 .item {
   position: sticky; left: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: 10px 16px;
-  background: var(--jsal-surface); font-size: 14.5px; font-weight: 600; line-height: 1.35; border-right: 1px solid var(--jsal-line);
+  background: var(--jsal-surface); font-size: 15px; font-weight: 600; line-height: 1.35; border-right: 1px solid var(--jsal-line);
 }
 .row.head .item { background: var(--jsal-sunk); }
 /* Every answer row is at least 44px, its content centred, so rows line up whether a cell has a note or not */
@@ -167,9 +176,9 @@ body {
 .cell .plat { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .line { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 7px; max-width: 100%; }   /* "varies" drops under a long tag rather than past the cell */
 .line .tag { white-space: normal; }   /* and a tag wider than a narrow column ("Free software + hosting" at 1024px) wraps inside it */
-.sc { color: var(--jsal-muted); font-size: 12.5px; font-weight: 600; white-space: nowrap; }   /* "varies" / "not verified" after a tag */
+.sc { color: var(--jsal-muted); font-size: 13px; font-weight: 600; white-space: nowrap; }   /* "varies" / "not verified" after a tag */
 .mark { display: block; margin-top: 4px; color: var(--jsal-ink-2); font-size: 14px; line-height: 1.4; }
-.where { display: block; margin-top: 3px; color: var(--jsal-muted); font-size: 12.5px; line-height: 1.4; }   /* menu path to the setting, under the note */
+.where { display: block; margin-top: 3px; color: var(--jsal-muted); font-size: 13px; line-height: 1.4; }   /* menu path to the setting, under the note */
 /* Section heading row inside the table: Built in, SEO (spans every column) */
 /* A quiet label, not a filled bar: the sections are signposts, not content */
 .row.group { display: block; padding: 16px 14px 6px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -196,7 +205,7 @@ body {
 .tip {
   position: fixed; z-index: 20; max-width: 280px; padding: 8px 11px; pointer-events: none;
   border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius);
-  background: var(--jsal-surface); color: var(--jsal-ink); font-size: 13.5px; line-height: 1.45;
+  background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; line-height: 1.45;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 .tip small { display: block; color: var(--jsal-muted); font-size: 12px; }
@@ -214,7 +223,7 @@ body {
 .seo-chip .logo { width: 18px; height: 18px; }
 .seo-chip .logo.badge { border-radius: var(--jsal-radius-sm); font-size: 10px; }
 @media (pointer: coarse) { .seo-chip { min-height: 44px; } }
-.note { margin-top: 12px; max-width: 680px; color: var(--jsal-muted); font-size: 12.5px; }
+.note { margin-top: 12px; max-width: 680px; color: var(--jsal-muted); font-size: 13px; }
 
 /* Narrow: no table. Each item is a card with one line per platform. */
 @media (max-width: 720px) {
@@ -265,7 +274,7 @@ body {
 .mini-btn:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: -2px; }
 .mini-t { display: grid; flex: 1; gap: 2px; min-width: 0; }
 .mini-name { color: var(--jsal-ink); font-size: 17px; font-weight: 700; }
-.mini-sum { color: var(--jsal-muted); font-size: 14.5px; font-weight: 400; line-height: 1.4; }
+.mini-sum { color: var(--jsal-muted); font-size: 15px; font-weight: 400; line-height: 1.4; }
 .mini-btn svg { flex: none; width: 20px; height: 20px; color: var(--jsal-muted); transition: transform 0.15s; }
 .card.open .mini-btn svg { transform: rotate(180deg); }
 .cbody { display: flex; flex-direction: column; padding: 4px 16px 16px; }
@@ -276,12 +285,12 @@ body {
 .logo { flex: none; width: 30px; height: 30px; background: var(--jsal-ink); -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
 .logo.badge { display: grid; place-items: center; border-radius: 8px; background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 14px; font-weight: 800; -webkit-mask: none; mask: none; }
 .ptype { align-self: flex-start; margin-top: 6px; padding: 2px 10px; border-radius: 999px; background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 13px; font-weight: 700; }
-.summary { margin-top: 12px; min-height: 3em; font-size: 16.5px; line-height: 1.5; }   /* two lines on every card, so they line up */
+.summary { margin-top: 12px; min-height: 3em; font-size: 17px; line-height: 1.5; }   /* two lines on every card, so they line up */
 .ktags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-.ktag { padding: 3px 10px; border-radius: 999px; background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 13.5px; font-weight: 600; }
+.ktag { padding: 3px 10px; border-radius: 999px; background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 13px; font-weight: 600; }
 .aitags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
 .ailabel { color: var(--jsal-info); font-size: 13px; font-weight: 800; letter-spacing: 0.04em; }
-.aitag { padding: 3px 10px; border-radius: 999px; background: var(--jsal-info-soft); color: var(--jsal-info); font-size: 13.5px; font-weight: 600; }
+.aitag { padding: 3px 10px; border-radius: 999px; background: var(--jsal-info-soft); color: var(--jsal-info); font-size: 13px; font-weight: 600; }
 /* Running it: two short facts per platform (hosting and updates, what you can export) */
 .run { display: grid; gap: 12px; margin-top: 16px; padding: 13px 14px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
 .run > div { display: grid; grid-template-columns: 18px minmax(0, 1fr); column-gap: 11px; }
@@ -293,7 +302,7 @@ body {
 .run .r-skip { --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8.5 8.5l7 7M15.5 8.5l-7 7'/%3E%3C/svg%3E"); }
 .run dd span { display: block; }
 .run dd span + span { margin-top: 3px; }
-.run dd { margin-top: 1px; color: var(--jsal-ink); font-size: 14.5px; line-height: 1.4; }
+.run dd { margin-top: 1px; color: var(--jsal-ink); font-size: 15px; line-height: 1.4; }
 .cfoot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: auto; padding-top: 16px; }
 .cmp { padding: 5px 12px; font-size: 14px; }
 .cseo { color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; }   /* the platform's own page */
@@ -325,12 +334,12 @@ body {
 /* An old shared link: the questions added since, offered above its result */
 .qz-more { margin: 2px 0 10px; }
 .qz-ans { margin-bottom: 14px; }
-.qz-ans-l { margin-bottom: 6px; color: var(--jsal-muted); font-size: 13.5px; }
+.qz-ans-l { margin-bottom: 6px; color: var(--jsal-muted); font-size: 13px; }
 .qz-ans-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .qz-ans-chips .chip { text-align: left; }   /* a long answer wraps on a phone */
 .qz-ans-chips .chip[aria-expanded="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
 .qz-ans-ed { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; padding: 12px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
-.qz-ans-ed p { flex-basis: 100%; margin-bottom: 2px; color: var(--jsal-ink); font-size: 14.5px; font-weight: 600; }
+.qz-ans-ed p { flex-basis: 100%; margin-bottom: 2px; color: var(--jsal-ink); font-size: 15px; font-weight: 600; }
 .qz-res { display: grid; gap: 12px; }
 .qz-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; padding: 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); color: var(--jsal-ink-2); }
 .qz-card.top { border-color: var(--jsal-line-hi); }   /* the green badge says which wins; gold stays for interaction */
@@ -339,37 +348,37 @@ body {
 .fitp { padding: 2px 9px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
 .fitp.low { background: var(--jsal-line); color: var(--jsal-ink-2); }   /* the closest, not a fit: neutral, not green */
 /* Above the cards when nothing fits well or the answers pull against each other: information, so blue */
-.qz-note { display: flex; gap: 8px; margin: 0 0 12px; padding: 10px 12px; border-left: 3px solid var(--jsal-info); border-radius: var(--jsal-radius-sm); background: var(--jsal-info-soft); color: var(--jsal-ink); font-size: 14.5px; line-height: 1.45; }
+.qz-note { display: flex; gap: 8px; margin: 0 0 12px; padding: 10px 12px; border-left: 3px solid var(--jsal-info); border-radius: var(--jsal-radius-sm); background: var(--jsal-info-soft); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
 .qz-note::before { content: ""; flex: none; width: 16px; height: 16px; margin-top: 2px; background: var(--jsal-info); -webkit-mask: var(--info) center / contain no-repeat; mask: var(--info) center / contain no-repeat; }
 .qz-note-a { display: inline; padding: 0; text-align: left; border: 0; background: none; color: var(--jsal-info); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
-.qz-card .sum { color: var(--jsal-muted); font-size: 14.5px; }
+.qz-card .sum { color: var(--jsal-muted); font-size: 15px; }
 /* "Why it fits": a small label, then the reasons with quiet ticks */
 .qz-sec { grid-column: 2; margin-top: 10px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-.qz-why { grid-column: 2; margin: 4px 0 0; padding: 0; list-style: none; font-size: 14.5px; }
+.qz-why { grid-column: 2; margin: 4px 0 0; padding: 0; list-style: none; font-size: 15px; }
 .qz-why li { position: relative; padding-left: 22px; }
 .qz-why li + li { margin-top: 3px; }
 .qz-why li::before { content: ""; position: absolute; left: 0; top: 4px; width: 14px; height: 14px; background: var(--jsal-muted); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }
 /* What sets it apart from its neighbour: one gold rule and label, no fill, so it reads as the one insight */
-.qz-vs { grid-column: 2; margin-top: 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); color: var(--jsal-ink); font-size: 14.5px; line-height: 1.45; }
+.qz-vs { grid-column: 2; margin-top: 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
 .qz-vs-h { margin-bottom: 2px; color: var(--jsal-accent); font-size: 13px; font-weight: 700; }
 /* "Less suited if…": context, not an alarm (a platform its own card rules out never reaches the top three) */
-.qz-lim { grid-column: 2; display: flex; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13.5px; }
+.qz-lim { grid-column: 2; display: flex; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
 .qz-lim::before { content: ""; flex: none; width: 15px; height: 15px; margin-top: 2px; background: var(--jsal-muted); -webkit-mask: var(--info) center / contain no-repeat; mask: var(--info) center / contain no-repeat; }
 .qz { --info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5M12 8h.01'/%3E%3C/svg%3E"); }
 /* The key facts as a strip of labelled boxes, side by side; stacked on a phone */
 .qz-facts { grid-column: 2; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); margin: 8px 0 2px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); overflow: hidden; }
 .qz-facts div { padding: 8px 12px; }
 .qz-facts div + div { border-left: 1px solid var(--jsal-line); }
-.qz-facts dt { color: var(--jsal-muted); font-size: 12.5px; }
-.qz-facts dd { margin: 0; color: var(--jsal-ink); font-size: 14.5px; font-weight: 600; line-height: 1.35; }
-.qz-facts small { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 12.5px; font-weight: 400; }
+.qz-facts dt { color: var(--jsal-muted); font-size: 12px; }
+.qz-facts dd { margin: 0; color: var(--jsal-ink); font-size: 15px; font-weight: 600; line-height: 1.35; }
+.qz-facts small { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 13px; font-weight: 400; }
 @media (max-width: 560px) {
   .qz-facts { grid-auto-flow: row; }
   .qz-facts div + div { border-left: 0; border-top: 1px solid var(--jsal-line); }
 }
-.qz-steps { margin: 8px 0 0; padding-left: 1.4em; font-size: 14.5px; }
+.qz-steps { margin: 8px 0 0; padding-left: 1.4em; font-size: 15px; }
 .qz-steps li + li { margin-top: 4px; }
-.qz-steps small { display: block; color: var(--jsal-muted); font-size: 13.5px; }
+.qz-steps small { display: block; color: var(--jsal-muted); font-size: 13px; }
 .qz-steps a, .qz-later a { color: var(--jsal-info); text-underline-offset: 2px; white-space: nowrap; }   /* links inside the result's content */
 .qz-later { margin-top: 12px; color: var(--jsal-ink-2); font-size: 14px; }
 .qz-later b { font-weight: 600; }
@@ -381,14 +390,17 @@ body {
 
 /* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact chips) */
 @media (pointer: coarse) {
-  .chip, .chip-link, .qz-opt, .btn { min-height: 44px; }
-  .chip-link { display: inline-flex; align-items: center; }
+  .chip, .qz-opt, .btn { min-height: 44px; }
+  /* the Compare chips and actions look 36px tall; the tap area reaches 44px (the rows are 8px apart) */
+  .plats { row-gap: 8px; }
+  .plats .chip, .plats-act { position: relative; min-height: 36px; }
+  .plats .chip::after, .plats-act::after { content: ""; position: absolute; inset: -4px 0; }
 }
 
 /* Printing: the quiz result and the table on paper, with every note written out and the docs links'
    addresses shown; buttons and floating bits are left off */
 @media print {
-  .jsal-top, .jsal-about, .cta, .sections, .qz-hint, .qz-nav, .qz-switch, .qz-ans-l, .qz-ans-ed, .qz-opts, .types, .plats, #notes, .cbar, .totop, .tip, .cfoot { display: none !important; }
+  .jsal-top, .jsal-about, .cta, .sections, .qz-hint, .qz-nav, .qz-switch, .qz-ans-l, .qz-ans-ed, .qz-opts, .types, .plats, .plats-head, #notes, .cbar, .totop, .tip, .cfoot { display: none !important; }
   .grid.compact .mark, .grid.compact .where { position: static; width: auto; height: auto; margin: 4px 0 0; overflow: visible; clip-path: none; white-space: normal; }
   .thead { position: static; overflow: visible; }
   .scroll { overflow: visible; }

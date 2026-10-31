@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page not found | jsal.io</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="/favicon.svg?v=2026-10-30zzk" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-31a" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -133,7 +133,7 @@ transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 
 .jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
 .jsal-ach b { display: block; font-size: 15px; }
-.jsal-ach span.d { display: block; font-size: 12.5px; color: var(--jsal-muted); }
+.jsal-ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
 .jsal-consent { position: fixed; z-index: 2147483000; left: 16px; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(380px, calc(100vw - 32px));
 padding: 14px 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink-2);
 box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
@@ -229,7 +229,7 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 20px 56px; }
 .lost { margin-top: 64px; max-width: 36em; }
-.code { margin: 0 0 12px; font: 500 12.5px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+.code { margin: 0 0 12px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 h1 { margin: 0; font: 700 clamp(40px, 7vw, 72px)/1 "Lora", Georgia, serif; letter-spacing: -0.03em; text-wrap: balance; }
 h1 em { font-weight: 600; color: var(--jsal-accent); }
 .lost p { margin: 18px 0 0; font-size: 17px; color: var(--jsal-muted); text-wrap: pretty; }
@@ -261,6 +261,6 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     </ul>
   </main>
 </div>
-<script src="/nav.js?v=2026-10-30zzk" defer></script>
+<script src="/nav.js?v=2026-10-31a" defer></script>
 </body>
 </html>
