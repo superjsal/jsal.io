@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog | jsal.io</title>
+<meta name="description" content="Everything that has changed on jsal.io, newest first: the CMS Picker, Clean Paste, the Image Resizer and the rest of the site.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://jsal.io/changelog/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jsal.io/changelog/">
+<meta property="og:site_name" content="jsal.io">
+<meta property="og:title" content="Changelog | jsal.io">
+<meta property="og:description" content="Everything that has changed on jsal.io, newest first.">
+<meta property="og:image" content="https://jsal.io/og/home.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg?v=2026-10-31j" type="image/svg+xml">
+<!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
+<script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
+     only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  // Consent Mode v2: analytics stays off in the EU, EEA, UK and Switzerland until the visitor allows it
+  // (the card from /nav.js); ads storage is never used. A choice saved earlier applies straight away.
+  gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'] });
+  gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+  try { var jc = localStorage.getItem('jsal-analytics'); if (jc === 'granted' || jc === 'denied') gtag('consent', 'update', { analytics_storage: jc }); } catch (e) {}
+  gtag('js', new Date());
+  gtag('config', 'G-ND4L6CSD8S');
+</script>
+<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/lora.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/lora-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
+<script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<!-- Colours and top bar: shared styles from /shell.css, copied in by build\bump-version.ps1 so nothing blocks the first paint (edit shell.css, not this copy) -->
+<style data-jsal-shell>
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap; src: url(/fonts/inter.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Lora"; font-style: normal; font-weight: 400 700; font-display: swap; src: url(/fonts/lora.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Lora"; font-style: italic; font-weight: 400 700; font-display: swap; src: url(/fonts/lora-italic.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: swap; src: url(/fonts/jetbrains-mono.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+:root {
+--jsal-bg: #f5efe2;
+--jsal-surface: #fbf8f0;
+--jsal-sunk: #ece4d3;
+--jsal-ink: #1f1a12;
+--jsal-ink-2: #3d362a;
+--jsal-muted: #6b6253;
+--jsal-line: #e2d8c4;
+--jsal-line-hi: #cfc3a9;
+--jsal-accent: #835c0e;
+--jsal-accent-soft: #f1e3c2;
+--jsal-accent-ring: rgba(131, 92, 14, 0.35);
+--jsal-fill: #e3b04b;
+--jsal-on-fill: #1f1a12;
+--jsal-ok: #3f6b3a;   --jsal-ok-soft: #e3eedb;
+--jsal-warn: #8a4f0a; --jsal-warn-soft: #f6e2c8;
+--jsal-bad: #a8352b;  --jsal-bad-soft: #f6dfda;
+--jsal-info: #3b5a9a; --jsal-info-soft: #e1e7f3;
+--jsal-shadow: 0 1px 2px rgba(60, 40, 10, 0.08);
+--jsal-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+--jsal-radius: 6px;
+color-scheme: light;
+}
+@media screen and (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) {
+--jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
+--jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
+--jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
+--jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
+--jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
+--jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+--jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+color-scheme: dark;
+}
+}
+@media screen {
+:root[data-theme="dark"] {
+--jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
+--jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
+--jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
+--jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
+--jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0a860; --jsal-warn-soft: #33261a;
+--jsal-bad: #ff8f84; --jsal-bad-soft: #3a1d1a; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+--jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+color-scheme: dark;
+}
+}
+body { background: var(--jsal-bg); }
+:root {
+--jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-pill: 999px;
+--jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
+--jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
+--jsal-btn-weight: 600;
+--jsal-hover-line: var(--jsal-muted);
+--jsal-focus-ring: 0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent);
+}
+@media (pointer: coarse) {
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]), select, textarea { font-size: 16px !important; }
+.jsal-brand, .jsal-link, .jsal-theme { position: relative; }
+.jsal-brand::after, .jsal-link::after, .jsal-theme::after { content: ""; position: absolute; inset: -6px; }
+.jsal-theme::after { inset: -7px; }
+}
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:root { --jsal-col: 840px; }
+@media (min-width: 1280px) { :root { --jsal-col: 1120px; } }
+@media (min-width: 1800px) { :root { --jsal-col: 1240px; } }
+html { scrollbar-gutter: stable; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+@view-transition { navigation: auto; }
+.app { view-transition-name: jsal-app; }
+::view-transition-group(*) { animation-duration: 0.3s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
+::view-transition-image-pair(jsal-app) { overflow: hidden; }
+::view-transition-old(jsal-app), ::view-transition-new(jsal-app) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+::view-transition-old(jsal-app) { animation: jsal-fade-out 0.12s ease both; }
+::view-transition-new(jsal-app) { animation: jsal-fade-in 0.2s ease 0.08s both; }
+::view-transition-old(root) { animation: jsal-home-out 0.15s ease both; }
+::view-transition-new(root) { animation: jsal-fade-in 0.2s ease both; }
+.jsal-brand { view-transition-name: jsal-brand; }
+.jsal-theme { view-transition-name: jsal-theme; }
+::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
+::view-transition-old(jsal-brand), ::view-transition-old(jsal-theme) { display: none; }
+::view-transition-new(jsal-brand), ::view-transition-new(jsal-theme) { animation: none; }
+.jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px) + var(--jsal-consent-lift, 0px)); width: min(340px, calc(100vw - 32px));
+display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink);
+border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font);
+transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
+.jsal-ach[data-hide] { opacity: 0; transform: translate(-50%, 16px); visibility: hidden; transition: opacity .3s ease, transform .3s ease, visibility 0s .3s; }
+@media (min-width: 900px) {
+.jsal-ach { left: auto; right: max(20px, env(safe-area-inset-right, 0px)); transform: none; }
+.jsal-ach[data-hide] { transform: translateY(16px); }
+}
+@media (pointer: coarse) and (max-width: 899px) {
+.jsal-ach { top: max(12px, env(safe-area-inset-top, 0px)); bottom: auto; }
+.jsal-ach[data-hide] { transform: translate(-50%, -16px); }
+}
+.jsal-ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.jsal-ach small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
+.jsal-ach b { display: block; font-size: 15px; }
+.jsal-ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
+.jsal-consent { position: fixed; z-index: 2147483000; left: 16px; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(380px, calc(100vw - 32px));
+padding: 14px 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink-2);
+box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
+.jsal-consent p { margin: 0; }
+.jsal-consent b { color: var(--jsal-ink); }
+.jsal-consent a { color: var(--jsal-accent); text-underline-offset: 2px; }
+.jsal-consent div { display: flex; gap: 8px; margin-top: 12px; }
+.jsal-consent button { min-height: 36px; padding: 0 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: none; color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); cursor: pointer; }
+.jsal-consent button:hover { border-color: var(--jsal-hover-line); }
+.jsal-consent button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-consent .jsal-consent-yes { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+@media (pointer: coarse) { .jsal-consent button { min-height: 44px; } }
+@media print { .jsal-consent { display: none; } }
+@keyframes jsal-fade-out { to { opacity: 0; } }
+@keyframes jsal-fade-in { from { opacity: 0; } }
+@keyframes jsal-home-out { to { opacity: 0; transform: scale(0.97); } }
+@media (prefers-reduced-motion: reduce) {
+::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+.jsal-ach, .jsal-ach[data-hide] { transition: none; }
+}
+.jsal-top {
+width: min(100%, var(--jsal-col)); margin-inline: auto;
+display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
+padding-top: calc(40px - (36px - 18px * 1.65) / 2);
+font-family: var(--jsal-font);
+}
+@media (max-width: 520px) { .jsal-top { padding-top: 14px; } }
+.jsal-brand {
+display: inline-flex; align-items: center; height: 36px; flex-shrink: 0;
+font-weight: 700; font-size: 18px; line-height: 1.65; letter-spacing: -0.02em;
+color: var(--jsal-ink); text-decoration: none; white-space: nowrap;
+}
+.jsal-brand span { color: var(--jsal-accent); }
+.jsal-title { margin: 0; font: 700 20px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
+.jsal-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.jsal-theme {
+width: 32px; height: 32px; flex-shrink: 0; display: grid; place-items: center; padding: 0;
+border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius);
+background: transparent; color: var(--jsal-muted); cursor: pointer;
+transition: background 0.12s, color 0.12s;
+}
+.jsal-theme:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
+.jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
+.jsal-caret { display: inline-block; margin-left: 6px; opacity: .55; transition: transform .15s; vertical-align: middle; }
+[data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
+[data-jsal-nav]:hover .jsal-caret { opacity: .9; }
+.jsal-theme .i-sun { display: none; }
+:root[data-theme="dark"] .jsal-theme .i-sun { display: block; }
+:root[data-theme="dark"] .jsal-theme .i-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) .jsal-theme .i-sun { display: block; }
+:root:not([data-theme="light"]) .jsal-theme .i-moon { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .jsal-caret { transition: none; } }
+.jsal-link { padding: 8px 10px; line-height: 20px; font-size: 14px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }
+.jsal-link:hover { color: var(--jsal-ink); }
+.jsal-link:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
+.jsal-about {
+width: min(100% - 40px, var(--jsal-col)); margin: 0 auto; padding: 40px 0 64px;
+border-top: 1px solid var(--jsal-line);
+font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
+}
+.jsal-about > * { max-width: 680px; }
+.jsal-about h2 { margin: 0 0 10px; font: 700 26px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-about h3 { margin: 28px 0 8px; font-size: 16px; color: var(--jsal-ink); }
+.jsal-about p { margin: 0 0 12px; }
+.jsal-about ul, .jsal-about ol { margin: 0 0 12px; padding-left: 1.3em; }
+.jsal-about li + li { margin-top: 4px; }
+.jsal-about a { color: var(--jsal-accent); text-underline-offset: 2px; }
+.jsal-for { grid-column: 1 / -1; margin: -8px 0 14px; color: var(--jsal-muted); font-size: 14px; line-height: 1.45; }
+.jsal-about .jsal-lead { font-size: 17px; line-height: 1.5; color: var(--jsal-ink); }
+.jsal-about dl { margin: 0 0 12px; }
+.jsal-about dt { margin-top: 14px; font-weight: 600; color: var(--jsal-ink); }
+.jsal-about dd { margin: 3px 0 0; }
+.jsal-about .jsal-feedback { margin-top: 24px; }
+.jsal-about details { margin-top: 18px; border-top: 1px solid var(--jsal-line); }
+.jsal-about details:last-of-type { border-bottom: 1px solid var(--jsal-line); }
+.jsal-about details + details { margin-top: 0; }
+.jsal-about summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; border-radius: var(--jsal-radius-sm); }
+.jsal-about summary::-webkit-details-marker { display: none; }
+.jsal-about summary::before { content: ""; width: 7px; height: 7px; margin: 0 4px 0 2px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate 0.15s; }
+.jsal-about details[open] > summary::before { rotate: 45deg; }
+.jsal-about summary h3 { margin: 0; }
+.jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
+.jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-about details > ul { margin-bottom: 14px; }
+.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
+@media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
+</style>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 20px 56px; }
+.log { margin-top: 56px; max-width: 44em; }
+.code { margin: 0 0 12px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+h1 { margin: 0; font: 700 clamp(40px, 7vw, 64px)/1.1 "Lora", Georgia, serif; letter-spacing: -0.03em; }
+h1 em { font-weight: 600; color: var(--jsal-accent); }
+.log .lead { margin: 20px 0 0; font-size: 17px; color: var(--jsal-ink-2); text-wrap: pretty; }
+.log h2 { margin: 36px 0 8px; font: 700 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.log ul { margin: 0; padding: 0; list-style: none; }
+.log li { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--jsal-line); color: var(--jsal-ink-2); }
+.log .app { color: var(--jsal-ink); font-weight: 600; }
+.log a { color: var(--jsal-accent); text-underline-offset: 2px; }
+@media (max-width: 520px) { .log { margin-top: 36px; } .log li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="jsal-top">
+    <a class="jsal-brand" href="/" data-jsal-nav>jsal<span>.io</span><span class="jsal-caret"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></a>
+    <div class="jsal-actions">
+      <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"><svg class="i-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg><svg class="i-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+    </div>
+  </header>
+  <main class="log">
+    <p class="code">Changelog</p>
+    <h1>What’s <em>changed</em></h1>
+    <p class="lead">Everything that has changed on jsal.io, newest first. The home page keeps only the latest change for each part of the site.</p>
+    <h2><time datetime="2026-10-31">31 October 2026</time></h2>
+    <ul>
+      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>The quiz comes first; the platform cards and the comparison table open when you ask for them.</span></li>
+      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Picking platforms to compare is clearer: a tick on each pick, a count, and Select all and Clear above them.</span></li>
+      <li><span class="app"><a href="/play/">Mostly Warcraft</a></span><span>Its own page: WoW Forever, my game UI, the backpack and the achievements.</span></li>
+      <li><span class="app">Site</span><span>The home page is just the tools, with a short Updates list and this changelog for the rest.</span></li>
+      <li><span class="app">Site</span><span>Text sizes and spacing evened out across the site, and tidier code underneath.</span></li>
+    </ul>
+    <h2><time datetime="2026-10-30">30 October 2026</time></h2>
+    <ul>
+      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>A page per platform with where to find each SEO setting, like <a href="/cms-picker/squarespace/">Squarespace</a>.</span></li>
+      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Results say which of your answers tipped them, what counts against them, and when nothing fits well.</span></li>
+      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Sanity replaces the general “Headless CMS”, checked against its own docs.</span></li>
+      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>A new question on adding features as your site grows, and a “Sell memberships or paid posts” row.</span></li>
+      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Each platform card links to its own page; on phones the table folds by group, and the key explains “varies”.</span></li>
+      <li><span class="app"><a href="/formatter/">Clean Paste</a></span><span>The Copy buttons say Copied for a moment, and Clear can be undone (Undo clear, or Ctrl+Z).</span></li>
+      <li><span class="app"><a href="/formatter/">Clean Paste</a></span><span>The heading and list shortcuts of WordPress and Google Docs; Show makes the line it means easy to spot.</span></li>
+      <li><span class="app"><a href="/image-resizer/">Image Resizer</a></span><span>Saves PNG too, lossless and with transparency kept, and warns when an image may look blurry.</span></li>
+      <li><span class="app"><a href="/image-resizer/">Image Resizer</a></span><span>Uses far less memory and never overwrites a file when saving to a folder.</span></li>
+      <li><span class="app">Site</span><span>A new home page with the CMS Picker up front.</span></li>
+      <li><span class="app">Site</span><span>Clearer colours, shorter About sections and accessibility fixes; the tools work better on phones.</span></li>
+      <li><span class="app">Site</span><span>Quick clicks through the logo menu no longer get lost; on phones the achievement pop-up sits clear of the buttons.</span></li>
+    </ul>
+    <h2><time datetime="2026-10-29">29 October 2026</time></h2>
+    <ul>
+      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Find your fit in a few questions, with first steps for each match; change any answer from the results.</span></li>
+      <li><span class="app"><a href="/play/">Mostly Warcraft</a></span><span><a href="/play/#ach-h">Achievements</a> for using the tools (and a few secrets), and a <a href="/play/#hi-h">backpack</a> with where to find me.</span></li>
+      <li><span class="app">Site</span><span>Clearer descriptions for each project, and what’s live or coming soon.</span></li>
+    </ul>
+    <h2><time datetime="2026-10-28">28 October 2026</time></h2>
+    <ul>
+      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>New: which CMS fits your business, and what you can change for SEO on each.</span></li>
+      <li><span class="app"><a href="/formatter/">Clean Paste</a></span><span>Edit links in place, and copy as WordPress blocks.</span></li>
+      <li><span class="app"><a href="/image-resizer/">Image Resizer</a></span><span>Fits narrow windows, with a new About section.</span></li>
+      <li><span class="app">Site</span><span>New names: Platform Playbook and Clean Paste. Faster first load: the fonts now come from jsal.io.</span></li>
+    </ul>
+    <h2><time datetime="2026-10-27">27 October 2026</time></h2>
+    <ul>
+      <li><span class="app">Site</span><span>jsal.io launched.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="/nav.js?v=2026-10-31j" defer></script>
+</body>
+</html>

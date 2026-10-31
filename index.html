@@ -26,7 +26,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.svg?v=2026-10-31i" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-31j" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -478,13 +478,11 @@ p, li { text-wrap: pretty; }
 .now { grid-column: 1 / 13; background: var(--plain); }
 .now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
 /* Grouped by app: the CMS Picker on the left, the other apps stacked on the right (Site last) */
-.upd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; row-gap: 22px; align-items: start; }
-.upd-side { display: grid; gap: 22px; }
-.now h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
-.now h3 time { font-size: 14px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
-.now ul { margin: 0; padding: 0; list-style: none; }
-.now li { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--plain-line); }
-.now li time { flex: none; min-width: 4em; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
+.upd { margin: 0; padding: 0; list-style: none; }
+.upd li { display: grid; grid-template-columns: 10em minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--plain-line); }
+.upd .app { font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link */
+.upd time { color: var(--jsal-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+.upd-all { margin: 12px 0 0; font-weight: 600; }
 .now a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
@@ -523,7 +521,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .ic h2 { font-size: 22px; }
   .ic { padding: 20px; }
   .now h2 { font-size: 24px; }
-  .upd { grid-template-columns: minmax(0, 1fr); }
+  .upd li { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; }
+  .upd li > span:nth-child(2) { grid-row: 2; grid-column: 1 / -1; }
   footer { margin-top: 32px; }
 }
 @media (prefers-reduced-motion: reduce) { .tile, .arrow { transition: none; } a.tile:hover, a.tile:hover .arrow, a.tile:focus-visible .arrow { transform: none; } }
@@ -631,47 +630,15 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     <!-- Site updates, newest first. "Currently" (the WoW tile) says what I'm up to; this lists what shipped. -->
     <section id="updates" class="tile now" aria-labelledby="updates-h">
       <h2 id="updates-h">Updates</h2>
-      <!-- One group per app, newest first, at most five entries each. The CMS Picker is the left column;
-           the others stack on the right, ordered by their newest entry, with Site last. -->
-      <div class="upd">
-        <div>
-          <h3><a href="/cms-picker/">CMS Picker</a> <time datetime="2026-10-31">· Oct 31</time></h3>
-          <ul>
-            <li><time datetime="2026-10-31">Oct 31</time> <span>The quiz comes first; the platform cards and the comparison table open when you ask for them</span></li>
-            <li><time datetime="2026-10-31">Oct 31</time> <span>Picking platforms to compare is clearer: a tick on each pick, with a count, Select all and Clear above them</span></li>
-            <li><time datetime="2026-10-30">Oct 30</time> <span>Results also say what counts against your answers, the key explains “varies”, and on phones the table folds by group</span></li>
-            <li><time datetime="2026-10-30">Oct 30</time> <span>A “Sell memberships or paid posts” row, with quiz scoring to match</span></li>
-            <li><time datetime="2026-10-30">Oct 30</time> <span>Each platform card links to its own page</span></li>
-          </ul>
-        </div>
-        <div class="upd-side">
-          <div>
-            <h3><a href="/formatter/">Clean Paste</a> <time datetime="2026-10-30">· Oct 30</time></h3>
-            <ul>
-              <li><time datetime="2026-10-30">Oct 30</time> <span>The Copy buttons say Copied for a moment</span></li>
-              <li><time datetime="2026-10-30">Oct 30</time> <span>Clear can be undone: an Undo clear link in the paste area, or Ctrl+Z</span></li>
-              <li><time datetime="2026-10-30">Oct 30</time> <span>The heading and list shortcuts of WordPress and Google Docs</span></li>
-            </ul>
-          </div>
-          <div>
-            <h3><a href="/image-resizer/">Image Resizer</a> <time datetime="2026-10-30">· Oct 30</time></h3>
-            <ul>
-              <li><time datetime="2026-10-30">Oct 30</time> <span>Saves PNG too, lossless and with transparency kept</span></li>
-              <li><time datetime="2026-10-30">Oct 30</time> <span>Uses far less memory and never overwrites a file when saving to a folder</span></li>
-            </ul>
-          </div>
-          <div>
-            <h3>Site <time datetime="2026-10-31">· Oct 31</time></h3>
-            <ul>
-              <li><time datetime="2026-10-31">Oct 31</time> <span>The home page is just the tools; Warcraft, the backpack and the achievements moved to <a href="/play/">Off the clock</a></span></li>
-              <li><time datetime="2026-10-30">Oct 30</time> <span>Quick clicks through the logo menu no longer get lost</span></li>
-              <li><time datetime="2026-10-30">Oct 30</time> <span>On phones the achievement pop-up shows at the top, clear of the buttons</span></li>
-              <li><time datetime="2026-10-30">Oct 30</time> <span>A new home page, clearer colours, shorter About sections and accessibility fixes</span></li>
-              <li><time datetime="2026-10-29">Oct 29</time> <span><a href="/play/#ach-h">Achievements</a> and a <a href="/play/#hi-h">backpack</a> with where to find me</span></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <!-- The latest change for each part of the site, one line each; every change is on /changelog/ -->
+      <ul class="upd">
+        <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Quiz first; cards and table on request</span><time datetime="2026-10-31">Oct 31</time></li>
+        <li><span class="app"><a href="/formatter/">Clean Paste</a></span><span>Copy buttons say Copied; Clear can be undone</span><time datetime="2026-10-30">Oct 30</time></li>
+        <li><span class="app"><a href="/image-resizer/">Image Resizer</a></span><span>Saves PNG, with transparency</span><time datetime="2026-10-30">Oct 30</time></li>
+        <li><span class="app"><a href="/play/">Mostly Warcraft</a></span><span>Its own page: WoW, my UI, the backpack</span><time datetime="2026-10-31">Oct 31</time></li>
+        <li><span class="app">Site</span><span>The home page is just the tools</span><time datetime="2026-10-31">Oct 31</time></li>
+      </ul>
+      <p class="upd-all"><a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>
     </section>
 
     <!-- Say hi: plain ways to get in touch; the game-styled backpack lives on /play/ -->
@@ -721,6 +688,6 @@ if (matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: 
 addEventListener('pageswap', (e) => nameTile(tileFor(e.activation && e.activation.entry.url), e.viewTransition));
 addEventListener('pagereveal', (e) => nameTile(tileFor(window.navigation && navigation.activation && navigation.activation.from && navigation.activation.from.url), e.viewTransition));
 </script>
-<script src="/nav.js?v=2026-10-31i" defer></script>
+<script src="/nav.js?v=2026-10-31j" defer></script>
 </body>
 </html>
