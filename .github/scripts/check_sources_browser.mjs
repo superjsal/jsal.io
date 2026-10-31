@@ -34,5 +34,9 @@ await browser.close();
 console.log(`Browser pass over ${list.length} refused links: ${out.ok} ok, ${out.dead.length} dead, ${out.moved.length} moved, ${out.blocked.length} still blocked.`);
 for (const [u, s, t] of out.dead) console.log(`  DEAD ${s}  ${u}\n       title: ${t}`);
 for (const [u, f] of out.moved) console.log(`  moved  ${u}\n       now: ${f}`);
-for (const [u, s, t] of out.blocked) console.log(`  blocked ${s}  ${u}  (${t})`);
+// Still-blocked pages are whole help centres behind a bot challenge (Webflow and Duda show Cloudflare's "Just a
+// moment" page), so they're counted per host; one line per page would bury a dead or moved link
+const perHost = {};
+for (const [u, s, t] of out.blocked) (perHost[new URL(u).host] ??= []).push(`${s}${/just a moment/i.test(t) ? ' bot challenge' : ''}`);
+for (const [h, l] of Object.entries(perHost).sort()) console.log(`  blocked  ${h}: ${l.length} page(s) (${[...new Set(l)].join(', ')}); open one in a browser now and then`);
 process.exit(out.dead.length ? 1 : 0);
