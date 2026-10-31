@@ -214,15 +214,32 @@
     });
     ghead.append(head);
     $('#thead').scrollLeft = $('#seo .scroll').scrollLeft;
-    // A label row where each section starts: Built in, SEO
+    // A label row where each section starts: Built in, SEO. On phones it's a button that folds the group's rows
+    // (only the first group starts open), so the comparison isn't 4,800px tall; desktop shows every row.
     const groups = Object.fromEntries((data.groups || []).map((g) => [g.id, g]));
-    let lastGroup = null;
+    const order = [...new Set(items.map((it) => it.group))].filter((g) => groups[g]);
+    if (!state.folded) state.folded = new Set(order.slice(1));
+    let lastGroup = null, body = grid;
     items.forEach((it) => {
       if (it.group !== lastGroup && groups[it.group]) {
-        const g = groups[it.group];
+        const g = groups[it.group], id = it.group, title = `${g.title}${g.asOf ? ` · as of ${g.asOf}` : ''}`;
         const gr = el('div', 'row group');
-        gr.append(el('span', null, `${g.title}${g.asOf ? ` · as of ${g.asOf}` : ''}`));
+        gr.append(el('span', 'gtitle', title));
+        const fold = el('button', 'gfold');
+        fold.type = 'button';
+        fold.setAttribute('aria-expanded', String(!state.folded.has(id)));
+        fold.setAttribute('aria-controls', `grows-${id}`);
+        fold.append(el('span', null, title), el('span', 'gcount', `${items.filter((x) => x.group === id).length} rows`));
+        fold.addEventListener('click', () => {
+          state.folded.has(id) ? state.folded.delete(id) : state.folded.add(id);
+          render();
+          document.querySelector(`.gfold[aria-controls="grows-${id}"]`)?.focus();
+        });
+        gr.append(fold);
         grid.append(gr);
+        body = el('div', `grows${state.folded.has(id) ? ' folded' : ''}`);
+        body.id = `grows-${id}`;
+        grid.append(body);
       }
       lastGroup = it.group;
       const row = el('div', 'row');
@@ -253,7 +270,7 @@
         if (!state.notes && (cell.dataset.note || cell.dataset.scope || cell.dataset.where)) cell.tabIndex = 0;   // notes off: Tab to a cell opens its note too
         row.append(cell);
       });
-      grid.append(row);
+      body.append(row);
     });
   }
 

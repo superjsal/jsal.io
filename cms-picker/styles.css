@@ -173,7 +173,21 @@ body {
 /* Section heading row inside the table: Built in, SEO (spans every column) */
 /* A quiet label, not a filled bar: the sections are signposts, not content */
 .row.group { display: block; padding: 16px 14px 6px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-.row.group > span { position: sticky; left: 14px; }
+.row.group .gtitle { position: sticky; left: 14px; }
+/* Phones: each group's rows fold behind its heading, a button (the first group starts open), so the comparison
+   stays a screen or two instead of 4,800px. Desktop shows every row under the plain heading. */
+.row.group .gfold { display: none; }
+@media (max-width: 720px) {
+  .row.group { padding: 0; margin: 4px 0 10px; }
+  .row.group .gtitle { display: none; }
+  .row.group .gfold { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; min-height: 44px; padding: 10px 14px;
+    border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; text-align: left; cursor: pointer; }
+  .row.group .gfold:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+  .gfold .gcount { flex: none; letter-spacing: 0; text-transform: none; }
+  .gfold .gcount::after { content: " ▾"; }
+  .gfold[aria-expanded="true"] .gcount::after { content: " ▴"; }
+  .grows.folded { display: none; }
+}
 /* "Show notes" off: tags only, so far more rows fit on screen; hovering a cell shows its note in .tip */
 .grid.compact .mark, .grid.compact .where { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }   /* still read out */
 .grid.compact .cell[data-note], .grid.compact .cell[data-scope], .grid.compact .cell[data-where] { cursor: help; }
