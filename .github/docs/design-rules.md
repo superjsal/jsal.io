@@ -29,10 +29,17 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 - Colours come from the `--jsal-*` tokens in `shell.css`, light and dark. Every text/background pair is at
   least 4.5:1; icons and other graphics people need to see at least 3:1. Light-mode gold text is
   `--jsal-accent`; `--jsal-fill` is for fills and for text on images.
-- **Roles:** green = fit or success; gold = selected, focused, the main action, or the one insight line (never
-  hover); orange = genuine warnings; blue = information and links inside a tool's content; neutral for
-  everything else. Gold is also the site's own text links and brand touches (".io", each title's gold word,
-  eyebrow labels, section numbers, achievements).
+- **Gold is the site's accent: loud, and spent only where it matters.** Selected states, the main action, the
+  one insight line, brand touches (".io", each title's gold word, the home page name and role line, section
+  numbers, eyebrow labels, achievements) and the site's own text links (About sections, footers, notes).
+  Never hover. Focus is the focus ring, not a gold fill.
+- **The answer ramp**, for tags that say how well a platform does something: green = built in or automatic,
+  blue = with an add-on or indirectly, orange = needs code, red = not possible. It reads as one scale
+  wherever it appears.
+- **Other roles:** green = fit or success; orange = a genuine warning (a missing or stale source, "may look
+  blurry"); red = not possible, and destructive actions (Clear, Remove); blue = information (a note,
+  something in flight) and links inside a tool's content; neutral for everything else (labels, type badges,
+  icons, cost bands, states such as "not verified"). The team Playbook follows the same roles.
 - **Check:** `check.py` fails on written-out colours, selected states without the `--jsal-selected-*` tokens,
   gold on hover, button corners off the scale and odd font weights. A deliberate exception carries a
   `/* style: allow (reason) */` comment.

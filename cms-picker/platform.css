@@ -24,7 +24,7 @@
 .pp-path-l { margin-right: 2px; color: var(--jsal-muted); font-size: 13px; }
 .pp-step { padding: 2px 8px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); font-size: 13.5px; line-height: 1.45; }
 .pp-sep { color: var(--jsal-muted); font-size: 13px; }   /* the arrow; screen readers hear ", then" */
-.pp-src { display: inline-block; margin-top: 10px; color: var(--jsal-accent); font-size: 13.5px; text-underline-offset: 2px; }
+.pp-src { display: inline-block; margin-top: 10px; color: var(--jsal-info); font-size: 13.5px; text-underline-offset: 2px; }   /* a source link inside the content, blue like the Playbook's */
 
 /* The short profile */
 .pp-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 0; }

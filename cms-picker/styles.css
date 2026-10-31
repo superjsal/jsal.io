@@ -98,7 +98,7 @@ body {
 }
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-accent); color: var(--jsal-selected-ink); }
-.chip-link { padding: 3px 6px; color: var(--jsal-accent); font-size: 13px; text-decoration: underline; text-underline-offset: 2px; }
+.chip-link { padding: 3px 6px; color: var(--jsal-info); font-size: 13px; text-decoration: underline; text-underline-offset: 2px; }   /* link-styled controls inside the tool are blue; gold stays for selected and the main action */
 
 /* Key and Show notes share one row */
 .keyrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 14px; }
@@ -370,7 +370,7 @@ body {
 .qz-steps { margin: 8px 0 0; padding-left: 1.4em; font-size: 14.5px; }
 .qz-steps li + li { margin-top: 4px; }
 .qz-steps small { display: block; color: var(--jsal-muted); font-size: 13.5px; }
-.qz-steps a, .qz-later a { color: var(--jsal-accent); text-underline-offset: 2px; white-space: nowrap; }
+.qz-steps a, .qz-later a { color: var(--jsal-info); text-underline-offset: 2px; white-space: nowrap; }   /* links inside the result's content */
 .qz-later { margin-top: 12px; color: var(--jsal-ink-2); font-size: 14px; }
 .qz-later b { font-weight: 600; }
 .qz-panel { margin-top: 12px; padding: 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
