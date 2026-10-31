@@ -1,7 +1,7 @@
 /* CMS Picker platform pages (/cms-picker/<platform>/), written by playbook.py from
    .github/scripts/platform-page.html. Tags (.tag, .sc) come from styles.css. */
 /* The CMS Picker's byline: the same place, size and type, so the two pages' headings line up */
-.pp-crumbs { margin: var(--jsal-page-top) 0 0 4px; color: var(--jsal-muted); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+.pp-crumbs { margin: var(--jsal-page-top) 0 0; color: var(--jsal-muted); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
 .pp-crumbs a { color: var(--jsal-accent); text-underline-offset: 3px; }
 /* Headings in the home page's serif, like the page titles and the CMS Picker's own headings; the gold word italic */
 .pp-title { margin: 14px 0 10px; font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the CMS Picker's heading size */
@@ -50,7 +50,6 @@
 .pp-others a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 @media (max-width: 720px) {
-  .pp-crumbs { margin-left: 2px; }   /* the same indent as the home page's name line, so the eyebrow doesn't jump between pages */
   .pp-facts { grid-template-columns: 1fr 1fr; }
   .pp-fit { grid-template-columns: 1fr; }
   .pp-where { grid-template-columns: 1fr; gap: 6px; }

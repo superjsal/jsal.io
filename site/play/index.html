@@ -121,7 +121,7 @@ p, li { text-wrap: pretty; }
 /* Top padding lines the small line up with the picture's top edge in the CMS Picker tile beside it
    (tile padding 26px + 1px border) */
 .intro { grid-column: 1 / 6; padding: 28px 0 0; }
-.roles { display: flex; flex-wrap: wrap; margin: 0 0 18px 4px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+.roles { display: flex; flex-wrap: wrap; margin: 0 0 18px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 .roles span + span::before { content: "·"; margin: 0 10px; color: var(--jsal-muted); }
 .intro h1 { margin: 0; font: 700 clamp(44px, 5vw, 62px)/1.02 "Lora", Georgia, serif; letter-spacing: -0.03em; }
 .intro h1 em { font-weight: 600; color: var(--jsal-accent); }
@@ -254,7 +254,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 @media (max-width: 520px) {
   .jsal-top nav a:not([href="#work"]) { display: none; }
   .grid { gap: 14px; }
-  .roles { margin: 0 0 12px 2px; }
+  .roles { margin: 0 0 12px; }
   .roles span + span::before { margin: 0 8px; }
   .intro h1 { font-size: 40px; line-height: 1.05; }
   .intro p { margin: 16px 0 6px 2px; font-size: 16px; line-height: 1.55; }
