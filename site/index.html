@@ -134,7 +134,7 @@ p, li { text-wrap: pretty; }
 /* The first click: the CMS Picker (gold, the main action), or the backpack's ways to get in touch */
 .cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; }
 /* The platform guides: a mono label and a quiet tile per platform in even columns (a bordered pill means a choice
-   elsewhere on the site, and uneven pills stagger), under the intro with its bottom level with the big tile's (the
+   elsewhere on the site, and uneven pills stagger), ending with a Compare tile that fills out the last row, under the intro with its bottom level with the big tile's (the
    tile spans both rows); from 1100px down the intro's free space is too short for it, so it takes the full width
    under the intro and the tile instead of stretching the tile */
 .guides { grid-column: 1 / 6; align-self: end; margin: 0; padding-top: 32px; }
@@ -144,6 +144,10 @@ p, li { text-wrap: pretty; }
 .guides a { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: border-color 0.15s; }
 .guides a:hover { border-color: var(--jsal-hover-line); }
 .guides a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+/* The last tile ("Compare all") stretches across whatever is left of its row, so the grid ends even at any platform count */
+.guides .all { justify-content: space-between; color: var(--jsal-ink-2); }
+.guides a:last-child:nth-child(3n+1) { grid-column: span 3; }
+.guides a:last-child:nth-child(3n+2) { grid-column: span 2; }
 .cta a { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; }
 .cta .main { background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); }
 .cta .alt { border: 1px solid var(--jsal-muted); color: var(--jsal-ink); }   /* muted, not line-hi: the outline is the button's edge, so 3:1 */
@@ -312,7 +316,12 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
 @media (max-width: 1100px) {
   .guides { grid-column: 1 / -1; grid-row: 2; align-self: start; padding-top: 0; }
-  .guides div { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }   /* as many even columns as the full width takes */
+  .guides div { grid-template-columns: repeat(5, minmax(0, 1fr)); }   /* five even columns across the full width */
+  .guides a:last-child:nth-child(5n+1) { grid-column: span 5; }
+  .guides a:last-child:nth-child(5n+2) { grid-column: span 4; }
+  .guides a:last-child:nth-child(5n+3) { grid-column: span 3; }
+  .guides a:last-child:nth-child(5n+4) { grid-column: span 2; }
+  .guides a:last-child:nth-child(5n) { grid-column: auto; }
   .cms { grid-row: 1; }
 }
 @media (max-width: 860px) {
@@ -337,6 +346,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .cta { margin-top: 18px; }
   .guides div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .guides a { min-height: 44px; }
+  .guides a:last-child:nth-child(even) { grid-column: auto; }
+  .guides a:last-child:nth-child(odd) { grid-column: span 2; }
   .tile { padding: 20px; border-radius: 18px; }
   .jscale { padding: 12px; }
   .jscale .foot { padding: 0 6px 4px; }
@@ -382,7 +393,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     </section>
     <!-- Platform guides: the CMS Picker's one page per platform (its SEO settings and where to find each). Under the intro, its bottom level with the
        tile's; from 1100px down it takes the full width under both; written by hand in the publish's platform order -->
-    <nav class="guides" aria-labelledby="guides-h"><p class="label" id="guides-h">Platform guides</p><div><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/webflow/">Webflow</a><a href="/cms-picker/framer/">Framer</a><a href="/cms-picker/hubspot/">HubSpot CMS</a><a href="/cms-picker/bigcommerce/">BigCommerce</a><a href="/cms-picker/magento/">Magento 2</a><a href="/cms-picker/drupal/">Drupal</a><a href="/cms-picker/duda/">Duda</a><a href="/cms-picker/ghost/">Ghost</a><a href="/cms-picker/sanity/">Sanity</a></div></nav>
+    <nav class="guides" aria-labelledby="guides-h"><p class="label" id="guides-h">Platform guides</p><div><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/webflow/">Webflow</a><a href="/cms-picker/framer/">Framer</a><a href="/cms-picker/hubspot/">HubSpot CMS</a><a href="/cms-picker/bigcommerce/">BigCommerce</a><a href="/cms-picker/magento/">Magento 2</a><a href="/cms-picker/drupal/">Drupal</a><a href="/cms-picker/duda/">Duda</a><a href="/cms-picker/ghost/">Ghost</a><a href="/cms-picker/sanity/">Sanity</a><a class="all" href="/cms-picker/#seo">Compare all 13<span aria-hidden="true">→</span></a></div></nav>
 
     <!-- App tiles (data-app marks the ones that open a tool). CMS Picker is the big one beside
          the intro; then Image Resizer (wide) and Clean Paste, then the team's Playbook. The wide tile swaps

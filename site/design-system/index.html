@@ -163,7 +163,10 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .tick b { display: block; font-size: 15px; font-weight: 600; }
 .tick small { display: block; color: var(--jsal-muted); font-size: 13px; }
 /* An index of links: equal tiles, never pills (home .guides) */
-.ltiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px; width: 100%; }
+.ltiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: 100%; }
+.ltiles .all { justify-content: space-between; color: var(--jsal-ink-2); }
+.ltiles a:last-child:nth-child(3n+1) { grid-column: span 3; }
+.ltiles a:last-child:nth-child(3n+2) { grid-column: span 2; }
 .ltiles a { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: border-color 0.15s; }
 .ltiles a:hover { border-color: var(--jsal-hover-line); }
 .ltiles a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
@@ -499,8 +502,8 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div class="demo">
         <span class="src">A tick that goes with a choice · cms-picker/styles.css .qz-tick (selected like a pressed chip; the box in the accent)</span>
         <div class="row"><label class="tick"><input type="checkbox" checked><span><b>In two or more languages</b><small>Tick it, then pick below</small></span></label><label class="tick"><input type="checkbox"><span><b>In two or more languages</b><small>Tick it, then pick below</small></span></label></div>
-        <span class="src">An index of links · index.html .guides (a bordered pill means a choice, so links get equal tiles, never pills)</span>
-        <div class="ltiles"><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/hubspot/">HubSpot CMS</a><a href="/cms-picker/ghost/">Ghost</a></div>
+        <span class="src">An index of links · index.html .guides (a bordered pill means a choice, so links get equal tiles, never pills; the last tile fills out the row at any count)</span>
+        <div class="ltiles"><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/hubspot/">HubSpot CMS</a><a href="/cms-picker/ghost/">Ghost</a><a class="all" href="/cms-picker/#seo">Compare all<span aria-hidden="true">→</span></a></div>
       </div>
       <div class="demo">
         <span class="src">Tags · cms-picker/styles.css .tag (the answer ramp), with the words that follow a tag</span>
