@@ -50,7 +50,7 @@
     agency: [(a, y, x) => `${x} is a common choice for them`, null],
     agencyOnly: [null, (a, y) => `${y} is mainly sold through agencies`],
     dev: [(a, y, x) => `${x} gives them full control`, (a, y) => `${y} isn’t built to be coded`],
-    care: [(a, y, x) => `${x} handles them for you`, (a, y) => `${y} leaves hosting and updates to you`],
+    care: [(a, y, x) => `${x} handles them for you`, (a, y, x, own, theirs) => (theirs === -2 ? `${y} needs a managed host or someone to look after it` : `${y} leaves hosting and updates to you`)],
     sell: [(a, y, x) => `selling is easier to set up on ${x}`, (a, y) => `selling is harder to set up on ${y}`],
     sellFirst: [(a, y, x) => `${x} is made for selling first`, null],
     size: [(a, y, x) => `${x} handles large catalogues`, (a, y) => `${y} isn’t made for large catalogues`],
@@ -130,9 +130,11 @@
     // A developer: platforms built to be coded (quiz.devControl)
     if (a.who === 'dev') { if (has('devControl')) add('dev', 2, 'Gives a developer full control'); else add('dev', -1); }
     if (a.care === 'no') {
-      const handled = /^Handled for you/.test(pr.hosting || '');
-      add('care', handled ? 2 : -6, handled && 'Hosting, updates and security are handled for you');
-      if (!handled) but.push('hosting, updates and security are on you');
+      // Three states: handled by the platform (+2); a managed option the profile's hosting line names, which takes
+      // updates and security on (quiz.managedHosting, -2); or yours (-6)
+      const handled = /^Handled for you/.test(pr.hosting || ''), managed = has('managedHosting');
+      add('care', handled ? 2 : managed ? -2 : -6, handled && 'Hosting, updates and security are handled for you');
+      if (!handled) but.push(managed ? 'it needs a managed host or someone to look after it' : 'hosting, updates and security are on you');
     }
     if (a.what === 'store') {
       add('sell', { yes: 2, plugin: 0, code: -3, no: -6 }[verdict('store')] ?? 0);
@@ -253,7 +255,7 @@
     const two = gaps(x, y).slice(0, 2).sort((p, q) => (p.k === 'leave') - (q.k === 'leave'));
     let said = null;
     const words = two.map(({ k }) => {
-      const [plus, minus] = TIP[k], f = (x.pts[k] || 0) > 0 ? plus || minus : minus || plus, w = f && f(a, y.p.name, x.p.name, x.pts[k] || 0);
+      const [plus, minus] = TIP[k], f = (x.pts[k] || 0) > 0 ? plus || minus : minus || plus, w = f && f(a, y.p.name, x.p.name, x.pts[k] || 0, y.pts[k] || 0);
       if (!w) return null;
       const lead = LEAD[k] && LEAD[k](a);
       if (!lead || lead === said) return w;

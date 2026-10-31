@@ -84,6 +84,7 @@ Shared by the page and the tests, so they always run the same code.
   `score.js` picks the row for the score, the "costs less to start" box and the card alike.
 - **A platform's own reason:** `quiz.leaveWhy` replaces "Easy to move to another platform later" where the
   card's "If you leave" says more (Sanity: "You own the site code and can export all your content").
+- **Hosting, three states** (since 2026-10-31): wanting hosting handled counts +2 where the profile's hosting line starts "Handled for you", −2 where it names a managed option that takes updates and security on (`managedHosting` in quiz.json: WordPress, Magento 2), −6 otherwise; the "worth knowing" line says which.
 - **Ties** (since 2026-10-31): two platforms level on points are ordered by how many of their card's "Good fit"
   lines answer what the person is making, from `quiz.fitFor`: each tagged line as it reads on the card (`line`)
   with the answers it answers (`when`, the same shape as `notIdeal`; a line that answers two questions is listed
