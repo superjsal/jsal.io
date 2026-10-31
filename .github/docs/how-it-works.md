@@ -42,8 +42,10 @@ flowchart TB
     main[("main branch")]
     pages["GitHub Pages → jsal.io<br>(CNAME; live a minute or two after a push)"]
     a1["Action: Publish CMS Picker<br>daily 07:41 UTC: publish, commit,<br>rebuild Pages, IndexNow ping"]
-    a2["Action: Site checks<br>every push: check.py, check_data.py,<br>personas.test.js"]
-    a3["Action: Keep Platform Playbook awake<br>Mon + Thu: calls the ping() function<br>so the free Supabase project doesn't pause"]
+    a2["Action: Site checks<br>every push: check.py, check_data.py, personas,<br>and the browser checks on Playwright's<br>Chromium, WebKit and Firefox"]
+    a3["Action: Keep Platform Playbook awake<br>Mon + Thu: calls the ping() function<br>so the free Supabase project doesn't pause<br>(URL and anon key: repository variables)"]
+    a5["Action: Back up Platform Playbook<br>Sundays: every table, encrypted with the<br>BACKUP_PASSPHRASE secret, kept 90 days as an artifact"]
+    a6["Action: IndexNow for changed pages<br>every hand push: announces pages whose<br>index.html changed, once Pages is live"]
     a4["Action: Quarterly recheck reminder<br>1 Jan/Apr/Jul/Oct: opens an issue<br>(cost bands, add-on tiers, 'varies', devices)"]
   end
   a1 --> pub
@@ -51,13 +53,15 @@ flowchart TB
   main --> pages
   main --> a2
   a3 --> DB
+  DB --> a5
+  main --> a6 --> bing
 
   subgraph DEV["Working on this PC (before a push)"]
     edit["edit the site: shell.css, nav.js, a tool's CSS/JS, pages"]
     upd["updates.py<br>rewrites Updates on the home page from the<br>changelog's data-short lines"]
     bump["bump-version.ps1<br>bumps ?v= on every page, the shell.css link<br>and the apps' module imports"]
     check["check.ps1 → check.py<br>top bar identical, ?v= in step, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults,<br>Updates matches the changelog"]
-    bcheck["browser-check.mjs (Playwright on Edge/WebKit)<br>axe on every page, 375/390px, each tool's main flow"]
+    bcheck["browser-check.mjs (Playwright: Edge or Chromium, WebKit, Firefox)<br>axe on every page, 375/390px, each tool's main flow"]
     personas["personas.test.js<br>37 agreed quiz results still hold"]
     commit["git pull --ff-only, stage by name, commit, push"]
   end
@@ -86,6 +90,8 @@ flowchart TB
 - **The quiz is code plus data.** `score.js` (questions, scoring, wording) and `quiz.json` (per-platform values the published answers don't carry) ship with the page; everything else the quiz says comes from `data.json`. The personas test pins the agreed results.
 - **A change is described once.** The changelog is the record; an entry with a `data-short` leads its section in Updates on the home page, which `updates.py` writes between two marker comments in `index.html`. `check.py` fails when that block is out of date, so nobody edits it by hand.
 - **Cache numbers, not a build.** There's no bundler. `bump-version.ps1` rewrites `?v=` so browsers fetch changed files; `check.py` fails a page whose numbers are out of step.
-- **What the Actions can and can't check.** `check.py`, `check_data.py` and the personas run on every push. The browser checks (axe, phone widths, each tool's flow) need Playwright on a real browser, so they run on the PC before a push.
-- **Keep-awake reads the Supabase URL and anon key from the Playbook's source** (`ic/app.js`); if that file moves or the constants are renamed, the workflow's `grep` must follow.
+- **The Action is the full gate.** `check.py`, `check_data.py`, the personas and the browser checks (axe, phone widths, each tool's flow on Chromium, WebKit and Firefox) all run on every push; the PC runs the same before pushing, Firefox excepted (it won't start there).
+- **Keep-awake reads the Supabase URL and anon key from the repository's Actions variables** (`SUPABASE_URL`, `SUPABASE_ANON_KEY`; the same public values `ic/app.js` carries). A new Supabase project means updating both.
+- **Backups live in two places:** `playbook.py backup` on the PC (plain JSON in `private\backups`), and the Sunday Action's encrypted artifact on GitHub (90 days; `gh run download <run id> -n playbook-backup`, then `gpg --decrypt` with the passphrase John set as the `BACKUP_PASSPHRASE` secret). The repo is public and its artifacts are downloadable by any GitHub account, which is why the file is encrypted.
+- **Nobody runs IndexNow by hand any more:** the nightly publish announces its pages and the push Action announces any page whose `index.html` changed.
 - **Analytics are opt-in where the law asks.** Each page's head sets Consent Mode defaults; `nav.js` loads gtag.js only where analytics may run, and the home page footer reopens the choice.
