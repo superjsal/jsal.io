@@ -104,6 +104,11 @@ body { background: var(--jsal-bg); }
 :root { --jsal-col: 840px; }
 @media (min-width: 1280px) { :root { --jsal-col: 1120px; } }
 @media (min-width: 1800px) { :root { --jsal-col: 1240px; } }
+/* One distance from the top bar to the first thing on every page that opens with a heading
+   (home, Off the clock, the CMS Picker and its platform pages, Privacy, Changelog, 404).
+   The tools sit closer (16px), so their work area fills the first screen. */
+:root { --jsal-page-top: 30px; }
+@media (max-width: 720px) { :root { --jsal-page-top: 22px; } }
 /* Reserve the scrollbar's space on every page, scrolling or not, so nothing shifts sideways */
 html { scrollbar-gutter: stable; }
 /* In-page links (About, #sections, Top) glide, unless the visitor has turned motion off.

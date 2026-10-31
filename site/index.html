@@ -49,7 +49,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=f5978175">
+<link rel="stylesheet" href="/shell.css?v=0917cbf6">
 <style>
 /* Tile colours. The Image Resizer has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
@@ -96,7 +96,7 @@ a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles kee
 .jsal-top nav a:hover { color: var(--jsal-ink); }
 
 /* Bento grid: 12 columns, one per tile row; stacks on narrow screens */
-.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: var(--jsal-page-top); }
 .tile { border-radius: 22px; padding: 26px; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
 a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 /* With a mouse: the tile tilts toward the pointer and a soft light follows it (the script below sets
@@ -301,7 +301,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
 @media (max-width: 860px) {
   .grid > * { grid-column: 1 / -1 !important; }
-  .intro { padding-top: 4px; }
+  .intro { padding-top: 0; }
   .intro p { font-size: 16px; }
 }
 #work, #updates, #hi-h { scroll-margin-top: 16px; }   /* #hi-h: where "Say hi" lands */
@@ -310,8 +310,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
    and only the Work link kept in the top bar (Updates and Email are a short scroll away). */
 @media (max-width: 520px) {
   .jsal-top nav a:not([href="#work"]) { display: none; }
-  .grid { margin-top: 22px; gap: 14px; }
-  .roles { margin: 0 0 12px 2px; font-size: 11px; letter-spacing: 0.05em; }
+  .grid { gap: 14px; }
+  .roles { margin: 0 0 12px 2px; }
   .roles span + span::before { margin: 0 8px; }
   .intro h1 { font-size: 40px; line-height: 1.05; }
   .intro p { margin: 16px 0 6px 2px; font-size: 16px; line-height: 1.55; }

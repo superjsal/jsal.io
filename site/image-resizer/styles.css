@@ -725,6 +725,7 @@ body {
 @media (max-width: 899px) and (max-height: 900px), (max-height: 820px) {
   .section-label, .divider, .option-hint, .grid-hint, .drop-sub { display: none; }
   .app-header { margin-bottom: 14px; }
+  .jsal-for { margin: 2px 0 4px; }   /* 16px under the top bar, like every tool; the same height as before */
   .drop-zone { padding: 8px 12px; }
   .drop-icon { width: 28px; height: 28px; }
   .folder-row { padding-top: 3px; padding-bottom: 3px; }

@@ -22,7 +22,7 @@ body {
 
 /* ── Hero ──────────────────────────────────────────────────────────────── */
 
-.hero { margin: 30px 0 32px; }
+.hero { margin: var(--jsal-page-top) 0 32px; }
 .byline { margin-bottom: 4px; color: var(--jsal-accent); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }   /* the home page's small gold label above the heading */
 .hero-title { margin-top: 14px; color: var(--jsal-ink); font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the home page's serif, like the page title */
 .lede { max-width: 520px; margin-top: 20px; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.6; }
@@ -259,7 +259,6 @@ body {
   /* Compare: thirteen uneven names in two even columns, instead of a stagger */
   .plats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .plats .chip { text-align: center; }
-  .hero { margin-top: 22px; }
   .more { grid-template-columns: minmax(0, 1fr); }
   .lede { font-size: 16px; }
   .btn { flex: 1 1 auto; }

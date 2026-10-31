@@ -30,22 +30,21 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours and top bar: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=f5978175">
+<link rel="stylesheet" href="/shell.css?v=0917cbf6">
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 20px 56px; }
-.lost { margin-top: 64px; max-width: 36em; }
+.lost { margin-top: var(--jsal-page-top); max-width: 36em; }
 .code { margin: 0 0 12px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 h1 { margin: 0; font: 700 clamp(40px, 7vw, 72px)/1 "Lora", Georgia, serif; letter-spacing: -0.03em; text-wrap: balance; }
 h1 em { font-weight: 600; color: var(--jsal-accent); }
-.lost p { margin: 18px 0 0; font-size: 17px; color: var(--jsal-muted); text-wrap: pretty; }
-.links { margin: 32px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 420px; }
+.lost .lead { margin: 28px 0 0; padding-bottom: 40px; border-bottom: 1px solid var(--jsal-line); font-size: 17px; color: var(--jsal-muted); text-wrap: pretty; }   /* the intro ends in a thin line */
+.links { margin: 40px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 420px; }
 .links a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink); text-decoration: none; font-weight: 600; }
 .links a span { font-weight: 400; color: var(--jsal-muted); font-size: 14px; }
 .links a:hover { border-color: var(--jsal-hover-line); }
 .links a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
-@media (max-width: 520px) { .lost { margin-top: 40px; } }
 </style>
 </head>
 <body data-jsal-lost>
@@ -59,7 +58,7 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
   <main class="lost">
     <p class="code">404 · page not found</p>
     <h1>Nothing <em>here</em></h1>
-    <p>This page doesn't exist, or it moved. One of these is probably what you're after:</p>
+    <p class="lead">This page doesn't exist, or it moved. One of these is probably what you're after:</p>
     <ul class="links">
       <li><a href="/">jsal.io home <span>John Salvador</span></a></li>
       <li><a href="/image-resizer/">Image Resizer <span>Resize and crop images</span></a></li>
