@@ -20,7 +20,8 @@ SECTIONS = [('CMS Picker', '/cms-picker/'), ('Clean Paste', '/formatter/'), ('Im
 MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 
-def read(rel): return (SITE / rel).read_text(encoding='utf-8', newline='')
+def read(rel):   # newline='' keeps the file's own line endings (open(), not read_text: that argument needs Python 3.13)
+    with open(SITE / rel, encoding='utf-8', newline='') as f: return f.read()
 
 
 def entries():
@@ -97,7 +98,7 @@ def write():
     before, cur, after, nl, indent = b
     new = nl + render(nl, indent) + nl + indent
     if cur == new: return False
-    (SITE / HOME).write_text(before + new + after, encoding='utf-8', newline='')
+    with open(SITE / HOME, 'w', encoding='utf-8', newline='') as f: f.write(before + new + after)
     return True
 
 
