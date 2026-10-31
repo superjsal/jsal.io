@@ -664,8 +664,7 @@ body {
 .controls {
   flex: 0 1 auto;
   min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;   /* scrolling the settings doesn't scroll the page */
+  overflow-y: auto;   /* scroll chaining stays on: the settings rarely overflow, and the wheel over them must still move the page */
   scrollbar-width: thin;
   /* Keep the scrollbar's space even when nothing scrolls. Otherwise its coming and going (e.g. as
      file sizes update after a Quality click) changes the width, and the Quality label jumps above
