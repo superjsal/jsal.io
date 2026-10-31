@@ -386,7 +386,7 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pk-cell:hover { border-color: var(--jsal-hover-line); }
 .pk-cell.on { border-color: var(--jsal-accent); }   /* the answer open below */
 .pk-cell .v { cursor: pointer; }
-.pk-cell.wait::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--jsal-warn); }   /* waiting for the next publish */
+.pk-cell.wait::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--jsal-info); }   /* waiting for the next publish: in flight (blue), not a warning */
 .pk-nosrc { font-size: 10.5px; color: var(--jsal-muted); }
 /* Section headings, as on the public CMS Picker: a row across the table, and a heading in a platform's list */
 .pk-table tr.pk-group th { background: var(--jsal-sunk); color: var(--jsal-info); font-size: 12.5px; font-weight: 700; letter-spacing: 0.02em; }
@@ -402,7 +402,21 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pk-chip.on { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .pk-plat { display: grid; gap: 8px; }
 .pk-plat > h3 { margin: 6px 0 0; font-size: 18px; color: var(--jsal-ink); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.pk-wait { padding: 1px 8px; border-radius: var(--jsal-radius-pill); background: var(--jsal-warn-soft); color: var(--jsal-warn); font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.pk-wait { padding: 1px 8px; border-radius: var(--jsal-radius-pill); background: var(--jsal-info-soft); color: var(--jsal-info); font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+/* Needs attention (CMS Picker tab): orange = data to fix (no source, a stale one), blue = waiting for publish,
+   neutral = states to settle (not verified, unclear). Under six items it's one line with "Show them". */
+.pk-attn { margin-bottom: 14px; }
+.pk-attn .pk-chips { margin: 8px 0 10px; }
+.pk-attn ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }   /* the first twelve, then "Show all": no scroll box cutting a row in half */
+.pk-attn .pk-more { margin: 8px 0 0; }
+.pk-attn .pk-row { width: 100%; display: flex; gap: 10px; align-items: baseline; text-align: left; }
+.pk-attn .pk-row > b { min-width: 120px; }
+.pk-attn .why { margin-left: auto; font-size: 12px; color: var(--jsal-muted); white-space: nowrap; }
+.pk-attn .fix, .pk-attn-line .fix { color: var(--jsal-warn); font-weight: 600; }
+.pk-attn .inflight, .pk-attn-line .inflight { color: var(--jsal-info); }
+.pk-attn-line { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 0 0 14px; padding: 10px 14px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); font-size: 14px; }
+.pk-attn-line .link-btn { margin-left: auto; }
+@media (max-width: 720px) { .pk-attn .pk-row { flex-wrap: wrap; } .pk-attn .why { margin-left: 0; white-space: normal; flex-basis: 100%; } }
 .pk-twin, .card .item .pk-twin { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--jsal-muted); }
 .twin-copy { margin: 0 0 10px; font-size: 13px; }   /* "Copy from the CMS Picker: Built in · varies" at the top of an edit form */
 .twin-copy .muted { margin-left: 6px; }
@@ -1554,6 +1568,46 @@ function pkPlatformHtml(p) {
       ${pkProfileHtml(p, r)}${pkLogoHtml(p, r)}${PK.items.map((it, i) => `${pkSectionStarts(i) ? `<h4 class="pk-sec">${esc(pkSectionTitle(it))}</h4>` : ''}${pkRowHtml(p, r, it)}`).join('')}
       <p><button type="button" class="link-btn" data-pk-public="off">Take ${p.name} off the CMS Picker</button></p></section>`;
 }
+// Needs attention: answers with no source or a stale one (to fix), not verified or unclear (to settle), or
+// waiting for the next publish (in flight), worst first, so a recheck is a list to work down. Each row opens
+// its editor like a table cell. Under six items it's one line that opens on request.
+const PK_ATTN = [   // key, label, colour class, test
+  ['nosrc', 'No source', 'fix', (a) => !(a.src && a.src.url)],
+  ['stale', `Source over ${PK_RECHECK_DAYS} days`, 'fix', (a) => !!(a.src && a.src.url) && a.age > PK_RECHECK_DAYS],
+  ['unverified', 'Not verified', '', (a) => a.scope === 'C'],
+  ['unclear', 'Unclear', '', (a) => a.verdict === 'check'],
+  ['waiting', 'Waiting for publish', 'inflight', (a) => a.waiting],
+];
+function pkAttention() {
+  const out = [];
+  for (const p of pkPlatforms().on) {
+    const r = PK.rows.get(p.id);
+    for (const it of PK.items) {
+      const [verdict, , scope] = pkAnswer(r, it.id), src = pkSource(r, it.id);
+      const a = { verdict, scope, src, age: src && src.checked ? (Date.now() - Date.parse(src.checked)) / 864e5 : 0, waiting: pkAnswerWaiting(p, r, it.id) };
+      const why = PK_ATTN.filter(([, , , test]) => test(a)).map(([k, l, cls]) => [k, k === 'stale' ? `checked ${Math.round(a.age)} days ago` : l.toLowerCase(), cls]);
+      if (why.length) out.push({ p, it, why });
+    }
+  }
+  return out.sort((x, y) => y.why.length - x.why.length);
+}
+function pkAttentionHtml() {
+  const all = pkAttention();
+  if (!all.length) return '';
+  const n = all.length, s = n === 1 ? '' : 's';
+  const bits = PK_ATTN.map(([k, l, cls]) => [k, l, cls, all.filter((i) => i.why.some(([key]) => key === k)).length]).filter((x) => x[3]);
+  if (PK.attnFilter && !bits.some(([k]) => k === PK.attnFilter)) PK.attnFilter = null;
+  if (n <= 5 && !PK.attnOpen) {
+    return `<p class="pk-attn-line"><span><b>${n}</b> answer${s} need${s ? '' : 's'} attention:</span>${bits.map(([, l, cls, c]) => `<span class="muted"><b class="${cls}">${c}</b> ${l.toLowerCase()}</span>`).join('')}<button type="button" class="link-btn" data-pk-attn="open">Show them</button></p>`;
+  }
+  const items = PK.attnFilter ? all.filter((i) => i.why.some(([k]) => k === PK.attnFilter)) : all;
+  const shown = PK.attnAll ? items : items.slice(0, 12);
+  const row = (i) => `<li><button type="button" class="pk-cell pk-row" data-pk-cell="${i.p.id}~${i.it.id}" aria-label="Edit ${esc(it_label(i))} for ${esc(plain(i.p.name))}"><b>${esc(plain(i.p.name))}</b><span>${esc(i.it.label)}</span><span class="why">${i.why.map(([, w, cls]) => `<span class="${cls}">${esc(w)}</span>`).join(' · ')}</span></button></li>`;
+  const it_label = (i) => i.it.label;
+  return `<section class="card pk-attn"><div class="card-head"><h4 class="item">Needs attention<small>${n} answer${s} across the public platforms, worst first. Click one to edit it.</small></h4>${n <= 5 ? '<div class="answer"><button type="button" class="link-btn" data-pk-attn="close">Hide</button></div>' : ''}</div>
+      <div class="pk-chips" role="group" aria-label="Show only">${bits.map(([k, l, cls, c]) => `<button type="button" class="pk-chip${PK.attnFilter === k ? ' on' : ''}" data-pk-attn="${k}" aria-pressed="${PK.attnFilter === k}">${l} <b class="${cls}">${c}</b></button>`).join('')}</div>
+      <ul>${shown.map(row).join('')}</ul>${shown.length < items.length ? `<p class="pk-more"><button type="button" class="link-btn" data-pk-attn="all">Show all ${items.length}</button></p>` : ''}</section>`;
+}
 function renderPickerView() {
   if (!PK.on) return;
   const n = pkWaitingCount();
@@ -1566,7 +1620,7 @@ function renderPickerView() {
   $('#pk-status').innerHTML = `${n ? `<b>${n} change${n === 1 ? '' : 's'} waiting</b> for the next publish (nightly, 07:41 UTC). Just published? GitHub takes a minute or two to put it live; then press Refresh.` : 'Everything here is live on the CMS Picker.'}
     <a href="${PUBLISH_URL}" target="_blank" rel="noopener">Publish now on GitHub</a>${pubAt ? ` <span class="muted">· answers dated ${esc(pubAt)}</span>` : ''}`;
   const chip = (x) => `<button type="button" class="pk-chip${x.id === PK.sel ? ' on' : ''}" data-pk-sel="${x.id}" aria-pressed="${x.id === PK.sel}">${x.name}</button>`;
-  $('#pk-body').innerHTML = `${pkTableHtml(on)}
+  $('#pk-body').innerHTML = `${pkAttentionHtml()}${pkTableHtml(on)}
     <div class="pk-chips" role="group" aria-label="Platform"><span class="muted">On the CMS Picker</span>${on.map(chip).join('')}${off.length ? `<span class="muted">Not on it</span>${off.map(chip).join('')}` : ''}</div>
     ${pkPlatformHtml(p)}`;
   const f = $('#pk-view .edit-form[data-pk-form]');
@@ -1640,6 +1694,15 @@ $('#pk-view').addEventListener('keydown', (e) => {
 });
 $('#pk-view').addEventListener('click', async (e) => {
   if (e.target.closest('#pk-refresh')) return loadPicker().then(() => toast('Up to date'));
+  const at = e.target.closest('[data-pk-attn]');   // Needs attention: open or hide the short list, or filter the long one
+  if (at) {
+    const v = at.dataset.pkAttn;
+    if (v === 'open' || v === 'close') PK.attnOpen = v === 'open';
+    else if (v === 'all') PK.attnAll = true;
+    else { PK.attnFilter = PK.attnFilter === v ? null : v; PK.attnAll = false; }
+    renderPickerView();
+    return;
+  }
   const cell = e.target.closest('[data-pk-cell]');
   if (cell) { const [pid, id] = cell.dataset.pkCell.split('~'); return pkOpen(pid, id); }
   const sel = e.target.closest('[data-pk-sel]');
