@@ -43,7 +43,7 @@ flowchart TB
     deploy["Action: Deploy Pages<br>every push to main: uploads site/ and publishes it<br>(the repo root holds the rules, scripts and docs)"]
     pages["GitHub Pages → jsal.io<br>(CNAME in site/; live a minute or two after the deploy)"]
     a1["Action: Publish CMS Picker<br>daily 07:41 UTC: publish, commit,<br>start the deploy, wait, IndexNow ping"]
-    a2["Action: Site checks<br>every push: check.py, check_data.py, personas,<br>and the browser checks on Playwright's<br>Chromium and WebKit (Firefox: by hand, manual-checks.md)"]
+    a2["Action: Site checks<br>every push: check.py, check_data.py, personas,<br>and the browser checks on Playwright's<br>Chromium, WebKit and Firefox (HOME=/root, or Firefox won't start)"]
     a3["Action: Keep Platform Playbook awake<br>Mon + Thu: calls the ping() function<br>so the free Supabase project doesn't pause<br>(URL and anon key: repository variables)"]
     a5["Action: Back up Platform Playbook<br>Sundays: every table, encrypted with the<br>BACKUP_PASSPHRASE secret, kept 90 days as an artifact"]
     a6["Action: IndexNow for changed pages<br>every hand push: announces pages whose<br>index.html changed, once Pages is live"]
@@ -63,7 +63,7 @@ flowchart TB
     upd["updates.py<br>rewrites Updates on the home page from the<br>changelog's data-short lines"]
     bump["bump-version.ps1 → versions.py<br>each file's ?v= is its content hash; rewrites only<br>the references to the files that changed"]
     check["check.ps1 → check.py<br>top bar identical, every ?v= current, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults,<br>Updates matches the changelog"]
-    bcheck["browser-check.mjs (Playwright: Edge or Chromium, WebKit)<br>axe on every page, 375/390px, each tool's main flow"]
+    bcheck["browser-check.mjs (Playwright: Edge or Chromium, WebKit; Firefox on GitHub)<br>axe on every page, 375/390px, each tool's main flow"]
     personas["personas.test.js<br>48 agreed quiz results still hold,<br>7 rules over every answer set"]
     commit["in a worktree of your own: merge main,<br>stage by name, commit, push"]
   end
@@ -93,7 +93,7 @@ flowchart TB
 - **A change is described once.** The changelog is the record; an entry with a `data-short` leads its section in Updates on the home page, which `updates.py` writes between two marker comments in `index.html`. `check.py` fails when that block is out of date, so nobody edits it by hand.
 - **The project folder is the repository; `site/` is what's served.** `.github/` (workflows, build scripts, publish scripts, docs), the rules and `SETUP.md` sit beside it and never reach the site; `private/` and the root `build/` shims are ignored. Pages deploys from the `site/` artifact, not from a branch, so a push to `main` is live only once "Deploy Pages" has run.
 - **Cache numbers, not a build.** There's no bundler. Every `?v=` is its file's content hash (8 hex characters of its SHA-256, line endings as LF so Windows and GitHub agree); `bump-version.ps1` (`versions.py`) recomputes them and rewrites only the references to the files that changed, in the pages, the apps' module imports and the platform-page template, which carries real hashes rather than a placeholder. `quiz.json` has its own, `data-quiz-v` on the CMS Picker's `app.js` tag. `check.py` fails any reference whose hash isn't the file's current one.
-- **The Action is the full gate.** `check.py`, `check_data.py`, the personas and the browser checks (axe, phone widths, each tool's flow on Chromium and WebKit) all run on every push; the PC runs the same before pushing. Firefox starts in neither place, so it stays on the real-device checklist.
+- **The Action is the full gate.** `check.py`, `check_data.py`, the personas and the browser checks (axe, phone widths, each tool's flow on Chromium, WebKit and Firefox) all run on every push; the PC runs the same before pushing. Firefox starts in neither place, so it stays on the real-device checklist.
 - **Keep-awake reads the Supabase URL and anon key from the repository's Actions variables** (`SUPABASE_URL`, `SUPABASE_ANON_KEY`; the same public values `ic/app.js` carries). A new Supabase project means updating both.
 - **Backups live in two places:** `playbook.py backup` on the PC (plain JSON in `private\backups`), and the Sunday Action's encrypted artifact on GitHub (90 days; `gh run download <run id> -n playbook-backup`, then `gpg --decrypt` with the passphrase John set as the `BACKUP_PASSPHRASE` secret). The repo is public and its artifacts are downloadable by any GitHub account, which is why the file is encrypted.
 - **Source links are checked monthly.** `check_sources.py` (the "Source links" Action, 3rd of the month) fetches every unique address in `data.json`'s sources and `quiz.json`'s guides, reports dead, blocked and moved pages; the addresses a site refused get a second pass in a real browser (`check_sources_browser.mjs`, Playwright's Chromium on the runner), and what's still refused is listed for a check by hand. An issue opens when either pass finds a dead page. Fixes go on the Playbook's CMS Picker tab, then a publish.

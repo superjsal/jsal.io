@@ -3,7 +3,8 @@
 The parts automated checks can't cover. `.github\build\browser-check.mjs` already runs axe on every page and
 loads the tools at 375 and 390px in Chromium (Edge) and WebKit, and Claude can tap through the quiz on an emulated
 phone and measure it; Playwright's Firefox doesn't start on John's PC (only a first-screen screenshot from the
-installed Firefox, no scripting), and nothing there is a real phone. So these need a person.
+installed Firefox, no scripting; the Site checks Action does run the phone-width checks in Firefox), and nothing
+there is a real phone. So these need a person.
 
 Run them on **an iPhone (Safari)**, **an Android phone (Chrome)**, **desktop Firefox** and, where it says
 so, **a Mac**. About twenty minutes for everything; for a release that only touches one part, do that part.
