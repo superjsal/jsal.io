@@ -1,14 +1,9 @@
-// Shared by every jsal.io app (with /shell.css for the colours):
-// - the logo marked data-jsal-nav (a link to jsal.io) becomes a menu for moving between the apps
-//   (to add an app, add it to APPS)
-// - the button marked data-jsal-theme switches light/dark for all the apps
-// - on touch screens, text marked data-touch is swapped for that wording (data-touch="" removes it), so
-//   instructions say tap instead of click, drop or a keyboard shortcut; the HTML keeps the desktop wording
-// - window.jsalTrack('name', { params }) sends a GA4 event; a link or button can carry data-track="name"
-//   with data-track-* params instead (data-track-platform="wix" → platform: "wix")
+// Shared by every jsal.io app (with /shell.css for the colours): the logo marked data-jsal-nav becomes the app
+// menu (APPS); the button marked data-jsal-theme switches light/dark; on touch screens text marked data-touch is
+// swapped for that wording (data-touch="" removes it); window.jsalTrack('name', { params }) or data-track="name"
+// with data-track-* params sends a GA4 event.
 (() => {
-  // Analytics events, on the GA4 tag every public page already has (the team Playbook has none, so
-  // nothing is sent there). A page loaded ahead on hover only sends once it's actually shown.
+  // Analytics events on the GA4 tag every public page has (none on the Playbook); a page loaded ahead sends once shown
   const track = (name, params = {}) => {
     const send = () => { try { if (typeof window.gtag === 'function') window.gtag('event', name, params); } catch (e) {} };
     if (document.prerendering) document.addEventListener('prerenderingchange', send, { once: true }); else send();
@@ -23,11 +18,9 @@
     }
     track(t.dataset.track, params);
   });
-  // Analytics choice. Each page's head sets the gtag queue and Consent Mode (off by default in the EU,
-  // EEA, UK and Switzerland); visitors whose browser time zone is in Europe get this card to allow or
-  // decline, and a [data-jsal-consent] button (the home page footer) brings it back for anyone. The
-  // choice is kept in this browser as "granted" or "denied". Basic Consent Mode: Google's script is only
-  // fetched where analytics may run (loadGA). No card or script where there's no GA4 tag (the Playbook).
+  // Analytics choice. Each page's head sets Consent Mode (off by default in the EU, EEA, UK and Switzerland); visitors
+  // in a European time zone get this card to allow or decline, and a [data-jsal-consent] button brings it back for
+  // anyone. The choice is kept in this browser; Google's script is only fetched where analytics may run (loadGA).
   const CONSENT = 'jsal-analytics';
   const saved = () => { try { return localStorage.getItem(CONSENT); } catch (e) { return null; } };
   const europe = (() => {
@@ -65,8 +58,7 @@
     // Achievement pop-ups (bottom centre) sit above the card while it's open
     document.documentElement.style.setProperty('--jsal-consent-lift', `${card.offsetHeight + 12}px`);
   };
-  // Google's script: with a saved "granted", or outside Europe unless declined. In Europe it waits for
-  // Allow. Fetched once the page is idle (2 s after load at most), so its ~180 KB doesn't compete with it.
+  // Google's script: with a saved "granted", or outside Europe unless declined; in Europe after Allow. Fetched once idle
   let gaLoaded = false;
   function loadGA() {
     const c = saved();
@@ -104,9 +96,8 @@
   ];
   const HOME = { href: '/', name: 'jsal.io home', icon: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>' };
   const PLAY = { href: '/play/', name: 'Off the clock', icon: '<path d="M6 11h4M8 9v4"/><circle cx="15.5" cy="10.5" r=".8"/><circle cx="17.5" cy="13" r=".8"/><path d="M7 5h10a5 5 0 0 1 4.6 7l-1.4 3.6a2.6 2.6 0 0 1-4.6.6L14 14h-4l-1.6 2.2a2.6 2.6 0 0 1-4.6-.6L2.4 12A5 5 0 0 1 7 5z"/>' };
-  // Page transitions (/shell.css): while one plays, the page is a picture the browser can't click
-  // into, so a click straight after arriving (on the logo, a link) did nothing. A press during a
-  // transition now ends it at once, and the click goes to whatever is under the pointer.
+  // Page transitions (/shell.css): while one plays the page is a picture, so a click straight after arriving did
+  // nothing; a press during a transition ends it at once and the click lands on what's under the pointer
   let replay = false;
   const quiet = (vt) => { for (const p of [vt.ready, vt.finished, vt.updateCallbackDone]) p.catch(() => {}); };   // a skipped transition rejects them all
   const watch = (vt) => {
@@ -139,9 +130,8 @@
 
   const svg = (paths, size = 16) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
 
-  // Achievements: unlocked by using the site, kept only in this browser (localStorage). An app unlocks
-  // one with window.jsalAchieve('id'); to add one, add it here and call that where it happens. A pop-up
-  // shows on any page; the home page lists them all. None on the team-only Playbook.
+  // Achievements: unlocked by using the site, kept in this browser only. An app unlocks one with window.jsalAchieve('id');
+  // to add one, add it here and call that where it happens. None on the Playbook.
   const ACH = [
     { id: 'first', name: 'First steps', done: 'Used a tool', todo: 'Use a tool', icon: '<path d="M14 4h5v16h-5"/><path d="M3 12h11M10 8l4 4-4 4"/>' },
     { id: 'explorer', name: 'Explorer', done: 'Used every tool', todo: 'Use every tool', icon: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>' },
@@ -162,8 +152,7 @@
   const team = location.pathname.startsWith('/ic/');
   const queue = [];
   let toastEl = null, showing = false;
-  // Its styles are in /shell.css (adding a stylesheet at the moment it pops up made the browser
-  // restyle the whole page mid-animation), and the box is made once, while the page is idle
+  // Styles in /shell.css (adding a stylesheet as it pops up restyled the page mid-animation); made once, while idle
   function makeToast() {
     if (toastEl || team || !document.body) return;
     toastEl = document.createElement('div');
@@ -196,10 +185,8 @@
   window.jsalAchieve = unlock;
   (window.requestIdleCallback || setTimeout)(makeToast);
   window.jsalAchievements = { list: ACH, got: () => read('jsal-achievements', {}) };
-  // Using a tool, not just opening it: "First steps", and "Explorer" once all of them have been used. Each
-  // tool calls window.jsalUsed() at its first real action (a paste, images loaded, a quiz answer…), so the
-  // pop-up comes after something was done and never over a tool someone has only just opened. Kept under
-  // its own key: the visits counted before this don't count as use.
+  // Using a tool, not just opening it: "First steps", and "Explorer" once all have been used. Each tool calls
+  // window.jsalUsed() at its first real action, so the pop-up never covers a tool someone has only just opened
   const tool = TOOLS.find((t) => location.pathname.startsWith(t));
   window.jsalUsed = () => {
     if (!tool) return;
@@ -214,9 +201,8 @@
     if (document.prerendering) document.addEventListener('prerenderingchange', () => unlock('lost'), { once: true }); else unlock('lost');
   }
 
-  // Pages load ahead when a link is hovered (or pressed, on touch screens), so the click opens them
-  // straight away, even on a first visit with nothing cached. Chrome, Edge and Brave; others ignore it.
-  // Not the team Playbook (it signs in as it loads) or the logo (it opens the menu, not a page).
+  // Pages load ahead when a link is hovered (or pressed, on touch), so the click opens them at once (Chrome family;
+  // others ignore it). Not the Playbook (it signs in as it loads) or the logo (it opens the menu)
   if (window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
     const rules = document.createElement('script');
     rules.type = 'speculationrules';
@@ -235,9 +221,8 @@
     if (step === CODE.length) { step = 0; unlock('secret'); }
   });
 
-  // Theme button ([data-jsal-theme]): flips light/dark and remembers it for every app.
-  // Each page applies the saved choice in its <head> so there's no flash. Apps that draw
-  // with theme colours (e.g. a canvas) can listen for the "jsal-theme" event to redraw.
+  // Theme button: flips light/dark and remembers it for every app (each page applies it in its <head>, so no flash);
+  // apps that draw with theme colours can listen for the "jsal-theme" event
   const themeBtn = document.querySelector('[data-jsal-theme]');
   if (themeBtn) {
     const root = document.documentElement;
@@ -314,8 +299,7 @@
     menu.style.left = `${Math.round(Math.max(12, Math.min(r.left, innerWidth - w - 12)))}px`;
   }
   const links = () => [...menu.querySelectorAll('a')];
-  // Opening the menu is a stronger signal than a hover: the pages it lists load ahead now (Chrome family), so
-  // picking one swaps at once and a quick next click has a page to land on. Not the Playbook (it signs in).
+  // Opening the menu loads the pages it lists ahead (Chrome family), so picking one swaps at once. Not the Playbook
   let warmed = false;
   function warm() {
     if (warmed || !(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'))) return;
@@ -370,12 +354,10 @@
   addEventListener('resize', () => { if (!menu.hidden) place(); });
   addEventListener('scroll', () => { if (!menu.hidden) place(); }, { passive: true });
 
-  // Quick clicks while pages change hands used to be lost (or the logo, still a plain link, went home):
-  // · before this file ran on the new page, the one-line script in each page's <head> holds the click;
-  // · after an app was picked but before the new page took over, the old page holds it in sessionStorage.
-  // Either way the new page replays it here: the logo opens the menu, anything else is clicked, with the
-  // transition cut short. A page loaded ahead (prerendered) looks again when it's shown.
-  // Held clicks are a queue, replayed in order: logo, then the menu item picked from the menu it opened.
+  // Quick clicks while pages change hands used to be lost (or the logo, still a plain link, went home). Before this
+  // file runs, the one-line script in each page's <head> holds the click; after an app was picked but before the new
+  // page took over, the old page holds it in sessionStorage. The new page replays them here, in order (the logo opens
+  // the menu, anything else is clicked) with the transition cut short; a prerendered page looks again when shown.
   const KEY = 'jsal-early-clicks';
   let leaving = false;
   const heldHere = [];
@@ -389,8 +371,8 @@
     // Both stores: a page loaded ahead keeps the session storage it started with, but reads local storage live
     try { sessionStorage.setItem(KEY, JSON.stringify(heldHere)); localStorage.setItem(KEY, JSON.stringify(heldHere)); } catch (err) {}
   }, true);
-  // Back to this page from the browser's cache: it comes back exactly as it was when a menu item was picked, still
-  // holding clicks for a page that never came (the logo seemed dead), with the menu open. Start afresh.
+  // Back from the browser's cache: the page returns as it was when a menu item was picked, still holding clicks and
+  // with the menu open. Start afresh.
   addEventListener('pageshow', (e) => {
     if (!e.persisted) return;
     leaving = false;

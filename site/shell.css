@@ -1,8 +1,5 @@
-/* jsal.io shared app shell: colours, top bar and theme button, used by every app.
-   Palette is the home page's Azeroth one: parchment and gold in light mode, dark slate,
-   gold and arcane blue in dark. Light by default, dark when the computer is set to dark,
-   and <html data-theme="light|dark"> when someone picks one with the theme button
-   (nav.js saves the choice for all the apps and the home page). */
+/* jsal.io shared app shell: colours, top bar and theme button, used by every app. Light by default, dark when the
+   computer is set to dark, and <html data-theme="light|dark"> when someone picks one with the theme button. */
 
 /* Fonts are hosted here (Latin subset of Google's variable files, SIL Open Font Licence)
    so nothing blocks the first paint. Pages preload the ones they show above the fold. */
@@ -65,20 +62,16 @@
 }
 body { background: var(--jsal-bg); }
 
-/* Shared building blocks, so the apps look like one site. Use these rather than new values;
-   build\check.py flags written-out colours, selected states without these tokens, button corners
-   outside the scale and odd font weights (a deliberate exception carries a "style: allow" comment).
-   - Corners: small controls and chips inside a control 4px, buttons and fields 6px, cards 8px,
-     pills and round buttons 999px.
-   - Selected (a pressed toggle, the current tab): gold tint, gold text, thin gold ring.
-   - Buttons: semibold (600); main = gold fill, secondary = outlined. */
+/* Shared building blocks, so the apps look like one site; use these rather than new values (the checks flag written-out
+   colours, selected states without these tokens, corners off the scale and odd weights; "style: allow" marks an exception).
+   Corners 4 / 6 / 8 / 999px; selected = gold tint, gold text, thin gold ring; buttons 600, main = gold fill, secondary = outlined. */
 :root {
   --jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-pill: 999px;
   --jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
   --jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
   --jsal-btn-weight: 600;
   /* Hover is neutral everywhere: a firmer border or a slight tint. Gold means selected, focused, a file being
-     dragged over, or the main action (build\check.py fails a gold hover that isn't marked as one of those). */
+     dragged over, or the main action (the checks fail a gold hover). */
   --jsal-hover-line: var(--jsal-muted);
   /* One focus ring for every control, text fields included */
   --jsal-focus-ring: 0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent);
@@ -115,20 +108,16 @@ html { scrollbar-gutter: stable; }
    A script that wants a jump passes behavior: 'instant'. */
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
-/* Page transitions (browsers that support them; Firefox just navigates). The same move on every
-   page: the old page fades as it drifts up a little, the new one rises into place; going back
-   (nav.js sets data-jsal-back on <html> when the browser is travelling backwards) runs it the
-   other way. Kept short so a click feels instant: done by 0.3s. */
+/* Page transitions (Firefox just navigates): the old page fades as it drifts up, the new one rises into place; going
+   back (nav.js sets data-jsal-back on <html>) runs it the other way. Done by 0.3s, so a click feels instant. */
 @view-transition { navigation: auto; }
 ::view-transition-group(*) { animation-duration: 0.3s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
 ::view-transition-old(root) { animation: jsal-out-up 0.16s ease both; }
 ::view-transition-new(root) { animation: jsal-in-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both; }
 html[data-jsal-back]::view-transition-old(root) { animation-name: jsal-out-down; }
 html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; }
-/* The top bar sits in the same spot on every page, so it's lifted out of the sliding page and
-   cross-fades in place (its title and links differ by page). Within it, the logo and theme
-   button are identical everywhere and don't even fade: only the new page's copy is shown,
-   already in place, so nothing up there moves. */
+/* The top bar sits in the same spot on every page: lifted out of the sliding page, it cross-fades in place, and the
+   logo and theme button, identical everywhere, don't even fade. */
 .jsal-top { view-transition-name: jsal-top; }
 ::view-transition-group(jsal-top) { animation: none; }
 ::view-transition-old(jsal-top) { animation: jsal-fade-out 0.12s ease both; }
@@ -152,9 +141,7 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
   .jsal-ach { left: auto; right: max(20px, env(safe-area-inset-right, 0px)); transform: none; }
   .jsal-ach[data-hide] { transform: translateY(16px); }
 }
-/* Phones: the top of the screen, sliding down. The bottom is where every tool's action buttons sit
-   (Copy, Download All, the quiz's Next), and the card hid them for its four seconds; the top holds
-   checks and headings, which nobody needs to tap right then. --jsal-ach-lift doesn't apply up here. */
+/* Phones: the top of the screen, sliding down; the bottom is where every tool's action buttons sit. --jsal-ach-lift doesn't apply up here. */
 @media (pointer: coarse) and (max-width: 899px) {
   .jsal-ach { top: max(12px, env(safe-area-inset-top, 0px)); bottom: auto; }
   .jsal-ach[data-hide] { transform: translate(-50%, -16px); }
@@ -188,10 +175,8 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
   .jsal-ach, .jsal-ach[data-hide] { transition: none; }
 }
 
-/* Top bar: logo (app switcher) · app name · the app's own controls · theme button.
-   The logo sits exactly where the home page's does: 40px down, 18px. Every row is 36px
-   tall (the tallest control), so the top padding is set to put its centre on the home
-   page logo's centre (40px + half of its 18px × 1.65 line). */
+/* Top bar: logo (app switcher) · app name · the app's own controls · theme button. The logo sits exactly where the
+   home page's does; every row is 36px tall, padded to centre on the home page logo's centre. */
 .jsal-top {
   width: min(100%, var(--jsal-col)); margin-inline: auto;
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;

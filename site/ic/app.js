@@ -55,11 +55,8 @@ const htmlToMd = (h) => plain(String(h).replace(/<code>(.*?)<\/code>/g, '`$1`').
 const SEC_LABEL = { tech: 'Tech', content: 'Content' };
 function itemsFor(sec) { return sec === 'tech' ? ITEMS : CONTENT_ITEMS; }
 
-// Shared edits: corrections anyone with write access saves for everyone. One document per answer in
-// the "edits" collection, id "<platform>~<section>~<item>", body { verdict, mark, scope, note, how?, warn?, at }.
-// <section> is "tech", "content", or "content.<page type>" for a page-type answer (e.g. "content.product").
-// `how` is the how-to steps, one per line, and `warn` the Watch out text; when either is missing
-// the built-in one shows (an empty string means none). Edits are Markdown; built-in text is trusted HTML.
+// Shared edits: one document per answer, id "<platform>~<section>~<item>" (section: tech, content, or content.<page
+// type>), body { verdict, mark, scope, note, how?, warn?, at }; a missing how or warn shows the built-in one. Markdown.
 const EDITS = new Map();
 const NOTES = new Map();   // platform id → its watch-out note (platform_notes)
 let canEditAnswers = false;
@@ -236,9 +233,8 @@ function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
       </form>
     </article>`;
 }
-// The Answer: can we do it? Stored in the answer's "mark". Tag says what it takes, Scope whether it's
-// the same on every site. An older free-text mark ("Yes, with a module", "Depends on theme") counts as
-// the closest Answer, and its wording shows beside it until someone saves the answer again.
+// The Answer: can we do it? Stored in the answer's "mark" (tag = what it takes, scope = same on every site?); an older
+// free-text mark counts as the closest Answer, with its wording shown until the answer is saved again
 const ANSWERS = ['Yes', 'Yes, with limitations', 'No', 'Check'];
 const ANSWER_CLASS = { Yes: 'a-yes', 'Yes, with limitations': 'a-some', No: 'a-no', Check: 'a-check' };
 const LIMITED = /^(partly|partial|mostly|some|limited|depends)\b|\b(paid plans?|plan\+|plans? and up|pages only|only on|limited)\b|\d+(\.\d+)*\+|;/i;
@@ -259,7 +255,7 @@ const answerHtml = (mark, verdict) => { const a = answerOf(mark, verdict); retur
 const ICON_CHECK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg>';
 const ICON_SAME = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>';
 // When the answers on show last changed: the latest team edit to this platform's section, its watch-out,
-// or the Playbook's own content (a new platform, item or wording pushed from playbook.py)
+// or the Playbook's own content (a new platform, item or wording pushed from outside the page)
 let DATA_AT = null;
 let ALL_P = [];   // every platform, hidden ones too (admins restore them on the Team page); P is the visible ones
 function updatedHtml(p) {
@@ -389,10 +385,8 @@ function renderGrid() {
     }).join('')}</tr>`).join('');
   $('#grid').innerHTML = head + `<tbody>${body}</tbody>`;
 }
-// Redraw the panel without moving the card under your finger. Opening or closing an edit form redraws
-// the whole panel, and Safari (unlike Chrome) doesn't keep the scroll place when content is replaced,
-// so on an iPhone the page jumped away. The card's spot on screen is kept by hand: an edit form replaces
-// its card in place, so the card at the same position in the list is the one to line up.
+// Redraw the panel without moving the card under your finger: Safari doesn't keep the scroll place when content is
+// replaced, so the card's spot on screen is kept by hand (a form replaces its card in place)
 function keepPlace(el, redraw = renderPanel) {
   const cards = () => [...document.querySelectorAll('#panel .card')];
   const card = el && el.closest('#panel .card'), i = cards().indexOf(card), top = card ? card.getBoundingClientRect().top : 0;
@@ -514,12 +508,9 @@ $('#panel').addEventListener('submit', (e) => {
   if (f) saveEdit(f.dataset.form, f, f.querySelector('[type="submit"]'));
 });
 // ---------- CMS Picker (admins only) ----------
-// The public CMS Picker keeps its own answers, separate from the Playbook's: every row, each platform's
-// profile, logo and sources, and whether it's public, live in the picker table, which only admins can
-// read or change. They're edited on the CMS Picker tab: a table of every public answer (wide screens),
-// then one platform at a time below it (the only view on phones), with one edit form for both. Row
-// labels come from the published /cms-picker/data.json, which is also what "Live" is checked against.
-// Changes reach jsal.io/cms-picker with the next publish (the nightly GitHub Action, or playbook.py publish).
+// The public CMS Picker keeps its own answers, separate from the Playbook's, in the picker table (admins only): a
+// table of every public answer, then one platform at a time (the only view on phones), one edit form for both. Row
+// labels come from the published /cms-picker/data.json; changes reach the site with the next publish.
 const PK = { on: false, rows: new Map(), items: [], verdicts: {}, pubLogos: new Map(), pub: null, sel: null, editing: null };
 const PK_GOALS = { store: 'Online store', site: 'Business or marketing site', content: 'Blog or content', custom: 'Custom build with developers' };
 const PK_FIELDS = [   // profile field, label, kind
@@ -592,9 +583,8 @@ function pbTwin(id) {
   return content ? { label: plain(content.label), view: 'content' } : null;
 }
 // ---------- Twin answers ----------
-// The Playbook and the CMS Picker each keep their own answer on a shared topic, so a recheck used to mean
-// typing the same tag, scope and words twice. An open edit form offers "Copy from the CMS Picker" / "Copy
-// from the Playbook", which fills its fields from the other side's answer; nothing is saved until Save.
+// The Playbook and the CMS Picker each keep their own answer on a shared topic; an open edit form offers "Copy from
+// the CMS Picker" / "Copy from the Playbook", which fills its fields from the other side; nothing is saved until Save
 function twinFromPlaybook(p, id) {   // the Playbook's answer for a CMS Picker row, if the topic is shared
   const t = pbTwin(id);
   if (!t) return null;
@@ -785,9 +775,8 @@ function pkPlatformHtml(p) {
       ${pkProfileHtml(p, r)}${pkLogoHtml(p, r)}${PK.items.map((it, i) => `${pkSectionStarts(i) ? `<h4 class="pk-sec">${esc(pkSectionTitle(it))}</h4>` : ''}${pkRowHtml(p, r, it)}`).join('')}
       <p><button type="button" class="link-btn" data-pk-public="off">Take ${p.name} off the CMS Picker</button></p></section>`;
 }
-// Needs attention: answers with no source or a stale one (to fix), not verified or unclear (to settle), or
-// waiting for the next publish (in flight), worst first, so a recheck is a list to work down. Each row opens
-// its editor like a table cell. Under six items it's one line that opens on request.
+// Needs attention: answers with no source or a stale one, not verified or unclear, or waiting for the next publish,
+// worst first; each row opens its editor. Under six items it's one line that opens on request
 const PK_ATTN = [   // key, label, colour class, test
   ['nosrc', 'No source', 'fix', (a) => !(a.src && a.src.url)],
   ['stale', `Source over ${PK_RECHECK_DAYS} days`, 'fix', (a) => !!(a.src && a.src.url) && a.age > PK_RECHECK_DAYS],
@@ -1121,10 +1110,8 @@ function renderTeam() {
   $('#member-list').innerHTML = members.map((m) => personHtml(m, m.user_id === R.me ? '<span class="muted">You</span>' :
     `<button type="button" class="btn" data-role="${esc(m.user_id)}" data-to="${m.role === 'admin' ? 'member' : 'admin'}">${m.role === 'admin' ? 'Make member' : 'Make admin'}</button><button type="button" class="link-btn" data-remove="${esc(m.user_id)}">Remove</button>`)).join('');
 }
-// Platforms: admins add one (it starts with every answer "Check manually"), and switch each on or off the
-// Playbook (hidden: answers kept) and the CMS Picker. The Playbook switch goes through set_platform_hidden
-// (supabase/schema.sql), which checks for an admin and also takes a hidden platform off the CMS Picker; the
-// CMS Picker switch is the picker table's own, as on the CMS Picker tab.
+// Platforms: admins add one (every answer starts "Check manually") and switch each on or off the Playbook (hidden:
+// answers kept; set_platform_hidden also takes it off the CMS Picker) and the CMS Picker (the picker table's own switch)
 function renderPlatformList() {
   if (!R.manage) return;
   const sw = (attr, id, on, label, name, why) => `<span class="plat-sw"><button type="button" class="tgl" role="switch" ${attr}="${id}" aria-checked="${on}" aria-label="${esc(plain(name))} on the ${label}"${why ? ` disabled title="${why}"` : ''}></button><span class="tgl-l" aria-hidden="true">${label}</span></span>`;
@@ -1743,10 +1730,8 @@ function startApp(me) {
   goLive();
 }
 
-// Live: a teammate's request, upvote, comment, edit or watch-out shows up on every open page within a
-// second or so (needs the tables in Supabase's realtime publication: supabase/schema.sql). Any change
-// reloads the team data once, with changes that arrive together batched; the redraws keep anything
-// being typed. When a dropped connection comes back, it catches up the same way.
+// Live: a teammate's change shows up on every open page within a second or so (the tables are in the realtime
+// publication). Any change reloads the team data once, batched; redraws keep anything being typed
 async function goLive() {
   if (!sb) return;
   const { data: { session } } = await sb.auth.getSession();

@@ -137,6 +137,29 @@ for p, t in html.items():
     if 'wow-forever' in t and 'Art © Blizzard Entertainment' not in t:
         fail(f'{p}: the WoW Forever art is missing its "Art © Blizzard Entertainment" credit')
 
+# Served comments explain the page to a reader of its source (CLAUDE.md): never tooling, scripts or folders outside
+# site/, people, dates of decisions or TODOs. The marker comments the scripts look for are exempt by their prefix.
+COMMENT_BAN = re.compile(r'\.ps1\b|\.py\b|\.mjs\b|\.github|build\\|bump-version|playbook\.py|check\.py|updates\.py|\bTODO\b|\bFIXME\b|\bClaude\b|agreed with|\bJohn\b|\b20\d\d-\d\d-\d\d\b')
+COMMENT_OK = ('prerender:', '/prerender:', 'updates:', 'style: allow')
+def comments(text, suffix):
+    if suffix == '.html':
+        yield from ((m.start(), m.group(1)) for m in re.finditer(r'<!--(.*?)-->', text, re.S))
+        inner = re.findall(r'<(?:style|script)[^>]*>(.*?)</(?:style|script)>', text, re.S)
+        for block in inner:
+            at = text.find(block)
+            yield from ((at + s, c) for s, c in comments(block, '.css' if block.lstrip().startswith(('/*', ':root', 'html', '@')) else '.js'))
+        return
+    yield from ((m.start(), m.group(1)) for m in re.finditer(r'/\*(.*?)\*/', text, re.S))
+    if suffix == '.js':
+        yield from ((m.start(), m.group(1)) for m in re.finditer(r'(?:^|(?<=\s))//(.*)$', text, re.M))
+for f in files(['**/*.html', '**/*.css', '**/*.js']):
+    if 'vendor' in f.parts: continue
+    text = f.read_text(encoding='utf-8')
+    for at, c in comments(text, f.suffix):
+        if c.strip().startswith(COMMENT_OK): continue
+        m = COMMENT_BAN.search(c)
+        if m: fail(f'{f.relative_to(SITE)}:{text.count(chr(10), 0, at) + 1}: served comment names "{m.group(0)}" (explain the page, not the tooling; see CLAUDE.md)')
+
 # The apps' modules import each other with the imported file's cache number (checked above); an import
 # without one would load a second, uncached copy of the module
 for f in files(['*/js/*.js']):

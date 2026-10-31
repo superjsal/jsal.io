@@ -1,6 +1,6 @@
 # jsal.io
 
-John Salvador's site: a home page and four browser tools, hosted free on GitHub Pages.
+John Salvador's site: a home page, browser tools and a few plain pages, hosted free on GitHub Pages.
 
 | Address | What it is | Files |
 |---|---|---|
@@ -9,6 +9,10 @@ John Salvador's site: a home page and four browser tools, hosted free on GitHub 
 | jsal.io/formatter/ | Clean Paste | `site\formatter\` |
 | jsal.io/cms-picker/ | CMS Picker (public, published from the Playbook) | `site\cms-picker\` |
 | jsal.io/ic/ | Platform Playbook (team only, Discord sign-in) | `site\ic\` |
+| jsal.io/play/ | Mostly Warcraft ("Off the clock": the WoW tile, the backpack, achievements) | `site\play\` |
+| jsal.io/changelog/ | Every change, newest first (noindex; the home page's Updates come from it) | `site\changelog\` |
+| jsal.io/privacy/ | What the site collects | `site\privacy\` |
+| jsal.io/design-system/ | The design rules shown visually (noindex, linked from nowhere) | `site\design-system\` |
 
 The old resizer address, superjsal.github.io/image-resizer, only redirects to jsal.io/image-resizer (its repo, `superjsal/image-resizer`, holds only the redirect pages and the old history).
 
@@ -20,7 +24,7 @@ This whole folder is the GitHub repo `superjsal/jsal.io`; only `site\` is publis
   - `shell.css` (shared colours, building blocks, top bar, page transitions; every page links it with `?v=` its content hash) and `nav.js` (app menu, theme button, achievements).
   - `404.html`, `robots.txt`, `sitemap.xml`, `llms.txt`, `favicon.svg`, `apple-touch-icon.png`, `og\` (link-preview images), `img\`, `fonts\`.
   - `ic\supabase\schema.sql` — sets up the Playbook's database from scratch (tables, access rules, admin functions). Safe to re-run.
-- `.github\` — not served. `workflows\` are the GitHub Actions: the Pages deploy on every push, the site checks on every push, the nightly CMS Picker publish and the keep-awake ping. `scripts\` holds `playbook.py` with `cms-picker.json`, `check_data.py`, the persona tests and `indexnow.py`. `docs\` holds the design rules, the CMS Picker's maintenance note (`cms-picker-maintenance.md`: how its data, scoring and tests fit together) and a five-minute real-device checklist to run before releases (`manual-checks.md`).
+- `.github\` — not served. `workflows\` are the GitHub Actions: the Pages deploy and the site checks on every push, IndexNow for changed pages after a push, the nightly CMS Picker publish, the keep-awake ping (Mondays and Thursdays), the encrypted Playbook backup (Sundays) and the quarterly recheck reminder. `scripts\` holds `playbook.py` with `cms-picker.json`, `check_data.py`, the persona tests, `indexnow.py` and `updates.py`. `docs\` holds the design rules, a map of the backend (`how-it-works.md`), the CMS Picker's maintenance note (`cms-picker-maintenance.md`: how its data, scoring and tests fit together), a twenty-minute real-device checklist to run before releases (`manual-checks.md`) and the user-test script.
 - `.github\build\` — the scripts, in the repo so they work on any machine:
   - `check.ps1` — pre-push checks (top bar, cache numbers, broken links, unused CSS, branding, consistent styling), via `check.py`, which the "Site checks" Action also runs on every push.
   - `browser-check.mjs` — axe and phone-width runs in real browsers. Needs Node: run `npm ci` in that folder once per machine (`node_modules` isn't committed).
@@ -32,7 +36,7 @@ This whole folder is the GitHub repo `superjsal/jsal.io`; only `site\` is publis
 
 ## Making a change
 
-1. Edit the files in `site\`. To preview locally, run `python -m http.server 8765 --directory site` and open http://localhost:8765.
+1. Edit the files in `site\`. To preview locally, run `python -m http.server 8765 --directory site` and open http://localhost:8765 (Claude's browser pane uses the same address through the `jsal-site` server in `.claude\launch.json`).
 2. If you changed `shell.css`, `nav.js`, `favicon.svg`, an app's CSS/JS or `cms-picker/quiz.json`, update the cache numbers so browsers fetch the new files (it rewrites only the references to what changed, and lists the files it touched):
    ```
    powershell -ExecutionPolicy Bypass -File C:\Users\JSAL\Desktop\jsal.io\.github\build\bump-version.ps1
@@ -43,7 +47,7 @@ This whole folder is the GitHub repo `superjsal/jsal.io`; only `site\` is publis
    ```
 4. `git pull`, then commit and push (as superjsal, dev@jsal.io).
 
-When you ship something worth mentioning, add a line at the top of **Updates** in `site\index.html`. When a public page changes a lot, update its date in `site\sitemap.xml`.
+When you ship something worth mentioning, add it at the top of `site\changelog\index.html` under today's date, tagged with its app; give it `data-short="…"` (about 40 characters) if it should lead its section in **Updates** on the home page, then run `python .github\scripts\updates.py`, which rewrites that block (never edit it by hand; the checks fail when it's out of date). When a public page changes a lot, update its date in `site\sitemap.xml`.
 
 ## Link-preview images
 
@@ -61,7 +65,7 @@ It writes `site\og\*.png` and `site\apple-touch-icon.png`.
   - **Edit** on any answer. On a topic both apps cover, the open form offers **Copy from the CMS Picker** (or, on the CMS Picker tab, **Copy from the Playbook**): it fills the tag, scope and words from the other side's answer, so a recheck is one edit and one confirm. Nothing is saved until Save.
   - **Team page → Platforms:** add a platform (it starts with every answer "Check manually"), hide one, or restore a hidden one.
   - **CMS Picker tab** (admins only, `jsal.io/ic/#picker`): a **Needs attention** list at the top (answers with no source or one checked over 90 days ago, in orange; not verified or unclear; waiting for publish, in blue), worst first, each opening its editor; then every public answer in a table (click one to edit it), then one platform at a time with its card, logo, answers and on/off switch. It shows how many changes are waiting for the next publish, with a link to publish now.
-- **CMS Picker publishing:** a GitHub Action runs `playbook.py publish` every night and commits `cms-picker/data.json`, any uploaded logos and the page's plain-HTML copy when anything changed. It needs the repository secret `SUPABASE_SERVICE_ROLE_KEY` (GitHub → Settings → Secrets and variables → Actions). To publish straight away, use **Run workflow** on the repo's Actions tab. `scripts\cms-picker.json` sets the rows and their wording, the platform order, and the Find my fit quiz's own values (how easy each platform is, the design control it suits, and a few lists). After changing it, run the publish so the page picks it up.
+- **CMS Picker publishing:** a GitHub Action runs `playbook.py publish` every night and commits `cms-picker/data.json`, any uploaded logos and the page's plain-HTML copy when anything changed. It needs the repository secret `SUPABASE_SERVICE_ROLE_KEY` (GitHub → Settings → Secrets and variables → Actions). To publish straight away, use **Run workflow** on the repo's Actions tab. `scripts\cms-picker.json` sets the rows and their wording and the platform order; after changing it, run the publish so the page picks it up. The Find my fit quiz's own values (how easy each platform is, the design control it suits, and a few lists) are in `site\cms-picker\quiz.json`, which ships with the page code: after editing it, run the cache-number step below, not the publish.
 - **Structural changes** (a new item, page type or guide), and **backups**, use `playbook.py`. It needs the Supabase `service_role` key (Project Settings → API), set in your own terminal only:
   ```
   $env:SUPABASE_SERVICE_ROLE_KEY = "<service_role key>"
@@ -71,7 +75,7 @@ It writes `site\og\*.png` and `site\apple-touch-icon.png`.
   ```
   `backup` saves every table to `private\backups\`. `pull` saves the base content to `private\playbook\defaults.json`; edit it, then `push` uploads it (taking a backup first). Live edits are kept.
 - **Back up** now and then (monthly is plenty). The free Supabase plan has no backups of its own. Keeping the newest one or two is enough.
-- **The page's code** is `site\ic\index.html` (the markup), `site\ic\styles.css` (its styles) and `site\ic\app.js` (its script), like the other tools. Edit them directly; after a CSS or JS change run `build\bump-version.ps1`.
+- **The page's code** is `site\ic\index.html` (the markup), `site\ic\styles.css` (its styles) and `site\ic\app.js` (its script), like the other tools. Edit them directly; after a CSS or JS change run `.github\build\bump-version.ps1`.
 - **Keep-awake:** free Supabase projects pause after about a week of no activity. A GitHub Action calls the database twice a week so that doesn't happen; you can also run it from the Actions tab. GitHub stops scheduled Actions in a repo with no commits for 60 days; if that happens, it emails you and one click re-enables it.
 
 ## The WoW Forever art

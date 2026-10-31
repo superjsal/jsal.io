@@ -15,7 +15,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=0917cbf6">
+<link rel="stylesheet" href="/shell.css?v=d8fe0782">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -153,6 +153,20 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
 .chip-link { padding: 3px 6px; border: 0; background: none; color: var(--jsal-info); font: 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+/* A tick that goes with a choice: a checkbox row, selected like a pressed chip (cms-picker .qz-also) */
+.tick { display: flex; align-items: center; gap: 12px; width: max-content; max-width: 100%; padding: 8px 14px 8px 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); cursor: pointer; transition: border-color 0.12s, background 0.12s; }
+.tick:hover { border-color: var(--jsal-hover-line); }
+.tick:has(:checked) { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+.tick:has(:focus-visible) { box-shadow: var(--jsal-focus-ring); }
+.tick input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: var(--jsal-accent); cursor: pointer; }
+.tick input:focus-visible { outline: none; }
+.tick b { display: block; font-size: 15px; font-weight: 600; }
+.tick small { display: block; color: var(--jsal-muted); font-size: 13px; }
+/* An index of links: equal tiles, never pills (home .guides) */
+.ltiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px; width: 100%; }
+.ltiles a { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: border-color 0.15s; }
+.ltiles a:hover { border-color: var(--jsal-hover-line); }
+.ltiles a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .tag { display: inline-block; padding: 2px 10px; border-radius: var(--jsal-radius-sm); font-size: 13px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
 .tag.yes { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 .tag.plugin { background: var(--jsal-info-soft); color: var(--jsal-info); }
@@ -218,7 +232,7 @@ footer.end { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--js
 footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 @media (max-width: 720px) { .hero { padding-top: 32px; } .sec { padding-top: 40px; } .roles td:first-child { white-space: normal; } .jsal-top nav { display: none; } }   /* the contents list below does the nav's job on a phone */
-@media (pointer: coarse) { .btn, .cta, .chip, .seg, .chk, .chip-link { min-height: 44px; } .chip, .seg, .chip-link { display: inline-flex; align-items: center; } }
+@media (pointer: coarse) { .btn, .cta, .chip, .seg, .chk, .chip-link, .tick, .ltiles a { min-height: 44px; } .chip, .seg, .chip-link { display: inline-flex; align-items: center; } }
 @media (prefers-reduced-motion: reduce) { .cta, .btn, .chip, .seg { transition: none; } .cta:hover { transform: none; } }
 </style>
 </head>
@@ -429,6 +443,8 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div class="col-demo"><i style="width:80%"></i><span>1120px · from 1280px wide</span></div>
       <div class="col-demo"><i style="width:88.6%"></i><span>1240px · from 1800px wide</span></div>
     </div>
+    <h3>Under the top bar</h3>
+    <p>Pages that open with a heading (home, Off the clock, the CMS Picker and its platform pages, Privacy, Changelog, 404) start their first line at <code>--jsal-page-top</code>: 30px under the bar, 22px at 720px and under, and flush with the logo's left edge, with no optical indent on the mono line, the heading or the text beneath it. So the small line under the bar never shifts between pages. The tools' "for" line sits 16px under the bar instead, so the work area fills the first screen.</p>
     <h3>Breakpoints the pages use</h3>
     <div class="table-wrap"><table class="scale">
       <thead><tr><th>Width</th><th>What changes</th></tr></thead>
@@ -437,6 +453,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <tr><td>≤ 599px</td><td>Clean Paste's toolbar in two even rows; the CMS Picker's phone rules</td></tr>
         <tr><td>≤ 720px</td><td>The CMS Picker's comparison becomes stacked cards, with groups that fold; the platform pages reflow</td></tr>
         <tr><td>≤ 860px</td><td>The home page's bento grid stacks to one column</td></tr>
+        <tr><td>≤ 1100px</td><td>The home page's Platform guides take the full width under the intro and the CMS Picker tile</td></tr>
         <tr><td>&lt; 900px</td><td>Clean Paste in one column; the achievement pop-up moves to the bottom centre, or the top on touch screens</td></tr>
         <tr><td>≥ 1280px</td><td>Column grows to 1120px</td></tr>
         <tr><td>≥ 1800px</td><td>Column grows to 1240px</td></tr>
@@ -457,7 +474,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div><i style="border-radius:22px"></i>home tiles · 22px</div>
     </div>
     <h3>The home page's bento</h3>
-    <p>A 12-column grid with 16px gaps. Each row has one leading tile, and the wide side alternates, so the eye zigzags down the page; the Updates row is full width. Tab order follows the screen. On phones it stacks to one column.</p>
+    <p>A 12-column grid with 16px gaps. The intro and the Platform guides (a link tile per platform, three even columns, level with the big tile's bottom) share the first column beside the CMS Picker tile; below, each row has one leading tile and the wide side alternates, so the eye zigzags down the page; the Updates row is full width. Tab order follows the screen. On phones it stacks to one column, the guides after the big tile.</p>
     <div class="bento" aria-hidden="true"><i class="big"></i><i class="sm"></i><i class="sm"></i><i class="big"></i><i class="full"></i></div>
     <div class="suggest"><b>Decided</b><p>Spacing isn’t named as tokens either. Most values are even; the odd nudges (5, 7, 9, 11, 13px) were rounded in October 2026, except a few row paddings that repeat down a list, where rounding would change the list’s height. The 1–3px paddings inside small tags and pills stay as set by eye.</p></div>
   </section>
@@ -478,6 +495,12 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <div class="row"><button type="button" class="chip" aria-pressed="true">WordPress</button><button type="button" class="chip" aria-pressed="true">Shopify</button><button type="button" class="chip" aria-pressed="false">Webflow</button><button type="button" class="chip" aria-pressed="false">Ghost</button><button type="button" class="chip-link">All</button><button type="button" class="chip-link">Deselect all</button></div>
         <span class="src">Segmented control · image-resizer/styles.css .option-track, .quality-btn</span>
         <div class="row"><span class="track"><button type="button" class="seg">Low</button><button type="button" class="seg">Med</button><button type="button" class="seg active">High</button></span><span class="track"><button type="button" class="seg active">JPG</button><button type="button" class="seg">PNG</button><button type="button" class="seg">WebP</button></span></div>
+      </div>
+      <div class="demo">
+        <span class="src">A tick that goes with a choice · cms-picker/styles.css .qz-also (selected like a pressed chip; the box in the accent)</span>
+        <div class="row"><label class="tick"><input type="checkbox" checked><span><b>In two or more languages</b><small>Tick it, then pick below</small></span></label><label class="tick"><input type="checkbox"><span><b>In two or more languages</b><small>Tick it, then pick below</small></span></label></div>
+        <span class="src">An index of links · index.html .guides (a bordered pill means a choice, so links get equal tiles, never pills)</span>
+        <div class="ltiles"><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/hubspot/">HubSpot CMS</a><a href="/cms-picker/ghost/">Ghost</a></div>
       </div>
       <div class="demo">
         <span class="src">Tags · cms-picker/styles.css .tag (the answer ramp), with the words that follow a tag</span>
@@ -587,6 +610,6 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <span>Decisions about suggested changes are marked in blue.</span>
   </footer>
 </div>
-<script src="/nav.js?v=fcee8135" defer></script>
+<script src="/nav.js?v=f9645058" defer></script>
 </body>
 </html>

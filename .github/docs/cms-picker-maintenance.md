@@ -6,10 +6,13 @@ data, scoring and tests. Real-device checks before a release: `manual-checks.md`
 ## Status: in development again (since 2026-10-31)
 
 It was in maintenance mode from 2026-10-30. On 2026-10-31 John reopened it to make the page less dense: the quiz
-becomes the focus, and the comparison table and the platform cards show only on demand. The scoring and the data
-stay as they are; the quarterly rechecks below ("Keeping the answers current") still apply.
+becomes the focus, and the comparison table and the platform cards show only on demand. The scoring changed the same
+day (v3 and v4, below), each step agreed with John and pinned by the personas; the data is unchanged until the content
+audit started on 2026-10-31 reports (CMS Picker answers and sources, the Playbook, and the items both cover, checked
+against each platform's own docs; findings to John before any correction). The quarterly rechecks below ("Keeping the
+answers current") still apply.
 
-The parked ideas are revisited only on their stated triggers: **two-step scoring** if the four rule tests start
+The parked ideas are revisited only on their stated triggers: **two-step scoring** if the seven rule tests start
 failing in new ways, and **partial fit** if people report Wix missing from content-site results (both under
 "Persona tests").
 
@@ -31,8 +34,9 @@ say "Joint best match" and the box under each card does the work.
 B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
 and an old `v=1` link): tips start from the person's answers, ties are labelled honestly, costs match the
 table, and old links open on their results. Under v3 with the managed-hosting change: seven rules, 48 personas, 2,171 of 80,640 answer sets show
-"Closest match" (2.7%; moving from one of 13 platforms multiplies the sets without changing points). A change to any of these numbers is a result change: agree
-it with John first.
+"Closest match" (2.7%; moving from one of 13 platforms multiplies the sets without changing points). Under v4: 3,713 of
+132,480 (2.8%; the languages tick doubles the sets). A change to any of these numbers is a result change: agree it with
+John first.
 
 **Accepted limitation:** old `v=1` links have no "Which is closest to what you do?" answer, so HubSpot's
 "You don't otherwise use HubSpot" rule (matched on that answer) can't apply, and HubSpot can show third on
@@ -46,7 +50,7 @@ question and fixes it, so it's left as is.
 | Each platform's answers (tag, public note, varies/not verified), profile, logo, public switch | Supabase `picker` table (its own answers, separate from the Playbook's) | John, on the Playbook's CMS Picker tab |
 | Each answer's source (official docs URL) and the date it was checked | `picker.sources` | John, on the CMS Picker tab (in the same form as the answer) |
 | The rows, their plain-language labels and SEO names, platform order | `.github/scripts/cms-picker.json` | code |
-| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, `bookings` (built-in or first-party bookings), `notIdeal`, `fitFor` (which "Good fit" lines answer which quiz answer, for ties), `imports` (what each platform's own docs say it imports from another platform on the picker, with the docs page), and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker/quiz.json`, served with the page with its own `?v=` content hash (`data-quiz-v` on the `app.js` script tag), so a browser never keeps an old copy. Run `.github\build\bump-version.ps1` after editing it. | code |
+| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, `managedHosting`, `members`, `bookings` (built-in or first-party bookings), `notIdeal`, `fitFor` (which "Good fit" lines answer which quiz answer, for ties), `lookBest` (the design control a card leads with, for ties the lines don't settle), `imports` (what each platform's own docs say it imports from another platform on the picker, with the docs page), and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker/quiz.json`, served with the page with its own `?v=` content hash (`data-quiz-v` on the `app.js` script tag), so a browser never keeps an old copy. Run `.github\build\bump-version.ps1` after editing it. | code |
 | What the page reads | `cms-picker/data.json`, written by `playbook.py publish` (nightly at 07:41 UTC, or Run workflow); never edit it by hand | the publish |
 | Its shape | `.github/scripts/cms-picker.schema.json`, checked by `check_data.py` before every publish and push | code |
 | One page per platform (`/cms-picker/<platform>/`: its SEO answers with where to find each setting, then a short profile) | `cms-picker/<platform>/index.html`, written by the publish from `.github/scripts/platform-page.html` (markup), `cms-picker/platform.css` (look) and `platform_pages()` in `playbook.py` (the headings in `SEO_HEAD`). Pages for platforms taken off are removed, and `sitemap.xml` follows. Never edit the pages by hand; `playbook.py prerender` rebuilds them locally. Each has its own share image, `og/cms-picker-<id>.png` (name and six SEO tags, text only), made by `build\og\make-og.ps1`; re-run it after adding a platform or changing an SEO tag. Until it's re-run, a new platform's page uses `og/cms-picker.png`. | the publish (code for the template) |
