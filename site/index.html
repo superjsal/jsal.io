@@ -133,14 +133,15 @@ p, li { text-wrap: pretty; }
 .intro p { margin: 28px 0 0 4px; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
 /* The first click: the CMS Picker (gold, the main action), or the backpack's ways to get in touch */
 .cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0 2px; }
-/* The platform guides: a mono label and a pill link per platform, under the intro with its bottom level with the
-   tile's (the tile spans both rows); from 1100px down the intro's free space is too short for it, so it takes the
-   full width under the intro and the tile instead of stretching the tile */
+/* The platform guides: a mono label and a quiet tile per platform in even columns (a bordered pill means a choice
+   elsewhere on the site, and uneven pills stagger), under the intro with its bottom level with the big tile's (the
+   tile spans both rows); from 1100px down the intro's free space is too short for it, so it takes the full width
+   under the intro and the tile instead of stretching the tile */
 .guides { grid-column: 1 / 6; align-self: end; margin: 0 0 0 2px; padding-top: 32px; }
 .cms { grid-row: 1 / 3; }
 .guides .label { margin: 0 0 10px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); letter-spacing: 0.06em; text-transform: uppercase; }
-.guides div { display: flex; flex-wrap: wrap; gap: 8px; }
-.guides a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); color: var(--jsal-ink); font-size: 14px; font-weight: 600; text-decoration: none; transition: border-color 0.15s; }
+.guides div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.guides a { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: border-color 0.15s; }
 .guides a:hover { border-color: var(--jsal-hover-line); }
 .guides a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .cta a { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; }
@@ -311,6 +312,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
 @media (max-width: 1100px) {
   .guides { grid-column: 1 / -1; grid-row: 2; align-self: start; padding-top: 0; }
+  .guides div { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }   /* as many even columns as the full width takes */
   .cms { grid-row: 1; }
 }
 @media (max-width: 860px) {
@@ -333,8 +335,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .intro h1 { font-size: 40px; line-height: 1.05; }
   .intro p { margin: 16px 0 6px 2px; font-size: 16px; line-height: 1.55; }
   .cta { margin-top: 18px; }
-  .guides div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .guides a { justify-content: center; min-height: 44px; }
+  .guides div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .guides a { min-height: 44px; }
   .tile { padding: 20px; border-radius: 18px; }
   .jscale { padding: 12px; }
   .jscale .foot { padding: 0 6px 4px; }
