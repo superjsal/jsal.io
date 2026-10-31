@@ -13,11 +13,19 @@ The parked ideas are revisited only on their stated triggers: **two-step scoring
 failing in new ways, and **partial fit** if people report Wix missing from content-site results (both under
 "Persona tests").
 
-**Baseline** (final review with Claude Reviewer, 2026-10-30): all four rule tests pass, all 37 personas pass, and
+**Quiz v3** (2026-10-31): the questions on languages, paid members, moving later and adding features became "Anything
+you'll need from day one?" and "Moving from somewhere?" (eight questions at most). The audit behind it is in the
+code-tidy session's notes (`scoring-v2-report.md`): "adding features" measured plugin-library size and flipped 15% of
+results, "moving later" rewarded self-hosting. Known since: exact ties for first are about 13% of answer sets (4.4%
+before), nearly all Wix against Squarespace for a local business, which the data genuinely can't separate; the result
+says "Joint best match" and the box under each card does the work. Revisit only if visitors say so.
+
+**Baseline** (final review with Claude Reviewer, 2026-10-30, before v3): all four rule tests pass, all 37 personas pass, and
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
 B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
 and an old `v=1` link): tips start from the person's answers, ties are labelled honestly, costs match the
-table, and old links open on their results. A change to any of the three numbers is a result change: agree
+table, and old links open on their results. Under v3: seven rules, 48 personas, 4,157 of 80,640 answer sets show
+"Closest match" (5.2%; moving from one of 13 platforms multiplies the sets without changing points). A change to any of these numbers is a result change: agree
 it with John first.
 
 **Accepted limitation:** old `v=1` links have no "Which is closest to what you do?" answer, so HubSpot's
@@ -32,7 +40,7 @@ question and fixes it, so it's left as is.
 | Each platform's answers (tag, public note, varies/not verified), profile, logo, public switch | Supabase `picker` table (its own answers, separate from the Playbook's) | John, on the Playbook's CMS Picker tab |
 | Each answer's source (official docs URL) and the date it was checked | `picker.sources` | John, on the CMS Picker tab (in the same form as the answer) |
 | The rows, their plain-language labels and SEO names, platform order | `.github/scripts/cms-picker.json` | code |
-| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, `notIdeal`, `fitFor` (which "Good fit" lines answer which quiz answer, for ties), and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker/quiz.json`, served with the page with its own `?v=` content hash (`data-quiz-v` on the `app.js` script tag), so a browser never keeps an old copy. Run `.github\build\bump-version.ps1` after editing it. | code |
+| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, `bookings` (built-in or first-party bookings), `notIdeal`, `fitFor` (which "Good fit" lines answer which quiz answer, for ties), `imports` (what each platform's own docs say it imports from another platform on the picker, with the docs page), and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker/quiz.json`, served with the page with its own `?v=` content hash (`data-quiz-v` on the `app.js` script tag), so a browser never keeps an old copy. Run `.github\build\bump-version.ps1` after editing it. | code |
 | What the page reads | `cms-picker/data.json`, written by `playbook.py publish` (nightly at 07:41 UTC, or Run workflow); never edit it by hand | the publish |
 | Its shape | `.github/scripts/cms-picker.schema.json`, checked by `check_data.py` before every publish and push | code |
 | One page per platform (`/cms-picker/<platform>/`: its SEO answers with where to find each setting, then a short profile) | `cms-picker/<platform>/index.html`, written by the publish from `.github/scripts/platform-page.html` (markup), `cms-picker/platform.css` (look) and `platform_pages()` in `playbook.py` (the headings in `SEO_HEAD`). Pages for platforms taken off are removed, and `sitemap.xml` follows. Never edit the pages by hand; `playbook.py prerender` rebuilds them locally. Each has its own share image, `og/cms-picker-<id>.png` (name and six SEO tags, text only), made by `build\og\make-og.ps1`; re-run it after adding a platform or changing an SEO tag. Until it's re-run, a new platform's page uses `og/cms-picker.png`. | the publish (code for the template) |
@@ -51,12 +59,28 @@ source is better than a wrong one: `check_data.py --list` shows what's missing.
 
 Shared by the page and the tests, so they always run the same code.
 
-- **Questions:** `QUESTIONS`. Each option is `[value, title, hint, the answer on its own]`; the last is the
-  answer button on the results. Changing the questions means raising `LINK_VERSION` in `app.js` and
-  translating older answers in `readLink`, so shared links keep working.
+- **Questions:** `QUESTIONS`: what, kind (sites) or size (stores), who, care, needs, look, moving, budget. Each
+  option is `[value, title, hint, the answer on its own, when?]`; the fourth is the answer button on the results,
+  the optional fifth a test on the answers that hides the option ("Selling online too" for a store, "A blog" for a
+  publication). `options(q, a, data)` gives a question's options for the answers, and for "Moving from somewhere?"
+  adds the 13 platforms from the data (each with its platform object as a sixth item, which the page draws as a
+  logo chip). The page and the test both go through it. Changing the questions means raising `LINK_VERSION` in
+  `app.js` and translating older answers in `readLink`, so shared links keep working (v3 translates the old
+  language, members and moving-later answers; see the comment there).
+- **Needs** ("Anything you'll need from day one?", one choice): paid members and languages score as before (below),
+  selling too reads the "Sell online" row (+2 / 0 / −2 / −4, and the budget reads the store band), a blog reads the
+  "Add a blog" row the same way, bookings read `quiz.bookings` (+3 built in or first-party, else −1 and a "worth
+  knowing" line). Nothing special scores nothing.
+- **Moving from** ("Moving from somewhere?"): no points. The result shows what the old platform lets you take (its
+  profile's "If you leave" line) above the cards, a match whose own docs describe an import from it gets a 0-point
+  reason linked to those docs (`quiz.imports`, through `links` on the score), and the platform being left is never
+  a match: `candidates` (the list the page and the test rank from) leaves it out and also puts platforms whose
+  "Not ideal if" line matches behind every other, so the gap it leaves never brings a ruled-out platform into the
+  top three. It still ranks in full under "Had a platform in mind?", which opens on it ("You're on Wix now: it
+  ranks 3rd of 13 for your answers").
 - **Scoring:** `fitScore` builds the score from parts with `add(key, points, reason)`. The reason (if any)
-  shows as a bullet on the card. Where a part counts *against* an answer the person gave (moving later,
-  languages, running it yourself, hosting, budget), `fitScore` also pushes a plain line to `but`, which the
+  shows as a bullet on the card. Where a part counts *against* an answer the person gave (a need that takes an
+  add-on, running it yourself, hosting, budget), `fitScore` also pushes a plain line to `but`, which the
   card shows as "Worth knowing: …" so a top match never hides it. It changes no score; a new negative part
   that answers a question should add its line there too.
 - **"What tipped it":** every part's key has wording in `TIP`: `[what the leader earned, what the
@@ -76,14 +100,13 @@ Shared by the page and the tests, so they always run the same code.
 - **Second and third:** both are compared with the first, unless the third would repeat the second (the
   same reasons, or the same box sentence). Then the third says "the same reasons as" the second and is
   compared with the second instead, falling back to what it's known for if that sentence still matches.
-- **Paid members** ("Will you have paid members or a newsletter?" → Yes) read the "Sell memberships or paid
+- **Paid members** (the "Paid members or a newsletter" need) read the "Sell memberships or paid
   posts" row: built in +3, plugin 0, needs code or check manually −2, no −4. Ghost gets +2 more for sending
   newsletters to those members itself (`quiz.members`). HubSpot's card rules it out for paid members.
   Their budget reads "Start a site with paid members" (`cost_members`: the plan that includes paid
   memberships, e.g. Ghost(Pro) Publisher, Wix Core), as does the card's "Cost to start" line; `costRow` in
-  `score.js` picks the row for the score, the "costs less to start" box and the card alike.
-- **A platform's own reason:** `quiz.leaveWhy` replaces "Easy to move to another platform later" where the
-  card's "If you leave" says more (Sanity: "You own the site code and can export all your content").
+  `score.js` picks the row for the score, the "costs less to start" box and the card alike (a store, or a site
+  that sells too, reads the store band).
 - **Ties** (since 2026-10-31): two platforms level on points are ordered by how many of their card's "Good fit"
   lines answer what the person is making, from `quiz.fitFor`: each tagged line as it reads on the card (`line`)
   with the answers it answers (`when`, the same shape as `notIdeal`; a line that answers two questions is listed
@@ -108,22 +131,26 @@ node .github/scripts/personas.test.js
 
 Also run by `.github\build\check.ps1` before every push, and by the "Site checks" Action on GitHub.
 
-- **37 personas** (bakery, maker shop, B2B wholesaler, government site…) must keep the first places and top threes John
-  agreed. A failure means a result changed: agree the new result with John before editing the expectation.
-- **Every answer combination (8,448)**, for every result card:
+- **48 personas** (bakery, maker shop, B2B wholesaler, government site, and since v3 eleven hard cases: a need the
+  builders cover, a store that is also a publication, moving from Wix or Shopify…) must keep the first places and top
+  threes John agreed. A failure means a result changed: agree the new result with John before editing the expectation.
+- **Every answer combination (80,640)**, for every result card:
   - it has a box saying what sets it apart, and never mentions a row those answers rule out;
   - "the same reasons as X" appears only when the reasons really are the same, the top two never
     show an identical list, and the second and third never show the same box;
   - every score part has `TIP` wording and every row a `PHRASE`;
   - it reports how many clear winners fall back from "What tipped it" (0 today), how many first places are
     level on points but ahead on their card's "Good fit" lines (their box must say so) or tied, and how many show a
-    "Closest match" (first scores under `LOW_FIT`, 4: 241 today). No persona may get only a closest match.
+    "Closest match" (first scores under `LOW_FIT`, 4: 4,157 today). No persona may get only a closest match.
   - every tagged "Good fit" line (`fitFor`) is still on its card and answers a real question and answer.
-- **Four rules** that must hold for every answer set (a failure names the first few):
+- **Seven rules** that must hold for every answer set (a failure names the first few):
   - the first match is made for what they're making, unless the page shows the "Closest match" notice;
   - someone not technical never gets a "Needs a developer" platform first;
-  - no top-three platform has a matching "Not ideal if" line;
-  - every "What tipped it" starts from one of their answers (`LEAD`).
+  - no top-three platform has a matching "Not ideal if" line (unless fewer than three platforms fit at all);
+  - every "What tipped it" starts from one of their answers (`LEAD`);
+  - a local business with no technical help never has a "Needs a developer" platform in its top three;
+  - a large or B2B catalogue never has Framer in its top three;
+  - the platform being moved from is never a match.
   If one starts failing in new ways, that's the point to revisit two-step scoring (must-haves filter first,
   then preferences), simulated and parked on 2026-10-30.
 - **Parked: partial fit.** Being made for what someone's making is all or nothing (+4 if the card's "Fits"
@@ -154,9 +181,10 @@ Platforms change plans and features often. Every few months (or when a platform 
   Shopify (apps.shopify.com/zendra), Paid Member Subscriptions for WordPress
   (wordpress.org/plugins/paid-member-subscriptions/), and Duda's own Membership add-on (duda.co/membership).
   A change can move a band: Webflow ($15 + $25) and Framer ($10 + $24) sit just over $25.
-- Recheck the **plugin and app library tiers** (`addOnsMany` / `addOnsSome` in `cms-picker/quiz.json`, for "Will you
-  add features as the site grows?") against each directory's own page; the `_about` note there says where
-  each count came from and which are third-party estimates.
+- Recheck the **bookings list and the import pages** (`bookings` and `imports` in `cms-picker/quiz.json`): a
+  platform adding or dropping its own bookings product moves the bookings need, and an import guide that moves or
+  disappears should come off the list (only the destination's own docs count; the `_about` note says what was
+  checked and when).
 - Recheck the **AI crawlers row**: the bots and how each platform lets you block them change fastest.
   The row's SEO name (`term` in `cms-picker.json`) carries its "as of" month; update it when you recheck.
 - Update each answer's checked date in the Playbook when you confirm it, so `check_data.py` (sources

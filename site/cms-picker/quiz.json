@@ -1,5 +1,5 @@
 {
-  "_about": "The Find my fit quiz's own values per platform (the rest of its scoring comes from the published answers and cards). Served next to the page and loaded with the code's ?v= number, so score.js and these values always arrive together: run build\\bump-version.ps1 after editing this file. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop / b2b: stores it suits (b2b: profiles that name selling to other businesses). storeOnly: only for selling. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end. devControl: built to be coded. kind: for business sites, which platforms suit each answer to \"Which is closest to what you do?\". members: newsletters to paying members sent by the platform itself (Ghost), a bonus on top of the published \"Sell memberships or paid posts\" row. leaveWhy: a platform’s own reason in place of “Easy to move to another platform later”, backed by its card’s “If you leave” (Sanity’s card says the website’s code is already yours). addOnsMany / addOnsSome: the size of the plugin or app library, for \"Will you add features as the site grows?\". Many: WordPress (plugin directory), Drupal (about 55,000 modules), Shopify (\"over 16,000 apps\"). Some: Magento (about 3,700, third-party count), BigCommerce (\"Over 1,200 apps\"), HubSpot (1,000+), Wix (no published total; about 800 by third-party count). Fewer: Squarespace (about 55 extensions), Webflow (\"300+ Apps\"), Framer, Ghost, Duda, Sanity. notIdeal: a card's \"Less suited if\" lines that clearly match a quiz answer. \"if\" is the start of the line as it reads on the card (the persona test and every publish check it's still there); \"when\" is the matching answers (all keys, any listed value). A match rules the platform out unless nothing else fits; the rule reads only the answers, never the card text. Lines with no clear matching answer stay plain text, including Ghost's \"several languages\" (its languages answer already counts against it). WordPress’s \"no maintenance\" applies only to a custom build by someone not technical who wants the platform to host it; elsewhere managed hosting covers it, and the hosting question already counts against it. fitFor: a card's \"Good fit\" lines that answer a quiz question, for breaking an exact tie: \"line\" is the line as it reads on the card (the persona test checks it's still there), \"when\" the answers it answers (all keys, any listed value; a line that answers two different questions is listed twice). When two platforms score the same, the one with more matching lines comes first and the result says why; with the same count they stay tied. Only lines that plainly name what the person is making (its kind, a store's size, a publication, a custom build) are tagged, never who builds it or how it's hosted. domainDocs: the platform's own help page for connecting a domain (official docs only; none where the developer's host does it), linked from the first steps on a result. Checked 2026-10-31.",
+  "_about": "The Find my fit quiz's own values per platform (the rest of its scoring comes from the published answers and cards). Served next to the page and loaded with the code's ?v= number, so score.js and these values always arrive together: run build\\bump-version.ps1 after editing this file. ease: how easy it is to run without technical skills (0 needs a developer, 3 easiest). look: the design control it suits (template, visual = arrange pages yourself, pixel = every detail). largeCatalogue / smallShop / b2b: stores it suits (b2b: profiles that name selling to other businesses). storeOnly: only for selling. agency: a common choice for designers and agencies; agencyOnly: mostly sold through them. customFrontEnd: built to feed an app or any front end. devControl: built to be coded. kind: for business sites, which platforms suit each answer to \"Which is closest to what you do?\". members: newsletters to paying members sent by the platform itself (Ghost), a bonus on top of the published \"Sell memberships or paid posts\" row. bookings: bookings or appointments from the platform itself or its own first-party product, for \"Anything you'll need from day one?\" → Bookings: Wix (Wix Bookings), Squarespace (Squarespace Scheduling, the Acuity product it owns, sold as an add-on plan), HubSpot (its meetings scheduler). Everywhere else bookings come from a third-party app or plugin, which the result says as \"worth knowing\". imports: for \"Moving from somewhere?\", what each platform's own docs say it imports from another platform on the picker: imports[destination][origin] = { what: the content as the docs list it, url: the docs page }. Only the platform's own documentation counts (BigCommerce's are its own Data Migration app pages; WordPress's are WordPress.com's importers, which read the same files self-hosted WordPress imports through Tools → Import). Framer's WordPress and Webflow guides describe rebuilding, not importing, so they're not listed; Duda's URL import copies text and images into its content library from any address, not a platform's content, so it isn't either. The result shows the match's line as a reason with the docs link, no points. Checked 2026-10-31. notIdeal: a card's \"Less suited if\" lines that clearly match a quiz answer. \"if\" is the start of the line as it reads on the card (the persona test and every publish check it's still there); \"when\" is the matching answers (all keys, any listed value). A match rules the platform out unless nothing else fits; the rule reads only the answers, never the card text. Lines with no clear matching answer stay plain text, including Ghost's \"several languages\" (its languages answer already counts against it). WordPress’s \"no maintenance\" applies only to a custom build by someone not technical who wants the platform to host it; elsewhere managed hosting covers it, and the hosting question already counts against it. fitFor: a card's \"Good fit\" lines that answer a quiz question, for breaking an exact tie: \"line\" is the line as it reads on the card (the persona test checks it's still there), \"when\" the answers it answers (all keys, any listed value; a line that answers two different questions is listed twice). When two platforms score the same, the one with more matching lines comes first and the result says why; with the same count they stay tied. Only lines that plainly name what the person is making (its kind, a store's size, a publication, a custom build) are tagged, never who builds it or how it's hosted. domainDocs: the platform's own help page for connecting a domain (official docs only; none where the developer's host does it), linked from the first steps on a result. Checked 2026-10-31.",
   "ease": {
     "wordpress": 2,
     "shopify": 3,
@@ -86,17 +86,6 @@
     "squarespace",
     "wordpress"
   ],
-  "addOnsMany": [
-    "wordpress",
-    "drupal",
-    "shopify"
-  ],
-  "addOnsSome": [
-    "magento",
-    "bigcommerce",
-    "hubspot",
-    "wix"
-  ],
   "storeOnly": [
     "shopify",
     "bigcommerce",
@@ -150,8 +139,108 @@
   "members": [
     "ghost"
   ],
-  "leaveWhy": {
-    "sanity": "You own the site code and can export all your content"
+  "bookings": [
+    "wix",
+    "squarespace",
+    "hubspot"
+  ],
+  "imports": {
+    "wordpress": {
+      "squarespace": {
+        "what": "posts, pages, comments, tags and images",
+        "url": "https://wordpress.com/support/import/import-from-squarespace/"
+      },
+      "wix": {
+        "what": "pages, images and menus (blog posts by RSS, the newest 20)",
+        "url": "https://wordpress.com/support/import/import-from-wix/"
+      }
+    },
+    "shopify": {
+      "wordpress": {
+        "what": "WooCommerce products, customers and orders",
+        "url": "https://help.shopify.com/en/manual/migrating-to-shopify/migrating-from-woocommerce"
+      },
+      "squarespace": {
+        "what": "products and customers as CSV",
+        "url": "https://help.shopify.com/en/manual/migrating-to-shopify/migrating-from-squarespace"
+      },
+      "wix": {
+        "what": "products, customers and orders",
+        "url": "https://help.shopify.com/en/manual/migrating-to-shopify/migrating-from-wix"
+      }
+    },
+    "wix": {
+      "wordpress": {
+        "what": "blog posts with their images and categories",
+        "url": "https://support.wix.com/en/article/importing-blog-posts-from-wordpress-to-the-new-wix-blog"
+      },
+      "shopify": {
+        "what": "products as CSV, or products, orders and coupons with the Cart2Cart app",
+        "url": "https://support.wix.com/en/article/wix-stores-migrating-from-shopify-to-wix-stores"
+      }
+    },
+    "squarespace": {
+      "wordpress": {
+        "what": "posts, pages, authors, categories, tags, comments and images",
+        "url": "https://support.squarespace.com/hc/en-us/articles/206543957-Importing-content-from-WordPress-Blogger-or-Tumblr"
+      },
+      "shopify": {
+        "what": "products and contacts as CSV",
+        "url": "https://support.squarespace.com/hc/en-us/articles/37949513737229-Moving-from-Shopify-to-Squarespace"
+      }
+    },
+    "webflow": {
+      "wordpress": {
+        "what": "content as CSV into a CMS collection",
+        "url": "https://help.webflow.com/hc/en-us/articles/33961236268435"
+      }
+    },
+    "hubspot": {
+      "wordpress": {
+        "what": "blog posts with their images, authors and tags",
+        "url": "https://knowledge.hubspot.com/blog/import-your-blog-from-wordpress-or-squarespace-with-an-xml-file"
+      },
+      "squarespace": {
+        "what": "blog posts with their images, authors and tags",
+        "url": "https://knowledge.hubspot.com/blog/import-your-blog-from-wordpress-or-squarespace-with-an-xml-file"
+      }
+    },
+    "bigcommerce": {
+      "shopify": {
+        "what": "products, customers and orders",
+        "url": "https://www.bigcommerce.com/apps/data-migration-services-shopify"
+      },
+      "wordpress": {
+        "what": "WooCommerce products, customers and orders",
+        "url": "https://www.bigcommerce.com/apps/data-migration-services-woocommerce"
+      },
+      "magento": {
+        "what": "products, customers and orders",
+        "url": "https://www.bigcommerce.com/apps/data-migration-services-magento"
+      }
+    },
+    "drupal": {
+      "wordpress": {
+        "what": "posts, pages, comments, media, tags and categories (WordPress Migrate module)",
+        "url": "https://www.drupal.org/project/wordpress_migrate"
+      }
+    },
+    "ghost": {
+      "wordpress": {
+        "what": "posts and pages (categories become tags)",
+        "url": "https://docs.ghost.org/migration/wordpress/"
+      },
+      "squarespace": {
+        "what": "posts and pages (categories become tags)",
+        "url": "https://docs.ghost.org/migration/squarespace/"
+      }
+    },
+    "sanity": {
+      "wordpress": {
+        "what": "posts, pages, categories, tags and files, with import scripts from Sanity’s own course",
+        "url": "https://www.sanity.io/learn/course/migrating-content-from-wordpress-to-sanity/introduction-to-wp-migration"
+      }
+    }
   },
   "domainDocs": {
     "wordpress": "https://wordpress.org/documentation/article/settings-general-screen/",
@@ -282,8 +371,8 @@
       {
         "if": "You want paid memberships or a paid newsletter",
         "when": {
-          "members": [
-            "yes"
+          "needs": [
+            "members"
           ]
         }
       }

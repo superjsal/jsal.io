@@ -489,18 +489,27 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches. The questions and the scoring live in score.js (shared
   // with the persona tests). The answers stay in the page address, so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, explain, tied, conflict, costRow, weight, TIP } = window.cmsScore;
-  // Shared result links carry the quiz version (v=2). Links from before versions (no v) are version 1.
+  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, tied, conflict, costRow, weight, TIP, options } = window.cmsScore;
+  // Shared result links carry the quiz version (v=3). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
   // people have already shared keep opening a result rather than an empty quiz.
-  const LINK_VERSION = 2;
-  // Returns { answers, old } (old: a v1 link, made before some of today's questions), or null.
+  const LINK_VERSION = 3;
+  // Returns { answers, old } (old: a link made before some of today's questions, which are then answered neutrally
+  // or offered above the result), or null. Version 3 (2026-10-31) replaced the language, paid-members, moving-later
+  // and adding-features questions with "Anything you'll need from day one?" and "Moving from somewhere?":
+  // lang=yes → needs=lang, members=yes → needs=members (members first, as it was asked of publications only), neither →
+  // needs=none; leave=no → moving=no, leave=yes → moving left to answer; grow dropped.
   function readLink(params) {
     const v = Number(params.get('v') || 1);
     params.delete('v');
     const answers = Object.fromEntries(params);
-    if (v === 1 || v === 2) return { answers, old: v === 1 };
-    return null;   // a newer version than this page knows: start the quiz fresh
+    if (v > LINK_VERSION) return null;   // a newer version than this page knows: start the quiz fresh
+    if (v < 3) {
+      if (!answers.needs) answers.needs = answers.members === 'yes' ? 'members' : answers.lang === 'yes' ? 'lang' : 'none';
+      if (!answers.moving && answers.leave === 'no') answers.moving = 'no';
+      ['lang', 'members', 'leave', 'grow'].forEach((k) => delete answers[k]);
+    }
+    return { answers, old: v < 3 };
   }
   // Effort, from values already checked: the quiz's ease score and the profile's hosting line
   const SKILL = ['Needs a developer', 'Takes some learning', 'Easy to learn', 'No technical skill needed'];
@@ -580,7 +589,7 @@
     let step = 0, a = {};
     const pending = new Set();   // questions an old link didn't have: answered neutrally (NEUTRAL) or not at all, and offered above the results
     const steps = (o = a) => QUESTIONS.filter((q) => !q.when || q.when(o));   // the questions these answers call for
-    const valid = (o) => steps(o).every((q) => q.opts.some(([v]) => v === o[q.id]));
+    const valid = (o) => steps(o).every((q) => options(q, o, data).some(([v]) => v === o[q.id]));
 
     function ask() {
       const list = steps();
@@ -607,30 +616,36 @@
       const opts = el('div', 'qz-opts');
       opts.setAttribute('role', 'group');
       opts.setAttribute('aria-label', q.q);
-      q.opts.forEach(([v, title, sub]) => {
-        const b = el('button', 'qz-opt');
+      // "Moving from somewhere?": its platforms are a row of logo chips under the two plain answers, one tap like the rest
+      const from = q.plats ? el('div', 'qz-from') : null;
+      if (from) { from.setAttribute('role', 'group'); from.setAttribute('aria-label', 'Yes, from one of these'); }
+      let busy = false;
+      const pick = async (v, b) => {
+        if (busy) return;
+        // The choice shows as selected for a moment, so it's clear it registered, before the next question
+        busy = true;
+        box.querySelectorAll('.qz-opt, .qz-from .chip').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+        await new Promise((r) => setTimeout(r, 150));
+        window.jsalUsed?.();   // "First steps" / "Explorer" (/nav.js)
+        a[q.id] = v;
+        pending.delete(q.id);
+        if (resume) {
+          const next = steps().findIndex((x) => pending.has(x.id) || !options(x, a, data).some(([o]) => o === a[x.id]));
+          if (next < 0) { resume = false; step = steps().length; } else step = next;
+        } else step++;
+        ask();
+        box.querySelector('h3')?.focus({ preventScroll: true });
+      };
+      options(q, a, data).forEach(([v, title, sub, , , plat]) => {
+        const b = el('button', plat ? 'chip' : 'qz-opt');
         b.type = 'button';
         b.setAttribute('aria-pressed', String(a[q.id] === v));
-        b.append(el('b', null, title), el('small', null, sub));
-        b.addEventListener('click', async () => {
-          if (opts.dataset.busy) return;
-          // The choice shows as selected for a moment, so it's clear it registered, before the next question
-          opts.dataset.busy = '1';
-          opts.querySelectorAll('.qz-opt').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
-          await new Promise((r) => setTimeout(r, 150));
-          window.jsalUsed?.();   // "First steps" / "Explorer" (/nav.js)
-          a[q.id] = v;
-          pending.delete(q.id);
-          if (resume) {
-            const next = steps().findIndex((x) => pending.has(x.id) || !x.opts.some(([o]) => o === a[x.id]));
-            if (next < 0) { resume = false; step = steps().length; } else step = next;
-          } else step++;
-          ask();
-          box.querySelector('h3')?.focus({ preventScroll: true });
-        });
-        opts.append(b);
+        if (plat) b.append(logo(plat), title); else b.append(el('b', null, title), el('small', null, sub));
+        b.addEventListener('click', () => pick(v, b));
+        (plat ? from : opts).append(b);
       });
-      box.append(top, h, el('p', 'qz-hint', 'Pick the closest one; you can go back and change it.'), opts);
+      box.append(top, h, el('p', 'qz-hint', q.hint || 'Pick the closest one; you can go back and change it.'), opts);
+      if (from) box.append(el('p', 'qz-from-l', 'Yes, from one of these'), from);
       box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');
       if (step) {
         const nav = el('div', 'qz-nav'), back = el('button', 'btn', 'Back');
@@ -655,7 +670,7 @@
       const chips = el('div', 'qz-ans-chips');
       const answered = steps().filter((q) => !pending.has(q.id));
       answered.forEach((q) => {
-        const opt = q.opts.find(([v]) => v === a[q.id]);
+        const opt = options(q, a, data).find(([v]) => v === a[q.id]);
         // The answer on its own ("Two or more languages"), so it makes sense without remembering the question
         const b = el('button', 'chip', opt ? opt[3] : q.q);
         b.type = 'button';
@@ -672,7 +687,7 @@
         ed.setAttribute('role', 'group');
         ed.setAttribute('aria-label', q.q);
         ed.append(el('p', null, q.q));
-        q.opts.forEach(([v, title]) => {
+        options(q, a, data).forEach(([v, title]) => {
           const b = el('button', 'chip', title);
           b.type = 'button';
           b.setAttribute('aria-pressed', String(a[q.id] === v));
@@ -680,7 +695,7 @@
             a[q.id] = v;
             pending.delete(q.id);
             editing = null;
-            const missing = steps().findIndex((x) => !x.opts.some(([o]) => o === a[x.id]));
+            const missing = steps().findIndex((x) => !options(x, a, data).some(([o]) => o === a[x.id]));
             if (missing >= 0) { step = missing; resume = true; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); return; }
             results();
             box.querySelector(`.qz-ans-chips [data-q="${q.id}"]`)?.focus({ preventScroll: true });
@@ -701,7 +716,9 @@
     // source: 'quiz' (the last question answered) or 'link' (a shared result opened), sent as a GA4
     // event; re-showing the result after an answer is changed sends nothing
     function results(source) {
-      const ranked = rank(data, a);
+      // The platform you're moving from isn't offered as a match (candidates); it keeps its place in the full ranking (all)
+      // for "Had a platform in mind?", which opens on it
+      const ranked = candidates(data, a), all = rank(data, a), origin = all.find((x) => x.p.id === a.moving);
       const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
       // A tie for first is shown as one: list order alone mustn't crown a "Best match". Level points go to the
       // card with more "Good fit" lines answering what's being made (score.js: tied, fit); only a tie on both is
@@ -784,7 +801,7 @@
           const li = el('li', null, w);
           // A reason that comes from a sourced table row links to the platform's own page on it: evidence, not a claim
           const row = EVIDENCE[w] || (/^(Free to start|Fits your budget)$/.test(w) ? costRow(a) : null);
-          const src = row && ((data.answers[r.p.id] || {})[row] || {}).sourceUrl;
+          const src = r.links[w] || (row && ((data.answers[r.p.id] || {})[row] || {}).sourceUrl);
           if (src) li.append(' · ', docLink(src, 'docs'));
           ul.append(li);
         });
@@ -827,25 +844,39 @@
         } else say.append('No platform fits these answers well, so these are the closest. Changing an answer above may bring better matches.');
         box.append(note);
       }
+      // Moving from somewhere: what the old platform lets you take (its profile's "If you leave" line), and that a match
+      // whose own docs describe an import from it says so in its reasons (quiz.imports, linked)
+      if (a.moving && a.moving !== 'no') {
+        const mig = el('p', 'qz-mig'), origin = data.platforms.find((p) => p.id === a.moving);
+        if (origin) {
+          const exp = (origin.profile || {}).export;
+          // The export line's own colon ("Everything: a full WordPress export…") becomes a comma after ours
+          mig.append(el('b', null, `Moving from ${origin.name}`), el('span', null, exp ? `What you can take with you: ${exp.charAt(0).toLowerCase()}${exp.slice(1).replace(': ', ', ')}.` : ''));
+          if (Object.values(data.quiz.imports || {}).some((m) => m[origin.id])) mig.append(el('small', null, `A match whose own docs describe an import from ${origin.name} says so in its reasons.`));
+        } else mig.append(el('b', null, 'Moving from another platform'), el('span', null, 'Check what it lets you export before you pick: posts and pages, products as a spreadsheet, or everything.'));
+        box.append(mig);
+      }
       box.append(list);
       // "Had a platform in mind?": any other platform, ranked for these answers, with what counted for it and against
       // it (its own "worth knowing" lines, and where it lost most points to the first match, in TIP's words)
-      const rest = ranked.slice(3);
+      const rest = [...(origin ? [origin] : []), ...ranked.slice(3)];
+      if (origin && !rest.some((r) => r.p.id === checking)) checking = origin.p.id;
       if (rest.length) {
         const check = el('section', 'qz-check'), res = el('div');
         check.append(el('h4', null, 'Had a platform in mind?'), el('p', 'lead', 'See where it lands for your answers, and why.'));
         const showCheck = (id) => {
           checking = id;
           check.querySelectorAll('.qz-pick-chips .chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
-          const r = ranked.find((x) => x.p.id === id), i = ranked.indexOf(r), lead = ranked[0];
+          const r = all.find((x) => x.p.id === id), i = all.indexOf(r), lead = ranked[0];
           // The parts where it lost most to the first match, in TIP's "runner-up lost it" words; the parts its own "worth
           // knowing" lines already cover (ease, hosting, languages, moving later, budget) aren't said twice
-          const SAID = new Set(['ease', 'care', 'lang', 'leave', 'budget']);
+          const SAID = new Set(['ease', 'care', 'lang', 'bookings', 'blog', 'budget']);
           const lost = [...new Set([...Object.keys(lead.pts), ...Object.keys(r.pts)])].map((k) => [k, (lead.pts[k] || 0) - (r.pts[k] || 0)])
             .filter(([k, d]) => d > 0 && TIP[k] && TIP[k][1] && !SAID.has(k)).sort((p, q) => q[1] - p[1]).slice(0, 2)
             .map(([k]) => TIP[k][1](a, r.p.name, lead.p.name, lead.pts[k] || 0)).filter(Boolean);
           const against = [...r.but, ...lost].map((w) => w.charAt(0).toUpperCase() + w.slice(1));
-          const rankText = el('b', 'rank', `${r.p.name} ranks ${i + 1}${['st', 'nd', 'rd'][i] || 'th'} of ${ranked.length} for you`);
+          const nth = `${i + 1}${['st', 'nd', 'rd'][i] || 'th'} of ${all.length}`;
+          const rankText = el('b', 'rank', r === origin ? `You’re on ${r.p.name} now: it ranks ${nth} for your answers` : `${r.p.name} ranks ${nth} for you`);
           rankText.append(el('span', 'gap', ` · ${lead.s - r.s === 0 ? 'level with' : `${lead.s - r.s} point${lead.s - r.s === 1 ? '' : 's'} behind`} ${lead.p.name}`));
           const cols = el('div', 'cols');
           [['For', r.why, 'for'], ['Against', against, 'against']].forEach(([t, items, cls]) => {
@@ -903,7 +934,7 @@
       box.append(nav);
     }
 
-    // A shared result (#quiz?v=2&what=site&who=easy…) opens straight on it. A v2 link with an answer missing or
+    // A shared result (#quiz?v=3&what=site&who=easy…) opens straight on it. A v3 link with an answer missing or
     // unknown (cut short, or edited) keeps the good answers and asks the first question it lacks.
     // Returns false when the address holds no quiz answers.
     function fromLink() {
@@ -915,7 +946,7 @@
       editing = null;
       resume = false;
       pending.clear();
-      QUESTIONS.forEach((q) => { if (q.opts.some(([v]) => v === shared[q.id])) a[q.id] = shared[q.id]; });
+      QUESTIONS.forEach((q) => { if (options(q, shared, data).some(([v]) => v === shared[q.id])) a[q.id] = shared[q.id]; });
       // An old link (v=1) opens on its result: questions it didn't have get an answer that scores nothing
       // either way (NEUTRAL in score.js), or none, and are offered above the results
       if (link.old && 'what' in a) {

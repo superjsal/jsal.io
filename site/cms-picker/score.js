@@ -11,16 +11,23 @@
     // Each option: [value, title, hint, its answer on its own] (the last is the answer button above the results, so it reads without the question)
     { id: 'what', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact', 'A business or work site'], ['store', 'An online store', 'Products, checkout and payments', 'An online store'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing', 'A blog, newsletter or publication'], ['custom', 'Something custom', 'An app or portal, built with a developer', 'Something custom: an app or portal']] },
     { id: 'kind', q: 'Which is closest to what you do?', when: (a) => a.what === 'site', opts: [['local', 'A local business or services', 'Shops, trades, salons, clinics, consultants', 'A local business or services'], ['creative', 'Creative work or a portfolio', 'Photography, design, art, music', 'Creative work or a portfolio'], ['startup', 'A startup or product launch', 'A product, an app or a launch page', 'A startup or product launch'], ['b2b', 'A company selling to other businesses', 'B2B: leads, demos and a sales team', 'A company selling to other businesses (B2B)'], ['content', 'Lots of content', 'Articles, guides and resources', 'A site with lots of content']] },
-    { id: 'members', q: 'Will you have paid members or a newsletter?', when: (a) => a.what === 'content', opts: [['yes', 'Yes', 'Subscribers, paid posts or a newsletter', 'Paid members or a newsletter'], ['no', 'No', 'Just the posts', 'Just posts, no members']] },
     { id: 'who', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple', 'I’ll build it, not technical'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine', 'I’ll build it and learn'], ['agency', 'A designer or agency', 'They build it; I might edit', 'A designer or agency builds it'], ['dev', 'A developer', 'Code is fine', 'A developer builds it']] },
     { id: 'care', q: 'Who should look after hosting, updates and security?', opts: [['no', 'The platform', 'Everything included, nothing to install', 'Hosting and updates handled for me'], ['yes', 'Me, or someone I’ll ask', 'A web host and updates now and then', 'Fine looking after hosting and updates']] },
     { id: 'size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few dozen products', 'A small shop', 'A small shop, up to a few dozen products'], ['big', 'Hundreds of products', 'A large catalogue', 'Hundreds of products'], ['b2b', 'Selling to other businesses (B2B)', 'Wholesale, trade accounts or bulk orders', 'Selling to other businesses (B2B)']] },
-    { id: 'lang', q: 'Will it be in more than one language?', opts: [['no', 'No', 'One language', 'One language'], ['yes', 'Yes', 'Two or more', 'Two or more languages']] },
+    // One need, the one that matters most (an option's fifth item says when it's offered: selling is only a need
+    // for something that isn't a store, a blog for something that isn't a publication). The hint replaces the usual
+    // "Pick the closest one".
+    { id: 'needs', q: 'Anything you’ll need from day one?', hint: 'Pick the one that matters most; the rest can come later.', opts: [['bookings', 'Bookings or appointments', 'Clients book a time online', 'Bookings or appointments from day one'], ['members', 'Paid members or a newsletter', 'Subscribers, paid posts or a newsletter', 'Paid members or a newsletter'], ['sell', 'Selling online too', 'A few products or services to buy', 'Selling online too', (a) => a.what !== 'store'], ['lang', 'More than one language', 'Two or more', 'Two or more languages'], ['blog', 'A blog or news section', 'Posts alongside the main pages', 'A blog or news section', (a) => a.what !== 'content'], ['none', 'Nothing special', 'The usual pages are enough', 'Nothing special from day one']] },
     { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go', 'A good template is enough'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust', 'Arrange the design visually'], ['pixel', 'Every detail', 'Exactly as designed', 'Control every detail of the design']] },
-    { id: 'leave', q: 'How important is being able to move to another platform later?', opts: [['yes', 'Very important', 'I want to own all of it', 'Being able to move later matters'], ['no', 'Not a big concern', 'I’ll probably stay', 'Not planning to switch']] },
-    { id: 'grow', q: 'Will you add features as the site grows?', opts: [['yes', 'Yes, I’ll keep adding things', 'Bookings, memberships, reviews, CRM links…', 'Adding features as it grows'], ['no', 'No, what’s built in is enough', 'Keep it simple', 'What’s built in is enough']] },
+    // Where the site is now: these two answers, then every platform on the picker (plats: options() adds them from
+    // the data, each as [id, name, '', 'Moving from <name>', undefined, platform]). No points; the result says what
+    // the old platform lets you take and which matches import it (quiz.imports).
+    { id: 'moving', q: 'Moving from somewhere?', hint: 'One tap: pick where your site runs now, or start fresh.', plats: true, opts: [['no', 'No, starting fresh', 'A new site, nothing to bring over', 'Starting fresh'], ['other', 'Yes, from somewhere else', 'A platform that isn’t listed below', 'Moving from another platform']] },
     { id: 'budget', q: 'What can you spend each month?', opts: [['none', 'Nothing for now', 'Start free, upgrade later', 'Nothing for now: free to start'], ['low', 'Up to about $25', 'A basic plan', 'Up to about $25 a month'], ['mid', 'Up to about $100', 'Room for a store or more features', 'Up to about $100 a month'], ['any', 'Over $100, or it doesn’t matter', 'Cost isn’t the deciding factor', 'Cost isn’t the deciding factor']] },
   ];
+  // A question's options for these answers: the ones offered (an option's fifth item is a test on the answers), then,
+  // for "Moving from somewhere?", the platforms on the picker
+  const options = (q, a, data) => [...q.opts.filter((o) => !o[4] || o[4](a)), ...(q.plats && data ? data.platforms.map((p) => [p.id, p.name, '', `Moving from ${p.name}`, undefined, p]) : [])];
   const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
   // "Which is closest to what you do?": the reason a matching platform gets (quiz.kind in cms-picker.json lists them)
   const KINDS = { local: 'Suits local businesses and services', creative: 'Suits creative work and portfolios', startup: 'Suits startups and product launches', b2b: 'Suits companies selling to other businesses', content: 'Suits sites with lots of content' };
@@ -29,10 +36,11 @@
   // Free software still needs paid hosting, so it counts as the lowest paid band.
   const COST_LEVEL = { free: 0, low: 1, software: 1, mid: 2, high: 3 };
   const BUDGET = { none: 0, low: 1, mid: 2 };
-  // Which "What it costs to start" row prices these answers for a platform: a store's, or (with paid members)
-  // the plan that includes paid memberships ("Start a site with paid members"), else a website's. Shared by the
-  // budget score, the "costs less to start" box and the card's cost line, so they always agree.
-  const costRow = (a) => (a.what === 'store' ? 'cost_store' : a.members === 'yes' ? 'cost_members' : 'cost_site');
+  // Which "What it costs to start" row prices these answers for a platform: a store's (a site that sells too pays
+  // the commerce plan as well), or (with paid members) the plan that includes paid memberships ("Start a site with
+  // paid members"), else a website's. Shared by the budget score, the "costs less to start" box and the card's
+  // cost line, so they always agree.
+  const costRow = (a) => (a.what === 'store' || a.needs === 'sell' ? 'cost_store' : a.needs === 'members' ? 'cost_members' : 'cost_site');
   const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
 
   // What each part of the score says when it's what put one match ahead of another: [the leader earned
@@ -58,8 +66,9 @@
     b2b: [(a, y, x) => `${x} is built for B2B`, null],
     lang: [(a, y, x) => `that’s easier to set up on ${x}`, (a, y) => `that’s harder to set up on ${y}`],
     look: [(a, y, x) => ({ template: `${x} has good ones to start from`, visual: `${x} lets you do that`, pixel: `${x} gives you that` })[a.look], null],
-    leave: [(a, y, x) => `moving off ${x} later is easier`, (a, y) => `moving off ${y} later is harder`],
-    grow: [(a, y, x) => `${x} has more plugins and apps for that`, (a, y) => `${y} has fewer plugins and apps for that`],
+    bookings: [(a, y, x) => `${x} has bookings built in`, (a, y) => `${y} needs an add-on for bookings`],
+    blog: [(a, y, x) => `${x} has a blog built in`, (a, y) => `${y} needs more than its own tools for a blog`],
+    imports: [(a, y, x) => `${x} imports your content from there`, null],   // never tips a result (no points); here so every part has words
     notIdeal: [null, (a, y) => `${y}’s own card says it isn’t ideal for answers like yours`],
     // Minus: when the leader is over the budget too (lost points of its own), it only costs less than the runner-up
     budget: [(a, y, x) => (a.budget === 'none' ? `${x} is free to start` : `${x} fits it`), (a, y, x, own) => (own < 0 ? `${x} costs less than ${y}` : `${y} costs more than that`)],
@@ -78,15 +87,16 @@
     agencyOnly: (a) => (a.who === 'dev' ? 'a developer is building it' : 'you’re building it yourself'),
     dev: () => 'a developer is building it',
     care: () => 'you want hosting, updates and security looked after',
-    sell: () => 'you’re making an online store',
+    sell: (a) => (a.what === 'store' ? 'you’re making an online store' : 'you want to sell online too'),
     sellFirst: () => 'you’re making an online store',
     size: (a) => (a.size === 'b2b' ? 'you’re selling to other businesses' : 'you have hundreds of products'),
     small: () => 'you have a small shop',
     b2b: () => 'you’re selling to other businesses',
     lang: () => 'you need more than one language',
     look: (a) => ({ template: 'a good template is enough for you', visual: 'you want to arrange things visually', pixel: 'you want control over every detail' })[a.look],
-    leave: () => 'you want to own all of it',
-    grow: () => 'you’ll add features over time',
+    bookings: () => 'you need bookings from day one',
+    blog: () => 'you want a blog alongside the site',
+    imports: (a) => (a.moving && a.moving !== 'no' && a.moving !== 'other' ? `you’re moving from ${a.moving}` : null),
     notIdeal: null,
     budget: (a) => ({ none: 'you want to start free', low: 'you want to spend up to about $25 a month', mid: 'you want to spend up to about $100 a month' })[a.budget],
   };
@@ -100,7 +110,7 @@
   const fitLines = (Q, id, a) => [...new Set(((Q.fitFor || {})[id] || []).filter((f) => matches(f.when, a)).map((f) => f.line))];
 
   function fitScore(data, p, a) {
-    const Q = data.quiz, pr = p.profile || {}, why = [], but = [], pts = {};   // but: where it counts against an answer, shown as "Worth knowing"
+    const Q = data.quiz, pr = p.profile || {}, why = [], but = [], pts = {}, links = {};   // but: where it counts against an answer, shown as "Worth knowing"; links: a reason's docs page
     const has = (list) => (Q[list] || []).includes(p.id);
     const verdict = (row) => ((data.answers[p.id] || {})[row] || {}).verdict;
     let s = 0;
@@ -109,7 +119,7 @@
     if ((pr.goals || []).includes(a.what)) add('goal', 4, WHAT[a.what]); else add('goal', -8);
     if (a.what !== 'store' && has('storeOnly')) add('sellOnly', -6);
     if (a.what === 'site' && ((Q.kind || {})[a.kind] || []).includes(p.id)) add('kind', 3, KINDS[a.kind]);
-    if (a.what === 'content' && a.members === 'yes') {
+    if (a.needs === 'members') {
       // The "Sell memberships or paid posts" row: built in beats an add-on (Wix, Squarespace and Duda have their
       // own; Webflow retired its own in 2026).
       const m = verdict('members');
@@ -134,6 +144,13 @@
       add('care', handled ? 2 : -6, handled && 'Hosting, updates and security are handled for you');
       if (!handled) but.push('hosting, updates and security are on you');
     }
+    if (a.what !== 'store' && a.needs === 'sell') {
+      // Selling too, on something that isn't a store: the "Sell online" row (storeOnly already counts against above)
+      const v = verdict('store');
+      add('sell', { yes: 2, plugin: 0, code: -2, no: -4 }[v] ?? 0, v === 'yes' && 'Selling online built in');
+      const w = { plugin: 'selling online needs an add-on', code: 'selling online needs custom code', no: 'it doesn’t sell online' }[v];
+      if (w) but.push(w);
+    }
     if (a.what === 'store') {
       add('sell', { yes: 2, plugin: 0, code: -3, no: -6 }[verdict('store')] ?? 0);
       if (has('storeOnly')) add('sellFirst', 2);   // made for selling first, so it leads a tie with all-round builders
@@ -142,27 +159,29 @@
       if (a.size === 'b2b' && has('b2b')) add('b2b', 3, 'Suits selling to other businesses (B2B)');
       if (a.size === 'small' && has('smallShop')) add('small', 1);
     }
-    if (a.lang === 'yes') {
+    if (a.needs === 'lang') {
       const l = verdict('languages');
       // Needing an add-on for it counts a little against (Ghost's and Squarespace's own cards say so)
       add('lang', { yes: 2, plugin: -1, code: -2, no: -4 }[l] ?? 0, l === 'yes' && 'More than one language is built in');
       const w = { plugin: 'more than one language needs an add-on', code: 'more than one language needs custom code', no: 'it doesn’t do more than one language' }[l];
       if (w) but.push(w);
     }
+    // Bookings have no table row: the quiz's own list (quiz.bookings) says which platforms have them built in; the rest
+    // take an add-on, said as "worth knowing"
+    if (a.needs === 'bookings') { if (has('bookings')) add('bookings', 3, 'Bookings built in'); else { add('bookings', -1); but.push('bookings need an add-on'); } }
+    // A blog beside a site or store: the "Add a blog" row
+    if (a.what !== 'content' && a.needs === 'blog') {
+      const v = verdict('blog');
+      add('blog', { yes: 2, plugin: 0, code: -2, no: -4 }[v] ?? 0, v === 'yes' && 'A blog built in');
+      const w = { plugin: 'a blog needs an add-on', code: 'a blog needs custom code', no: 'it doesn’t do a blog' }[v];
+      if (w) but.push(w);
+    }
     if ((Q.look[p.id] || []).includes(a.look)) add('look', 2, LOOKS[a.look]);
-    if (a.leave === 'yes') {
-      // A platform's own wording for it where the general line undersells it (quiz.leaveWhy: Sanity, whose card
-      // says the website's code is already yours)
-      if (/^Everything/.test(pr.export || '')) add('leave', 2, (Q.leaveWhy || {})[p.id] || 'Easy to move to another platform later');
-      else if (/API/.test(pr.export || '')) add('leave', 1, 'Your content stays yours, through the API');
-      else { add('leave', -1); but.push(`moving to another platform later is harder${pr.export ? ` (${lowerFirst(pr.export)})` : ''}`); }
-    }
-    // Adding features later: the platforms with the biggest plugin and app libraries (quiz.addOnsMany: tens of
-    // thousands; quiz.addOnsSome: about a thousand or more)
-    if (a.grow === 'yes') {
-      if (has('addOnsMany')) add('grow', 2, 'Thousands of plugins and apps to add later');
-      else if (has('addOnsSome')) add('grow', 1, 'A good range of apps to add later');
-    }
+    // Moving from a platform on the picker: a reason, with the docs behind it, where this platform's own docs describe
+    // an import from there (quiz.imports); no points, so it never decides a result
+    const imp = ((Q.imports || {})[p.id] || {})[a.moving];
+    const origin = imp && data.platforms.find((x) => x.id === a.moving);
+    if (origin) { const line = `Imports your ${origin.name} ${imp.what}`; add('imports', 0, line); links[line] = imp.url; }
     // The platform's own "Not ideal if" lines that match these answers (quiz.notIdeal): it's ruled out unless
     // nothing else fits
     if (notIdealFor(Q, p.id, a)) add('notIdeal', -30);
@@ -178,12 +197,21 @@
     // person gave, so a top match never hides that (moving later, languages, running it yourself, hosting,
     // budget); it changes no score.
     const fit = fitLines(Q, p.id, a);
-    return { p, s, why, all: why, but, pts, fit, tb: fit.length };
+    return { p, s, why, all: why, but, pts, fit, tb: fit.length, links };
   }
 
   // Every platform, best fit first; an exact tie goes to the one whose card has more "Good fit" lines answering
   // what's being made (fit), and stays a tie when that count is the same too
   const rank = (data, a) => data.platforms.map((p) => fitScore(data, p, a)).sort((x, y) => y.s - x.s || y.tb - x.tb);
+  // The matches: every platform but the one you're moving from (it still ranks, under "Had a platform in mind?"), with
+  // those whose own card says they aren't ideal for these answers behind every other, so taking the origin out never
+  // lets a ruled-out platform into the top three while three others fit (the persona test's rule; with fewer, the
+  // page shows the closest anyway)
+  function candidates(data, a) {
+    const rs = rank(data, a).filter((r) => r.p.id !== a.moving);
+    const ok = rs.filter((r) => !notIdealFor(data.quiz, r.p.id, a));
+    return [...ok, ...rs.filter((r) => !ok.includes(r))];
+  }
   const tied = (x, y) => x.s === y.s && x.tb === y.tb;
 
   // ---------- Telling the top matches apart ----------
@@ -201,11 +229,11 @@
   // How much a row matters for these answers; 0 when the person has ruled it out
   function weight(row, a) {
     if (row.startsWith('cost_')) return 0;   // the budget question covers cost
-    if (row === 'store') return a.what === 'store' ? 3 : 0;      // not selling
-    if (row === 'languages') return a.lang === 'yes' ? 3 : 0;    // one language
+    if (row === 'store') return a.what === 'store' || a.needs === 'sell' ? 3 : 0;   // not selling
+    if (row === 'languages') return a.needs === 'lang' ? 3 : 0;   // one language
     if (row === 'design') return a.look === 'template' ? 0 : 2;  // a good template is enough
-    if (row === 'blog') return a.what === 'content' ? 3 : 1;
-    if (row === 'members') return a.members === 'yes' ? 3 : a.members === 'no' ? 0 : 1;   // "Just posts" rules it out
+    if (row === 'blog') return a.what === 'content' || a.needs === 'blog' ? 3 : 1;
+    if (row === 'members') return a.needs === 'members' ? 3 : 1;
     return 1;
   }
   // Card tags about a row, left out of "is known for" when the answers rule that row out
@@ -328,7 +356,7 @@
   }
 
   // Answers that add and take nothing, used for questions an old shared link (v=1) didn't have
-  const NEUTRAL = { grow: 'no', budget: 'any' };
+  const NEUTRAL = { needs: 'none', moving: 'no', budget: 'any' };
   // A first match scoring under this fits poorly: less than being made for what you're making earns on its
   // own. The page calls it the closest match, not the best. First places mostly score 7 to 19 (the lowest
   // persona is 9); about 3% of answer sets fall under it, all of them custom builds.
@@ -336,6 +364,6 @@
   // Answers that pull against each other, with the question to change: a custom app or portal built by
   // someone not technical
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, rank, explain, tied, fitLines, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
+  const api = { QUESTIONS, options, rank, candidates, explain, tied, fitLines, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -346,6 +346,13 @@ body {
 .qz-opt small { color: var(--jsal-muted); font-size: 13px; }
 .qz-opt:hover { border-color: var(--jsal-hover-line); }
 .qz-opt[aria-pressed="true"] { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+/* "Moving from somewhere?": the platforms as logo chips under the two plain answers, a grid so a phone gets two even
+   columns; the chips are the site's chip with the option's corners and height, so a tap target is 44px throughout */
+.qz-from-l { margin: 16px 0 8px; color: var(--jsal-muted); font-size: 13px; font-weight: 600; }
+.qz-from { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 130px), 1fr)); gap: 8px; }
+.qz-from .chip { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 12px; border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font-size: 14px; text-align: left; }
+.qz-from .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+.qz-from .logo { width: 20px; height: 20px; }
 /* Selected: a small tick, the same mark wherever a choice is made */
 .qz-opt[aria-pressed="true"]::after { content: ""; position: absolute; top: 13px; right: 12px; width: 14px; height: 14px; background: var(--jsal-accent); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }
 .qz-opt, .qz-ans-chips .chip { transition: border-color 0.12s, background 0.12s, color 0.12s; }
@@ -385,6 +392,10 @@ body {
 .qz-note::before { content: ""; flex: none; width: 16px; height: 16px; margin-top: 2px; background: var(--jsal-info); -webkit-mask: var(--info) center / contain no-repeat; mask: var(--info) center / contain no-repeat; }
 .qz-note-a { display: inline; padding: 0; text-align: left; border: 0; background: none; color: var(--jsal-info); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .qz-card .sum { color: var(--jsal-muted); font-size: 15px; }
+/* Moving from a platform: what it lets you take, above the cards, in the compare line's shape */
+.qz-mig { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0 0 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-gold-line); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
+.qz-mig b { color: var(--jsal-accent); font-size: 13px; }
+.qz-mig small { flex-basis: 100%; color: var(--jsal-muted); font-size: 13px; }
 /* "Why it fits": a small label, then the reasons with quiet ticks */
 .qz-sec { grid-column: 2; margin-top: 10px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 .qz-why { grid-column: 2; margin: 4px 0 0; padding: 0; list-style: none; font-size: 15px; }
