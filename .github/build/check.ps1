@@ -1,5 +1,5 @@
 # Pre-push checks for the site (see check.py for the list). Run before every push:
-#   powershell -ExecutionPolicy Bypass -File C:\Users\JSAL\Desktop\jsal.io\site\.github\build\check.ps1
+#   powershell -ExecutionPolicy Bypass -File C:\Users\JSAL\Desktop\jsal.io\.github\build\check.ps1
 # When the local server is running (the jsal-site preview, port 8765) and Playwright is installed here
 # (npm ci in this folder), it also runs axe on every page (browser-check.mjs --axe, about 20 seconds);
 # otherwise that part is skipped.

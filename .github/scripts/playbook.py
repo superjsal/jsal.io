@@ -2,8 +2,8 @@
 #   app_data 'defaults' = the Playbook's base content (items, platforms, answers, how-to, watch-outs, page types, guides)
 #   edits               = admin corrections made on the live page, layered over the base
 #   picker              = the CMS Picker's own rows and each platform's public profile (admins only)
-# This file lives in the site repo (site/.github/scripts, not published) so the nightly GitHub Action
-# can run publish. Run it from anywhere: python site\.github\scripts\playbook.py <command>
+# This file lives in the site repo (.github/scripts, not published) so the nightly GitHub Action
+# can run publish. Run it from anywhere: python .github\scripts\playbook.py <command>
 #
 #   backup       → saves every table to private/backups/playbook-<date-time>.json
 #   pull         → saves the Playbook base content to private/playbook/defaults.json for editing

@@ -2,10 +2,10 @@
 // Needs the local server on http://localhost:8765 (the jsal-site preview). Chromium runs on the installed Microsoft
 // Edge (Playwright's own Chromium and Firefox builds don't start on this machine: Windows reports a missing
 // runtime), so a browser that can't start is reported and skipped; Firefox is in manual-checks.md.
-//   node site\.github\build\browser-check.mjs          axe on every public page (light and dark), then 375 and 390px in
+//   node .github\build\browser-check.mjs          axe on every public page (light and dark), then 375 and 390px in
 //                                         Chromium, WebKit and Firefox: errors, sideways scroll, and each tool's
 //                                         main flow (Clean Paste's example and Show; the resizer loading images)
-//   node site\.github\build\browser-check.mjs --axe    only the axe part (quick; used by check.ps1 when the server is up)
+//   node .github\build\browser-check.mjs --axe    only the axe part (quick; used by check.ps1 when the server is up)
 // Exits 1 if axe finds a serious or critical problem or a page breaks.
 import { chromium, webkit, firefox } from 'playwright';
 import { createRequire } from 'module';

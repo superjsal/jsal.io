@@ -1,8 +1,8 @@
 # Renders the link-preview images and the home-screen icon with headless Edge.
-# Run from anywhere:  powershell -File C:\Users\JSAL\Desktop\jsal.io\site\.github\build\og\make-og.ps1
+# Run from anywhere:  powershell -File C:\Users\JSAL\Desktop\jsal.io\.github\build\og\make-og.ps1
 $edge = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 $here = $PSScriptRoot
-$site = Join-Path $here "..\..\.." | Resolve-Path   # site\.github\build\og -> site\
+$site = Join-Path $here "..\..\.." | Resolve-Path   # .github\build\og -> site\
 New-Item -ItemType Directory -Force (Join-Path $site "og") | Out-Null
 $tpl = "file:///" + ((Join-Path $here "og.html") -replace '\\', '/')
 

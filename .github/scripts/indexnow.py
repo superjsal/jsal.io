@@ -7,7 +7,7 @@
 # Only addresses listed in sitemap.xml are sent. Run it after the change is live, not before.
 import json, pathlib, re, subprocess, sys, urllib.error, urllib.request
 
-SITE = pathlib.Path(__file__).resolve().parents[2] / 'site' / 'site'
+SITE = pathlib.Path(__file__).resolve().parents[2] / 'site'
 KEY = '184d9b76996d8751c72b4a5a062f80d7'
 HOST = 'jsal.io'
 

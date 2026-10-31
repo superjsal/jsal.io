@@ -40,8 +40,9 @@ flowchart TB
 
   subgraph GH["GitHub"]
     main[("main branch")]
-    pages["GitHub Pages → jsal.io<br>(CNAME; live a minute or two after a push)"]
-    a1["Action: Publish CMS Picker<br>daily 07:41 UTC: publish, commit,<br>rebuild Pages, IndexNow ping"]
+    deploy["Action: Deploy Pages<br>every push to main: uploads site/ and publishes it<br>(the repo root holds the rules, scripts and docs)"]
+    pages["GitHub Pages → jsal.io<br>(CNAME in site/; live a minute or two after the deploy)"]
+    a1["Action: Publish CMS Picker<br>daily 07:41 UTC: publish, commit,<br>start the deploy, wait, IndexNow ping"]
     a2["Action: Site checks<br>every push: check.py, check_data.py, personas,<br>and the browser checks on Playwright's<br>Chromium, WebKit and Firefox"]
     a3["Action: Keep Platform Playbook awake<br>Mon + Thu: calls the ping() function<br>so the free Supabase project doesn't pause<br>(URL and anon key: repository variables)"]
     a5["Action: Back up Platform Playbook<br>Sundays: every table, encrypted with the<br>BACKUP_PASSPHRASE secret, kept 90 days as an artifact"]
@@ -50,7 +51,7 @@ flowchart TB
   end
   a1 --> pub
   data & pp & logos & pre & smap -->|"commit: CMS Picker: nightly publish"| main
-  main --> pages
+  main --> deploy --> pages
   main --> a2
   a3 --> DB
   DB --> a5
@@ -89,6 +90,7 @@ flowchart TB
 - **Two keys, two trust levels.** The browser uses the public anon key with row-level security (members read, admins write). The publish and backup scripts use the service_role key, which lives only in John's terminal (`SUPABASE_SERVICE_ROLE_KEY`) and in the Action's secrets.
 - **The quiz is code plus data.** `score.js` (questions, scoring, wording) and `quiz.json` (per-platform values the published answers don't carry) ship with the page; everything else the quiz says comes from `data.json`. The personas test pins the agreed results.
 - **A change is described once.** The changelog is the record; an entry with a `data-short` leads its section in Updates on the home page, which `updates.py` writes between two marker comments in `index.html`. `check.py` fails when that block is out of date, so nobody edits it by hand.
+- **The project folder is the repository; `site/` is what's served.** `.github/` (workflows, build scripts, publish scripts, docs), the rules and `SETUP.md` sit beside it and never reach the site; `private/` and the root `build/` shims are ignored. Pages deploys from the `site/` artifact, not from a branch, so a push to `main` is live only once "Deploy Pages" has run.
 - **Cache numbers, not a build.** There's no bundler. Every `?v=` is its file's content hash (8 hex characters of its SHA-256, line endings as LF so Windows and GitHub agree); `bump-version.ps1` (`versions.py`) recomputes them and rewrites only the references to the files that changed, in the pages, the apps' module imports and the platform-page template, which carries real hashes rather than a placeholder. `quiz.json` has its own, `data-quiz-v` on the CMS Picker's `app.js` tag. `check.py` fails any reference whose hash isn't the file's current one.
 - **The Action is the full gate.** `check.py`, `check_data.py`, the personas and the browser checks (axe, phone widths, each tool's flow on Chromium, WebKit and Firefox) all run on every push; the PC runs the same before pushing, Firefox excepted (it won't start there).
 - **Keep-awake reads the Supabase URL and anon key from the repository's Actions variables** (`SUPABASE_URL`, `SUPABASE_ANON_KEY`; the same public values `ic/app.js` carries). A new Supabase project means updating both.
