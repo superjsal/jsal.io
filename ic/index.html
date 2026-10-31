@@ -404,6 +404,8 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 .pk-plat > h3 { margin: 6px 0 0; font-size: 18px; color: var(--jsal-ink); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .pk-wait { padding: 1px 8px; border-radius: var(--jsal-radius-pill); background: var(--jsal-warn-soft); color: var(--jsal-warn); font-size: 11.5px; font-weight: 600; white-space: nowrap; }
 .pk-twin, .card .item .pk-twin { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--jsal-muted); }
+.twin-copy { margin: 0 0 10px; font-size: 13px; }   /* "Copy from the CMS Picker: Built in · varies" at the top of an edit form */
+.twin-copy .muted { margin-left: 6px; }
 a.pk-twin { color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 2px; }
 .pk-recheck { color: var(--jsal-warn); font-weight: 600; }
 .pk-hints:empty { display: none; }
@@ -990,6 +992,7 @@ function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
           <label>Scope<select name="scope">${opts(SCOPE, scope)}</select></label>
         </div>
         ${ANSWERS.includes(plain(mark).trim()) ? '' : `<p class="was">The answer used to say “${esc(plain(mark))}”. Add anything worth keeping to the Note.</p>`}
+        ${twinCopyHtml(R.manage && PK.on ? twinFromPicker(p, e.it.id) : null, `data-twin-copy="${p.id}|${e.key}"`, 'the CMS Picker')}
         <label><span>Note <span style="font-weight:400">(optional; copies as plain text)</span></span><textarea name="note" maxlength="600" rows="3">${esc(e.edit ? note : htmlToMd(note))}</textarea></label>
         <label><span>Watch out <span style="font-weight:400">(optional, side effects to know before changing it)</span></span><textarea name="warn" maxlength="600" rows="2">${esc(warnMd(p, e.sec, e.it.id))}</textarea></label>
         <label><span>How-to steps <span style="font-weight:400">(one per line)</span></span><textarea name="how" maxlength="2000" rows="4">${esc(howMd(p, e.sec, e.it.id))}</textarea></label>
@@ -1358,6 +1361,50 @@ function pbTwin(id) {
   const content = CONTENT_ITEMS.find((x) => x.id === id);
   return content ? { label: plain(content.label), view: 'content' } : null;
 }
+// ---------- Twin answers ----------
+// The Playbook and the CMS Picker each keep their own answer on a shared topic, so a recheck used to mean
+// typing the same tag, scope and words twice. An open edit form offers "Copy from the CMS Picker" / "Copy
+// from the Playbook", which fills its fields from the other side's answer; nothing is saved until Save.
+function twinFromPlaybook(p, id) {   // the Playbook's answer for a CMS Picker row, if the topic is shared
+  const t = pbTwin(id);
+  if (!t) return null;
+  const c = cellFor(p, t.view === 'tech' ? 'tech' : contentSec(p), id);   // content: the page type on show, as in the Playbook
+  return c ? { verdict: c[0], scope: c[2], text: unmd(c[3] || '').trim() } : null;
+}
+function twinFromPicker(p, id) {   // the CMS Picker's answer for a Playbook row, if it has the topic
+  if (!PK.items.some((x) => x.id === id) || !PK.rows.has(p.id)) return null;
+  const r = PK.rows.get(p.id), [verdict, mark, scope] = pkAnswer(r, id), src = pkSource(r, id);
+  return { verdict, scope, text: mark, where: (src && src.where) || '' };
+}
+function twinCopyHtml(t, attr, from) {
+  if (!t) return '';
+  const summary = `${vName(t.verdict)}${SCOPE_SHORT[t.scope] ? ` · ${SCOPE_SHORT[t.scope]}` : ''}${t.text ? ` · “${t.text.length > 90 ? `${t.text.slice(0, 90)}…` : t.text}”` : ''}`;
+  return `<p class="twin-copy"><button type="button" class="link-btn" ${attr}>Copy from ${from}</button><span class="muted">${esc(summary)}</span></p>`;
+}
+const setOption = (sel, v) => { if (sel && [...sel.options].some((o) => o.value === v)) sel.value = v; };
+document.addEventListener('click', (e) => {
+  const pb = e.target.closest('[data-twin-copy]'), pk = e.target.closest('[data-pk-twin-copy]');
+  if (!pb && !pk) return;
+  const f = (pb || pk).closest('form');
+  if (pb) {   // a Playbook form, from the CMS Picker's answer
+    const [pid, key] = pb.dataset.twinCopy.split('|'), p = P.find((x) => x.id === pid), t = twinFromPicker(p, key.split(':')[1]);
+    if (!t) return;
+    setOption(f.verdict, t.verdict);
+    setOption(f.scope, t.scope);
+    setOption(f.mark, answerOf(t.text, t.verdict));
+    if (!f.note.value.trim() && t.text && !PK_GENERIC.test(t.text.trim())) f.note.value = t.text;   // a note that only repeats the tag isn't worth copying
+    if (!f.how.value.trim() && t.where) f.how.value = t.where;   // the menu path, as a first step
+  } else {    // a CMS Picker form, from the Playbook's answer
+    const [pid, id] = pk.dataset.pkTwinCopy.split('|'), p = P.find((x) => x.id === pid), t = twinFromPlaybook(p, id);
+    if (!t) return;
+    setOption(f.verdict, t.verdict);
+    setOption(f.scope, t.scope);
+    if (!f.mark.value.trim() && t.text) f.mark.value = t.text.slice(0, 200);
+    f.dispatchEvent(new Event('input', { bubbles: true }));   // the hints under the form
+  }
+  toast('Copied in. Check it, then Save');
+  f.querySelector('[type="submit"]').focus({ preventScroll: true });
+});
 // Platforms on the tab: the public ones in the CMS Picker's order, then the others by name
 function pkPlatforms() {
   const order = PK.pub ? PK.pub.platforms.map((x) => x.id) : [];
@@ -1444,6 +1491,7 @@ function pkRowHtml(p, r, it) {
     return `<article class="card editing" id="pk-${key}">
         <h4 class="item">${esc(it.label)}<small>CMS Picker · editing ${esc(plain(p.name))}${it.term ? ` · ${esc(it.term)}` : ''}</small>${twinHtml}</h4>
         <form class="edit-form" data-pk-form="${it.id}">
+          ${twinCopyHtml(twinFromPlaybook(p, it.id), `data-pk-twin-copy="${p.id}|${it.id}"`, 'the Playbook')}
           <div class="edit-grid">
             <label>Public note <span style="font-weight:400">(shown on the CMS Picker)</span><input name="mark" maxlength="200" value="${esc(mark)}"></label>
             <label>${it.group === 'cost' ? 'Cost to start' : 'Tag'}<select name="verdict">${opts(pkTagsFor(it), verdict)}</select></label>
