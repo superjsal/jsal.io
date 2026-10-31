@@ -470,7 +470,7 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches. The questions and the scoring live in score.js (shared
   // with the persona tests). The answers stay in the page address, so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, explain, conflict, costRow, weight } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, explain, conflict, costRow, weight, TIP } = window.cmsScore;
   // Shared result links carry the quiz version (v=2). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
   // people have already shared keep opening a result rather than an empty quiz.
@@ -527,6 +527,30 @@
     const frag = document.createDocumentFragment();
     frag.append(ol, later);
     return frag;
+  }
+
+  // One of several platforms: chips, or on a phone the phone's own picker (a row of thirteen uneven names staggers there)
+  function picker(label, options, currentId, onPick) {
+    if (PHONE.matches) {
+      const sel = el('select', 'qz-pick');
+      sel.setAttribute('aria-label', label);
+      options.forEach(([id, name]) => { const o = el('option', null, name); o.value = id; o.selected = id === currentId; sel.append(o); });
+      if (currentId == null) { const o = el('option', null, 'Choose a platform…'); o.value = ''; o.selected = true; sel.prepend(o); }
+      sel.addEventListener('change', () => { if (sel.value) onPick(sel.value); });
+      return sel;
+    }
+    const group = el('div', 'qz-pick-chips');
+    group.setAttribute('role', 'group');
+    group.setAttribute('aria-label', label);
+    options.forEach(([id, name]) => {
+      const b = el('button', 'chip', name);
+      b.type = 'button';
+      b.dataset.id = id;
+      b.setAttribute('aria-pressed', String(id === currentId));
+      b.addEventListener('click', () => onPick(id));
+      group.append(b);
+    });
+    return group;
   }
 
   function setupQuiz() {
@@ -603,6 +627,7 @@
     // re-ranks straight away (or asks a question the change brings in, such as the shop's size)
     let editing = null, resume = false;   // resume: answering a question a change brought in goes straight back to the results
     let ansOpen = false;   // phones: the answers fold away under the heading, so the first match is right there; this keeps the fold as left
+    let checking = null;   // "Had a platform in mind?": the platform being looked at, kept across re-renders
     function answersBar() {
       const bar = el('div', 'qz-ans'), tap = matchMedia('(pointer: coarse)').matches ? 'tap' : 'click';
       bar.append(el('p', 'qz-ans-l', `Your answers · ${tap} one to change it`));
@@ -660,8 +685,11 @@
       // A tie for first is shown as one: list order alone mustn't crown a "Best match". When even the first
       // fits poorly (cmsScore.LOW_FIT), it's only the closest, and the others are worth a look at most.
       const tied = top[1] && top[1].s === best, weak = best < LOW_FIT;
+      // How sure the result is: the gap between first and second. Within two points it's a close call and the second
+      // is a close second, not merely good; six or more is a clear winner.
+      const gap = top[1] ? best - top[1].s : 99, close = gap <= 2;
       const first = weak ? 'closest match' : 'best match';
-      const label = (r) => (r.s === best ? (tied ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : r.s >= best - 4 && !weak ? 'Good match' : 'Worth a look');
+      const label = (r) => (r.s === best ? (tied ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : close && !weak && r === top[1] ? 'Close second' : r.s >= best - 4 && !weak ? 'Good match' : 'Worth a look');
       const told = explain(data, a, top);   // reasons without repeats, and what sets each apart
       // An old link stays v=1 (its own answers) until its newer questions are answered
       const kept = Object.entries(a).filter(([k]) => steps().some((q) => q.id === k) && !pending.has(k));
@@ -673,6 +701,14 @@
       const head = el('div', 'qz-top');
       head.append(el('span', null, `Your ${first}es`));   // no progress bar here: it would only be full
       const h = el('h3', 'sr-only', `Your ${first}es`);
+      let sure = null;
+      if (top[1] && !weak) {
+        head.append(el('span', `qz-sure${close ? ' close' : ''}`, close ? 'A close call' : gap <= 5 ? 'A clear lead' : 'A clear winner'));
+        const [x, y] = [top[0].p.name, top[1].p.name];
+        sure = el('p', 'qz-sure-why', tied ? `${x} and ${y} score the same on your answers: either would do, and the box under each says what sets it apart.`
+          : close ? `${x} is ${gap === 1 ? 'one point' : 'two points'} ahead of ${y} on your answers: either would do, and the box under each says what sets it apart.`
+          : `${x} is ${gap} points ahead of ${y} on your answers.`);
+      }
       h.tabIndex = -1;
       const list = el('div', 'qz-res');
       top.forEach((r, i) => {
@@ -712,6 +748,7 @@
         list.append(card);
       });
       box.append(head, h);
+      if (sure) box.append(sure);
       if (pending.size) {
         const more = el('button', 'btn qz-more', `${pending.size} newer question${pending.size === 1 ? '' : 's'} can sharpen this`);
         more.type = 'button';
@@ -736,24 +773,63 @@
         box.append(note);
       }
       box.append(list);
+      // "Had a platform in mind?": any other platform, ranked for these answers, with what counted for it and against
+      // it (its own "worth knowing" lines, and where it lost most points to the first match, in TIP's words)
+      const rest = ranked.slice(3);
+      if (rest.length) {
+        const check = el('section', 'qz-check'), res = el('div');
+        check.append(el('h4', null, 'Had a platform in mind?'), el('p', 'lead', 'See where it lands for your answers, and why.'));
+        const showCheck = (id) => {
+          checking = id;
+          check.querySelectorAll('.qz-pick-chips .chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
+          const r = ranked.find((x) => x.p.id === id), i = ranked.indexOf(r), lead = ranked[0];
+          // The parts where it lost most to the first match, in TIP's "runner-up lost it" words; the parts its own "worth
+          // knowing" lines already cover (ease, hosting, languages, moving later, budget) aren't said twice
+          const SAID = new Set(['ease', 'care', 'lang', 'leave', 'budget']);
+          const lost = [...new Set([...Object.keys(lead.pts), ...Object.keys(r.pts)])].map((k) => [k, (lead.pts[k] || 0) - (r.pts[k] || 0)])
+            .filter(([k, d]) => d > 0 && TIP[k] && TIP[k][1] && !SAID.has(k)).sort((p, q) => q[1] - p[1]).slice(0, 2)
+            .map(([k]) => TIP[k][1](a, r.p.name, lead.p.name, lead.pts[k] || 0)).filter(Boolean);
+          const against = [...r.but, ...lost].map((w) => w.charAt(0).toUpperCase() + w.slice(1));
+          const rankText = el('b', 'rank', `${r.p.name} ranks ${i + 1}${['st', 'nd', 'rd'][i] || 'th'} of ${ranked.length} for you`);
+          rankText.append(el('span', 'gap', ` · ${lead.s - r.s === 0 ? 'level with' : `${lead.s - r.s} point${lead.s - r.s === 1 ? '' : 's'} behind`} ${lead.p.name}`));
+          const cols = el('div', 'cols');
+          [['For', r.why, 'for'], ['Against', against, 'against']].forEach(([t, items, cls]) => {
+            const c = el('div', cls);
+            c.append(el('p', null, t));
+            const ul = el('ul');
+            (items.length ? items : ['Nothing in particular']).forEach((w) => ul.append(el('li', null, w)));
+            c.append(ul);
+            cols.append(c);
+          });
+          const cta = el('p', 'cta'), link = el('a', null, `Compare ${r.p.name} with ${lead.p.name} side by side →`);
+          link.href = '#seo';
+          link.addEventListener('click', () => {
+            state.compare = new Set([lead.p.id, r.p.id]);
+            state.touched = true;
+            state.pick = lead.p.id;
+            state.quiz = null;
+            renderCards();
+            render();
+          });
+          cta.append(link);
+          res.replaceChildren(rankText, cols, cta);
+          res.className = 'res';
+        };
+        check.append(picker('Platform to check', rest.map((r) => [r.p.id, r.p.name]), checking, showCheck), res);
+        if (checking && rest.some((r) => r.p.id === checking)) showCheck(checking);
+        box.append(check);
+      }
       // One first-steps panel under the cards, switched between the three matches
       const panel = el('section', 'qz-panel'), sw = el('div', 'qz-switch'), body = el('div');
-      sw.setAttribute('role', 'group');
-      sw.setAttribute('aria-label', 'Show first steps for');
       sw.append(el('span', 'qz-switch-l', 'Show steps for'));
-      const show = (p) => {
-        sw.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === p.id)));
+      const show = (id) => {
+        const p = top.find((r) => r.p.id === id).p;
+        sw.querySelectorAll('.chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === p.id)));
         body.replaceChildren(el('h4', null, `First steps if you pick ${p.name}`), nextSteps(p));
       };
-      top.forEach((r) => {
-        const b = el('button', 'chip', r.p.name);
-        b.type = 'button';
-        b.dataset.id = r.p.id;
-        b.addEventListener('click', () => show(r.p));
-        sw.append(b);
-      });
+      sw.append(picker('Show first steps for', top.map((r) => [r.p.id, r.p.name]), top[0].p.id, show));
       panel.append(sw, body);
-      show(top[0].p);
+      show(top[0].p.id);
       box.append(panel);
       if (also.length) box.append(el('p', 'qz-also', `Also worth a look: ${also.map((r) => r.p.name).join(', ')}`));
       const nav = el('div', 'qz-nav');
@@ -784,7 +860,7 @@
       });
       const again = el('button', 'btn', 'Start over');
       again.type = 'button';
-      again.addEventListener('click', () => { a = {}; step = 0; editing = null; resume = false; ansOpen = false; pending.clear(); history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+      again.addEventListener('click', () => { a = {}; step = 0; editing = null; resume = false; ansOpen = false; checking = null; pending.clear(); history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
       nav.append(cmp, copy, again);
       box.append(nav);
     }
@@ -818,6 +894,7 @@
     }
     if (fromLink()) requestAnimationFrame(() => $('#quiz').scrollIntoView());
     else ask();
+    PHONE.addEventListener('change', () => { if (box.querySelector('.qz-res')) results(); });   // chips or selects, by width
     // The address changed without a reload (edited by hand, or Back/Forward to another result): follow it.
     // The page's own updates use replaceState, which doesn't fire this, so there's no loop.
     addEventListener('hashchange', () => { if (fromLink()) $('#quiz').scrollIntoView(); });
