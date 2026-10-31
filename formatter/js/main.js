@@ -1,5 +1,5 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-30zz";
-import { SAMPLE_HTML } from "./sample.js?v=2026-10-30zz";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=2026-10-30zzf";
+import { SAMPLE_HTML } from "./sample.js?v=2026-10-30zzf";
 
 const $ = (id) => document.getElementById(id);
 const app = document.querySelector(".app");
@@ -679,12 +679,22 @@ editor.addEventListener("input", () => requestAnimationFrame(placeLinkBox));
 
 // ── Copy ─────────────────────────────────────────────────────────────────
 
-let noteTimer;
+// The button itself says "Copied" for a moment (the small note alone was easy to miss), then gets its label back
+let noteTimer, labelled = null;
+const labelOf = (btn) => [...btn.childNodes].find((n) => n.nodeType === 3 && n.textContent.trim());
 function done(btn, msg) {
+  if (labelled && labelled.btn !== btn) labelOf(labelled.btn).textContent = labelled.text;
+  if (!labelled || labelled.btn !== btn) labelled = { btn, text: labelOf(btn).textContent };
+  labelOf(btn).textContent = "Copied";
   btn.classList.add("done");
   $("copyNote").textContent = msg;
   clearTimeout(noteTimer);
-  noteTimer = setTimeout(() => { btn.classList.remove("done"); $("copyNote").textContent = ""; }, 2200);
+  noteTimer = setTimeout(() => {
+    labelOf(btn).textContent = labelled.text;
+    labelled = null;
+    btn.classList.remove("done");
+    $("copyNote").textContent = "";
+  }, 2200);
 }
 function failed() { $("copyNote").textContent = touch ? "Couldn't copy. Select the text, then tap Copy." : `Couldn't copy. Select the text and press ${isMac ? "⌘C" : "Ctrl+C"}.`; }
 
