@@ -30,7 +30,7 @@ import xml.etree.ElementTree as ET
 HERE = pathlib.Path(__file__).resolve().parent             # site/.github/scripts
 SITE = HERE.parents[1]                                      # the site repo (what jsal.io serves)
 PRIV = SITE.parent / 'private'                              # never committed; only on John's computer
-PAGE = SITE / 'ic' / 'index.html'
+PAGE = SITE / 'ic' / 'app.js'                            # the Playbook's script carries the project URL (public by design)
 CONFIG = HERE / 'cms-picker.json'
 PUBLIC = SITE / 'cms-picker' / 'data.json'
 LOGO_DIR = SITE / 'cms-picker' / 'logos'                     # hand-made logos: <id>.svg
