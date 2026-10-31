@@ -901,9 +901,9 @@ function inspect(sl) {
   // Below the item, or above it when the bag is too short (phones), kept inside the bag's width
   const b = bag.getBoundingClientRect(), r = sl.getBoundingClientRect();
   const left = Math.min(Math.max(r.left - b.left, 8), b.width - tip.offsetWidth - 8);
-  const below = r.bottom - b.top + 6;
+  const below = r.bottom - b.top + 12;
   tip.style.left = left + 'px';
-  tip.style.top = (below + tip.offsetHeight <= b.height ? below : r.top - b.top - tip.offsetHeight - 6) + 'px';
+  tip.style.top = (below + tip.offsetHeight <= b.height ? below : r.top - b.top - tip.offsetHeight - 12) + 'px';
 }
 function hide() { clearTimeout(hideTimer); tip.hidden = true; shown = null; document.querySelectorAll('.slot.on').forEach((x) => x.classList.remove('on')); }
 // WCAG 1.4.13: the tooltip stays while the pointer moves from an item onto it (a short grace period), and
@@ -911,7 +911,16 @@ function hide() { clearTimeout(hideTimer); tip.hidden = true; shown = null; docu
 let hideTimer = 0;
 const hideSoon = () => { clearTimeout(hideTimer); hideTimer = setTimeout(hide, 200); };
 tip.addEventListener('pointerenter', () => clearTimeout(hideTimer));
-tip.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') hideSoon(); });
+tip.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') { clearTimeout(handTimer); hideSoon(); } });
+// The tooltip can cover other items: resting on one through it (or clicking there) switches to that item
+let handTimer = 0;
+const itemUnder = (e) => document.elementsFromPoint(e.clientX, e.clientY).find((x) => x.matches('.slot:not(.empty)') && x !== shown);
+tip.addEventListener('pointermove', (e) => {
+  clearTimeout(handTimer);
+  const sl = itemUnder(e);
+  if (sl) handTimer = setTimeout(() => inspect(sl), 250);
+});
+tip.addEventListener('click', (e) => { const sl = itemUnder(e); if (sl) { clearTimeout(handTimer); inspect(sl); } });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && shown) hide(); });
 document.querySelectorAll('.slot:not(.empty)').forEach((sl) => {
   sl.addEventListener('pointerdown', (e) => { touch = e.pointerType === 'touch'; });
@@ -931,7 +940,7 @@ document.querySelectorAll('.slot:not(.empty)').forEach((sl) => {
     }
   });
 });
-document.addEventListener('pointerdown', (e) => { if (shown && !e.target.closest('.slot')) hide(); });
+document.addEventListener('pointerdown', (e) => { if (shown && !e.target.closest('.slot, #tip')) hide(); });
 // The bag fills the room beside "Currently":
 // fill whatever room there is with rows of empty slots, so it never shows a gap (on phones, one spare row)
 const slots = document.querySelector('.slots'), count = document.querySelector('.pack-h .count');
