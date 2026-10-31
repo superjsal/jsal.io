@@ -7,6 +7,7 @@
 #  - no unused CSS classes, keyframes or variables
 #  - branding: no standalone "JSAL"; the WoW art keeps its credit
 #  - every sitemap address exists
+#  - Updates on the home page is what .github/scripts/updates.py would write from the changelog
 import json, pathlib, re, sys
 
 SITE = pathlib.Path(__file__).resolve().parents[2]   # site\.github\build\check.py -> site\
@@ -200,6 +201,11 @@ sys.dont_write_bytecode = True   # no __pycache__ folder inside the site repo
 import check_data
 picker_data = json.loads(read('cms-picker/data.json'))
 for e in check_data.problems(picker_data): fail(f'cms-picker/data.json: {e}')
+
+# Updates on the home page matches the changelog's data-short lines (updates.py writes it; this only compares)
+import updates
+for e in updates.problems(): fail(e)
+for w in updates.warnings(): print('Note: ' + w)
 
 # CMS Picker persona tests: example people still get the agreed Find my fit results (needs Node)
 import shutil, subprocess
