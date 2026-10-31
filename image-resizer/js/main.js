@@ -3,14 +3,14 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=2026-10-30zu";
-import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zu";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zu";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zu";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zu";
-import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zu";
-import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zu";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zu";
+} from "./state.js?v=2026-10-30zv";
+import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=2026-10-30zv";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=2026-10-30zv";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=2026-10-30zv";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=2026-10-30zv";
+import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=2026-10-30zv";
+import { makeZip, uniqueNames } from "./zip.js?v=2026-10-30zv";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=2026-10-30zv";
 
 const $ = id => document.getElementById(id);
 
@@ -450,8 +450,16 @@ formatButtons.forEach(btn => btn.addEventListener("click", () => {
   setPressed(formatButtons, btn);
   state.format = FORMATS[btn.dataset.format];
   $("formatHint").textContent = state.format.hint;
+  syncQuality();
   encodingChanged();
 }));
+
+// PNG is lossless, so the Quality buttons do nothing for it: greyed out while it's chosen
+function syncQuality() {
+  const png = state.format === FORMATS.png;
+  qualityButtons.forEach(b => { b.disabled = png; });
+  $("qualityHint").textContent = png ? "PNG is lossless, so quality doesn't apply" : QUALITY_HINTS[String(state.quality)];
+}
 
 destButtons.forEach(btn => btn.addEventListener("click", async () => {
   const dest = btn.dataset.dest;
@@ -543,6 +551,7 @@ $("qualityHint").textContent = QUALITY_HINTS[q.dataset.quality];
 
 setPressed(formatButtons, formatButtons.find(b => FORMATS[b.dataset.format] === state.format));
 $("formatHint").textContent = state.format.hint;
+syncQuality();
 
 if (!CAN_WEBP) {
   const webp = formatButtons.find(b => b.dataset.format === "webp");

@@ -2,6 +2,7 @@
 
 export const FORMATS = {
   jpeg: { mime: "image/jpeg", ext: "jpg",  hint: "Smaller file, good for photos" },
+  png:  { mime: "image/png",  ext: "png",  hint: "Lossless and keeps transparency; largest file" },
   webp: { mime: "image/webp", ext: "webp", hint: "Best compression, modern browsers" },
 };
 
@@ -58,7 +59,7 @@ function readJSON(key) {
 export function savePrefs() {
   write("resizer-size",     JSON.stringify(state.size));
   write("resizer-quality",  String(state.quality));
-  write("resizer-format",   state.format === FORMATS.webp ? "webp" : "jpeg");
+  write("resizer-format",   Object.keys(FORMATS).find(k => FORMATS[k] === state.format) ?? "jpeg");
   write("resizer-original", state.keepOriginal ? "1" : "0");
   write("resizer-dest",     state.dest);
 }
@@ -70,10 +71,9 @@ export function loadPrefs() {
   const q = parseFloat(read("resizer-quality"));
   if (q in QUALITY_HINTS) state.quality = q;
 
-  // Older versions stored {mime, ext}; PNG is no longer offered, so anything
-  // other than WebP falls back to JPG.
+  // Older versions stored {mime, ext}, so this matches on the name inside; anything else is JPG
   const fmt = read("resizer-format") ?? "";
-  state.format = fmt.includes("webp") && CAN_WEBP ? FORMATS.webp : FORMATS.jpeg;
+  state.format = fmt.includes("webp") && CAN_WEBP ? FORMATS.webp : fmt.includes("png") ? FORMATS.png : FORMATS.jpeg;
 
   state.keepOriginal = read("resizer-original") === "1";
 

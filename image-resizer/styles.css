@@ -190,8 +190,8 @@ body {
 /* The chosen option is gold (like the size presets) with its own edge, and switches instantly. It used
    to be the card's own colour, so it blended into the card and the track looked like it changed size. */
 .quality-btn.active, .format-btn.active, .dest-btn.active { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
-.format-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.format-btn:disabled:hover { color: var(--jsal-muted); }
+.quality-btn:disabled, .format-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.quality-btn:disabled:hover, .format-btn:disabled:hover { color: var(--jsal-muted); }
 .option-hint { flex: 1 1 160px; font-size: 12px; color: var(--jsal-muted); line-height: 1.4; }
 
 /* "Save to" row spans the full width, with its buttons sharing the space */
