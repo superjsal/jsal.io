@@ -6,7 +6,7 @@
   <title>CMS Picker: Which Website Builder or CMS Fits You? | jsal.io</title>
   <meta name="description" content="Which website builder or CMS fits you? Take a short quiz or compare 13 platforms, from WordPress to Webflow: who each suits, what’s built in, and SEO." />
   <link rel="canonical" href="https://jsal.io/cms-picker/" />
-  <link rel="icon" href="/favicon.svg?v=2026-10-31j" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2026-10-31l" type="image/svg+xml">
   <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
   <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -260,11 +260,11 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 @media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
 </style>
-  <link rel="stylesheet" href="styles.css?v=2026-10-31j" />
-  <script src="score.js?v=2026-10-31j" defer></script>
-  <script src="app.js?v=2026-10-31j" defer></script>
+  <link rel="stylesheet" href="styles.css?v=2026-10-31l" />
+  <script src="score.js?v=2026-10-31l" defer></script>
+  <script src="app.js?v=2026-10-31l" defer></script>
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=2026-10-31j" defer></script>
+  <script src="/nav.js?v=2026-10-31l" defer></script>
 </head>
 <body>
   <main class="app">
@@ -324,9 +324,12 @@ font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
       <div class="plats" id="plats" role="group" aria-label="Platforms to compare"></div>
       <div class="keyrow">
         <div class="legend" id="legend" role="group" aria-label="Key"></div>
+        <button type="button" class="chip" id="diffs" aria-pressed="false" title="Hide the rows where every compared platform has the same answer">Only differences</button>
         <button type="button" class="chip" id="notes" aria-pressed="false">Show notes</button>
       </div>
 
+      <!-- After the quiz's "Compare these": what put the best match ahead (app.js fills it) -->
+      <p class="qz-line" id="qz-line" hidden></p>
       <!-- Platform names, pinned to the top of the window while the table scrolls with the page (kept in line with the table by app.js) -->
       <div class="thead" id="thead" hidden><div class="grid" id="ghead"></div></div>
       <div class="scroll" role="region" aria-label="Answers by platform" tabindex="0">

@@ -2,9 +2,11 @@
 // (answers and profiles, exported by build\playbook.py publish) and quiz.json (the quiz's own values).
 (() => {
   const $ = (s) => document.querySelector(s);
-  // pick: the quiz's best match, marked in the table; touched: the comparison was changed by hand; open: platforms
-  // expanded in the "Show all" list; folded: the table's groups folded on a phone (set on the first render)
-  const state = { goal: 'all', compare: new Set(), notes: false, pick: null, touched: false, open: new Set(), folded: null };
+  // pick: the quiz's best match, marked in the table; quiz: its result while "Compare these" stands (fit labels, the
+  // line on what put the best match ahead, and its answers, so rows they rule out can be dimmed); touched: the
+  // comparison was changed by hand; diffs: only rows where the compared platforms differ; open: platforms expanded
+  // in the "Show all" list; folded: the table's groups folded on a phone (set on the first render)
+  const state = { goal: 'all', compare: new Set(), notes: false, diffs: false, pick: null, quiz: null, touched: false, open: new Set(), folded: null };
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Needs code', hosting: 'Hosting/DNS', check: 'Unclear', indirect: 'Indirectly', no: 'Not possible' };
   // "What it costs to start": bands from each platform's own pricing page, never a price (not in the key above the table)
@@ -48,14 +50,14 @@
 
   function setGoal(g) {
     state.goal = g;
-    state.pick = null;
+    state.pick = state.quiz = null;
     state.compare = new Set(g === 'all' ? DEFAULT_COMPARE : data.platforms.filter(fits).map((p) => p.id));
     state.touched = false;
     renderCards();
     render();
   }
   function toggleCompare(id) {
-    state.pick = null;
+    state.pick = state.quiz = null;
     state.touched = true;
     if (state.compare.has(id)) state.compare.delete(id);
     else { state.compare.add(id); window.jsalUsed?.(); window.jsalAchieve?.('compare'); window.jsalTrack?.('compare_add', { platform: id }); }   // achievements and GA4 event (/nav.js)
@@ -213,6 +215,14 @@
     [grid, ghead].forEach((g) => g.style.setProperty('--n', Math.max(plats.length, 1)));
     $('#thead').hidden = !plats.length;
     grid.classList.toggle('compact', !state.notes);
+    // The one line above the table on what put the quiz's best match ahead (the result card's own words)
+    const line = $('#qz-line');
+    line.hidden = !(state.quiz && state.quiz.line && plats.length);
+    if (!line.hidden) {
+      const back = el('a', null, 'See the full result ↑');
+      back.href = '#quiz';
+      line.replaceChildren(el('b', null, state.quiz.eyebrow), el('span', null, state.quiz.line), back);
+    }
     if (!plats.length) {
       grid.append(el('p', 'empty', 'No platforms selected. Add some above, or from the cards.'));
       return;
@@ -223,18 +233,29 @@
       const c = el('div', `hcell${p.id === state.pick ? ' col-pick' : ''}`);
       c.dataset.col = i;
       c.append(el('span', 'pname', p.name));
+      const fit = state.quiz && state.quiz.fit[p.id];   // the quiz's label, while its three are being compared
+      if (fit) c.append(el('span', `fitp${fit.low ? ' low' : ''}`, fit.label));
       if (p.profile) c.append(el('span', 'htype', p.profile.type));
       head.append(c);
     });
     ghead.append(head);
     $('#thead').scrollLeft = $('#seo .scroll').scrollLeft;
+    // Rows the quiz's answers rule out (score.js weight: no store, one language, no members, a template is enough; the
+    // cost rows that aren't for what's being made) stay, dimmed. "Only differences" drops rows where every compared
+    // platform has the same tag, so what's left is what sets them apart.
+    const ruledOut = (it) => !!state.quiz && (it.id.startsWith('cost_') ? it.id !== state.quiz.cost : weight(it.id, state.quiz.answers) === 0);
+    const shown = state.diffs && plats.length > 1 ? items.filter((it) => new Set(plats.map((p) => data.answers[p.id][it.id].verdict)).size > 1) : items;
+    if (!shown.length) {
+      grid.append(el('p', 'empty', 'These platforms have the same answer on every row.'));
+      return;
+    }
     // A label row where each section starts: Built in, SEO. On phones it's a button that folds the group's rows
     // (only the first group starts open), so the comparison isn't 4,800px tall; desktop shows every row.
     const groups = Object.fromEntries((data.groups || []).map((g) => [g.id, g]));
     const order = [...new Set(items.map((it) => it.group))].filter((g) => groups[g]);
     if (!state.folded) state.folded = new Set(order.slice(1));
     let lastGroup = null, body = grid;
-    items.forEach((it) => {
+    shown.forEach((it) => {
       if (it.group !== lastGroup && groups[it.group]) {
         const g = groups[it.group], id = it.group, title = `${g.title}${g.asOf ? ` · as of ${g.asOf}` : ''}`;
         const gr = el('div', 'row group');
@@ -243,7 +264,7 @@
         fold.type = 'button';
         fold.setAttribute('aria-expanded', String(!state.folded.has(id)));
         fold.setAttribute('aria-controls', `grows-${id}`);
-        fold.append(el('span', null, title), el('span', 'gcount', `${items.filter((x) => x.group === id).length} rows`));
+        fold.append(el('span', null, title), el('span', 'gcount', `${shown.filter((x) => x.group === id).length} rows`));
         fold.addEventListener('click', () => {
           state.folded.has(id) ? state.folded.delete(id) : state.folded.add(id);
           render();
@@ -256,9 +277,11 @@
         grid.append(body);
       }
       lastGroup = it.group;
-      const row = el('div', 'row');
+      const off = ruledOut(it);
+      const row = el('div', `row${off ? ' off' : ''}`);
       const label = el('div', 'item', it.label);
       if (it.term) label.append(el('small', 'term', it.term));   // the SEO name, small, under the plain question
+      if (off) label.append(el('small', 'off-note', 'Not for your answers'));
       row.append(label);
       plats.forEach((p, i) => {
         const c = data.answers[p.id][it.id], cell = el('div', `cell${p.id === state.pick ? ' col-pick' : ''}`);
@@ -300,10 +323,10 @@
     // Select all and Clear sit on the line above the chips, beside "Compare · 4 of 13"
     const all = el('button', 'plats-act', 'Select all');
     all.type = 'button';
-    all.addEventListener('click', () => { data.platforms.forEach((p) => state.compare.add(p.id)); state.touched = true; renderCards(); render(); });
+    all.addEventListener('click', () => { data.platforms.forEach((p) => state.compare.add(p.id)); state.touched = true; state.quiz = null; renderCards(); render(); });
     const none = el('button', 'plats-act', 'Clear');
     none.type = 'button';
-    none.addEventListener('click', () => { state.compare.clear(); state.touched = true; renderCards(); render(); });
+    none.addEventListener('click', () => { state.compare.clear(); state.touched = true; state.quiz = null; renderCards(); render(); });
     $('#plats-acts').append(all, none);
 
     const types = $('#types');
@@ -386,6 +409,17 @@
       try { localStorage.setItem('cms-picker-notes', state.notes ? 'on' : 'off'); } catch (e) { /* not remembered */ }
       render();
     });
+    // "Only differences" (remembered too): rows where every compared platform has the same tag are left out
+    const diffs = $('#diffs');
+    try { state.diffs = localStorage.getItem('cms-picker-diffs') === 'on'; } catch (e) { /* storage blocked: off */ }
+    diffs.setAttribute('aria-pressed', String(state.diffs));
+    diffs.addEventListener('click', () => {
+      state.diffs = !state.diffs;
+      hideTip();
+      diffs.setAttribute('aria-pressed', String(state.diffs));
+      try { localStorage.setItem('cms-picker-diffs', state.diffs ? 'on' : 'off'); } catch (e) { /* not remembered */ }
+      render();
+    });
     // Key: only the tags the table actually uses
     const used = new Set(Object.values(data.answers).flatMap((a) => Object.values(a).map((c) => c.verdict)));
     const legend = $('#legend');
@@ -406,7 +440,7 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches. The questions and the scoring live in score.js (shared
   // with the persona tests). The answers stay in the page address, so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, explain, conflict, costRow } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, explain, conflict, costRow, weight } = window.cmsScore;
   // Shared result links carry the quiz version (v=2). Links from before versions (no v) are version 1.
   // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
   // people have already shared keep opening a result rather than an empty quiz.
@@ -695,6 +729,13 @@
         state.compare = new Set(top.map((r) => r.p.id));
         state.touched = true;
         state.pick = top[0].p.id;
+        // The table carries the result along: each column's label, and the first card's "what sets it apart" box as
+        // one line ("Wix came out ahead because …"; a tie or a closest match keeps the box's own heading)
+        const vs = told[0].vs;
+        const tipped = vs && vs.text.startsWith('What tipped it: ');
+        const line = !vs ? '' : tipped ? `${top[0].p.name} came out ahead because ${vs.text.slice(16)}`
+          : `${weak ? vs.head.replace(/^Ahead of /, 'Versus ') : vs.head}: ${vs.text.replace(/^Both fit/, 'both fit')}`;
+        state.quiz = { fit: Object.fromEntries(top.map((r) => [r.p.id, { label: label(r), low: weak }])), line, eyebrow: `Your ${first}`, answers: { ...a }, cost: costRow(a) };
         renderCards();
         openPanel('seo');
         render();

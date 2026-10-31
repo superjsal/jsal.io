@@ -14,7 +14,7 @@
 <meta property="og:description" content="Everything that has changed on jsal.io, newest first.">
 <meta property="og:image" content="https://jsal.io/og/home.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.svg?v=2026-10-31j" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=2026-10-31l" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -243,7 +243,7 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
 .log h2 { margin: 36px 0 8px; font: 700 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
 .log ul { margin: 0; padding: 0; list-style: none; }
 .log li { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--jsal-line); color: var(--jsal-ink-2); }
-.log .app { color: var(--jsal-ink); font-weight: 600; }
+.log .log-name { color: var(--jsal-ink); font-weight: 600; }
 .log a { color: var(--jsal-accent); text-underline-offset: 2px; }
 @media (max-width: 520px) { .log { margin-top: 36px; } .log li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
 </style>
@@ -262,46 +262,46 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     <p class="lead">Everything that has changed on jsal.io, newest first. The home page keeps only the latest change for each part of the site.</p>
     <h2><time datetime="2026-10-31">31 October 2026</time></h2>
     <ul>
-      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>The quiz comes first; the platform cards and the comparison table open when you ask for them.</span></li>
-      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Picking platforms to compare is clearer: a tick on each pick, a count, and Select all and Clear above them.</span></li>
-      <li><span class="app"><a href="/play/">Mostly Warcraft</a></span><span>Its own page: WoW Forever, my game UI, the backpack and the achievements.</span></li>
-      <li><span class="app">Site</span><span>The home page is just the tools, with a short Updates list and this changelog for the rest.</span></li>
-      <li><span class="app">Site</span><span>Text sizes and spacing evened out across the site, and tidier code underneath.</span></li>
+      <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>The quiz comes first; the platform cards and the comparison table open when you ask for them.</span></li>
+      <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>Picking platforms to compare is clearer: a tick on each pick, a count, and Select all and Clear above them.</span></li>
+      <li><span class="log-name"><a href="/play/">Mostly Warcraft</a></span><span>Its own page: WoW Forever, my game UI, the backpack and the achievements.</span></li>
+      <li><span class="log-name">Site</span><span>The home page is just the tools, with a short Updates list and this changelog for the rest.</span></li>
+      <li><span class="log-name">Site</span><span>Text sizes and spacing evened out across the site, and tidier code underneath.</span></li>
     </ul>
     <h2><time datetime="2026-10-30">30 October 2026</time></h2>
     <ul>
-      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>A page per platform with where to find each SEO setting, like <a href="/cms-picker/squarespace/">Squarespace</a>.</span></li>
-      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Results say which of your answers tipped them, what counts against them, and when nothing fits well.</span></li>
-      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Sanity replaces the general “Headless CMS”, checked against its own docs.</span></li>
-      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>A new question on adding features as your site grows, and a “Sell memberships or paid posts” row.</span></li>
-      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Each platform card links to its own page; on phones the table folds by group, and the key explains “varies”.</span></li>
-      <li><span class="app"><a href="/formatter/">Clean Paste</a></span><span>The Copy buttons say Copied for a moment, and Clear can be undone (Undo clear, or Ctrl+Z).</span></li>
-      <li><span class="app"><a href="/formatter/">Clean Paste</a></span><span>The heading and list shortcuts of WordPress and Google Docs; Show makes the line it means easy to spot.</span></li>
-      <li><span class="app"><a href="/image-resizer/">Image Resizer</a></span><span>Saves PNG too, lossless and with transparency kept, and warns when an image may look blurry.</span></li>
-      <li><span class="app"><a href="/image-resizer/">Image Resizer</a></span><span>Uses far less memory and never overwrites a file when saving to a folder.</span></li>
-      <li><span class="app">Site</span><span>A new home page with the CMS Picker up front.</span></li>
-      <li><span class="app">Site</span><span>Clearer colours, shorter About sections and accessibility fixes; the tools work better on phones.</span></li>
-      <li><span class="app">Site</span><span>Quick clicks through the logo menu no longer get lost; on phones the achievement pop-up sits clear of the buttons.</span></li>
+      <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>A page per platform with where to find each SEO setting, like <a href="/cms-picker/squarespace/">Squarespace</a>.</span></li>
+      <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>Results say which of your answers tipped them, what counts against them, and when nothing fits well.</span></li>
+      <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>Sanity replaces the general “Headless CMS”, checked against its own docs.</span></li>
+      <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>A new question on adding features as your site grows, and a “Sell memberships or paid posts” row.</span></li>
+      <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>Each platform card links to its own page; on phones the table folds by group, and the key explains “varies”.</span></li>
+      <li><span class="log-name"><a href="/formatter/">Clean Paste</a></span><span>The Copy buttons say Copied for a moment, and Clear can be undone (Undo clear, or Ctrl+Z).</span></li>
+      <li><span class="log-name"><a href="/formatter/">Clean Paste</a></span><span>The heading and list shortcuts of WordPress and Google Docs; Show makes the line it means easy to spot.</span></li>
+      <li><span class="log-name"><a href="/image-resizer/">Image Resizer</a></span><span>Saves PNG too, lossless and with transparency kept, and warns when an image may look blurry.</span></li>
+      <li><span class="log-name"><a href="/image-resizer/">Image Resizer</a></span><span>Uses far less memory and never overwrites a file when saving to a folder.</span></li>
+      <li><span class="log-name">Site</span><span>A new home page with the CMS Picker up front.</span></li>
+      <li><span class="log-name">Site</span><span>Clearer colours, shorter About sections and accessibility fixes; the tools work better on phones.</span></li>
+      <li><span class="log-name">Site</span><span>Quick clicks through the logo menu no longer get lost; on phones the achievement pop-up sits clear of the buttons.</span></li>
     </ul>
     <h2><time datetime="2026-10-29">29 October 2026</time></h2>
     <ul>
-      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>Find your fit in a few questions, with first steps for each match; change any answer from the results.</span></li>
-      <li><span class="app"><a href="/play/">Mostly Warcraft</a></span><span><a href="/play/#ach-h">Achievements</a> for using the tools (and a few secrets), and a <a href="/play/#hi-h">backpack</a> with where to find me.</span></li>
-      <li><span class="app">Site</span><span>Clearer descriptions for each project, and what’s live or coming soon.</span></li>
+      <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>Find your fit in a few questions, with first steps for each match; change any answer from the results.</span></li>
+      <li><span class="log-name"><a href="/play/">Mostly Warcraft</a></span><span><a href="/play/#ach-h">Achievements</a> for using the tools (and a few secrets), and a <a href="/play/#hi-h">backpack</a> with where to find me.</span></li>
+      <li><span class="log-name">Site</span><span>Clearer descriptions for each project, and what’s live or coming soon.</span></li>
     </ul>
     <h2><time datetime="2026-10-28">28 October 2026</time></h2>
     <ul>
-      <li><span class="app"><a href="/cms-picker/">CMS Picker</a></span><span>New: which CMS fits your business, and what you can change for SEO on each.</span></li>
-      <li><span class="app"><a href="/formatter/">Clean Paste</a></span><span>Edit links in place, and copy as WordPress blocks.</span></li>
-      <li><span class="app"><a href="/image-resizer/">Image Resizer</a></span><span>Fits narrow windows, with a new About section.</span></li>
-      <li><span class="app">Site</span><span>New names: Platform Playbook and Clean Paste. Faster first load: the fonts now come from jsal.io.</span></li>
+      <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>New: which CMS fits your business, and what you can change for SEO on each.</span></li>
+      <li><span class="log-name"><a href="/formatter/">Clean Paste</a></span><span>Edit links in place, and copy as WordPress blocks.</span></li>
+      <li><span class="log-name"><a href="/image-resizer/">Image Resizer</a></span><span>Fits narrow windows, with a new About section.</span></li>
+      <li><span class="log-name">Site</span><span>New names: Platform Playbook and Clean Paste. Faster first load: the fonts now come from jsal.io.</span></li>
     </ul>
     <h2><time datetime="2026-10-27">27 October 2026</time></h2>
     <ul>
-      <li><span class="app">Site</span><span>jsal.io launched.</span></li>
+      <li><span class="log-name">Site</span><span>jsal.io launched.</span></li>
     </ul>
   </main>
 </div>
-<script src="/nav.js?v=2026-10-31j" defer></script>
+<script src="/nav.js?v=2026-10-31l" defer></script>
 </body>
 </html>

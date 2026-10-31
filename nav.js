@@ -381,6 +381,15 @@
     // Both stores: a page loaded ahead keeps the session storage it started with, but reads local storage live
     try { sessionStorage.setItem(KEY, JSON.stringify(heldHere)); localStorage.setItem(KEY, JSON.stringify(heldHere)); } catch (err) {}
   }, true);
+  // Back to this page from the browser's cache: it comes back exactly as it was when a menu item was picked, still
+  // holding clicks for a page that never came (the logo seemed dead), with the menu open. Start afresh.
+  addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    leaving = false;
+    heldHere.length = 0;
+    try { sessionStorage.removeItem(KEY); localStorage.removeItem(KEY); } catch (err) {}
+    close();
+  });
   function replayEarly() {
     let early = window.jsalEarlyClicks || [];
     delete window.jsalEarlyClicks;

@@ -165,6 +165,15 @@ body {
 .cell.col-on, .cell.col-pick { background: color-mix(in srgb, var(--jsal-ink) 3%, transparent); }
 .hcell .pname { display: inline-block; padding-bottom: 2px; background: linear-gradient(var(--jsal-accent), var(--jsal-accent)) left bottom / 0 2px no-repeat; transition: background-size 0.18s ease, color 0.18s ease; }
 .hcell.col-on .pname, .hcell.col-pick .pname { color: var(--jsal-accent); background-size: 100% 2px; }
+/* After the quiz's "Compare these": its fit label beside each name, one gold line on what put the best match ahead
+   (the one insight line), and the rows its answers rule out dimmed, with a word saying so */
+.hcell .fitp { display: inline-block; margin-left: 8px; vertical-align: 2px; }
+.qz-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0 0 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-accent); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
+.qz-line b { color: var(--jsal-accent); font-size: 13px; }
+.qz-line a { color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; white-space: nowrap; }
+.row.off .item, .row.off .mark, .row.off .where, .row.off .plat { color: var(--jsal-muted); }
+.row.off .tag { background: var(--jsal-sunk); color: var(--jsal-muted); }
+.item .off-note { display: block; margin-top: 2px; color: var(--jsal-muted); font-size: 12px; font-weight: 500; }
 /* The platform's name, for screen readers on wide screens (the column header says it) and shown on phones */
 .cell .plat { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .line { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; max-width: 100%; }   /* "varies" drops under a long tag rather than past the cell */
@@ -228,6 +237,7 @@ body {
   .row.group { padding: 14px 2px 6px; border: 0; background: none; }
   .cell { display: grid; grid-template-columns: 96px 1fr; gap: 2px 10px; align-items: start; border-top: 1px solid var(--jsal-line); }
   .cell .plat { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; display: block; grid-row: 1 / span 2; color: var(--jsal-ink-2); font-weight: 600; font-size: 14px; }
+  .cell.col-pick .plat { color: var(--jsal-accent); }   /* the quiz's best match, named in gold on every row (its column is underlined on desktop) */
   .cell > :not(.plat) { grid-column: 2; justify-self: start; }
   .cell .mark { margin-top: 0; }
   .hero { margin-top: 22px; }
