@@ -419,6 +419,15 @@ details.fold[open] > summary::before { transform: rotate(90deg); }
 @media (max-width: 720px) { .pk-attn .pk-row { flex-wrap: wrap; } .pk-attn .why { margin-left: 0; white-space: normal; flex-basis: 100%; } }
 .pk-twin, .card .item .pk-twin { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--jsal-muted); }
 .twin-copy { margin: 0 0 10px; font-size: 13px; }   /* "Copy from the CMS Picker: Built in · varies" at the top of an edit form */
+/* The answer form's three text areas, folded when empty (a tag change is then two fields), open when any has words */
+.edit-more { margin: 4px 0 10px; }
+.edit-more > summary { cursor: pointer; padding: 4px 0; font: 600 13px var(--jsal-font); color: var(--jsal-muted); list-style: none; }
+.edit-more > summary::-webkit-details-marker { display: none; }
+.edit-more > summary::before { content: "▸ "; }
+.edit-more[open] > summary::before { content: "▾ "; }
+.edit-more > summary:hover { color: var(--jsal-ink); }
+.edit-more > summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius-sm); }
+.edit-more[open] > summary { margin-bottom: 6px; }
 .twin-copy .muted { margin-left: 6px; }
 a.pk-twin { color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 2px; }
 .pk-recheck { color: var(--jsal-warn); font-weight: 600; }
@@ -1007,16 +1016,24 @@ function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
         </div>
         ${ANSWERS.includes(plain(mark).trim()) ? '' : `<p class="was">The answer used to say “${esc(plain(mark))}”. Add anything worth keeping to the Note.</p>`}
         ${twinCopyHtml(R.manage && PK.on ? twinFromPicker(p, e.it.id) : null, `data-twin-copy="${p.id}|${e.key}"`, 'the CMS Picker')}
-        <label><span>Note <span style="font-weight:400">(optional; copies as plain text)</span></span><textarea name="note" maxlength="600" rows="3">${esc(e.edit ? note : htmlToMd(note))}</textarea></label>
-        <label><span>Watch out <span style="font-weight:400">(optional, side effects to know before changing it)</span></span><textarea name="warn" maxlength="600" rows="2">${esc(warnMd(p, e.sec, e.it.id))}</textarea></label>
-        <label><span>How-to steps <span style="font-weight:400">(one per line)</span></span><textarea name="how" maxlength="2000" rows="4">${esc(howMd(p, e.sec, e.it.id))}</textarea></label>
+        ${(() => {
+          // The three text areas fold away when all are empty, so changing a tag is a two-field edit; they
+          // open on their own when any has words, so nothing saved is ever out of sight
+          const noteV = e.edit ? note : htmlToMd(note), warnV = warnMd(p, e.sec, e.it.id), howV = howMd(p, e.sec, e.it.id);
+          const filled = [noteV, warnV, howV].filter((v) => v && v.trim()).length;
+          return `<details class="edit-more"${filled ? ' open' : ''}><summary>Note, watch-out and how-to steps${filled ? '' : ' (empty)'}</summary>
+        <label><span>Note <span style="font-weight:400">(optional; copies as plain text)</span></span><textarea name="note" maxlength="600" rows="3">${esc(noteV)}</textarea></label>
+        <label><span>Watch out <span style="font-weight:400">(optional, side effects to know before changing it)</span></span><textarea name="warn" maxlength="600" rows="2">${esc(warnV)}</textarea></label>
+        <label><span>How-to steps <span style="font-weight:400">(one per line)</span></span><textarea name="how" maxlength="2000" rows="4">${esc(howV)}</textarea></label>
+        <div class="md-hint">Formatting: <code>**bold**</code> <code>*italic*</code> <code>~~strike~~</code> <code>&#96;code&#96;</code> <code>[link](https://…)</code> <code>- list</code> <code>1. list</code></div>
+        </details>`;
+        })()}
         <div class="edit-actions">
           <button type="submit" class="btn primary">Save</button>
           <button type="button" class="btn" data-cancel>Cancel</button>
           ${e.own ? `<button type="button" class="btn" data-reset="${e.key}">Reset to original</button>` : ''}
           <span class="muted edit-hint">Saved for everyone who can open this page${ptypeOf(e.sec) ? `, for ${esc(PTYPES[ptypeOf(e.sec)])} only` : ''}.</span>
         </div>
-        <div class="md-hint">Formatting: <code>**bold**</code> <code>*italic*</code> <code>~~strike~~</code> <code>&#96;code&#96;</code> <code>[link](https://…)</code> <code>- list</code> <code>1. list</code></div>
       </form>
     </article>`;
 }
@@ -1408,6 +1425,7 @@ document.addEventListener('click', (e) => {
     setOption(f.mark, answerOf(t.text, t.verdict));
     if (!f.note.value.trim() && t.text && !PK_GENERIC.test(t.text.trim())) f.note.value = t.text;   // a note that only repeats the tag isn't worth copying
     if (!f.how.value.trim() && t.where) f.how.value = t.where;   // the menu path, as a first step
+    if ((f.note.value || f.how.value).trim()) { const d = f.querySelector('.edit-more'); if (d) d.open = true; }   // show what was filled in
   } else {    // a CMS Picker form, from the Playbook's answer
     const [pid, id] = pk.dataset.pkTwinCopy.split('|'), p = P.find((x) => x.id === pid), t = twinFromPlaybook(p, id);
     if (!t) return;
