@@ -20,6 +20,7 @@ APP_FILES = {
     'formatter/index.html': ['formatter/styles.css', 'formatter/js/*.js'],
     'image-resizer/index.html': ['image-resizer/styles.css', 'image-resizer/js/*.js'],
     'cms-picker/index.html': ['cms-picker/styles.css', 'cms-picker/app.js'],
+    'ic/index.html': ['ic/styles.css', 'ic/app.js'],
 }
 # Class names built from data at runtime, so they never appear literally in the markup
 DYNAMIC_CLASSES = {'plugin', 'hosting', 'auto', 'code', 'check', 'no', 'yes', 'U', 'V', 'C'}
