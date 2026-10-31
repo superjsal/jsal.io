@@ -873,7 +873,7 @@
           const SAID = new Set(['ease', 'care', 'lang', 'bookings', 'blog', 'budget']);
           const lost = [...new Set([...Object.keys(lead.pts), ...Object.keys(r.pts)])].map((k) => [k, (lead.pts[k] || 0) - (r.pts[k] || 0)])
             .filter(([k, d]) => d > 0 && TIP[k] && TIP[k][1] && !SAID.has(k)).sort((p, q) => q[1] - p[1]).slice(0, 2)
-            .map(([k]) => TIP[k][1](a, r.p.name, lead.p.name, lead.pts[k] || 0)).filter(Boolean);
+            .map(([k]) => TIP[k][1](a, r.p.name, lead.p.name, lead.pts[k] || 0, r.pts[k] || 0)).filter(Boolean);
           const against = [...r.but, ...lost].map((w) => w.charAt(0).toUpperCase() + w.slice(1));
           const nth = `${i + 1}${['st', 'nd', 'rd'][i] || 'th'} of ${all.length}`;
           const rankText = el('b', 'rank', r === origin ? `You’re on ${r.p.name} now: it ranks ${nth} for your answers` : `${r.p.name} ranks ${nth} for you`);

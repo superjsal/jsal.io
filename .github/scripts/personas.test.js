@@ -61,7 +61,7 @@ const PERSONAS = [
   ['Local business that needs bookings, happy to learn', { what: 'site', kind: 'local', who: 'learn', care: 'yes', needs: 'bookings', look: 'template', moving: 'no', budget: 'low' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'] }],
   ['Local business adding features later, wants hosting handled', { what: 'site', kind: 'local', who: 'learn', care: 'no', needs: 'none', look: 'template', moving: 'no', budget: 'low' },
-    { first: ['wix', 'squarespace'], not: ['wordpress'] }],
+    { first: ['wix', 'squarespace'] }],   // WordPress may show third: managed hosting exists (agreed 2026-10-31); first it must not be
   ['Blogger who will add features, happy to learn', { what: 'content', who: 'learn', care: 'yes', needs: 'none', look: 'template', moving: 'no', budget: 'low' },
     { first: ['ghost', 'wordpress'], top3: ['ghost', 'wordpress'] }],
   // Round 5: a non-technical local business that adds features isn't steered to a CRM-first platform

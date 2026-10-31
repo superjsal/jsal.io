@@ -24,8 +24,8 @@ says "Joint best match" and the box under each card does the work. Revisit only 
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
 B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
 and an old `v=1` link): tips start from the person's answers, ties are labelled honestly, costs match the
-table, and old links open on their results. Under v3: seven rules, 48 personas, 4,157 of 80,640 answer sets show
-"Closest match" (5.2%; moving from one of 13 platforms multiplies the sets without changing points). A change to any of these numbers is a result change: agree
+table, and old links open on their results. Under v3 with the managed-hosting change: seven rules, 48 personas, 2,171 of 80,640 answer sets show
+"Closest match" (2.7%; moving from one of 13 platforms multiplies the sets without changing points). A change to any of these numbers is a result change: agree
 it with John first.
 
 **Accepted limitation:** old `v=1` links have no "Which is closest to what you do?" answer, so HubSpot's
@@ -107,6 +107,7 @@ Shared by the page and the tests, so they always run the same code.
   memberships, e.g. Ghost(Pro) Publisher, Wix Core), as does the card's "Cost to start" line; `costRow` in
   `score.js` picks the row for the score, the "costs less to start" box and the card alike (a store, or a site
   that sells too, reads the store band).
+- **Hosting, three states** (since 2026-10-31): wanting hosting handled counts +2 where the profile's hosting line starts "Handled for you", −2 where it names a managed option that takes updates and security on (`managedHosting` in quiz.json: WordPress, Magento 2), −6 otherwise; the "worth knowing" line says which.
 - **Ties** (since 2026-10-31): two platforms level on points are ordered by how many of their card's "Good fit"
   lines answer what the person is making, from `quiz.fitFor`: each tagged line as it reads on the card (`line`)
   with the answers it answers (`when`, the same shape as `notIdeal`; a line that answers two questions is listed
@@ -141,7 +142,7 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
   - every score part has `TIP` wording and every row a `PHRASE`;
   - it reports how many clear winners fall back from "What tipped it" (0 today), how many first places are
     level on points but ahead on their card's "Good fit" lines (their box must say so) or tied, and how many show a
-    "Closest match" (first scores under `LOW_FIT`, 4: 4,157 today). No persona may get only a closest match.
+    "Closest match" (first scores under `LOW_FIT`, 4: 2,171 today). No persona may get only a closest match.
   - every tagged "Good fit" line (`fitFor`) is still on its card and answers a real question and answer.
 - **Seven rules** that must hold for every answer set (a failure names the first few):
   - the first match is made for what they're making, unless the page shows the "Closest match" notice;
