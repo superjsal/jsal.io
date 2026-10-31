@@ -7,10 +7,10 @@ data, scoring and tests. Real-device checks before a release: `manual-checks.md`
 
 It was in maintenance mode from 2026-10-30. On 2026-10-31 John reopened it to make the page less dense: the quiz
 becomes the focus, and the comparison table and the platform cards show only on demand. The scoring changed the same
-day (v3 and v4, below), each step agreed with John and pinned by the personas; the data is unchanged until the content
-audit started on 2026-10-31 reports (CMS Picker answers and sources, the Playbook, and the items both cover, checked
-against each platform's own docs; findings to John before any correction). The quarterly rechecks below ("Keeping the
-answers current") still apply.
+day (v3 and v4, below), each step agreed with John and pinned by the personas. The content audit of 2026-10-31 (every
+CMS Picker answer and source, the Playbook, and the items both cover, checked against each platform's own docs;
+findings to John first, then applied) left every answer's checked date at 2026-10-31, so the quarterly rechecks below
+("Keeping the answers current") run from there.
 
 The parked ideas are revisited only on their stated triggers: **two-step scoring** if the seven rule tests start
 failing in new ways, and **partial fit** if people report Wix missing from content-site results (both under
@@ -63,7 +63,8 @@ repeats its tag ("Yes, with an SEO plugin") is hidden as generic, so name the pl
 `scope` is U (same everywhere), V ("varies": depends on plan, theme or setup) or C (not verified).
 
 **Sources.** Only the platform's own documentation (or the named plugin's own page), never a guess. No
-source is better than a wrong one: `check_data.py --list` shows what's missing.
+source is better than a wrong one: `check_data.py --list` shows what's missing. A cost row tagged "Not for stores"
+isn't counted as missing one: no pricing page states an absence.
 
 ## The quiz and its explanations (`cms-picker/score.js`)
 
