@@ -1,0 +1,10 @@
+{
+  "name": "jsal-io-build",
+  "private": true,
+  "description": "Checks for jsal.io that need a browser: npm ci here, then node browser-check.mjs (see check.ps1). Not published.",
+  "type": "commonjs",
+  "devDependencies": {
+    "axe-core": "^4.10.2",
+    "playwright": "^1.48.2"
+  }
+}

@@ -483,7 +483,7 @@ def platform_pages(d):
                   {'@type': 'ListItem', 'position': 1, 'name': 'CMS Picker', 'item': 'https://jsal.io/cms-picker/'},
                   {'@type': 'ListItem', 'position': 2, 'name': name, 'item': url}]}}
         parts = {
-            # Its own share image (build/og/make-og.ps1) once made; until then the CMS Picker's
+            # Its own share image (.github/build/og/make-og.ps1) once made; until then the CMS Picker's
             'OG_IMAGE': f'cms-picker-{pid}.png' if (SITE / 'og' / f'cms-picker-{pid}.png').exists() else 'cms-picker.png',
             'OG_ALT': e(f'{name} SEO on CMS Picker: its six SEO settings, marked built in, plugin or needs code'
                         if (SITE / 'og' / f'cms-picker-{pid}.png').exists() else

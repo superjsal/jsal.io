@@ -1,5 +1,5 @@
 # Checks the public CMS Picker data (cms-picker/data.json) against cms-picker.schema.json, then reports
-# how well sourced it is. Run by playbook.py before it publishes, by build\check.py before every push,
+# how well sourced it is. Run by playbook.py before it publishes, by .github\build\check.py before every push (and on GitHub),
 # and on GitHub after every push.
 #
 #   python check_data.py            the summary; exits 1 only if the data doesn't fit the schema

@@ -32,7 +32,7 @@ question and fixes it, so it's left as is.
 | Each platform's answers (tag, public note, varies/not verified), profile, logo, public switch | Supabase `picker` table (its own answers, separate from the Playbook's) | John, on the Playbook's CMS Picker tab |
 | Each answer's source (official docs URL) and the date it was checked | `picker.sources` | John, on the CMS Picker tab (in the same form as the answer) |
 | The rows, their plain-language labels and SEO names, platform order | `.github/scripts/cms-picker.json` | code |
-| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, `notIdeal`, and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker/quiz.json`, served with the page and loaded with the code's `?v=` number, so scoring code and values always change together. Run `build\bump-version.ps1` after editing it. | code |
+| The quiz's own values: how easy each platform is, the design it suits, lists such as `storeOnly`, `devControl`, `notIdeal`, and `domainDocs` (each platform's "connect a domain" help page) | `cms-picker/quiz.json`, served with the page and loaded with the code's `?v=` number, so scoring code and values always change together. Run `.github\build\bump-version.ps1` after editing it. | code |
 | What the page reads | `cms-picker/data.json`, written by `playbook.py publish` (nightly at 07:41 UTC, or Run workflow); never edit it by hand | the publish |
 | Its shape | `.github/scripts/cms-picker.schema.json`, checked by `check_data.py` before every publish and push | code |
 | One page per platform (`/cms-picker/<platform>/`: its SEO answers with where to find each setting, then a short profile) | `cms-picker/<platform>/index.html`, written by the publish from `.github/scripts/platform-page.html` (markup), `cms-picker/platform.css` (look) and `platform_pages()` in `playbook.py` (the headings in `SEO_HEAD`). Pages for platforms taken off are removed, and `sitemap.xml` follows. Never edit the pages by hand; `playbook.py prerender` rebuilds them locally. Each has its own share image, `og/cms-picker-<id>.png` (name and six SEO tags, text only), made by `build\og\make-og.ps1`; re-run it after adding a platform or changing an SEO tag. Until it's re-run, a new platform's page uses `og/cms-picker.png`. | the publish (code for the template) |
@@ -91,7 +91,7 @@ Shared by the page and the tests, so they always run the same code.
 node .github/scripts/personas.test.js
 ```
 
-Also run by `build\check.ps1` before every push, and by the "Check CMS Picker data" Action on GitHub.
+Also run by `.github\build\check.ps1` before every push, and by the "Site checks" Action on GitHub.
 
 - **37 personas** (bakery, maker shop, B2B wholesaler, government site…) must keep the first places and top threes John
   agreed. A failure means a result changed: agree the new result with John before editing the expectation.
@@ -146,7 +146,7 @@ Platforms change plans and features often. Every few months (or when a platform 
   older than 90 days) stays useful.
 
 - After rewording a card's **"Not ideal if"** line on the CMS Picker tab, check the publish output (or
-  `build\check.ps1`): a line starting `WARNING "Not ideal if" rules…` means a rule in `cms-picker/quiz.json`
+  `.github\build\check.ps1`): a line starting `WARNING "Not ideal if" rules…` means a rule in `cms-picker/quiz.json`
   (`notIdeal`, matched on the start of the line) no longer matches, so update its `if` text there.
 
 No automation does this; it's a manual pass, on purpose.

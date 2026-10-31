@@ -1,6 +1,6 @@
 # Checks on real devices
 
-The parts automated checks can't cover. `build\browser-check.mjs` already runs axe on every page and
+The parts automated checks can't cover. `.github\build\browser-check.mjs` already runs axe on every page and
 loads Clean Paste and the Image Resizer at 375 and 390px in Chromium (Edge) and WebKit; Playwright's
 Firefox doesn't start on John's PC, and nothing there is a real phone. So these need a person.
 

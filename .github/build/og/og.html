@@ -1,0 +1,118 @@
+<!doctype html>
+<!-- Link-preview image template (1200 × 628). Rendered to PNG by make-og.ps1:
+     og.html?p=home | image-resizer | formatter | cms-picker | play  → site/og/<p>.png
+     icon.html → site/apple-touch-icon.png -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,700;1,600&family=JetBrains+Mono:wght@500&display=block">
+<style>
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1200px; height: 628px; overflow: hidden; }
+body { background: #111318; color: #ece6d6; font-family: Inter, "Segoe UI", sans-serif; padding: 64px 72px; display: grid; grid-template-columns: 1fr 470px; gap: 56px; align-items: center; }
+.brand { position: absolute; left: 72px; top: 56px; font: 700 30px/1 Inter, sans-serif; letter-spacing: -0.02em; }
+.brand span, .gold { color: #e3b04b; }
+.text { padding-top: 40px; }
+.label { font: 500 19px/1.4 "JetBrains Mono", monospace; letter-spacing: 0.06em; text-transform: uppercase; color: #e3b04b; margin-bottom: 22px; }
+h1 { font: 700 92px/0.95 Lora, Georgia, serif; letter-spacing: -0.03em; }
+h1 em { display: inline-block; margin-left: 0.9em; font-weight: 600; color: #e3b04b; }
+.sub { margin-top: 26px; font-size: 28px; line-height: 1.4; color: #9a9688; max-width: 15em; }
+
+/* Visuals */
+.card { border-radius: 28px; padding: 18px; background: #f5efe2; }
+.mock { border-radius: 16px; background: #111318; border: 1px solid #2a2e38; padding: 16px; display: grid; gap: 12px; }
+.photo { border-radius: 8px; background: radial-gradient(130% 55% at 15% 100%, #2f5f4c 50%, transparent 51%), radial-gradient(90% 45% at 90% 100%, #2b4866 50%, transparent 51%), radial-gradient(9% 16% at 70% 34%, #ffe1a1 70%, transparent 74%), linear-gradient(#f2ad6c, #cf6f7c 58%, #6f5aa3); }
+.frame { position: relative; height: 250px; overflow: hidden; border-radius: 8px; }
+.frame .photo { position: absolute; inset: 0; }
+.crop { position: absolute; inset: 12% 9%; border: 3px dashed #e3b04b; border-radius: 3px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.32); }
+.strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; height: 64px; }
+.strip .photo:first-child { outline: 3px solid #e3b04b; outline-offset: 2px; }
+.paste { display: grid; grid-template-columns: 150px 1fr; gap: 14px; }
+.box { background: #191c23; border: 1px solid #2a2e38; border-radius: 8px; }
+.col { display: flex; flex-direction: column; gap: 10px; }
+.check { display: flex; align-items: center; gap: 8px; padding: 12px 10px; }
+.check b { width: 13px; height: 13px; border-radius: 50%; background: var(--c); flex: none; }
+.bar { height: 9px; border-radius: 5px; background: #3d424e; }
+.go { height: 32px; border-radius: 7px; background: #e3b04b; margin-top: 4px; }
+.doc { padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.h { display: flex; align-items: center; gap: 8px; }
+.h b { width: 26px; height: 16px; border-radius: 4px; background: #2c2618; box-shadow: inset 0 0 0 1.5px rgba(227,176,75,.45); }
+.h .bar { height: 14px; background: #cfc8b6; }
+.link { display: flex; gap: 6px; }
+.tbl { border-radius: 16px; background: #191c23; border: 1px solid #2a2e38; font-size: 21px; overflow: hidden; }
+.tbl div { display: grid; grid-template-columns: 1fr 126px 126px; gap: 12px; align-items: center; padding: 17px 20px; border-top: 1px solid #2a2e38; color: #c9c3b7; white-space: nowrap; }
+.tbl div:first-child { border-top: 0; color: #9a9688; font-weight: 600; }
+.t { justify-self: start; padding: 3px 10px; border-radius: 6px; font-size: 17px; font-weight: 700; }
+.tbl.seo div { grid-template-columns: 1fr auto; }
+.tbl.seo div:first-child { color: #c9c3b7; font-weight: 400; }   /* no header row here */
+.art img { display: block; width: 100%; border-radius: 18px; box-shadow: 0 0 0 1px #2a2e38; }
+.art figcaption { margin-top: 10px; font-size: 15px; color: #9a9688; text-align: right; }
+.ok { background: #1d2a1c; color: #8fcf7f; } .pl { background: #1b2333; color: #86a8ef; } .cd { background: #2e2416; color: #e7a35a; } .no { background: #33191b; color: #ef8a85; }
+</style>
+</head>
+<body>
+<div class="brand">jsal<span>.io</span></div>
+<div class="text">
+  <p class="label" id="label"></p>
+  <h1 id="title"></h1>
+  <p class="sub" id="sub"></p>
+</div>
+<div id="visual"></div>
+<script>
+const p = new URLSearchParams(location.search).get('p') || 'home';
+const resizer = `<div class="card"><div class="mock"><div class="frame"><i class="photo"></i><i class="crop"></i></div>
+  <div class="strip"><i class="photo"></i><i class="photo" style="filter:hue-rotate(150deg)"></i><i class="photo" style="filter:hue-rotate(-60deg) saturate(.8)"></i><i class="photo" style="filter:hue-rotate(80deg)"></i></div></div></div>`;
+const paste = `<div class="card" style="background:none;border:3px solid #e3b04b"><div class="mock paste">
+  <div class="col">
+    <div class="box check" style="--c:#7fbf7a"><b></b><i class="bar" style="flex:1"></i></div>
+    <div class="box check" style="--c:#7fbf7a"><b></b><i class="bar" style="flex:1"></i></div>
+    <div class="box check" style="--c:#f0a860"><b></b><i class="bar" style="flex:1"></i></div>
+    <div class="go"></div>
+  </div>
+  <div class="box doc">
+    <div class="h"><b></b><i class="bar" style="width:60%"></i></div>
+    <i class="bar" style="width:96%"></i><i class="bar" style="width:88%"></i>
+    <div class="link"><i class="bar" style="width:34%"></i><i class="bar" style="width:30%;background:#e3b04b"></i></div>
+    <i class="bar" style="width:72%"></i>
+    <div class="h"><b></b><i class="bar" style="width:46%"></i></div>
+    <i class="bar" style="width:90%"></i><i class="bar" style="width:64%"></i>
+  </div>
+</div></div>`;
+// The CMS Picker's live answers for WordPress and Shopify (cms-picker/data.json), with the page's own short row
+// labels (PEEK_ROWS in app.js); recheck them when you remake the image
+const table = `<div class="tbl">
+  <div><span></span><span>WordPress</span><span>Shopify</span></div>
+  <div><span>Run a blog</span><span class="t ok">Built in</span><span class="t ok">Built in</span></div>
+  <div><span>Sell online</span><span class="t pl">Plugin</span><span class="t ok">Built in</span></div>
+  <div><span>Keep old links</span><span class="t pl">Plugin</span><span class="t ok">Built in</span></div>
+  <div><span>Custom design</span><span class="t cd">Needs code</span><span class="t cd">Needs code</span></div>
+  <div><span>Languages</span><span class="t pl">Plugin</span><span class="t ok">Built in</span></div>
+</div>`;
+const pages = {
+  home: { label: 'Technical SEO · Web tools', title: 'John<br><em>Salvador</em>', sub: 'CMS Picker and free browser tools for website content.', visual: table },
+  'image-resizer': { label: 'Free · Runs in your browser', title: 'Image<br>Resizer', sub: 'Resize one image or a whole batch: JPG, PNG, WebP and HEIC.', visual: resizer },
+  formatter: { label: 'Free · Runs in your browser', title: 'Clean<br>Paste', sub: 'Word and Google Docs to clean HTML, with SEO checks.', visual: paste },
+  'cms-picker': { label: 'Free · 13 platforms compared', title: 'CMS<br>Picker', sub: 'Which CMS fits your business, and what each one can do.', visual: table },
+  // Blizzard's WoW Forever art: scaled down whole (never cropped or altered), framed with CSS, credited
+  play: { label: 'Off the clock', title: 'Mostly<br><em>Warcraft</em>', sub: 'My game UI, ways to say hi, and hidden achievements.',
+    visual: `<figure class="art"><img src="../../../img/wow-forever-1200.webp" alt=""><figcaption>Art © Blizzard Entertainment</figcaption></figure>` },
+};
+// A CMS Picker platform page: og.html?p=platform&name=Shopify&tags=yes,yes,yes,code,yes,code (its six SEO
+// answers from cms-picker/data.json, in the platform page's order). Text only: no platform logos.
+if (p === 'platform') {
+  const q = new URLSearchParams(location.search), name = q.get('name') || '';
+  const TAG = { yes: ['ok', 'Built in'], auto: ['ok', 'Automatic'], plugin: ['pl', 'Plugin/app'], code: ['cd', 'Needs code'], no: ['no', 'Not possible'], check: ['pl', 'Unclear'], indirect: ['pl', 'Indirectly'] };
+  const rows = ['Titles and descriptions', 'Page addresses', 'Redirect old links', 'Structured data', 'Hide a page (noindex)', 'Block AI crawlers'];
+  const tags = (q.get('tags') || '').split(',');
+  // how=1: no menus to point to (a headless CMS), so it says what each takes instead of where
+  pages.platform = { label: 'CMS Picker · SEO settings', title: `${name}<br><em>SEO</em>`, sub: q.get('how') ? 'What you can change, and what each takes.' : 'What you can change, and where to find each setting.',
+    visual: `<div class="tbl seo">${rows.map((r, i) => { const [c, t] = TAG[tags[i]] || ['pl', '?']; return `<div><span>${r}</span><span class="t ${c}">${t}</span></div>`; }).join('')}</div>` };
+}
+const d = pages[p];
+document.getElementById('label').textContent = d.label;
+document.getElementById('title').innerHTML = d.title;
+document.getElementById('sub').textContent = d.sub;
+document.getElementById('visual').innerHTML = d.visual;
+</script>
+</body>
+</html>

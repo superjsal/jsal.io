@@ -1,5 +1,5 @@
 // CMS Picker persona tests: example people run through the real Find my fit scoring (cms-picker/score.js),
-// checked against the results John agreed (2026-10-29; 37 people since the business-site, members, budget and B2B questions). Run by build\check.ps1 (node .github/scripts/personas.test.js).
+// checked against the results John agreed (2026-10-29; 37 people since the business-site, members, budget and B2B questions). Run by .github\build\check.py (node .github/scripts/personas.test.js), locally and on GitHub.
 // The answers come from cms-picker/data.json and the quiz's own values from cms-picker/quiz.json, as on the
 // page, so a change to either is tested before it goes live. When a result should change, agree it first, then
 // update the expectation here.
