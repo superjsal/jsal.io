@@ -1,0 +1,44 @@
+# A weekly copy of every Platform Playbook table (the team's edits, requests, the CMS Picker's answers and
+# sources), kept as a workflow artifact for 90 days, so a copy exists off John's PC (the free Supabase tier has no
+# point-in-time recovery). The repo is public and anyone with a GitHub account can download a public repo's
+# artifacts, so the file is encrypted with the BACKUP_PASSPHRASE secret before upload (gpg, symmetric).
+#   Fetch:   gh run download <run id> -n playbook-backup
+#   Open:    gpg --decrypt --batch --passphrase "<the passphrase>" playbook-<stamp>.json.gpg > playbook-<stamp>.json
+# The by-hand `playbook.py backup` still writes a plain file to private\backups on the PC.
+name: Back up Platform Playbook
+
+on:
+  schedule:
+    - cron: "23 6 * * 0"     # Sundays, 06:23 UTC
+  workflow_dispatch:          # "Run workflow" button for a copy now
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Save every table, then encrypt it
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          PLAYBOOK_BACKUP_DIR: ${{ runner.temp }}/backup
+        run: |
+          [ -n "$BACKUP_PASSPHRASE" ] || { echo "Set the BACKUP_PASSPHRASE secret first (Settings → Secrets and variables → Actions)."; exit 1; }
+          python .github/scripts/playbook.py backup
+          for f in "$PLAYBOOK_BACKUP_DIR"/*.json; do
+            gpg --symmetric --batch --yes --cipher-algo AES256 --passphrase "$BACKUP_PASSPHRASE" -o "$f.gpg" "$f"
+            rm "$f"
+          done
+          ls -l "$PLAYBOOK_BACKUP_DIR"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: playbook-backup
+          path: ${{ runner.temp }}/backup/*.json.gpg
+          retention-days: 90
+          if-no-files-found: error

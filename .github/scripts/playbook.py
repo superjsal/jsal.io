@@ -69,7 +69,8 @@ def table(name, query='select=*'):
 def backup():
     data = {t: rows for t in TABLES if (rows := table(t)) is not None}
     stamp = datetime.datetime.now().strftime('%Y-%m-%d-%H%M')
-    out = PRIV / 'backups' / f'playbook-{stamp}.json'
+    # PLAYBOOK_BACKUP_DIR: where the weekly Action puts its copy (there's no private\ on a runner)
+    out = pathlib.Path(os.environ.get('PLAYBOOK_BACKUP_DIR') or PRIV / 'backups') / f'playbook-{stamp}.json'
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding='utf-8')
     print(f'backup: {out}')
