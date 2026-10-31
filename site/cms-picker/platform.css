@@ -1,5 +1,4 @@
-/* CMS Picker platform pages (/cms-picker/<platform>/), written by playbook.py from
-   .github/scripts/platform-page.html. Tags (.tag, .sc) come from styles.css. */
+/* CMS Picker platform pages (/cms-picker/<platform>/), written by the publish from a template. Tags (.tag, .sc) come from styles.css. */
 /* The CMS Picker's byline: the same place, size and type, so the two pages' headings line up */
 .pp-crumbs { margin: var(--jsal-page-top) 0 0; color: var(--jsal-muted); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
 .pp-crumbs a { color: var(--jsal-accent); text-underline-offset: 3px; }

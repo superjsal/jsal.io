@@ -1,11 +1,9 @@
-// CMS Picker: the Find my fit quiz, the platform cards and the platform × item grid, all from data.json
-// (answers and profiles, exported by build\playbook.py publish) and quiz.json (the quiz's own values).
+// CMS Picker: the Find my fit quiz, the platform cards and the platform × item grid, from data.json (answers and
+// profiles, written by the publish) and quiz.json (the quiz's own values).
 (() => {
   const $ = (s) => document.querySelector(s);
-  // pick: the quiz's best match, marked in the table; quiz: its result while "Compare these" stands (fit labels, the
-  // line on what put the best match ahead, and its answers, so rows they rule out can be dimmed); touched: the
-  // comparison was changed by hand; diffs: only rows where the compared platforms differ; open: platforms expanded
-  // in the "Show all" list; folded: the table's groups folded on a phone (set on the first render)
+  // pick: the quiz's best match, marked in the table; quiz: its result while "Compare these" stands; touched: the
+  // comparison was changed by hand; diffs: only differing rows; open: platforms expanded in "Show all"; folded: phone groups
   const state = { goal: 'all', compare: new Set(), notes: false, diffs: false, pick: null, quiz: null, touched: false, open: new Set(), folded: null };
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Needs code', hosting: 'Hosting/DNS', check: 'Unclear', indirect: 'Indirectly', no: 'Not possible' };
@@ -13,8 +11,7 @@
   const COST = { free: 'Free to start', low: 'Under $25/mo', mid: '$25–$100/mo', high: 'Over $100/mo', software: 'Free software + hosting', na: 'Not for stores' };
   Object.assign(SHORT, COST);
   // Scope as a symbol, explained once in the key
-  // Only the exceptions are marked (a short word after the tag); settled answers have no mark.
-  // The longer wording is for the tooltip.
+  // Only the exceptions are marked (a short word after the tag); the longer wording is for the tooltip
   const SCOPE = { V: ['varies', 'Varies by site: depends on the plan, theme or setup'], C: ['not verified', 'Not checked against the platform’s own docs yet'] };
   // A note that only repeats its tag isn't shown ("Yes", "Yes, with an SEO plugin", "Automatic"…)
   const GENERIC = /^(yes|no|check|automatic|built in)$|^yes, with (an? )?(seo |redirect )?(plugin|module|extension|app|custom code)$/i;
@@ -30,8 +27,7 @@
     return e;
   }
 
-  // Platform logos (Simple Icons, CC0, or uploaded by an admin) drawn in the text colour via a mask, so
-  // they match the theme; data.json names the file. Without one (Magento, Duda, headless): a letter badge.
+  // Platform logos drawn in the text colour via a mask, so they match the theme; without one, a letter badge
   const BADGE = { magento: 'M', duda: 'D', headless: '{ }' };
   function logo(p) {
     if (p.logo) {
@@ -45,7 +41,7 @@
     return b;
   }
 
-  // "What are you building?": each profile lists the goals it suits (build\cms-picker.json)
+  // "What are you building?": each profile lists the goals it suits
   const GOALS = [['all', 'Show all'], ['store', 'Online store'], ['site', 'Business or marketing site'], ['content', 'Blog or content'], ['custom', 'Custom build with developers']];
   const fits = (p) => state.goal === 'all' || ((p.profile && p.profile.goals) || []).includes(state.goal);
 
@@ -92,8 +88,7 @@
         pr.aiTags.forEach((x) => a.append(el('span', 'aitag', x)));
         c.append(a);
       }
-      // The facts panel: who looks after hosting and updates, what you can take with you, and when
-      // to skip it (the summary above already says who it suits)
+      // The facts panel: hosting and updates, what you can take with you, and when to skip it
       const facts = [['Hosting and updates', pr.hosting, 'r-host'], ['If you leave', pr.export, 'r-exit'], ['Not ideal if', pr.lessSuited, 'r-skip']];
       if (facts.some(([, v]) => v && v.length)) {
         const run = el('dl', 'run');
@@ -127,8 +122,7 @@
     });
     updateBar();
   }
-  // "Show all": one line per platform (name and who it's for), so the first look isn't 13 full cards.
-  // The name is a button that opens the rest of the card in place.
+  // "Show all": one line per platform; the name is a button that opens the rest of the card in place
   function shortCard(c, p) {
     const open = state.open.has(p.id);
     const body = el('div', 'cbody');
@@ -139,8 +133,7 @@
     b.type = 'button';
     b.setAttribute('aria-expanded', String(open));
     b.setAttribute('aria-controls', body.id);
-    // The name and summary sit on their own lines, so screen readers ran them together ("WordPressFor content…"):
-    // a hidden ": " (no-break space, which survives) between them
+    // A hidden ": " between name and summary, so screen readers don't run them together
     const sum = (p.profile && p.profile.summary) || '';
     txt.append(el('span', 'mini-name', p.name));
     if (sum) txt.append(el('span', 'sr-only', ': '), el('span', 'mini-sum', sum));
@@ -193,8 +186,7 @@
     $('#cbar').classList.toggle('show', on);
     document.body.classList.toggle('cbar-on', on);
   }
-  // The cards (#fit) and the table (#seo) stay closed until asked for: their button, a link to them, the quiz's
-  // "Compare these" or find-in-page (hidden="until-found" lets the browser open them itself)
+  // The cards (#fit) and the table (#seo) stay closed until asked for (hidden="until-found" lets find-in-page open them)
   function setPanel(id, open) {
     const s = $('#' + id);
     if (open) s.hidden = false; else s.setAttribute('hidden', 'until-found');
@@ -241,25 +233,22 @@
     });
     ghead.append(head);
     $('#thead').scrollLeft = $('#seo .scroll').scrollLeft;
-    // Rows the quiz's answers rule out (score.js weight: no store, one language, no members, a template is enough; the
-    // cost rows that aren't for what's being made) stay, dimmed. "Only differences" drops rows where every compared
-    // platform has the same tag, so what's left is what sets them apart.
+    // Rows the quiz's answers rule out (score.js weight) stay, dimmed; "Only differences" drops rows where every
+    // compared platform has the same tag
     const ruledOut = (it) => !!state.quiz && (it.id.startsWith('cost_') ? it.id !== state.quiz.cost : weight(it.id, state.quiz.answers) === 0);
     const shown = state.diffs && plats.length > 1 ? items.filter((it) => new Set(plats.map((p) => data.answers[p.id][it.id].verdict)).size > 1) : items;
     if (!shown.length) {
       grid.append(el('p', 'empty', 'These platforms have the same answer on every row.'));
       return;
     }
-    // A label row where each section starts: Built in, SEO. On phones it's a button that folds the group's rows
-    // (only the first group starts open), so the comparison isn't 4,800px tall; desktop shows every row.
+    // A label row where each section starts; on phones a button that folds the group's rows (the first starts open)
     const groups = Object.fromEntries((data.groups || []).map((g) => [g.id, g]));
     const order = [...new Set(items.map((it) => it.group))].filter((g) => groups[g]);
     if (!state.folded) state.folded = new Set(order.slice(1));
     let lastGroup = null, body = grid;
     shown.forEach((it) => {
       if (it.group !== lastGroup && groups[it.group]) {
-        // The heading proper, then its qualifiers quietly: "What it costs to start (approx., billed yearly)" and the
-        // as-of date become "WHAT IT COSTS TO START · approx., billed yearly · as of October 2026"
+        // The heading, then its qualifiers quietly ("approx., billed yearly", the as-of date)
         const g = groups[it.group], id = it.group, [, main, extra] = g.title.match(/^(.*?)(?:\s*\((.*)\))?$/);
         const note = [extra, g.asOf && `as of ${g.asOf}`].filter(Boolean).join(' · ');
         const heading = () => { const s = el('span', 'gtitle', main); if (note) s.append(el('small', 'gnote', note)); return s; };
@@ -362,9 +351,7 @@
 
     // Keep the pinned header in line with the table when it scrolls sideways
     $('#seo .scroll').addEventListener('scroll', (e) => { $('#thead').scrollLeft = e.target.scrollLeft; }, { passive: true });
-    // The column under the pointer or keyboard focus is marked, header included, so a platform's answers
-    // are easy to follow down the table
-    // (only with two or more columns: with one, every answer is already that platform's)
+    // The column under the pointer or focus is marked, header included (only with two or more columns)
     const markCol = (i) => {
       if (state.compare.size < 2) i = null;
       document.querySelectorAll('#seo [data-col]').forEach((c) => c.classList.toggle('col-on', c.dataset.col === i));
@@ -378,9 +365,8 @@
     // Hero: platform count and when the answers were last checked
     document.querySelectorAll('.n-plats').forEach((n) => { n.textContent = data.platforms.length; });
     if (data.asOf) $('#asof').textContent = data.asOf;
-    // Notes off: hovering, tapping or tabbing to an answer shows its note and scope in a tooltip at once.
-    // It sits outside the table, fixed to the window, so the table's scroll box can't clip it. Screen
-    // readers get the note from the cell itself (.mark, hidden only visually), so the tooltip is aria-hidden.
+    // Notes off: hovering, tapping or tabbing to an answer shows its note in a tooltip fixed to the window (so the
+    // table's scroll box can't clip it); screen readers get the note from the cell itself, so it's aria-hidden
     const tip = $('#tip');
     let tipCell = null;
     const hideTip = () => { tip.hidden = true; tipCell = null; };
@@ -420,9 +406,7 @@
     new IntersectionObserver(([e]) => totop.classList.toggle('show', !e.isIntersecting)).observe($('.hero'));
     totop.addEventListener('click', () => scrollTo({ top: 0 }));   // smooth via scroll-behavior in shell.css
 
-    // "Show notes" (remembered in this browser). Off by default: just the tags, so the table can be
-    // scanned; each note is still in the cell's tooltip.
-    // Each is one side of a two-button track: the other side is its sibling, pressed when it isn't
+    // "Show notes" (remembered in this browser), off by default. Each switch is one side of a two-button track
     const setPair = (btn, on) => { btn.setAttribute('aria-pressed', String(on)); btn.previousElementSibling.setAttribute('aria-pressed', String(!on)); };
     const notes = $('#notes');
     $('#notes-off').addEventListener('click', () => { if (state.notes) notes.click(); });
@@ -455,17 +439,15 @@
     Object.values(SCOPE).forEach(([word, meaning]) => { const s = el('span', 'sc', word); s.title = meaning; legend.append(s); });
     setGoal('all');
     setupQuiz();
-    // Opening a panel brings its heading into view (closing stays put): with the cards already open, the table would
-    // otherwise appear far below and the tap seem to do nothing
+    // Opening a panel brings its heading into view (closing stays put), or the tap seems to do nothing
     document.querySelectorAll('.more-btn').forEach((b) => b.addEventListener('click', () => {
       const open = b.getAttribute('aria-expanded') !== 'true';
       setPanel(b.dataset.panel, open);
       if (open) $('#' + b.dataset.panel).scrollIntoView();
     }));
     ['fit', 'seo'].forEach((id) => $('#' + id).addEventListener('beforematch', () => requestAnimationFrame(() => setPanel(id, true))));
-    // Links to #fit or #seo (the compare bar, the platform pages) open the panel before the browser scrolls to it.
-    // A platform page's "Compare X with others" link is #seo?with=<id>: that platform joins the comparison, marked
-    // as the column to follow, beside the usual starting four.
+    // Links to #fit or #seo open the panel before the browser scrolls to it; #seo?with=<id> (a platform page's
+    // Compare link) adds that platform to the comparison as the column to follow
     const fromHash = () => {
       const [id, query] = location.hash.slice(1).split('?');
       if (id !== 'fit' && id !== 'seo') return;
@@ -487,19 +469,14 @@
   }
 
   // ---------- Find my fit: a short guided quiz ----------
-  // One question at a time, then the best matches. The questions and the scoring live in score.js (shared
-  // with the persona tests). The answers stay in the page address, so a result can be shared; nothing is stored.
+  // One question at a time, then the best matches; questions and scoring in score.js. The answers live in the page
+  // address so a result can be shared; nothing is stored.
   const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, tied, conflict, costRow, weight, TIP, options } = window.cmsScore;
-  // Shared result links carry the quiz version (v=4). Links from before versions (no v) are version 1.
-  // When the questions change, raise LINK_VERSION and translate older answers in readLink, so links
-  // people have already shared keep opening a result rather than an empty quiz.
+  // Shared result links carry the quiz version (v=4; none means 1). When the questions change, raise LINK_VERSION and
+  // translate older answers in readLink, so shared links keep opening a result.
   const LINK_VERSION = 4;
-  // Returns { answers, old } (old: a link made before some of today's questions, which are then answered neutrally
-  // or offered above the result), or null. Version 3 (2026-10-31) replaced the language, paid-members, moving-later
-  // and adding-features questions with "Anything you'll need from day one?" and "Moving from somewhere?":
-  // members=yes → needs=members (members first, as it was asked of publications only), else needs=none; leave=no →
-  // moving=no, leave=yes → moving left to answer; grow dropped. Version 4 (2026-10-31) made languages a tick on the
-  // needs question (lang=yes, as version 1 had it) instead of one of its choices: needs=lang → needs=none, lang=yes.
+  // Returns { answers, old } (old: a link from before some of today's questions, answered neutrally or offered above
+  // the result), or null. v3 folded members into needs and leave into moving (grow dropped); v4 made languages a tick.
   function readLink(params) {
     const v = Number(params.get('v') || 1);
     params.delete('v');
@@ -516,9 +493,7 @@
   }
   // Effort, from values already checked: the quiz's ease score and the profile's hosting line
   const SKILL = ['Needs a developer', 'Takes some learning', 'Easy to learn', 'No technical skill needed'];
-  // First steps after picking a platform: what most new sites do first, in order, each linking to the
-  // platform's own docs (the domain page from data.quiz.domainDocs, the rest from the answers' sources).
-  // A row id means "use that answer"; a link-only step names its link instead.
+  // First steps after picking a platform, each linking to the platform's own docs; a row id means "use that answer"
   const SEARCH_CONSOLE = 'https://support.google.com/webmasters/answer/34592';   // Google's own guide, the same on every platform
   const STEPS = [
     { text: 'Connect your own domain name', domain: true },
@@ -594,8 +569,7 @@
     const steps = (o = a) => QUESTIONS.filter((q) => !q.when || q.when(o));   // the questions these answers call for
     const valid = (o) => steps(o).every((q) => options(q, o, data).some(([v]) => v === o[q.id]));
 
-    // A question's tick (q.also: "In two or more languages" on the needs question): a checkbox that goes with
-    // whichever choice is picked, kept in the answers under its own id as yes or no
+    // A question's tick (q.also): a checkbox that goes with whichever choice is picked, kept under its own id
     function alsoBox(q, onChange) {
       if (!q.also) return null;
       const lab = el('label', 'qz-also'), input = el('input');
@@ -671,8 +645,7 @@
         nav.append(back);
         box.append(nav);
       }
-      // A question is much shorter than the results: if the box's top has gone above the window (Start over,
-      // or a change that brings in a new question), bring it back rather than leave the page further down
+      // If the box's top has gone above the window (Start over, a new question), bring it back
       if (box.getBoundingClientRect().top < 0) $('#quiz').scrollIntoView();
     }
 
@@ -696,8 +669,7 @@
         b.setAttribute('aria-label', `${opt ? opt[3] : ''}. Change your answer to: ${q.q}`);
         b.addEventListener('click', () => { editing = editing === q.id ? null : q.id; results(); box.querySelector(`.qz-ans-chips [data-q="${q.id}"]`)?.focus({ preventScroll: true }); });
         chips.append(b);
-        // A ticked "also" (two or more languages) is an answer of its own; it opens the same question's choices, where
-        // the tick can be taken off
+        // A ticked "also" is an answer of its own; it opens the same question's choices, where it can be taken off
         if (q.also && a[q.also.id] === 'yes') {
           const t = el('button', 'chip', q.also.own);
           t.type = 'button';
@@ -744,20 +716,14 @@
       return fold;
     }
 
-    // source: 'quiz' (the last question answered) or 'link' (a shared result opened), sent as a GA4
-    // event; re-showing the result after an answer is changed sends nothing
+    // source: 'quiz' or 'link', sent as a GA4 event; re-showing after a change sends nothing
     function results(source) {
-      // The platform you're moving from isn't offered as a match (candidates); it keeps its place in the full ranking (all)
-      // for "Had a platform in mind?", which opens on it
+      // The platform being left isn't a match (candidates) but keeps its place in the full ranking, for "Had a platform in mind?"
       const ranked = candidates(data, a), all = rank(data, a), origin = all.find((x) => x.p.id === a.moving);
       const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
-      // A tie for first is shown as one: list order alone mustn't crown a "Best match". Level points go to the
-      // card with more "Good fit" lines answering what's being made (score.js: tied, fit); only a tie on both is
-      // joint. When even the first fits poorly (cmsScore.LOW_FIT), it's only the closest, and the others are
-      // worth a look at most.
+      // A tie for first is shown as one (score.js tied); under LOW_FIT the first is only the closest
       const isTop = (r) => r === top[0] || tied(r, top[0]), joint = !!top[1] && isTop(top[1]), weak = best < LOW_FIT;
-      // How sure the result is: the gap between first and second. Within two points it's a close call and the second
-      // is a close second, not merely good; six or more is a clear winner.
+      // How sure: within two points a close call, six or more a clear winner
       const gap = top[1] ? best - top[1].s : 99, close = gap <= 2;
       const first = weak ? 'closest match' : 'best match';
       const label = (r) => (isTop(r) ? (joint ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : close && !weak && r === top[1] ? 'Close second' : r.s >= best - 4 && !weak ? 'Good match' : 'Worth a look');
@@ -775,8 +741,7 @@
         state.compare = new Set(top.map((r) => r.p.id));
         state.touched = true;
         state.pick = top[0].p.id;
-        // The table carries the result along: each column's label, and the first card's "what sets it apart" box as
-        // one line ("Wix came out ahead because …"; a tie or a closest match keeps the box's own heading)
+        // The table carries the result along: each column's label and the first card's box as one line
         const vs = told[0].vs;
         const tipped = vs && vs.text.startsWith('What tipped it: ');
         const line = !vs ? '' : tipped ? `${top[0].p.name} came out ahead because ${vs.text.slice(16)}`
@@ -812,8 +777,7 @@
         const name = el('h4', null, r.p.name);
         name.append(el('span', `fitp${weak ? ' low' : ''}`, label(r)));
         card.append(logo(r.p), name, el('p', 'sum', pr.summary || ''));
-        // The key facts people compare first: skill, hosting and updates, and what it costs to start for what
-        // you're making (a store's band for a store), with a note where a developer is needed
+        // The key facts people compare first: skill, hosting and updates, and the cost band for what's being made
         const fx = el('dl', 'qz-facts'), ease = data.quiz.ease[r.p.id] ?? 1;
         const cost = ((data.answers[r.p.id] || {})[costRow(a)] || {}).verdict;
         [['Skill needed', SKILL[ease]], ['Hosting and updates', pr.hosting],
@@ -859,8 +823,7 @@
         box.append(more);
       }
       box.append(answersBar());
-      // Above the cards, why they're only the closest: answers that pull against each other (with the question to
-      // change, opening its answer as the chip above does), or else that nothing fits them well
+      // Above the cards, why they're only the closest: answers that pull against each other, or nothing fits well
       const clash = conflict(a);
       if (clash || weak) {
         // The sentence in one span, so the info icon (::before) is the note's only other flex item
@@ -875,8 +838,7 @@
         } else say.append('No platform fits these answers well, so these are the closest. Changing an answer above may bring better matches.');
         box.append(note);
       }
-      // Moving from somewhere: what the old platform lets you take (its profile's "If you leave" line), and that a match
-      // whose own docs describe an import from it says so in its reasons (quiz.imports, linked)
+      // Moving from somewhere: what the old platform lets you take, and that a match importing from it says so
       if (a.moving && a.moving !== 'no') {
         const mig = el('p', 'qz-mig'), origin = data.platforms.find((p) => p.id === a.moving);
         if (origin) {
@@ -888,8 +850,7 @@
         box.append(mig);
       }
       box.append(list);
-      // "Had a platform in mind?": any other platform, ranked for these answers, with what counted for it and against
-      // it (its own "worth knowing" lines, and where it lost most points to the first match, in TIP's words)
+      // "Had a platform in mind?": any other platform ranked for these answers, with what counted for and against it
       const rest = [...(origin ? [origin] : []), ...ranked.slice(3)];
       if (origin && !rest.some((r) => r.p.id === checking)) checking = origin.p.id;
       if (rest.length) {
@@ -899,8 +860,7 @@
           checking = id;
           check.querySelectorAll('.qz-pick-chips .chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
           const r = all.find((x) => x.p.id === id), i = all.indexOf(r), lead = ranked[0];
-          // The parts where it lost most to the first match, in TIP's "runner-up lost it" words; the parts its own "worth
-          // knowing" lines already cover (ease, hosting, languages, moving later, budget) aren't said twice
+          // Where it lost most to the first match (TIP's words); parts its own "worth knowing" lines cover aren't said twice
           const SAID = new Set(['ease', 'care', 'lang', 'bookings', 'blog', 'budget']);
           const lost = [...new Set([...Object.keys(lead.pts), ...Object.keys(r.pts)])].map((k) => [k, (lead.pts[k] || 0) - (r.pts[k] || 0)])
             .filter(([k, d]) => d > 0 && TIP[k] && TIP[k][1] && !SAID.has(k)).sort((p, q) => q[1] - p[1]).slice(0, 2)
@@ -965,9 +925,8 @@
       box.append(nav);
     }
 
-    // A shared result (#quiz?v=3&what=site&who=easy…) opens straight on it. A v3 link with an answer missing or
-    // unknown (cut short, or edited) keeps the good answers and asks the first question it lacks.
-    // Returns false when the address holds no quiz answers.
+    // A shared result opens straight on it; a link with an answer missing keeps the good ones and asks the first it
+    // lacks. Returns false when the address holds no quiz answers.
     function fromLink() {
       const m = location.hash.match(/^#quiz\?(.+)$/);
       const link = m && readLink(new URLSearchParams(m[1]));
@@ -978,8 +937,7 @@
       resume = false;
       pending.clear();
       QUESTIONS.forEach((q) => { if (options(q, shared, data).some(([v]) => v === shared[q.id])) a[q.id] = shared[q.id]; });
-      // An old link (v=1) opens on its result: questions it didn't have get an answer that scores nothing
-      // either way (NEUTRAL in score.js), or none, and are offered above the results
+      // An old link (v=1): questions it didn't have score nothing (NEUTRAL) or wait, offered above the results
       if (link.old && 'what' in a) {
         steps().forEach((q) => { if (!(q.id in a)) { pending.add(q.id); if (q.id in NEUTRAL) a[q.id] = NEUTRAL[q.id]; } });
         step = steps().length;
@@ -1000,10 +958,8 @@
     addEventListener('hashchange', () => { if (fromLink()) $('#quiz').scrollIntoView(); });
   }
 
-  // data.json (the answers, from the database) with no-cache: always check with the server (a quick 304 if
-  // unchanged), so a publish shows straight away. quiz.json (the quiz's own values) with its own cache number,
-  // data-quiz-v on this script's tag (its content hash, kept current by bump-version.ps1 like every ?v=).
-  // (currentScript is empty in a module script, so the page's own <script src="app.js?v=…"> is the fallback)
+  // data.json with no-cache, so a publish shows straight away; quiz.json with its own cache number (data-quiz-v on
+  // this script's tag; currentScript is empty in a module, so the page's own script tag is the fallback)
   const self = document.currentScript || document.querySelector('script[src*="app.js?v="]');
   const QUIZ_V = (self && self.dataset.quizV) || '';
   Promise.all([

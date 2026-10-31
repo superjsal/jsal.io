@@ -65,9 +65,9 @@
 }
 body { background: var(--jsal-bg); }
 
-/* Shared building blocks, so the apps look like one site. Use these rather than new values;
-   build\check.py flags written-out colours, selected states without these tokens, button corners
-   outside the scale and odd font weights (a deliberate exception carries a "style: allow" comment).
+/* Shared building blocks, so the apps look like one site. Use these rather than new values; the checks
+   flag written-out colours, selected states without these tokens, button corners outside the scale and odd
+   font weights (a deliberate exception carries a "style: allow" comment).
    - Corners: small controls and chips inside a control 4px, buttons and fields 6px, cards 8px,
      pills and round buttons 999px.
    - Selected (a pressed toggle, the current tab): gold tint, gold text, thin gold ring.
@@ -78,7 +78,7 @@ body { background: var(--jsal-bg); }
   --jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
   --jsal-btn-weight: 600;
   /* Hover is neutral everywhere: a firmer border or a slight tint. Gold means selected, focused, a file being
-     dragged over, or the main action (build\check.py fails a gold hover that isn't marked as one of those). */
+     dragged over, or the main action (the checks fail a gold hover). */
   --jsal-hover-line: var(--jsal-muted);
   /* One focus ring for every control, text fields included */
   --jsal-focus-ring: 0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent);

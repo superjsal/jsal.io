@@ -259,7 +259,7 @@ const answerHtml = (mark, verdict) => { const a = answerOf(mark, verdict); retur
 const ICON_CHECK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg>';
 const ICON_SAME = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>';
 // When the answers on show last changed: the latest team edit to this platform's section, its watch-out,
-// or the Playbook's own content (a new platform, item or wording pushed from playbook.py)
+// or the Playbook's own content (a new platform, item or wording pushed from outside the page)
 let DATA_AT = null;
 let ALL_P = [];   // every platform, hidden ones too (admins restore them on the Team page); P is the visible ones
 function updatedHtml(p) {
@@ -519,7 +519,7 @@ $('#panel').addEventListener('submit', (e) => {
 // read or change. They're edited on the CMS Picker tab: a table of every public answer (wide screens),
 // then one platform at a time below it (the only view on phones), with one edit form for both. Row
 // labels come from the published /cms-picker/data.json, which is also what "Live" is checked against.
-// Changes reach jsal.io/cms-picker with the next publish (the nightly GitHub Action, or playbook.py publish).
+// Changes reach jsal.io/cms-picker with the next publish (nightly, or run by hand).
 const PK = { on: false, rows: new Map(), items: [], verdicts: {}, pubLogos: new Map(), pub: null, sel: null, editing: null };
 const PK_GOALS = { store: 'Online store', site: 'Business or marketing site', content: 'Blog or content', custom: 'Custom build with developers' };
 const PK_FIELDS = [   // profile field, label, kind
