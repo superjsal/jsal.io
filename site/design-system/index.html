@@ -102,7 +102,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .spec { display: grid; gap: 22px; }
 .spec > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; padding-bottom: 22px; border-bottom: 1px solid var(--jsal-line); }
 .spec .who { font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
-.t-h1 { font: 700 clamp(44px, 5vw, 62px)/1.02 "Lora", Georgia, serif; letter-spacing: -0.03em; }
+.t-h1 { font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
 .t-h1 em { font-weight: 600; color: var(--jsal-accent); }
 .t-tile { font: 700 30px/1.1 "Lora", Georgia, serif; }
 .t-h2 { font: 700 26px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
@@ -149,9 +149,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .btn-danger:hover { background: var(--jsal-bad-soft); border-color: var(--jsal-bad); }
 .cta { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; cursor: pointer; border: 0; font-family: inherit; }
 .cta.main { background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); }
-.cta.alt { background: none; border: 1px solid var(--jsal-muted); color: var(--jsal-ink); }
 .cta:hover { transform: translateY(-2px); }
-.cta.alt:hover { border-color: var(--jsal-ink); }
 .cta:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .chip { padding: 3px 10px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: transparent; color: var(--jsal-muted); font: 600 13px var(--jsal-font); cursor: pointer; transition: background 0.12s, color 0.12s, border-color 0.12s; }
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
@@ -208,6 +206,31 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .insight { padding: 2px 0 2px 12px; border-left: 3px solid var(--jsal-gold-line); font-size: 15px; line-height: 1.45; max-width: 36em; }
 .insight b { display: block; margin-bottom: 2px; color: var(--jsal-accent); font-size: 13px; font-weight: 700; }
 .worth { display: flex; gap: 8px; font-size: 13px; color: var(--jsal-muted); max-width: 36em; }
+/* The quiz result's verdict: green for a lead or winner, neutral for a close call (cms-picker .qz-verdict) */
+.verdict { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "eye jump" "line line"; align-items: center; gap: 6px 12px; padding: 18px 20px; border-radius: var(--jsal-radius-lg); background: var(--jsal-ok-soft); }
+.verdict.close { background: var(--jsal-sunk); }
+.verdict .eye { grid-area: eye; margin: 0; color: var(--jsal-ok); font: 600 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+.verdict.close .eye { color: var(--jsal-ink-2); }
+.verdict .line { grid-area: line; margin: 0; max-width: none; color: var(--jsal-ink); font: 600 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; text-wrap: balance; }
+.verdict .jump { grid-area: jump; color: var(--jsal-accent); font: 600 13px var(--jsal-font); text-underline-offset: 3px; }
+/* Your answers: equal tiles, a short name over each answer, ticked extras on a line beneath (cms-picker .qz-ans) */
+.ans { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.ans button { display: flex; flex-direction: column; gap: 2px; min-height: 58px; padding: 10px 12px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: 500 14px/1.3 var(--jsal-font); text-align: left; cursor: pointer; transition: border-color 0.12s, background 0.12s, color 0.12s; }
+.ans button small { color: var(--jsal-muted); font-size: 12px; }
+.ans button:hover { border-color: var(--jsal-hover-line); }
+.ans button[aria-expanded="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
+.ans-also { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+.ans-also i { display: grid; place-items: center; width: 16px; height: 16px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+/* A match that lacks a must-have the first has built in, under a divider; its pill neutral (cms-picker .qz-div, .fitp) */
+.match { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font: 700 18px/1.3 var(--jsal-font); }
+.fitp { padding: 2px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
+.fitp.low { background: var(--jsal-line); color: var(--jsal-ink-2); }
+.div { max-width: 36em; padding-top: 14px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
+.div b { display: block; margin-bottom: 2px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+/* The tool icons, one family with the logo */
+.icons { display: flex; flex-wrap: wrap; gap: 14px 22px; margin: 4px 0 16px; padding: 0; list-style: none; }
+.icons li { display: grid; justify-items: center; gap: 6px; width: 84px; font-size: 12px; line-height: 1.35; text-align: center; color: var(--jsal-muted); }
+.icons img { display: block; width: 48px; height: 48px; }
 
 /* Motion (07) */
 .motion { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -235,9 +258,10 @@ figcaption b { color: var(--jsal-ink); font-weight: 600; }
 footer.end { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--jsal-line); display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; font-size: 13px; color: var(--jsal-muted); }
 footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
-@media (max-width: 720px) { .hero { padding-top: 32px; } .sec { padding-top: 40px; } .roles td:first-child { white-space: normal; } .jsal-top nav { display: none; } }   /* the contents list below does the nav's job on a phone */
-@media (pointer: coarse) { .btn, .cta, .chip, .seg, .chk, .chip-link, .tick, .fgdemo a { min-height: 44px; } .chip, .seg, .chip-link, .fgdemo a { display: inline-flex; align-items: center; } }
-@media (prefers-reduced-motion: reduce) { .cta, .btn, .chip, .seg { transition: none; } .cta:hover { transform: none; } }
+@media (max-width: 720px) { .hero { padding-top: 32px; } .sec { padding-top: 40px; } .roles td:first-child { white-space: normal; } .jsal-top nav { display: none; } .ans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }   /* the contents list below does the nav's job on a phone */
+@media (max-width: 560px) { .verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: 16px; } .verdict .line { font-size: 22px; } .verdict .jump { margin-top: 8px; } }
+@media (pointer: coarse) { .btn, .cta, .chip, .seg, .chk, .chip-link, .tick, .fgdemo a, .ans button { min-height: 44px; } .chip, .seg, .chip-link, .fgdemo a { display: inline-flex; align-items: center; } }
+@media (prefers-reduced-motion: reduce) { .cta, .btn, .chip, .seg, .ans button { transition: none; } .cta:hover { transform: none; } }
 </style>
 </head>
 <body>
@@ -252,12 +276,13 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
   <main>
   <section class="hero">
-    <p class="eyebrow">jsal.io · Visual identity &amp; UI design system · October 2026</p>
+    <p class="eyebrow">jsal.io · Visual identity &amp; UI design system · November 2026</p>
     <h1>Small tools, <em>one</em> design language.</h1>
     <p class="lede">How jsal.io looks and behaves, taken from the site's own code rather than written for it: the colour tokens, the three typefaces, the column, the components the tools share, how things move, and what keeps it accessible. Every value on this page is the one the live site uses; decisions about it are marked as such.</p>
     <ul class="facts">
       <li><b>3</b><span>typefaces, self-hosted</span></li>
       <li><b>24</b><span>colour tokens × 2 themes</span></li>
+      <li><b>6</b><span>tool icons, one family</span></li>
       <li><b>4</b><span>corner radii</span></li>
       <li><b>1</b><span>column, three widths</span></li>
       <li><b>0</b><span>build steps</span></li>
@@ -273,6 +298,16 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <p class="intro">jsal.io is John Salvador's personal site: a web developer working in technical SEO, publishing the small browser tools he builds for the jobs around a website. Nothing is uploaded, nothing is sold, and the tools do one job each.</p>
     <h3>Identity</h3>
     <p>The name is always written <b>jsal.io</b>, with the <span style="color:var(--jsal-accent);font-weight:700">.io</span> in gold, or <b>John Salvador</b> in full. Never the four letters on their own as a name: a well-known YouTuber uses them. The logo is a lowercase j on a slate tile, its dot a gold gem: the tab icon and the home-screen icon. In the top bar the name stands on its own, in Inter at 700, 18px, tracked slightly tight (−0.02em), with two drawn touches: the j has round ends, the one soft letter (friends say the letter J, then Sal), and the full stop is cut as the gem.</p>
+    <h3>Tool icons</h3>
+    <p>Each tool has an icon in the logo's family: a rounded tile in the tool's colour (the deep shade of its home tile's tint), a simple drawing of what it does in parchment strokes, and the gold gem. One file does every job: the tab icon, the mark before the tool's name in the top bar and the logo menu, and the faint watermark on its home tile. Like the logo, the tiles keep their colours in both themes, from the <code>--jsal-tool-*</code> tokens in <code>shell.css</code>.</p>
+    <ul class="icons">
+      <li><img src="/img/icons/cms-picker.svg?v=2d6c80ca" alt="" width="48" height="48">CMS Picker</li>
+      <li><img src="/img/icons/image-resizer.svg?v=b735c5eb" alt="" width="48" height="48">Image Resizer</li>
+      <li><img src="/img/icons/clean-paste.svg?v=7eb743e5" alt="" width="48" height="48">Clean Paste</li>
+      <li><img src="/img/icons/platform-playbook.svg?v=bc366439" alt="" width="48" height="48">Platform Playbook</li>
+      <li><img src="/img/icons/off-the-clock.svg?v=1ed41f8c" alt="" width="48" height="48">Off the clock</li>
+      <li><img src="/img/icons/jsal-io.svg?v=f9148b71" alt="" width="48" height="48">jsal.io home</li>
+    </ul>
     <h3>Personality</h3>
     <p>Plain-spoken and exact: the copy says what a thing does and who it's for, in words a client would use ("Keep old links working when pages move", not "301 redirect management"). A little playful at the edges: a gamer's touches that never get in the way of the work, such as achievements for using the tools, a game-inventory "Backpack" for contact details, and a Warcraft lore sample post in Clean Paste.</p>
     <h3>Visual direction</h3>
@@ -383,16 +418,16 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <thead><tr><th>Colour</th><th>Means</th><th>Where you see it</th></tr></thead>
       <tbody>
         <tr><td><span class="dot" style="background:var(--jsal-accent)"></span>Gold</td><td>The site's accent: selected states, the main action, the one insight line, brand touches and the site's own text links. Never hover; focus is the ring, not a gold fill.</td><td>A pressed chip, "Find your CMS", "What tipped it", the gold word in each title, ".io", About links</td></tr>
-        <tr><td><span class="dot" style="background:var(--jsal-ok)"></span>Green</td><td>Fit, or success.</td><td>"Built in", a Copy button after it copied, "Best match"</td></tr>
+        <tr><td><span class="dot" style="background:var(--jsal-ok)"></span>Green</td><td>Fit, or success.</td><td>"Built in", a Copy button after it copied, "Best match", the quiz's verdict when one match leads</td></tr>
         <tr><td><span class="dot" style="background:var(--jsal-info)"></span>Blue</td><td>Information, something in flight, and links inside a tool's content.</td><td>"Plugin/app", a note, "waiting for publish", links in Clean Paste's editor and in a quiz result's steps</td></tr>
         <tr><td><span class="dot" style="background:var(--jsal-warn)"></span>Terracotta</td><td>A genuine warning.</td><td>"Needs code", a missing or stale source, "may look blurry", a bold-only line that may be a heading</td></tr>
         <tr><td><span class="dot" style="background:var(--jsal-bad)"></span>Red</td><td>Not possible, and destructive actions.</td><td>"Not possible", Clear, Remove, Replace, an invalid size</td></tr>
-        <tr><td><span class="dot" style="background:var(--jsal-muted)"></span>Neutral</td><td>Everything else: labels, type badges, icons, cost bands, states such as "not verified".</td><td>"Unclear", "$25–$100/mo", "varies"</td></tr>
+        <tr><td><span class="dot" style="background:var(--jsal-muted)"></span>Neutral</td><td>Everything else: labels, type badges, icons, cost bands, states such as "not verified".</td><td>"Unclear", "$25–$100/mo", the "*" for varies, a close call, a match under the must-have divider</td></tr>
       </tbody>
     </table></div>
     <h3>The answer ramp</h3>
     <p>On the CMS Picker a row says how well a platform does something. Its tags are one scale, read left to right, and the scale is the same wherever it appears, on the comparison table, the cards and the platform pages.</p>
-    <div class="ramp"><span class="tag yes">Built in</span><span class="arrow">→</span><span class="tag plugin">Plugin/app</span><span class="arrow">→</span><span class="tag code">Needs code</span><span class="arrow">→</span><span class="tag no">Not possible</span><span class="arrow" style="margin-left:8px">·</span><span class="tag check">Unclear</span> <span class="sc">varies</span></div>
+    <div class="ramp"><span class="tag yes">Built in</span><span class="arrow">→</span><span class="tag plugin">Plugin/app</span><span class="arrow">→</span><span class="tag code">Needs code</span><span class="arrow">→</span><span class="tag no">Not possible</span><span class="arrow" style="margin-left:8px">·</span><span class="tag check">Unclear</span> <span class="sc">* varies</span></div>
     <div class="suggest"><b>Decided</b><p>The home page's bento tiles keep their own tint tokens (<code>--t-cms</code> lilac, <code>--t-ir</code> teal, <code>--t-cp</code> honey, each with a deep <code>-ink</code> shade for its words, and <code>--t-plain</code> for Say hi and Updates) in <code>index.html</code>. Moving them into <code>shell.css</code> would copy colours only the home page uses into every page, so they stay where they’re used and are listed here instead.</p></div>
   </section>
 
@@ -401,13 +436,13 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h2>A serif that speaks, a sans that works, a mono that labels.</h2>
     <p class="intro">Three families, all self-hosted as Latin-subset variable fonts with <code>font-display: swap</code>, so nothing blocks the first paint. Lora carries every H1 and H2 on the public pages; Inter carries everything else, down to the smallest interface label; JetBrains Mono is reserved for the small gold uppercase labels above headings, code and keyboard keys. A pre-push check fails any visible H1 or H2 of 16px or more that isn't Lora.</p>
     <div class="spec">
-      <div><span class="who">Lora 700 · page title · clamp(44px, 5vw, 62px) / 1.02 · −0.03em</span><div class="t-h1">Small tools that do <em>one job</em> well.</div><span class="t-small">The gold word is Lora italic 600, the site's one typographic flourish. Clean <em style="color:var(--jsal-accent)">Paste</em>, CMS <em style="color:var(--jsal-accent)">Picker</em>, Your <em style="color:var(--jsal-accent)">privacy</em>.</span></div>
-      <div><span class="who">Lora 700 · tile name · 30px / 1.1</span><div class="t-tile">Image Resizer</div></div>
+      <div><span class="who">Lora 700 · home title · 46px / 1.05 · −0.02em</span><div class="t-h1">Small tools that do <em>one job</em> well.</div><span class="t-small">The gold word is Lora italic 600, the site's one typographic flourish. Clean <em style="color:var(--jsal-accent)">Paste</em>, CMS <em style="color:var(--jsal-accent)">Picker</em>, Your <em style="color:var(--jsal-accent)">privacy</em>.</span></div>
+      <div><span class="who">Lora 700 · tile name · 30px / 1.1 (the CMS Picker's 34px)</span><div class="t-tile">Image Resizer</div></div>
       <div><span class="who">Lora 700 · section heading · 26px / 1.25 · −0.01em</span><div class="t-h2">What can each one do?</div></div>
       <div><span class="who">Inter 600 · H3 and subheadings · 16px</span><div class="t-h3">How to use it</div></div>
       <div><span class="who">Inter 400 · lede · 17px / 1.6</span><div class="t-lede">Start with the CMS Picker: answer a few questions to see which website platform fits you, and what it lets you change for SEO.</div></div>
       <div><span class="who">Inter 400 · body · 15px / 1.6 · ink-2</span><div class="t-body">It turns content copied from Word, Google Docs or a web page into clean, minimal HTML, keeping the real structure: headings, lists, links, tables, bold and italic.</div></div>
-      <div><span class="who">Inter 400 · small labels · 12.5–14px · muted</span><div class="t-small">For writers and editors pasting from Word or Google Docs into WordPress, Shopify, Wix or any CMS.</div></div>
+      <div><span class="who">Inter 400 · secondary text · 13px · muted</span><div class="t-small">For writers and editors pasting from Word or Google Docs into WordPress, Shopify, Wix or any CMS.</div></div>
       <div><span class="who">JetBrains Mono 500 · eyebrow · 12px · 0.06em · uppercase · gold</span><div class="t-mono">John Salvador · Technical SEO · Gaming</div></div>
     </div>
     <h3>Weights in use</h3>
@@ -423,16 +458,18 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <div class="table-wrap" tabindex="0" role="region" aria-label="The type scale"><table class="scale">
       <thead><tr><th>Role</th><th>Size</th><th>Face, weight</th><th>Where</th></tr></thead>
       <tbody>
-        <tr><td>Page title</td><td>clamp(40–44px, 5–7vw, 62–64px)</td><td>Lora 700, −0.03em</td><td>Home, Privacy, 404</td></tr>
+        <tr><td>Home title</td><td>46px (40px on phones)</td><td>Lora 700, −0.02em</td><td>Home</td></tr>
+        <tr><td>Page title</td><td>clamp(40–44px, 5–7vw, 62–72px)</td><td>Lora 700, −0.03em</td><td>Off the clock, Privacy, Changelog, 404</td></tr>
         <tr><td>Platform page title</td><td>clamp(28px, 4.4vw, 40px)</td><td>Lora 700, −0.02em</td><td>/cms-picker/&lt;platform&gt;/</td></tr>
-        <tr><td>Tile name</td><td>30px</td><td>Lora 700</td><td>Home tiles</td></tr>
+        <tr><td>Tile name</td><td>34px CMS Picker, 30px the others, 28px Say hi (30px and 28px on phones)</td><td>Lora 700, in the tile's deep shade</td><td>Home tiles</td></tr>
         <tr><td>Section heading</td><td>24–28px</td><td>Lora 700 (italic 600 for Currently, Achievements)</td><td>Every H2</td></tr>
+        <tr><td>Verdict line</td><td>24px (22px on phones)</td><td>Lora 600, −0.01em</td><td>The CMS Picker's result</td></tr>
         <tr><td>Tool title in the top bar</td><td>20px (18px on phones)</td><td>Lora 700, gold word italic, after the tool's 22px icon</td><td>.jsal-title</td></tr>
         <tr><td>Lede</td><td>17px</td><td>Inter 400</td><td>Under titles</td></tr>
         <tr><td>H3</td><td>16–17px</td><td>Inter 600</td><td>How to use it, quiz questions</td></tr>
         <tr><td>Body</td><td>15px / 1.6</td><td>Inter 400</td><td>Everywhere</td></tr>
         <tr><td>Interface</td><td>13–14px</td><td>Inter 600 (controls) or 400</td><td>Buttons, chips, tags, top-bar links</td></tr>
-        <tr><td>Small labels</td><td>11–12px</td><td>Inter or JetBrains Mono</td><td>Hints, eyebrows, "varies"</td></tr>
+        <tr><td>Small labels</td><td>12px</td><td>Inter or JetBrains Mono</td><td>Hints, eyebrows, the short name over each quiz answer</td></tr>
       </tbody>
     </table></div>
     <div class="suggest"><b>Decided</b><p>Sizes are whole pixels only (<code>check.py</code> fails on a half pixel), after a clean-up in October 2026 that removed 76 half steps. They aren’t named as tokens: the scale above is the common set, and a page picks from it.</p></div>
@@ -454,9 +491,10 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <div class="table-wrap" tabindex="0" role="region" aria-label="Breakpoints"><table class="scale">
       <thead><tr><th>Width</th><th>What changes</th></tr></thead>
       <tbody>
+        <tr><td>≤ 420px</td><td>A tool's title in the top bar drops to 18px and the bar's gaps tighten, so it stays one row from 360px up; below 430px the title's icon drops out</td></tr>
         <tr><td>≤ 520px</td><td>Less space above the top bar (14px); the Privacy page's text starts sooner</td></tr>
         <tr><td>≤ 599px</td><td>Clean Paste's toolbar in two even rows; the CMS Picker's phone rules; the home page's bento stacks to one column</td></tr>
-        <tr><td>≤ 720px</td><td>The CMS Picker's comparison becomes stacked cards, with groups that fold; the platform pages reflow</td></tr>
+        <tr><td>≤ 720px</td><td>The CMS Picker's comparison becomes a card per question, one 44px line per platform, with groups that fold; the quiz's answer tiles go two across; the platform pages reflow</td></tr>
         <tr><td>≤ 759px</td><td>The home page's Updates notes stack above their words; the Image Resizer tile drops its output list</td></tr>
         <tr><td>600–860px</td><td>The home page keeps its bento for phones on their side, with a shorter CMS Picker tile</td></tr>
         <tr><td>≤ 1279px</td><td>The home page's intro, CMS Picker, Image Resizer and Updates take the full width, Clean Paste beside Say hi</td></tr>
@@ -493,8 +531,8 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div class="demo">
         <span class="src">Buttons · cms-picker/styles.css .btn, formatter .btn-primary/.btn-accent, image-resizer .btn-danger</span>
         <div class="row"><button type="button" class="btn primary">Find my fit</button><button type="button" class="btn">Compare all 14</button><button type="button" class="btn" disabled>Download All</button><button type="button" class="btn btn-danger">Clear</button></div>
-        <span class="src">Home page calls to action · index.html .cta (pill, lifts 2px on hover)</span>
-        <div class="row"><button type="button" class="cta main">Find your CMS</button><button type="button" class="cta alt">Say hi</button></div>
+        <span class="src">Home page call to action · index.html .cta (the one gold pill, lifts 2px on hover)</span>
+        <div class="row"><button type="button" class="cta main">Find your CMS</button></div>
       </div>
       <div class="demo">
         <span class="src">Chips and link-styled controls · cms-picker/styles.css .chip, .chip-link</span>
@@ -526,6 +564,22 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <div class="card"><h3>Squarespace</h3><p>For small businesses and creatives who want a designed site without a developer.</p><div class="foot"><button type="button" class="chip" aria-pressed="false">+ Add to compare</button><a class="cseo" href="/cms-picker/squarespace/">SEO settings →</a></div></div>
       </div>
       <div class="demo">
+        <span class="src">The quiz result's verdict · cms-picker/styles.css .qz-verdict (the first thing read: how sure in a small label, how far ahead in Lora; green for a lead, neutral for a close call)</span>
+        <div class="verdict"><p class="eye">A clear lead</p><p class="line">Wix is ahead of Squarespace for what you need.</p><a class="jump" href="/cms-picker/">Compare these side by side ↓</a></div>
+        <div class="verdict close"><p class="eye">A close call</p><p class="line">Squarespace is slightly ahead of Wix for your answers, and either would work.</p></div>
+      </div>
+      <div class="demo">
+        <span class="src">Your answers · cms-picker/styles.css .qz-ans-tiles (equal tiles, a short name over each answer, gold while one is being changed; a ticked extra sits on a line beneath, so a tick never makes a tile taller)</span>
+        <div class="ans"><button type="button"><small>Making</small>A business or work site</button><button type="button" aria-expanded="true"><small>Built by</small>Me, and I’m not technical</button><button type="button"><small>From day one</small>Bookings or appointments</button><button type="button"><small>Each month</small>Nothing for now</button></div>
+        <div class="ans-also"><i aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></i>I need two or more languages</div>
+      </div>
+      <div class="demo">
+        <span class="src">A match that lacks a must-have · cms-picker/styles.css .qz-div, .fitp (a label with a rule above, one plain sentence per match from the table's verdicts; under it the pill is neutral)</span>
+        <div class="match">Shopify <span class="fitp">Best match</span></div>
+        <div class="div"><b>Also possible, with an add-on</b>Framer needs an add-on for selling online.</div>
+        <div class="match">Framer <span class="fitp low">Worth a look</span></div>
+      </div>
+      <div class="demo">
         <span class="src">The insight line and a caveat · cms-picker quiz result (.qz-vs, .qz-lim)</span>
         <div class="insight"><b>Ahead of Wix</b>What tipped it: you're making an online store, and Shopify is made for selling first.</div>
         <div class="worth"><span aria-hidden="true">ⓘ</span><span>Worth knowing: moving to another platform later is harder (products, customers and orders as CSV).</span></div>
@@ -550,14 +604,15 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <thead><tr><th>Moment</th><th>Timing</th><th>What happens</th></tr></thead>
       <tbody>
         <tr><td>Hover on a control</td><td>0.12–0.15s</td><td>Border firms to <code>--jsal-hover-line</code> or the surface tints to <code>--jsal-sunk</code>. Never gold.</td></tr>
-        <tr><td>Home tile hover</td><td>0.25s cubic-bezier(0.2, 0.8, 0.2, 1)</td><td>Lifts 4px and turns −0.4°; with a mouse it tilts toward the pointer up to 4° and a soft light follows. Not on touch, not with reduced motion.</td></tr>
+        <tr><td>Home tile hover</td><td>0.25s cubic-bezier(0.2, 0.8, 0.2, 1)</td><td>Lifts 4px and turns −0.4°; the tool's pieces shift to their hover pose over 0.35s.</td></tr>
         <tr><td>Call-to-action hover</td><td>0.2s ease</td><td>Lifts 2px.</td></tr>
         <tr><td>Page change</td><td>0.3s, old page out in 0.12s, new page in over 0.2s</td><td>Cross-document view transitions, one slide everywhere: the old page drifts up 12px and fades (0.16s), the new one rises 18px into place (0.28s), and Back runs it downwards. The top bar cross-fades in place; the logo and theme button stay put and sharp. Pages load ahead on hover: prerendered in Chrome and Edge, fetched in Brave and Firefox.</td></tr>
         <tr><td>Logo unfold</td><td>about 1.4s, once per visit</td><td>The name opens as the tab icon: the short j wearing the gem, the menu arrow beside it. The gem hops over the name to land as the full stop while the j stretches into the name’s j and the arrow slides out ahead; then “io” fades in and a light runs across. Not with reduced motion, and not on later pages of the visit.</td></tr>
         <tr><td>Achievement pop-up</td><td>0.3s in, 0.3s out, 4s on screen</td><td>Slides in at full opacity (so a contrast check never catches it half-faded), fades on the way out. Transform and opacity only.</td></tr>
         <tr><td>Selected state</td><td>instant</td><td>Gold tint, gold text, a thin gold ring. A chosen option shouldn't lag the click.</td></tr>
         <tr><td>Clean Paste "Show"</td><td>held, then fades</td><td>The line a check means gets a gold wash and a bar beside it, scrolls into view first, then fades.</td></tr>
-        <tr><td>CMS Picker tile</td><td>about 3s, once</td><td>Shuffles through six first places and rests on a question, so no platform looks like the site's pick; the full cycle plays only on hover or focus.</td></tr>
+        <tr><td>Home tile pictures</td><td>three plays on hover; one under 3s on touch</td><td>Pointing at or focusing a tile plays what its tool does three times, then it rests as the still picture: the platform cards wave with none singled out, the crop box slides the one way the tool lets it, the clean HTML and the email type themselves. Touch screens play each once, when its tile reaches the middle of the screen. Updates stays still, and with reduced motion none of them play.</td></tr>
+        <tr><td>Quiz step</td><td>0.18s ease-out</td><td>Each question and the result fade up 6px. On phones the next question scrolls to the top of the screen when it wouldn't fit, so its answers are never below the fold.</td></tr>
       </tbody>
     </table></div>
     <h3>Focus</h3>
@@ -587,15 +642,15 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
   <section class="sec" id="practice">
     <p class="eyebrow">09 · Design in practice</p>
     <h2>The system on the pages, in both themes.</h2>
-    <p class="intro">Screenshots of the live site at 1280px, October 2026, with a phone view of the home page. The same tokens, column and components throughout; only the content changes.</p>
+    <p class="intro">Screenshots of the live site at 1280px, November 2026, with a phone view of the home page. The same tokens, column and components throughout; only the content changes.</p>
     <div class="shots">
       <div class="pair">
-        <figure><img src="img/home-dark.jpg" width="1280" height="820" alt="jsal.io home page in dark mode: the headline Small tools that do one job well, a gold Find your CMS button, and the CMS Picker tile with a grid of platform logos" loading="lazy"><figcaption><b>Home, dark.</b> The thesis, the mono eyebrow, the gold word, and the first bento row.</figcaption></figure>
-        <figure><img src="img/home-light.jpg" width="1280" height="820" alt="jsal.io home page in light mode, the same layout on parchment" loading="lazy"><figcaption><b>Home, light.</b> Parchment and the darker gold; the tiles keep their own tints.</figcaption></figure>
+        <figure><img src="img/home-dark.jpg" width="1280" height="820" alt="jsal.io home page in dark mode: the headline Small tools that do one job well and a gold Find your CMS button, beside the CMS Picker tile with its tilted brick of platform cards" loading="lazy"><figcaption><b>Home, dark.</b> The thesis, the mono eyebrow, the gold word, and the bento's tiles, each with a piece of its tool.</figcaption></figure>
+        <figure><img src="img/home-light.jpg" width="1280" height="820" alt="jsal.io home page in light mode, the same bento on parchment" loading="lazy"><figcaption><b>Home, light.</b> Parchment and the darker gold; each tile keeps its own tint and watermark.</figcaption></figure>
       </div>
       <div class="pair">
-        <figure><img src="img/cms-picker-dark.jpg" width="1280" height="820" alt="CMS Picker in dark mode: title, a short description and a preview of the comparison table" loading="lazy"><figcaption><b>CMS Picker, dark.</b> A real slice of the table in the hero, so the page shows what it does.</figcaption></figure>
-        <figure><img src="img/cms-picker-light.jpg" width="1280" height="820" alt="CMS Picker in light mode" loading="lazy"><figcaption><b>CMS Picker, light.</b> The answer ramp's tags read the same on parchment.</figcaption></figure>
+        <figure><img src="img/cms-picker-dark.jpg" width="1280" height="820" alt="CMS Picker in dark mode showing a result: a green verdict panel reading Wix is ahead of Squarespace for what you need, the answers as tiles, and the first match" loading="lazy"><figcaption><b>CMS Picker, dark.</b> A result: the verdict panel first, then your answers as tiles, then the matches.</figcaption></figure>
+        <figure><img src="img/cms-picker-light.jpg" width="1280" height="820" alt="CMS Picker in light mode: the quiz's first question, What are you making?, with its answers as bordered choices" loading="lazy"><figcaption><b>CMS Picker, light.</b> Quiz first: the cards and the table open on request.</figcaption></figure>
       </div>
       <div class="pair">
         <figure><img src="img/clean-paste-dark.jpg" width="1280" height="820" alt="Clean Paste in dark mode with the example post loaded: checks on the left, the cleaned post on the right" loading="lazy"><figcaption><b>Clean Paste, dark.</b> Checks as rows; the editor keeps Inter, with blue for links inside the content.</figcaption></figure>
@@ -614,7 +669,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
   </main>
 
   <footer class="end">
-    <span><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. Values taken from the site's code on 31 October 2026; the rules themselves live in <code>design-rules.md</code> in the repository.</span>
+    <span><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. Values taken from the site's code on 1 November 2026; the rules themselves live in <code>design-rules.md</code> in the repository.</span>
     <span>Decisions about suggested changes are marked in blue.</span>
   </footer>
 </div>
