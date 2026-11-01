@@ -99,6 +99,10 @@ body { background: var(--jsal-bg); }
 .jsal-btn.small { min-height: 32px; padding: 4px 12px; font-size: 13px; }
 .jsal-btn.danger { border-color: transparent; background: none; color: var(--jsal-bad); }
 .jsal-btn.danger:hover { border-color: var(--jsal-bad); background: var(--jsal-bad-soft); }
+/* A quiet action that reads as a link: no box, underlined, blue like the links inside a tool (red when it deletes) */
+.jsal-btn.link { min-height: 24px; padding: 2px 0; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-info); text-decoration: underline; text-underline-offset: 3px; }
+.jsal-btn.link:hover { background: none; text-decoration-thickness: 2px; }
+.jsal-btn.link.danger { color: var(--jsal-bad); }
 /* The one switch for picking one of a few options: a sunk track, the chosen option selected in gold */
 .jsal-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
 .jsal-seg > button { padding: 4px 12px; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font: 600 13px/1.25 var(--jsal-font); white-space: nowrap; cursor: pointer; transition: color 0.12s; }
@@ -191,11 +195,6 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 .jsal-consent b { color: var(--jsal-ink); }
 .jsal-consent a { color: var(--jsal-accent); text-underline-offset: 2px; }
 .jsal-consent div { display: flex; gap: 8px; margin-top: 12px; }
-.jsal-consent button { min-height: 36px; padding: 0 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: none; color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); cursor: pointer; }
-.jsal-consent button:hover { border-color: var(--jsal-hover-line); }
-.jsal-consent button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-.jsal-consent .jsal-consent-yes { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
-@media (pointer: coarse) { .jsal-consent button { min-height: 44px; } }
 @media print { .jsal-consent { display: none; } }
 @keyframes jsal-fade-out { to { opacity: 0; } }
 @keyframes jsal-fade-in { from { opacity: 0; } }

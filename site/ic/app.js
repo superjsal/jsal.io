@@ -356,7 +356,7 @@ function platformNoteHtml(p) {
         </div>
       </form>`;
   }
-  const tools = canEditAnswers ? `<button type="button" class="link-btn" data-note-edit>${n ? 'Edit watch-out' : 'Add a watch-out'}</button>` : '';
+  const tools = canEditAnswers ? `<button type="button" class="jsal-btn link small" data-note-edit>${n ? 'Edit watch-out' : 'Add a watch-out'}</button>` : '';
   return (n ? `<div class="warn pnote"><div><b>Watch out:</b> ${md(n.warn)}</div></div>` : '') +
     (tools ? `<div class="pnote-tools">${tools}</div>` : '');
 }
@@ -599,7 +599,7 @@ function twinFromPicker(p, id) {   // the CMS Picker's answer for a Playbook row
 function twinCopyHtml(t, attr, from) {
   if (!t) return '';
   const summary = `${vName(t.verdict)}${SCOPE_SHORT[t.scope] ? ` · ${SCOPE_SHORT[t.scope]}` : ''}${t.text ? ` · “${t.text.length > 90 ? `${t.text.slice(0, 90)}…` : t.text}”` : ''}`;
-  return `<p class="twin-copy"><button type="button" class="link-btn" ${attr}>Copy from ${from}</button><span class="muted">${esc(summary)}</span></p>`;
+  return `<p class="twin-copy"><button type="button" class="jsal-btn link small" ${attr}>Copy from ${from}</button><span class="muted">${esc(summary)}</span></p>`;
 }
 const setOption = (sel, v) => { if (sel && [...sel.options].some((o) => o.value === v)) sel.value = v; };
 document.addEventListener('click', (e) => {
@@ -773,7 +773,7 @@ function pkPlatformHtml(p) {
   return `<section class="pk-plat" id="pk-plat"><h3>${p.name}${pkSwitchWaiting(p) ? ` ${pkWaitTag}` : ''}</h3>
       ${(r.profile || {}).type ? '' : '<div class="warn"><div><b>Not shown yet:</b> it appears on the CMS Picker once its card has a type. Fill it in with Edit.</div></div>'}
       ${pkProfileHtml(p, r)}${pkLogoHtml(p, r)}${PK.items.map((it, i) => `${pkSectionStarts(i) ? `<h4 class="pk-sec">${esc(pkSectionTitle(it))}</h4>` : ''}${pkRowHtml(p, r, it)}`).join('')}
-      <p><button type="button" class="link-btn" data-pk-public="off">Take ${p.name} off the CMS Picker</button></p></section>`;
+      <p><button type="button" class="jsal-btn link small" data-pk-public="off">Take ${p.name} off the CMS Picker</button></p></section>`;
 }
 // Needs attention: answers with no source or a stale one, not verified or unclear, or waiting for the next publish,
 // worst first; each row opens its editor. Under six items it's one line that opens on request
@@ -804,15 +804,15 @@ function pkAttentionHtml() {
   const bits = PK_ATTN.map(([k, l, cls]) => [k, l, cls, all.filter((i) => i.why.some(([key]) => key === k)).length]).filter((x) => x[3]);
   if (PK.attnFilter && !bits.some(([k]) => k === PK.attnFilter)) PK.attnFilter = null;
   if (n <= 5 && !PK.attnOpen) {
-    return `<p class="pk-attn-line"><span><b>${n}</b> answer${s} need${s ? '' : 's'} attention:</span>${bits.map(([, l, cls, c]) => `<span class="muted"><b class="${cls}">${c}</b> ${l.toLowerCase()}</span>`).join('')}<button type="button" class="link-btn" data-pk-attn="open">Show them</button></p>`;
+    return `<p class="pk-attn-line"><span><b>${n}</b> answer${s} need${s ? '' : 's'} attention:</span>${bits.map(([, l, cls, c]) => `<span class="muted"><b class="${cls}">${c}</b> ${l.toLowerCase()}</span>`).join('')}<button type="button" class="jsal-btn link small" data-pk-attn="open">Show them</button></p>`;
   }
   const items = PK.attnFilter ? all.filter((i) => i.why.some(([k]) => k === PK.attnFilter)) : all;
   const shown = PK.attnAll ? items : items.slice(0, 12);
   const row = (i) => `<li><button type="button" class="pk-cell pk-row" data-pk-cell="${i.p.id}~${i.it.id}" aria-label="Edit ${esc(it_label(i))} for ${esc(plain(i.p.name))}"><b>${esc(plain(i.p.name))}</b><span>${esc(i.it.label)}</span><span class="why">${i.why.map(([, w, cls]) => `<span class="${cls}">${esc(w)}</span>`).join(' · ')}</span></button></li>`;
   const it_label = (i) => i.it.label;
-  return `<section class="card pk-attn"><div class="card-head"><h4 class="item">Needs attention<small>${n} answer${s} across the public platforms, worst first. Click one to edit it.</small></h4>${n <= 5 ? '<div class="answer"><button type="button" class="link-btn" data-pk-attn="close">Hide</button></div>' : ''}</div>
+  return `<section class="card pk-attn"><div class="card-head"><h4 class="item">Needs attention<small>${n} answer${s} across the public platforms, worst first. Click one to edit it.</small></h4>${n <= 5 ? '<div class="answer"><button type="button" class="jsal-btn link small" data-pk-attn="close">Hide</button></div>' : ''}</div>
       <div class="pk-chips" role="group" aria-label="Show only">${bits.map(([k, l, cls, c]) => `<button type="button" class="pk-chip${PK.attnFilter === k ? ' on' : ''}" data-pk-attn="${k}" aria-pressed="${PK.attnFilter === k}">${l} <b class="${cls}">${c}</b></button>`).join('')}</div>
-      <ul>${shown.map(row).join('')}</ul>${shown.length < items.length ? `<p class="pk-more"><button type="button" class="link-btn" data-pk-attn="all">Show all ${items.length}</button></p>` : ''}</section>`;
+      <ul>${shown.map(row).join('')}</ul>${shown.length < items.length ? `<p class="pk-more"><button type="button" class="jsal-btn link small" data-pk-attn="all">Show all ${items.length}</button></p>` : ''}</section>`;
 }
 function renderPickerView() {
   if (!PK.on) return;
@@ -1108,7 +1108,7 @@ function renderTeam() {
     : '<p class="empty">Nobody is waiting. When someone signs in with Discord and isn’t on the team yet, they show up here.</p>';
   renderPlatformList();
   $('#member-list').innerHTML = members.map((m) => personHtml(m, m.user_id === R.me ? '<span class="muted">You</span>' :
-    `<button type="button" class="jsal-btn small" data-role="${esc(m.user_id)}" data-to="${m.role === 'admin' ? 'member' : 'admin'}">${m.role === 'admin' ? 'Make member' : 'Make admin'}</button><button type="button" class="link-btn" data-remove="${esc(m.user_id)}">Remove</button>`)).join('');
+    `<button type="button" class="jsal-btn small" data-role="${esc(m.user_id)}" data-to="${m.role === 'admin' ? 'member' : 'admin'}">${m.role === 'admin' ? 'Make member' : 'Make admin'}</button><button type="button" class="jsal-btn link small danger" data-remove="${esc(m.user_id)}">Remove</button>`)).join('');
 }
 // Platforms: admins add one (every answer starts "Check manually") and switch each on or off the Playbook (hidden:
 // answers kept; set_platform_hidden also takes it off the CMS Picker) and the CMS Picker (the picker table's own switch)
@@ -1318,9 +1318,9 @@ function reqHtml(r) {
         ${r.details ? `<div class="req-details">${md(r.details)}</div>` : ''}
         <div class="req-foot"><span>Posted by ${esc(personName(r.author))} · ${ago(r.at)}</span>
           ${R.manage ? `<label>Status <select data-status="${esc(r.id)}">${Object.keys(REQ_STATUS).map((k) => `<option value="${k}"${k === r.status ? ' selected' : ''}>${REQ_STATUS[k]}</option>`).join('')}</select></label>` : ''}
-          ${R.commentsOn ? `<button type="button" class="link-btn" data-thread="${esc(r.id)}" aria-expanded="${open}">${n ? `Comments (${n})` : 'Comment'}</button>` : ''}
-          ${fixable ? `<button type="button" class="link-btn" data-fix="${esc(r.id)}" aria-expanded="${fixing}">Edit item</button>` : ''}
-          ${canDelete ? `<button type="button" class="link-btn" data-del="${esc(r.id)}">Delete</button>` : ''}
+          ${R.commentsOn ? `<button type="button" class="jsal-btn link small" data-thread="${esc(r.id)}" aria-expanded="${open}">${n ? `Comments (${n})` : 'Comment'}</button>` : ''}
+          ${fixable ? `<button type="button" class="jsal-btn link small" data-fix="${esc(r.id)}" aria-expanded="${fixing}">Edit item</button>` : ''}
+          ${canDelete ? `<button type="button" class="jsal-btn link small danger" data-del="${esc(r.id)}">Delete</button>` : ''}
         </div>
         ${fixing ? itemEditHtml(r) : ''}
         ${open ? threadHtml(r) : ''}
@@ -1331,7 +1331,7 @@ function threadHtml(r) {
   const who = (uid) => { const n = personName(uid); return n[0].toUpperCase() + n.slice(1); };
   return `<div class="req-thread">
       ${r.comments.map((c) => `<div class="comment">
-        <div class="comment-meta"><b>${esc(who(c.author))}</b><span>${ago(c.at)}</span>${R.manage || c.author === R.me ? `<button type="button" class="link-btn" data-del-comment="${esc(c.id)}">Delete</button>` : ''}</div>
+        <div class="comment-meta"><b>${esc(who(c.author))}</b><span>${ago(c.at)}</span>${R.manage || c.author === R.me ? `<button type="button" class="jsal-btn link small danger" data-del-comment="${esc(c.id)}">Delete</button>` : ''}</div>
         <div class="comment-body">${md(c.body)}</div>
       </div>`).join('')}
       <form class="edit-form comment-form" data-comment-form="${esc(r.id)}">

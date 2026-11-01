@@ -112,7 +112,6 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .jsal-btn.primary.done { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 
 .toolbar-hint { font-size: 12px; color: var(--jsal-muted); }
-.btn-link { padding: 4px 0; color: var(--jsal-info); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }   /* 24px tall: easier to hit (WCAG 2.5.8); blue: link-styled controls inside the tool, gold is for the main action */
 
 /* ── Workspace ─────────────────────────────────────────────────────────── */
 
@@ -355,7 +354,7 @@ textarea.code {
 }
 /* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact controls) */
 @media (pointer: coarse) {
-  .toolbar button, .btn-link, .link-box button, .link-box a { min-height: 44px; }
+  .toolbar button, .link-box button, .link-box a { min-height: 44px; }
   .toolbar button { min-width: 44px; }
   button.check { min-height: 44px; }
   /* The paste area is editable on touch screens (to take a tap-and-hold Paste): iPhones zoom into an editable

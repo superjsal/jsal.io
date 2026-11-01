@@ -36,8 +36,8 @@
     card.className = 'jsal-consent';
     card.setAttribute('aria-label', 'Analytics choice');
     card.innerHTML = '<p><b>Can I count your visit?</b> Basic usage stats (Google Analytics, no ads or profiles) show me which tools get used. '
-      + 'Your files never leave your browser either way. <a href="/privacy/">Privacy</a></p><div><button type="button" class="jsal-consent-yes">Allow</button>'
-      + '<button type="button">No thanks</button></div>';
+      + 'Your files never leave your browser either way. <a href="/privacy/">Privacy</a></p><div><button type="button" class="jsal-btn primary jsal-consent-yes">Allow</button>'
+      + '<button type="button" class="jsal-btn">No thanks</button></div>';
     card.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
       const v = b.classList.contains('jsal-consent-yes') ? 'granted' : 'denied';
       try { localStorage.setItem(CONSENT, v); } catch (e) {}

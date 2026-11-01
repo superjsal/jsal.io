@@ -18,7 +18,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=22e18b40">
+<link rel="stylesheet" href="/shell.css?v=ee371ac9">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -518,9 +518,9 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <p class="intro">These are live, built from the same rules the apps use (each demo names its source). Hover is neutral everywhere: a firmer border or a slight tint. Gold means selected, focused, a file being dragged over, or the main action. Every control has one focus ring, and on touch screens every control is at least 44px tall.</p>
     <div class="demos">
       <div class="demo">
-        <span class="src">Buttons · shell.css .jsal-btn, the one button every page uses: plain, .primary (the gold main action), .small for dense screens, .danger to remove or clear</span>
-        <div class="row"><button type="button" class="jsal-btn primary">Find my fit</button><button type="button" class="jsal-btn">Compare all 14</button><button type="button" class="jsal-btn" disabled>Download All</button><button type="button" class="jsal-btn danger">Clear</button><button type="button" class="jsal-btn small">Cancel</button></div>
-        <span class="src">Home page call to action · index.html .cta (the one gold pill, lifts 2px on hover)</span>
+        <span class="src">Buttons · shell.css .jsal-btn, the one button every page uses: plain, .primary (the gold main action), .small for dense screens, .danger to remove or clear, .link for a quiet action that reads as a link</span>
+        <div class="row"><button type="button" class="jsal-btn primary">Find my fit</button><button type="button" class="jsal-btn">Compare all 14</button><button type="button" class="jsal-btn" disabled>Download All</button><button type="button" class="jsal-btn danger">Clear</button><button type="button" class="jsal-btn small">Cancel</button><button type="button" class="jsal-btn link">Start with a blank page</button><button type="button" class="jsal-btn link small danger">Delete</button></div>
+        <span class="src">Home page call to action · index.html .cta (the one filled pill, the page's main action, lifts 2px on hover)</span>
         <div class="row"><button type="button" class="cta main">Find your CMS</button></div>
       </div>
       <div class="demo">
@@ -662,6 +662,6 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <span>Decisions about suggested changes are marked in blue.</span>
   </footer>
 </div>
-<script src="/nav.js?v=c5bdd8f2" defer></script>
+<script src="/nav.js?v=04ed4703" defer></script>
 </body>
 </html>

@@ -96,7 +96,11 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - **One button and one switch, defined once in `shell.css`.** `.jsal-btn` is every page's button: outlined in
   `--jsal-line-hi` on a `--jsal-surface` fill, 14px at 600, 40px tall (44px on touch screens). `.primary` makes it
   the gold main action, `.small` (32px, 13px) suits dense screens such as the Playbook's forms, and `.danger`
-  removes or clears (red text, a red edge and tint on hover). `.jsal-seg` is the switch for picking one of a few
+  removes or clears (red text, a red edge and tint on hover). `.link` is a quiet action that reads as a link: no
+  box, underlined, 24px tall, blue like the links inside a tool, red with `.danger` when it deletes (Clean Paste's
+  "Start with a blank page", the Playbook's Comment, Edit item and Delete). A button sitting in running text or in a
+  row of links (the quiz's "Also worth a look", the footers' Analytics) looks like the links around it instead.
+  The analytics card's Allow and No thanks are `.jsal-btn.primary` and `.jsal-btn`. `.jsal-seg` is the switch for picking one of a few
   options (a sunk track; the chosen button `aria-pressed`, `aria-selected` or `.active`, in the selected gold). An
   app adds only layout (width, order, a compact height in a tight spot) and never its own look; a new button or
   switch uses these. The Image Resizer's two-line size presets are their own control, as they show a size and a
@@ -106,7 +110,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   edge and tint. Inside the CMS Picker quiz and its result, a choice is a rounded square (`--jsal-radius`) instead,
   like the answers, tiles and cards around it, so the quiz reads as one set of shapes; selected is the same gold. A set of links is not a choice, so it never wears pills: it's a text list (the home page footer's
   Platform guides) or a grid of equal-width tiles with the plain `--jsal-line` border, surface background and 500
-  weight. Uneven pills stagger; equal tiles don't.
+  weight. Uneven pills stagger; equal tiles don't. **The one filled pill** is the home page's gold "Find your CMS":
+  the page's main action, filled rather than bordered, so it never reads as a choice. It stays a pill to sit with the
+  bento's round tiles; nothing else on the site uses that shape for an action.
 - **A tick that goes with a choice** (the quiz's "In two or more languages") is a checkbox in a bordered row above
   the choices, selected with the same `--jsal-selected-*` tokens and gold edge as a pressed chip, the box itself in
   `accent-color: var(--jsal-accent)`; one focus ring on the row.

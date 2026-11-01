@@ -200,7 +200,7 @@ details.fold[open] > summary::before { rotate: 45deg; }
 .pk-attn .fix, .pk-attn-line .fix { color: var(--jsal-warn); font-weight: 600; }
 .pk-attn .inflight, .pk-attn-line .inflight { color: var(--jsal-info); }
 .pk-attn-line { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 0 0 14px; padding: 10px 14px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); font-size: 14px; }
-.pk-attn-line .link-btn { margin-left: auto; }
+.pk-attn-line .jsal-btn.link { margin-left: auto; }
 /* Phones: one platform at a time (the chips), no table */
 @media (max-width: 720px) {
   .pk-table { display: none; }
@@ -358,8 +358,8 @@ footer a { color: var(--jsal-accent); }
 .account { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--jsal-muted); padding-left: 14px; border-left: 1px solid var(--jsal-line); }
 .account img { width: 24px; height: 24px; border-radius: 50%; }
 .account #user-name { color: var(--jsal-ink); font-weight: 600; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.account .link-btn { color: var(--jsal-muted); font-weight: 500; }
-.account .link-btn:hover { color: var(--jsal-ink); }
+.account .jsal-btn.link { color: var(--jsal-muted); font-weight: 500; text-decoration: none; }
+.account .jsal-btn.link:hover { color: var(--jsal-ink); }
 /* Theme button (shared with the other jsal.io apps): far right of the top bar */
 header.top .jsal-theme { margin-left: auto; }
 header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
@@ -370,8 +370,6 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 @media (max-width: 859px) { .viewnav { margin-left: 0; order: 9; flex: 1 1 100%; } .viewnav button { flex: 1; } .account { margin-left: auto; border-left: 0; padding-left: 0; } }
 @media (max-width: 859px) { header.top .jsal-title-ico { display: none; } }   /* the account needs the room on row one */
 @media (max-width: 400px) { #user-avatar { display: none !important; } }
-.link-btn { font: 600 13px var(--jsal-font); color: var(--jsal-info); background: none; border: 0; padding: 0; cursor: pointer; }
-.link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
 .count { display: inline-block; min-width: 18px; padding: 0 6px; border-radius: var(--jsal-radius-pill); background: var(--jsal-warn-soft); color: var(--jsal-warn); font-size: 12px; text-align: center; }
 .count:empty { display: none; }
 .team-view { display: grid; gap: 10px; }
