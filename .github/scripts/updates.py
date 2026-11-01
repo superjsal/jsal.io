@@ -51,7 +51,8 @@ def render(nl, indent):
         if e is None: continue
         label = f'<a href="{href}">{name}</a>' if href else name
         y, m, d = e[1].split('-')
-        lines.append(f'{indent}  <li><span class="upd-name">{label}</span><span>{e[2]}</span>'
+        sec = name.lower().replace(' ', '-')   # styles each line's mark in its app's colour
+        lines.append(f'{indent}  <li data-sec="{sec}"><span class="upd-name">{label}</span><span>{e[2]}</span>'
                      f'<time datetime="{e[1]}">{MONTHS[int(m) - 1]} {int(d)}</time></li>')
     lines.append(indent + '</ul>')
     return nl.join(lines)

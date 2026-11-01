@@ -67,8 +67,12 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   edge and tint. A set of links is not a choice, so it never wears pills: an index of links (the home page's
   Platform guides) is a grid of equal-width tiles with the plain `--jsal-line` border, surface background and
   500 weight, or a text list. Uneven pills stagger; equal tiles don't.
+- **The Platform guides show each platform's logo before its name**, in a 24px slot in `--jsal-muted` (icons at
+  16px; the wordmark-only logos, Wix and Duda, across the slot's width), the tile's text left-aligned so the names
+  line up. Where a tile is too narrow for the logo and the longest name (the five columns below 770px, two below
+  340px), the logos drop out and the names centre.
 - **An index of links ends even.** Its last tile is the link that covers the whole set (the guides' "Compare all 13
-  →"), set exactly like the others (full ink, centred, the arrow after the words) and stretched across whatever is
+  →"), set like the others (full ink, the arrow after the words) but centred and without a logo and stretched across whatever is
   left of its row by `:last-child:nth-child(…)` rules for each column count, so the grid stays even at any count
   and adding an entry is adding its link. It never takes gold: the arrow alone says it goes elsewhere.
 - **A tick that goes with a choice** (the quiz's "In two or more languages") is a checkbox in a bordered row above
@@ -88,7 +92,8 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
 - **Home page:** tools only. The intro beside the CMS Picker's big tile, with the Platform guides (a link tile
   per platform, three even columns) under the intro and level with the tile's bottom; then the other tools as
-  picture tiles (the team Playbook as a slim text tile), Updates (one line per section) and a plain "Say hi"
+  picture tiles (the team Playbook as a slim tile, a preview of three checks beside its text, dropped from 860px
+  down), Updates (one line per section, marked in its app's tile colour; Site's mark is the logo's gem) and a plain "Say hi"
   row. From 1100px down the guides take the full width under both; on phones they follow the tile. Tab order
   follows the screen. Gaming parts live on `/play/`.
 - **Every new home page tool or section is a bento box:** a `.tile` (22px corners, 26px padding; 18px and 20px

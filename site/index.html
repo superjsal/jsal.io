@@ -143,6 +143,16 @@ p, li { text-wrap: pretty; }
 .guides div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .guides a { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: border-color 0.15s; }
 .guides a:hover { border-color: var(--jsal-hover-line); }
+/* Each platform's logo before its name, in a 24px slot so the names line up: icons at 16px, the wordmark-only logos
+   (Wix, Duda) across the slot's width */
+.guides a:not(.all) { justify-content: flex-start; gap: 8px; }
+.guides a:not(.all)::before { content: ""; flex: none; width: 24px; height: 16px; background: var(--jsal-muted); -webkit-mask: var(--logo) center / 16px 16px no-repeat; mask: var(--logo) center / 16px 16px no-repeat; }
+.guides a.wm::before { -webkit-mask-size: 24px auto; mask-size: 24px auto; }
+/* Where the tiles are too narrow for a logo and the longest names (the five columns below 770px, two below 340px), names only, centred */
+@media (min-width: 521px) and (max-width: 769px), (max-width: 339px) {
+  .guides a:not(.all) { justify-content: center; }
+  .guides a:not(.all)::before { display: none; }
+}
 .guides a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 /* The last tile ("Compare all") stretches across whatever is left of its row, so the grid ends even at any platform count */
 .guides .all { gap: 6px; }   /* full ink and centred like the platform tiles; the arrow alone says it goes elsewhere */
@@ -181,6 +191,15 @@ p, li { text-wrap: pretty; }
 .ic { padding: 22px 26px; }
 .ic h2 { font-size: 22px; }
 .ic .pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: var(--blue-acc); }
+/* Its preview: three checks with answers in the CMS Picker's colours, beside the text; dropped on phones, where the tile stays slim */
+.ic .foot { align-items: center; }
+.ic .foot > div:first-child { flex: 1; }
+.m-ic { flex: none; width: 300px; gap: 6px; margin-right: 8px; }
+.m-ic .box { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 6px 10px; font-size: 13px; color: var(--jsal-ink); }
+.m-ic em { font-style: normal; font-size: 12px; font-weight: 600; padding: 0 8px; border-radius: var(--jsal-radius-pill); }
+.m-ic .yes { color: var(--jsal-ok); background: var(--jsal-ok-soft); }
+.m-ic .plugin { color: var(--jsal-info); background: var(--jsal-info-soft); }
+.m-ic .code { color: var(--jsal-warn); background: var(--jsal-warn-soft); }
 
 /* App mockups on the tiles: simplified versions of each app's real layout, in the apps' own
    page colours, so opening an app looks like the picture growing into it. Photos, links and
@@ -303,6 +322,13 @@ p, li { text-wrap: pretty; }
 .upd { margin: 0; padding: 0; list-style: none; }
 .upd li { display: grid; grid-template-columns: 10em minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--plain-line); }
 .upd-name { font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link */
+/* A mark in each app's own tile colour ties the line to its tile above; Site's is the logo's gem */
+.upd-name::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 10px; vertical-align: 1px; border-radius: 2px; background: var(--mark, var(--jsal-muted)); }
+.upd [data-sec="cms-picker"] { --mark: var(--plum-acc); }
+.upd [data-sec="clean-paste"] { --mark: var(--gold-acc); }
+.upd [data-sec="image-resizer"] { --mark: var(--cream); }
+.upd [data-sec="mostly-warcraft"] { --mark: var(--green-acc); }
+.upd [data-sec="site"] .upd-name::before { width: 10px; height: 10px; vertical-align: 0; border-radius: 0; background: var(--jsal-accent); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
 .upd time { color: var(--jsal-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
 .upd-all { margin: 12px 0 0; font-weight: 600; }
 .now a { color: var(--jsal-accent); text-underline-offset: 2px; }
@@ -331,6 +357,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .grid > :not(.intro):not(.cms):not(.guides) { order: 2; }
   .grid > * { grid-column: 1 / -1 !important; }
   .intro p { font-size: 16px; }
+  .m-ic { display: none; }
+  .ic .foot { align-items: flex-end; }
 }
 #updates, #hi-h { scroll-margin-top: 16px; }   /* #hi-h: where "Say hi" lands */
 /* Phones: the editorial type scaled down rather than squeezed. A smaller name with a shorter
@@ -393,7 +421,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     </section>
     <!-- Platform guides: the CMS Picker's one page per platform (its SEO settings and where to find each). Under the intro, its bottom level with the
        tile's; from 1100px down it takes the full width under both; written by hand in the publish's platform order -->
-    <nav class="guides" aria-labelledby="guides-h"><p class="label" id="guides-h">Platform guides</p><div><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/webflow/">Webflow</a><a href="/cms-picker/framer/">Framer</a><a href="/cms-picker/hubspot/">HubSpot CMS</a><a href="/cms-picker/bigcommerce/">BigCommerce</a><a href="/cms-picker/magento/">Magento 2</a><a href="/cms-picker/drupal/">Drupal</a><a href="/cms-picker/duda/">Duda</a><a href="/cms-picker/ghost/">Ghost</a><a href="/cms-picker/sanity/">Sanity</a><a class="all" href="/cms-picker/#seo">Compare all 13<span aria-hidden="true">→</span></a></div></nav>
+    <nav class="guides" aria-labelledby="guides-h"><p class="label" id="guides-h">Platform guides</p><div><a href="/cms-picker/wordpress/" style="--logo: url(/cms-picker/logos/wordpress.svg)">WordPress</a><a href="/cms-picker/shopify/" style="--logo: url(/cms-picker/logos/shopify.svg)">Shopify</a><a class="wm" href="/cms-picker/wix/" style="--logo: url(/cms-picker/logos/wix.svg)">Wix</a><a href="/cms-picker/squarespace/" style="--logo: url(/cms-picker/logos/squarespace.svg)">Squarespace</a><a href="/cms-picker/webflow/" style="--logo: url(/cms-picker/logos/webflow.svg)">Webflow</a><a href="/cms-picker/framer/" style="--logo: url(/cms-picker/logos/framer.svg)">Framer</a><a href="/cms-picker/hubspot/" style="--logo: url(/cms-picker/logos/hubspot.svg)">HubSpot CMS</a><a href="/cms-picker/bigcommerce/" style="--logo: url(/cms-picker/logos/bigcommerce.svg)">BigCommerce</a><a href="/cms-picker/magento/" style="--logo: url(/cms-picker/logos/magento.svg)">Magento 2</a><a href="/cms-picker/drupal/" style="--logo: url(/cms-picker/logos/drupal.svg)">Drupal</a><a class="wm" href="/cms-picker/duda/" style="--logo: url(/cms-picker/logos/duda.svg)">Duda</a><a href="/cms-picker/ghost/" style="--logo: url(/cms-picker/logos/ghost.svg)">Ghost</a><a href="/cms-picker/sanity/" style="--logo: url(/cms-picker/logos/sanity.svg)">Sanity</a><a class="all" href="/cms-picker/#seo">Compare all 13<span aria-hidden="true">→</span></a></div></nav>
 
     <!-- App tiles (data-app marks the ones that open a tool). CMS Picker is the big one beside
          the intro; then Image Resizer (wide) and Clean Paste, then the team's Playbook. The wide tile swaps
@@ -463,6 +491,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
           <p class="desc">SEO checks across website platforms, with how-to steps and guides.</p>
           <span class="pill"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Sign-in, approved team only</span>
         </div>
+        <div class="mock m-ic" aria-hidden="true"><span class="box">Title tag <em class="yes">Built in</em></span><span class="box">Redirects <em class="plugin">Plugin/app</em></span><span class="box">Custom schema <em class="code">Needs code</em></span></div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </div>
     </a>
@@ -474,11 +503,11 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       <h2 id="updates-h">Updates</h2>
       <!-- updates:start (the latest change for each part of the site, written from the changelog; never edited by hand) -->
       <ul class="upd">
-        <li><span class="upd-name"><a href="/cms-picker/">CMS Picker</a></span><span>Languages as a tick; fewer joint results</span><time datetime="2026-10-31">Oct 31</time></li>
-        <li><span class="upd-name"><a href="/formatter/">Clean Paste</a></span><span>Copy says Copied; Clear can be undone</span><time datetime="2026-10-30">Oct 30</time></li>
-        <li><span class="upd-name"><a href="/image-resizer/">Image Resizer</a></span><span>Saves PNG, with transparency</span><time datetime="2026-10-30">Oct 30</time></li>
-        <li><span class="upd-name"><a href="/play/">Mostly Warcraft</a></span><span>Its own page: WoW, my UI, the backpack</span><time datetime="2026-10-31">Oct 31</time></li>
-        <li><span class="upd-name">Site</span><span>A logo: the j and its gem</span><time datetime="2026-11-01">Nov 1</time></li>
+        <li data-sec="cms-picker"><span class="upd-name"><a href="/cms-picker/">CMS Picker</a></span><span>Languages as a tick; fewer joint results</span><time datetime="2026-10-31">Oct 31</time></li>
+        <li data-sec="clean-paste"><span class="upd-name"><a href="/formatter/">Clean Paste</a></span><span>Copy says Copied; Clear can be undone</span><time datetime="2026-10-30">Oct 30</time></li>
+        <li data-sec="image-resizer"><span class="upd-name"><a href="/image-resizer/">Image Resizer</a></span><span>Saves PNG, with transparency</span><time datetime="2026-10-30">Oct 30</time></li>
+        <li data-sec="mostly-warcraft"><span class="upd-name"><a href="/play/">Mostly Warcraft</a></span><span>Its own page: WoW, my UI, the backpack</span><time datetime="2026-10-31">Oct 31</time></li>
+        <li data-sec="site"><span class="upd-name">Site</span><span>A logo: the j and its gem</span><time datetime="2026-11-01">Nov 1</time></li>
       </ul>
       <!-- updates:end -->
       <p class="upd-all"><a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>
