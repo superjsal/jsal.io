@@ -776,9 +776,10 @@
       if (top[1] && !weak) {
         head.append(el('span', `qz-sure${close ? ' close' : ''}`, close ? 'A close call' : gap <= 5 ? 'A clear lead' : 'A clear winner'));
         const [x, y] = [top[0].p.name, top[1].p.name];
+        // A tie on points goes to the card that names the person's case, or else to the look they chose (score.js rank)
         const fitLine = top[0].fit[0] && `${top[0].fit[0].charAt(0).toLowerCase()}${top[0].fit[0].slice(1)}`;
         sure = el('p', 'qz-sure-why', joint ? `${x} and ${y} score the same on your answers: either would do, and the box under each says what sets it apart.`
-          : top[1].s === best ? `${x} and ${y} score the same on your answers: ${x} comes first because its own card says it suits ${fitLine}, and the box under each says what sets it apart.`
+          : top[1].s === best ? `${x} and ${y} score the same on your answers: ${x} comes first because ${top[0].tb !== top[1].tb ? `its own card says it suits ${fitLine}` : `its card leads with “${top[0].lookTag}”, the look you asked for`}, and the box under each says what sets it apart.`
           : close ? `${x} is ${gap === 1 ? 'one point' : 'two points'} ahead of ${y} on your answers: either would do, and the box under each says what sets it apart.`
           : `${x} is ${gap} points ahead of ${y} on your answers.`);
       }
