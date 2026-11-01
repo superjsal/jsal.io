@@ -483,7 +483,7 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches; questions and scoring in score.js. The answers live in the page
   // address so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, tied, conflict, costRow, weight, TIP, options } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, standing, tied, conflict, costRow, weight, TIP, options } = window.cmsScore;
   // Shared result links carry the quiz version (v=4; none means 1). When the questions change, raise LINK_VERSION and
   // translate older answers in readLink, so shared links keep opening a result.
   const LINK_VERSION = 4;
@@ -514,6 +514,8 @@
     { row: 'gsc404', text: 'Moving from an old site? Point the old links to the new pages' },
   ];
   const LATER = [['noindex', 'hide pages from search'], ['ai_crawlers', 'choose which AI bots may read the site']];
+  // A box's heading; under LOW_FIT the first is only the closest, so its box compares like the others' ("Compared with Wix")
+  const boxHead = (vs, weak) => (vs.head.startsWith('Why ') && weak ? `Compared with ${vs.than}` : vs.head);
   // Reasons the scoring takes from a sourced table row (score.js), so the card can link the platform's own docs for them
   const EVIDENCE = { 'More than one language is built in': 'languages', 'Paid memberships built in': 'members' };
   function docLink(url, text) {
@@ -735,8 +737,8 @@
       const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
       // A tie for first is shown as one (score.js tied); under LOW_FIT the first is only the closest
       const isTop = (r) => r === top[0] || tied(r, top[0]), joint = !!top[1] && isTop(top[1]), weak = best < LOW_FIT;
-      // How sure: within two points a close call, six or more a clear winner
-      const gap = top[1] ? best - top[1].s : 99, close = gap <= 2;
+      // How sure: level or a couple of points apart is a close call (score.js standing)
+      const stand = standing(top), close = !!stand && (stand.kind === 'level' || stand.kind === 'close');
       const first = weak ? 'closest match' : 'best match';
       const label = (r) => (isTop(r) ? (joint ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : close && !weak && r === top[1] ? 'Close second' : r.s >= best - 4 && !weak ? 'Good match' : 'Worth a look');
       const told = explain(data, a, top);   // reasons without repeats, and what sets each apart
@@ -755,9 +757,7 @@
         state.pick = top[0].p.id;
         // The table carries the result along: each column's label and the first card's box as one line
         const vs = told[0].vs;
-        const tipped = vs && vs.text.startsWith('What tipped it: ');
-        const line = !vs ? '' : tipped ? `${top[0].p.name} came out ahead because ${vs.text.slice(16)}`
-          : `${weak ? vs.head.replace(/^Ahead of /, 'Versus ') : vs.head}: ${vs.text.replace(/^Both fit/, 'both fit')}`;
+        const line = !vs ? '' : `${boxHead(vs, weak)}: ${vs.text.replace(/^(It |They |You)/, (w) => w.toLowerCase())}`;
         state.quiz = { fit: Object.fromEntries(top.map((r) => [r.p.id, { label: label(r), low: weak }])), line, eyebrow: `Your ${first}`, answers: { ...a }, cost: costRow(a) };
         state.folded = new Set();   // every group open: three platforms and folded ruled-out rows keep a phone's table short
         renderCards();
@@ -774,14 +774,9 @@
       const h = el('h3', 'sr-only', `Your ${first}es`);
       let sure = null;
       if (top[1] && !weak) {
-        head.append(el('span', `qz-sure${close ? ' close' : ''}`, close ? 'A close call' : gap <= 5 ? 'A clear lead' : 'A clear winner'));
-        const [x, y] = [top[0].p.name, top[1].p.name];
-        // A tie on points goes to the card that names the person's case, or else to the look they chose (score.js rank)
-        const fitLine = top[0].fit[0] && `${top[0].fit[0].charAt(0).toLowerCase()}${top[0].fit[0].slice(1)}`;
-        sure = el('p', 'qz-sure-why', joint ? `${x} and ${y} score the same on your answers: either would do, and the box under each says what sets it apart.`
-          : top[1].s === best ? `${x} and ${y} score the same on your answers: ${x} comes first because ${top[0].tb !== top[1].tb ? `its own card says it suits ${fitLine}` : `its card leads with “${top[0].lookTag}”, the look you asked for`}, and the box under each says what sets it apart.`
-          : close ? `${x} is ${gap === 1 ? 'one point' : 'two points'} ahead of ${y} on your answers: either would do, and the box under each says what sets it apart.`
-          : `${x} is ${gap} points ahead of ${y} on your answers.`);
+        head.append(el('span', `qz-sure${close ? ' close' : ''}`, stand.pill));
+        // How close it is, in words (the first card's box says why it's first, so this doesn't repeat it)
+        sure = el('p', 'qz-sure-why', stand.line);
       }
       h.tabIndex = -1;
       const list = el('div', 'qz-res');
@@ -816,9 +811,7 @@
         card.append(ul);
         if (told[i].vs) {
           const vs = el('div', 'qz-vs');
-          // Only the closest can't be "ahead": its box compares, like the others' ("Versus Wix")
-          const head = weak ? told[i].vs.head.replace(/^Ahead of /, 'Versus ') : told[i].vs.head;
-          vs.append(el('p', 'qz-vs-h', head), el('p', null, told[i].vs.text));
+          vs.append(el('p', 'qz-vs-h', boxHead(told[i].vs, weak)), el('p', null, told[i].vs.text));
           card.append(vs);
         }
         // Where it counts against an answer given (score.js "but"), so the pick never hides it
