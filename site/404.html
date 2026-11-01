@@ -40,7 +40,8 @@ body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webk
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 20px 56px; }
 .lost { margin-top: var(--jsal-page-top); max-width: 36em; }
 .code { margin: 0 0 12px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-h1 { margin: 0; font: 700 clamp(40px, 7vw, 72px)/1 "Lora", Georgia, serif; letter-spacing: -0.03em; text-wrap: balance; }
+h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; text-wrap: balance; }   /* every page title's size, as on the home page */
+@media (max-width: 520px) { h1 { font-size: 40px; } }
 h1 em { font-weight: 600; color: var(--jsal-accent); }
 .lost .lead { margin: 28px 0 0; padding-bottom: 40px; border-bottom: 1px solid var(--jsal-line); font-size: 17px; color: var(--jsal-muted); text-wrap: pretty; }   /* the intro ends in a thin line */
 .links { margin: 40px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 420px; }
@@ -48,6 +49,14 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
 .links a span { font-weight: 400; color: var(--jsal-muted); font-size: 14px; }
 .links a:hover { border-color: var(--jsal-hover-line); }
 .links a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
+/* Wide screens: the way back sits beside the title, in the first screen, rather than under the intro */
+@media (min-width: 721px) {
+  .lost { display: grid; grid-template-columns: minmax(0, 36em) minmax(280px, 420px); grid-template-rows: auto auto auto 1fr; grid-template-areas: "code ." "title links" "lead links" ". links"; justify-content: space-between; column-gap: 56px; align-items: start; max-width: none; }   /* the empty last row takes the links' extra height, so the intro stays under the title */
+  .code { grid-area: code; }
+  h1 { grid-area: title; }
+  .lost .lead { grid-area: lead; padding-bottom: 0; border-bottom: 0; }
+  .links { grid-area: links; margin: 0; }
+}
 </style>
 </head>
 <body data-jsal-lost>

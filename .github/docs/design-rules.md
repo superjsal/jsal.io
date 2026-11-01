@@ -20,6 +20,11 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 - **Exception, kept on purpose:** on the platform pages the gold word is "SEO" ("WordPress *SEO*: what you can
   change, and where"). Lora's italic capitals barely lean, so it reads as a lighter word rather than an
   obvious italic. It stays because "SEO" is the page's key word.
+- **Every page title is one size:** Lora 700, 46px, line height 1.05, −0.02em, and 40px at 520px and under (home,
+  Off the clock, Privacy, Changelog, 404, `/design-system/`). The longer titles of the CMS Picker and its platform
+  pages also stop at 46px but shrink with the screen to 30px. A short page's empty space beside its title stays
+  empty, the reading column's margin, unless something useful belongs there (the 404's links sit beside its
+  title on wide screens).
 - Content inside a tool (the visitor's own post in Clean Paste's editor) and the team Playbook's screens keep
   Inter.
 - **Check:** `browser-check.mjs` fails on any visible H1 or H2 of 16px or more that isn't Lora. A new heading
