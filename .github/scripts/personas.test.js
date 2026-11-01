@@ -10,7 +10,7 @@
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
 const site = path.join(__dirname, '..', '..', 'site');
-const { rank, candidates, explain, standing, tied, QUESTIONS, options, PHRASE, DOES, DOES_BOTH, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
+const { rank, candidates, explain, standing, tied, QUESTIONS, options, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
@@ -171,11 +171,15 @@ let sentenceErrs = 0;
 // a box may use to say what the other platform lacks
 const MISSING = new Set(['bookings', 'members', 'blog', 'dev', 'care', 'size']);
 if (![...LACKS].every((k) => MISSING.has(k))) { console.log(`FAIL: LACKS has parts whose other side isn't something missing: ${[...LACKS].filter((k) => !MISSING.has(k))}`); process.exitCode = 1; }
-// A sentence built from the comparison table (score.js rowsLine): the rows' phrases, then each platform's verdict
-const verdictOf = new Map([...Object.entries(DOES), ...Object.entries(DOES_BOTH)].map(([v, w]) => [w, v]));
+// A sentence built from the comparison table (score.js rowsLine): the row's phrase, then each platform's verdict;
+// "The same goes if you want …" repeats the sentence before it for another row. A phrase with a comma would split
+// wrongly here, so none may have one.
+Object.entries(PHRASE).forEach(([id, p]) => { if (p.includes(',')) { console.log(`FAIL: PHRASE.${id} has a comma, so its sentence can't be checked`); process.exitCode = 1; } });
+const verdictOf = new Map(Object.entries(DOES).map(([v, w]) => [w, v]));
 const rowOf = new Map(Object.entries(PHRASE).map(([id, p]) => [p, id]));
 const saying = [...verdictOf.keys()].map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-const TABLE_LINE = new RegExp(`^(?:If you want|For) (.+?), (.+?) (${saying}), while (.+?) (${saying})\\.$`);
+const TABLE_LINE = new RegExp(`^If you want (.+?), (.+?) (${saying}), while (.+?) (${saying})\\.$`);
+const SAME_LINE = /^The same goes if you want (.+)\.$/;
 let combos = 0, clear = 0, fallback = 0, byCard = 0, ties = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0, weak = 0, fewFit = 0;
 const cardErrs = [];
 const walk = (a, i) => {
@@ -232,15 +236,18 @@ const walk = (a, i) => {
   told.forEach((t, k) => {
     if (!t.vs) return;
     const x = r[k], text = t.vs.text;
+    let last = null;   // the table sentence before, for "The same goes if you want …"
     for (const s of text.split(/(?<=\.)\s+(?=[A-Z])/)) {
-      const row = s.match(TABLE_LINE);
+      const same = s.match(SAME_LINE), row = same && last ? [s, same[1], last[2], last[3], last[4], last[5]] : s.match(TABLE_LINE);
+      if (same && !last) sentenceErr(at, `${x.p.id}'s box says "${s}" with no table sentence before it`);
       if (row) {
-        const ids = (rowOf.get(row[1]) ? [row[1]] : row[1].split(' or ')).map((p) => rowOf.get(p));
-        const [px, py] = [row[2], row[4]].map((n) => r.find((o) => o.p.name === n));
-        const ok = px && py && ids.every((id) => id && ((data.answers[px.p.id] || {})[id] || {}).verdict === verdictOf.get(row[3]) && ((data.answers[py.p.id] || {})[id] || {}).verdict === verdictOf.get(row[5]));
+        const id = rowOf.get(row[1]), [px, py] = [row[2], row[4]].map((n) => r.find((o) => o.p.name === n));
+        const ok = id && px && py && ((data.answers[px.p.id] || {})[id] || {}).verdict === verdictOf.get(row[3]) && ((data.answers[py.p.id] || {})[id] || {}).verdict === verdictOf.get(row[5]);
         if (!ok) sentenceErr(at, `${x.p.id}'s box says "${s}", which isn't what the table says`);
+        last = row;
         continue;
       }
+      last = null;
       for (const m of s.matchAll(/, while (.+?) (needs|isn’t|leaves|is|has|costs)\b/g)) {
         const y = r.find((o) => o.p.name === m[1]);
         if (!y || ![...MISSING].some((p) => (x.pts[p] || 0) > 0 && (y.pts[p] || 0) < 0)) sentenceErr(at, `${x.p.id}'s box says "${m[0]}…" without the score behind it`);

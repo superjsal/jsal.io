@@ -118,11 +118,13 @@ Shared by the page and the tests, so they always run the same code.
   your answers equally well, so either is a sound choice"), up to `CLOSE` (2: "slightly ahead", a close call), up to
   `LEAD_BY` (5: "ahead", a clear lead), then "well ahead" (a clear winner). The line says only how close it is; the
   first card's box says why, so neither repeats the other.
-- **"If you want design control, Webflow has it built in, while HubSpot CMS needs code for it":** when the answers
-  don't separate two platforms, the comparison table does, in its own verdicts (`DOES`; two rows with the same
-  verdicts are said together with `DOES_BOTH`), so every sentence can be checked against the table below it (the
-  persona test does, row by row). Rows are those where a platform does better than its neighbour (built in beats a
-  plugin beats code), described by `PHRASE` (a short phrase per table row; **a new row needs one**, the test checks).
+- **"If you want to keep a page out of search results, Webflow has it built in, while HubSpot CMS needs code for
+  it":** when the answers don't separate two platforms, the comparison table does, in its own verdicts (`DOES`; a
+  second row with the same verdicts is "The same goes if you want …"), so every sentence can be checked against the
+  table below it (the persona test does, row by row). Rows are those where a platform does better than its neighbour
+  (built in beats a plugin beats code), described by `PHRASE`: **what the row's own question asks and no more** ("Design
+  every detail" is "to shape every detail of the design", not "design control"), never an answer's wording (the
+  echo check would fail it), and no comma (the sentence check splits on it). **A new row needs one**; the test checks.
   `weight` decides how much a row matters for the answers, and is 0 for rows the person ruled out
   (design control after "a good template is enough", more languages after "one language", selling when
   not making a store). Rows that matter to the answers (weight over 1: selling, languages, design control, a blog

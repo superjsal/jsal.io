@@ -198,13 +198,13 @@
   // How well an answer does it, and the table's verdict as the end of a sentence ("Webflow has it built in")
   const LEVEL = { yes: 3, auto: 3, plugin: 2, code: 1, no: 0 };
   const DOES = { yes: 'has it built in', auto: 'does it automatically', plugin: 'needs a plugin or app for it', code: 'needs code for it', no: 'can’t do it' };
-  const DOES_BOTH = { yes: 'has both built in', auto: 'does both automatically', plugin: 'needs plugins or apps for them', code: 'needs code for them', no: 'can’t do either' };
-  // Each table row as a short phrase for "If you want …, Webflow has it built in"
+  // Each table row as a short phrase for "If you want …, Webflow has it built in": what the row's own question asks,
+  // no more ("Design every detail" is every detail, not design control in general)
   const PHRASE = {
-    blog: 'a blog', store: 'online selling', members: 'paid memberships', languages: 'more than one language', forms: 'contact and sign-up forms',
-    design: 'design control', meta_title: 'page titles and descriptions for search', urls: 'control over page addresses',
-    gsc404: 'redirects for old links', schema: 'search details like prices and ratings', noindex: 'pages kept out of search',
-    ai_crawlers: 'control over which AI bots read the site',
+    blog: 'a blog', store: 'to sell online', members: 'to sell memberships or paid posts', languages: 'more than one language', forms: 'contact and sign-up forms',
+    design: 'to shape every detail of the design', meta_title: 'to set page titles and descriptions for search', urls: 'to choose page addresses',
+    gsc404: 'old links to keep working when pages move', schema: 'to add details like prices and ratings for search engines', noindex: 'to keep a page out of search results',
+    ai_crawlers: 'to choose which AI bots may read the site',
     cost_site: 'a cheaper start', cost_store: 'a cheaper store', cost_members: 'a cheaper start with paid members',   // never shown (weight 0), but every row needs one (the test checks)
   };
   // How much a row matters for these answers; 0 when the person has ruled it out
@@ -212,7 +212,7 @@
     if (row.startsWith('cost_')) return 0;   // the budget question covers cost
     if (row === 'store') return a.what === 'store' || a.needs === 'sell' ? 3 : 0;   // not selling
     if (row === 'languages') return a.lang === 'yes' ? 3 : 0;   // one language
-    if (row === 'design') return a.look === 'template' ? 0 : 2;  // a good template is enough
+    if (row === 'design') return a.look === 'template' ? 0 : a.look === 'pixel' ? 2 : 1;  // a good template is enough; every detail is what "pixel" asked for
     if (row === 'blog') return a.what === 'content' || a.needs === 'blog' ? 3 : 1;
     if (row === 'members') return a.needs === 'members' ? 3 : 1;
     return 1;
@@ -233,12 +233,12 @@
       return { id: it.id, gap: lx - ly, w: weight(it.id, a), ly, vx, vy };
     }).filter((r) => r.gap > 0 && r.w > 0 && r.ly >= 0 && PHRASE[r.id]).sort((p, q) => q.w - p.w || q.gap - p.gap).slice(0, 2);
   }
-  // Table rows where x does more than y, in the table's own verdicts, so the sentence can be checked against it; two
-  // rows with the same verdicts are said together
+  // Table rows where x does more than y, in the table's own verdicts, so the sentence can be checked against it; a
+  // second row with the same verdicts is "The same goes if you want …"
   function rowsLine(rows, x, y) {
-    const [r, s] = rows, X = x.p.name, Y = y.p.name;
-    if (s && s.vx === r.vx && s.vy === r.vy) return `If you want ${PHRASE[r.id]} or ${PHRASE[s.id]}, ${X} ${DOES_BOTH[r.vx]}, while ${Y} ${DOES_BOTH[r.vy]}.`;
-    return rows.map((q, i) => `${i ? 'For' : 'If you want'} ${PHRASE[q.id]}, ${X} ${DOES[q.vx]}, while ${Y} ${DOES[q.vy]}.`).join(' ');
+    const [r, s] = rows, line = (q) => `If you want ${PHRASE[q.id]}, ${x.p.name} ${DOES[q.vx]}, while ${y.p.name} ${DOES[q.vy]}.`;
+    if (!s) return line(r);
+    return `${line(r)} ${s.vx === r.vx && s.vy === r.vy ? `The same goes if you want ${PHRASE[s.id]}.` : line(s)}`;
   }
   // What sets x apart from y, from the comparison table first (rows the person asked about, then the rest), then the
   // card tags y doesn't have, then x's first "Good fit" line. Null when there's nothing to go on. behind: x is behind
@@ -362,6 +362,6 @@
   const LOW_FIT = 4;
   // Answers that pull against each other, with the question to change
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, fitLines, PHRASE, DOES, DOES_BOTH, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
+  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);
