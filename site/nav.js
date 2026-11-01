@@ -411,7 +411,7 @@
     const unfold = () => root.classList.remove('jsal-intro');
     const logo = document.querySelector('[data-jsal-nav]');
     const part = (c) => logo && logo.querySelector('.jsal-' + c);
-    const [j, sal, stop, io] = ['j', 'sal', 'stop', 'io'].map(part);
+    const [j, sal, stop, io, caret] = ['j', 'sal', 'stop', 'io', 'caret'].map(part);
     if (!root.classList.contains('jsal-intro') || document.prerendering || !(j && sal && stop && io)) return unfold();
     try { sessionStorage.setItem('jsal-intro', '1'); } catch (e) {}
     const lerp = (a, b, t) => a + (b - a) * t;
@@ -420,29 +420,52 @@
     const play = () => {
       if (!root.classList.contains('jsal-intro')) return;
       const em = parseFloat(getComputedStyle(logo).fontSize);
-      // Where the letters sit unfolded (offsets ignore the fold's transforms); folded, the gem sits 0.535em after the j
-      const shift = stop.offsetLeft - (j.offsetLeft + 0.535 * em), salW = sal.offsetWidth;
-      j.insertAdjacentHTML('beforeend', '<svg class="jsal-morph" viewBox="0 0 900 1050" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-linecap="round"/><circle fill="currentColor" cx="236" cy="58" r="0"/></svg>');
-      const svg = j.lastElementChild, path = svg.firstElementChild, dot = svg.lastElementChild;
+      // Where the letters sit unfolded (offsets ignore the fold's transforms); folded, the gem sits 0.2845em after the j
+      const shift = stop.offsetLeft - (j.offsetLeft + 0.2845 * em), ioW = io.offsetWidth;
+      const gemFrom = j.offsetLeft + 0.2845 * em - sal.offsetLeft;   // the folded gem's left edge, from where "sal" starts
+      j.insertAdjacentHTML('beforeend', '<svg class="jsal-morph" viewBox="0 0 900 1050" aria-hidden="true"><path fill="none" stroke="currentColor"/><circle fill="currentColor" cx="586" cy="57.5" r="77" opacity="0"/><ellipse fill="currentColor"/><ellipse fill="currentColor"/></svg>');
+      const svg = j.lastElementChild, [path, dot, capTop, capEnd] = svg.children;
       // Its box starts 0.75em above the j's baseline, measured here in case the font's line metrics differ
       const probe = document.createElement('span');
       probe.style.cssText = 'display:inline-block;width:0;height:0';
       j.append(probe);
-      svg.style.top = `${probe.getBoundingClientRect().bottom - j.getBoundingClientRect().top - 0.75 * em}px`;
+      // The box goes on whole pixels, as browsers paint the folded J's; the drawing then moves inside it by the rest
+      // while the J sinks, so it starts where that J was painted and ends exactly on the text's j
+      const snap = Math.round, box = j.getBoundingClientRect();
+      const wantY = probe.getBoundingClientRect().bottom - 0.75 * em, wantX = box.left - 0.45 * em;
+      const settleX = ((snap(wantX) - wantX) * 1000) / em, settleY = ((snap(wantY) - wantY) * 1000) / em;
+      svg.style.top = `${snap(wantY) - box.top}px`;
+      svg.style.left = `${snap(wantX) - box.left}px`;
       probe.remove();
       logo.classList.add('jsal-unfolding');
       unfold();
-      // m: the J becomes the j (the stem sinks and steps left, the hook turns from a half circle to a quarter, the dot
-      // appears); u: the gem and "io" slide to their places, "sal" shows from the left a step behind the gem, "io" fades in
+      // m: the J becomes the j (the stem sinks straight down, the hook turns from a half circle to a quarter, the round
+      // ends flatten into the letter's square ones, the dot appears); u: the gem, "io" and the arrow slide to their places, "sal"
+      // shows from the left a step behind the gem, "io" fades in
       const draw = (m, u) => {
-        const x = lerp(486, 235.5, m), r = lerp(168, 70, m), y = lerp(507.5, 810, m), th = lerp(Math.PI, Math.PI / 2, m), tail = lerp(0, 15.5, m);
-        const ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th);
-        path.setAttribute('d', `M${x} ${lerp(97, 277.5, m)}V${y}A${r} ${r} 0 0 1 ${ex} ${ey}l${-Math.sin(th) * tail} ${Math.cos(th) * tail}`);
-        path.setAttribute('stroke-width', lerp(149, 147, m));
-        dot.setAttribute('r', 80 * clamp((m - 0.55) / 0.45));
+        const x = 585.5, r = lerp(168, 70, m), y = lerp(507.5, 810, m), th = lerp(Math.PI, Math.PI / 2, m), tail = lerp(0, 89.5, m);
+        const w = lerp(149, 147, m), top = lerp(97, 204, m);
+        const ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th), tx = ex - Math.sin(th) * tail, ty = ey + Math.cos(th) * tail;
+        path.setAttribute('d', `M${x} ${top}V${y}A${r} ${r} 0 0 1 ${ex} ${ey}L${tx} ${ty}`);
+        path.setAttribute('stroke-width', w);
+        svg.setAttribute('viewBox', `${settleX * m} ${settleY * m} 900 1050`);
+        // Each end is a dome as wide as the stroke that flattens as m grows: round on the J, square on the j
+        const dome = (el, cx, cy, deg) => {
+          el.setAttribute('cx', cx); el.setAttribute('cy', cy);
+          el.setAttribute('rx', (w / 2) * (1 - m)); el.setAttribute('ry', w / 2);
+          el.setAttribute('transform', `rotate(${deg} ${cx} ${cy})`);
+        };
+        dome(capTop, x, top, 90);
+        dome(capEnd, tx, ty, (Math.atan2(Math.cos(th), -Math.sin(th)) * 180) / Math.PI);
+        dot.setAttribute('r', 77); dot.setAttribute('opacity', clamp((m - 0.55) / 0.45));
         const back = `translateX(${-(1 - u) * shift}px)`;
         stop.style.transform = io.style.transform = back;
-        sal.style.clipPath = `inset(0 ${(1 - u) * salW}px 0 0)`;
+        // the menu's arrow starts just after the gem and ends after "io", still turned over if the menu opened meanwhile
+        if (caret) caret.style.transform = `translateX(${-(1 - u) * (shift + ioW)}px)` + (logo.getAttribute('aria-expanded') === 'true' ? ' rotate(180deg)' : '');
+        // "sal" fades in just behind the gem through a soft edge (none by the end), so no letter shows as a sliced
+        // sliver or slips out ahead of the gem
+        const edge = gemFrom + u * shift - 0.03 * em, soft = 0.35 * em * (1 - u);
+        sal.style.webkitMaskImage = sal.style.maskImage = `linear-gradient(90deg, black ${edge - soft}px, transparent ${edge}px)`;
         io.style.opacity = clamp((u - 0.55) / 0.45);
       };
       draw(0, 0);
@@ -451,12 +474,14 @@
         const t = now - start;
         draw(ease(clamp(t / 520)), ease(clamp((t - 440) / 520)));
         if (t < 960) return requestAnimationFrame(step);
-        // Hand over to the real letters: the drawn j fades as the j of the text comes back
-        stop.style.transform = io.style.transform = sal.style.clipPath = io.style.opacity = '';
-        j.style.transition = 'color .15s'; svg.style.transition = 'opacity .15s';
-        logo.classList.remove('jsal-unfolding'); svg.style.opacity = '0';
-        setTimeout(() => { svg.remove(); j.style.transition = ''; logo.classList.add('jsal-glint'); }, 200);
-        setTimeout(() => logo.classList.remove('jsal-glint'), 1000);
+        // Settle: the letters are in place, the drawn j stays on this page (nothing is swapped), then the glint
+        // (the last frame is left exactly as drawn, "sal"'s fully open mask included, so its pixels don't change; only the
+        // arrow, outside the name, hands its turn back to the menu)
+        if (caret) caret.style.transform = '';
+        logo.classList.add('jsal-unfolded');
+        logo.classList.remove('jsal-unfolding');
+        setTimeout(() => logo.classList.add('jsal-glint'), 250);
+        setTimeout(() => logo.classList.remove('jsal-glint'), 1100);
       };
       requestAnimationFrame(step);
     };

@@ -196,39 +196,50 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
   display: inline-block; width: 0.34em; height: 0.34em; margin: 0 0.05em 0 0.07em; overflow: hidden;
   color: transparent; background: var(--jsal-accent); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
-/* First page of a visit: the name opens folded into the mark, a J and its gem, and /nav.js unfolds it. The letters
-   keep their places, so nothing beside the logo moves; the J is drawn over the j, in a box from 0.75em above the
-   baseline to 0.3em below it (its units are thousandths of an em). */
+/* The name's parts sit in one line of text (.jsal-name), so the gem stands on the baseline like a full stop */
 .jsal-brand .jsal-j { position: relative; }
-html.jsal-intro [data-jsal-nav] .jsal-j, [data-jsal-nav].jsal-unfolding .jsal-j { color: transparent; }
+.jsal-brand .jsal-io { display: inline-block; position: relative; }
+.jsal-brand .jsal-stop { position: relative; }
+/* First page of a visit: the name opens folded into the mark, a J and its gem, and /nav.js unfolds it. The letters
+   keep their places, so nothing beside the logo moves; the J is drawn over the j, on the same stem, in a box from
+   0.75em above the baseline to 0.3em below it (its units are thousandths of an em). On that page the name is painted
+   on a layer of its own from the first frame to the last and the drawn j stays, so the letters keep one look
+   throughout instead of changing (sharper or softer) when the animation ends. */
+html.jsal-intro [data-jsal-nav] .jsal-name, [data-jsal-nav].jsal-unfolding .jsal-name,
+[data-jsal-nav].jsal-unfolded .jsal-name { will-change: transform; }
+html.jsal-intro [data-jsal-nav] .jsal-j, [data-jsal-nav].jsal-unfolding .jsal-j,
+[data-jsal-nav].jsal-unfolded .jsal-j { color: transparent; }
 html.jsal-intro [data-jsal-nav] .jsal-sal { clip-path: inset(0 100% 0 0); }
-html.jsal-intro [data-jsal-nav] .jsal-stop, html.jsal-intro [data-jsal-nav] .jsal-io { transform: translateX(-1.14em); }
+html.jsal-intro [data-jsal-nav] .jsal-stop, html.jsal-intro [data-jsal-nav] .jsal-io { transform: translateX(-1.39em); }
+html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.23em); }
+[data-jsal-nav].jsal-unfolding .jsal-caret { transition: none; }
 html.jsal-intro [data-jsal-nav] .jsal-io { opacity: 0; }
 html.jsal-intro [data-jsal-nav] .jsal-j::before, .jsal-morph {
-  position: absolute; left: -0.1em; top: 0.42em; width: 0.9em; height: 1.05em;
+  position: absolute; left: -0.45em; top: 0.22em; width: 0.9em; height: 1.05em;
+  top: calc(round(0.96875em, 1px) - 0.75em);   /* the baseline sits a whole number of pixels below the top */
 }
 html.jsal-intro [data-jsal-nav] .jsal-j::before {
   content: ""; background: var(--jsal-ink);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M486 97V507.5A168 168 0 0 1 150 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M486 97V507.5A168 168 0 0 1 150 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 97V507.5A168 168 0 0 1 249.5 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 97V507.5A168 168 0 0 1 249.5 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
 }
 .jsal-morph { overflow: visible; color: var(--jsal-ink); pointer-events: none; }
-/* Once unfolded, a light runs across the gem and on over "io", like loot catching the light */
-.jsal-brand .jsal-stop { position: relative; }
+/* Once unfolded, a light runs across the gem and on over "io", like loot catching the light. It passes over the
+   letters as a layer of its own, so the letters underneath are never repainted. */
 [data-jsal-nav].jsal-glint .jsal-stop::after {
   content: ""; position: absolute; inset: 0; transform: translateX(-120%);
   background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 0.85) 50%, transparent 70%);
   animation: jsal-glint .3s ease-in;
 }
-[data-jsal-nav].jsal-glint .jsal-io {
-  background: linear-gradient(115deg, var(--jsal-accent) 40%, rgb(255 255 255 / 0.85) 50%, var(--jsal-accent) 60%) 100% 0 / 300% 100% no-repeat;
-  -webkit-background-clip: text; background-clip: text; color: transparent;
+[data-jsal-nav].jsal-glint .jsal-io::after {
+  content: "io"; content: "io" / ""; position: absolute; inset: 0; color: transparent;
+  background: linear-gradient(115deg, transparent 40%, rgb(255 255 255 / 0.85) 50%, transparent 60%) 100% 0 / 300% 100% no-repeat;
+  -webkit-background-clip: text; background-clip: text;
   animation: jsal-glint-text .5s ease-out .18s both;
 }
 @keyframes jsal-glint { to { transform: translateX(120%); } }
 @keyframes jsal-glint-text { from { background-position: 100% 0; } to { background-position: 0 0; } }
 @media (prefers-reduced-motion: reduce) {
-  [data-jsal-nav].jsal-glint .jsal-stop::after { display: none; }
-  [data-jsal-nav].jsal-glint .jsal-io { animation: none; background: none; color: var(--jsal-accent); }
+  [data-jsal-nav].jsal-glint .jsal-stop::after, [data-jsal-nav].jsal-glint .jsal-io::after { display: none; }
 }
 /* Page titles in the home page's serif, the gold word in italic (as "one job" on the home page) */
 .jsal-title { margin: 0; font: 700 20px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }

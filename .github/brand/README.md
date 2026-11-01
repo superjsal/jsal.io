@@ -33,12 +33,19 @@ SVG here and `site/favicon.svg`; edit the mark in that script, not in the files.
 
 ## The unfold
 
-On the first page of a visit the top bar's name opens as the tile's mark, a J and its gem, without the tile.
-The J sinks through the line into the lowercase j of jsal and gets its dot, the gem slides right with "sal"
-coming out behind it, "io" fades in, and a light runs across the gem and on over "io". About two seconds in all;
-the letters keep their places throughout, so nothing beside the logo moves. Each page's head script folds the
-name before the first paint, `site/nav.js` plays it, and later pages in the visit, pages loaded ahead and reduced
-motion show the name as it is.
+On the first page of a visit the top bar's name opens as the tile's mark, a J and its gem, without the tile, with
+the menu arrow tucked in after the gem. The J sinks straight down through the line into the lowercase j of jsal
+(its ends flatten and its dot fades in), the gem slides right with "sal" fading in just behind it, "io" fades in,
+the arrow travels out to its place, and a light runs across the gem and on over "io". About two seconds in all;
+the letters keep their places throughout, so nothing beside the logo moves.
+
+- Each page's head script folds the name before the first paint (the J is drawn by CSS until `site/nav.js` takes
+  over and animates it); later pages in the visit, pages loaded ahead and reduced motion show the name as it is.
+- On that first page the drawn j stays after the unfold and the name is painted on its own layer throughout, so
+  nothing is swapped or repainted when it ends. Windows draws plain text sharper than animated text, and swapping
+  back to the real letter made the name flicker there.
+- The drawing lines up with Inter's bold j to within a screen pixel at 100–200% scaling: its box sits on whole
+  pixels and the drawing settles inside it by the rest while the J sinks.
 
 ## Colours
 
