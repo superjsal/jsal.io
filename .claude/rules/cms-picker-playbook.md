@@ -7,6 +7,7 @@ paths:
   - ".github/scripts/check_data.py"
   - ".github/scripts/check_sources*"
   - ".github/scripts/personas.test.js"
+  - ".github/scripts/expert-cases.js"
   - ".github/scripts/platform-page.html"
   - ".github/workflows/publish-cms-picker.yml"
   - ".github/workflows/keep-playbook-awake.yml"

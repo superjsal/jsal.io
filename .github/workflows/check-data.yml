@@ -30,6 +30,8 @@ jobs:
         run: python .github/scripts/check_data.py --list
       - name: Persona tests (the agreed Find my fit results)
         run: node .github/scripts/personas.test.js
+      - name: Expert cases (how often Find my fit agrees with a consultant; a report, never a failure)
+        run: node .github/scripts/expert-cases.js
 
   browser:
     runs-on: ubuntu-latest

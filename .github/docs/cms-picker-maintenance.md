@@ -225,6 +225,13 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
     level on points but ahead on their card's "Good fit" lines or the look (their box must say which) or tied, and how many show a
     "Closest match" (first scores under `LOW_FIT`, 4: 2,171 today). No persona may get only a closest match.
   - every tagged "Good fit" line (`fitFor`) is still on its card and answers a real question and answer.
+- **Expert cases** (`node .github/scripts/expert-cases.js`, also in `check.py` and the Action): 40 real-world clients
+  and the picks an experienced web consultant would accept, written without looking at the quiz's results (drafted by
+  Claude on 2026-11-01, set up as a standing report at John's request). It never fails a check; it reports how many
+  agree (38 of 40 when set up, `BASELINE`) and names the ones that differ, and says so when a change takes it below
+  the baseline. Raise `BASELINE` when agreement rises; edit a case only when its expert judgment is wrong, never to
+  match a result. The two that differed when set up: Framer third for a musician selling on no budget, and Duda first
+  for an agency-built news site (Duda's card lists "Blog or content", John's call on the Playbook tab).
 - **Nine rules** that must hold for every answer set (a failure names the first few):
   - the first match is made for what they're making, unless the page shows the "Closest match" notice;
   - someone not technical never gets a "Needs a developer" platform first;

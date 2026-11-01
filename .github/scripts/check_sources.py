@@ -1,5 +1,5 @@
 # Are the CMS Picker's source links still alive? Every answer links the platform's own help page (data.json
-# sourceUrl), and quiz.json links domain guides and import guides. Help centres move pages often, so once a
+# sourceUrl), and quiz.json links domain guides, import guides and free-plan pages. Help centres move pages often, so once a
 # month (the "Source links" Action) and by hand this asks each unique address for its page and reports:
 #   dead     404, 410 or a 5xx twice in a row, or no such host: fix the source on the Playbook's CMS Picker tab
 #   blocked  401, 403, 429 or 999, or no answer within the time limit twice: the site refuses or stalls scripts; open it in a browser
@@ -32,6 +32,8 @@ def collect():
     for dest, origins in (quiz.get('imports') or {}).items():
         for org, v in origins.items():
             if isinstance(v, dict) and v.get('url'): used[v['url']].add(f'{dest} imports {org}')
+    for pid, v in (quiz.get('freeDomain') or {}).items():
+        if v.get('url'): used[v['url']].add(f'{pid} freeDomain')
     return used
 
 

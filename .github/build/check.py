@@ -244,6 +244,10 @@ if shutil.which('node'):
     run = subprocess.run(['node', str(ROOT / '.github' / 'scripts' / 'personas.test.js')], capture_output=True, text=True, encoding='utf-8')
     if run.returncode:
         fail('CMS Picker persona tests:\n      ' + '\n      '.join(l for l in run.stdout.splitlines() if l.startswith('FAIL')) + (run.stderr.strip() and '\n      ' + run.stderr.strip()))
+    # Expert cases: how often the quiz agrees with a consultant's picks, a report that never fails (only a crash does)
+    run = subprocess.run(['node', str(ROOT / '.github' / 'scripts' / 'expert-cases.js')], capture_output=True, text=True, encoding='utf-8')
+    if run.returncode: fail('CMS Picker expert cases didn\'t run: ' + run.stderr.strip())
+    else: print('Note: ' + run.stdout.strip().replace('\n', '\n      '))
 else:
     print('Note: Node isn\'t installed, so the CMS Picker persona tests were skipped.')
 
