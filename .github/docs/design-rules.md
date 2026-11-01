@@ -113,9 +113,16 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   reserves its first question's height (`.qz` min-height per column count) so the rows under it don't move at
   load or between questions.
 - **A result card says everything it knows.** Each match lists every reason with its docs link, the facts, what
-  tipped it and what counts against it, even when two cards repeat reasons and a card runs past a phone screen.
-  Decided on purpose: the reasons are the evidence the pick stands on, and two platforms fitting for the same
-  reasons is the honest answer. Don't fold or dedupe them.
+  tipped it and what counts against it, even when a card runs past a phone screen: no trimming the reasons two cards
+  share, and no hiding long lists. The reasons are the evidence the pick stands on. The one exception: a card whose
+  list is an exact copy of another card's collapses to "Fits your answers for the same reasons as …" (the full list
+  is on the card above), and its box still says how it differs. The personas test checks this on every answer set.
+- **The comparison on phones** is a card per question, one 44px line per platform (name, tag, "varies"). Who's
+  compared is said once, in a card at the top (each platform's name, match label and type), not on every row. With
+  Tags on, an answer with a note is a button the width of its row, a muted chevron at its end; tapped, the note opens
+  under the answer and stays open (no floating box, which covered the next row and vanished on scroll). Group
+  headings are labels with a rule above, not boxes. On short screens with the full table (a phone on its side) the
+  pinned header drops its type line. On touch screens the Top button shows only while scrolling back up.
 
 ## Motion
 

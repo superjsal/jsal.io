@@ -225,7 +225,7 @@ p, li { text-wrap: pretty; }
 .m-jscale .tr { top: 9%; right: 8%; border-left: 0; border-bottom: 0; }
 .m-jscale .bl { bottom: 9%; left: 8%; border-right: 0; border-top: 0; }
 .m-jscale .br { bottom: 9%; right: 8%; border-left: 0; border-top: 0; }
-.m-jscale .tag { position: absolute; left: 50%; bottom: -10px; translate: -50% 0; padding: 3px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad); color: var(--jsal-bg); font: 600 11px/1.4 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
+.m-jscale .tag { position: absolute; left: 50%; bottom: -10px; translate: -50% 0; padding: 3px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-warn); color: var(--jsal-bg); font: 600 11px/1.4 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
 .m-jscale .outs { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .m-jscale .out { display: flex; align-items: center; gap: 10px; padding: 6px; min-width: 0; font: 11px/1.35 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 .m-jscale .out .photo { flex: none; width: 38px; aspect-ratio: 4 / 3; border-radius: 3px; }
@@ -339,7 +339,7 @@ p, li { text-wrap: pretty; }
 
 footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
 footer nav { display: flex; gap: 4px; }
-footer a, footer .foot-btn { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
+footer a, footer .foot-btn { padding: 8px; color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 2px; }   /* the site's own links: gold, as in every Made by line */
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
 /* Touch screens: the footer links and button at finger size (they're 37px tall with the 8px padding alone) */
 @media (pointer: coarse) { footer a, footer .foot-btn { min-height: 44px; display: inline-flex; align-items: center; } }

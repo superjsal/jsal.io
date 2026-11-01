@@ -154,7 +154,7 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
 - **48 personas** (bakery, maker shop, B2B wholesaler, government site, and since v3 eleven hard cases: a need the
   builders cover, a store that is also a publication, moving from Wix or Shopify…) must keep the first places and top
   threes John agreed. A failure means a result changed: agree the new result with John before editing the expectation.
-- **Every answer combination (80,640)**, for every result card:
+- **Every answer combination (132,480)**, for every result card:
   - it has a box saying what sets it apart, and never mentions a row those answers rule out;
   - "the same reasons as X" appears only when the reasons really are the same, the top two never
     show an identical list, and the second and third never show the same box;

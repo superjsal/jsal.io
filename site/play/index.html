@@ -245,7 +245,7 @@ p, li { text-wrap: pretty; }
 
 footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
 footer nav { display: flex; gap: 4px; }
-footer a, footer .foot-btn { padding: 8px; text-decoration: none; color: var(--jsal-ink); }
+footer a, footer .foot-btn { padding: 8px; color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 2px; }   /* the site's own links: gold, as in every Made by line */
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
 /* Touch screens: the footer links and button at finger size (they're 37px tall with the 8px padding alone) */
 @media (pointer: coarse) { footer a, footer .foot-btn { min-height: 44px; display: inline-flex; align-items: center; } }

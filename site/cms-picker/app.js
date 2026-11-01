@@ -303,10 +303,7 @@
           cell.dataset.scope = scope;
           line.append(s);
         }
-        const plat = el('span', 'plat', p.name);
-        const fitLabel = state.quiz && state.quiz.fit[p.id];
-        if (fitLabel && PHONE.matches) plat.append(' ', el('span', `fitp${fitLabel.low ? ' low' : ''}`, fitLabel.label));   // phones: the label on each row, as the header isn't shown
-        cell.append(plat, line);
+        cell.append(el('span', 'plat', p.name), line);
         if (c.mark && !GENERIC.test(c.mark.trim())) {
           cell.append(el('span', 'mark', c.mark));
           cell.dataset.note = c.mark;
@@ -314,6 +311,15 @@
         if (c.where) {   // where to find the setting, e.g. "Pages → page settings → SEO"
           cell.append(el('span', 'where', `Where: ${c.where}`));
           cell.dataset.where = c.where;
+        }
+        if (cell.dataset.note || cell.dataset.where) {
+          const b = el('button', 'nbtn');
+          b.type = 'button';
+          b.setAttribute('aria-expanded', 'false');
+          b.setAttribute('aria-label', `${p.name}’s note`);
+          b.addEventListener('click', () => b.setAttribute('aria-expanded', String(cell.classList.toggle('open'))));
+          cell.classList.add('noted');
+          cell.append(b);
         }
         if (!state.notes && (cell.dataset.note || cell.dataset.scope || cell.dataset.where)) cell.tabIndex = 0;   // notes off: Tab to a cell opens its note too
         row.append(cell);
@@ -372,7 +378,7 @@
     const hideTip = () => { tip.hidden = true; tipCell = null; };
     const showTip = (cell) => {
       if (cell === tipCell) return;
-      if (state.notes || !cell || !(cell.dataset.note || cell.dataset.scope || cell.dataset.where)) { hideTip(); return; }
+      if (state.notes || PHONE.matches || !cell || !(cell.dataset.note || cell.dataset.scope || cell.dataset.where)) { hideTip(); return; }
       tipCell = cell;
       tip.replaceChildren();
       if (cell.dataset.note) tip.append(el('span', null, cell.dataset.note));
@@ -405,6 +411,12 @@
     const totop = $('#totop');
     new IntersectionObserver(([e]) => totop.classList.toggle('show', !e.isIntersecting)).observe($('.hero'));
     totop.addEventListener('click', () => scrollTo({ top: 0 }));   // smooth via scroll-behavior in shell.css
+    let lastY = scrollY;
+    addEventListener('scroll', () => {
+      if (Math.abs(scrollY - lastY) < 12) return;   // ignore jitter
+      totop.classList.toggle('up', scrollY < lastY);
+      lastY = scrollY;
+    }, { passive: true });
 
     // "Show notes" (remembered in this browser), off by default. Each switch is one side of a two-button track
     const setPair = (btn, on) => { btn.setAttribute('aria-pressed', String(on)); btn.previousElementSibling.setAttribute('aria-pressed', String(!on)); };
