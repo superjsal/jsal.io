@@ -46,11 +46,11 @@ const PERSONAS = [
   // Stores
   ['Etsy-style maker shop', { what: 'store', who: 'easy', care: 'no', size: 'small', needs: 'none', look: 'template', moving: 'no' },
     { first: ['shopify'], top3: ['shopify'], not: ['magento', 'drupal', 'sanity'] }],
-  // Magento 2 while it's on the picker, BigCommerce once it's switched off (John, 2026-11-01)
+  // BigCommerce since Magento 2 came off the picker (John, 2026-11-01)
   ['5,000-product store with a dev team', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', look: 'pixel', moving: 'no' },
-    { first: ['magento', 'bigcommerce'], top3: ['magento', 'shopify'], not: ['wix', 'squarespace'] }],
+    { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'], not: ['wix', 'squarespace'] }],
   ['Wholesale B2B store with a developer, two languages', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', lang: 'yes', look: 'pixel', moving: 'no' },
-    { first: ['magento', 'bigcommerce'], top3: ['magento', 'shopify', 'bigcommerce'] }],
+    { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
   ['Clothing brand, about 50 products, wants design control', { what: 'store', who: 'learn', care: 'no', size: 'small', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['shopify', 'wix', 'squarespace'], top3: ['shopify'] }],   // a three-way tie: the store questions don't ask about design
   ['Coffee roaster selling to cafés (B2B), not technical', { what: 'store', who: 'easy', care: 'no', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
@@ -58,7 +58,7 @@ const PERSONAS = [
   ['Wholesaler with trade accounts (B2B), happy to learn', { what: 'store', who: 'learn', care: 'no', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
     { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
   ['Parts supplier selling to businesses (B2B), with a developer', { what: 'store', who: 'dev', care: 'yes', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
-    { first: ['magento', 'bigcommerce'], top3: ['magento', 'bigcommerce'] }],
+    { first: ['bigcommerce'], top3: ['bigcommerce'] }],
   // Quiz v3 (agreed 2026-10-31): without the "adding features" and "moving later" points, these four settle on the builders
   ['Local business that needs bookings, happy to learn', { what: 'site', kind: 'local', who: 'learn', care: 'yes', needs: 'bookings', look: 'template', moving: 'no', budget: 'low' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'] }],
@@ -81,40 +81,40 @@ const PERSONAS = [
     { first: ['squarespace', 'ghost'], top3: ['squarespace', 'ghost'] }],
   ['Online course creator with members', { what: 'content', who: 'easy', care: 'no', needs: 'members', look: 'template', moving: 'no' },
     { first: ['ghost'], top3: ['ghost', 'squarespace'], not: ['hubspot'] }],
-  // Substack or Square Online first once it is on the picker (agreed with John, 2026-11-01)
+  // Substack or Square Online first since they joined the picker (agreed with John, 2026-11-01)
   ['Paid newsletter, not technical, two languages', { what: 'content', who: 'easy', care: 'no', needs: 'members', lang: 'yes', look: 'template', moving: 'no' },
-    { first: ['ghost', 'substack'], top3: ['ghost'], not: ['hubspot'] }],
+    { first: ['substack'], top3: ['substack', 'ghost'], not: ['hubspot'] }],
   // HubSpot's card line "You don't otherwise use HubSpot" covers publications (agreed 2026-11-01), so Webflow, the one
   // made for them with languages built in, comes first
-  // Substack or Square Online first once it is on the picker (agreed with John, 2026-11-01)
+  // Substack or Square Online first since they joined the picker (agreed with John, 2026-11-01)
   ['Nonprofit with news in two languages', { what: 'content', who: 'learn', care: 'no', needs: 'none', lang: 'yes', look: 'template', moving: 'no' },
-    { first: ['webflow', 'substack'], top3: ['webflow', 'ghost'], not: ['hubspot'] }],
+    { first: ['substack'], top3: ['substack', 'webflow', 'ghost'], not: ['hubspot'] }],
   ['Developer building an app and a site', { what: 'custom', who: 'dev', care: 'yes', needs: 'none', look: 'pixel', moving: 'no' },
     { first: ['sanity'], top3: ['sanity'] }],
   // With "What can you spend each month?" (the "What it costs to start" bands)
   ['Local bakery, no budget yet', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', look: 'template', moving: 'no', budget: 'none' },
     { first: ['wix'], top3: ['wix'] }],
-  // Substack or Square Online first once it is on the picker (agreed with John, 2026-11-01)
+  // Substack or Square Online first since they joined the picker (agreed with John, 2026-11-01)
   ['Etsy-style maker shop, up to $25 a month', { what: 'store', who: 'easy', care: 'no', size: 'small', needs: 'none', look: 'template', moving: 'no', budget: 'low' },
-    { first: ['squarespace', 'square'], top3: ['squarespace', 'shopify'] }],
+    { first: ['square'], top3: ['square', 'squarespace', 'shopify'] }],
   ['Etsy-style maker shop, up to $100 a month', { what: 'store', who: 'easy', care: 'no', size: 'small', needs: 'none', look: 'template', moving: 'no', budget: 'mid' },
     { first: ['shopify'], top3: ['shopify'] }],
   ['Photographer, no budget yet', { what: 'site', kind: 'creative', who: 'learn', care: 'no', needs: 'none', look: 'visual', moving: 'no', budget: 'none' },
     { first: ['framer'], top3: ['framer'] }],
-  // Substack or Square Online first once it is on the picker (agreed with John, 2026-11-01)
+  // Substack or Square Online first since they joined the picker (agreed with John, 2026-11-01)
   ['Newsletter with paid members, up to $25 a month', { what: 'content', who: 'learn', care: 'no', needs: 'members', look: 'template', moving: 'no', budget: 'low' },
-    { first: ['squarespace', 'substack'], top3: ['squarespace', 'ghost'], not: ['hubspot'] }],
+    { first: ['substack'], top3: ['substack', 'squarespace', 'ghost'], not: ['hubspot'] }],
   ['5,000-product store with a dev team, cost no object', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', look: 'pixel', moving: 'no', budget: 'any' },
-    { first: ['magento', 'bigcommerce'], top3: ['magento'] }],
+    { first: ['bigcommerce'], top3: ['bigcommerce'] }],
   // Hard cases for quiz v3 (agreed 2026-10-31): a need the builders cover, needs the quiz can only take one of, a budget
   // against an agency's usual picks, moving from a platform on the picker (no points; the one you're leaving is never a
   // match), and a store that is also a publication
   // WordPress may show third since it counts as suiting local businesses (agreed 2026-11-01); first it must not be
   ['Not technical, wants a blog beside the site, hosting handled', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'blog', look: 'template', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['drupal', 'sanity'] }],
-  // Substack or Square Online first once it is on the picker (agreed with John, 2026-11-01)
+  // Substack or Square Online first since they joined the picker (agreed with John, 2026-11-01)
   ['Publication with paid members, two languages', { what: 'content', who: 'learn', care: 'no', needs: 'members', lang: 'yes', look: 'template', moving: 'no' },
-    { first: ['ghost', 'substack'], top3: ['ghost', 'squarespace'], not: ['hubspot'] }],
+    { first: ['substack'], top3: ['substack', 'ghost', 'squarespace'], not: ['hubspot'] }],
   ['Agency-built B2B site on a small budget', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', needs: 'none', look: 'visual', moving: 'no', budget: 'low' },
     { first: ['hubspot', 'webflow'], top3: ['hubspot', 'webflow'] }],
   ['Developer who wants to be able to leave later', { what: 'custom', who: 'dev', care: 'yes', needs: 'none', look: 'pixel', moving: 'other' },

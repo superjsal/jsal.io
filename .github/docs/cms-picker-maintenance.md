@@ -141,6 +141,11 @@ Shared by the page and the tests, so they always run the same code.
 - **Platforms switched off the picker** keep their `quiz.json` values; the persona test skips them, and drops them
   from a persona's expected first places as from its top three. That's how a persona can name a platform not yet
   live (Substack, Square Online) or switched off (Magento 2): `first: ['ghost', 'substack']` holds both ways.
+- **The lineup since 2026-11-01:** 14 platforms. Magento 2 came off (few start new Magento sites; it stays in the
+  Playbook), and Substack (paid newsletters) and Square Online (shops and cafés on Square) joined, researched against
+  their own help centres (Claude's notes in the worktree's `private\playbook-research\substack-square-draft-2026-11.md`).
+  Three of their answers are "not verified" for want of a docs page: structured data on both, and AI bots on Square
+  Online. Their logos are Simple Icons files in `cms-picker/logos/`.
 - **Adding or removing a platform:** the code (its `quiz.json` values, personas, expert cases) ships first and holds
   with it on or off; then John switches it on the Playbook tab and the publish runs; then the hand-written counts and
   the home page's Platform guides grid follow (they would link a page that doesn't exist yet if they went first).
