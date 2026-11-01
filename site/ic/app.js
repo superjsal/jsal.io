@@ -145,23 +145,50 @@ function entriesFor(p, secs = [curSec(p)]) {
   }));
 }
 
+// A success whose form closes (Save) is said at the bottom, briefly; one whose button stays is said on the button
 function toast(msg) {
   const t = $('#toast');
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(toast.t);
+  toast.stay = false;
   toast.t = setTimeout(() => t.classList.remove('show'), 1800);
 }
+// An error stays next to what was tried (the form, card or row of the last click) until the next try there, as a
+// message that fades could go unread. Where there's no such place (a refresh on load), the bottom message stays put
+let lastAct = null;
+const tryAgain = (e) => {
+  lastAct = e.target;
+  document.querySelectorAll('.jsal-error[data-said]').forEach((x) => { if (x.parentElement.contains(e.target)) x.remove(); });
+  if (toast.stay) { toast.stay = false; $('#toast').classList.remove('show'); }
+};
+document.addEventListener('click', tryAgain, true);
+document.addEventListener('submit', tryAgain, true);
+function fail(msg, near = lastAct) {
+  const at = near && near.isConnected && near.closest && (near.closest('form') || near.closest('.card, article, section, li'));
+  if (!at) { toast(msg); clearTimeout(toast.t); toast.stay = true; return; }
+  let x = at.querySelector(':scope > .jsal-error[data-said]');
+  if (!x) {
+    x = document.createElement('p');
+    x.className = 'jsal-error';
+    x.dataset.said = '';
+    x.setAttribute('role', 'alert');
+    const acts = at.querySelector(':scope > .edit-actions');
+    if (acts) acts.before(x); else at.append(x);
+  }
+  x.textContent = msg;
+}
 async function copy(text, selectEl) {
+  const btn = lastAct && lastAct.closest && lastAct.closest('button');
   try {
     await navigator.clipboard.writeText(text);
-    toast('Copied');
+    if (btn) window.jsalDone(btn); else toast('Copied');
   } catch {
     if (selectEl) {
       if (selectEl.select) selectEl.select();
       else { const r = document.createRange(); r.selectNodeContents(selectEl); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
     }
-    toast('Press Ctrl+C to copy');
+    fail('Couldn’t copy. The text is selected: press Ctrl+C');
   }
 }
 
@@ -366,7 +393,7 @@ async function saveNote(warn, button) {
   if (await changedMeanwhile(button && button.closest('form'), 'platform_notes', { platform: p.id }, 'this watch-out', 'removed this watch-out', button)) return;
   const row = warn && { platform: p.id, warn, at: new Date().toISOString(), edited_by: R.me };
   const { error } = row ? await sb.from('platform_notes').upsert(row) : await sb.from('platform_notes').delete().eq('platform', p.id);
-  if (error) { if (button) button.disabled = false; return toast(failText(error, 'Couldn’t save')); }
+  if (error) { if (button) button.disabled = false; return fail(failText(error, 'Couldn’t save')); }
   if (row) NOTES.set(p.id, row); else NOTES.delete(p.id);
   state.editing = null;
   renderPanel();
@@ -859,7 +886,7 @@ async function pkSetPublic(p, on, el) {
   if (PK.rows.has(p.id)) return savePicker(p, { public: on }, el, msg);
   el.disabled = true;
   const { data, error } = await sb.from('picker').insert({ platform: p.id, public: true }).select().single();
-  if (error) { el.disabled = false; return toast(failText(error, 'Couldn’t add it')); }
+  if (error) { el.disabled = false; return fail(failText(error, 'Couldn’t add it')); }
   PK.rows.set(p.id, data);
   renderPickerView();
   renderPlatformList();
@@ -870,7 +897,7 @@ async function savePicker(p, change, button, msg = 'Saved. Live on the CMS Picke
   if (button) button.disabled = true;
   const upd = { ...change, at: new Date().toISOString() };
   const { error } = await sb.from('picker').update(upd).eq('platform', p.id);
-  if (error) { if (button) button.disabled = false; return toast(failText(error, 'Couldn’t save')); }
+  if (error) { if (button) button.disabled = false; return fail(failText(error, 'Couldn’t save')); }
   Object.assign(r, upd);
   PK.editing = null;
   pkKeep(button);
@@ -881,12 +908,12 @@ $('#pk-view').addEventListener('change', async (e) => {
   const inp = e.target.closest('[data-pk-logo]');
   if (!inp || !inp.files[0]) return;
   const f = inp.files[0], p = P.find((x) => x.id === PK.sel);
-  if (f.size > 150000) return toast('That file is over 150 KB');
+  if (f.size > 150000) return fail('That file is over 150 KB');
   let logo = '';
   if (f.type === 'image/svg+xml' || /\.svg$/i.test(f.name)) logo = cleanSvg(await f.text());
   else if (f.type === 'image/png') logo = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => res(''); fr.readAsDataURL(f); });
-  else return toast('Use an SVG or PNG file');
-  if (!logo) return toast('That file couldn’t be read');
+  else return fail('Use an SVG or PNG file');
+  if (!logo) return fail('That file couldn’t be read');
   savePicker(p, { logo }, null, 'Logo saved. On the CMS Picker after the next publish');
 });
 $('#pk-view').addEventListener('input', (e) => {
@@ -950,7 +977,7 @@ $('#pk-view').addEventListener('submit', (e) => {
       else if (kind === 'list') pr[fld] = f[fld].value.split(',').map((t) => t.trim()).filter(Boolean);
       else pr[fld] = f[fld].value.trim();
     });
-    if (!pr.type) { f.type.focus(); return toast('Add the type'); }
+    if (!pr.type) { f.type.focus(); return fail('Add the type'); }
     return savePicker(p, { profile: pr }, btn);
   }
 });
@@ -1062,7 +1089,7 @@ async function saveEdit(key, form, button, p = P.find((x) => x.id === state.plat
     how: 'how' in body ? body.how : null, warn: 'warn' in body ? body.warn : null, at: body.at, edited_by: R.me };
   const { error } = row ? await sb.from('edits').upsert(row)
     : EDITS.has(docId) ? await sb.from('edits').delete().match({ platform: p.id, sec, item: id }) : { error: null };
-  if (error) { if (button) button.disabled = false; return toast(failText(error, 'Couldn’t save')); }
+  if (error) { if (button) button.disabled = false; return fail(failText(error, 'Couldn’t save')); }
   if (row) EDITS.set(docId, row); else EDITS.delete(docId);
   state.editing = null;
   keepPlace(form || button, refresh);
@@ -1128,7 +1155,7 @@ function renderPlatformList() {
 }
 async function reloadContent() {
   const app = await sb.from('app_data').select('data,updated_at').eq('id', 'defaults').maybeSingle();
-  if (app.error || !app.data) return toast('Couldn’t reload the Playbook. Refresh the page');
+  if (app.error || !app.data) return fail('Couldn’t reload the Playbook. Refresh the page', null);
   const data = { ...app.data.data, AT: app.data.updated_at };
   useContent(data);
   const c = readCache(R.me);
@@ -1155,7 +1182,7 @@ $('#platform-list').addEventListener('click', async (e) => {
   b.disabled = true;
   const { error } = await sb.rpc('set_platform_hidden', { p_id: id, p_hidden: hide });
   b.disabled = false;
-  if (error) return toast(platError(error, hide ? 'Couldn’t hide it' : 'Couldn’t restore it'));
+  if (error) return fail(platError(error, hide ? 'Couldn’t hide it' : 'Couldn’t restore it'));
   await reloadContent();
   await loadPicker();
   $(`[data-plat-team="${id}"]`)?.focus();
@@ -1174,7 +1201,7 @@ $('#add-platform').addEventListener('submit', async (e) => {
   btn.disabled = true;
   const { error } = await sb.rpc('add_platform', { p_id: id, p_name: name, p_about: f.pabout.value.trim() });
   btn.disabled = false;
-  if (error) return toast(platError(error, 'Couldn’t add it'));
+  if (error) return fail(platError(error, 'Couldn’t add it'));
   f.reset();
   delete f.pid.dataset.typed;
   await reloadContent();
@@ -1235,7 +1262,7 @@ $('#team-view').addEventListener('click', async (e) => {
   t.disabled = true;
   const { error } = await call;
   t.disabled = false;
-  if (error) return toast(failText(error, 'That didn’t work'));
+  if (error) return fail(failText(error, 'That didn’t work'));
   await loadTeam();
   toast(done);
 });
@@ -1345,12 +1372,12 @@ function threadHtml(r) {
 function addComment(c) { if (!R.comments.has(c.request_id)) R.comments.set(c.request_id, []); R.comments.get(c.request_id).push(c); }
 async function postComment(form) {
   const id = form.dataset.commentForm, body = form.body.value.trim();
-  if (!body) { form.body.focus(); return toast('Write a comment first'); }
+  if (!body) { form.body.focus(); return fail('Write a comment first'); }
   const btn = form.querySelector('[type="submit"]');
   btn.disabled = true;
   const { data, error } = await sb.from('comments').insert({ request_id: id, body }).select().single();
   btn.disabled = false;
-  if (error) return toast(failText(error, 'Couldn’t post your comment'));
+  if (error) return fail(failText(error, 'Couldn’t post your comment'));
   addComment(data);
   R.drafts.delete(id);
   renderRequests();
@@ -1417,12 +1444,12 @@ async function postRequest(f) {
   let item = t === 'correction' ? f.item.value : '';
   if (item.startsWith('content:') && !$('#req-ptype-wrap').hidden && f.ptype.value) item = item.replace('content:', `content.${f.ptype.value}:`);
   const body = { type: t, title: f.title.value.trim(), details: f.details.value.trim(), platform: t === 'platform' ? '' : f.platform.value, item };
-  if (!body.title) { f.title.focus(); return toast('Add a title'); }
+  if (!body.title) { f.title.focus(); return fail('Add a title'); }
   const btn = f.querySelector('[type="submit"]');
   btn.disabled = true;
   const { data, error } = await sb.from('requests').insert(body).select().single();
   btn.disabled = false;
-  if (error) return toast(failText(error, 'Couldn’t post'));
+  if (error) return fail(failText(error, 'Couldn’t post'));
   R.reqs.set(data.id, data);
   // Posting counts as your upvote.
   const v = await sb.from('votes').insert({ request_id: data.id });
@@ -1441,7 +1468,7 @@ async function toggleVote(id) {
     ? await sb.from('votes').delete().match({ request_id: id, user_id: R.me })
     : await sb.from('votes').insert({ request_id: id });
   R.busy.delete(id);
-  if (error && !/duplicate/i.test(error.message)) return toast(failText(error, 'Couldn’t save your upvote'));
+  if (error && !/duplicate/i.test(error.message)) return fail(failText(error, 'Couldn’t save your upvote'));
   if (had) R.votes.get(id).delete(R.me); else addVote(id, R.me);
   renderRequests();
 }
@@ -1495,7 +1522,7 @@ $('#req-list').addEventListener('click', async (e) => {
     if (!confirm('Delete this comment?')) return;
     const id = dc.dataset.delComment;
     const { error } = await sb.from('comments').delete().eq('id', id);
-    if (error) return toast(failText(error, 'Couldn’t delete'));
+    if (error) return fail(failText(error, 'Couldn’t delete'));
     R.comments.forEach((list, k) => R.comments.set(k, list.filter((c) => c.id !== id)));
     renderRequests(); toast('Comment deleted');
     return;
@@ -1504,7 +1531,7 @@ $('#req-list').addEventListener('click', async (e) => {
   if (d && confirm('Delete this request for everyone?')) {
     const id = d.dataset.del;
     const { error } = await sb.from('requests').delete().eq('id', id);
-    if (error) return toast(failText(error, 'Couldn’t delete'));
+    if (error) return fail(failText(error, 'Couldn’t delete'));
     R.reqs.delete(id); R.votes.delete(id); renderRequests(); toast('Request deleted');
   }
 });
@@ -1532,7 +1559,7 @@ $('#req-list').addEventListener('change', async (e) => {
   s.disabled = true;
   const { error } = await sb.from('requests').update(body).eq('id', id);
   s.disabled = false;
-  if (error) return toast(failText(error, 'Couldn’t change the status'));
+  if (error) return fail(failText(error, 'Couldn’t change the status'));
   Object.assign(R.reqs.get(id), body);
   renderRequests();
   toast(`Marked ${REQ_STATUS[s.value]}`);
@@ -1665,7 +1692,7 @@ async function boot() {
     sb.from('app_data').select('data,updated_at').eq('id', 'defaults').maybeSingle(),
     fetchShared().catch((error) => ({ error })),
   ]);
-  if (mem.error) return cached ? toast('Couldn’t refresh. Showing the last loaded answers.') : gate('error', { user: me, message: 'Couldn’t check your access. Try again in a moment.' });
+  if (mem.error) return cached ? fail('Couldn’t refresh. Showing the last loaded answers.', null) : gate('error', { user: me, message: 'Couldn’t check your access. Try again in a moment.' });
   if (!mem.data) {
     if (cached) { clearCache(); return location.reload(); }
     // Not on the team: record (or keep) the access request so an admin can approve it.
@@ -1673,7 +1700,7 @@ async function boot() {
     return gate('pending', { user: me });
   }
   if (app.error || !app.data || shared.error) {
-    if (cached) return toast('Couldn’t refresh. Showing the last loaded answers.');
+    if (cached) return fail('Couldn’t refresh. Showing the last loaded answers.', null);
     if (shared.error && !app.error && app.data) return gate('error', { user: me, message: 'Couldn’t load the team’s data. Try again.' });
     return gate('error', { user: me, message: app.error ? 'Couldn’t load the answers. Try again.' : 'The Playbook’s answers are missing from the database.' });
   }

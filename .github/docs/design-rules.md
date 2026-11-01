@@ -198,6 +198,21 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - Nothing moves on its own for more than 5 seconds (WCAG 2.2.2): the home pictures' one play on touch screens takes
   under 3 seconds.
 
+## Feedback
+
+One rule for how every tool answers an action, so "it worked" and "it didn't" look the same everywhere.
+
+- **Success is said on the button that did it:** `window.jsalDone(button, 'Copied')` (in `nav.js`) turns it green with
+  a tick (`.jsal-done` in `shell.css`) and the past tense for two seconds, then gives its label back, and says the word
+  to screen readers. "Copied", "Link copied", "Saved", never with "!". Only when that button goes away (a Playbook form
+  closes on Save) is it said in the short message at the bottom instead.
+- **Work in progress is said on the button**, which is disabled meanwhile ("Zipping…", "Saving 2/5…").
+- **An error never fades.** It's a `.jsal-error` (red "!", tinted box, `role="alert"`) next to what failed, saying what
+  to do, and stays until the next try there. The Playbook's `fail()` puts it in the form, card or row of the last click;
+  with nowhere to put it (a refresh on load) the bottom message stays until the next click.
+- **Running state** lives in the Image Resizer's status line (what's loaded, where it saves), not in pop-ups.
+- A final answer replaces its question in place ("Thanks, that helps make the quiz better." with a green tick).
+
 ## Touch and accessibility
 
 - On touch screens (`pointer: coarse`) buttons are at least 44px tall (a smaller-looking control gets a 44px

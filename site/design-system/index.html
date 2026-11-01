@@ -18,7 +18,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=ee371ac9">
+<link rel="stylesheet" href="/shell.css?v=05bc4367">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -613,7 +613,12 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <p>One ring for every control, text fields included: <code>0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent)</code>. The gap of background colour keeps the ring legible on gold buttons and on tinted chips alike.</p>
     <div class="focus-demo"><button type="button" class="jsal-btn primary ring">Find my fit</button><button type="button" class="chip ring" aria-pressed="false">Webflow</button></div>
     <h3>Feedback</h3>
-    <p>Actions answer in words where it matters: a Copy button says "Copied" for two seconds in green; a saved edit says "Saved"; a cleared post offers "Undo clear". Small notes in muted text carry the longer hints.</p>
+    <p>One rule for every tool. Success is said on the button that did it: green, a tick and the past tense ("Copied", "Link copied", "Saved") for two seconds, then its own label again; only when that button goes away, as a form closes on Save, does a short message appear at the bottom. Work in progress is said on the button too ("Zipping…"), which waits meanwhile. An error is never a message that fades: it sits in red next to what failed and says what to do, until the next try there. A cleared post offers "Undo clear"; the Image Resizer's status line keeps the running state of a batch.</p>
+    <div class="demo">
+      <span class="src">States · shell.css .jsal-done (window.jsalDone in nav.js) and .jsal-error</span>
+      <div class="row"><button type="button" class="jsal-btn primary">Copy formatted</button><button type="button" class="jsal-btn" disabled>Zipping…</button><button type="button" class="jsal-btn primary jsal-done">Copied</button><button type="button" class="jsal-btn jsal-done">Link copied</button></div>
+      <p class="jsal-error">Couldn’t save: check your connection and try again. Your changes are still here.</p>
+    </div>
   </section>
 
   <section class="sec" id="a11y">
@@ -667,6 +672,6 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <span>Decisions about suggested changes are marked in blue.</span>
   </footer>
 </div>
-<script src="/nav.js?v=04ed4703" defer></script>
+<script src="/nav.js?v=7c02cbc3" defer></script>
 </body>
 </html>

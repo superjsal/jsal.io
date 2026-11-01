@@ -9,6 +9,29 @@
     if (document.prerendering) document.addEventListener('prerenderingchange', send, { once: true }); else send();
   };
   window.jsalTrack = track;
+  // "It worked", said on the button that did it: green, a tick and the past tense for two seconds, then its own label
+  // again (/shell.css .jsal-done); a hidden live region says it too, as a changing label isn't always read out
+  const doneTimers = new WeakMap();
+  let doneSay;
+  window.jsalDone = (btn, word = 'Copied') => {
+    const label = [...btn.childNodes].reverse().find((n) => n.nodeType === 3 && n.textContent.trim());
+    if (!doneTimers.has(btn)) {
+      if (label) btn.dataset.jsalLabel = label.textContent;
+      btn.style.minWidth = btn.offsetWidth + 'px';   // a shorter word doesn't shift the buttons beside it
+    }
+    if (label) label.textContent = (/^\s/.test(label.textContent) ? ' ' : '') + word;
+    btn.classList.add('jsal-done');
+    if (!doneSay) { doneSay = document.createElement('span'); doneSay.className = 'sr-only'; doneSay.setAttribute('aria-live', 'polite'); document.body.append(doneSay); }
+    doneSay.textContent = '';
+    setTimeout(() => { doneSay.textContent = word; }, 50);
+    clearTimeout(doneTimers.get(btn));
+    doneTimers.set(btn, setTimeout(() => {
+      if (label && btn.dataset.jsalLabel) label.textContent = btn.dataset.jsalLabel;
+      btn.classList.remove('jsal-done');
+      btn.style.minWidth = '';
+      doneTimers.delete(btn);
+    }, 2000));
+  };
   addEventListener('click', (e) => {
     const t = e.target.closest && e.target.closest('[data-track]');
     if (!t) return;

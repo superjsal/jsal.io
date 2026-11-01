@@ -679,24 +679,24 @@ editor.addEventListener("input", () => requestAnimationFrame(placeLinkBox));
 
 // ── Copy ─────────────────────────────────────────────────────────────────
 
-// The button itself says "Copied" for a moment (the small note alone was easy to miss), then gets its label back
-let noteTimer, labelled = null;
-const labelOf = (btn) => [...btn.childNodes].find((n) => n.nodeType === 3 && n.textContent.trim());
+// The button itself says "Copied" for a moment (the small note alone was easy to miss), with a line on where to paste;
+// a failed copy says what to do instead, in red under the buttons, until the next copy
+let noteTimer;
+const copyError = () => document.querySelector(".actions > .jsal-error");
 function done(btn, msg) {
-  if (labelled && labelled.btn !== btn) labelOf(labelled.btn).textContent = labelled.text;
-  if (!labelled || labelled.btn !== btn) labelled = { btn, text: labelOf(btn).textContent };
-  labelOf(btn).textContent = "Copied";
-  btn.classList.add("done");
+  copyError()?.remove();
+  window.jsalDone(btn);
   $("copyNote").textContent = msg;
   clearTimeout(noteTimer);
-  noteTimer = setTimeout(() => {
-    labelOf(btn).textContent = labelled.text;
-    labelled = null;
-    btn.classList.remove("done");
-    $("copyNote").textContent = "";
-  }, 2200);
+  noteTimer = setTimeout(() => { $("copyNote").textContent = ""; }, 2000);
 }
-function failed() { $("copyNote").textContent = touch ? "Couldn't copy. Select the text, then tap Copy." : `Couldn't copy. Select the text and press ${isMac ? "⌘C" : "Ctrl+C"}.`; }
+function failed() {
+  clearTimeout(noteTimer);
+  $("copyNote").textContent = "";
+  let p = copyError();
+  if (!p) { p = Object.assign(document.createElement("p"), { className: "jsal-error" }); p.setAttribute("role", "alert"); document.querySelector(".actions").append(p); }
+  p.textContent = touch ? "Couldn't copy. Select the text, then tap Copy." : `Couldn't copy. Select the text and press ${isMac ? "⌘C" : "Ctrl+C"}.`;
+}
 
 async function copyPlain(text) {
   try { await navigator.clipboard.writeText(text); return true; }

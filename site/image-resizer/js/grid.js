@@ -64,7 +64,7 @@ export function setSaveState(i, label) {
   const btn = previewGrid.children[i]?.querySelector(".card-dl-btn");
   if (!btn) return;
   const saved = label === "saved";
-  btn.innerHTML = icon(saved ? "check" : "download") + (saved ? " Saved!" : label === "busy" ? " Saving…" : " Save");
+  btn.innerHTML = icon(saved ? "check" : "download") + (saved ? " Saved" : label === "busy" ? " Saving…" : " Save");
   btn.classList.toggle("saved", saved);
 }
 

@@ -107,9 +107,6 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .actions-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 28px; }
 
 .actions .jsal-btn { white-space: nowrap; }
-/* A copy button says it worked: green for two seconds */
-.jsal-btn.done { border-color: var(--jsal-ok); }
-.jsal-btn.primary.done { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 
 .toolbar-hint { font-size: 12px; color: var(--jsal-muted); }
 

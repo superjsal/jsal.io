@@ -72,6 +72,7 @@ body { background: var(--jsal-bg); }
 :root {
   --jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-xl: 12px; --jsal-radius-pill: 999px;
   --jsal-radius-tile: 22px;
+  --jsal-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
   --jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
   --jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
   --jsal-btn-weight: 600;
@@ -103,6 +104,14 @@ body { background: var(--jsal-bg); }
 .jsal-btn.link { min-height: 24px; padding: 2px 0; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-info); text-decoration: underline; text-underline-offset: 3px; }
 .jsal-btn.link:hover { background: none; text-decoration-thickness: 2px; }
 .jsal-btn.link.danger { color: var(--jsal-bad); }
+/* Feedback. "It worked" is said on the button that did it (window.jsalDone in /nav.js): green, a tick, two seconds */
+.jsal-done { border-color: var(--jsal-ok) !important; color: var(--jsal-ok) !important; }
+.jsal-btn.primary.jsal-done { background: var(--jsal-ok-soft); filter: none; }
+.jsal-done > svg, .jsal-done > .ico { display: none; }
+.jsal-done::before { content: ""; flex: none; width: 14px; height: 14px; background: currentColor; -webkit-mask: var(--jsal-tick) center / contain no-repeat; mask: var(--jsal-tick) center / contain no-repeat; }
+/* Something failed: said next to it in red, and it stays until the next try there (never in a message that fades) */
+.jsal-error { display: flex; gap: 8px; margin: 10px 0 0; padding: 8px 12px; border-radius: var(--jsal-radius); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-size: 14px; line-height: 1.45; text-align: left; }
+.jsal-error::before { content: "!"; flex: none; display: grid; place-items: center; width: 17px; height: 17px; margin-top: 1px; border-radius: 50%; background: var(--jsal-bad); color: var(--jsal-surface); font-size: 12px; font-weight: 800; }
 /* The one switch for picking one of a few options: a sunk track, the chosen option selected in gold */
 .jsal-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
 .jsal-seg > button { padding: 4px 12px; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font: 600 13px/1.25 var(--jsal-font); white-space: nowrap; cursor: pointer; transition: color 0.12s; }

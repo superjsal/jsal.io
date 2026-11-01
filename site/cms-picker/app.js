@@ -1093,7 +1093,13 @@
       const copy = el('button', 'jsal-btn', 'Copy link to this result');
       copy.type = 'button';
       copy.addEventListener('click', async () => {
-        try { await navigator.clipboard.writeText(location.href); copy.textContent = 'Link copied'; } catch (e) { copy.textContent = 'Copy the address bar to share'; }
+        const nav = copy.parentElement, said = nav.nextElementSibling;
+        if (said && said.classList.contains('jsal-error')) said.remove();
+        try { await navigator.clipboard.writeText(location.href); window.jsalDone?.(copy, 'Link copied'); } catch (e) {
+          const err = el('p', 'jsal-error', 'Couldn’t copy the link. Copy the address from the address bar instead: it opens this result.');
+          err.setAttribute('role', 'alert');
+          nav.after(err);
+        }
       });
       const again = el('button', 'jsal-btn', 'Start over');
       again.type = 'button';
