@@ -91,6 +91,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   picture tiles (the team Playbook as a slim text tile), Updates (one line per section) and a plain "Say hi"
   row. From 1100px down the guides take the full width under both; on phones they follow the tile. Tab order
   follows the screen. Gaming parts live on `/play/`.
+- **Every new home page tool or section is a bento box:** a `.tile` (22px corners, 26px padding; 18px and 20px
+  on phones), in its own tint if it's a tool, `--plain` like Updates and "Say hi" if it isn't. Bento boxes are
+  for the home page only; other pages keep their open layouts. The intro and the Platform guides stay unboxed,
+  so the byline keeps the shared distance and left edge.
 - **The CMS Picker is quiz first:** the platform cards and the comparison table open on request. The quiz box
   reserves its first question's height (`.qz` min-height per column count) so the rows under it don't move at
   load or between questions.
