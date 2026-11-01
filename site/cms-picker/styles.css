@@ -184,6 +184,7 @@ body {
 /* "varies" always sits on its own line under the tag, so long and short tags read alike down a row */
 .line { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; max-width: 100%; }
 .line .tag { white-space: normal; }   /* and a tag wider than a narrow column ("Free software + hosting" at 1024px) wraps inside it */
+.line .sc { padding-left: 10px; }   /* level with the tag's text, past its padding */
 .sc { color: var(--jsal-muted); font-size: 13px; font-weight: 600; white-space: nowrap; }   /* "varies" / "not verified" after a tag */
 .mark { display: block; margin-top: 4px; color: var(--jsal-ink-2); font-size: 14px; line-height: 1.4; }
 .where { display: block; margin-top: 3px; color: var(--jsal-muted); font-size: 13px; line-height: 1.4; }   /* menu path to the setting, under the note */
