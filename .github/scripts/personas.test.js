@@ -104,8 +104,9 @@ const PERSONAS = [
   // Hard cases for quiz v3 (agreed 2026-10-31): a need the builders cover, needs the quiz can only take one of, a budget
   // against an agency's usual picks, moving from a platform on the picker (no points; the one you're leaving is never a
   // match), and a store that is also a publication
+  // WordPress may show third since it counts as suiting local businesses (agreed 2026-11-01); first it must not be
   ['Not technical, wants a blog beside the site, hosting handled', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'blog', look: 'template', moving: 'no' },
-    { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['wordpress', 'drupal', 'sanity'] }],
+    { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['drupal', 'sanity'] }],
   ['Publication with paid members, two languages', { what: 'content', who: 'learn', care: 'no', needs: 'members', lang: 'yes', look: 'template', moving: 'no' },
     { first: ['ghost'], top3: ['ghost', 'squarespace'], not: ['hubspot'] }],
   ['Agency-built B2B site on a small budget', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', needs: 'none', look: 'visual', moving: 'no', budget: 'low' },

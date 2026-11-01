@@ -150,8 +150,8 @@
     }
     if (a.lang === 'yes') {
       const l = verdict('languages');
-      // An add-on for it counts a little against
-      add('lang', { yes: 2, plugin: -1, code: -2, no: -4 }[l] ?? 0, l === 'yes' && 'More than one language is built in');
+      // An add-on for it counts a little against, except for a developer or agency, who adds plugins as a matter of course
+      add('lang', { yes: 2, plugin: a.who === 'dev' || a.who === 'agency' ? 0 : -1, code: -2, no: -4 }[l] ?? 0, l === 'yes' && 'More than one language is built in');
       const w = { plugin: 'more than one language needs an add-on', code: 'more than one language needs custom code', no: 'it doesn’t do more than one language' }[l];
       if (w) but.push(w);
     }

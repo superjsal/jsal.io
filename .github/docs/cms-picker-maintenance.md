@@ -30,6 +30,11 @@ places moved (to Squarespace, Webflow, Ghost, Duda), and the nonprofit persona m
 Content-heavy business sites keep HubSpot, as the B2B marketing team persona answers that way. A result that starts
 free on Wix, Webflow or Framer also says, as "worth knowing", that the free plan has only the platform's own address
 (`quiz.freeDomain`, each with the platform's page saying so; no points, and HubSpot left out as its pages disagree).
+WordPress then joined `kind.local` (it suits local businesses), and a languages plugin stopped costing a developer or
+agency points (as in the ranking): 258 first places moved (2.9%), mostly Drupal, Wix or Squarespace giving way to
+WordPress for local sites built by a developer or someone happy to learn, and the persona "Not technical, wants a blog
+beside the site" may now show WordPress third (not first), agreed with John. A draft set of 40 expert cases (Claude's,
+not yet reviewed by John) agreed with 33 first thing that day, 38 after these changes.
 
 **Quiz v3** (2026-10-31): the questions on languages, paid members, moving later and adding features became "Anything
 you'll need from day one?" and "Moving from somewhere?" (eight questions at most). The audit behind it is in the
