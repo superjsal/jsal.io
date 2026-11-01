@@ -87,14 +87,13 @@
   // for what the tool does, on a tile in the tool's colour (--jsal-tool-*). Home is the logo's own tile, and Off the
   // clock a loot bag holding the gem, on /play/'s green.
   const APPS = [   // the homepage's order: CMS Picker first, the team's Playbook last
-    // Descriptions stay under about 35 characters, so they fit on one line on a phone
-    { href: '/cms-picker/', name: 'CMS Picker', desc: 'Find the CMS that fits, and its SEO', tile: 'var(--jsal-tool-cms)',
+    { href: '/cms-picker/', name: 'CMS Picker', tile: 'var(--jsal-tool-cms)',
       icon: '<path class="l" d="M9 19v5M16 14v10M23 21v3" stroke-width="4"/><path class="g" d="M16 4.5l3 3-3 3-3-3z"/>' },
-    { href: '/formatter/', name: 'Clean Paste', desc: 'Clean up Word and Google Docs text', tile: 'var(--jsal-tool-paste)',
+    { href: '/formatter/', name: 'Clean Paste', tile: 'var(--jsal-tool-paste)',
       icon: '<path class="l" d="M8 10h16M8 16h13M8 22h9" stroke-width="3"/><path class="g" d="M22.5 18.5l2.5 2.5-2.5 2.5-2.5-2.5z"/>' },
-    { href: '/image-resizer/', name: 'Image Resizer', desc: 'Resize, crop and convert images', tile: 'var(--jsal-tool-resize)',
+    { href: '/image-resizer/', name: 'Image Resizer', tile: 'var(--jsal-tool-resize)',
       icon: '<path class="l" d="M6 6h14v14H6z" stroke-width="3"/><path class="g cut" d="M22.5 18l4.5 4.5-4.5 4.5-4.5-4.5z"/>' },
-    { href: '/ic/', name: 'Platform Playbook', desc: 'SEO steps by platform, for my team', tag: 'Team', tile: 'var(--jsal-tool-playbook)',
+    { href: '/ic/', name: 'Platform Playbook', tag: 'Team', tile: 'var(--jsal-tool-playbook)',
       icon: '<path class="l" d="M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11" stroke-width="3"/><path class="g" d="M8.5 19.5l3 3-3 3-3-3z"/>' },
   ];
   const HOME = { href: '/', name: 'jsal.io home', tile: 'var(--jsal-tool-home)', edge: true,
@@ -303,9 +302,7 @@
     .jsal-menu a[aria-current="page"] { background: var(--jsal-accent-soft); }
     .jsal-menu .ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--jsal-sunk); color: var(--jsal-ink-2); }
     .jsal-menu b { display: block; font-weight: 600; }
-    .jsal-menu small { display: block; font-size: 12px; line-height: 1.35; color: var(--jsal-muted); text-wrap: pretty; }   /* wraps rather than cutting off beside a tag on a phone */
     .jsal-menu .tag { font-size: 12px; font-weight: 700; color: var(--jsal-muted); border: 1px solid currentColor; border-radius: 99px; padding: 0 7px; }
-    .jsal-menu .here { font-size: 12px; color: var(--jsal-muted); }
     .jsal-menu hr { border: 0; border-top: 1px solid var(--jsal-line); margin: 6px 4px; }
     .jsal-menu .home { grid-template-columns: 32px minmax(0, 1fr); }
     .jsal-menu .home .ico { background: none; color: var(--jsal-muted); }
@@ -321,8 +318,8 @@
   const isHere = (href) => href !== '/' && here.startsWith(href);
   const item = (a, home) => `<a href="${a.href}" role="menuitem"${isHere(a.href) ? ' aria-current="page"' : ''}${home ? ' class="home"' : ''}>
       <span class="ico${a.tile ? ' jsal-ico-tile' : ''}">${appIcon(a)}</span>
-      <span><b>${a.name}</b>${a.desc ? `<small>${a.desc}</small>` : ''}</span>
-      ${home ? '' : isHere(a.href) ? '<span class="here">You’re here</span>' : a.tag ? `<span class="tag">${a.tag}</span>` : '<span></span>'}
+      <b>${a.name}</b>
+      ${home ? '' : a.tag ? `<span class="tag">${a.tag}</span>` : '<span></span>'}
     </a>`;
   const menu = document.createElement('div');
   menu.className = 'jsal-menu';
