@@ -707,7 +707,7 @@
     let ansOpen = false;   // phones: the answers fold away under the heading, so the first match is right there; this keeps the fold as left
     let checking = null;   // "Had a platform in mind?": the platform being looked at, kept across re-renders
     // Each answer's tile: a short name for its question over the answer, so the answers read as a summary
-    const ANS_LABEL = { what: 'Making', kind: 'Closest to', who: 'Built by', care: 'Hosting and updates', size: 'Shop size', needs: 'From day one', look: 'Design', moving: 'Moving', budget: 'Each month' };
+    const ANS_LABEL = { what: 'Making', kind: 'Best describes', who: 'Built by', care: 'Hosting and updates', size: 'Shop', needs: 'From day one', look: 'Design', moving: 'Moving', budget: 'Each month' };
     const ansText = (q, opt) => (q.id === 'what' ? opt[3] : q.id !== 'moving' ? opt[1] : opt[0] === 'no' ? 'Starting fresh' : opt[0] === 'other' ? 'From another platform' : `From ${opt[1]}`);
     function answersBar() {
       const bar = el('div', 'qz-ans'), tap = matchMedia('(pointer: coarse)').matches ? 'tap' : 'click';
@@ -910,7 +910,7 @@
           const exp = (origin.profile || {}).export;
           // The export line's own colon ("Everything: a full WordPress export…") becomes a comma after ours
           mig.append(el('b', null, `Moving from ${origin.name}`), el('span', null, exp ? `What you can take with you: ${exp.charAt(0).toLowerCase()}${exp.slice(1).replace(': ', ', ')}.` : ''));
-          if (Object.values(data.quiz.imports || {}).some((m) => m[origin.id])) mig.append(el('small', null, `A match whose own docs describe an import from ${origin.name} says so in its reasons.`));
+          if (Object.values(data.quiz.imports || {}).some((m) => m[origin.id])) mig.append(el('small', null, `If a match can import your ${origin.name} content, its reasons say so, with a link to its guide.`));
         } else mig.append(el('b', null, 'Moving from another platform'), el('span', null, 'Check what it lets you export before you pick: posts and pages, products as a spreadsheet, or everything.'));
         box.append(mig);
       }

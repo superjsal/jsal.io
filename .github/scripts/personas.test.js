@@ -252,7 +252,7 @@ const walk = (a, i) => {
   told.forEach((t, k) => {
     if (!t.vs) return cardErrs.push(`${at}: nothing setting ${r[k].p.id} apart`);
     boxes++;
-    if (/’s card (highlights|says) /.test(t.vs.text)) tagBoxes++;
+    if (/ (stands out for|is a good fit for) /.test(t.vs.text)) tagBoxes++;
     Object.keys(PHRASE).forEach((row) => { if (weight(row, a) === 0 && t.vs.text.includes(PHRASE[row])) cardErrs.push(`${at}: ${r[k].p.id} mentions "${PHRASE[row]}", which these answers rule out`); });
     // "the same reasons as" names the first or, for the third, the second: they must really match that one
     const named = k && /same reasons as/.test(t.why[0]) && r.find((x) => t.why[0].endsWith(` ${x.p.name}`));
