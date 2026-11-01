@@ -399,7 +399,8 @@ body {
 .qz-tick input:focus-visible { outline: none; }
 .qz-tick b { display: block; font-size: 15px; font-weight: 600; }
 .qz-tick small { display: block; color: var(--jsal-muted); font-size: 13px; }
-.qz-ans-ed .qz-tick { margin: 8px 0 0; padding: 6px 12px 6px 10px; }
+.qz-ans-tick { flex-basis: 100%; margin-bottom: 4px; }
+.qz-ans-ed .qz-tick { margin: 0; padding: 6px 12px 6px 10px; }
 .qz-ans-ed .qz-tick b { font-size: 14px; }
 .qz-ans-ed .qz-tick small { display: none; }
 @media (pointer: coarse) { .qz-tick { min-height: 44px; } }

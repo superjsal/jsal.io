@@ -10,7 +10,7 @@
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
 const site = path.join(__dirname, '..', '..', 'site');
-const { rank, candidates, explain, standing, tied, QUESTIONS, options, PHRASE, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
+const { rank, candidates, explain, standing, tied, QUESTIONS, options, PHRASE, DOES, DOES_BOTH, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
@@ -171,6 +171,11 @@ let sentenceErrs = 0;
 // a box may use to say what the other platform lacks
 const MISSING = new Set(['bookings', 'members', 'blog', 'dev', 'care', 'size']);
 if (![...LACKS].every((k) => MISSING.has(k))) { console.log(`FAIL: LACKS has parts whose other side isn't something missing: ${[...LACKS].filter((k) => !MISSING.has(k))}`); process.exitCode = 1; }
+// A sentence built from the comparison table (score.js rowsLine): the rows' phrases, then each platform's verdict
+const verdictOf = new Map([...Object.entries(DOES), ...Object.entries(DOES_BOTH)].map(([v, w]) => [w, v]));
+const rowOf = new Map(Object.entries(PHRASE).map(([id, p]) => [p, id]));
+const saying = [...verdictOf.keys()].map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+const TABLE_LINE = new RegExp(`^(?:If you want|For) (.+?), (.+?) (${saying}), while (.+?) (${saying})\\.$`);
 let combos = 0, clear = 0, fallback = 0, byCard = 0, ties = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0, weak = 0, fewFit = 0;
 const cardErrs = [];
 const walk = (a, i) => {
@@ -188,7 +193,7 @@ const walk = (a, i) => {
   told.forEach((t, k) => {
     if (!t.vs) return cardErrs.push(`${at}: nothing setting ${r[k].p.id} apart`);
     boxes++;
-    if (/’s strengths: /.test(t.vs.text)) tagBoxes++;
+    if (/’s card (lists|says) /.test(t.vs.text)) tagBoxes++;
     Object.keys(PHRASE).forEach((row) => { if (weight(row, a) === 0 && t.vs.text.includes(PHRASE[row])) cardErrs.push(`${at}: ${r[k].p.id} mentions "${PHRASE[row]}", which these answers rule out`); });
     // "the same reasons as" names the first or, for the third, the second: they must really match that one
     const named = k && /same reasons as/.test(t.why[0]) && r.find((x) => t.why[0].endsWith(` ${x.p.name}`));
@@ -217,7 +222,9 @@ const walk = (a, i) => {
   // Level on points: first on its card's "Good fit" lines or on the look asked for (the box must say which), or a tie
   else if (!tied(r[0], r[1])) { byCard++; const want = r[0].tb !== r[1].tb ? 'card' : 'look'; if (told[0].vs.kind !== want) cardErrs.push(`${at}: ${r[0].p.id} is first on ${want === 'card' ? 'its card\'s lines' : 'the look'}, but the box doesn't say so`); } else { ties++; if (told[0].vs.kind !== 'tie') cardErrs.push(`${at}: a tie whose box doesn't say so`); }
   // Every sentence checks out against the data and the answers:
-  // - "…, while Wix needs an add-on for bookings": the score marks that platform down for that very thing (LACKS)
+  // - "If you want design control, Wix has it built in, while Squarespace needs code for it": both verdicts are the
+  //   comparison table's own, for that row and those two platforms
+  // - any other "…, while Wix needs an add-on for bookings": the score marks that platform down for that very thing (LACKS)
   // - an echoed answer ("you need bookings from day one") is one this visitor gave
   // - a figure ($25) comes from a cost band's label or a budget answer, never typed into the wording
   // - the closeness words match the score gap (standing)
@@ -225,9 +232,19 @@ const walk = (a, i) => {
   told.forEach((t, k) => {
     if (!t.vs) return;
     const x = r[k], text = t.vs.text;
-    for (const m of text.matchAll(/, while (.+?) (needs|isn’t|leaves|is|has|costs)\b/g)) {
-      const y = r.find((o) => o.p.name === m[1]);
-      if (!y || ![...MISSING].some((p) => (x.pts[p] || 0) > 0 && (y.pts[p] || 0) < 0)) sentenceErr(at, `${x.p.id}'s box says "${m[0]}…" without the score behind it`);
+    for (const s of text.split(/(?<=\.)\s+(?=[A-Z])/)) {
+      const row = s.match(TABLE_LINE);
+      if (row) {
+        const ids = (rowOf.get(row[1]) ? [row[1]] : row[1].split(' or ')).map((p) => rowOf.get(p));
+        const [px, py] = [row[2], row[4]].map((n) => r.find((o) => o.p.name === n));
+        const ok = px && py && ids.every((id) => id && ((data.answers[px.p.id] || {})[id] || {}).verdict === verdictOf.get(row[3]) && ((data.answers[py.p.id] || {})[id] || {}).verdict === verdictOf.get(row[5]));
+        if (!ok) sentenceErr(at, `${x.p.id}'s box says "${s}", which isn't what the table says`);
+        continue;
+      }
+      for (const m of s.matchAll(/, while (.+?) (needs|isn’t|leaves|is|has|costs)\b/g)) {
+        const y = r.find((o) => o.p.name === m[1]);
+        if (!y || ![...MISSING].some((p) => (x.pts[p] || 0) > 0 && (y.pts[p] || 0) < 0)) sentenceErr(at, `${x.p.id}'s box says "${m[0]}…" without the score behind it`);
+      }
     }
     echoes.forEach((e) => { if (text.toLowerCase().includes(e.toLowerCase()) && !own.has(e)) sentenceErr(at, `${x.p.id}'s box echoes "${e}", which isn't one of these answers`); });
     for (const f of text.match(/\$[\d,]+(?:–\$[\d,]+)?/g) || []) if (!figures.includes(f)) sentenceErr(at, `${x.p.id}'s box shows ${f}, which no cost band or answer says`);
@@ -238,7 +255,7 @@ const walk = (a, i) => {
     if (st.kind !== want || (/slightly/.test(st.line) && st.kind !== 'close') || (/well ahead/.test(st.line) && st.gap <= 5) || (/equally/.test(st.line) && st.gap)) sentenceErr(at, `a ${st.gap}-point gap reads "${st.pill}: ${st.line}"`);
   }
   // No box says "undefined", "null" or "NaN", or keeps the old scoring words
-  told.forEach((t, k) => { if (t.vs && /undefined|null|NaN|Level on points|What tipped it/.test(`${t.vs.head} ${t.vs.text}`)) cardErrs.push(`${at}: ${r[k].p.id}'s box reads "${t.vs.head}: ${t.vs.text}"`); });
+  told.forEach((t, k) => { if (t.vs && /undefined|null|NaN|Level on points|What tipped it|strengths:|does better for you|natural fit|better pick/.test(`${t.vs.head} ${t.vs.text}`)) cardErrs.push(`${at}: ${r[k].p.id}'s box reads "${t.vs.head}: ${t.vs.text}"`); });
   // Old shared links (v=1) get NEUTRAL answers for questions they didn't have: they must change no score,
   // and leaving a question unanswered (kind, members) mustn't break the ranking
   Object.entries(NEUTRAL).forEach(([q, v]) => {

@@ -483,7 +483,7 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches; questions and scoring in score.js. The answers live in the page
   // address so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, standing, tied, conflict, costRow, weight, TIP, options } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, standing, behind, tied, conflict, costRow, weight, TIP, LEAD, options } = window.cmsScore;
   // Shared result links carry the quiz version (v=4; none means 1). When the questions change, raise LINK_VERSION and
   // translate older answers in readLink, so shared links keep opening a result.
   const LINK_VERSION = 4;
@@ -701,6 +701,9 @@
         ed.setAttribute('role', 'group');
         ed.setAttribute('aria-label', q.q);
         ed.append(el('p', null, q.q));
+        // The tick on its own row above the choices, as in the quiz itself
+        const also = alsoBox(q, () => { results(); box.querySelector('.qz-ans-ed input')?.focus({ preventScroll: true }); });
+        if (also) { const row = el('div', 'qz-ans-tick'); row.append(also); ed.append(row); }
         options(q, a, data).forEach(([v, title]) => {
           const b = el('button', 'chip', title);
           b.type = 'button';
@@ -716,8 +719,6 @@
           });
           ed.append(b);
         });
-        const also = alsoBox(q, () => { results(); box.querySelector('.qz-ans-ed input')?.focus({ preventScroll: true }); });
-        if (also) ed.append(also);
         bar.append(ed);
       }
       if (!PHONE.matches) return bar;
@@ -866,15 +867,16 @@
           checking = id;
           check.querySelectorAll('.qz-pick-chips .chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
           const r = all.find((x) => x.p.id === id), i = all.indexOf(r), lead = ranked[0];
-          // Where it lost most to the first match (TIP's words); parts its own "worth knowing" lines cover aren't said twice
+          // Where it lost most to the first match (TIP's words, after the answer behind them, so "that" has something to
+          // point to); parts its own "worth knowing" lines cover aren't said twice
           const SAID = new Set(['ease', 'care', 'lang', 'bookings', 'blog', 'budget']);
           const lost = [...new Set([...Object.keys(lead.pts), ...Object.keys(r.pts)])].map((k) => [k, (lead.pts[k] || 0) - (r.pts[k] || 0)])
             .filter(([k, d]) => d > 0 && TIP[k] && TIP[k][1] && !SAID.has(k)).sort((p, q) => q[1] - p[1]).slice(0, 2)
-            .map(([k]) => TIP[k][1](a, r.p.name, lead.p.name, lead.pts[k] || 0, r.pts[k] || 0)).filter(Boolean);
+            .map(([k]) => { const w = TIP[k][1](a, r.p.name, lead.p.name, lead.pts[k] || 0, r.pts[k] || 0), l = LEAD[k] && LEAD[k](a); return w && (l ? `${l}, and ${w}` : w); }).filter(Boolean);
           const against = [...r.but, ...lost].map((w) => w.charAt(0).toUpperCase() + w.slice(1));
           const nth = `${i + 1}${['st', 'nd', 'rd'][i] || 'th'} of ${all.length}`;
           const rankText = el('b', 'rank', r === origin ? `You’re on ${r.p.name} now: it ranks ${nth} for your answers` : `${r.p.name} ranks ${nth} for you`);
-          rankText.append(el('span', 'gap', ` · ${lead.s - r.s === 0 ? 'level with' : `${lead.s - r.s} point${lead.s - r.s === 1 ? '' : 's'} behind`} ${lead.p.name}`));
+          rankText.append(el('span', 'gap', ` · ${behind(lead.s - r.s)} ${lead.p.name}`));
           const cols = el('div', 'cols');
           [['For', r.why, 'for'], ['Against', against, 'against']].forEach(([t, items, cls]) => {
             const c = el('div', cls);

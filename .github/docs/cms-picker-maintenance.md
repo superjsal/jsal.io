@@ -98,12 +98,14 @@ Shared by the page and the tests, so they always run the same code.
   card shows as "Worth knowing: …" so a top match never hides it. It changes no score; a new negative part
   that answers a question should add its line there too.
 - **The boxes are plain words, and every phrase comes from the data or the answers.** No scoring talk ("level on
-  points", "what tipped it") and no talk of the page ("its own card says"). Each box has a `kind` the page and the
+  points", "what tipped it"), no marketing words ("strengths", "natural fit", "the better pick"), and a claim from a
+  card is said to come from the card ("its card says"). Each box has a `kind` the page and the
   tests read instead of its wording: `tie` ("Wix or Squarespace": "They fit your answers equally well."), `card`
-  ("Why Squarespace first": "It fits your answers as well as Framer does, and comes first because it's made for …",
-  its first matching "Good fit" line), `look` ("… The difference is the look: a good template is enough for you, and
+  ("Why Squarespace first": "It fits your answers as well as Framer does. It comes first because its card says it's
+  made for …, which matches your answers", its first matching "Good fit" line), `look` ("… The difference is the look: a good template is enough for you, and
   Squarespace is known for its designer templates", the `lookBest` tag), `tipped` (ahead, with the answers behind
-  it), `other` (ahead, on what it offers) and `versus` ("Compared with Wix", the second and third cards).
+  it), `other` (ahead, on what it offers) and `versus` ("Compared with Wix", the second and third cards: "In Wix's
+  favour: …" for the answers or a cheaper start, else the table rows below).
 - **Reasons from the answers:** every part's key has wording in `TIP`: `[what the leader earned, what the
   runner-up lost]`, naming the platform rather than "it". Each one follows the answer that drove it, from
   `LEAD` ("You're building an app or portal, and Sanity is built to…"), which echoes the answer's own label (the
@@ -116,18 +118,24 @@ Shared by the page and the tests, so they always run the same code.
   your answers equally well, so either is a sound choice"), up to `CLOSE` (2: "slightly ahead", a close call), up to
   `LEAD_BY` (5: "ahead", a clear lead), then "well ahead" (a clear winner). The line says only how close it is; the
   first card's box says why, so neither repeats the other.
-- **"If you want …, Webflow makes it easier than Wix":** rows where a platform does better than its neighbour (built in beats a plugin beats
-  code), described by `PHRASE` (a short phrase per table row; **a new row needs one**, the test checks).
+- **"If you want design control, Webflow has it built in, while HubSpot CMS needs code for it":** when the answers
+  don't separate two platforms, the comparison table does, in its own verdicts (`DOES`; two rows with the same
+  verdicts are said together with `DOES_BOTH`), so every sentence can be checked against the table below it (the
+  persona test does, row by row). Rows are those where a platform does better than its neighbour (built in beats a
+  plugin beats code), described by `PHRASE` (a short phrase per table row; **a new row needs one**, the test checks).
   `weight` decides how much a row matters for the answers, and is 0 for rows the person ruled out
   (design control after "a good template is enough", more languages after "one language", selling when
-  not making a store). Only rows that matter to the answers (weight over 1: selling, languages, design
-  control, a blog for content sites) come first. Next is what the platform offers: its card tags that
-  the other platform's card doesn't list ("Shopify's strengths: app ecosystem, built-in checkout, and
-  theme store"), so **card tags are customer-facing selling points**, written as they should read there.
-  Then the smaller rows (the technical SEO ones), and last the platform's first "good fit" line.
+  not making a store). Rows that matter to the answers (weight over 1: selling, languages, design control, a blog
+  for content sites) come first, then the technical SEO rows. Only when no row differs does a box fall back to the
+  cards: "Nothing in your answers or the table puts Squarespace ahead of Wix. Squarespace's card lists “Designer
+  templates” and “All-in-one”, and Wix's doesn't" (the tags quoted, as they're labels, not sentences), and last the
+  platform's first "Good fit" line, said as the card's.
 - **Second and third:** both are compared with the first, unless the third would repeat the second (the
   same reasons, or the same box sentence). Then the third says "the same reasons as" the second and is
-  compared with the second instead, falling back to its strengths if that sentence still matches.
+  compared with the second instead, falling back to the table or its card if that sentence still matches.
+- **"Had a platform in mind?"** says where a platform lands in the same words as `standing` (`behind`: level with,
+  slightly behind, behind, well behind, or ahead of for the platform being left), never in points, and each
+  "Against" reason follows the answer behind it, like the boxes.
 - **Paid members** (the "Paid subscribers or members" need) read the "Sell memberships or paid
   posts" row: built in +3, plugin 0, needs code or check manually −2, no −4. Ghost gets +2 more for sending
   newsletters to those members itself (`quiz.members`). HubSpot's card rules it out for paid members.
