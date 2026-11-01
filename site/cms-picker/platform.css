@@ -40,6 +40,7 @@
 .pp-built { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 15px; }
 .pp-built li { display: grid; grid-template-columns: 210px auto 1fr; gap: 4px 12px; align-items: baseline; }
 .pp-built .pp-note { font-size: 14px; }
+.pp-built .tag + .sc { margin-left: 8px; }   /* "varies" a step clear of its tag, as elsewhere */
 
 .pp-next { display: flex; flex-wrap: wrap; gap: 10px; margin: 36px 0 8px; }
 .pp-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); color: var(--jsal-ink); font-weight: var(--jsal-btn-weight); text-decoration: none; }
