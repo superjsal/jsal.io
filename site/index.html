@@ -60,7 +60,7 @@
    with no border, so the apps keep the colour. */
 :root {
   --cream: #1f1a12; --cream-ink: #f5efe2; --cream-muted: #b8b2a3; --cream-btn: #e3b04b; --cream-btn-ink: #1f1a12;
-  --blue: #e6e9f0; --blue-ink: #1f1a12; --blue-muted: #3d362a; --blue-acc: #3b5a9a;
+  --blue: #e6e9f0; --blue-ink: #1f1a12; --blue-acc: #3b5a9a;
   --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
   --gold: #f0e4c6; --gold-ink: #1f1a12; --gold-muted: #3d362a; --gold-acc: #835c0e;
   --plain: #e8e5dd; --plain-line: #cfc3a9;
@@ -69,7 +69,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
-    --blue: #1a2034; --blue-ink: #ece6d6; --blue-muted: #c4bfb2; --blue-acc: #8fb1ff;
+    --blue: #1a2034; --blue-ink: #ece6d6; --blue-acc: #8fb1ff;
     --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
     --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
     --plain: #1c1f27; --plain-line: #3d424e;
@@ -78,7 +78,7 @@
 }
 :root[data-theme="dark"] {
   --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
-  --blue: #1a2034; --blue-ink: #ece6d6; --blue-muted: #c4bfb2; --blue-acc: #8fb1ff;
+  --blue: #1a2034; --blue-ink: #ece6d6; --blue-acc: #8fb1ff;
   --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
   --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
   --plain: #1c1f27; --plain-line: #3d424e;
@@ -182,8 +182,6 @@ p, li { text-wrap: pretty; }
 .desc { margin-top: 4px !important; font-size: 15px; }
 
 .ic { grid-column: 1 / 13; background: var(--blue); color: var(--blue-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 28px; --arrow-bg: var(--blue-acc); --arrow-ink: var(--blue); }
-.ic .label { color: var(--blue-acc); }
-.ic .desc { color: var(--blue-muted); }
 
 .fmt { grid-column: 8 / 13; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
 .fmt h2, .jscale h2 { font-size: 24px; }   /* the featured app keeps the biggest title */
@@ -195,19 +193,11 @@ p, li { text-wrap: pretty; }
 .cms .label { color: var(--plum-acc); }
 .cms .desc { font-size: 16px; max-width: 32em; color: var(--plum-muted); }
 
-/* The team tiles (JSal UI, Platform Playbook) are text only and a step smaller than the live tools */
-.ic { padding: 22px 26px; }
-.ic h2 { font-size: 22px; }
-.ic .pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: var(--blue-acc); }
-/* Its preview: three checks with answers in the CMS Picker's colours, beside the text; dropped on phones, where the tile stays slim */
+.ic { padding: 14px 20px; }   /* the team Playbook is one line: visitors can't open it, so it takes little room */
+.ic h2 { font-size: 18px; }
 .ic .foot { align-items: center; }
-.ic .foot > div:first-child { flex: 1; }
-.m-ic { flex: none; width: 300px; gap: 6px; margin-right: 8px; }
-.m-ic .box { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 6px 10px; font-size: 13px; color: var(--jsal-ink); }
-.m-ic em { font-style: normal; font-size: 12px; font-weight: 600; padding: 0 8px; border-radius: var(--jsal-radius-pill); }
-.m-ic .yes { color: var(--jsal-ok); background: var(--jsal-ok-soft); }
-.m-ic .plugin { color: var(--jsal-info); background: var(--jsal-info-soft); }
-.m-ic .code { color: var(--jsal-warn); background: var(--jsal-warn-soft); }
+.ic-line { flex: 1; display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; }
+.ic .pill { display: inline-flex; align-items: center; gap: 6px; color: var(--blue-acc); }
 
 /* App mockups on the tiles: simplified versions of each app's real layout, in the apps' own
    page colours, so opening an app looks like the picture growing into it. Photos, links and
@@ -329,7 +319,9 @@ p, li { text-wrap: pretty; }
 /* Grouped by app: the CMS Picker on the left, the other apps stacked on the right (Site last) */
 .upd { margin: 0; padding: 0; list-style: none; }
 .upd li { display: grid; grid-template-columns: 10em minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--plain-line); }
-.upd-name { font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link */
+.upd-name, .now .upd-name a { font-weight: 600; color: var(--jsal-ink); }   /* ink: each row's icon carries its app's colour */
+.now .upd-name a { text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); }
+.now .upd-name a:hover { text-decoration-color: currentColor; }
 /* Each line starts with its app's icon, the one the logo menu shows; Site's is the logo itself */
 .upd-ico { display: inline-block; width: 20px; height: 20px; margin-right: 10px; vertical-align: -5px; }
 /* The two dark tiles (the Image Resizer, the logo) get the dark-page edge, so they hold on the dark Updates box */
@@ -370,8 +362,6 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .grid > :not(.intro):not(.cms):not(.guides) { order: 2; }
   .grid > * { grid-column: 1 / -1 !important; }
   .intro p { font-size: 16px; }
-  .m-ic { display: none; }
-  .ic .foot { align-items: flex-end; }
 }
 #updates, #hi-h { scroll-margin-top: 16px; }   /* #hi-h: where "Say hi" lands */
 /* Phones: the editorial type scaled down rather than squeezed. A smaller name with a shorter
@@ -398,10 +388,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .m-jscale { gap: 10px; padding: 12px; }
   .m-jscale .out .photo { display: none; }
   .tile h2 { font-size: 26px; }
-  .ic h2 { font-size: 22px; }
-  .ic { padding: 20px; }
-  .ic .foot { flex-wrap: wrap; }   /* the arrow drops under the text only when the pill leaves it no room (below about 360px) */
-  .ic .foot .arrow { margin-left: auto; }
+  .ic { padding: 14px 18px; }
+  .ic h2 { font-size: 18px; }
   .now h2 { font-size: 24px; }
   .upd li { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; }
   .upd li > span:nth-child(2) { grid-row: 2; grid-column: 1 / -1; }
@@ -500,13 +488,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
     <a class="tile ic" href="/ic/" data-app>
       <div class="foot">
-        <div>
-          <p class="label">for my team</p>
-          <h2><img class="tile-ico" src="/img/icons/platform-playbook.svg" alt="" width="32" height="32">Platform Playbook</h2>
-          <p class="desc">SEO checks across website platforms, with how-to steps and guides.</p>
-          <span class="pill"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Sign-in, approved team only</span>
-        </div>
-        <div class="mock m-ic" aria-hidden="true"><span class="box">Title tag <em class="yes">Built in</em></span><span class="box">Redirects <em class="plugin">Plugin/app</em></span><span class="box">Custom schema <em class="code">Needs code</em></span></div>
+        <div class="ic-line"><h2><img class="tile-ico" src="/img/icons/platform-playbook.svg" alt="" width="32" height="32">Platform Playbook</h2><span class="pill"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Sign-in, approved team only</span></div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </div>
     </a>
