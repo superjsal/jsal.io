@@ -8,6 +8,35 @@ gold. Its j is a drawing, not Inter's: the one letter with round ends.
 way they say it: the j, round-ended, is the letter said by itself; the firm, flat-ended "sal" is Sal. Keep it that way:
 the j is the only soft letter, and the rest of the name stays Inter Bold as it is.
 
+## Bios
+
+Ready to paste, in the site's voice. Keep them to what the site says: no years, places or employer names.
+
+**25 words**
+
+> John Salvador is a web developer in technical SEO. At jsal.io he builds small, free browser tools that each do one
+> job well.
+
+**50 words**
+
+> John Salvador is a web developer working in technical SEO, putting SEO fixes and content onto whatever CMS a
+> client runs. At jsal.io he publishes the small browser tools he builds for that work: a CMS Picker, Clean Paste
+> and an Image Resizer. Nothing is uploaded, nothing is sold.
+
+**100 words**
+
+> John Salvador is a web developer working in technical SEO. By day he works on the implementation side: taking SEO
+> specialists' technical fixes and content and putting them onto whatever CMS a client runs. At jsal.io he publishes
+> the small browser tools he builds for the jobs around a website. The CMS Picker matches people to a platform and
+> shows what each can change for SEO; Clean Paste turns text from Word or Google Docs into clean HTML; the Image
+> Resizer resizes, crops and converts images. Each does one job, in the browser, for free. Off the clock, it's
+> Warcraft.
+
+**First person** (LinkedIn's About, where third person reads oddly)
+
+> I'm a web developer in technical SEO: I put SEO fixes and content onto whatever CMS a client runs. On the side I
+> build small browser tools that do one job each, free at jsal.io. Friends call me J Sal.
+
 ## Files
 
 | File | Use |
