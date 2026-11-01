@@ -23,7 +23,7 @@ body {
 /* ── Hero ──────────────────────────────────────────────────────────────── */
 
 .hero { margin: var(--jsal-page-top) 0 32px; }
-.byline { margin-bottom: 4px; color: var(--jsal-accent); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }   /* the home page's small gold label above the heading */
+.byline { margin-bottom: 4px; color: var(--jsal-muted); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }   /* muted, so gold stays for what you act on */
 .hero-title { margin-top: 14px; color: var(--jsal-ink); font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the home page's serif, like the page title */
 .lede { max-width: 520px; margin-top: 20px; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.6; }
 .btn {
@@ -319,7 +319,8 @@ body {
 /* Sections and platform profile cards */
 /* Each section opens on a thin rule with its number, matching 01 · 02 · 03 in the hero */
 .block { margin-bottom: 34px; padding-top: 18px; border-top: 1px solid var(--jsal-line-hi); scroll-margin-top: 16px; }
-.block h2 .num { display: block; margin-bottom: 6px; color: var(--jsal-accent); font-family: var(--jsal-font); font-size: 13px; font-weight: 700; letter-spacing: 0; }   /* the small label stays in Inter */
+.block h2 .num { display: block; margin-bottom: 6px; color: var(--jsal-muted); font-family: var(--jsal-font); font-size: 13px; font-weight: 700; letter-spacing: 0; }   /* the small label stays in Inter */
+.block h2 .num-d { color: var(--jsal-accent); }   /* only the section's number keeps the gold */
 .block h2 { margin-bottom: 14px; color: var(--jsal-ink); font-family: "Lora", Georgia, serif; font-size: 26px; line-height: 1.25; letter-spacing: -0.01em; }
 /* "What are you building?" narrows the cards; each is short, in larger text than the grid, since this is what people read */
 .types { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }

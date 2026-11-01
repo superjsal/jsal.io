@@ -13,7 +13,7 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 |---|---|
 | **Lora** (serif) | Every H1 and H2 on the public pages: page titles (`.jsal-title`), heroes, section headings, home tile names, "About …" headings, the platform pages' headline and sections, Privacy, the changelog's dates. |
 | **Inter** (`--jsal-font`) | Everything else: body text, buttons, fields, top-bar links, H3s and smaller subheadings ("How to use it", quiz questions, platform names in lists, the platform pages' question headings), and small interface labels under 16px ("Checks", "Output size", "Export"). |
-| **JetBrains Mono** | The small gold uppercase labels above headings (`.roles`, `.byline`, Privacy's date line, "Changelog"), code, and keyboard keys. |
+| **JetBrains Mono** | The small uppercase labels above headings (gold on the site's own pages: `.roles`, Privacy's date line, "Changelog"; muted on the tools: the CMS Picker's `.byline`), code, and keyboard keys. |
 
 - A title's **gold word** is Lora italic 600 (`.hl`, or `em` on the home page and `/play/`): Clean *Paste*,
   CMS *Picker*, one *job*, Mostly *Warcraft*, Your *privacy*.
@@ -43,9 +43,11 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   `--jsal-accent` (#7e5a00); `--jsal-fill` (#e3b04b) is for fills and for text on images. The home tiles' own
   tint tokens stay in `index.html`, where they're used.
 - **Gold is the site's accent: loud, and spent only where it matters.** Selected states, the main action, the
-  one insight line, brand touches (".io", each title's gold word, the home page name and role line, section
-  numbers, eyebrow labels, achievements) and the site's own text links (About sections, footers, notes).
-  Never hover. Focus is the focus ring, not a gold fill.
+  one insight line, brand touches (".io", each title's gold word, the home page name and role line, eyebrow
+  labels on the site's own pages, achievements) and the site's own text links (About sections, footers, notes).
+  Never hover. Focus is the focus ring, not a gold fill. **On the tools the small labels are muted**, so gold
+  stays for what you act on: the CMS Picker's "Updated" line is muted, and its section labels keep only the
+  number in gold ("**01** · Find your fit").
 - **The answer ramp**, for tags that say how well a platform does something: green = built in or automatic,
   blue = with an add-on or indirectly, terracotta = needs code, red = not possible. It reads as one scale
   wherever it appears, so a single tag's colour isn't a warning or information on its own.
