@@ -52,7 +52,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=0e2882a2">
+<link rel="stylesheet" href="/shell.css?v=907b5eb3">
 <style>
 /* Tile colours. The Image Resizer has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
@@ -97,6 +97,12 @@ a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles kee
 .jsal-top nav { display: flex; gap: 2px; font-size: 14px; }
 .jsal-top nav a { padding: 8px 10px; line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }   /* 36px tall, like the apps' controls */
 .jsal-top nav a:hover { color: var(--jsal-ink); }
+@media (pointer: coarse) {
+  .jsal-top nav a { position: relative; }
+  .jsal-top nav a::after { content: ""; position: absolute; inset: -4px 0; }   /* 36px drawn, 44px to tap */
+  .upd-name a, .upd-all a { position: relative; }
+  .upd-name a::after, .upd-all a::after { content: ""; position: absolute; inset: -13px -4px; }
+}
 
 /* Bento grid: 12 columns, one per tile row; stacks on narrow screens */
 .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: var(--jsal-page-top); }
@@ -162,6 +168,7 @@ p, li { text-wrap: pretty; }
   .guides a:not(.all)::before { display: none; }
 }
 .guides a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+@media (pointer: coarse) { .guides a { min-height: 44px; } }
 /* The last tile ("Compare all") stretches across whatever is left of its row, so the grid ends even at any platform count */
 .guides .all { gap: 6px; }   /* full ink and centred like the platform tiles; the arrow alone says it goes elsewhere */
 .guides a:last-child:nth-child(3n+1) { grid-column: span 3; }
@@ -546,6 +553,6 @@ if (matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: 
   });
 }
 </script>
-<script src="/nav.js?v=6c48fc13" defer></script>
+<script src="/nav.js?v=d697a6d1" defer></script>
 </body>
 </html>

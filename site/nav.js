@@ -273,7 +273,7 @@
     [data-jsal-nav]:focus-visible { outline: 2px solid var(--jsal-accent, currentColor); outline-offset: 3px; }
     .jsal-menu { position: fixed; z-index: 2147483000; width: min(300px, calc(100vw - 24px)); padding: 6px; border-radius: 12px;
       background: var(--jsal-surface); color: var(--jsal-ink); border: 1px solid var(--jsal-line); box-shadow: 0 16px 40px rgb(0 0 0 / .28), 0 2px 6px rgb(0 0 0 / .12);
-      font: 14px/1.35 var(--jsal-font); }
+      font: 14px/1.35 var(--jsal-font); overflow-y: auto; overscroll-behavior: contain; }
     .jsal-menu[hidden] { display: none; }
     .jsal-menu a { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 8px; color: inherit; text-decoration: none; outline: none; }
     .jsal-menu a:hover, .jsal-menu a:focus-visible { background: var(--jsal-sunk); }
@@ -281,8 +281,8 @@
     .jsal-menu .ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--jsal-sunk); color: var(--jsal-ink-2); }
     .jsal-menu b { display: block; font-weight: 600; }
     .jsal-menu small { display: block; font-size: 12px; line-height: 1.35; color: var(--jsal-muted); text-wrap: pretty; }   /* wraps rather than cutting off beside a tag on a phone */
-    .jsal-menu .tag { font-size: 11px; font-weight: 700; color: var(--jsal-muted); border: 1px solid currentColor; border-radius: 99px; padding: 0 7px; }
-    .jsal-menu .here { font-size: 11px; color: var(--jsal-muted); }
+    .jsal-menu .tag { font-size: 12px; font-weight: 700; color: var(--jsal-muted); border: 1px solid currentColor; border-radius: 99px; padding: 0 7px; }
+    .jsal-menu .here { font-size: 12px; color: var(--jsal-muted); }
     .jsal-menu hr { border: 0; border-top: 1px solid var(--jsal-line); margin: 6px 4px; }
     .jsal-menu .home { grid-template-columns: 32px minmax(0, 1fr); }
     .jsal-menu .home .ico { background: none; color: var(--jsal-muted); }
@@ -321,6 +321,7 @@
     const r = trigger.getBoundingClientRect();
     const w = menu.offsetWidth;
     menu.style.top = `${Math.round(r.bottom + 8)}px`;
+    menu.style.maxHeight = `${Math.max(160, innerHeight - Math.round(r.bottom + 8) - 12)}px`;   // short screens: it scrolls rather than running off the bottom
     menu.style.left = `${Math.round(Math.max(12, Math.min(r.left, innerWidth - w - 12)))}px`;
   }
   const links = () => [...menu.querySelectorAll('a')];
