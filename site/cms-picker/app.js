@@ -525,9 +525,10 @@
     { text: 'Connect your own domain name', domain: true },
     { row: 'meta_title', text: 'Give each page a title and description for search' },
     { text: 'Tell Google the site exists: add it to Search Console and submit its sitemap', url: SEARCH_CONSOLE, link: 'Google’s guide' },
-    { row: 'gsc404', text: 'Moving from an old site? Point the old links to the new pages' },
+    { row: 'gsc404', text: 'Point your old site’s links to the new pages', moving: true },
   ];
   const LATER = [['noindex', 'hide pages from search'], ['ai_crawlers', 'choose which AI bots may read the site']];
+  const LATER_FRESH = ['gsc404', 'point old links to new pages when pages move'];   // starting fresh: the moving step waits
   // A box's heading; under LOW_FIT the first is only the closest, so its box compares like the others' ("Compared with Wix")
   const boxHead = (vs, weak) => (vs.head.startsWith('Why ') && weak ? `Compared with ${vs.than}` : vs.head);
   // Reasons the scoring takes from a sourced table row (score.js), so the card can link the platform's own docs for them
@@ -539,13 +540,16 @@
     a.target = '_blank';
     return a;
   }
-  function nextSteps(p) {
+  // moving: the "Moving from somewhere?" answer. Leaving a named platform makes the last step name it ("Point your old
+  // Wix links…"); starting fresh moves it to "Later"
+  function nextSteps(p, moving) {
     const answer = (row) => (data.answers[p.id] || {})[row] || {};
+    const fresh = !moving || moving === 'no', from = data.platforms.find((x) => x.id === moving);
     const ol = el('ol', 'qz-steps');
-    STEPS.forEach((s) => {
+    STEPS.filter((s) => !(s.moving && fresh)).forEach((s) => {
       const ans = s.row ? answer(s.row) : {};
       const url = s.url || (s.domain ? data.quiz.domainDocs[p.id] : ans.sourceUrl);
-      const li = el('li', null, s.text);
+      const li = el('li', null, s.moving && from ? `Point your old ${from.name} links to the new pages` : s.text);
       if (url) li.append(' · ', docLink(url, s.link || `How on ${p.name}`));
       // How it's done there, when it isn't simply built in ("Yes, with an SEO plugin" → "With an SEO plugin")
       const how = (ans.verdict && ans.verdict !== 'yes' && ans.verdict !== 'auto' && ans.mark || '').replace(/^yes,?\s*/i, '');
@@ -555,7 +559,7 @@
     // Less common, so not numbered: a single line, each part linked where there's a source
     const later = el('p', 'qz-later');
     later.append(el('b', null, 'Later, if you need it: '));
-    LATER.forEach(([row, text], i) => {
+    (fresh ? [...LATER, LATER_FRESH] : LATER).forEach(([row, text], i) => {
       if (i) later.append(' · ');
       const url = answer(row).sourceUrl;
       later.append(url ? docLink(url, text) : text);
@@ -926,7 +930,7 @@
       const show = (id) => {
         const p = top.find((r) => r.p.id === id).p;
         sw.querySelectorAll('.chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === p.id)));
-        body.replaceChildren(el('h4', null, `First steps if you pick ${p.name}`), nextSteps(p));
+        body.replaceChildren(el('h4', null, `First steps if you pick ${p.name}`), nextSteps(p, a.moving));
       };
       sw.append(picker('Show first steps for', top.map((r) => [r.p.id, r.p.name]), top[0].p.id, show));
       panel.append(sw, body);
