@@ -46,10 +46,11 @@ const PERSONAS = [
   // Stores
   ['Etsy-style maker shop', { what: 'store', who: 'easy', care: 'no', size: 'small', needs: 'none', look: 'template', moving: 'no' },
     { first: ['shopify'], top3: ['shopify'], not: ['magento', 'drupal', 'sanity'] }],
+  // Magento 2 while it's on the picker, BigCommerce once it's switched off (John, 2026-11-01)
   ['5,000-product store with a dev team', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', look: 'pixel', moving: 'no' },
-    { first: ['magento'], top3: ['magento', 'shopify'], not: ['wix', 'squarespace'] }],
+    { first: ['magento', 'bigcommerce'], top3: ['magento', 'shopify'], not: ['wix', 'squarespace'] }],
   ['Wholesale B2B store with a developer, two languages', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', lang: 'yes', look: 'pixel', moving: 'no' },
-    { first: ['magento'], top3: ['magento', 'shopify', 'bigcommerce'] }],
+    { first: ['magento', 'bigcommerce'], top3: ['magento', 'shopify', 'bigcommerce'] }],
   ['Clothing brand, about 50 products, wants design control', { what: 'store', who: 'learn', care: 'no', size: 'small', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['shopify', 'wix', 'squarespace'], top3: ['shopify'] }],   // a three-way tie: the store questions don't ask about design
   ['Coffee roaster selling to cafés (B2B), not technical', { what: 'store', who: 'easy', care: 'no', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
@@ -57,7 +58,7 @@ const PERSONAS = [
   ['Wholesaler with trade accounts (B2B), happy to learn', { what: 'store', who: 'learn', care: 'no', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
     { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
   ['Parts supplier selling to businesses (B2B), with a developer', { what: 'store', who: 'dev', care: 'yes', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
-    { first: ['magento'], top3: ['magento', 'bigcommerce'] }],
+    { first: ['magento', 'bigcommerce'], top3: ['magento', 'bigcommerce'] }],
   // Quiz v3 (agreed 2026-10-31): without the "adding features" and "moving later" points, these four settle on the builders
   ['Local business that needs bookings, happy to learn', { what: 'site', kind: 'local', who: 'learn', care: 'yes', needs: 'bookings', look: 'template', moving: 'no', budget: 'low' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'] }],
@@ -100,7 +101,7 @@ const PERSONAS = [
   ['Newsletter with paid members, up to $25 a month', { what: 'content', who: 'learn', care: 'no', needs: 'members', look: 'template', moving: 'no', budget: 'low' },
     { first: ['squarespace'], top3: ['squarespace', 'ghost'], not: ['hubspot'] }],
   ['5,000-product store with a dev team, cost no object', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', look: 'pixel', moving: 'no', budget: 'any' },
-    { first: ['magento'], top3: ['magento'] }],
+    { first: ['magento', 'bigcommerce'], top3: ['magento'] }],
   // Hard cases for quiz v3 (agreed 2026-10-31): a need the builders cover, needs the quiz can only take one of, a budget
   // against an agency's usual picks, moving from a platform on the picker (no points; the one you're leaving is never a
   // match), and a store that is also a publication
@@ -137,7 +138,9 @@ let failed = 0;
 for (const [name, answers, want] of PERSONAS) {
   const r = candidates(data, answers), top = r.slice(0, 3).map((x) => x.p.id);
   const errs = [];
-  if (want.first && !want.first.includes(top[0])) errs.push(`first is ${top[0]}, expected ${want.first.join(' or ')}`);
+  // Platforms switched off the picker drop out of what's expected, like the top-three check below
+  const firsts = (want.first || []).filter((id) => ids.has(id));
+  if (want.first && !firsts.includes(top[0])) errs.push(`first is ${top[0]}, expected ${firsts.join(' or ')}`);
   (want.top3 || []).forEach((id) => { if (ids.has(id) && !top.includes(id)) errs.push(`${id} not in the top three`); });
   (want.not || []).forEach((id) => { if (top.includes(id)) errs.push(`${id} in the top three`); });
   // A tie for first (level on points and on matching "Good fit" lines) means the page shows a "Best match" it can't back up
@@ -358,19 +361,22 @@ walk({}, 0);
 unworded.forEach((k) => cardErrs.push(`score part "${k}" has no wording in TIP (score.js), so it can't say what tipped a result`));
 // Each part says the answer behind it first (LEAD); null only when its wording already names the answer
 Object.keys(TIP).forEach((k) => { if (!(k in LEAD)) cardErrs.push(`score part "${k}" has no answer lead-in in LEAD (score.js)`); });
+// The checks of quiz.json against the cards skip platforms switched off the picker: their values stay, unused, for when
+// they're switched back on
+const onPicker = ([id]) => ids.has(id);
 // A design-control tie-break (quiz.lookBest) must quote a tag that is on its platform's card
-Object.entries(data.quiz.lookBest || {}).forEach(([id, lb]) => {
+Object.entries(data.quiz.lookBest || {}).filter(onPicker).forEach(([id, lb]) => {
   const p = data.platforms.find((x) => x.id === id);
   if (!p || !((p.profile || {}).tags || []).includes(lb.tag)) cardErrs.push(`lookBest for ${id}: "${lb.tag}" isn't a tag on its card`);
 });
 // Every mapped "Not ideal if" line must still be on its platform's card, or the rule matches a line nobody sees
-Object.entries(data.quiz.notIdeal || {}).forEach(([id, rules]) => {
+Object.entries(data.quiz.notIdeal || {}).filter(onPicker).forEach(([id, rules]) => {
   const lines = ((data.platforms.find((p) => p.id === id) || {}).profile || {}).lessSuited || [];
   rules.forEach((n) => { if (!lines.some((l) => l.startsWith(n.if))) cardErrs.push(`notIdeal for ${id}: "${n.if}" isn't a "Not ideal if" line on its card any more`); });
 });
 // Every tagged "Good fit" line (quiz.fitFor, the tie-break) must still be on its card, and its "when" must name real
 // questions and answers
-Object.entries(data.quiz.fitFor || {}).forEach(([id, tags]) => {
+Object.entries(data.quiz.fitFor || {}).filter(onPicker).forEach(([id, tags]) => {
   const lines = ((data.platforms.find((p) => p.id === id) || {}).profile || {}).goodFit || [];
   tags.forEach((f) => {
     if (!lines.some((l) => l.startsWith(f.line))) cardErrs.push(`fitFor for ${id}: "${f.line}" isn't a "Good fit" line on its card any more`);
@@ -381,7 +387,7 @@ Object.entries(data.quiz.fitFor || {}).forEach(([id, tags]) => {
   });
 });
 // A free plan's address note (quiz.freeDomain) names its address and the platform's own page, on a platform that starts free
-Object.entries(data.quiz.freeDomain || {}).forEach(([id, fd]) => {
+Object.entries(data.quiz.freeDomain || {}).filter(onPicker).forEach(([id, fd]) => {
   if (!fd.address || !/^https:\/\//.test(fd.url || '')) cardErrs.push(`freeDomain for ${id}: needs an address and the platform's own page`);
   if (((data.answers[id] || {}).cost_site || {}).verdict !== 'free') cardErrs.push(`freeDomain for ${id}: its site doesn't start free any more`);
 });

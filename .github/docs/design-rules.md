@@ -73,7 +73,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   (beside the intro from 1101 to 1279px, the four and five columns from 521 to 769px, two columns below 340px), the
   logos drop out and the names centre. From 521 to 619px the guides take four columns rather than five, so
   "BigCommerce" fits.
-- **An index of links ends even.** Its last tile is the link that covers the whole set (the guides' "Compare all 13
+- **An index of links ends even.** Its last tile is the link that covers the whole set (the guides' "Compare all 12
   →"), set like the others (full ink, the arrow after the words) but centred and without a logo, and stretched across whatever is
   left of its row by `:last-child:nth-child(…)` rules for each column count, so the grid stays even at any count
   and adding an entry is adding its link. It never takes gold: the arrow alone says it goes elsewhere.
