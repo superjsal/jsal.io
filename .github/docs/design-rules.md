@@ -63,8 +63,9 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 Corners `--jsal-radius-sm` / `-` / `-lg` / `-pill`; selected `--jsal-selected-*`; hover `--jsal-hover-line`;
 focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead of new values.
 
-- **A bordered pill is a choice** (compare chips, pickers, quiz answers): it toggles, and selected is the gold
-  edge and tint. A set of links is not a choice, so it never wears pills: it's a text list (the home page footer's
+- **A bordered pill is a choice** (compare chips, the comparison's pickers): it toggles, and selected is the gold
+  edge and tint. Inside the CMS Picker quiz and its result, a choice is a rounded square (`--jsal-radius`) instead,
+  like the answers, tiles and cards around it, so the quiz reads as one set of shapes; selected is the same gold. A set of links is not a choice, so it never wears pills: it's a text list (the home page footer's
   Platform guides) or a grid of equal-width tiles with the plain `--jsal-line` border, surface background and 500
   weight. Uneven pills stagger; equal tiles don't.
 - **A tick that goes with a choice** (the quiz's "In two or more languages") is a checkbox in a bordered row above

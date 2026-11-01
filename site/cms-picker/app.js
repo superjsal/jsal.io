@@ -776,6 +776,35 @@
       return fold;
     }
 
+    // Under the best match: would they pick it? An anonymous GA4 event for the answer (quiz_feedback) and, after "No",
+    // one for the platform they'd pick instead (quiz_pick), each with the answers as one short code, so the quiz can be
+    // checked against what real visitors choose. Kept per result across re-renders, so a reply is asked for only once
+    let fbDone = null, fbNo = null;
+    function feedback(r) {
+      const key = location.hash, wrap = el('div', 'qz-fb');
+      wrap.setAttribute('aria-live', 'polite');
+      const answers = [...steps().map((q) => a[q.id] || '-'), ...(a.lang === 'yes' ? ['lang'] : []), ...(a.hubspot === 'yes' ? ['hubspot'] : [])].join('.');
+      const send = (name, params) => window.jsalTrack?.(name, { top_match: r.p.id, answers, ...params });
+      const thanks = () => { fbDone = key; wrap.replaceChildren(el('p', 'qz-fb-thanks', 'Thanks, that helps make the quiz better.')); };
+      if (fbDone === key) { thanks(); return wrap; }
+      const row = el('div', 'qz-fb-row'), yes = el('button', 'chip', 'Yes'), no = el('button', 'chip', 'No');
+      [yes, no].forEach((b) => { b.type = 'button'; b.setAttribute('aria-pressed', 'false'); });
+      row.append(el('p', 'qz-fb-q', `Is ${r.p.name} what you’d pick?`), yes, no);
+      const note = el('p', 'qz-fb-note', 'Anonymous, and only used to make the quiz better.');
+      wrap.append(row, note);
+      const others = [...data.platforms.filter((p) => p.id !== r.p.id).map((p) => [p.id, p.name]), ['unsure', 'Not sure yet']];
+      const openNo = () => {
+        no.setAttribute('aria-pressed', 'true');
+        const pick = el('div', 'qz-fb-pick');
+        pick.append(el('p', null, 'Which would you pick?'), picker('Which would you pick?', others, null, (id) => { send('quiz_pick', { platform: id }); thanks(); }));
+        wrap.insertBefore(pick, note);
+      };
+      yes.addEventListener('click', () => { send('quiz_feedback', { agree: 'yes' }); thanks(); });
+      no.addEventListener('click', () => { if (fbNo === key) return; fbNo = key; send('quiz_feedback', { agree: 'no' }); openNo(); });
+      if (fbNo === key) openNo();
+      return wrap;
+    }
+
     // source: 'quiz' or 'link', sent as a GA4 event; re-showing after a change sends nothing
     function results(source) {
       // The platform being left isn't a match (candidates) but keeps its place in the full ranking, for "Had a platform in mind?"
@@ -875,6 +904,7 @@
         const skip = lessSuited(data.quiz, r.p, a);
         if (skip) card.append(el('p', 'qz-lim', `Less suited if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);
+        if (!i) list.append(feedback(r));
       });
       box.append(h, verdict || head);
       if (pending.size) {
