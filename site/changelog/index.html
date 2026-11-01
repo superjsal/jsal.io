@@ -18,6 +18,9 @@
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet; the first page of a visit folds the logo into its mark before the first paint, for /nav.js to unfold -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});try{if(!sessionStorage.getItem("jsal-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){var h=document.documentElement;h.classList.add("jsal-intro");setTimeout(function(){h.classList.remove("jsal-intro")},4e3);}}catch(e){}</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
 <!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
      only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
 <script>
@@ -70,6 +73,7 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     <p class="lead">Everything that has changed on jsal.io, newest first. The home page keeps only the latest change for each part of the site.</p>
     <h2><time datetime="2026-11-01">1 November 2026</time></h2>
     <ul>
+      <li><span class="log-name">Site</span><span>On phones, the browser’s bar takes the page’s colour, cream or slate, on every page rather than only the tools, and now follows the theme button too. Adding jsal.io to an Android home screen uses the logo’s tile as its icon.</span></li>
       <li><span class="log-name">Site</span><span>The logo, refined: the icon’s j is lowercase at every size, wearing the gold gem as its dot, and the j in the name has round ends, the one soft letter in jsal.io. On the first page of a visit, the gem hops off the j and over the name to land as its full stop; the j stays put.</span></li>
       <li><span class="log-name">Site</span><span>The home page’s Platform guides show each platform’s logo beside its name, each line in Updates carries its app’s colour, and the Platform Playbook tile shows a small preview of its checks.</span></li>
       <li data-short="A logo: the j and its gem"><span class="log-name">Site</span><span>jsal.io has a logo: a j on a slate tile, with the full stop cut as a gold gem. It’s the browser tab’s icon and the phone home-screen icon, and the name at the top of every page and in every link preview now ends in the same gem. On the first page of a visit, the name opens as the mark and unfolds into jsal.io.</span></li>
@@ -142,6 +146,6 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     </ul>
   </main>
 </div>
-<script src="/nav.js?v=6666b1a3" defer></script>
+<script src="/nav.js?v=be9a1b33" defer></script>
 </body>
 </html>

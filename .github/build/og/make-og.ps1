@@ -15,7 +15,10 @@ function Shot($url, $out, $w, $h) {
 foreach ($p in "home", "image-resizer", "formatter", "cms-picker", "play") {
   Shot "$($tpl)?p=$p" (Join-Path $site "og\$p.png") 1200 628
 }
-Shot ("file:///" + ((Join-Path $here "icon.html") -replace '\\', '/')) (Join-Path $site "apple-touch-icon.png") 180 180
+$icon = "file:///" + ((Join-Path $here "icon.html") -replace '\\', '/')
+Shot $icon (Join-Path $site "apple-touch-icon.png") 180 180
+Shot $icon (Join-Path $site "icon-192.png") 192 192
+Shot $icon (Join-Path $site "icon-512.png") 512 512
 
 # One per CMS Picker platform page (og/cms-picker-<id>.png), from the published answers: the platform's name
 # and its six SEO tags. Text only, no logos. Re-run after a platform is added or an SEO tag changes; a page

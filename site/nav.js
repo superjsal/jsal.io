@@ -234,10 +234,16 @@
     const system = matchMedia('(prefers-color-scheme: dark)');
     const current = () => root.dataset.theme || (system.matches ? 'dark' : 'light');
     // Both icons are in each page's HTML (/shell.css shows the right one); only the label changes here
+    // The browser's own bar takes the page colour: each page's head names one per system theme, and a theme picked
+    // here wins over the system's, so both of those tags take its colour until the system decides again
+    const bars = [...document.querySelectorAll('meta[name="theme-color"]')];
+    bars.forEach((m) => { m.dataset.own = m.content; });
     const paint = () => {
       const label = current() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
       themeBtn.title = label;
       themeBtn.setAttribute('aria-label', label);
+      const picked = root.dataset.theme;
+      bars.forEach((m) => { m.content = !picked ? m.dataset.own : picked === 'dark' ? '#111318' : '#f5efe2'; });
     };
     themeBtn.addEventListener('click', () => {
       const next = current() === 'dark' ? 'light' : 'dark';

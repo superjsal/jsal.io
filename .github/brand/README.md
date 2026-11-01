@@ -28,7 +28,10 @@ in the files.
 
 - **Square spaces** (the browser tab, the phone home screen, bookmarks): the tile. `site/favicon.svg` is
   `mark.svg`; `site/favicon.ico` (16 and 32) is an export of it, and `site/apple-touch-icon.png` (180, from
-  `.github/build/og/icon.html`) is `mark-square.svg`.
+  `.github/build/og/icon.html`) is `mark-square.svg`, as are `site/icon-192.png` and `site/icon-512.png`, the icons
+  in `site/site.webmanifest` for Android's Add to Home Screen (the 512 doubles as the maskable icon: the j and gem
+  sit inside the middle 80% that Android keeps). Each page's head also sets the browser bar's colour to the page's
+  (`theme-color`: cream #f5efe2 in light, slate #111318 in dark); a theme picked with the theme button wins.
 - **Anywhere the name fits** (the site's top bar, the link previews' corner): the wordmark alone. The tab icon
   already shows the tile, so the page doesn't repeat it. In the top bar the name is real text: the j is drawn over
   the hidden letter (`.jsal-j` in `site/shell.css`: the stroke as `::before`, the dot as `::after`), and the gem is its

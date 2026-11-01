@@ -1,7 +1,7 @@
 <!doctype html>
-<!-- Home-screen icon (180 × 180), the jsal.io mark (.github/brand/mark-square.svg: square, as iOS rounds the corners itself). Rendered by make-og.ps1. -->
+<!-- Home-screen icon, the jsal.io mark (.github/brand/mark-square.svg: square, as iOS and Android round or mask the corners themselves). It fills the window, so make-og.ps1 renders it at 180 (apple-touch-icon.png), 192 and 512 (icon-192.png, icon-512.png, for the web manifest). -->
 <html><head><meta charset="utf-8"><style>
-* { margin: 0; } html, body { width: 180px; height: 180px; overflow: hidden; background: #111318; }
-svg { display: block; width: 180px; height: 180px; }
+* { margin: 0; } html, body { width: 100%; height: 100%; overflow: hidden; background: #111318; }
+svg { display: block; width: 100vw; height: 100vh; }
 </style></head>
 <body><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#111318"/><path d="M20 15V20a4.5 4.5 0 0 1-9 0" fill="none" stroke="#ece6d6" stroke-width="4" stroke-linecap="round"/><path d="M20 5l3 3-3 3-3-3z" fill="#e3b04b"/></svg></body></html>
