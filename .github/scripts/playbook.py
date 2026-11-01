@@ -440,7 +440,7 @@ BUILT_ROWS = ['blog', 'members', 'store', 'languages', 'forms', 'design']   # th
 # Each SEO row as a heading, worded the way people search for it (the table's label is a "Can you…" question)
 SEO_HEAD = {'meta_title': 'Change the title and description in Google', 'urls': 'Choose page addresses (URLs)',
             'gsc404': 'Redirect old links (301s)', 'schema': 'Add structured data (schema)',
-            'noindex': 'Hide a page from search (noindex)', 'ai_crawlers': 'Block AI crawlers'}
+            'noindex': 'Hide a page from search (noindex)', 'ai_crawlers': 'Allow or block AI crawlers'}
 
 
 # Who each platform page is about, for its structured data: the official site and, where Wikidata has a clear

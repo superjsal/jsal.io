@@ -107,7 +107,7 @@ const pages = {
 if (p === 'platform') {
   const q = new URLSearchParams(location.search), name = q.get('name') || '';
   const TAG = { yes: ['ok', 'Built in'], auto: ['ok', 'Automatic'], plugin: ['pl', 'Plugin/app'], code: ['cd', 'Needs code'], no: ['no', 'Not possible'], check: ['pl', 'Unclear'], indirect: ['pl', 'Indirectly'] };
-  const rows = ['Titles and descriptions', 'Page addresses', 'Redirect old links', 'Structured data', 'Hide a page (noindex)', 'Block AI crawlers'];
+  const rows = ['Titles and descriptions', 'Page addresses', 'Redirect old links', 'Structured data', 'Hide a page (noindex)', 'Allow or block AI crawlers'];
   const tags = (q.get('tags') || '').split(',');
   // how=1: no menus to point to (a headless CMS), so it says what each takes instead of where
   pages.platform = { label: 'CMS Picker · SEO settings', title: `${name}<br><em>SEO</em>`, sub: q.get('how') ? 'What you can change, and what each takes.' : 'What you can change, and where to find each setting.',
