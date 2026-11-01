@@ -83,7 +83,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 
 ## Layout
 
-- **The top bar never moves between pages:** the same `.jsal-top` markup everywhere (`check.py` compares it).
+- **The top bar never moves between pages:** the same `.jsal-top` markup everywhere (`check.py` compares it). A tool's name
+  in the bar starts with its icon (22px, `.jsal-title-ico`, the same file as its tab icon; dark tiles add `.jsal-dark-tile`), as in
+  the logo menu; the icon drops out below 430px. From 360px up the bar keeps one row on every tool (at 420px and under the
+  title is 18px and the gaps tighten), so the work area starts at the same height on each.
 - **One distance under the top bar:** pages that open with a heading (home, Off the clock, the CMS Picker and
   its platform pages, Privacy, Changelog, 404) start their first thing at `--jsal-page-top` from `shell.css`
   (30px, 22px at 720px and under), flush with the logo's left edge: no optical indent on the mono line, the

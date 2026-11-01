@@ -18,7 +18,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=eb002775">
+<link rel="stylesheet" href="/shell.css?v=0e2882a2">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -433,7 +433,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <tr><td>Platform page title</td><td>clamp(28px, 4.4vw, 40px)</td><td>Lora 700, −0.02em</td><td>/cms-picker/&lt;platform&gt;/</td></tr>
         <tr><td>Tile name</td><td>30px</td><td>Lora 700</td><td>Home tiles</td></tr>
         <tr><td>Section heading</td><td>24–28px</td><td>Lora 700 (italic 600 for Currently, Achievements)</td><td>Every H2</td></tr>
-        <tr><td>Tool title in the top bar</td><td>20px</td><td>Lora 700, gold word italic</td><td>.jsal-title</td></tr>
+        <tr><td>Tool title in the top bar</td><td>20px (18px on phones)</td><td>Lora 700, gold word italic, after the tool's 22px icon</td><td>.jsal-title</td></tr>
         <tr><td>Lede</td><td>17px</td><td>Inter 400</td><td>Under titles</td></tr>
         <tr><td>H3</td><td>16–17px</td><td>Inter 600</td><td>How to use it, quiz questions</td></tr>
         <tr><td>Body</td><td>15px / 1.6</td><td>Inter 400</td><td>Everywhere</td></tr>
@@ -542,7 +542,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </div>
       <div class="demo">
         <span class="src">Top bar · shell.css .jsal-top (identical markup on every page; the theme button is 32px drawn, 44px to tap)</span>
-        <div class="topbar-demo"><div class="jsal-top"><span class="jsal-brand"><span class="jsal-name"><span class="jsal-j">j<svg class="jsal-j-draw" viewBox="0 -30 900 1080" aria-hidden="true"><path class="jsal-j-line" d="M585.5 277.5V780A100 100 0 0 1 435.5 866.6" stroke-width="147"/><path class="jsal-j-fold" d="M585.5 452V638A167.6 167.6 0 0 1 250.3 638" stroke-width="149"/><circle class="jsal-j-dot" cx="586" cy="57.5" r="77"/></svg></span><span class="jsal-sal">sal</span><span class="jsal-stop">.</span><span class="jsal-io">io</span></span></span><span class="jsal-title">Clean <span class="hl">Paste</span></span><div class="jsal-actions"><span class="jsal-link">About</span><span class="jsal-theme" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span></div></div></div>
+        <div class="topbar-demo"><div class="jsal-top"><span class="jsal-brand"><span class="jsal-name"><span class="jsal-j">j<svg class="jsal-j-draw" viewBox="0 -30 900 1080" aria-hidden="true"><path class="jsal-j-line" d="M585.5 277.5V780A100 100 0 0 1 435.5 866.6" stroke-width="147"/><path class="jsal-j-fold" d="M585.5 452V638A167.6 167.6 0 0 1 250.3 638" stroke-width="149"/><circle class="jsal-j-dot" cx="586" cy="57.5" r="77"/></svg></span><span class="jsal-sal">sal</span><span class="jsal-stop">.</span><span class="jsal-io">io</span></span></span><span class="jsal-title"><img class="jsal-title-ico" src="/img/icons/clean-paste.svg?v=7eb743e5" alt="" width="22" height="22">Clean <span class="hl">Paste</span></span><div class="jsal-actions"><span class="jsal-link">About</span><span class="jsal-theme" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span></div></div></div>
         <span class="src">Keys · kbd, as in the About sections: <kbd>Ctrl</kbd> + <kbd>V</kbd></span>
       </div>
     </div>

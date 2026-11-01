@@ -377,6 +377,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 /* Narrower screens: the account shrinks to your picture and a sign-out icon, then the tabs get their own row */
 @media (max-width: 959px) { #user-name, #signout span { display: none; } #signout svg { display: block; } }
 @media (max-width: 760px) { .viewnav { margin-left: 0; order: 9; flex: 1 1 100%; } .viewnav button { flex: 1; } .account { margin-left: auto; border-left: 0; padding-left: 0; } }
+@media (max-width: 760px) { header.top .jsal-title-ico { display: none; } }   /* the account needs the room on row one */
 .link-btn { font: 600 13px var(--jsal-font); color: var(--jsal-info); background: none; border: 0; padding: 0; cursor: pointer; }
 .link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
 .count { display: inline-block; min-width: 18px; padding: 0 6px; border-radius: var(--jsal-radius-pill); background: var(--jsal-warn-soft); color: var(--jsal-warn); font-size: 12px; text-align: center; }
