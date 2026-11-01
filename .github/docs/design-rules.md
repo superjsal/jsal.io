@@ -122,6 +122,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   group heading ("Also possible, with an add-on", or with custom code, or "Missing something you need"), and one
   plain sentence per match from the table's verdicts ("Framer needs an add-on for selling online."). Above it every
   card has the must-haves and none reads "Worth a look"; under it the pill is neutral, not green, as it isn't a fit.
+  When even the first match lacks one, the blue note above the cards says that nothing that fits has it all built in.
 - **"Varies" is a "*" right after the tag** in the comparison, at every width: never a word on its own line, which made
   wide and narrow tags read unevenly down a row. The key above the table and the note under it say what it means,
   and screen readers hear "varies". The rarer "not verified" stays in words, under the tag.

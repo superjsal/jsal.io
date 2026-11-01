@@ -497,7 +497,7 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches; questions and scoring in score.js. The answers live in the page
   // address so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, standing, behind, tied, near, divider, conflict, costRow, weight, TIP, LEAD, options } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, standing, behind, tied, near, divider, firstGap, conflict, costRow, weight, TIP, LEAD, options } = window.cmsScore;
   // Shared result links carry the quiz version (v=4; none means 1). When the questions change, raise LINK_VERSION and
   // translate older answers in readLink, so shared links keep opening a result.
   const LINK_VERSION = 4;
@@ -871,6 +871,10 @@
           say.append('An app or portal usually needs a developer. Without one, these are the closest options. To see developer-built choices, ', change, '.');
         } else say.append('No platform fits these answers well, so these are the closest. Changing an answer above may bring better matches.');
         box.append(note);
+      } else {
+        // Even the best match lacks a must-have: nothing that fits has them all built in (score.js firstGap)
+        const gap = firstGap(top);
+        if (gap) { const note = el('p', 'qz-note'); note.append(el('span', null, gap)); box.append(note); }
       }
       // Moving from somewhere: what the old platform lets you take, and that a match importing from it says so
       if (a.moving && a.moving !== 'no') {

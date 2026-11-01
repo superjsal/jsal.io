@@ -456,7 +456,8 @@ body {
 /* Before the matches that lack a must-have the first has built in: a label with a rule above, like a group heading */
 .qz-div { padding-top: 14px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
 .qz-div-h { margin-bottom: 2px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-/* Above the cards when nothing fits well or the answers pull against each other: information, so blue */
+/* Above the cards when nothing fits well, the answers pull against each other, or no match has every must-have built
+   in: information, so blue */
 .qz-note { display: flex; gap: 8px; margin: 0 0 12px; padding: 10px 12px; border-left: 3px solid var(--jsal-info); border-radius: var(--jsal-radius-sm); background: var(--jsal-info-soft); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
 .qz-note::before { content: ""; flex: none; width: 16px; height: 16px; margin-top: 2px; background: var(--jsal-info); -webkit-mask: var(--info) center / contain no-repeat; mask: var(--info) center / contain no-repeat; }
 .qz-note-a { display: inline; padding: 0; text-align: left; border: 0; background: none; color: var(--jsal-info); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }

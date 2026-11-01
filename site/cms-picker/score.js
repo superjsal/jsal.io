@@ -226,10 +226,22 @@
   const HOW = { plugin: 'needs an add-on for', indirect: 'needs an add-on for', code: 'needs custom code for', check: 'needs custom code for', no: 'can’t do', notMade: 'isn’t made for' };
   const HOW_RANK = { plugin: 1, indirect: 1, code: 2, check: 2, no: 3, notMade: 3 };
   function lacks(x, lead) {
-    const gaps = x.must.filter((m) => m.short > ((lead.must.find((l) => l.key === m.key) || {}).short || 0) && HOW[m.how]);
+    return sayGaps(x, x.must.filter((m) => m.short > ((lead.must.find((l) => l.key === m.key) || {}).short || 0) && HOW[m.how]));
+  }
+  // Must-haves a match falls short on, as one sentence grouped by how it would get there, and the worst of them
+  function sayGaps(x, gaps) {
     if (!gaps.length) return null;
     const groups = [...new Set(gaps.map((m) => HOW[m.how]))].map((h) => `${h} ${listAnd(gaps.filter((m) => HOW[m.how] === h).map((m) => m.what))}`);
     return { text: `${x.p.name} ${groups.join(', and ')}.`, worst: Math.max(...gaps.map((m) => HOW_RANK[m.how])) };
+  }
+  // When even the first match falls short on a must-have, nothing that fits has them all built in (the ranking puts the
+  // fewest gaps first): a note above the cards says so and what the first lacks. Null when it has them all, or when it
+  // doesn't fit at all (the "closest" notice covers that).
+  function firstGap(top) {
+    const r = top[0];
+    if (!r || r.gate) return null;
+    const said = sayGaps(r, r.must.filter((m) => m.short > 0 && HOW[m.how]));
+    return said && `None of the platforms that fit your answers has everything you need built in. ${said.text}`;
   }
   const listAnd = (xs) => (xs.length > 1 ? `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}` : xs[0]);
   // The divider in the top three: before the first match that lacks a must-have the first has built in, with a heading by
@@ -449,6 +461,6 @@
   const LOW_FIT = 4;
   // Answers that pull against each other, with the question to change
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
+  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

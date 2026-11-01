@@ -10,7 +10,7 @@
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
 const site = path.join(__dirname, '..', '..', 'site');
-const { rank, candidates, explain, standing, tied, ahead, divider, HOW, QUESTIONS, options, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
+const { rank, candidates, explain, standing, tied, ahead, divider, firstGap, HOW, QUESTIONS, options, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
@@ -213,7 +213,7 @@ const TABLE_LINE = new RegExp(`^If you want (.+?), (.+?) (${saying}), while (.+?
 const SAME_LINE = /^The same goes if you want (.+)\.$/;
 // The must-haves as the divider names them, and the table row (or quiz list) behind each
 const MUST_ROW = { bookings: 'bookings', 'paid members': 'members', 'a blog': 'blog', 'selling online': 'store', 'more than one language': 'languages', 'a large catalogue': 'size', 'selling to other businesses': 'b2b' };
-let dividers = 0;
+let dividers = 0, firstGaps = 0;
 let combos = 0, clear = 0, fallback = 0, byCard = 0, ties = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0, weak = 0, fewFit = 0;
 const cardErrs = [];
 const walk = (a, i) => {
@@ -319,6 +319,22 @@ const walk = (a, i) => {
       });
     });
   } else if (shortBelow && r.slice(1).some((x) => x.gate === r[0].gate && x.must.some((m) => m.short > ((r[0].must.find((l) => l.key === m.key) || {}).short || 0)))) cardErrs.push(`${at}: a match short of a must-have with no divider above it`);
+  // The note when even the first lacks a must-have (score.js firstGap): true only if no platform that fits (level with
+  // the first on what rules one out) has every must-have built in, and its sentence is the first's own verdicts
+  const fg = firstGap(r), fitsAll = ranked.some((x) => x.gate === r[0].gate && !x.short);
+  if (fg) {
+    firstGaps++;
+    if (fitsAll) sentenceErr(at, `the note says nothing that fits has everything built in, but one does`);
+    const own = fg.split('. ').slice(1).join('. ');
+    if (!own.startsWith(`${r[0].p.name} `)) sentenceErr(at, `the note "${fg}" doesn't name the best match`);
+    else own.slice(r[0].p.name.length + 1, -1).split(', and ').forEach((group) => {
+      const how = Object.keys(HOW).find((h) => group.startsWith(`${HOW[h]} `));
+      group.slice(how ? HOW[how].length + 1 : 0).split(/, | and /).forEach((what) => {
+        const m = r[0].must.find((x) => x.what === what);
+        if (!how || !m || HOW[m.how] !== HOW[how] || !m.short) sentenceErr(at, `the note says "${r[0].p.name} ${group}", which isn't its verdict`);
+      });
+    });
+  } else if (!r[0].gate && r[0].must.some((m) => m.short > 0 && HOW[m.how])) cardErrs.push(`${at}: the best match lacks a must-have but no note says so`);
   const st = standing(r);
   if (st) {
     // Ahead on a must-have: a clear lead, or a clear winner when the second is ruled out or also well behind on points
@@ -371,6 +387,6 @@ Object.entries(data.quiz.freeDomain || {}).forEach(([id, fd]) => {
 });
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
-console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}${sentenceErrs ? ` (${sentenceErrs} sentences the data doesn't back)` : ', and every sentence is backed by the data and the answers'}. ${clear} clear winners, ${fallback} without a reason from their answers; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}). ${dividers} put a divider above matches that lack a must-have.`);
+console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}${sentenceErrs ? ` (${sentenceErrs} sentences the data doesn't back)` : ', and every sentence is backed by the data and the answers'}. ${clear} clear winners, ${fallback} without a reason from their answers; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}). ${dividers} put a divider above matches that lack a must-have; ${firstGaps} say even the best match lacks one.`);
 console.log(`Rules: first is made for what they're making ${broke.made ? `FAILS ${broke.made}` : 'ok'}; not technical never gets "Needs a developer" first ${broke.dev ? `FAILS ${broke.dev}` : 'ok'}; no "Not ideal if" in the top three ${notIdealTop ? `FAILS ${notIdealTop}` : 'ok'}; every reason starts from an answer ${broke.named ? `FAILS ${broke.named}` : 'ok'}; no developer platform for a solo local business ${broke.local ? `FAILS ${broke.local}` : 'ok'}; no Framer for a large catalogue ${broke.catalogue ? `FAILS ${broke.catalogue}` : 'ok'}; the platform you're leaving is never a match ${broke.origin ? `FAILS ${broke.origin}` : 'ok'}; the must-haves come before taste ${broke.need ? `FAILS ${broke.need}` : 'ok'}; every cost is weighed against the budget ${broke.budget ? `FAILS ${broke.budget}` : 'ok'}.`);
 process.exit(failed || cardErrs.length ? 1 : 0);

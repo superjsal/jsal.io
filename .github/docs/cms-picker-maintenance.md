@@ -129,6 +129,11 @@ Shared by the page and the tests, so they always run the same code.
   "Good match" at least and gives the ones under it a neutral "Worth a look"; the expert cases count only the cards
   above it as recommendations; the personas test checks every divider sentence against the table and that the divider
   appears exactly when a match falls short (55,000 of 132,480 answer sets when added, 2026-11-01).
+- **When even the first lacks a must-have** (`firstGap` in `score.js`): nothing that fits (level with the first on
+  `gate`) has every must-have built in, so a blue note above the cards says so and what the first lacks, in the same
+  `HOW` words ("None of the platforms that fit your answers has everything you need built in. BigCommerce needs an
+  add-on for paid members."). Not shown with the "closest" or clashing-answers notice. The personas test checks the
+  claim (no fitting platform has them all) and the sentence on every answer set; 13,024 of 132,480 when added.
 - **Scoring:** `fitScore` builds the score from parts with `add(key, points, reason)`. The reason (if any)
   shows as a bullet on the card. Where a part counts *against* an answer the person gave (a need that takes an
   add-on, running it yourself, hosting, budget), `fitScore` also pushes a plain line to `but`, which the
