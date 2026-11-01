@@ -758,7 +758,9 @@
         state.pick = top[0].p.id;
         // The table carries the result along: each column's label and the first card's box as one line
         const vs = told[0].vs;
-        const line = !vs ? '' : `${boxHead(vs, weak)}: ${vs.text.replace(/^(It |They |You)/, (w) => w.toLowerCase())}`;
+        // After the colon the sentence carries on in lower case, unless it starts with a platform's name
+        const named = vs && data.platforms.some((p) => vs.text.startsWith(p.name));
+        const line = !vs ? '' : `${boxHead(vs, weak)}: ${named ? vs.text : vs.text.charAt(0).toLowerCase() + vs.text.slice(1)}`;
         state.quiz = { fit: Object.fromEntries(top.map((r) => [r.p.id, { label: label(r), low: weak }])), line, eyebrow: `Your ${first}`, answers: { ...a }, cost: costRow(a) };
         state.folded = new Set();   // every group open: three platforms and folded ruled-out rows keep a phone's table short
         renderCards();
