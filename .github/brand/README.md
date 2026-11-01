@@ -71,6 +71,10 @@ in the files.
   than a CSS mask, the j is as sharp as the text on high-density screens (a mask was painted softer, so handing over
   between the two showed as the j shifting). The link previews (`.github/build/og/og.html`) draw it as a mask, which is
   fine for a still image.
+- **Signing off a page:** the mark, still (no unfold), at the size of the text it sits in: before the © line in the
+  home and `/play/` footers and at the start of every "Made by" line (the tools, the platform pages, Privacy,
+  `/design-system/`). It's `.jsal-mark` in `site/shell.css`, with the dark tile's edge on dark pages. The top of the
+  page still shows the name alone; the mark closes a page, it doesn't head it.
 - **The lockups** (tile and name together) are for places where neither appears on its own, such as an email
   signature.
 
@@ -114,9 +118,10 @@ for what the tool does, on a tile in the tool's accent from its home page tile. 
 | Clean Paste (`clean-paste`) | deep gold #5e430b (darker than the home tile's gold, so the gold gem keeps its contrast) | Tidy lines of text ending in the gem as their full stop |
 | Image Resizer (`image-resizer`) | ink #1f1a12, with the dark tile's 1px #3d424e edge everywhere | A picture's frame with the gem as the corner handle |
 | Platform Playbook (`platform-playbook`) | blue #3b5a9a | A checklist: two steps done, the gem marking the current one |
+| Off the clock (`off-the-clock`) | green #3f6b3a, as `/play/` uses it | A loot bag holding the gem, a nod to the Backpack. Not a tool, so it's not in the kit's tool row |
 
 The site's logo menu draws them inline (`APPS` in `site/nav.js`, its tile colours the `--jsal-tool-*` tokens in
-`site/shell.css`), with the menu's Home row as the mark's j and gem and Off the clock as a controller in the same style.
+`site/shell.css`), with the menu's Home row as the logo tile itself and Off the clock as the loot bag.
 Outside the site they're in the brand kit. Change a glyph in both places: `make-brand.py` and `nav.js`.
 
 ## Brand kit

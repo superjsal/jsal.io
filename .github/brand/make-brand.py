@@ -139,6 +139,10 @@ TOOLS = {   # file name: (tile colour, glyph drawn in ink with the gem's colour,
     # A checklist of steps: two done, and the gem marking the one you're on
     'platform-playbook': ('#3b5a9a', lambda ink, g, bg: stroke(
         'M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11', ink) + gem_at(8.5, 22.5, 3, g)),
+    # Off the clock (/play/, not a tool, but in the same family): a loot bag holding the gem, on /play/'s green
+    'off-the-clock': ('#3f6b3a', lambda ink, g, bg: stroke(
+        'M13.6 10.6 12.4 7h7.2l-1.2 3.6M13.6 10.6C8.8 12.5 6.5 16 6.5 19.6c0 3.6 3 5.6 9.5 5.6s9.5-2 9.5-5.6c0-3.6-2.3-7.1-7.1-9zM13.4 10.6h5.2',
+        ink, 2.8) + gem_at(16, 18.6, 3.4, g)),
 }
 (OUT / 'tools').mkdir(exist_ok=True)
 for name, (bg, draw) in TOOLS.items():

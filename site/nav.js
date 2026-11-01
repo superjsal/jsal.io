@@ -84,8 +84,8 @@
     }
   }
   // Each app's icon is drawn like the logo, on its 32-unit grid: round-ended strokes (.l) and the gold gem (.g) used once
-  // for what the tool does, on a tile in the tool's colour (--jsal-tool-*). Home is the logo's j and gem, and Off the
-  // clock a controller with the gem as a button, both in plain ink.
+  // for what the tool does, on a tile in the tool's colour (--jsal-tool-*). Home is the logo's own tile, and Off the
+  // clock a loot bag holding the gem, on /play/'s green.
   const APPS = [   // the homepage's order: CMS Picker first, the team's Playbook last
     // Descriptions stay under about 35 characters, so they fit on one line on a phone
     { href: '/cms-picker/', name: 'CMS Picker', desc: 'Find the CMS that fits, and its SEO', tile: 'var(--jsal-tool-cms)',
@@ -97,10 +97,10 @@
     { href: '/ic/', name: 'Platform Playbook', desc: 'SEO steps by platform, for my team', tag: 'Team', tile: 'var(--jsal-tool-playbook)',
       icon: '<path class="l" d="M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11" stroke-width="3"/><path class="g" d="M8.5 19.5l3 3-3 3-3-3z"/>' },
   ];
-  const HOME = { href: '/', name: 'jsal.io home',
+  const HOME = { href: '/', name: 'jsal.io home', tile: 'var(--jsal-tool-home)', edge: true,
     icon: '<path class="l" d="M20 15V20a4.5 4.5 0 0 1-9 0" stroke-width="4"/><path class="g" d="M20 5l3 3-3 3-3-3z"/>' };
-  const PLAY = { href: '/play/', name: 'Off the clock',
-    icon: '<path class="l" d="M10 10h12a5.5 5.5 0 0 1 5.3 7l-1.2 4.1a2.8 2.8 0 0 1-4.8 1.1L19.4 20h-6.8l-1.9 2.2a2.8 2.8 0 0 1-4.8-1.1L4.7 17A5.5 5.5 0 0 1 10 10zM11 13.5v5M8.5 16h5" stroke-width="2.6"/><path class="g" d="M21.5 13.5l2.3 2.3-2.3 2.3-2.3-2.3z"/>' };
+  const PLAY = { href: '/play/', name: 'Off the clock', tile: 'var(--jsal-tool-play)',
+    icon: '<path class="l" d="M13.6 10.6 12.4 7h7.2l-1.2 3.6M13.6 10.6C8.8 12.5 6.5 16 6.5 19.6c0 3.6 3 5.6 9.5 5.6s9.5-2 9.5-5.6c0-3.6-2.3-7.1-7.1-9zM13.4 10.6h5.2" stroke-width="2.8"/><path class="g" d="M16 15.2l3.4 3.4-3.4 3.4-3.4-3.4z"/>' };
   // An app's icon on its tile, or a plain one (home, Off the clock) in the row's ink
   const appIcon = (a) => `<svg viewBox="0 0 32 32" width="${a.tile ? 32 : 22}" height="${a.tile ? 32 : 22}" aria-hidden="true"${a.tile ? ` style="--tile: ${a.tile}${a.edge ? '; --tile-edge: var(--jsal-tool-edge)' : ''}"` : ''}>${a.tile ? '<rect class="t" x=".5" y=".5" width="31" height="31" rx="6.5"/>' : ''}${a.icon}</svg>`;
   // Page transitions (/shell.css): while one plays the page is a picture, so a click straight after arriving did
@@ -289,7 +289,7 @@
     .jsal-menu .ico .l { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
     .jsal-menu .ico .g { fill: currentColor; }
     /* jsal-ico-tile, not "tile": the menu sits on every page, and the home page's bento boxes are .tile */
-    .jsal-menu .jsal-ico-tile { background: none; color: var(--jsal-tool-ink); }
+    .jsal-menu .ico.jsal-ico-tile { background: none; color: var(--jsal-tool-ink); }   /* outranks the home rows' muted ink */
     .jsal-menu .jsal-ico-tile .t { fill: var(--tile); stroke: var(--tile-edge, none); }
     .jsal-menu .jsal-ico-tile .g { fill: var(--jsal-tool-gem); }
     .jsal-menu .jsal-ico-tile .cut { stroke: var(--tile); stroke-width: 2.4; paint-order: stroke; }   /* the gem cuts its gap where it overlaps the frame */

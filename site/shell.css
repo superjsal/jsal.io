@@ -29,6 +29,7 @@
   --jsal-bad: #b32d2a;  --jsal-bad-soft: #f7dcd9;
   --jsal-info: #2f5db5; --jsal-info-soft: #dfe6f5;   /* arcane blue */
   --jsal-shadow: 0 1px 2px rgba(60, 40, 10, 0.08);
+  --jsal-mark-edge: transparent;   /* the logo tile's edge: none on light pages */
   --jsal-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --jsal-radius: 6px;
   color-scheme: light;
@@ -44,6 +45,7 @@
     --jsal-bad: #ff8c96; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
     --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill);
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --jsal-mark-edge: #3d424e;
     color-scheme: dark;
   }
 }
@@ -57,6 +59,7 @@
     --jsal-bad: #ff8c96; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
     --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill);
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --jsal-mark-edge: #3d424e;
     color-scheme: dark;
   }
 }
@@ -79,6 +82,7 @@ body { background: var(--jsal-bg); }
      its home page tile, parchment strokes and the gold gem; the ink tile keeps a thin edge so it holds on a dark page */
   --jsal-tool-cms: #674690; --jsal-tool-paste: #5e430b; --jsal-tool-resize: #1f1a12; --jsal-tool-playbook: #3b5a9a;
   --jsal-tool-edge: #3d424e; --jsal-tool-ink: #ece6d6; --jsal-tool-gem: #e3b04b;
+  --jsal-tool-home: #111318; --jsal-tool-play: #3f6b3a;   /* the logo's slate; Off the clock's green, as /play/ uses it */
 }
 
 /* Phones (iOS) zoom into any text field under 16px when it's tapped or focused, which throws the page
@@ -200,6 +204,11 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
   display: inline-block; width: 0.34em; height: 0.34em; margin: 0 0.05em 0 0.07em; overflow: hidden;
   color: transparent; background: var(--jsal-accent); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
+/* The logo mark, still, signing off a page: before the footer's © line and each "Made by" line, at the text's size */
+.jsal-mark { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -0.25em; margin-right: 0.5em; }
+.jsal-mark .jsal-mark-tile { fill: var(--jsal-tool-home); stroke: var(--jsal-mark-edge); }
+.jsal-mark .jsal-mark-j { fill: none; stroke: var(--jsal-tool-ink); stroke-width: 4; stroke-linecap: round; }
+.jsal-mark .jsal-mark-gem { fill: var(--jsal-tool-gem); }
 /* The name's parts sit in one line of text (.jsal-name), so the gem stands on the baseline like a full stop */
 .jsal-brand .jsal-io { display: inline-block; position: relative; }
 .jsal-brand .jsal-stop { position: relative; }
