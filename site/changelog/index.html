@@ -14,7 +14,7 @@
 <meta property="og:description" content="Everything that has changed on jsal.io, newest first.">
 <meta property="og:image" content="https://jsal.io/og/home.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.svg?v=22915abb" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=fce72ce3" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -37,7 +37,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours and top bar: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=d8fe0782">
+<link rel="stylesheet" href="/shell.css?v=bf30df23">
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
@@ -59,7 +59,7 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
 <body>
 <div class="wrap">
   <header class="jsal-top">
-    <a class="jsal-brand" href="/" data-jsal-nav>jsal<span>.io</span><span class="jsal-caret"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></a>
+    <a class="jsal-brand" href="/" data-jsal-nav>jsal<span><span class="jsal-stop">.</span>io</span><span class="jsal-caret"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></a>
     <div class="jsal-actions">
       <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"><svg class="i-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg><svg class="i-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
     </div>
@@ -68,6 +68,10 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     <p class="code">Changelog</p>
     <h1>What’s <em>changed</em></h1>
     <p class="lead">Everything that has changed on jsal.io, newest first. The home page keeps only the latest change for each part of the site.</p>
+    <h2><time datetime="2026-11-01">1 November 2026</time></h2>
+    <ul>
+      <li data-short="A logo: the j and its gem"><span class="log-name">Site</span><span>jsal.io has a logo: the j on its slate tile, with the full stop cut as a gold gem. It sits beside the name at the top of every page, and is the browser tab’s icon, the phone home-screen icon and the corner of every link preview.</span></li>
+    </ul>
     <h2><time datetime="2026-10-31">31 October 2026</time></h2>
     <ul>
       <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>The quiz box reserves its first question’s height, so the rows under it no longer jump when the page loads or between questions.</span></li>
