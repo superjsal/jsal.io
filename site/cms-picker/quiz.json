@@ -351,7 +351,7 @@
     ],
     "hubspot": [
       {
-        "if": "You don't otherwise use HubSpot",
+        "if": "You don’t otherwise use HubSpot",
         "when": {
           "what": [
             "site"
@@ -416,7 +416,7 @@
         }
       },
       {
-        "if": "There's no budget for developers",
+        "if": "There’s no budget for developers",
         "when": {
           "budget": [
             "none",
@@ -427,7 +427,7 @@
     ],
     "drupal": [
       {
-        "if": "It's a small site with no developer",
+        "if": "It’s a small site with no developer",
         "when": {
           "who": [
             "easy",
@@ -438,7 +438,7 @@
     ],
     "duda": [
       {
-        "if": "You're building it yourself outside an agency",
+        "if": "You’re building it yourself outside an agency",
         "when": {
           "who": [
             "easy",
@@ -467,7 +467,7 @@
     ],
     "sanity": [
       {
-        "if": "There's no developer",
+        "if": "There’s no developer",
         "when": {
           "who": [
             "easy",
