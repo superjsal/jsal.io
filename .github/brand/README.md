@@ -41,11 +41,10 @@ the letters keep their places throughout, so nothing beside the logo moves.
 
 - Each page's head script folds the name before the first paint (the J is drawn by CSS until `site/nav.js` takes
   over and animates it); later pages in the visit, pages loaded ahead and reduced motion show the name as it is.
-- On that first page the drawn j stays after the unfold and the name is painted on its own layer throughout, so
-  nothing is swapped or repainted when it ends. Windows draws plain text sharper than animated text, and swapping
-  back to the real letter made the name flicker there.
-- The drawing lines up with Inter's bold j to within a screen pixel at 100–200% scaling: its box sits on whole
-  pixels and the drawing settles inside it by the rest while the J sinks.
+- The top bar's j is a drawing on every page (`.jsal-j::before` in `site/shell.css`, a mask over the hidden letter,
+  which stays in the text for copying and screen readers), and the unfold draws each frame into that same mask, so
+  it starts on the folded J and ends on exactly the j every page shows: nothing is swapped, and the name looks the
+  same on every page. Swapping a drawing for the font's j showed on Windows, which draws text and drawings differently.
 
 ## Colours
 

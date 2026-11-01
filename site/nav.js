@@ -413,9 +413,9 @@
   if (document.prerendering) document.addEventListener('prerenderingchange', replayEarly, { once: true }); else replayEarly();
 
   // The logo on the first page of a visit: it opens as the mark, a J and its gem (folded by the head script before the
-  // first paint), then the J sinks through the line into the j of jsal while the gem slides right and the rest of the
-  // name comes out from behind it, and a light runs across the gem and on over "io". Once per visit; a page loaded ahead shows the name
-  // as it is.
+  // first paint), then the J sinks through the line into the drawn j of jsal while the gem slides right and the rest
+  // of the name comes out from behind it, and a light runs across the gem and on over "io". Once per visit; a page
+  // loaded ahead shows the name as it is.
   (() => {
     const root = document.documentElement;
     const unfold = () => root.classList.remove('jsal-intro');
@@ -433,20 +433,9 @@
       // Where the letters sit unfolded (offsets ignore the fold's transforms); folded, the gem sits 0.2845em after the j
       const shift = stop.offsetLeft - (j.offsetLeft + 0.2845 * em), ioW = io.offsetWidth;
       const gemFrom = j.offsetLeft + 0.2845 * em - sal.offsetLeft;   // the folded gem's left edge, from where "sal" starts
-      j.insertAdjacentHTML('beforeend', '<svg class="jsal-morph" viewBox="0 0 900 1050" aria-hidden="true"><path fill="none" stroke="currentColor"/><circle fill="currentColor" cx="586" cy="57.5" r="77" opacity="0"/><ellipse fill="currentColor"/><ellipse fill="currentColor"/></svg>');
-      const svg = j.lastElementChild, [path, dot, capTop, capEnd] = svg.children;
-      // Its box starts 0.75em above the j's baseline, measured here in case the font's line metrics differ
-      const probe = document.createElement('span');
-      probe.style.cssText = 'display:inline-block;width:0;height:0';
-      j.append(probe);
-      // The box goes on whole pixels, as browsers paint the folded J's; the drawing then moves inside it by the rest
-      // while the J sinks, so it starts where that J was painted and ends exactly on the text's j
-      const snap = Math.round, box = j.getBoundingClientRect();
-      const wantY = probe.getBoundingClientRect().bottom - 0.75 * em, wantX = box.left - 0.45 * em;
-      const settleX = ((snap(wantX) - wantX) * 1000) / em, settleY = ((snap(wantY) - wantY) * 1000) / em;
-      svg.style.top = `${snap(wantY) - box.top}px`;
-      svg.style.left = `${snap(wantX) - box.left}px`;
-      probe.remove();
+      // The J is drawn as the mask of the j's own drawing (shell.css): each frame is a small SVG put in --jsal-j-draw,
+      // so the first frame is the folded J and the last is the j every page shows, drawn the same way
+      const n = (v) => Math.round(v * 100) / 100;
       logo.classList.add('jsal-unfolding');
       unfold();
       // m: the J becomes the j (the stem sinks straight down, the hook turns from a half circle to a quarter, the round
@@ -456,18 +445,15 @@
         const x = 585.5, r = lerp(168, 70, m), y = lerp(507.5, 810, m), th = lerp(Math.PI, Math.PI / 2, m), tail = lerp(0, 89.5, m);
         const w = lerp(149, 147, m), top = lerp(97, 204, m);
         const ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th), tx = ex - Math.sin(th) * tail, ty = ey + Math.cos(th) * tail;
-        path.setAttribute('d', `M${x} ${top}V${y}A${r} ${r} 0 0 1 ${ex} ${ey}L${tx} ${ty}`);
-        path.setAttribute('stroke-width', w);
-        svg.setAttribute('viewBox', `${settleX * m} ${settleY * m} 900 1050`);
         // Each end is a dome as wide as the stroke that flattens as m grows: round on the J, square on the j
-        const dome = (el, cx, cy, deg) => {
-          el.setAttribute('cx', cx); el.setAttribute('cy', cy);
-          el.setAttribute('rx', (w / 2) * (1 - m)); el.setAttribute('ry', w / 2);
-          el.setAttribute('transform', `rotate(${deg} ${cx} ${cy})`);
-        };
-        dome(capTop, x, top, 90);
-        dome(capEnd, tx, ty, (Math.atan2(Math.cos(th), -Math.sin(th)) * 180) / Math.PI);
-        dot.setAttribute('r', 77); dot.setAttribute('opacity', clamp((m - 0.55) / 0.45));
+        const dome = (cx, cy, deg) => (m < 1 ? `<ellipse cx='${n(cx)}' cy='${n(cy)}' rx='${n((w / 2) * (1 - m))}' ry='${n(w / 2)}' transform='rotate(${n(deg)} ${n(cx)} ${n(cy)})'/>` : '');
+        const frame = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'><path d='M${x} ${n(top)}V${n(y)}A${n(r)} ${n(r)} 0 0 1 ${n(ex)} ${n(ey)}L${n(tx)} ${n(ty)}' fill='none' stroke='black' stroke-width='${n(w)}'/>`
+          + dome(x, top, 90) + dome(tx, ty, (Math.atan2(Math.cos(th), -Math.sin(th)) * 180) / Math.PI)
+          + `<circle cx='586' cy='57.5' r='77' opacity='${n(clamp((m - 0.55) / 0.45))}'/></svg>`;
+        // at the two ends the stylesheet's own drawings show (the J folded, the j unfolded), so they match exactly
+        logo.classList.toggle('jsal-j-done', m >= 1);
+        if (m <= 0 || m >= 1) j.style.removeProperty('--jsal-j-draw');
+        else j.style.setProperty('--jsal-j-draw', `url("data:image/svg+xml,${encodeURIComponent(frame)}")`);
         const back = `translateX(${-(1 - u) * shift}px)`;
         stop.style.transform = io.style.transform = back;
         // the menu's arrow starts just after the gem and ends after "io", still turned over if the menu opened meanwhile
@@ -484,12 +470,11 @@
         const t = now - start;
         draw(ease(clamp(t / 520)), ease(clamp((t - 440) / 520)));
         if (t < 960) return requestAnimationFrame(step);
-        // Settle: the letters are in place, the drawn j stays on this page (nothing is swapped), then the glint
-        // (the last frame is left exactly as drawn, "sal"'s fully open mask included, so its pixels don't change; only the
-        // arrow, outside the name, hands its turn back to the menu)
+        // Settle: the letters are in place and the j is the one every page shows; the last frame is left exactly as
+        // drawn, "sal"'s fully open mask included, so no pixel changes; only the arrow, outside the name, hands its turn
+        // back to the menu. Then the glint
         if (caret) caret.style.transform = '';
-        logo.classList.add('jsal-unfolded');
-        logo.classList.remove('jsal-unfolding');
+        logo.classList.remove('jsal-unfolding', 'jsal-j-done');
         setTimeout(() => logo.classList.add('jsal-glint'), 250);
         setTimeout(() => logo.classList.remove('jsal-glint'), 1100);
       };

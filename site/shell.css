@@ -197,32 +197,34 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
   color: transparent; background: var(--jsal-accent); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
 /* The name's parts sit in one line of text (.jsal-name), so the gem stands on the baseline like a full stop */
-.jsal-brand .jsal-j { position: relative; }
 .jsal-brand .jsal-io { display: inline-block; position: relative; }
 .jsal-brand .jsal-stop { position: relative; }
-/* First page of a visit: the name opens folded into the mark, a J and its gem, and /nav.js unfolds it. The letters
-   keep their places, so nothing beside the logo moves; the J is drawn over the j, on the same stem, in a box from
-   0.75em above the baseline to 0.3em below it (its units are thousandths of an em). On that page the name is painted
-   on a layer of its own from the first frame to the last and the drawn j stays, so the letters keep one look
-   throughout instead of changing (sharper or softer) when the animation ends. */
-html.jsal-intro [data-jsal-nav] .jsal-name, [data-jsal-nav].jsal-unfolding .jsal-name,
-[data-jsal-nav].jsal-unfolded .jsal-name { will-change: transform; }
-html.jsal-intro [data-jsal-nav] .jsal-j, [data-jsal-nav].jsal-unfolding .jsal-j,
-[data-jsal-nav].jsal-unfolded .jsal-j { color: transparent; }
+/* The j is drawn (the letter stays in the text for copying and screen readers), the same drawing on every page and the
+   one the unfold below ends on, so the name looks the same everywhere. Its box runs from 0.75em above the baseline to
+   0.3em below it; the drawings' units are thousandths of an em. */
+.jsal-brand .jsal-j { position: relative; color: transparent; }
+.jsal-brand .jsal-j::before {
+  position: absolute; left: -0.45em; top: 0.22em; width: 0.9em; height: 1.05em;
+  top: calc(round(0.96875em, 1px) - 0.75em);   /* the baseline sits a whole number of pixels below the top */
+}
+.jsal-brand .jsal-j::before {
+  content: ""; background: var(--jsal-ink);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 204V810A70 70 0 0 1 515.5 880L426 880' fill='none' stroke='black' stroke-width='147'/%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 204V810A70 70 0 0 1 515.5 880L426 880' fill='none' stroke='black' stroke-width='147'/%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+}
+/* First page of a visit: the name opens folded into the mark, a J and its gem, and /nav.js unfolds it, drawing each
+   frame of the J sinking into the j as this same mask (--jsal-j-draw). The letters keep their places, so nothing beside
+   the logo moves. */
+html.jsal-intro [data-jsal-nav] .jsal-j::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 97V507.5A168 168 0 0 1 249.5 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 97V507.5A168 168 0 0 1 249.5 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+[data-jsal-nav].jsal-unfolding:not(.jsal-j-done) .jsal-j::before {
+  -webkit-mask-image: var(--jsal-j-draw, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 97V507.5A168 168 0 0 1 249.5 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E")); mask-image: var(--jsal-j-draw, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 97V507.5A168 168 0 0 1 249.5 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E"));
+}
 html.jsal-intro [data-jsal-nav] .jsal-sal { clip-path: inset(0 100% 0 0); }
 html.jsal-intro [data-jsal-nav] .jsal-stop, html.jsal-intro [data-jsal-nav] .jsal-io { transform: translateX(-1.39em); }
 html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.23em); }
 [data-jsal-nav].jsal-unfolding .jsal-caret { transition: none; }
 html.jsal-intro [data-jsal-nav] .jsal-io { opacity: 0; }
-html.jsal-intro [data-jsal-nav] .jsal-j::before, .jsal-morph {
-  position: absolute; left: -0.45em; top: 0.22em; width: 0.9em; height: 1.05em;
-  top: calc(round(0.96875em, 1px) - 0.75em);   /* the baseline sits a whole number of pixels below the top */
-}
-html.jsal-intro [data-jsal-nav] .jsal-j::before {
-  content: ""; background: var(--jsal-ink);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 97V507.5A168 168 0 0 1 249.5 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 97V507.5A168 168 0 0 1 249.5 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
-}
-.jsal-morph { overflow: visible; color: var(--jsal-ink); pointer-events: none; }
 /* Once unfolded, a light runs across the gem and on over "io", like loot catching the light. It passes over the
    letters as a layer of its own, so the letters underneath are never repainted. */
 [data-jsal-nav].jsal-glint .jsal-stop::after {
