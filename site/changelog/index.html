@@ -14,7 +14,7 @@
 <meta property="og:description" content="Everything that has changed on jsal.io, newest first.">
 <meta property="og:image" content="https://jsal.io/og/home.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.svg?v=fce72ce3" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=26e56056" type="image/svg+xml">
 <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet; the first page of a visit folds the logo into its mark before the first paint, for /nav.js to unfold -->
 <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});try{if(!sessionStorage.getItem("jsal-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){var h=document.documentElement;h.classList.add("jsal-intro");setTimeout(function(){h.classList.remove("jsal-intro")},4e3);}}catch(e){}</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -37,7 +37,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours and top bar: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=92fe6459">
+<link rel="stylesheet" href="/shell.css?v=327cc210">
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
@@ -70,6 +70,7 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     <p class="lead">Everything that has changed on jsal.io, newest first. The home page keeps only the latest change for each part of the site.</p>
     <h2><time datetime="2026-11-01">1 November 2026</time></h2>
     <ul>
+      <li><span class="log-name">Site</span><span>The logo, refined: the icon’s j is lowercase at every size, wearing the gold gem as its dot, and the j in the name has round ends, the one soft letter in jsal.io. On the first page of a visit, the gem hops off the j and over the name to land as its full stop; the j stays put.</span></li>
       <li><span class="log-name">Site</span><span>The home page’s Platform guides show each platform’s logo beside its name, each line in Updates carries its app’s colour, and the Platform Playbook tile shows a small preview of its checks.</span></li>
       <li data-short="A logo: the j and its gem"><span class="log-name">Site</span><span>jsal.io has a logo: a j on a slate tile, with the full stop cut as a gold gem. It’s the browser tab’s icon and the phone home-screen icon, and the name at the top of every page and in every link preview now ends in the same gem. On the first page of a visit, the name opens as the mark and unfolds into jsal.io.</span></li>
     </ul>
@@ -141,6 +142,6 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     </ul>
   </main>
 </div>
-<script src="/nav.js?v=a52a8a0a" defer></script>
+<script src="/nav.js?v=6666b1a3" defer></script>
 </body>
 </html>
