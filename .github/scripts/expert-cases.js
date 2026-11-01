@@ -12,7 +12,7 @@ const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
 
 // Agreement when the report was set up: fewer than this is called out
-const BASELINE = 42;
+const BASELINE = 43;
 const DEV = ['magento', 'drupal', 'sanity'];
 const S = (o) => ({ moving: 'no', needs: 'none', budget: 'any', ...o });
 const CASES = [
@@ -37,6 +37,7 @@ const CASES = [
   ['App launch page, not technical, nothing to spend', S({ what: 'site', kind: 'startup', who: 'easy', care: 'no', look: 'visual', budget: 'none' }), { ok: ['wix', 'framer', 'squarespace'], never: DEV }],
   // B2B and content-heavy business sites
   ['Industrial B2B, lead generation, agency-built', S({ what: 'site', kind: 'b2b', who: 'agency', care: 'no', look: 'template', budget: 'any' }), { ok: ['hubspot', 'wordpress', 'webflow'], never: ['magento', 'sanity'] }],
+  ['B2B company whose sales team runs on HubSpot, agency-built', S({ what: 'site', kind: 'b2b', hubspot: 'yes', who: 'agency', care: 'no', look: 'template', budget: 'any' }), { ok: ['hubspot'], never: ['magento', 'sanity'] }],
   ['B2B software company, in-house marketer, every detail', S({ what: 'site', kind: 'b2b', who: 'learn', care: 'no', look: 'pixel', budget: 'mid' }), { ok: ['webflow', 'hubspot', 'framer'], never: DEV }],
   ['Consultancy publishing guides, agency-built, own hosting', S({ what: 'site', kind: 'content', who: 'agency', care: 'yes', needs: 'blog', look: 'visual', budget: 'any' }), { ok: ['wordpress', 'webflow', 'hubspot'], never: ['magento'] }],
   ['Resource library for a marketing team, happy to learn', S({ what: 'site', kind: 'content', who: 'learn', care: 'no', look: 'visual', budget: 'mid' }), { ok: ['webflow', 'wordpress', 'hubspot'], never: DEV }],

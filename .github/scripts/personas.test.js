@@ -2,7 +2,8 @@
 // checked against the results John agreed (2026-10-29; 37 people since the business-site, members, budget and B2B questions;
 // quiz v3 on 2026-10-31 replaced the language, members, moving-later and adding-features questions with "Anything you'll
 // need from day one?" (needs) and "Moving from somewhere?" (moving), and added the hard cases at the end; quiz v4 the same
-// day made languages a tick on the needs question, lang=yes, beside whichever need is picked). Run by
+// day made languages a tick on the needs question, lang=yes, beside whichever need is picked; quiz v5 on 2026-11-01 added
+// the "We already use HubSpot" tick on "Which is closest to what you do?", hubspot=yes, so the B2B people come both ways). Run by
 // .github\build\check.py (node .github/scripts/personas.test.js), locally and on GitHub.
 // The answers come from cms-picker/data.json and the quiz's own values from cms-picker/quiz.json, as on the
 // page, so a change to either is tested before it goes live. When a result should change, agree it first, then
@@ -20,8 +21,12 @@ const PERSONAS = [
   // Business or work sites (with "Which is closest to what you do?", agreed 2026-10-29)
   ['Local bakery, no tech help', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', look: 'template', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'sanity'] }],
+  // HubSpot only for people already on its tools (agreed 2026-11-01: 1 of 76 B2B client sites in an anonymous tally runs
+  // on it); its card's "You don't otherwise use HubSpot" rules it out otherwise
   ['Multilingual B2B SaaS marketing site, agency-built', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', needs: 'none', lang: 'yes', look: 'pixel', moving: 'no' },
-    { first: ['hubspot', 'webflow'], top3: ['hubspot', 'webflow'] }],   // HubSpot since Webflow's languages became a paid add-on (agreed)
+    { first: ['webflow'], top3: ['webflow', 'wordpress'], not: ['hubspot'] }],
+  ['Multilingual B2B SaaS marketing site, agency-built, already on HubSpot', { what: 'site', kind: 'b2b', hubspot: 'yes', who: 'agency', care: 'no', needs: 'none', lang: 'yes', look: 'pixel', moving: 'no' },
+    { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
   ['Agency-built local service site', { what: 'site', kind: 'local', who: 'agency', care: 'no', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['duda'], top3: ['duda'] }],
   ['Design-led startup landing page', { what: 'site', kind: 'startup', who: 'learn', care: 'no', needs: 'none', look: 'pixel', moving: 'no' },
@@ -30,15 +35,19 @@ const PERSONAS = [
     { first: ['squarespace', 'framer'], top3: ['squarespace'], not: ['magento', 'drupal', 'sanity'] }],
   ['Learns as they go, local business (John’s answers)', { what: 'site', kind: 'local', who: 'learn', care: 'yes', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'] }],
-  // A close call agreed with John: HubSpot if sales run on its CRM, Webflow for design control
+  // A close call agreed with John: HubSpot if sales run on its CRM (the tick), Webflow for design control
   ['Learns as they go, B2B company (John’s answers)', { what: 'site', kind: 'b2b', who: 'learn', care: 'yes', needs: 'none', look: 'visual', moving: 'no' },
-    { first: ['webflow', 'hubspot'], top3: ['webflow', 'hubspot'] }],
+    { first: ['webflow', 'wordpress'], top3: ['webflow', 'wordpress'], not: ['hubspot'] }],
+  ['Learns as they go, B2B company on HubSpot', { what: 'site', kind: 'b2b', hubspot: 'yes', who: 'learn', care: 'yes', needs: 'none', look: 'visual', moving: 'no' },
+    { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
   ['Freelance consultant, one-page site', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', look: 'template', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'sanity'] }],
   ['Restaurant in a tourist town, two languages', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', lang: 'yes', look: 'template', moving: 'no' },
     { first: ['wix'], top3: ['wix', 'squarespace'] }],
   ['B2B marketing team with lots of articles', { what: 'site', kind: 'content', who: 'learn', care: 'no', needs: 'none', look: 'visual', moving: 'no' },
-    { first: ['webflow', 'hubspot'], top3: ['webflow', 'hubspot'] }],
+    { first: ['webflow'], top3: ['webflow'], not: ['hubspot'] }],
+  ['B2B marketing team with lots of articles, on HubSpot', { what: 'site', kind: 'content', hubspot: 'yes', who: 'learn', care: 'no', needs: 'none', look: 'visual', moving: 'no' },
+    { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
   ['Estate agent, built by an agency', { what: 'site', kind: 'local', who: 'agency', care: 'no', needs: 'none', look: 'template', moving: 'no' },
     { first: ['duda'], top3: ['duda'] }],
   ['Developer portfolio, owns everything', { what: 'site', kind: 'creative', who: 'dev', care: 'yes', needs: 'none', look: 'pixel', moving: 'no' },
@@ -116,7 +125,9 @@ const PERSONAS = [
   ['Publication with paid members, two languages', { what: 'content', who: 'learn', care: 'no', needs: 'members', lang: 'yes', look: 'template', moving: 'no' },
     { first: ['substack'], top3: ['substack', 'ghost', 'squarespace'], not: ['hubspot'] }],
   ['Agency-built B2B site on a small budget', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', needs: 'none', look: 'visual', moving: 'no', budget: 'low' },
-    { first: ['hubspot', 'webflow'], top3: ['hubspot', 'webflow'] }],
+    { first: ['webflow', 'wordpress'], top3: ['webflow', 'wordpress'], not: ['hubspot'] }],
+  ['Agency-built B2B site on a small budget, on HubSpot', { what: 'site', kind: 'b2b', hubspot: 'yes', who: 'agency', care: 'no', needs: 'none', look: 'visual', moving: 'no', budget: 'low' },
+    { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
   ['Developer who wants to be able to leave later', { what: 'custom', who: 'dev', care: 'yes', needs: 'none', look: 'pixel', moving: 'other' },
     { first: ['sanity'], top3: ['sanity', 'wordpress'] }],
   ['Store that is also a publication', { what: 'content', who: 'learn', care: 'no', needs: 'sell', look: 'template', moving: 'no' },
@@ -132,6 +143,8 @@ const PERSONAS = [
   ['Store moving from Shopify, thousands of products', { what: 'store', who: 'learn', care: 'no', size: 'big', needs: 'none', look: 'template', moving: 'shopify' },
     { first: ['bigcommerce'], top3: ['bigcommerce'], not: ['shopify'] }],
   ['B2B site with two languages, built in-house', { what: 'site', kind: 'b2b', who: 'learn', care: 'no', needs: 'none', lang: 'yes', look: 'visual', moving: 'no' },
+    { first: ['webflow'], top3: ['webflow'], not: ['hubspot'] }],
+  ['B2B site with two languages, built in-house, on HubSpot', { what: 'site', kind: 'b2b', hubspot: 'yes', who: 'learn', care: 'no', needs: 'none', lang: 'yes', look: 'visual', moving: 'no' },
     { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
   // Must-haves first: selling, the need that matters most, isn't outvoted by the design answer, and a platform with no
   // store plan doesn't escape the budget (Framer came first here before)

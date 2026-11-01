@@ -49,6 +49,15 @@ builders is settled by the design control their card leads with (`quiz.lookBest`
 fell to 5% of answer sets (moving=no, languages both ways), 530 of the settled ones Wix against Squarespace; the rest
 say "Joint best match" and the box under each card does the work.
 
+**Quiz v5** (2026-11-01): a "We already use HubSpot" tick on "Which is closest to what you do?" (`also` on the kind
+question, `hubspot=yes` in links). HubSpot's card line "You don't otherwise use HubSpot" now rules it out for every
+business site and publication unless it's ticked (`when: { what: [site, content], hubspot: [no] }`; a tick that isn't
+given, or whose question isn't asked, reads as "no"), and a tick gives HubSpot 4 points ("Fits the HubSpot tools you
+already use"). Before, HubSpot came first for most B2B answers, though an anonymous tally of the agency's B2B client
+sites found 1 of 76 on it; its CMS is worth it mainly to companies already on its CRM. Unticked, 798 of 8,832 first
+places moved (9%, HubSpot to Webflow, WordPress or Wix); ticked, HubSpot is first for 652 of 960 B2B answer sets. The
+five B2B personas now come both ways (Webflow or WordPress without the tick, HubSpot with it), agreed with John.
+
 **Baseline** (final review with Claude Reviewer, 2026-10-30, before v3): all four rule tests pass, all 37 personas pass, and
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
 B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
@@ -61,10 +70,9 @@ box has no reason from their answers (an agency or developer selling on no budge
 separate shop is estimated cheaper than a store plan; the estimate is never given as a reason, so the box falls back to
 the table or card). A change to any of these numbers is a result change: agree it with John first.
 
-**Accepted limitation:** old `v=1` links have no "Which is closest to what you do?" answer, so HubSpot's
-"You don't otherwise use HubSpot" rule (matched on that answer) can't apply, and HubSpot can show third on
-an old business-site link. The "newer questions can sharpen this" button above the results asks the missing
-question and fixes it, so it's left as is.
+Old `v=1` links have no "Which is closest to what you do?" answer; since v5 HubSpot's "You don't otherwise use
+HubSpot" rule doesn't read that answer, so it applies to them too. The "newer questions can sharpen this" button
+above the results still asks the missing question.
 
 ## Where everything lives
 
@@ -100,9 +108,12 @@ Shared by the page and the tests, so they always run the same code.
   adds the 13 platforms from the data (each with its platform object as a sixth item, which the page draws as a
   logo chip). The page and the test both go through it. Changing the questions means raising `LINK_VERSION` in
   `app.js` and translating older answers in `readLink`, so shared links keep working (v3 translates the old
-  members and moving-later answers, v4 the languages choice into the tick; see the comment there). A question can
-  carry a tick (`also`: id, title, hint, and `own`, the answer on its own) that goes with whichever choice is picked:
-  the page draws it as a checkbox above the choices and again in the answers editor, and the test walks it both ways.
+  members and moving-later answers, v4 the languages choice into the tick, v5 added the HubSpot tick; see the comment
+  there). A question can carry a tick (`also`: id, title, hint, and `own`, the answer on its own) that goes with
+  whichever choice is picked: the page draws it as a checkbox above the choices and again in the answers editor, and
+  the test walks it both ways. Two do: languages on the needs question, "We already use HubSpot" on the kind question.
+  A tick counts only while its question is asked (`ticked()` in score.js), and in a quiz.json `when` one that isn't
+  given reads as "no".
 - **Needs** ("Anything you'll need from day one?", one choice, plus the languages tick): paid members score as
   before (below), selling too reads the "Sell online" row (+2 / 0 / −2 / −4, and the budget reads the store band), a
   blog reads the "Add a blog" row the same way, bookings read `quiz.bookings` (+3 built in or first-party, else −1 and
@@ -213,8 +224,8 @@ Shared by the page and the tests, so they always run the same code.
   comparison, so a box never calls equal hosting an advantage. With it WordPress joined `kind.b2b`: an anonymous tally
   of the agency's client sites (`private\clients\`, platform and business type only, never committed) found WordPress
   on 63 of 84 local-service and 51 of 58 B2B sites, which the quiz had rarely recommended to an agency. 533 of 8,832
-  first places moved, no persona. Still open: HubSpot stays first for agency-built B2B, though 1 of 58 clients runs it;
-  the fix is a "We already use HubSpot" tick (a question change), not yet agreed.
+  first places moved, no persona. HubSpot still came first for agency-built B2B, though 1 of 58 clients ran it; quiz v5's
+  "We already use HubSpot" tick (above) settled that.
 - **Ties** (since 2026-10-31): two platforms level on points are ordered by how many of their card's "Good fit"
   lines answer what the person is making, from `quiz.fitFor`: each tagged line as it reads on the card (`line`)
   with the answers it answers (`when`, the same shape as `notIdeal`; a line that answers two questions is listed
@@ -244,9 +255,9 @@ node .github/scripts/personas.test.js
 
 Also run by `.github\build\check.ps1` before every push, and by the "Site checks" Action on GitHub.
 
-- **49 personas** (bakery, maker shop, B2B wholesaler, government site, since v3 eleven hard cases: a need the
-  builders cover, a store that is also a publication, moving from Wix or Shopify…, and since must-haves first a local
-  shop selling on no budget that wants every detail) must keep the first places and top
+- **54 personas** (bakery, maker shop, B2B wholesaler, government site, since v3 eleven hard cases: a need the
+  builders cover, a store that is also a publication, moving from Wix or Shopify…, since must-haves first a local
+  shop selling on no budget that wants every detail, and since v5 each B2B persona with and without the HubSpot tick) must keep the first places and top
   threes John agreed. A failure means a result changed: agree the new result with John before editing the expectation.
 - **Every answer combination (132,480)**, for every result card:
   - it has a box saying what sets it apart, and never mentions a row those answers rule out;
@@ -260,12 +271,13 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
     level on points but ahead on their card's "Good fit" lines or the look (their box must say which) or tied, and how many show a
     "Closest match" (first scores under `LOW_FIT`, 4: 2,171 today). No persona may get only a closest match.
   - every tagged "Good fit" line (`fitFor`) is still on its card and answers a real question and answer.
-- **Expert cases** (`node .github/scripts/expert-cases.js`, also in `check.py` and the Action): 40 real-world clients
+- **Expert cases** (`node .github/scripts/expert-cases.js`, also in `check.py` and the Action): 43 real-world clients
   and the picks an experienced web consultant would accept, written without looking at the quiz's results (drafted by
   Claude on 2026-11-01, set up as a standing report at John's request). It never fails a check; it reports how many
   agree (`BASELINE`: 38 of 40 when set up, 39 once Duda's card stopped listing "Blog or content", 40 with the
   divider, as a match under it isn't a recommendation; 42 of 42 with the first two real sites, John's friends' own
-  quiz answers and the platform they run, both Squarespace) and names the ones that differ, and says so when a change takes
+  quiz answers and the platform they run, both Squarespace; 43 of 43 with a B2B company already on HubSpot, for the v5
+  tick) and names the ones that differ, and says so when a change takes
   it below the baseline. Raise `BASELINE` when agreement rises; edit a case only when its expert judgment is wrong,
   never to match a result.
 - **Nine rules** that must hold for every answer set (a failure names the first few):

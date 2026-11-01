@@ -497,12 +497,12 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches; questions and scoring in score.js. The answers live in the page
   // address so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, closest, rank, candidates, explain, standing, behind, tied, near, divider, firstGap, conflict, costRow, weight, TIP, LEAD, options } = window.cmsScore;
-  // Shared result links carry the quiz version (v=4; none means 1). When the questions change, raise LINK_VERSION and
+  const { QUESTIONS, NEUTRAL, closest, rank, candidates, explain, standing, behind, tied, near, divider, firstGap, conflict, costRow, weight, TIP, LEAD, options, lessSuited } = window.cmsScore;
+  // Shared result links carry the quiz version (v=5; none means 1). When the questions change, raise LINK_VERSION and
   // translate older answers in readLink, so shared links keep opening a result.
-  const LINK_VERSION = 4;
+  const LINK_VERSION = 5;
   // Returns { answers, old } (old: a link from before some of today's questions, answered neutrally or offered above
-  // the result), or null. v3 folded members into needs and leave into moving (grow dropped); v4 made languages a tick.
+  // the result), or null. v3 folded members into needs and leave into moving (grow dropped); v4 made languages a tick; v5 added the HubSpot tick (absent: not ticked).
   function readLink(params) {
     const v = Number(params.get('v') || 1);
     params.delete('v');
@@ -514,7 +514,7 @@
       ['members', 'leave', 'grow'].forEach((k) => delete answers[k]);
     }
     if (v < 4 && answers.needs === 'lang') { answers.needs = 'none'; answers.lang = 'yes'; }
-    if (answers.lang !== 'yes') delete answers.lang;
+    ['lang', 'hubspot'].forEach((k) => { if (answers[k] !== 'yes') delete answers[k]; });
     return { answers, old: v < 3 };
   }
   // Effort, from values already checked: the quiz's ease score and the profile's hosting line
@@ -844,7 +844,7 @@
         }
         // Where it counts against an answer given (score.js "but"), so the pick never hides it
         if (r.but && r.but.length) card.append(el('p', 'qz-lim', `Worth knowing: ${r.but.join('; ')}.`));
-        const skip = (pr.lessSuited || [])[0];
+        const skip = lessSuited(data.quiz, r.p, a);
         if (skip) card.append(el('p', 'qz-lim', `Less suited if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);
       });

@@ -7,7 +7,7 @@
   const QUESTIONS = [
     // Each option: [value, title, hint, the answer on its own (the button above the results), when it's offered?]
     { id: 'what', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact', 'A business or work site'], ['store', 'An online store', 'Products, checkout and payments', 'An online store'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing', 'A blog, newsletter or publication'], ['custom', 'Something custom', 'An app or portal, built with a developer', 'Something custom: an app or portal']] },
-    { id: 'kind', q: 'Which is closest to what you do?', when: (a) => a.what === 'site', opts: [['local', 'A local business or services', 'Shops, trades, salons, clinics, consultants', 'A local business or services'], ['creative', 'Creative work or a portfolio', 'Photography, design, art, music', 'Creative work or a portfolio'], ['startup', 'A startup or product launch', 'A product, an app or a launch page', 'A startup or product launch'], ['b2b', 'A company selling to other businesses', 'B2B: leads, demos and a sales team', 'A company selling to other businesses (B2B)'], ['content', 'Lots of content', 'Articles, guides and resources', 'A site with lots of content']] },
+    { id: 'kind', q: 'Which is closest to what you do?', when: (a) => a.what === 'site', also: { id: 'hubspot', title: 'We already use HubSpot', hint: 'For our CRM, email or marketing', own: 'We already use HubSpot' }, opts: [['local', 'A local business or services', 'Shops, trades, salons, clinics, consultants', 'A local business or services'], ['creative', 'Creative work or a portfolio', 'Photography, design, art, music', 'Creative work or a portfolio'], ['startup', 'A startup or product launch', 'A product, an app or a launch page', 'A startup or product launch'], ['b2b', 'A company selling to other businesses', 'B2B: leads, demos and a sales team', 'A company selling to other businesses (B2B)'], ['content', 'Lots of content', 'Articles, guides and resources', 'A site with lots of content']] },
     { id: 'who', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple', 'I’ll build it, not technical'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine', 'I’ll build it and learn'], ['agency', 'A designer or agency', 'They build it; I might edit', 'A designer or agency builds it'], ['dev', 'A developer', 'Code is fine', 'A developer builds it']] },
     { id: 'care', q: 'Who should look after hosting, updates and security?', opts: [['no', 'The platform', 'Everything included, nothing to install', 'Hosting and updates handled for me'], ['yes', 'Me, or someone I’ll ask', 'A web host and updates now and then', 'Fine looking after hosting and updates']] },
     { id: 'size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few hundred products', 'A small or growing shop', 'A shop with up to a few hundred products'], ['big', 'Thousands of products', 'A large catalogue', 'Thousands of products'], ['b2b', 'Selling to other businesses (B2B)', 'Wholesale, trade accounts or bulk orders', 'Selling to other businesses (B2B)']] },
@@ -41,6 +41,7 @@
     letters: [(a, y, x) => `${x} sends newsletters to them itself`, null],
     sellOnly: [null, (a, y) => `${y} is made only for selling`],
     frontEnd: [(a, y, x) => `${x} is built to feed a website and an app from one place`, null],
+    hubspot: [(a, y, x) => `${x} works with them directly`, null],
     ease: [(a, y, x) => (a.who === 'easy' ? `${x} is easier to run` : `${x} is easier to learn`), (a, y) => (a.who === 'easy' ? `${y} is harder to run` : `${y} is harder to learn`)],
     agency: [(a, y, x) => `${x} is a common choice for them`, null],
     agencyOnly: [null, (a, y) => `${y} is mainly sold through agencies`],
@@ -72,6 +73,7 @@
     letters: () => 'you want paid subscribers or members',
     sellOnly: () => 'you’re not making a store',
     frontEnd: () => 'you’re building an app or portal',
+    hubspot: () => 'you already use HubSpot’s tools',
     ease: (a) => (a.who === 'easy' ? 'you’re not technical' : 'you’re building it yourself'),
     agency: () => 'a designer or agency is building it',
     agencyOnly: (a) => (a.who === 'dev' ? 'a developer is building it' : 'you’re building it yourself'),
@@ -94,9 +96,14 @@
   };
 
   // Every key in "when" has one of its listed answers (quiz.notIdeal, quiz.fitFor)
-  const matches = (when, a) => Object.entries(when).every(([q, vs]) => vs.includes(a[q]));
+  // A question's tick counts only while that question is asked; one not given reads as "no", so a line can apply unless it's ticked
+  const TICKS = Object.fromEntries(QUESTIONS.filter((q) => q.also).map((q) => [q.also.id, q]));
+  const ticked = (a, id) => a[id] === 'yes' && (!TICKS[id].when || TICKS[id].when(a));
+  const matches = (when, a) => Object.entries(when).every(([q, vs]) => vs.includes(TICKS[q] ? (ticked(a, q) ? 'yes' : 'no') : a[q]));
   // The first of a platform's "Not ideal if" lines (quiz.notIdeal) these answers match
   const notIdealFor = (Q, id, a) => ((Q.notIdeal || {})[id] || []).find((n) => matches(n.when, a));
+  // The card's first "Less suited if" line, skipping one a tick has answered ("You don't otherwise use HubSpot" when it's ticked)
+  const lessSuited = (Q, p, a) => ((p.profile || {}).lessSuited || []).find((l) => !((Q.notIdeal || {})[p.id] || []).some((n) => l.startsWith(n.if) && Object.entries(n.when).some(([q, vs]) => TICKS[q] && ticked(a, q) && !vs.includes('yes'))));
   // The card's "Good fit" lines that answer these answers (quiz.fitFor), in card order; they break an exact tie
   const fitLines = (Q, id, a) => [...new Set(((Q.fitFor || {})[id] || []).filter((f) => matches(f.when, a)).map((f) => f.line))];
 
@@ -117,6 +124,7 @@
       // quiz.members: the platform sends newsletters to those members itself
       if (has('members')) add('letters', 2, 'Newsletters to your members built in');
     }
+    if (ticked(a, 'hubspot') && p.id === 'hubspot') add('hubspot', 4, 'Fits the HubSpot tools you already use');
     if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'One place to manage content for a website and an app');
     const ease = Q.ease[p.id] ?? 1;
     // Building it yourself: one that needs a developer counts as heavily as one not made for what you're making
@@ -469,6 +477,6 @@
   const closest = (r) => !!r && (r.gate > 0 || r.s < LOW_FIT);
   // Answers that pull against each other, with the question to change
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, closest, conflict, costRow };
+  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, lessSuited, LOW_FIT, closest, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);
