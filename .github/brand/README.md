@@ -57,17 +57,18 @@ Two drawings of one letter, both with round ends:
 ## The unfold
 
 On the first page of a visit the top bar's name opens folded into the tab icon's mark: the icon's short j with its
-deep hook, the gem as its dot, and the rest of the name hidden. The gem lifts off and arcs over the name, turning half
-a turn and growing to full size, with "sal" showing in its wake, while the j's curve shortens into the name's taller j
-(round ends throughout) and its own dot fills in. The gem lands on the baseline as the full stop with a small swell,
-"io" and the menu arrow fade in, and a light runs across the gem and on over "io". About 1.4 seconds, then the glint.
-The letters keep their places throughout, so nothing beside the logo moves.
+deep hook, the gem as its dot, the menu arrow tucked just after it, and the rest of the name hidden. The gem lifts
+off and arcs over the name, turning half a turn and growing to full size, with "sal" showing in its wake, while the
+j's curve shortens into the name's taller j (round ends throughout), its own dot fills in, and the arrow slides out
+ahead of the name. The gem lands on the baseline as the full stop with a small swell, "io" fades in behind the
+arrow, and a light runs across the gem and on over "io". About 1.4 seconds, then the glint. The letters keep their
+places throughout, so nothing beside the logo moves.
 
-- The j's inline SVG holds both shapes: the name's path (`.jsal-j-line`) and the icon's short j (`.jsal-j-fold`). Each
-  page's head script folds the name before the first paint (`html.jsal-intro` in `site/shell.css` shows the short j,
-  hides the dot, "sal", "io" and the arrow, and puts the gem on the j), and `site/nav.js` plays the rest, reshaping the
-  short path itself, frame by frame, until it is exactly the name's path, which then takes its place. Later pages in
-  the visit, pages loaded ahead and reduced motion show the name as it is.
+- The j's inline SVG holds both shapes: the name's path (`.jsal-j-line`) and the icon's short j (`.jsal-j-fold`).
+  Each page's head script folds the name before the first paint (`html.jsal-intro` in `site/shell.css` shows the
+  short j, hides the dot, "sal" and "io", and puts the gem on the j and the arrow after it), and `site/nav.js` plays
+  the rest, reshaping the short path itself, frame by frame, until it is exactly the name's path, which then takes
+  its place. Later pages in the visit, pages loaded ahead and reduced motion show the name as it is.
 - Nothing is swapped mid-way, so the name ends pixel for pixel as every page shows it.
 
 ## Colours

@@ -444,7 +444,10 @@
       // doesn't move. Folded, it sits on the short j as its dot, 0.1355em into the j's box and 0.559em above the
       // baseline, at 0.657 of its size, as the stylesheet folds it.
       const salBox = sal.getBoundingClientRect(), home = salBox.right + 0.24 * em;
-      const x0 = j.getBoundingClientRect().left + 0.1355 * em - home, y0 = -0.389 * em;
+      const jLeft = j.getBoundingClientRect().left, x0 = jLeft + 0.1355 * em - home, y0 = -0.389 * em;
+      // The arrow starts 6px after the folded mark (whose gem ends 0.2475em into the j's box), as it sits 6px after "io"
+      // (its place is measured from the end of "io", which the fold doesn't move; its margin travels with it)
+      const caretFrom = caret ? io.getBoundingClientRect().right - (jLeft + 0.2475 * em) : 0;
       // The j is reshaped in its own drawing (the top bar's inline SVG, in thousandths of an em): its short path goes
       // from the icon's j (a half-circle hook) to the name's j (taller, its hook turning a third past the quarter), round
       // ends throughout. Its last frame is the name's path exactly, which then shows in its place.
@@ -459,8 +462,8 @@
       };
       logo.classList.add('jsal-unfolding');
       // t in ms: 300 still, the gem lifts (300-500), arcs over the name (480-1100) and lands with a small swell
-      // (1100-1260); the j reshapes (560-1040) and its dot fills in over the second half of that; "io" and the
-      // arrow fade in (1000-1320)
+      // (1100-1260); the j reshapes (560-1040) and its dot fills in over the second half of that; the arrow slides
+      // out (480-1000) and "io" fades in behind it (1000-1320)
       const draw = (t) => {
         const m = ease(clamp((t - 560) / 480));
         shape(m);
@@ -477,7 +480,10 @@
         const o = ease(clamp((t - 1000) / 320));
         io.style.opacity = o;
         io.style.transform = `translateX(${-(1 - o) * 0.12 * em}px)`;
-        if (caret) caret.style.setProperty('--jsal-show', o);
+        // the arrow slides out ahead of the name, reaching its place as "io" fades in behind it, still turned over if
+        // the menu was opened meanwhile
+        const c = ease(clamp((t - 480) / 520));
+        if (caret) caret.style.transform = `translateX(${-(1 - c) * caretFrom}px)` + (logo.getAttribute('aria-expanded') === 'true' ? ' rotate(180deg)' : '');
       };
       draw(0);
       unfold();
@@ -489,7 +495,7 @@
         // Settle: the name's own path takes over from the reshaped one (the same shape), the short path goes back to
         // the fold, and the inline styles go; "sal"'s mask is left fully open as drawn, so no pixel changes. Then the glint
         stop.style.transform = io.style.transform = io.style.opacity = dot.style.opacity = '';
-        if (caret) caret.style.removeProperty('--jsal-show');
+        if (caret) caret.style.transform = '';
         logo.classList.remove('jsal-unfolding');
         fold.setAttribute('d', foldD); fold.setAttribute('stroke-width', foldW);
         setTimeout(() => logo.classList.add('jsal-glint'), 130);
