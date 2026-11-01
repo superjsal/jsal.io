@@ -4,8 +4,9 @@ The mark is a lowercase j on a slate tile, its dot cut as a gold gem; the gem no
 Backpack. The wordmark is "jsal.io" in Inter Bold, tracked -0.02em, with the same gem as its full stop and "io" in
 gold. Its j is a drawing, not Inter's: the one letter with round ends.
 
-**Why the j is soft.** John Salvador's friends call him "Jay" Sal. The round-ended j is Jay; the firm, flat-ended
-"sal" is Sal. Keep it that way: the j is the only soft letter, and the rest of the name stays Inter Bold as it is.
+**Why the j is soft.** John Salvador's friends call him J Sal: the letter J on its own, then Sal. The name is drawn the
+way they say it: the j, round-ended, is the letter said by itself; the firm, flat-ended "sal" is Sal. Keep it that way:
+the j is the only soft letter, and the rest of the name stays Inter Bold as it is.
 
 ## Files
 
