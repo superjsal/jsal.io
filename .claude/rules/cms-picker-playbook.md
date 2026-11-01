@@ -2,16 +2,23 @@
 paths:
   - "site/cms-picker/**"
   - "site/ic/**"
-  - ".github/scripts/**"
-  - ".github/workflows/**"
+  - ".github/scripts/playbook.py"
+  - ".github/scripts/cms-picker*.json"
+  - ".github/scripts/check_data.py"
+  - ".github/scripts/check_sources*"
+  - ".github/scripts/personas.test.js"
+  - ".github/scripts/platform-page.html"
+  - ".github/workflows/publish-cms-picker.yml"
+  - ".github/workflows/keep-playbook-awake.yml"
+  - ".github/workflows/backup-playbook.yml"
+  - ".github/workflows/check-data.yml"
+  - ".github/workflows/check-sources.yml"
+  - ".github/workflows/quarterly-recheck.yml"
   - ".github/docs/cms-picker-maintenance.md"
-  - ".github/build/**"
   - "private/playbook/**"
 ---
 
 # CMS Picker and Platform Playbook
-
-The site-wide rules in CLAUDE.md (checks, committing, colours, secrets) apply here too.
 
 - **Active development (maintenance mode lifted 2026-10-31):** the quiz is the page's focus. Design changes still go through mockups first; a scoring change is agreed with John and keeps the personas passing (a persona that moves is agreed first); the data is corrected only through the content audit's findings he has agreed, never on a hunch. Parked ideas and the baseline are in `.github\docs\cms-picker-maintenance.md` ("Status").
 - **Page structure:** the title and one line, then the quiz (`#quiz`), then two buttons (`.more-btn`) that open the platform cards (`#fit`) and the comparison table (`#seo`). Both sections are `hidden="until-found"`, so find-in-page opens them too; `setPanel`/`openPanel` in `app.js` open them for links to `#fit` or `#seo` (the platform pages' Compare button, the compare bar) and for the quiz's "Compare these side by side". Anything new that points into the cards or the table must open its panel first.
