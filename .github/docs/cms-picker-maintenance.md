@@ -76,6 +76,13 @@ cards: Duda and WordPress name agencies, Webflow and Framer name designers, HubS
 persona). Two tries were dropped the same day: the HubSpot tick at 3 points, like a kind line, moved the agreed "B2B
 marketing team on HubSpot" persona to Webflow, so it stays at 4; and a tie-break on fitting the budget counted the
 budget twice, while the real photographer case (said "Nothing for now", runs Squarespace) went to Square Online.
+Later the same day, with John's agreement, two card fixes through the Supabase connector: WordPress's card gained the
+"Good fit" line "Custom sites and apps, through its REST API" (its REST API handbook: a new front end, or its content
+in separate applications), tagged in `quiz.fitFor` for custom builds like Sanity's, so the "custom" goal that puts
+WordPress first for most custom builds is on its card (no first place moved; dropping the goal instead sent them to
+Drupal, or to Wix as the closest fallback); and HubSpot's "(cost)" became "(it costs more on its own)". A stronger
+developer answer (+3/−2) was measured and left: 808 first places move with no persona or expert case to judge them,
+so it waits for the "Is … what you'd pick?" data, as does "A close call" (62% of results: 26% level, 36% within 2).
 
 **Baseline** (final review with Claude Reviewer, 2026-10-30, before v3): all four rule tests pass, all 37 personas pass, and
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
