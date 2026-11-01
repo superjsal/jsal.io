@@ -130,7 +130,7 @@ body {
 .recent-pill {
   display: inline-flex;
   align-items: center;
-  border-radius: 20px;
+  border-radius: var(--jsal-radius-pill);
   border: 1px solid var(--jsal-line);
   background: var(--jsal-surface);
   color: var(--jsal-ink-2);
@@ -140,14 +140,14 @@ body {
   transition: background 0.12s, border-color 0.12s;
 }
 .recent-pill:hover { background: var(--jsal-sunk); border-color: var(--jsal-hover-line); }
-.recent-pill-apply { padding: 4px 4px 4px 10px; border-radius: 20px 0 0 20px; }
+.recent-pill-apply { padding: 4px 4px 4px 10px; border-radius: var(--jsal-radius-pill) 0 0 var(--jsal-radius-pill); }
 .recent-pill-apply:hover { color: var(--jsal-ink); }
 .recent-pill-del {
   padding: 2px 10px 2px 6px;
   font-size: 15px;
   line-height: 1;
   color: var(--jsal-muted);
-  border-radius: 0 20px 20px 0;
+  border-radius: 0 var(--jsal-radius-pill) var(--jsal-radius-pill) 0;
 }
 .recent-pill-del:hover { color: var(--jsal-bad); }
 
@@ -222,7 +222,7 @@ body {
 .drop-icon {
   width: 36px;
   height: 36px;
-  border-radius: 9px;
+  border-radius: var(--jsal-radius-xl);
   background: var(--jsal-accent-soft);
   border: 1px solid var(--jsal-accent-ring);
   color: var(--jsal-accent);
@@ -323,7 +323,7 @@ body {
   flex: 0 1 auto;
   aspect-ratio: 3 / 2;
   min-height: 80px;
-  border-radius: var(--jsal-radius);
+  border-radius: var(--jsal-radius-xl);
   overflow: hidden;
   background: var(--jsal-surface);
   border: 1px solid var(--jsal-line);
@@ -369,7 +369,7 @@ body {
   width: 44px;
   height: 44px;
   margin-bottom: 4px;
-  border-radius: 11px;
+  border-radius: var(--jsal-radius-xl);
   background: var(--jsal-accent-soft);
   border: 1px solid var(--jsal-accent-ring);
   color: var(--jsal-accent);
@@ -384,7 +384,7 @@ body {
   bottom: 16px;
   right: 16px;
   padding: 2px 8px;
-  border-radius: 20px;
+  border-radius: var(--jsal-radius-pill);
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -488,7 +488,7 @@ body {
   top: 6px;
   left: 6px;
   padding: 2px 8px;
-  border-radius: 5px;
+  border-radius: var(--jsal-radius-sm);
   font-size: 12px;
   font-weight: 600;
   background: var(--jsal-warn);   /* orange: a genuine warning (gold is for selected) */

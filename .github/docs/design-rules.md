@@ -83,8 +83,15 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 
 ## Building blocks
 
-Corners `--jsal-radius-sm` / `-` / `-lg` / `-pill`; selected `--jsal-selected-*`; hover `--jsal-hover-line`;
+Corners `--jsal-radius-sm` / `-` / `-lg` / `-xl` / `-pill` / `-tile`; selected `--jsal-selected-*`; hover `--jsal-hover-line`;
 focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead of new values.
+
+- **Corners by size of thing:** 4px small controls and chips inside a control, 6px buttons and fields, 8px cards,
+  12px a tool's main panel (the quiz box, Clean Paste's editor, the Image Resizer's canvas), icon tiles and the
+  achievement pop-up, 999px pills and round buttons, 22px the home and Off the clock tiles (18px at 520px and
+  under, set on the token). Each step is larger than what sits inside it. **Check:** `check.py` fails any corner
+  that isn't a token (or 0, 50%, `inherit`); the home tiles' miniature pictures and the backpack drawing carry
+  `style: allow`.
 
 - **One button and one switch, defined once in `shell.css`.** `.jsal-btn` is every page's button: outlined in
   `--jsal-line-hi` on a `--jsal-surface` fill, 14px at 600, 40px tall (44px on touch screens). `.primary` makes it

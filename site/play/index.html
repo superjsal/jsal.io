@@ -53,7 +53,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=6691ec6a">
+<link rel="stylesheet" href="/shell.css?v=22e18b40">
 <style>
 /* Tile colours: moss for the WoW UI, toned close to the page; the other tiles are plain, a neutral fill with no border */
 :root {
@@ -90,7 +90,7 @@ a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles kee
 
 /* Bento grid: 12 columns, one per tile row; stacks on narrow screens */
 .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: var(--jsal-page-top); }
-.tile { border-radius: 22px; padding: 26px; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.tile { border-radius: var(--jsal-radius-tile); padding: 26px; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
 a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 /* With a mouse: the tile tilts toward the pointer and a soft light follows it (the script below sets
    --rx/--ry and --mx/--my). Not on touch screens, and not with reduced motion (the plain lift above). */
@@ -164,7 +164,7 @@ p, li { text-wrap: pretty; }
 .ach-bar { height: 6px; margin: 12px 0 16px; border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
 .ach-bar i { display: block; height: 100%; background: var(--jsal-fill); border-radius: inherit; transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }   /* a transform, so filling it doesn't re-lay-out the page */
 .ach-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
-.ach-list li { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 12px; background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
+.ach-list li { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
 .ach-list .medal { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .ach-list b { display: block; font-weight: 600; }
 .ach-list small { display: block; font-size: 13px; color: var(--jsal-muted); }
@@ -194,7 +194,7 @@ p, li { text-wrap: pretty; }
   background: radial-gradient(120% 90% at 30% 0%, var(--pk-hi), transparent 60%), linear-gradient(160deg, var(--pk-top), var(--pk-mid) 55%, var(--pk-low));
   box-shadow: inset 0 0 0 1px var(--pk-edge), inset 0 2px 0 var(--pk-shine), 0 10px 24px -14px rgb(0 0 0 / 0.6);
 }
-.mail.pack::before { content: ""; position: absolute; inset: 9px; z-index: -1; border-radius: 15px; border: 1.5px dashed var(--pk-stitch); pointer-events: none; }
+.mail.pack::before { content: ""; position: absolute; inset: 9px; z-index: -1; border-radius: 15px; border: 1.5px dashed var(--pk-stitch); pointer-events: none; }   /* style: allow (part of the backpack drawing) */
 .mail.pack .label { color: var(--pk-label); }
 .mail.pack .desc { color: var(--pk-text); margin-top: 12px !important; }
 .pack-h { display: flex; align-items: center; gap: 14px; }
@@ -202,7 +202,7 @@ p, li { text-wrap: pretty; }
 .portrait { flex: none; width: 54px; height: 54px; border-radius: 50%; overflow: hidden; border: 3px solid var(--pk-gold); box-shadow: 0 0 0 1px var(--pk-gold-edge), 0 3px 8px rgb(0 0 0 / 0.5); }
 .portrait svg { display: block; width: 100%; height: 100%; }
 .pack-h .count { margin-left: auto; font: 600 12px "JetBrains Mono", Consolas, monospace; color: var(--pk-label); }
-.bag { position: relative; flex: 1; display: flex; flex-direction: column; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-pocket); box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.7), 0 1px 0 var(--pk-shine); }
+.bag { position: relative; flex: 1; display: flex; flex-direction: column; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-pocket); box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.7), 0 1px 0 var(--pk-shine); }   /* style: allow (part of the backpack drawing) */
 .slots { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: max-content; align-content: center; justify-content: center; gap: 8px; }   /* the script below fills it with empty slots */
 .slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: var(--jsal-radius); border: 2px solid var(--q); background: var(--pk-black); box-shadow: 0 0 0 1px var(--pk-black), 0 0 12px -3px var(--q); cursor: pointer; font: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
 .slot svg { display: block; width: 100%; height: 100%; }
@@ -250,7 +250,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .roles span + span::before { margin: 0 8px; }
   .intro h1 { font-size: 40px; line-height: 1.05; }
   .intro p { margin: 16px 0 6px; font-size: 17px; line-height: 1.55; }
-  .tile { padding: 20px; border-radius: 18px; }
+  .tile { padding: 20px; }
   .tile h2 { font-size: 24px; }
   .ui { padding: 20px; }
   .now-playing { gap: 14px; min-height: 300px; }

@@ -372,7 +372,7 @@ body {
 .qz {
   --tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
   --info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5M12 8h.01'/%3E%3C/svg%3E");
-  padding: 22px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface);
+  padding: 22px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface);
   scroll-margin-top: 12px;   /* brought into view after an answer: a little room above its edge */
   /* The first question's height is reserved before the script fills the box, so the rows under it don't move at load;
      it also keeps the box steady between questions. Per column count of the answers; phones scroll anyway */
@@ -500,6 +500,9 @@ body {
 @media (max-width: 560px) {
   .qz-facts { grid-auto-flow: row; }
   .qz-facts div + div { border-left: 0; border-top: 1px solid var(--jsal-line); }
+  /* Phones: the logo sits beside the name only, and everything under it takes the card's full width */
+  .qz-card .logo { grid-row: auto; align-self: center; }
+  .qz-card > :not(.logo, h4) { grid-column: 1 / -1; }
 }
 .qz-steps { margin: 8px 0 0; padding-left: 1.4em; font-size: 15px; }
 .qz-steps li + li { margin-top: 4px; }

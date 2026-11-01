@@ -52,7 +52,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=6691ec6a">
+<link rel="stylesheet" href="/shell.css?v=22e18b40">
 <style>
 /* Tile colours: each tool keeps its own tint with a deep shade of it for the words; Updates and Say hi are plain.
    The pieces of each tool laid on the tiles wear the tools' own colours, so they change with the theme as the tools do;
@@ -122,7 +122,7 @@ p { text-wrap: pretty; }
 
 /* Tiles: soft colour, a deep-shade serif name, and real-looking pieces of the tool laid on top. Each tile
    clips most of its pieces (.clip); one piece per row pokes a little past the edge, never near another tile. */
-.tile { position: relative; display: flex; flex-direction: column; border-radius: 22px; padding: 26px; background: var(--bg); color: var(--ink); text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.tile { position: relative; display: flex; flex-direction: column; border-radius: var(--jsal-radius-tile); padding: 26px; background: var(--bg); color: var(--ink); text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
 a.tile:hover, .hi:has(.hi-mail:hover) { transform: translateY(-4px) rotate(-0.4deg); }
 .tile .txt { position: relative; z-index: 2; }
 .tile h2 { margin: 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
@@ -145,7 +145,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .pcs { left: 281px; top: 68px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
 .pcs > span { display: flex; gap: 12px; }
 .pcs > span:nth-child(even) { margin-left: 56px; }
-.pc { display: grid; place-items: center; width: 100px; height: 66px; border-radius: 12px; background: var(--b); color: var(--c); box-shadow: var(--pc-shadow); }
+.pc { display: grid; place-items: center; width: 100px; height: 66px; border-radius: var(--jsal-radius-xl); background: var(--b); color: var(--c); box-shadow: var(--pc-shadow); }
 .pc i { width: 30px; height: 30px; background: currentColor; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
 .pc .wide { width: 46px; }
 .pc .wix { -webkit-mask-size: 36px auto; mask-size: 36px auto; }
@@ -170,9 +170,9 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .ir { --bg: var(--t-ir); --ink: var(--t-ir-ink); }
 .ir .txt { max-width: 258px; }
 .ir .wm { left: 100px; top: 110px; }
-.ed { left: 290px; top: 22px; width: 250px; padding: 12px; border-radius: 16px; --hover: translateY(-8px); }
+.ed { left: 290px; top: 22px; width: 250px; padding: 12px; border-radius: 16px; --hover: translateY(-8px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .ed-head { display: flex; justify-content: space-between; color: var(--jsal-muted); }
-.ed-photo { position: relative; display: block; margin-top: 8px; height: 140px; border-radius: 8px; overflow: hidden; }
+.ed-photo { position: relative; display: block; margin-top: 8px; height: 140px; border-radius: var(--jsal-radius-lg); overflow: hidden; }
 .ed-photo img, .outs img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .crop { position: absolute; left: 0; right: 0; top: 10px; height: 118px; outline: 2px solid var(--jsal-fill); outline-offset: -2px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.42); }   /* gold, as the tool draws it */
 .crop i { position: absolute; width: 12px; height: 12px; border: 0 solid var(--jsal-fill); }
@@ -181,14 +181,14 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .crop i:nth-child(3) { left: 0; bottom: 0; border-width: 0 0 4px 4px; }
 .crop i:nth-child(4) { right: 0; bottom: 0; border-width: 0 4px 4px 0; }
 .sizes { display: flex; gap: 4px; margin-top: 10px; }
-.sizes span { flex: 1; padding: 5px 0; border-radius: 6px; border: 1px solid var(--jsal-line); text-align: center; white-space: nowrap; }
+.sizes span { flex: 1; padding: 5px 0; border-radius: var(--jsal-radius); border: 1px solid var(--jsal-line); text-align: center; white-space: nowrap; }
 .sizes .on { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); }
 .sizes .plain { font: 600 11px/1.4 var(--jsal-font); }   /* style: allow (miniature) */
-.outs { right: 20px; top: -2px; z-index: 3; width: 214px; padding: 12px 14px; border-radius: 16px; --rest: rotate(4deg); --hover: rotate(6deg) translate(4px, -4px); }
+.outs { right: 20px; top: -2px; z-index: 3; width: 214px; padding: 12px 14px; border-radius: 16px; --rest: rotate(4deg); --hover: rotate(6deg) translate(4px, -4px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .outs-head { display: flex; justify-content: space-between; padding-bottom: 6px; color: var(--jsal-muted); }
 .outs-head span { color: var(--jsal-ok); }
 .outs .row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }
-.outs .row img { flex: none; width: 44px; height: 30px; border-radius: 4px; }
+.outs .row img { flex: none; width: 44px; height: 30px; border-radius: var(--jsal-radius-sm); }
 .outs .row span { display: flex; flex-direction: column; font-size: 11px; line-height: 1.4; color: var(--jsal-muted); }   /* style: allow (miniature) */
 .outs .row b { color: var(--jsal-ink); }
 
@@ -196,7 +196,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
    and the status it shows once copied */
 .cp { --bg: var(--t-cp); --ink: var(--t-cp-ink); }
 .cp .wm { right: -30px; bottom: 0; }
-.sheet { left: -12px; top: 138px; z-index: 1; width: 258px; padding: 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; --hover: translateY(-6px); }
+.sheet { left: -12px; top: 138px; z-index: 1; width: 258px; padding: 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .sheet span { color: var(--jsal-muted); }
 .sheet code { font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
 .sheet code i { font-style: normal; color: var(--jsal-info); }
@@ -208,11 +208,11 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .hi { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
 .hi-mail { text-decoration: none; }
 .hi .txt { position: static; margin-top: 130px; }   /* static: the link's cover below spans the whole tile; the margin keeps the words under the draft */
-.hi-mail::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: 22px; }
+.hi-mail::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: var(--jsal-radius-tile); }
 .hi-mail:focus-visible { outline: none; }
 .hi:has(.hi-mail:focus-visible) { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 .hi .txt a:not(.hi-mail) { position: relative; z-index: 2; color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
-.draft { left: 26px; right: 26px; top: -4px; z-index: 3; padding: 12px 14px; border-radius: 16px; font-size: 12px; pointer-events: none; --hover: translateY(-6px); }   /* a click on the draft reaches the email link under it */
+.draft { left: 26px; right: 26px; top: -4px; z-index: 3; padding: 12px 14px; border-radius: 16px; font-size: 12px; pointer-events: none; --hover: translateY(-6px); }   /* a click on the draft reaches the email link under it; style: allow (a miniature) */
 .draft > span { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }
 .draft > span:first-child { justify-content: space-between; align-items: center; padding: 0 0 6px; border: 0; font-size: 13px; font-weight: 700; }
 .draft > span:first-child i { font-style: normal; font-weight: 400; color: var(--jsal-muted); }
@@ -226,12 +226,12 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .now .txt { max-width: 260px; }
 .now .txt a { color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
 .upd { position: absolute; right: 26px; top: 22px; width: min(404px, calc(100% - 340px)); display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.upd li { position: relative; padding: 10px 14px 11px 54px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); }
+.upd li { position: relative; padding: 10px 14px 11px 54px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); }
 .upd li:nth-child(1) { z-index: 3; rotate: -1.5deg; }
 .upd li:nth-child(2) { z-index: 2; rotate: 1deg; margin: 0 -14px 0 14px; }
 .upd li:nth-child(3) { z-index: 1; rotate: -0.5deg; margin: 0 6px 0 -6px; }
 .upd-name { display: block; padding-right: 48px; font-size: 13px; font-weight: 700; }
-.upd-ico { position: absolute; left: 14px; top: 50%; translate: 0 -50%; border-radius: 7px; }
+.upd-ico { position: absolute; left: 14px; top: 50%; translate: 0 -50%; border-radius: var(--jsal-radius); }
 .upd time { position: absolute; right: 14px; top: 11px; color: var(--jsal-muted); font-size: 12px; }
 .upd-line { display: block; margin-top: 1px; font: 600 17px/1.3 "Lora", Georgia, serif; }
 
@@ -312,8 +312,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .grid { gap: 28px; }
   .roles span + span::before { margin: 0 8px; }
   .intro h1 { font-size: 40px; }
-  .tile { padding: 20px; border-radius: 18px; }
-  .clip, .hi-mail::after { border-radius: 18px; }
+  .tile { padding: 20px; }
   .draft { left: 20px; width: calc(100% - 40px); }
   footer { margin-top: 32px; }
 }

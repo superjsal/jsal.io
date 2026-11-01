@@ -18,7 +18,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=6691ec6a">
+<link rel="stylesheet" href="/shell.css?v=22e18b40">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -126,12 +126,12 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .col-demo span { position: absolute; left: 10px; top: 50%; translate: 0 -50%; font: 500 12px "JetBrains Mono", Consolas, monospace; color: var(--jsal-ink-2); }
 .steps { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; }
 .steps div { display: grid; gap: 6px; justify-items: center; font: 500 12px "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
-.steps i { display: block; width: var(--s); height: var(--s); background: var(--jsal-accent); border-radius: 2px; opacity: 0.85; }
+.steps i { display: block; width: var(--s); height: var(--s); background: var(--jsal-accent); border-radius: 2px; opacity: 0.85; }   /* style: allow (a spacing swatch, not a corner) */
 .radii { display: flex; flex-wrap: wrap; gap: 14px; }
 .radii div { display: grid; gap: 6px; justify-items: center; font: 500 12px "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 .radii i { display: block; width: 64px; height: 44px; border: 1px solid var(--jsal-line-hi); background: var(--jsal-surface); }
 .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
-.bento i { display: block; height: 42px; border-radius: 10px; background: var(--jsal-sunk); border: 1px solid var(--jsal-line); }
+.bento i { display: block; height: 42px; border-radius: var(--jsal-radius-xl); background: var(--jsal-sunk); border: 1px solid var(--jsal-line); }
 .bento .big { grid-column: span 4; }
 .bento .sm { grid-column: span 2; }
 .bento .open { background: none; border-style: dashed; }   /* the intro, unboxed */
@@ -186,7 +186,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .card p { margin: 0; font-size: 14px; color: var(--jsal-ink-2); }
 .card .foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
 .card .cseo { margin-left: auto; color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; }
-.ach { display: flex; align-items: center; gap: 12px; width: min(340px, 100%); padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink); border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font); }
+.ach { display: flex; align-items: center; gap: 12px; width: min(340px, 100%); padding: 10px 16px 10px 10px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); color: var(--jsal-ink); border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font); }
 .ach .medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .ach small { display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jsal-accent); }
 .ach b { display: block; font-size: 15px; }
@@ -497,13 +497,14 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div><i style="--s:4px"></i>4</div><div><i style="--s:6px"></i>6</div><div><i style="--s:8px"></i>8</div><div><i style="--s:10px"></i>10</div><div><i style="--s:12px"></i>12</div><div><i style="--s:14px"></i>14</div><div><i style="--s:16px"></i>16</div><div><i style="--s:18px"></i>18</div><div><i style="--s:20px"></i>20</div><div><i style="--s:24px"></i>24</div><div><i style="--s:28px"></i>28</div><div><i style="--s:36px"></i>36</div><div><i style="--s:40px"></i>40</div><div><i style="--s:48px"></i>48</div><div><i style="--s:56px"></i>56</div>
     </div>
     <h3>Corners</h3>
-    <p>Four radii, as tokens: small controls and chips inside a control 4px; buttons and fields 6px; cards 8px; pills and round buttons 999px. The home tiles (22px) and the achievement pop-up (14px) are the two deliberate exceptions, both marked in their stylesheets.</p>
+    <p>Six radii, all tokens: small controls and chips inside a control 4px; buttons and fields 6px; cards 8px; a tool's main panel (the quiz box, Clean Paste's editor, the Image Resizer's canvas), icon tiles and the achievement pop-up 12px; pills and round buttons 999px; the home and Off the clock tiles 22px (18px on phones). Every step is larger than the one inside it, so a card in a panel in a tile nests evenly. The checks fail any corner that isn't a token; the home tiles' miniature pictures are the marked exception.</p>
     <div class="radii">
       <div><i style="border-radius:var(--jsal-radius-sm)"></i>--jsal-radius-sm · 4px</div>
       <div><i style="border-radius:var(--jsal-radius)"></i>--jsal-radius · 6px</div>
       <div><i style="border-radius:var(--jsal-radius-lg)"></i>--jsal-radius-lg · 8px</div>
+      <div><i style="border-radius:var(--jsal-radius-xl)"></i>--jsal-radius-xl · 12px</div>
       <div><i style="border-radius:var(--jsal-radius-pill)"></i>--jsal-radius-pill · 999px</div>
-      <div><i style="border-radius:22px"></i>home tiles · 22px</div>
+      <div><i style="border-radius:var(--jsal-radius-tile)"></i>--jsal-radius-tile · 22px</div>
     </div>
     <h3>The home page's bento</h3>
     <p>A six-column grid with 28px gaps: the intro (two columns, unboxed) beside the CMS Picker (four), then the Image Resizer and Clean Paste, then Say hi and Updates, the wide tile swapping sides each row so the eye zigzags down the page. Each tile holds a real-looking piece of its tool in the tools’ own colours, a few of them poking a little past the edge, and its app icon as a faint watermark; pointing at a tile plays what the tool does three times. The bento holds down to 600px, so phones on their side keep it; upright phones get one column. Tab order follows the screen. The home page is always bento; other pages keep an open layout but may use a card in the tiles’ style (corners, padding, a tint) where it helps.</p>

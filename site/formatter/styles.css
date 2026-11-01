@@ -65,7 +65,7 @@ body {
 .stats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
 .stat {
   padding: 3px 10px;
-  border-radius: 20px;
+  border-radius: var(--jsal-radius-pill);
   border: 1px solid var(--jsal-line);
   background: var(--jsal-surface);
   color: var(--jsal-ink-2);
@@ -128,14 +128,14 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
   padding: 32px 20px;
   text-align: center;
   border: 1.5px dashed var(--jsal-line-hi);
-  border-radius: var(--jsal-radius-lg);
+  border-radius: var(--jsal-radius-xl);
   background: var(--jsal-surface);
   cursor: text;
   transition: border-color 0.12s, background 0.12s;
 }
 .paste-zone:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
 .paste-zone:focus-visible { border-color: var(--jsal-accent); background: var(--jsal-accent-soft); outline: none; box-shadow: var(--jsal-focus-ring); }   /* focused: ready to paste */
-.paste-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--jsal-accent-soft); color: var(--jsal-accent); border: 1px solid var(--jsal-accent-ring); margin-bottom: 4px; }
+.paste-icon { width: 44px; height: 44px; border-radius: var(--jsal-radius-xl); display: grid; place-items: center; background: var(--jsal-accent-soft); color: var(--jsal-accent); border: 1px solid var(--jsal-accent-ring); margin-bottom: 4px; }
 .paste-title { font-size: 15px; font-weight: 600; }
 .paste-sub { max-width: 34em; color: var(--jsal-ink-2); line-height: 1.5; }
 .paste-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; align-items: center; color: var(--jsal-muted); }   /* wraps whole links on phones, never a link's words */
@@ -150,7 +150,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
   min-height: 0;
   height: 70vh;
   border: 1px solid var(--jsal-line);
-  border-radius: var(--jsal-radius-lg);
+  border-radius: var(--jsal-radius-xl);
   background: var(--jsal-surface);
   overflow: hidden;
 }
@@ -260,7 +260,7 @@ textarea.code {
 .preview .flag { text-decoration-color: var(--jsal-warn); text-decoration-style: wavy; text-decoration-line: underline; }   /* a word a check points at */
 /* Bold-only lines: an orange bar in the margin (see the "only bold text" check) */
 .preview > p[data-bold] { position: relative; }
-.preview > p[data-bold]::before { content: ""; position: absolute; left: -14px; top: 0.2em; bottom: 0.2em; width: 3px; border-radius: 2px; background: var(--jsal-warn); opacity: 0.8; }
+.preview > p[data-bold]::before { content: ""; position: absolute; left: -14px; top: 0.2em; bottom: 0.2em; width: 3px; border-radius: var(--jsal-radius-pill); background: var(--jsal-warn); opacity: 0.8; }
 /* Show: the line a check means gets a clear gold wash and a bar beside it, held, then fading out. With reduced
    motion it stays highlighted (no fade) until the next Show or edit. */
 /* The bright gold (--jsal-fill), so it reads as gold in light mode too (the darker text gold turned beige); text

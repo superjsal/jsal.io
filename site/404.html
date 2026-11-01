@@ -33,7 +33,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours and top bar: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=6691ec6a">
+<link rel="stylesheet" href="/shell.css?v=22e18b40">
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
@@ -45,7 +45,7 @@ h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.0
 h1 em { font-weight: 600; color: var(--jsal-accent); }
 .lost .lead { margin: 28px 0 0; padding-bottom: 40px; border-bottom: 1px solid var(--jsal-line); font-size: 17px; color: var(--jsal-muted); text-wrap: pretty; }   /* the intro ends in a thin line */
 .links { margin: 40px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 420px; }
-.links a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink); text-decoration: none; font-weight: 600; }
+.links a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--jsal-radius-xl); border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink); text-decoration: none; font-weight: 600; }
 .links a span { font-weight: 400; color: var(--jsal-muted); font-size: 14px; }
 .links a:hover { border-color: var(--jsal-hover-line); }
 .links a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }

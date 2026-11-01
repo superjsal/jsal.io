@@ -183,6 +183,7 @@ for f in files(['*/js/*.js']):
 #  - a selected state (pressed toggle, current tab) uses the --jsal-selected-* tokens
 #  - hover uses no gold (--jsal-accent / --jsal-fill): it's a neutral border or tint (--jsal-hover-line, --jsal-sunk)
 #  - button and chip corners from the scale: 4px, 6px, 8px, 999px (or a variable)
+#  - every corner from a --jsal-radius-* token (or 0, 50%, inherit)
 #  - font weights 400, 500, 600, 700 or 800
 #  - font sizes in px from the type scale (TEXT_SIZES)
 #  - a stylesheet with animation has a prefers-reduced-motion fallback
@@ -222,6 +223,9 @@ for name, css, first in stylesheets():
             if prop == 'border-radius' and re.search(r'\bbtn\b|button|\.chip\b', sel):
                 odd = [v for v in val.split() if v not in RADII and not v.startswith('var(')]
                 if odd: fail(f'{where}: button corner {" ".join(odd)} on "{sel[:50]}" (use 4px, 6px, 8px or 999px)')
+            if re.fullmatch(r'border(-[a-z]+)*-radius', prop):
+                odd = [v for v in re.sub(r'var\([^)]*\)', '', val).split() if v not in ('0', '50%', 'inherit')]
+                if odd: fail(f'{where}: corner {" ".join(odd)} on "{sel[:50]}" (use a --jsal-radius-* token)')
             weights = re.findall(r'^(\d{3})\b', val) if prop == 'font' else ([val] if prop == 'font-weight' else [])
             for w in weights:
                 if w.isdigit() and w not in ('400', '500', '600', '700', '800'):

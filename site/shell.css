@@ -67,9 +67,11 @@ body { background: var(--jsal-bg); }
 
 /* Shared building blocks, so the apps look like one site; use these rather than new values (the checks flag written-out
    colours, selected states without these tokens, corners off the scale and odd weights; "style: allow" marks an exception).
-   Corners 4 / 6 / 8 / 999px; selected = gold tint, gold text, thin gold ring; buttons 600, main = gold fill, secondary = outlined. */
+   Corners 4 / 6 / 8 / 12px (a tool's main panel) / 999px, and 22px for the home and Off the clock tiles (18px on
+   phones); selected = gold tint, gold text, thin gold ring; buttons 600, main = gold fill, secondary = outlined. */
 :root {
-  --jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-pill: 999px;
+  --jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-xl: 12px; --jsal-radius-pill: 999px;
+  --jsal-radius-tile: 22px;
   --jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
   --jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
   --jsal-btn-weight: 600;
@@ -84,6 +86,7 @@ body { background: var(--jsal-bg); }
   --jsal-tool-edge: #3d424e; --jsal-tool-ink: #ece6d6; --jsal-tool-gem: #e3b04b;
   --jsal-tool-home: #111318; --jsal-tool-play: #3f6b3a;   /* the logo's slate; Off the clock's green, as /play/ uses it */
 }
+@media (max-width: 520px) { :root { --jsal-radius-tile: 18px; } }
 
 /* The one button every page uses: outlined on a light fill; .primary is the gold main action, .small suits dense
    screens, .danger removes or clears. An app adds only layout (width, order), never its own look */
@@ -161,7 +164,7 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
    its own bar along the bottom sets --jsal-ach-lift so the pop-up sits above it, and the analytics card below
    sets --jsal-consent-lift while it's open. */
 .jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px) + var(--jsal-consent-lift, 0px)); width: min(340px, calc(100vw - 32px));
-  display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink);
+  display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); color: var(--jsal-ink);
   border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font);
   transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
 /* It slides in at full opacity (only the way out fades), so it never sits half-transparent where a contrast check could catch it */
