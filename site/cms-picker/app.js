@@ -497,12 +497,13 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches; questions and scoring in score.js. The answers live in the page
   // address so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, closest, rank, candidates, explain, standing, behind, tied, near, divider, firstGap, conflict, costRow, weight, TIP, LEAD, options, lessSuited, stay } = window.cmsScore;
-  // Shared result links carry the quiz version (v=5; none means 1). When the questions change, raise LINK_VERSION and
+  const { QUESTIONS, NEUTRAL, closest, rank, candidates, explain, standing, behind, tied, near, divider, firstGap, conflict, costRow, weight, TIP, LEAD, options, lessSuited, stay, need, isAnswer } = window.cmsScore;
+  // Shared result links carry the quiz version (v=6; none means 1). When the questions change, raise LINK_VERSION and
   // translate older answers in readLink, so shared links keep opening a result.
-  const LINK_VERSION = 5;
+  const LINK_VERSION = 6;
   // Returns { answers, old } (old: a link from before some of today's questions, answered neutrally or offered above
-  // the result), or null. v3 folded members into needs and leave into moving (grow dropped); v4 made languages a tick; v5 added the HubSpot tick (absent: not ticked).
+  // the result), or null. v3 folded members into needs and leave into moving (grow dropped); v4 made languages a tick; v5 added the HubSpot tick (absent: not ticked);
+  // v6 lets needs hold several (a single need, as older links have, reads the same).
   function readLink(params) {
     const v = Number(params.get('v') || 1);
     params.delete('v');
@@ -599,7 +600,7 @@
     let step = 0, a = {};
     const pending = new Set();   // questions an old link didn't have: answered neutrally (NEUTRAL) or not at all, and offered above the results
     const steps = (o = a) => QUESTIONS.filter((q) => !q.when || q.when(o));   // the questions these answers call for
-    const valid = (o) => steps(o).every((q) => options(q, o, data).some(([v]) => v === o[q.id]));
+    const valid = (o) => steps(o).every((q) => isAnswer(q, o, data));
 
     // A question's tick (q.also): a checkbox that goes with whichever choice is picked, kept under its own id
     function alsoBox(q, onChange) {
@@ -648,23 +649,56 @@
       if (from) { from.id = 'qz-from'; from.setAttribute('role', 'group'); from.setAttribute('aria-label', 'Where your site runs now'); }
       const elsewhere = (v) => !!from && v !== 'no';   // a platform, or "Somewhere else"
       let busy = false;
-      const pick = async (v, b) => {
-        if (busy) return;
-        // The choice shows as selected for a moment, so it's clear it registered, before the next question
-        busy = true;
-        box.querySelectorAll('.qz-opt, .qz-from .chip').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
-        await new Promise((r) => setTimeout(r, 150));
+      // The answer given: on to the next question, or back to the results when a change brought this one in
+      const go = (v) => {
         window.jsalUsed?.();   // "First steps" / "Explorer" (/nav.js)
         a[q.id] = v;
         pending.delete(q.id);
         if (resume) {
-          const next = steps().findIndex((x) => pending.has(x.id) || !options(x, a, data).some(([o]) => o === a[x.id]));
+          const next = steps().findIndex((x) => pending.has(x.id) || !isAnswer(x, a, data));
           if (next < 0) { resume = false; step = steps().length; } else step = next;
         } else step++;
         ask();
         reveal();
         box.querySelector('h3')?.focus({ preventScroll: true });
       };
+      const pick = async (v, b) => {
+        if (busy) return;
+        // The choice shows as selected for a moment, so it's clear it registered, before the next question
+        busy = true;
+        box.querySelectorAll('.qz-opt, .qz-from .chip').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+        await new Promise((r) => setTimeout(r, 150));
+        go(v);
+      };
+      // A question that takes several answers (q.multi) is a checklist with Next; nothing ticked is its q.multi answer.
+      // Its tick (q.also, languages) is the list's last row
+      if (q.multi) {
+        const list = el('div', 'qz-checks');
+        list.setAttribute('role', 'group');
+        list.setAttribute('aria-label', q.q);
+        const boxes = options(q, a, data).filter(([v]) => v !== q.multi).map(([v, title, sub]) => {
+          const lab = el('label', 'qz-tick'), input = el('input'), text = el('span');
+          input.type = 'checkbox';
+          input.value = v;
+          input.checked = need(a, v);
+          text.append(el('b', null, title), el('small', null, sub));
+          lab.append(input, text);
+          list.append(lab);
+          return input;
+        });
+        const also = alsoBox(q, () => {});
+        if (also) list.append(also);
+        box.append(top, h, el('p', 'qz-hint', q.hint), list);
+        const nav = el('div', 'qz-nav'), back = el('button', 'jsal-btn', 'Back'), next = el('button', 'jsal-btn primary', 'Next');
+        [back, next].forEach((b) => { b.type = 'button'; });
+        back.addEventListener('click', () => { step--; ask(); reveal(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+        next.addEventListener('click', () => go(boxes.filter((i) => i.checked).map((i) => i.value).join(',') || q.multi));
+        nav.append(back, next);
+        box.append(nav);
+        box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');
+        if (box.getBoundingClientRect().top < 0) $('#quiz').scrollIntoView();
+        return;
+      }
       options(q, a, data).forEach(([v, title, sub, , , plat]) => {
         const b = el('button', elsewhere(v) ? 'chip' : 'qz-opt');
         b.type = 'button';
@@ -716,13 +750,14 @@
       const toggle = (q) => { editing = editing === q.id ? null : q.id; results(); box.querySelector(`.qz-ans [data-q="${q.id}"]`)?.focus({ preventScroll: true }); };
       const answered = steps().filter((q) => !pending.has(q.id));
       answered.forEach((q) => {
-        const opt = options(q, a, data).find(([v]) => v === a[q.id]);
+        // A checklist's answer is each ticked choice, in the question's order
+        const picked = options(q, a, data).filter(([v]) => (q.multi ? need(a, v) : v === a[q.id]));
         const b = el('button', 'qz-ans-tile');
-        b.append(el('small', null, ANS_LABEL[q.id] || q.q), opt ? ansText(q, opt) : '');
+        b.append(el('small', null, ANS_LABEL[q.id] || q.q), picked.map((o) => ansText(q, o)).join(', '));
         b.type = 'button';
         b.dataset.q = q.id;
         b.setAttribute('aria-expanded', String(editing === q.id));
-        b.setAttribute('aria-label', `${opt ? opt[3] : ''}. Change your answer to: ${q.q}`);
+        b.setAttribute('aria-label', `${picked.map((o) => o[3]).join('; ')}. Change your answer to: ${q.q}`);
         b.addEventListener('click', () => toggle(q));
         tiles.append(b);
         // A ticked "also" goes on its own line under the tiles, so ticking one never makes a tile taller; it opens
@@ -749,6 +784,24 @@
         // The tick on its own row above the choices, as in the quiz itself
         const also = alsoBox(q, () => { results(); box.querySelector('.qz-ans-ed input')?.focus({ preventScroll: true }); });
         if (also) { const row = el('div', 'qz-ans-tick'); row.append(also); ed.append(row); }
+        // A checklist's choices toggle and the editor stays open for more; taking every one off is its q.multi answer
+        if (q.multi) {
+          options(q, a, data).filter(([v]) => v !== q.multi).forEach(([v, title]) => {
+            const b = el('button', 'chip', title);
+            b.type = 'button';
+            b.setAttribute('aria-pressed', String(need(a, v)));
+            b.addEventListener('click', () => {
+              const on = options(q, a, data).map(([o]) => o).filter((o) => o !== q.multi && (o === v ? !need(a, o) : need(a, o)));
+              a[q.id] = on.join(',') || q.multi;
+              pending.delete(q.id);
+              results();
+              box.querySelectorAll('.qz-ans-ed .chip')[options(q, a, data).findIndex(([o]) => o === v)]?.focus({ preventScroll: true });
+            });
+            ed.append(b);
+          });
+          bar.append(ed);
+          return PHONE.matches ? fold() : bar;
+        }
         options(q, a, data).forEach(([v, title]) => {
           const b = el('button', 'chip', title);
           b.type = 'button';
@@ -757,7 +810,7 @@
             a[q.id] = v;
             pending.delete(q.id);
             editing = null;
-            const missing = steps().findIndex((x) => !options(x, a, data).some(([o]) => o === a[x.id]));
+            const missing = steps().findIndex((x) => !isAnswer(x, a, data));
             if (missing >= 0) { step = missing; resume = true; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); return; }
             results();
             box.querySelector(`.qz-ans [data-q="${q.id}"]`)?.focus({ preventScroll: true });
@@ -766,14 +819,16 @@
         });
         bar.append(ed);
       }
-      if (!PHONE.matches) return bar;
-      const fold = el('details', 'qz-ans-fold'), sum = el('summary');
-      const count = answered.length + answered.filter((q) => q.also && a[q.also.id] === 'yes').length;   // a tick counts as an answer
-      sum.append(el('b', null, 'Your answers'), el('span', null, ` · ${count} · ${tap} to change`));
-      fold.open = ansOpen || editing !== null;   // stays open while an answer is being changed
-      fold.addEventListener('toggle', () => { ansOpen = fold.open; });
-      fold.append(sum, bar);
-      return fold;
+      return PHONE.matches ? fold() : bar;
+      function fold() {
+        const f = el('details', 'qz-ans-fold'), sum = el('summary');
+        const count = answered.length + answered.filter((q) => q.also && a[q.also.id] === 'yes').length;   // a tick counts as an answer
+        sum.append(el('b', null, 'Your answers'), el('span', null, ` · ${count} · ${tap} to change`));
+        f.open = ansOpen || editing !== null;   // stays open while an answer is being changed
+        f.addEventListener('toggle', () => { ansOpen = f.open; });
+        f.append(sum, bar);
+        return f;
+      }
     }
 
     // Under the best match: would they pick it? An anonymous GA4 event for the answer (quiz_feedback) and, after "No",
@@ -1059,7 +1114,7 @@
       resume = false;
       pending.clear();
       QUESTIONS.forEach((q) => {
-        if (options(q, shared, data).some(([v]) => v === shared[q.id])) a[q.id] = shared[q.id];
+        if (isAnswer(q, shared, data)) a[q.id] = shared[q.id];
         if (q.also && shared[q.also.id] === 'yes') a[q.also.id] = 'yes';   // a ticked "also" (languages) comes along
       });
       // An old link (v=1): questions it didn't have score nothing (NEUTRAL) or wait, offered above the results

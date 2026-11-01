@@ -99,6 +99,18 @@ to leave later" is why code counts as built in for a developer. (3) **Substack's
 platforms that keep a share of what paid members pay, which the cost bands don't show; a paid-members result on one
 says it as "worth knowing", no points (Substack: 10% plus Stripe's card fees, from its cost answer's source).
 
+**Quiz v6** (2026-11-01, agreed with John): "Anything you'll need from day one?" takes several answers, as a checklist
+with Next (`multi` on the question; nothing ticked is "Nothing special"), and languages are its last row instead of a
+tick above the choices. `needs` holds a comma list (`needs=bookings,sell` in links; `need(a, v)` in `score.js` reads
+it, and `isAnswer` checks a checklist's answer); each ticked need scores and counts as a must-have as a single one
+did, so a single need, and every older link, reads exactly as before. Measured first: a second need changed the first
+place in 28% of the answer sets that have one (38% for bookings and selling, 37% for bookings and paid members), mostly
+towards the all-rounders. Two other changes were measured and left: a size question for sites (small moved 1%, large
+51% on card lines that weren't written for it, putting Square Online in a large site's top three) and leaving out the
+hosting question for someone not technical (9% of their results, mostly WordPress to Wix on custom builds). The
+personas test now walks every set of needs (638,976 answer sets, moving included); two expert cases with two needs
+were added (44 of 45 agree).
+
 **Baseline** (final review with Claude Reviewer, 2026-10-30, before v3): all four rule tests pass, all 37 personas pass, and
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
 B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
@@ -155,7 +167,9 @@ Shared by the page and the tests, so they always run the same code.
   the test walks it both ways. Two do: languages on the needs question, "We already use HubSpot" on the kind question.
   A tick counts only while its question is asked (`ticked()` in score.js), and in a quiz.json `when` one that isn't
   given reads as "no".
-- **Needs** ("Anything you'll need from day one?", one choice, plus the languages tick): paid members score as
+- **Needs** ("Anything you'll need from day one?", a checklist since v6: any of these, plus languages as its last
+  row, each scored as below and each a must-have; with selling and paid members both ticked, the budget reads the store
+  band): paid members score as
   before (below), selling too reads the "Sell online" row (+2 / 0 / −2 / −4, and the budget reads the store band), a
   blog reads the "Add a blog" row the same way, bookings read `quiz.bookings` (+3 built in or first-party, else −1 and
   a "worth knowing" line). Nothing special scores nothing. The tick (`lang=yes`) reads the "More than one language"

@@ -11,8 +11,9 @@
     { id: 'who', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple', 'I’ll build it, not technical'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine', 'I’ll build it and learn'], ['agency', 'A designer or agency', 'They build it; I might edit', 'A designer or agency builds it'], ['dev', 'A developer', 'Code is fine', 'A developer builds it']] },
     { id: 'care', q: 'Who should keep the site running and secure?', opts: [['no', 'The platform', 'Hosting, updates and security included', 'Hosting and updates handled for me'], ['yes', 'Me, or someone I’ll ask', 'I pay for web hosting and keep it updated', 'Fine looking after hosting and updates']] },
     { id: 'size', q: 'Which fits your shop best?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few hundred products', 'A small or growing shop', 'A shop with up to a few hundred products'], ['big', 'Thousands of products', 'A large catalogue', 'Thousands of products'], ['b2b', 'Selling to other businesses (B2B)', 'Wholesale, trade accounts or bulk orders', 'Selling to other businesses (B2B)']] },
-    // One need, the one that matters most. Languages are a tick on the same question (also), since they go with any need.
-    { id: 'needs', q: 'Anything you’ll need from day one?', hint: 'Pick the one that matters most; the rest can come later.', also: { id: 'lang', title: 'I need two or more languages', hint: 'Tick this as well as picking one below', own: 'Two or more languages' }, opts: [['bookings', 'Bookings or appointments', 'Clients book a time online', 'Bookings or appointments from day one'], ['members', 'Paid subscribers or members', 'Paid posts, memberships or a paid newsletter', 'Paid subscribers or members'], ['sell', 'Selling online too', 'A few products or services to sell', 'Selling online too', (a) => a.what !== 'store'], ['blog', 'A blog or news section', 'Posts alongside the main pages', 'A blog or news section', (a) => a.what !== 'content'], ['none', 'Nothing special', 'The usual pages are enough', 'Nothing special from day one']] },
+    // Every need that matters from day one, as a checklist (multi); "Nothing special" is the answer when none is ticked.
+    // Languages stay their own answer (also), drawn as the list's last row.
+    { id: 'needs', q: 'Anything you’ll need from day one?', hint: 'Tick everything you need; the rest can come later. None of these? Next skips it.', multi: 'none', also: { id: 'lang', title: 'Two or more languages', hint: 'The same pages in each language', own: 'Two or more languages' }, opts: [['bookings', 'Bookings or appointments', 'Clients book a time online', 'Bookings or appointments from day one'], ['members', 'Paid subscribers or members', 'Paid posts, memberships or a paid newsletter', 'Paid subscribers or members'], ['sell', 'Selling online too', 'A few products or services to sell', 'Selling online too', (a) => a.what !== 'store'], ['blog', 'A blog or news section', 'Posts alongside the main pages', 'A blog or news section', (a) => a.what !== 'content'], ['none', 'Nothing special', 'The usual pages are enough', 'Nothing special from day one']] },
     { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go', 'A good template is enough'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust', 'Arrange the design visually'], ['pixel', 'Every detail', 'Exactly to a designer’s layout', 'Control every detail of the design']] },
     // Where the site is now: starting fresh, every platform on the picker (options() adds them), or somewhere else. No points.
     { id: 'moving', q: 'Moving from somewhere?', hint: 'If you already have a site, pick where it runs now.', plats: true, opts: [['no', 'No, starting fresh', 'A new site, nothing to bring over', 'Starting fresh'], ['other', 'Somewhere else', 'A platform that isn’t listed', 'Moving from another platform']] },
@@ -25,6 +26,12 @@
     const plats = q.plats && data ? data.platforms.map((p) => [p.id, p.name, '', `Moving from ${p.name}`, undefined, p]) : [];
     return [...own.slice(0, 1), ...plats, ...own.slice(1)];
   };
+  const isAnswer = (q, a, data) => {
+    const vs = options(q, a, data).map(([v]) => v), x = a[q.id];
+    if (!q.multi) return vs.includes(x);
+    const list = String(x || '').split(',');
+    return x === q.multi || (!!x && list.every((v) => v !== q.multi && vs.includes(v)));
+  };
   const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
   // "Which best describes you or your site?": the reason a platform gets when its card has a "Good fit" line for that kind (quiz.fitFor)
   const KINDS = { local: 'Suits local businesses and services', creative: 'Suits creative work and portfolios', startup: 'Suits startups and product launches', b2b: 'Suits companies selling to other businesses', content: 'Suits sites with lots of content' };
@@ -34,7 +41,9 @@
   const BUDGET = { none: 0, low: 1, mid: 2 };
   // The cost row these answers pay: a store's (a site that sells too as well), the paid-members plan, or a website's.
   // Shared by the budget score, the "costs less" box and the card's cost line, so they agree.
-  const costRow = (a) => (a.what === 'store' || a.needs === 'sell' ? 'cost_store' : a.needs === 'members' ? 'cost_members' : 'cost_site');
+  // "Anything you'll need from day one?" takes several answers, kept as one comma list ("bookings,sell")
+  const need = (a, v) => String(a.needs || '').split(',').includes(v);
+  const costRow = (a) => (a.what === 'store' || need(a, 'sell') ? 'cost_store' : need(a, 'members') ? 'cost_members' : 'cost_site');
   const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
   // Moving an existing site, from a platform on the picker or another one
   const moving = (a) => !!a.moving && a.moving !== 'no';
@@ -108,7 +117,7 @@
   // A question's tick counts only while that question is asked; one not given reads as "no", so a line can apply unless it's ticked
   const TICKS = Object.fromEntries(QUESTIONS.filter((q) => q.also).map((q) => [q.also.id, q]));
   const ticked = (a, id) => a[id] === 'yes' && (!TICKS[id].when || TICKS[id].when(a));
-  const matches = (when, a) => Object.entries(when).every(([q, vs]) => vs.includes(TICKS[q] ? (ticked(a, q) ? 'yes' : 'no') : a[q]));
+  const matches = (when, a) => Object.entries(when).every(([q, vs]) => (q === 'needs' ? vs.some((v) => need(a, v)) : vs.includes(TICKS[q] ? (ticked(a, q) ? 'yes' : 'no') : a[q])));
   // The first of a platform's "Not ideal if" lines (quiz.notIdeal) these answers match
   const notIdealFor = (Q, id, a) => ((Q.notIdeal || {})[id] || []).find((n) => matches(n.when, a));
   // The card's first "Less suited if" line, skipping one a tick has answered ("You don't otherwise use HubSpot" when it's ticked)
@@ -127,7 +136,7 @@
     if (a.what !== 'store' && has('storeOnly')) add('sellOnly', -6);
     // Suits that kind of business only where its own card says so: a "Good fit" line tagged with that kind
     if (a.what === 'site' && ((Q.fitFor || {})[p.id] || []).some((f) => (f.when.kind || []).includes(a.kind))) add('kind', 3, KINDS[a.kind]);
-    if (a.needs === 'members') {
+    if (need(a, 'members')) {
       // The "Sell memberships or paid posts" row: built in beats an add-on
       const m = verdict('members');
       add('members', { yes: 3, plugin: 0, code: -2, check: -2, no: -4 }[m] ?? 0, m === 'yes' && 'Paid memberships built in');
@@ -159,7 +168,7 @@
       else add('care', handled ? 2 : managed ? -2 : -6, handled && 'Hosting, updates and security are handled for you');
       if (!handled) but.push(managed ? 'it needs a managed host or someone to look after it' : 'hosting, updates and security are on you');
     }
-    if (a.what !== 'store' && a.needs === 'sell') {
+    if (a.what !== 'store' && need(a, 'sell')) {
       // Selling on something that isn't a store: the "Sell online" row
       const v = verdict('store');
       add('sell', { yes: 2, plugin: 0, code: -2, no: -4 }[v] ?? 0, v === 'yes' && 'Selling online built in');
@@ -182,9 +191,9 @@
       if (w) but.push(w);
     }
     // No table row for bookings: quiz.bookings says which have them built in; the rest take an add-on
-    if (a.needs === 'bookings') { if (has('bookings')) add('bookings', 3, 'Bookings built in'); else { add('bookings', -1); but.push('bookings need an add-on'); } }
+    if (need(a, 'bookings')) { if (has('bookings')) add('bookings', 3, 'Bookings built in'); else { add('bookings', -1); but.push('bookings need an add-on'); } }
     // A blog beside a site or store: the "Add a blog" row
-    if (a.what !== 'content' && a.needs === 'blog') {
+    if (a.what !== 'content' && need(a, 'blog')) {
       const v = verdict('blog');
       add('blog', { yes: 2, plugin: 0, code: -2, no: -4 }[v] ?? 0, v === 'yes' && 'A blog built in');
       const w = { plugin: 'a blog needs an add-on', code: 'a blog needs custom code', no: 'it doesn’t do a blog' }[v];
@@ -246,10 +255,10 @@
     const Q = data.quiz, pro = a.who === 'dev' || a.who === 'agency', out = [];
     const verdict = (row) => ((data.answers[id] || {})[row] || {}).verdict;
     const row = (key, what, r) => { const v = verdict(r), lvl = pro && v === 'plugin' ? 3 : HAS[v] ?? 0; out.push({ key, what, how: v, short: 3 - lvl }); };
-    if (a.needs === 'bookings') { const has = (Q.bookings || []).includes(id); out.push({ key: 'bookings', what: 'bookings', how: has ? 'yes' : 'plugin', short: !pro && !has ? 1 : 0 }); }
-    if (a.needs === 'members') row('members', 'paid members', 'members');
-    if (a.needs === 'blog' && a.what !== 'content') row('blog', 'a blog', 'blog');
-    if (a.needs === 'sell' || a.what === 'store') row('sell', 'selling online', 'store');
+    if (need(a, 'bookings')) { const has = (Q.bookings || []).includes(id); out.push({ key: 'bookings', what: 'bookings', how: has ? 'yes' : 'plugin', short: !pro && !has ? 1 : 0 }); }
+    if (need(a, 'members')) row('members', 'paid members', 'members');
+    if (need(a, 'blog') && a.what !== 'content') row('blog', 'a blog', 'blog');
+    if (need(a, 'sell') || a.what === 'store') row('sell', 'selling online', 'store');
     if (a.lang === 'yes') row('lang', 'more than one language', 'languages');
     if (a.what === 'store' && (a.size === 'big' || a.size === 'b2b')) { const has = (Q.largeCatalogue || []).includes(id); out.push({ key: 'size', what: 'a large catalogue', how: has ? 'yes' : 'notMade', short: has ? 0 : 3 }); }
     if (a.what === 'store' && a.size === 'b2b') { const has = (Q.b2b || []).includes(id); out.push({ key: 'b2b', what: 'selling to other businesses', how: has ? 'yes' : 'notMade', short: has ? 0 : 1 }); }
@@ -327,11 +336,11 @@
   // How much a row matters for these answers; 0 when the person has ruled it out
   function weight(row, a) {
     if (row.startsWith('cost_')) return 0;   // the budget question covers cost
-    if (row === 'store') return a.what === 'store' || a.needs === 'sell' ? 3 : 0;   // not selling
+    if (row === 'store') return a.what === 'store' || need(a, 'sell') ? 3 : 0;   // not selling
     if (row === 'languages') return a.lang === 'yes' ? 3 : 0;   // one language
     if (row === 'design') return a.look === 'template' ? 0 : a.look === 'pixel' ? 2 : 1;  // a good template is enough; every detail is what "pixel" asked for
-    if (row === 'blog') return a.what === 'content' || a.needs === 'blog' ? 3 : 1;
-    if (row === 'members') return a.needs === 'members' ? 3 : 1;
+    if (row === 'blog') return a.what === 'content' || need(a, 'blog') ? 3 : 1;
+    if (row === 'members') return need(a, 'members') ? 3 : 1;
     return 1;
   }
   // Card tags about a row, left out of "is known for" when the answers rule that row out
@@ -512,6 +521,6 @@
     const where = behind(origin, lead);
     return where === 'ahead of' || where === 'level with' ? { origin, lead, where } : null;
   };
-  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, lessSuited, LOW_FIT, closest, conflict, costRow, stay };
+  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, lessSuited, LOW_FIT, closest, conflict, costRow, stay, need, isAnswer };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);
