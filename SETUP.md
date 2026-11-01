@@ -30,7 +30,6 @@ This whole folder is the GitHub repo `superjsal/jsal.io`; only `site\` is publis
   - `browser-check.mjs` — axe and phone-width runs in real browsers. Needs Node: run `npm ci` in that folder once per machine (`node_modules` isn't committed).
   - `bump-version.ps1` — updates the `?v=` cache numbers. Each is a short hash of its file's contents, so only the references to the files you changed are rewritten (in the pages, the apps' module imports and the platform-page template). The work is in `versions.py` next to it.
   - `og\make-og.ps1` (with `og.html`, `icon.html`) — makes the link-preview images and the home-screen icon.
-- `build\` — one-line shims so the old commands (`build\check.ps1`, `build\bump-version.ps1`, `build\og\make-og.ps1`, `build\playbook.py`) still run the scripts above. Not on GitHub.
 - `private\` — **never put this on GitHub.** `make-me-admin.sql`, the latest Playbook backup (`backups\`), research notes with sources (`playbook-research\`), and `playbook\defaults.json` while you're editing it.
 - `CLAUDE.md` and `.claude\` — working rules for Claude sessions (tracked in the repo, never served). Open Claude in this folder and it reads them automatically.
 

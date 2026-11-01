@@ -1,6 +1,4 @@
 # Only on John's PC: backups, SQL waiting to be run, research notes, session scratch
 private/
-# One-line shims for the old build\ commands (the real scripts are in .github\build)
-/build/
 .github/build/node_modules/
 __pycache__/

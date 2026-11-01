@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
-  "$comment": "The public CMS Picker data (cms-picker/data.json), written by playbook.py publish. check_data.py checks it against this file: before every publish, before every push (build\\check.ps1) and on GitHub. It understands the keywords used here: type, required, properties, additionalProperties, items, enum, pattern, minLength, minimum, maximum.",
+  "$comment": "The public CMS Picker data (cms-picker/data.json), written by playbook.py publish. check_data.py checks it against this file: before every publish, before every push (.github\\build\\check.ps1) and on GitHub. It understands the keywords used here: type, required, properties, additionalProperties, items, enum, pattern, minLength, minimum, maximum.",
   "type": "object",
   "required": ["schemaVersion", "verdicts", "asOf", "groups", "items", "platforms", "answers"],
   "additionalProperties": false,
