@@ -614,6 +614,9 @@
       return lab;
     }
 
+    // After an answer or Back, the next question (or the result) starts at the top of the screen when it wouldn't fit
+    // where it sits, so a phone never leaves its answers below the fold; never on load, when the page's top shows first
+    const reveal = () => { const r = box.getBoundingClientRect(); if (r.top < 0 || r.bottom > innerHeight) box.scrollIntoView({ block: 'start' }); };
     function ask() {
       const list = steps();
       if (step >= list.length) return results('quiz');
@@ -639,9 +642,11 @@
       const opts = el('div', 'qz-opts');
       opts.setAttribute('role', 'group');
       opts.setAttribute('aria-label', q.q);
-      // "Moving from somewhere?": its platforms are a row of logo chips under the two plain answers, one tap like the rest
+      // "Moving from somewhere?": No or Yes first; Yes opens where the site runs now, the platforms as logo chips and
+      // "Somewhere else" last, each one tap like the rest
       const from = q.plats ? el('div', 'qz-from') : null;
-      if (from) { from.setAttribute('role', 'group'); from.setAttribute('aria-label', 'Yes, from one of these'); }
+      if (from) { from.id = 'qz-from'; from.setAttribute('role', 'group'); from.setAttribute('aria-label', 'Where your site runs now'); }
+      const elsewhere = (v) => !!from && v !== 'no';   // a platform, or "Somewhere else"
       let busy = false;
       const pick = async (v, b) => {
         if (busy) return;
@@ -657,23 +662,38 @@
           if (next < 0) { resume = false; step = steps().length; } else step = next;
         } else step++;
         ask();
+        reveal();
         box.querySelector('h3')?.focus({ preventScroll: true });
       };
       options(q, a, data).forEach(([v, title, sub, , , plat]) => {
-        const b = el('button', plat ? 'chip' : 'qz-opt');
+        const b = el('button', elsewhere(v) ? 'chip' : 'qz-opt');
         b.type = 'button';
         b.setAttribute('aria-pressed', String(a[q.id] === v));
-        if (plat) b.append(logo(plat), title); else b.append(el('b', null, title), el('small', null, sub));
+        if (plat) b.append(logo(plat), title);
+        else if (elsewhere(v)) b.append(el('span', 'qz-from-else', '…'), title);
+        else b.append(el('b', null, title), el('small', null, sub));
         b.addEventListener('click', () => pick(v, b));
-        (plat ? from : opts).append(b);
+        (elsewhere(v) ? from : opts).append(b);
       });
       box.append(top, h, el('p', 'qz-hint', q.hint || 'Pick the closest one; you can go back and change it.'), ...[alsoBox(q, () => {}), opts].filter(Boolean));
-      if (from) box.append(el('p', 'qz-from-l', 'Yes, from one of these'), from);
+      if (from) {
+        // "Yes" isn't an answer on its own: it opens the list, already open when coming back to a site being moved
+        const wrap = el('div', 'qz-from-wrap'), yes = el('button', 'qz-opt');
+        yes.type = 'button';
+        yes.append(el('b', null, 'Yes, I have a site'), el('small', null, 'Pick where it runs now'));
+        yes.setAttribute('aria-controls', 'qz-from');
+        const show = (open) => { wrap.hidden = !open; yes.setAttribute('aria-expanded', String(open)); };
+        show(!!a[q.id] && a[q.id] !== 'no');
+        yes.addEventListener('click', () => { show(wrap.hidden); if (!wrap.hidden) wrap.scrollIntoView({ block: 'nearest' }); });
+        opts.append(yes);
+        wrap.append(el('p', 'qz-from-l', 'Where does it run now?'), from);
+        box.append(wrap);
+      }
       box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');
       if (step) {
         const nav = el('div', 'qz-nav'), back = el('button', 'btn', 'Back');
         back.type = 'button';
-        back.addEventListener('click', () => { step--; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
+        back.addEventListener('click', () => { step--; ask(); reveal(); box.querySelector('h3')?.focus({ preventScroll: true }); });
         nav.append(back);
         box.append(nav);
       }
@@ -686,33 +706,40 @@
     let editing = null, resume = false;   // resume: answering a question a change brought in goes straight back to the results
     let ansOpen = false;   // phones: the answers fold away under the heading, so the first match is right there; this keeps the fold as left
     let checking = null;   // "Had a platform in mind?": the platform being looked at, kept across re-renders
+    // Each answer's tile: a short name for its question over the answer, so the answers read as a summary
+    const ANS_LABEL = { what: 'Making', kind: 'Closest to', who: 'Built by', care: 'Hosting and updates', size: 'Shop size', needs: 'From day one', look: 'Design', moving: 'Moving', budget: 'Each month' };
+    const ansText = (q, opt) => (q.id === 'what' ? opt[3] : q.id !== 'moving' ? opt[1] : opt[0] === 'no' ? 'Starting fresh' : opt[0] === 'other' ? 'From another platform' : `From ${opt[1]}`);
     function answersBar() {
       const bar = el('div', 'qz-ans'), tap = matchMedia('(pointer: coarse)').matches ? 'tap' : 'click';
       bar.append(el('p', 'qz-ans-l', `Your answers · ${tap} one to change it`));
-      const chips = el('div', 'qz-ans-chips');
+      const tiles = el('div', 'qz-ans-tiles'), ticks = el('div', 'qz-ans-also');
+      const toggle = (q) => { editing = editing === q.id ? null : q.id; results(); box.querySelector(`.qz-ans [data-q="${q.id}"]`)?.focus({ preventScroll: true }); };
       const answered = steps().filter((q) => !pending.has(q.id));
       answered.forEach((q) => {
         const opt = options(q, a, data).find(([v]) => v === a[q.id]);
-        // The answer on its own ("Two or more languages"), so it makes sense without remembering the question
-        const b = el('button', 'chip', opt ? opt[3] : q.q);
+        const b = el('button', 'qz-ans-tile');
+        b.append(el('small', null, ANS_LABEL[q.id] || q.q), opt ? ansText(q, opt) : '');
         b.type = 'button';
         b.dataset.q = q.id;
         b.setAttribute('aria-expanded', String(editing === q.id));
         b.setAttribute('aria-label', `${opt ? opt[3] : ''}. Change your answer to: ${q.q}`);
-        b.addEventListener('click', () => { editing = editing === q.id ? null : q.id; results(); box.querySelector(`.qz-ans-chips [data-q="${q.id}"]`)?.focus({ preventScroll: true }); });
-        chips.append(b);
-        // A ticked "also" is an answer of its own; it opens the same question's choices, where it can be taken off
+        b.addEventListener('click', () => toggle(q));
+        tiles.append(b);
+        // A ticked "also" goes on its own line under the tiles, so ticking one never makes a tile taller; it opens
+        // the same question's choices, where it can be taken off
         if (q.also && a[q.also.id] === 'yes') {
-          const t = el('button', 'chip', q.also.own);
+          const t = el('button');
+          t.append(el('span', 'qz-ans-box'), q.also.own);
           t.type = 'button';
           t.dataset.q = q.also.id;
           t.setAttribute('aria-expanded', String(editing === q.id));
           t.setAttribute('aria-label', `${q.also.own}. Change your answer to: ${q.q}`);
-          t.addEventListener('click', () => { editing = editing === q.id ? null : q.id; results(); box.querySelector(`.qz-ans-chips [data-q="${q.id}"]`)?.focus({ preventScroll: true }); });
-          chips.append(t);
+          t.addEventListener('click', () => toggle(q));
+          ticks.append(t);
         }
       });
-      bar.append(chips);
+      bar.append(tiles);
+      if (ticks.childElementCount) bar.append(ticks);
       const q = steps().find((x) => x.id === editing);
       if (q) {
         const ed = el('div', 'qz-ans-ed');
@@ -733,7 +760,7 @@
             const missing = steps().findIndex((x) => !options(x, a, data).some(([o]) => o === a[x.id]));
             if (missing >= 0) { step = missing; resume = true; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); return; }
             results();
-            box.querySelector(`.qz-ans-chips [data-q="${q.id}"]`)?.focus({ preventScroll: true });
+            box.querySelector(`.qz-ans [data-q="${q.id}"]`)?.focus({ preventScroll: true });
           });
           ed.append(b);
         });
@@ -742,7 +769,7 @@
       if (!PHONE.matches) return bar;
       const fold = el('details', 'qz-ans-fold'), sum = el('summary');
       const count = answered.length + answered.filter((q) => q.also && a[q.also.id] === 'yes').length;   // a tick counts as an answer
-      sum.append(el('b', null, 'Your answers'), el('span', null, ` · ${count} · ${tap} to change one`));
+      sum.append(el('b', null, 'Your answers'), el('span', null, ` · ${count} · ${tap} to change`));
       fold.open = ansOpen || editing !== null;   // stays open while an answer is being changed
       fold.addEventListener('toggle', () => { ansOpen = fold.open; });
       fold.append(sum, bar);
@@ -795,11 +822,12 @@
       jump.addEventListener('click', compareThese);
       head.append(jump);
       const h = el('h3', 'sr-only', `Your ${first}es`);
-      let sure = null;
+      // A verdict panel in place of that row: how sure (green for a lead, neutral for a close call) and how close
+      // it is in words, large enough to read first (the first card's box says why it's first, so this doesn't repeat it)
+      let verdict = null;
       if (top[1] && !weak) {
-        head.append(el('span', `qz-sure${close ? ' close' : ''}`, stand.pill));
-        // How close it is, in words (the first card's box says why it's first, so this doesn't repeat it)
-        sure = el('p', 'qz-sure-why', stand.line);
+        verdict = el('div', `qz-verdict${close ? ' close' : ''}`);
+        verdict.append(el('p', 'qz-verdict-eye', stand.pill), el('p', 'qz-verdict-line', stand.line), jump);
       }
       h.tabIndex = -1;
       const list = el('div', 'qz-res');
@@ -848,8 +876,7 @@
         if (skip) card.append(el('p', 'qz-lim', `Less suited if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);
       });
-      box.append(head, h);
-      if (sure) box.append(sure);
+      box.append(h, verdict || head);
       if (pending.size) {
         const more = el('button', 'btn qz-more', `${pending.size} newer question${pending.size === 1 ? '' : 's'} can sharpen this`);
         more.type = 'button';
@@ -866,7 +893,7 @@
         if (clash === 'who') {
           const change = el('button', 'qz-note-a', `change “${steps().find((q) => q.id === 'who').q}”`);
           change.type = 'button';
-          change.addEventListener('click', () => { editing = 'who'; results(); box.querySelector('.qz-ans-chips [data-q="who"]')?.focus({ preventScroll: true }); });
+          change.addEventListener('click', () => { editing = 'who'; results(); box.querySelector('.qz-ans [data-q="who"]')?.focus({ preventScroll: true }); });
           // Ends on the link: a button can't wrap mid-line like text, so nothing is left dangling after it on a phone
           say.append('An app or portal usually needs a developer. Without one, these are the closest options. To see developer-built choices, ', change, '.');
         } else say.append('No platform fits these answers well, so these are the closest. Changing an answer above may bring better matches.');

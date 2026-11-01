@@ -58,6 +58,25 @@ sites found 1 of 76 on it; its CMS is worth it mainly to companies already on it
 places moved (9%, HubSpot to Webflow, WordPress or Wix); ticked, HubSpot is first for 652 of 960 B2B answer sets. The
 five B2B personas now come both ways (Webflow or WordPress without the tick, HubSpot with it), agreed with John.
 
+**Kinds from the cards** (2026-11-01, agreed with John): the 3 points for suiting an answer to "Which is closest to
+what you do?" now go only to platforms whose own card has a "Good fit" line tagged with that kind (`quiz.fitFor`); the
+separate `quiz.kind` lists are gone. The aim is a public tool that's checkable from the page: the agency's client tally
+had put WordPress on the local and B2B lists, but a client list counts what's installed (often years ago, and often
+because an agency builds on WordPress), not what fits someone choosing today, so it belongs in the Playbook, not the
+scoring. Platforms' own marketing doesn't settle it either: every vendor claims nearly every audience. The change took
+WordPress off local and B2B and HubSpot off content-heavy sites (neither card says so) and put Drupal on content-heavy
+sites ("Large, complex or multilingual sites"). 871 of 13,632 first places moved (6.4%; moving fixed at "starting
+fresh", both ticks both ways), nearly all sites a developer or agency builds: WordPress first 2,156 → 1,604, mostly to
+Webflow, Squarespace, Wix and HubSpot (ticked); Drupal 66 → 163. No persona moved. One expert case differs, agreed: the
+tourist café in two languages built by a developer gets Drupal first (Drupal 10, Wix 8, WordPress 8; its card names
+multilingual sites and developer teams), where a consultant would call Drupal overkill for a small site; the quiz
+doesn't ask a site's size. The same rule then held `quiz.agency` ("A common choice for designers and agencies") to the
+cards: Duda and WordPress name agencies, Webflow and Framer name designers, HubSpot's card names neither and left
+(282 more first places, all agency-built sites with the HubSpot tick; 1,137 of 13,632 for both changes, 8.3%, no
+persona). Two tries were dropped the same day: the HubSpot tick at 3 points, like a kind line, moved the agreed "B2B
+marketing team on HubSpot" persona to Webflow, so it stays at 4; and a tie-break on fitting the budget counted the
+budget twice, while the real photographer case (said "Nothing for now", runs Squarespace) went to Square Online.
+
 **Baseline** (final review with Claude Reviewer, 2026-10-30, before v3): all four rule tests pass, all 37 personas pass, and
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
 B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
@@ -221,13 +240,11 @@ Shared by the page and the tests, so they always run the same code.
 - **Hosting, three states** (since 2026-10-31): wanting hosting handled counts +2 where the profile's hosting line starts "Handled for you", −2 where it names a managed option that takes updates and security on (`managedHosting` in quiz.json: WordPress, Magento 2), −6 otherwise; the "worth knowing" line says which. Since 2026-11-01 a managed option counts +2 when an agency or
   developer builds the site, as they arrange the managed host; it's scored as its own part (`managed`, worded "your
   agency can put WordPress on managed hosting, which handles them") and `gaps` compares it with `care` as one hosting
-  comparison, so a box never calls equal hosting an advantage. With it WordPress joined `kind.b2b`: an anonymous tally
-  of the agency's client sites (`private\clients\`, platform and business type only, never committed) found WordPress
-  on 63 of 84 local-service and 51 of 58 B2B sites, which the quiz had rarely recommended to an agency. 533 of 8,832
-  first places moved, no persona. HubSpot still came first for agency-built B2B, though 1 of 58 clients ran it; quiz v5's
-  "We already use HubSpot" tick (above) settled that.
+  comparison, so a box never calls equal hosting an advantage. (WordPress joined the local and B2B kinds the same day
+  from a tally of the agency's client sites; "Kinds from the cards", above, took that out.)
 - **Ties** (since 2026-10-31): two platforms level on points are ordered by how many of their card's "Good fit"
-  lines answer what the person is making, from `quiz.fitFor`: each tagged line as it reads on the card (`line`)
+  lines answer what the person is making, from `quiz.fitFor` (whose kind-tagged lines also give the 3 points for
+  suiting "Which is closest to what you do?", since 2026-11-01): each tagged line as it reads on the card (`line`)
   with the answers it answers (`when`, the same shape as `notIdeal`; a line that answers two questions is listed
   twice). Only lines that plainly name the goal are tagged: a business site's kind ("Startups and landing pages"
   → `kind: startup`), a store's size ("Larger catalogues" → `size: big`), a publication ("Writers, creators and
@@ -277,7 +294,7 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
   agree (`BASELINE`: 38 of 40 when set up, 39 once Duda's card stopped listing "Blog or content", 40 with the
   divider, as a match under it isn't a recommendation; 42 of 42 with the first two real sites, John's friends' own
   quiz answers and the platform they run, both Squarespace; 43 of 43 with a B2B company already on HubSpot, for the v5
-  tick) and names the ones that differ, and says so when a change takes
+  tick; 42 of 43 with kinds from the cards, the tourist café differing, agreed with John) and names the ones that differ, and says so when a change takes
   it below the baseline. Raise `BASELINE` when agreement rises; edit a case only when its expert judgment is wrong,
   never to match a result.
 - **Nine rules** that must hold for every answer set (a failure names the first few):

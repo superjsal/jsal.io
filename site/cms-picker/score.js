@@ -14,14 +14,19 @@
     // One need, the one that matters most. Languages are a tick on the same question (also), since they go with any need.
     { id: 'needs', q: 'Anything you’ll need from day one?', hint: 'Pick the one that matters most; the rest can come later.', also: { id: 'lang', title: 'In two or more languages', hint: 'Tick it, then pick below', own: 'Two or more languages' }, opts: [['bookings', 'Bookings or appointments', 'Clients book a time online', 'Bookings or appointments from day one'], ['members', 'Paid subscribers or members', 'Paid posts, memberships or a paid newsletter', 'Paid subscribers or members'], ['sell', 'Selling online too', 'A few products or services to buy', 'Selling online too', (a) => a.what !== 'store'], ['blog', 'A blog or news section', 'Posts alongside the main pages', 'A blog or news section', (a) => a.what !== 'content'], ['none', 'Nothing special', 'The usual pages are enough', 'Nothing special from day one']] },
     { id: 'look', q: 'How much control over the design do you want?', opts: [['template', 'A good template is enough', 'Pick one and go', 'A good template is enough'], ['visual', 'Arrange things visually myself', 'Drag, drop and adjust', 'Arrange the design visually'], ['pixel', 'Every detail', 'Exactly as designed', 'Control every detail of the design']] },
-    // Where the site is now: these two, then every platform on the picker (options() adds them). No points.
-    { id: 'moving', q: 'Moving from somewhere?', hint: 'One tap: pick where your site runs now, or start fresh.', plats: true, opts: [['no', 'No, starting fresh', 'A new site, nothing to bring over', 'Starting fresh'], ['other', 'Yes, from somewhere else', 'A platform that isn’t listed below', 'Moving from another platform']] },
+    // Where the site is now: starting fresh, every platform on the picker (options() adds them), or somewhere else. No points.
+    { id: 'moving', q: 'Moving from somewhere?', hint: 'If you already have a site, pick where it runs now.', plats: true, opts: [['no', 'No, starting fresh', 'A new site, nothing to bring over', 'Starting fresh'], ['other', 'Somewhere else', 'A platform that isn’t listed', 'Moving from another platform']] },
     { id: 'budget', q: 'What can you spend each month?', opts: [['none', 'Nothing for now', 'Start free, upgrade later', 'Nothing for now: free to start'], ['low', 'Up to about $25', 'A basic plan', 'Up to about $25 a month'], ['mid', 'Up to about $100', 'Room for a store or more features', 'Up to about $100 a month'], ['any', 'Over $100, or it doesn’t matter', 'Cost isn’t the deciding factor', 'Cost isn’t the deciding factor']] },
   ];
   // A question's options for these answers, plus the platforms for "Moving from somewhere?"
-  const options = (q, a, data) => [...q.opts.filter((o) => !o[4] || o[4](a)), ...(q.plats && data ? data.platforms.map((p) => [p.id, p.name, '', `Moving from ${p.name}`, undefined, p]) : [])];
+  // The platforms go after the first answer, so "Somewhere else" closes their list
+  const options = (q, a, data) => {
+    const own = q.opts.filter((o) => !o[4] || o[4](a));
+    const plats = q.plats && data ? data.platforms.map((p) => [p.id, p.name, '', `Moving from ${p.name}`, undefined, p]) : [];
+    return [...own.slice(0, 1), ...plats, ...own.slice(1)];
+  };
   const WHAT = { site: 'Made for business and portfolio sites', store: 'Made for online stores', content: 'Made for blogs and publishing', custom: 'Made for custom builds' };
-  // "Which is closest to what you do?": the reason a matching platform gets (quiz.kind lists them)
+  // "Which is closest to what you do?": the reason a platform gets when its card has a "Good fit" line for that kind (quiz.fitFor)
   const KINDS = { local: 'Suits local businesses and services', creative: 'Suits creative work and portfolios', startup: 'Suits startups and product launches', b2b: 'Suits companies selling to other businesses', content: 'Suits sites with lots of content' };
   // Budget against the "What it costs to start" bands: 3 points off per band over, nothing for being within it.
   // Free software still needs paid hosting, so it counts as the lowest paid band.
@@ -116,7 +121,8 @@
     const add = (key, n, reason) => { s += n; pts[key] = (pts[key] || 0) + n; if (reason) why.push(reason); };
     if ((pr.goals || []).includes(a.what)) add('goal', 4, WHAT[a.what]); else add('goal', -8);
     if (a.what !== 'store' && has('storeOnly')) add('sellOnly', -6);
-    if (a.what === 'site' && ((Q.kind || {})[a.kind] || []).includes(p.id)) add('kind', 3, KINDS[a.kind]);
+    // Suits that kind of business only where its own card says so: a "Good fit" line tagged with that kind
+    if (a.what === 'site' && ((Q.fitFor || {})[p.id] || []).some((f) => (f.when.kind || []).includes(a.kind))) add('kind', 3, KINDS[a.kind]);
     if (a.needs === 'members') {
       // The "Sell memberships or paid posts" row: built in beats an add-on
       const m = verdict('members');
@@ -124,6 +130,7 @@
       // quiz.members: the platform sends newsletters to those members itself
       if (has('members')) add('letters', 2, 'Newsletters to your members built in');
     }
+    // Already on HubSpot: its card's first "Good fit" line
     if (ticked(a, 'hubspot') && p.id === 'hubspot') add('hubspot', 4, 'Fits the HubSpot tools you already use');
     if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'One place to manage content for a website and an app');
     const ease = Q.ease[p.id] ?? 1;

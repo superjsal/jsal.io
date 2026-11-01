@@ -12,7 +12,7 @@ const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
 
 // Agreement when the report was set up: fewer than this is called out
-const BASELINE = 43;
+const BASELINE = 42;
 const DEV = ['magento', 'drupal', 'sanity'];
 const S = (o) => ({ moving: 'no', needs: 'none', budget: 'any', ...o });
 const CASES = [

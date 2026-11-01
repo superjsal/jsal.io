@@ -380,6 +380,7 @@ body {
   --tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
   --info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5M12 8h.01'/%3E%3C/svg%3E");
   padding: 22px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface);
+  scroll-margin-top: 12px;   /* brought into view after an answer: a little room above its edge */
   /* The first question's height is reserved before the script fills the box, so the rows under it don't move at load;
      it also keeps the box steady between questions. Per column count of the answers; phones scroll anyway */
   min-height: 214px;
@@ -419,9 +420,12 @@ body {
 .qz-from .chip { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 12px; border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font-size: 14px; text-align: left; }
 .qz-from .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .qz-from .logo { width: 20px; height: 20px; }
+.qz-from-else { flex: none; display: grid; place-items: center; width: 20px; height: 20px; color: var(--jsal-muted); font-size: 18px; font-weight: 700; line-height: 1; }   /* "Somewhere else": a plain mark in the logo's place */
+/* "Yes, I have a site" opens the list, and stays marked while it's open */
+.qz-opt[aria-expanded="true"] { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 /* Selected: a small tick, the same mark wherever a choice is made */
 .qz-opt[aria-pressed="true"]::after { content: ""; position: absolute; top: 13px; right: 12px; width: 14px; height: 14px; background: var(--jsal-accent); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }
-.qz-opt, .qz-ans-chips .chip { transition: border-color 0.12s, background 0.12s, color 0.12s; }
+.qz-opt, .qz-ans-tile { transition: border-color 0.12s, background 0.12s, color 0.12s; }
 /* Each question, and the results, fade in from just below (off with reduced motion, below) */
 .qz.qz-in > * { animation: qz-in 0.18s ease-out; }
 @keyframes qz-in { from { opacity: 0; transform: translateY(6px); } }
@@ -430,14 +434,28 @@ body {
 .qz-more { margin: 2px 0 10px; }
 .qz-ans { margin-bottom: 14px; }
 .qz-ans-l { margin-bottom: 6px; color: var(--jsal-muted); font-size: 13px; }
-.qz-ans-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.qz-ans-chips .chip { text-align: left; }   /* a long answer wraps on a phone */
-.qz-ans-chips .chip[aria-expanded="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
+/* The answers as equal tiles, each a short name for its question over the answer; four across, two on phones */
+.qz-ans-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 720px) { .qz-ans-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.qz-ans-tile { display: flex; flex-direction: column; gap: 2px; min-height: 58px; padding: 10px 12px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: 500 14px/1.3 var(--jsal-font); text-align: left; cursor: pointer; }
+.qz-ans-tile small { color: var(--jsal-muted); font-size: 12px; }
+.qz-ans-tile:hover { border-color: var(--jsal-hover-line); }
+.qz-ans-tile[aria-expanded="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
+.qz-ans-tile:focus-visible, .qz-ans-also button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+/* Ticked extras ("We already use HubSpot") on a line under the tiles, a ticked box before each, so a tick never
+   makes a tile taller */
+.qz-ans-also { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 10px; }
+.qz-ans-also button { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 4px 0; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-ink); font: 500 14px var(--jsal-font); text-align: left; cursor: pointer; }
+.qz-ans-also button:hover { text-decoration: underline; text-underline-offset: 3px; }
+.qz-ans-also button[aria-expanded="true"] { color: var(--jsal-selected-ink); }
+.qz-ans-box { flex: none; position: relative; width: 16px; height: 16px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); }
+.qz-ans-box::after { content: ""; position: absolute; inset: 2px; background: var(--jsal-on-fill); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }
+@media (pointer: coarse) { .qz-ans-also button { min-height: 44px; } }
 /* Phones: the answers fold under one row, so the first match follows the heading (app.js wraps them) */
 .qz-ans-fold { margin-bottom: 14px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
 .qz-ans-fold > summary { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; list-style: none; cursor: pointer; font-size: 14px; color: var(--jsal-ink); border-radius: var(--jsal-radius); }
 .qz-ans-fold > summary::-webkit-details-marker { display: none; }
-.qz-ans-fold > summary b { font-weight: 600; }
+.qz-ans-fold > summary b { flex: none; font-weight: 600; }
 .qz-ans-fold > summary span { color: var(--jsal-muted); }
 .qz-ans-fold > summary::after { content: ""; flex: none; margin-left: auto; width: 7px; height: 7px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: 45deg; transition: rotate 0.15s; }
 .qz-ans-fold[open] > summary::after { rotate: -135deg; }
@@ -502,17 +520,26 @@ body {
 .qz-switch-l { margin-right: 4px; color: var(--jsal-muted); font-size: 14px; }
 .qz-pick-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .qz-pick { min-height: 40px; padding: 0 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: 600 14px var(--jsal-font); }
-/* The result's header: how sure it is sits beside "Your best matches", the compare link at the end of the row,
-   on a line of its own on phones so neither squeezes the other. A close call is neutral, a lead or winner green */
+/* The result's header: a verdict panel, how sure in a small label and how close in a serif line, the compare link at
+   the top right (under the line on phones). A close call is neutral, a lead or winner green. With only the closest
+   matches there's no verdict, and "Your closest matches" and the link share a plain row */
 .qz-top:has(.qz-jump) { flex-wrap: wrap; row-gap: 10px; }
 .qz-top > span { white-space: nowrap; }
-.qz-sure { order: 1; white-space: nowrap; padding: 2px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
-.qz-sure.close { background: var(--jsal-sunk); color: var(--jsal-ink-2); }
+.qz-verdict { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "eye jump" "line line"; align-items: center; gap: 6px 12px; margin-bottom: 18px; padding: 18px 20px; border-radius: var(--jsal-radius-lg); background: var(--jsal-ok-soft); }
+.qz-verdict.close { background: var(--jsal-sunk); }
+.qz-verdict-eye { grid-area: eye; color: var(--jsal-ok); font: 600 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+.qz-verdict.close .qz-verdict-eye { color: var(--jsal-ink-2); }
+.qz-verdict-line { grid-area: line; color: var(--jsal-ink); font: 600 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; text-wrap: balance; }
+.qz-verdict .qz-jump { grid-area: jump; margin-left: 0; }
+@media (max-width: 560px) {
+  .qz-verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: 16px; }
+  .qz-verdict-line { font-size: 22px; }
+  .qz-verdict .qz-jump { margin-top: 8px; }
+}
 .qz-jump { order: 2; position: relative; margin-left: auto; padding: 4px 0; border: 0; background: none; color: var(--jsal-accent); font: 600 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; white-space: nowrap; }
 .qz-jump:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius-sm); }
 @media (max-width: 560px) { .qz-jump { flex-basis: 100%; margin-left: 0; text-align: left; } }
 @media (pointer: coarse) { .qz-jump::after { content: ""; position: absolute; inset: -10px 0; } }
-.qz-sure-why { margin: -6px 0 14px; color: var(--jsal-muted); font-size: 14px; }
 /* "Had a platform in mind?": any platform ranked for these answers, with what counted for and against it */
 .qz-check { margin-top: 12px; padding: 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
 .qz-check h4 { color: var(--jsal-ink); font-size: 16px; }
