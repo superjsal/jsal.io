@@ -207,7 +207,14 @@ Shared by the page and the tests, so they always run the same code.
   its site band plus a separate shop, at least the lowest paid band, under its own part (`shopCost`). No pricing page
   states that sum, so `shopCost` has no wording, and a platform over budget on it never says it costs less than another;
   its "worth knowing" line says a separate shop adds to the cost.
-- **Hosting, three states** (since 2026-10-31): wanting hosting handled counts +2 where the profile's hosting line starts "Handled for you", −2 where it names a managed option that takes updates and security on (`managedHosting` in quiz.json: WordPress, Magento 2), −6 otherwise; the "worth knowing" line says which.
+- **Hosting, three states** (since 2026-10-31): wanting hosting handled counts +2 where the profile's hosting line starts "Handled for you", −2 where it names a managed option that takes updates and security on (`managedHosting` in quiz.json: WordPress, Magento 2), −6 otherwise; the "worth knowing" line says which. Since 2026-11-01 a managed option counts +2 when an agency or
+  developer builds the site, as they arrange the managed host; it's scored as its own part (`managed`, worded "your
+  agency can put WordPress on managed hosting, which handles them") and `gaps` compares it with `care` as one hosting
+  comparison, so a box never calls equal hosting an advantage. With it WordPress joined `kind.b2b`: an anonymous tally
+  of the agency's client sites (`private\clients\`, platform and business type only, never committed) found WordPress
+  on 63 of 84 local-service and 51 of 58 B2B sites, which the quiz had rarely recommended to an agency. 533 of 8,832
+  first places moved, no persona. Still open: HubSpot stays first for agency-built B2B, though 1 of 58 clients runs it;
+  the fix is a "We already use HubSpot" tick (a question change), not yet agreed.
 - **Ties** (since 2026-10-31): two platforms level on points are ordered by how many of their card's "Good fit"
   lines answer what the person is making, from `quiz.fitFor`: each tagged line as it reads on the card (`line`)
   with the answers it answers (`when`, the same shape as `notIdeal`; a line that answers two questions is listed
