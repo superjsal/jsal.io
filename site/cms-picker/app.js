@@ -13,6 +13,13 @@
   // Scope as a symbol, explained once in the key
   // Only the exceptions are marked (a short word after the tag); the longer wording is for the tooltip
   const SCOPE = { V: ['varies', 'Varies by site: depends on the plan, theme or setup'], C: ['not verified', 'Not checked against the platform’s own docs yet'] };
+  // "varies" after a tag: a "*" on screen, the word for screen readers
+  function scopeMark(word) {
+    const s = el('span', 'sc sc-mark'), star = el('span', null, '*');
+    star.setAttribute('aria-hidden', 'true');
+    s.append(star, el('span', 'sr-only', word));
+    return s;
+  }
   // A note that only repeats its tag isn't shown ("Yes", "Yes, with an SEO plugin", "Automatic"…)
   const GENERIC = /^(yes|no|check|automatic|built in)$|^yes, with (an? )?(seo |redirect )?(plugin|module|extension|app|custom code)$/i;
   // With "Show all", the grid starts with these; any other choice starts with the platforms that fit it
@@ -298,7 +305,10 @@
         const line = el('span', 'line');
         line.append(el('span', `tag ${c.verdict}`, SHORT[c.verdict] || data.verdicts[c.verdict] || c.verdict));
         if (word) {
-          const s = el('span', 'sc', word);
+          // "varies" is a mark right after the tag (the key says what it means; screen readers hear the word);
+          // the rarer "not verified" stays in words, under the tag
+          const s = c.scope === 'V' ? scopeMark(word) : el('span', 'sc', word);
+          if (c.scope !== 'V') line.classList.add('words');
           if (state.notes) s.title = scope;        // with notes off, the cell's tooltip says it instead
           cell.dataset.scope = scope;
           line.append(s);
@@ -447,8 +457,12 @@
     const used = new Set(Object.values(data.answers).flatMap((a) => Object.values(a).map((c) => c.verdict)));
     const legend = $('#legend');
     Object.keys(SHORT).filter((k) => used.has(k) && !(k in COST)).forEach((k) => legend.append(el('span', `tag ${k}`, SHORT[k])));
-    // The two words that follow a tag, explained where the tags are (not only in the note under the table)
-    Object.values(SCOPE).forEach(([word, meaning]) => { const s = el('span', 'sc', word); s.title = meaning; legend.append(s); });
+    // What follows a tag, explained where the tags are (not only in the note under the table): the mark, then the words
+    Object.entries(SCOPE).forEach(([k, [word, meaning]]) => {
+      const s = el('span', 'sc', k === 'V' ? `* ${word}` : word);
+      s.title = meaning;
+      legend.append(s);
+    });
     setGoal('all');
     setupQuiz();
     // Opening a panel brings its heading into view (closing stays put), or the tap seems to do nothing

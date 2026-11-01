@@ -297,7 +297,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><b>The tool fills the first screen</b><span>Explanations sit below the fold, reached by an About link in the top bar. On phones the empty work area stretches to the bottom of the screen until there's content.</span><small>design-rules.md · Layout</small></li>
       <li><b>The top bar never moves</b><span>Every page carries the same top-bar markup, so the logo and theme button stay put during page transitions while the rest of the page changes around them.</span><small>check.py compares the markup</small></li>
       <li><b>Gold where it matters</b><span>One accent, kept loud by spending it only on selected states, the main action, the one insight line, brand touches and the site's own links. Never on hover.</span><small>check.py fails gold on hover</small></li>
-      <li><b>Words over widgets</b><span>Plain tags ("Built in", "Needs code") and plain states ("varies", "not verified") carry the meaning; colour reinforces, it never explains alone. Instructions swap "click" for "tap" on touch screens.</span><small>nav.js · data-touch</small></li>
+      <li><b>Words over widgets</b><span>Plain tags ("Built in", "Needs code") and plain states ("not verified", and "*" for varies, spelled out in the key and for screen readers) carry the meaning; colour reinforces, it never explains alone. Instructions swap "click" for "tap" on touch screens.</span><small>nav.js · data-touch</small></li>
       <li><b>Motion that steps aside</b><span>Short, physical transitions (0.12 to 0.3s), every one with a reduced-motion fallback, and nothing moving on its own for more than five seconds.</span><small>check.py · WCAG 2.2.2</small></li>
       <li><b>Everything stays in the browser</b><span>Files, pasted documents and settings never leave the device; the only thing sent anywhere is basic analytics, and in Europe only with consent. The design makes the promise visible ("Nothing is uploaded") on every tool.</span><small>/privacy/</small></li>
       <li><b>Checked, not assumed</b><span>Contrast, fonts, button corners, touch sizes and page markup are verified by scripts before each push; axe runs on every page in both themes. Design rules live in the repo next to the code they govern.</span><small>build\check.ps1</small></li>
@@ -516,7 +516,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </div>
       <div class="demo">
         <span class="src">Tags · cms-picker/styles.css .tag (the answer ramp), with the words that follow a tag</span>
-        <div class="row"><span class="tag yes">Built in</span><span class="tag yes">Automatic</span><span class="tag plugin">Plugin/app</span><span class="tag plugin">Indirectly</span><span class="tag code">Needs code</span><span class="tag no">Not possible</span><span class="tag check">Unclear</span><span class="tag cost">Under $25/mo</span><span class="sc">varies</span><span class="sc">not verified</span></div>
+        <div class="row"><span class="tag yes">Built in</span><span class="tag yes">Automatic</span><span class="tag plugin">Plugin/app</span><span class="tag plugin">Indirectly</span><span class="tag code">Needs code</span><span class="tag no">Not possible</span><span class="tag check">Unclear</span><span class="tag cost">Under $25/mo</span><span class="sc">* varies</span><span class="sc">not verified</span></div>
       </div>
       <div class="demo">
         <span class="src">Field, at rest and focused · the one focus ring, --jsal-focus-ring</span>

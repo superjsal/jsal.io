@@ -181,10 +181,12 @@ body {
 @media (pointer: coarse) { .qz-line a { display: inline-flex; align-items: center; min-height: 44px; } }
 /* The platform's name, for screen readers on wide screens (the column header says it) and shown on phones */
 .cell .plat { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-/* "varies" always sits on its own line under the tag, so long and short tags read alike down a row */
-.line { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; max-width: 100%; }
-.line .tag { white-space: normal; }   /* and a tag wider than a narrow column ("Free software + hosting" at 1024px) wraps inside it */
-.line .sc { padding-left: 10px; }   /* level with the tag's text, past its padding */
+/* "varies" is a "*" right beside the tag, never on a line of its own; "not verified" sits under it in words */
+.line { display: inline-flex; align-items: flex-start; gap: 3px; max-width: 100%; }
+.line.words { flex-direction: column; gap: 2px; }
+.line .tag { white-space: normal; min-width: 0; }   /* a tag wider than a narrow column ("Free software + hosting" at 1024px) wraps inside it */
+.line.words .sc { padding-left: 10px; }   /* level with the tag's text, past its padding */
+.sc-mark { font-size: 15px; line-height: 1; }
 .sc { color: var(--jsal-muted); font-size: 13px; font-weight: 600; white-space: nowrap; }   /* "varies" / "not verified" after a tag */
 .mark { display: block; margin-top: 4px; color: var(--jsal-ink-2); font-size: 14px; line-height: 1.4; }
 .where { display: block; margin-top: 3px; color: var(--jsal-muted); font-size: 13px; line-height: 1.4; }   /* menu path to the setting, under the note */

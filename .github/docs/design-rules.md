@@ -117,7 +117,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   share, and no hiding long lists. The reasons are the evidence the pick stands on. The one exception: a card whose
   list is an exact copy of another card's collapses to "Fits your answers for the same reasons as …" (the full list
   is on the card above), and its box still says how it differs. The personas test checks this on every answer set.
-- **The comparison on phones** is a card per question, one 44px line per platform (name, tag, "varies"). Who's
+- **"Varies" is a "*" right after the tag** in the comparison, at every width: never a word on its own line, which made
+  wide and narrow tags read unevenly down a row. The key above the table and the note under it say what it means,
+  and screen readers hear "varies". The rarer "not verified" stays in words, under the tag.
+- **The comparison on phones** is a card per question, one 44px line per platform (name, tag, "*"). Who's
   compared is said once, in a card at the top (each platform's name, match label and type), not on every row. With
   Tags on, an answer with a note is a button the width of its row, a muted chevron at its end; tapped, the note opens
   under the answer and stays open (no floating box, which covered the next row and vanished on scroll). Group

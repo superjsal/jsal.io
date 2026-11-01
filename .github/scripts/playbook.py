@@ -385,11 +385,15 @@ def prerender():
             a = d['answers'][p['id']][it['id']]
             word = SCOPE.get(a['scope'])
             line = f'<span class="tag {e(a["verdict"])}">{e(SHORT.get(a["verdict"], a["verdict"]))}</span>'
-            if word:
+            # as app.js draws it: "varies" a "*" beside the tag (the word for screen readers), "not verified" in words
+            if a['scope'] == 'V':
+                line += f'<span class="sc sc-mark"><span aria-hidden="true">*</span><span class="sr-only">{word}</span></span>'
+            elif word:
                 line += f'<span class="sc">{word}</span>'
             mark = f'<span class="mark">{e(a["mark"])}</span>' if a.get('mark') and not GENERIC.match(a['mark'].strip()) else ''
             where = f'<span class="where">Where: {e(a["where"])}</span>' if a.get('where') else ''
-            cells.append(f'<div class="cell"><span class="plat">{e(p["name"])}</span><span class="line">{line}</span>{mark}{where}</div>')
+            words = ' words' if a['scope'] in SCOPE and a['scope'] != 'V' else ''
+            cells.append(f'<div class="cell"><span class="plat">{e(p["name"])}</span><span class="line{words}">{line}</span>{mark}{where}</div>')
         term = f'<small class="term">{e(it["term"])}</small>' if it.get('term') else ''
         rows.append(f'<div class="row"><div class="item">{e(it["label"])}{term}</div>{"".join(cells)}</div>')
 
