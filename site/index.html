@@ -116,6 +116,10 @@ a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
   :root:not([data-theme="light"]) a.tile::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 65%); }
 }
 .tile h2 { margin: 2px 0 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
+/* Each tool's name starts with its icon, the one the logo menu and Updates show, at one size on every tile */
+.tile-ico { display: inline-block; width: 32px; height: 32px; margin-right: 12px; vertical-align: calc(0.36em - 16px); }   /* centred on the name, whatever its size */
+/* The Image Resizer's tile is ink in light mode, like its icon, so the icon gets a faint ring to hold its edge */
+.jscale .tile-ico { border-radius: 7px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--cream-ink) 28%, transparent); }
 .tile p { margin: 0; }
 /* Every clickable tile ends with the same round arrow, in that tile's accent colour */
 .foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
@@ -442,8 +446,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
       <div class="foot">
         <div>
-          <p class="label">01 · web app</p>
-          <h2>CMS Picker</h2>
+          <p class="label">web app</p>
+          <h2><img class="tile-ico" src="/img/icons/cms-picker.svg" alt="" width="32" height="32">CMS Picker</h2>
           <p class="desc">Find the CMS that fits in a few questions, or compare 13 platforms: who each one suits, what it costs to start, and what you can change for SEO and AI search.</p>
         </div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
@@ -467,8 +471,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
       <div class="foot">
         <div>
-          <p class="label">02 · web app</p>
-          <h2>Image Resizer</h2>
+          <p class="label">web app</p>
+          <h2><img class="tile-ico" src="/img/icons/image-resizer.svg" alt="" width="32" height="32">Image Resizer</h2>
           <p class="desc">Resize, crop and convert one image or a whole batch in the browser. Nothing is uploaded.</p>
         </div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
@@ -483,8 +487,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
       <div class="foot">
         <div>
-          <p class="label">03 · web app</p>
-          <h2>Clean Paste</h2>
+          <p class="label">web app</p>
+          <h2><img class="tile-ico" src="/img/icons/clean-paste.svg" alt="" width="32" height="32">Clean Paste</h2>
           <p class="desc">Paste from Word or Google Docs, get clean HTML. Works both ways: HTML to formatted text, and back.</p>
         </div>
         <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
@@ -496,7 +500,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       <div class="foot">
         <div>
           <p class="label">for my team</p>
-          <h2>Platform Playbook</h2>
+          <h2><img class="tile-ico" src="/img/icons/platform-playbook.svg" alt="" width="32" height="32">Platform Playbook</h2>
           <p class="desc">SEO checks across website platforms, with how-to steps and guides.</p>
           <span class="pill"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Sign-in, approved team only</span>
         </div>

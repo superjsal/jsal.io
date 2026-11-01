@@ -122,7 +122,10 @@ for what the tool does, on a tile in the tool's accent from its home page tile. 
 
 The site's logo menu draws them inline (`APPS` in `site/nav.js`, its tile colours the `--jsal-tool-*` tokens in
 `site/shell.css`), with the menu's Home row as the logo tile itself and Off the clock as the loot bag.
-Outside the site they're in the brand kit. Change a glyph in both places: `make-brand.py` and `nav.js`.
+The home page's tool tiles start each name with its icon, Updates starts each row with one, and each tool page's
+browser tab shows its own (`site/img/icons/`, written by `make-brand.py`; the CMS Picker's platform pages share
+its icon, and home, Privacy, the changelog, 404 and `/design-system/` keep the logo, as does the home-screen
+icon everywhere). Outside the site they're in the brand kit. Change a glyph in both places: `make-brand.py` and `nav.js`.
 
 ## Brand kit
 

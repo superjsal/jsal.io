@@ -155,11 +155,11 @@ for name, (bg, draw) in TOOLS.items():
 for name, svg in files.items():
     (OUT / name).write_text(svg + '\n', encoding='utf-8', newline='\n')
 (ROOT / 'site' / 'favicon.svg').write_text(mark(), encoding='utf-8', newline='\n')
-# The home page's Updates rows show each section's icon: the tool icons, Off the clock's bag, and the logo tile for
+# The home page's Updates rows, its tool tiles and the tool pages' tabs show each section's icon: the tool icons, Off the clock's bag, and the logo tile for
 # Site, which keeps the dark tile's edge everywhere so it holds on the dark Updates box
 icons = ROOT / 'site' / 'img' / 'icons'
 icons.mkdir(parents=True, exist_ok=True)
-for name in ('cms-picker', 'clean-paste', 'image-resizer', 'off-the-clock'):
+for name in ('cms-picker', 'clean-paste', 'image-resizer', 'platform-playbook', 'off-the-clock'):
     (icons / f'{name}.svg').write_text(files[f'tools/{name}.svg'] + '\n', encoding='utf-8', newline='\n')
 (icons / 'jsal-io.svg').write_text(f'<svg {XMLNS} viewBox="0 0 32 32">{tile(edge=True)}{glyph(PARCH, GOLD)}</svg>\n', encoding='utf-8', newline='\n')
 print('\n'.join(files))

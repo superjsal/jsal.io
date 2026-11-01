@@ -12,8 +12,9 @@ SITE = ROOT / 'site'
 TEMPLATE = ROOT / '.github' / 'scripts' / 'platform-page.html'   # served as cms-picker/<platform>/index.html
 SKIP = {'vendor', 'node_modules', '.github', '.git'}
 
-# What counts as a reference: a quoted path ending in .css or .js, or favicon.svg, followed by ?v=…
-REF = re.compile(r'(?P<path>[\w./-]+(?:\.css|\.js|favicon\.svg))\?v=(?P<v>[\w.-]+)(?=["\'])')
+# What counts as a reference: a quoted path ending in .css or .js, favicon.svg or an icon in img/icons/ (the tool
+# pages' tab icons), followed by ?v=…
+REF = re.compile(r'(?P<path>[\w./-]+(?:\.css|\.js|favicon\.svg|img/icons/[\w-]+\.svg))\?v=(?P<v>[\w.-]+)(?=["\'])')
 # Attributes that version a file without linking it (app.js fetches quiz.json with the page's data-quiz-v)
 ATTR = {'data-quiz-v': 'quiz.json'}
 ATTR_RE = re.compile(r'(?P<attr>' + '|'.join(map(re.escape, ATTR)) + r')="(?P<v>[\w.-]*)"')
