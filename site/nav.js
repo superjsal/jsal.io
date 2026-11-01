@@ -83,19 +83,26 @@
       else el.remove();
     }
   }
+  // Each app's icon is drawn like the logo, on its 32-unit grid: round-ended strokes (.l) and the gold gem (.g) used once
+  // for what the tool does, on a tile in the tool's colour (--jsal-tool-*). Home is the logo's j and gem, and Off the
+  // clock a controller with the gem as a button, both in plain ink.
   const APPS = [   // the homepage's order: CMS Picker first, the team's Playbook last
     // Descriptions stay under about 35 characters, so they fit on one line on a phone
-    { href: '/cms-picker/', name: 'CMS Picker', desc: 'Find the CMS that fits, and its SEO',
-      icon: '<path d="M3 5h18v14H3z"/><path d="M3 10h18M9 5v14"/>' },
-    { href: '/formatter/', name: 'Clean Paste', desc: 'Clean up Word and Google Docs text',
-      icon: '<path d="M4 6h16M4 12h10M4 18h13"/>' },
-    { href: '/image-resizer/', name: 'Image Resizer', desc: 'Resize, crop and convert images',
-      icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 9"/>' },
-    { href: '/ic/', name: 'Platform Playbook', desc: 'SEO steps by platform, for my team', tag: 'Team',
-      icon: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>' },
+    { href: '/cms-picker/', name: 'CMS Picker', desc: 'Find the CMS that fits, and its SEO', tile: 'var(--jsal-tool-cms)',
+      icon: '<path class="l" d="M9 19v5M16 14v10M23 21v3" stroke-width="4"/><path class="g" d="M16 4.5l3 3-3 3-3-3z"/>' },
+    { href: '/formatter/', name: 'Clean Paste', desc: 'Clean up Word and Google Docs text', tile: 'var(--jsal-tool-paste)',
+      icon: '<path class="l" d="M8 10h16M8 16h13M8 22h9" stroke-width="3"/><path class="g" d="M22.5 18.5l2.5 2.5-2.5 2.5-2.5-2.5z"/>' },
+    { href: '/image-resizer/', name: 'Image Resizer', desc: 'Resize, crop and convert images', tile: 'var(--jsal-tool-resize)', edge: true,
+      icon: '<path class="l" d="M6 6h14v14H6z" stroke-width="3"/><path class="g cut" d="M22.5 18l4.5 4.5-4.5 4.5-4.5-4.5z"/>' },
+    { href: '/ic/', name: 'Platform Playbook', desc: 'SEO steps by platform, for my team', tag: 'Team', tile: 'var(--jsal-tool-playbook)',
+      icon: '<path class="l" d="M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11" stroke-width="3"/><path class="g" d="M8.5 19.5l3 3-3 3-3-3z"/>' },
   ];
-  const HOME = { href: '/', name: 'jsal.io home', icon: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>' };
-  const PLAY = { href: '/play/', name: 'Off the clock', icon: '<path d="M6 11h4M8 9v4"/><circle cx="15.5" cy="10.5" r=".8"/><circle cx="17.5" cy="13" r=".8"/><path d="M7 5h10a5 5 0 0 1 4.6 7l-1.4 3.6a2.6 2.6 0 0 1-4.6.6L14 14h-4l-1.6 2.2a2.6 2.6 0 0 1-4.6-.6L2.4 12A5 5 0 0 1 7 5z"/>' };
+  const HOME = { href: '/', name: 'jsal.io home',
+    icon: '<path class="l" d="M20 15V20a4.5 4.5 0 0 1-9 0" stroke-width="4"/><path class="g" d="M20 5l3 3-3 3-3-3z"/>' };
+  const PLAY = { href: '/play/', name: 'Off the clock',
+    icon: '<path class="l" d="M10 10h12a5.5 5.5 0 0 1 5.3 7l-1.2 4.1a2.8 2.8 0 0 1-4.8 1.1L19.4 20h-6.8l-1.9 2.2a2.8 2.8 0 0 1-4.8-1.1L4.7 17A5.5 5.5 0 0 1 10 10zM11 13.5v5M8.5 16h5" stroke-width="2.6"/><path class="g" d="M21.5 13.5l2.3 2.3-2.3 2.3-2.3-2.3z"/>' };
+  // An app's icon on its tile, or a plain one (home, Off the clock) in the row's ink
+  const appIcon = (a) => `<svg viewBox="0 0 32 32" width="${a.tile ? 32 : 22}" height="${a.tile ? 32 : 22}" aria-hidden="true"${a.tile ? ` style="--tile: ${a.tile}${a.edge ? '; --tile-edge: var(--jsal-tool-edge)' : ''}"` : ''}>${a.tile ? '<rect class="t" x=".5" y=".5" width="31" height="31" rx="6.5"/>' : ''}${a.icon}</svg>`;
   // Page transitions (/shell.css): while one plays the page is a picture, so a click straight after arriving did
   // nothing; a press during a transition ends it at once and the click lands on what's under the pointer
   let replay = false;
@@ -279,11 +286,17 @@
     .jsal-menu hr { border: 0; border-top: 1px solid var(--jsal-line); margin: 6px 4px; }
     .jsal-menu .home { grid-template-columns: 32px minmax(0, 1fr); }
     .jsal-menu .home .ico { background: none; color: var(--jsal-muted); }
+    .jsal-menu .ico .l { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+    .jsal-menu .ico .g { fill: currentColor; }
+    .jsal-menu .ico.tile { background: none; color: var(--jsal-tool-ink); }
+    .jsal-menu .ico.tile .t { fill: var(--tile); stroke: var(--tile-edge, none); }
+    .jsal-menu .ico.tile .g { fill: var(--jsal-tool-gem); }
+    .jsal-menu .ico.tile .cut { stroke: var(--tile); stroke-width: 2.4; paint-order: stroke; }   /* the gem cuts its gap where it overlaps the frame */
   </style>`);
 
   const isHere = (href) => href !== '/' && here.startsWith(href);
   const item = (a, home) => `<a href="${a.href}" role="menuitem"${isHere(a.href) ? ' aria-current="page"' : ''}${home ? ' class="home"' : ''}>
-      <span class="ico">${svg(a.icon)}</span>
+      <span class="ico${a.tile ? ' tile' : ''}">${appIcon(a)}</span>
       <span><b>${a.name}</b>${a.desc ? `<small>${a.desc}</small>` : ''}</span>
       ${home ? '' : isHere(a.href) ? '<span class="here">You’re here</span>' : a.tag ? `<span class="tag">${a.tag}</span>` : '<span></span>'}
     </a>`;

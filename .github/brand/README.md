@@ -115,8 +115,9 @@ for what the tool does, on a tile in the tool's accent from its home page tile. 
 | Image Resizer (`image-resizer`) | ink #1f1a12, with the dark tile's 1px #3d424e edge everywhere | A picture's frame with the gem as the corner handle |
 | Platform Playbook (`platform-playbook`) | blue #3b5a9a | A checklist: two steps done, the gem marking the current one |
 
-They are for places outside the site (the brand kit, a portfolio, a README). The site's own app menu keeps its small
-line icons.
+The site's logo menu draws them inline (`APPS` in `site/nav.js`, its tile colours the `--jsal-tool-*` tokens in
+`site/shell.css`), with the menu's Home row as the mark's j and gem and Off the clock as a controller in the same style.
+Outside the site they're in the brand kit. Change a glyph in both places: `make-brand.py` and `nav.js`.
 
 ## Brand kit
 
