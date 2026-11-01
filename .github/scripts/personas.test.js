@@ -10,7 +10,7 @@
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
 const site = path.join(__dirname, '..', '..', 'site');
-const { rank, candidates, explain, tied, QUESTIONS, options, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
+const { rank, candidates, explain, standing, tied, QUESTIONS, options, PHRASE, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
@@ -150,14 +150,27 @@ console.log(failed ? `${failed} of ${PERSONAS.length} personas failed.` : `All $
 //   made: the first match is made for what they're making, unless the page shows the "Closest match" notice
 //   dev: someone not technical never gets a "Needs a developer" platform (ease 0) first
 //   notIdeal: no top-three platform has a matching "Not ideal if" line (counted in notIdealTop below)
-//   named: every "What tipped it" starts from one of their answers (LEAD), never a bare feature
+//   named: every "Why … first" box with reasons starts from one of their answers (LEAD), never a bare feature
 //   local: a local business built by someone not technical never has a platform that needs a developer in its top three
 //   catalogue: a large or B2B catalogue never has Framer (its card: "You sell online") in its top three
 //   origin: the platform you're moving from is never a match (score.js candidates)
 const broke = { made: 0, dev: 0, named: 0, local: 0, catalogue: 0, origin: 0 };
 const ruleErr = (rule, msg) => { if (++broke[rule] <= 3) cardErrs.push(`rule "${rule}": ${msg}`); };
-const unworded = new Set();   // parts of the score with no "What tipped it" wording in TIP (score.js)
+const unworded = new Set();   // parts of the score with no reason wording in TIP (score.js)
 const sameSet = (x, y) => x.length === y.length && x.every((w) => y.includes(w));
+// Every answer echo LEAD can say, over every answer: a box may only echo the ones this visitor's answers give
+const answerIds = (id) => (QUESTIONS.find((q) => q.id === id).opts || []).map((o) => o[0]);
+const echoes = new Set();
+for (const what of answerIds('what')) for (const kind of [undefined, ...answerIds('kind')]) for (const who of answerIds('who')) for (const budget of answerIds('budget')) for (const look of answerIds('look'))
+  Object.values(LEAD).forEach((f) => { const t = f && f({ what, kind, who, budget, look }); if (t) echoes.add(t); });
+// Figures a box may show: the cost bands as the table labels them, and the budget answers' own labels
+const figures = [...Object.values(data.verdicts || {}), ...(QUESTIONS.find((q) => q.id === 'budget').opts || []).map((o) => o[1])].join(' ');
+const sentenceErr = (at, msg) => { if (++sentenceErrs <= 5) cardErrs.push(`${at}: ${msg}`); };
+let sentenceErrs = 0;
+// The parts whose other side names something missing in the data (an add-on, a host, code, a feature): the only ones
+// a box may use to say what the other platform lacks
+const MISSING = new Set(['bookings', 'members', 'blog', 'dev', 'care', 'size']);
+if (![...LACKS].every((k) => MISSING.has(k))) { console.log(`FAIL: LACKS has parts whose other side isn't something missing: ${[...LACKS].filter((k) => !MISSING.has(k))}`); process.exitCode = 1; }
 let combos = 0, clear = 0, fallback = 0, byCard = 0, ties = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0, weak = 0, fewFit = 0;
 const cardErrs = [];
 const walk = (a, i) => {
@@ -175,7 +188,7 @@ const walk = (a, i) => {
   told.forEach((t, k) => {
     if (!t.vs) return cardErrs.push(`${at}: nothing setting ${r[k].p.id} apart`);
     boxes++;
-    if (/ is known for: /.test(t.vs.text)) tagBoxes++;
+    if (/’s strengths: /.test(t.vs.text)) tagBoxes++;
     Object.keys(PHRASE).forEach((row) => { if (weight(row, a) === 0 && t.vs.text.includes(PHRASE[row])) cardErrs.push(`${at}: ${r[k].p.id} mentions "${PHRASE[row]}", which these answers rule out`); });
     // "the same reasons as" names the first or, for the third, the second: they must really match that one
     const named = k && /same reasons as/.test(t.why[0]) && r.find((x) => t.why[0].endsWith(` ${x.p.name}`));
@@ -196,13 +209,36 @@ const walk = (a, i) => {
   if (a.what === 'site' && a.kind === 'local' && a.who === 'easy') r.forEach((x) => { if (data.quiz.ease[x.p.id] === 0) ruleErr('local', `${at}: ${x.p.id} is in the top three for a local business with no technical help`); });
   if (a.what === 'store' && (a.size === 'big' || a.size === 'b2b') && r.some((x) => x.p.id === 'framer')) ruleErr('catalogue', `${at}: Framer is in the top three for a large catalogue`);
   if (ranked.some((x) => x.p.id === a.moving)) ruleErr('origin', `${at}: ${a.moving} is offered as a match while being moved from`);
-  if (/^What tipped it: /.test((told[0].vs || {}).text || '')) {
-    const said = told[0].vs.text.slice('What tipped it: '.length), leads = Object.values(LEAD).map((f) => f && f(a)).filter(Boolean);
+  if ((told[0].vs || {}).kind === 'tipped') {
+    const said = told[0].vs.reason, leads = Object.values(LEAD).map((f) => f && f(a)).filter(Boolean);
     if (!leads.some((l) => said.startsWith(l))) ruleErr('named', `${at}: "${told[0].vs.text}" doesn't start from an answer`);
   }
-  if (r[0].s > r[1].s) { clear++; if (!/^What tipped it/.test(told[0].vs.text)) fallback++; }
-  // Level on points: first by its card's "Good fit" lines (the box must say so), or a tie
-  else if (!tied(r[0], r[1])) { byCard++; if (!/^Level on points, but /.test(told[0].vs.text)) cardErrs.push(`${at}: ${r[0].p.id} is first on its card's lines, but the box doesn't say so`); } else ties++;
+  if (r[0].s > r[1].s) { clear++; if (told[0].vs.kind !== 'tipped') fallback++; }
+  // Level on points: first on its card's "Good fit" lines or on the look asked for (the box must say which), or a tie
+  else if (!tied(r[0], r[1])) { byCard++; const want = r[0].tb !== r[1].tb ? 'card' : 'look'; if (told[0].vs.kind !== want) cardErrs.push(`${at}: ${r[0].p.id} is first on ${want === 'card' ? 'its card\'s lines' : 'the look'}, but the box doesn't say so`); } else { ties++; if (told[0].vs.kind !== 'tie') cardErrs.push(`${at}: a tie whose box doesn't say so`); }
+  // Every sentence checks out against the data and the answers:
+  // - "…, while Wix needs an add-on for bookings": the score marks that platform down for that very thing (LACKS)
+  // - an echoed answer ("you need bookings from day one") is one this visitor gave
+  // - a figure ($25) comes from a cost band's label or a budget answer, never typed into the wording
+  // - the closeness words match the score gap (standing)
+  const own = new Set(Object.values(LEAD).map((f) => f && f(a)).filter(Boolean));
+  told.forEach((t, k) => {
+    if (!t.vs) return;
+    const x = r[k], text = t.vs.text;
+    for (const m of text.matchAll(/, while (.+?) (needs|isn’t|leaves|is|has|costs)\b/g)) {
+      const y = r.find((o) => o.p.name === m[1]);
+      if (!y || ![...MISSING].some((p) => (x.pts[p] || 0) > 0 && (y.pts[p] || 0) < 0)) sentenceErr(at, `${x.p.id}'s box says "${m[0]}…" without the score behind it`);
+    }
+    echoes.forEach((e) => { if (text.toLowerCase().includes(e.toLowerCase()) && !own.has(e)) sentenceErr(at, `${x.p.id}'s box echoes "${e}", which isn't one of these answers`); });
+    for (const f of text.match(/\$[\d,]+(?:–\$[\d,]+)?/g) || []) if (!figures.includes(f)) sentenceErr(at, `${x.p.id}'s box shows ${f}, which no cost band or answer says`);
+  });
+  const st = standing(r);
+  if (st) {
+    const want = st.gap === 0 ? 'level' : st.gap <= 2 ? 'close' : st.gap <= 5 ? 'lead' : 'clear';
+    if (st.kind !== want || (/slightly/.test(st.line) && st.kind !== 'close') || (/well ahead/.test(st.line) && st.gap <= 5) || (/equally/.test(st.line) && st.gap)) sentenceErr(at, `a ${st.gap}-point gap reads "${st.pill}: ${st.line}"`);
+  }
+  // No box says "undefined", "null" or "NaN", or keeps the old scoring words
+  told.forEach((t, k) => { if (t.vs && /undefined|null|NaN|Level on points|What tipped it/.test(`${t.vs.head} ${t.vs.text}`)) cardErrs.push(`${at}: ${r[k].p.id}'s box reads "${t.vs.head}: ${t.vs.text}"`); });
   // Old shared links (v=1) get NEUTRAL answers for questions they didn't have: they must change no score,
   // and leaving a question unanswered (kind, members) mustn't break the ranking
   Object.entries(NEUTRAL).forEach(([q, v]) => {
@@ -241,6 +277,6 @@ Object.entries(data.quiz.fitFor || {}).forEach(([id, tags]) => {
 });
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
-console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}. ${clear} clear winners, ${fallback} without a "What tipped it"; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}).`);
-console.log(`Rules: first is made for what they're making ${broke.made ? `FAILS ${broke.made}` : 'ok'}; not technical never gets "Needs a developer" first ${broke.dev ? `FAILS ${broke.dev}` : 'ok'}; no "Not ideal if" in the top three ${notIdealTop ? `FAILS ${notIdealTop}` : 'ok'}; every "What tipped it" names an answer ${broke.named ? `FAILS ${broke.named}` : 'ok'}; no developer platform for a solo local business ${broke.local ? `FAILS ${broke.local}` : 'ok'}; no Framer for a large catalogue ${broke.catalogue ? `FAILS ${broke.catalogue}` : 'ok'}; the platform you're leaving is never a match ${broke.origin ? `FAILS ${broke.origin}` : 'ok'}.`);
+console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}${sentenceErrs ? ` (${sentenceErrs} sentences the data doesn't back)` : ', and every sentence is backed by the data and the answers'}. ${clear} clear winners, ${fallback} without a reason from their answers; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}).`);
+console.log(`Rules: first is made for what they're making ${broke.made ? `FAILS ${broke.made}` : 'ok'}; not technical never gets "Needs a developer" first ${broke.dev ? `FAILS ${broke.dev}` : 'ok'}; no "Not ideal if" in the top three ${notIdealTop ? `FAILS ${notIdealTop}` : 'ok'}; every reason starts from an answer ${broke.named ? `FAILS ${broke.named}` : 'ok'}; no developer platform for a solo local business ${broke.local ? `FAILS ${broke.local}` : 'ok'}; no Framer for a large catalogue ${broke.catalogue ? `FAILS ${broke.catalogue}` : 'ok'}; the platform you're leaving is never a match ${broke.origin ? `FAILS ${broke.origin}` : 'ok'}.`);
 process.exit(failed || cardErrs.length ? 1 : 0);

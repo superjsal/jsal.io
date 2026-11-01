@@ -60,6 +60,8 @@
     // Minus: when the leader is over the budget too (lost points of its own), it only costs less than the runner-up
     budget: [(a, y, x) => (a.budget === 'none' ? `${x} is free to start` : `${x} fits it`), (a, y, x, own) => (own < 0 ? `${x} costs less than ${y}` : `${y} costs more than that`)],
   };
+  // An answer's own label, as the quiz shows it
+  const answerLabel = (q, v) => ((QUESTIONS.find((x) => x.id === q).opts || []).find((o) => o[0] === v) || [])[1];
   // The answer behind each part, said first so the reason reads as a reply to it. Null when the wording names it.
   const LEAD = {
     goal: (a) => ({ site: 'you’re making a site for your business or work', store: 'you’re making an online store', content: 'you’re making a blog, newsletter or publication', custom: 'you’re building an app or portal' })[a.what],
@@ -84,7 +86,7 @@
     blog: () => 'you want a blog alongside the site',
     imports: (a) => (a.moving && a.moving !== 'no' && a.moving !== 'other' ? `you’re moving from ${a.moving}` : null),
     notIdeal: null,
-    budget: (a) => ({ none: 'you want to start free', low: 'you want to spend up to about $25 a month', mid: 'you want to spend up to about $100 a month' })[a.budget],
+    budget: (a) => (a.budget === 'none' ? 'you want to start free' : ['low', 'mid'].includes(a.budget) ? `you want to spend ${lowerFirst(answerLabel('budget', a.budget))} a month` : undefined),
   };
 
   // Every key in "when" has one of its listed answers (quiz.notIdeal, quiz.fitFor)
@@ -191,13 +193,11 @@
     return [...ok, ...rs.filter((r) => !ok.includes(r))];
   }
   const tied = (x, y) => x.s === y.s && x.tb === y.tb && x.tb2 === y.tb2;
-  // The design-control answer, as the start of the sentence that settles a tie on it
-  const LOOK_WANT = { template: 'you want a good template', visual: 'you want to arrange things yourself', pixel: 'you want control over every detail' };
 
   // ---------- Telling the top matches apart, from the published answers and cards only ----------
   // How well an answer does it
   const LEVEL = { yes: 3, auto: 3, plugin: 2, code: 1, no: 0 };
-  // Each table row as a short phrase for "Pick it over … if you want …"
+  // Each table row as a short phrase for "If you want …, Webflow makes it easier"
   const PHRASE = {
     blog: 'a blog', store: 'online selling', members: 'paid memberships', languages: 'more than one language', forms: 'contact and sign-up forms',
     design: 'design control', meta_title: 'page titles and descriptions for search', urls: 'control over page addresses',
@@ -218,6 +218,7 @@
   // Card tags about a row, left out of "is known for" when the answers rule that row out
   const TAG_ABOUT = { members: /paid member/i, design: /design control|canvas|animation/i, languages: /lingual|language|translat/i, store: /stor|sell|checkout|commerce/i };
   const lowerFirst = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+  const upperFirst = (t) => t.charAt(0).toUpperCase() + t.slice(1);
   // A card tag inside a sentence: lower case, unless it starts with a name or an abbreviation (Figma, WooCommerce, SEO)
   const tagInSentence = (t) => (/^(Figma|[A-Z][a-z]*[A-Z]|[A-Z0-9]{2,})/.test(t) ? t : lowerFirst(t));
   // "a, b, and c": the serial comma, as some tags already contain "and" ("Forms and leads")
@@ -235,40 +236,45 @@
   // the smaller rows, then x's first "good fit" line. Null when there's nothing to go on.
   function pickOver(data, a, x, y) {
     const rows = edgeRows(data, a, x, y);
-    const rowsLine = (rs) => `Pick it over ${y.p.name} if you want ${joinAnd(rs.map((r) => PHRASE[r.id]))}: ${x.p.name} makes ${rs.length > 1 ? 'both' : 'it'} easier.`;
+    const rowsLine = (rs) => `If you want ${joinAnd(rs.map((r) => PHRASE[r.id]))}, ${x.p.name} makes ${rs.length > 1 ? 'both' : 'it'} easier than ${y.p.name}.`;
     const strong = rows.filter((r) => r.w > 1);
     if (strong.length) return rowsLine(strong);
     const theirs = new Set(((y.p.profile || {}).tags || []).map((t) => t.toLowerCase()));
     const offers = ((x.p.profile || {}).tags || []).filter((t) => !theirs.has(t.toLowerCase())
       && !Object.keys(TAG_ABOUT).some((row) => weight(row, a) === 0 && TAG_ABOUT[row].test(t))).slice(0, 3);
-    if (offers.length) return `${x.p.name} is known for: ${listOf(offers.map(tagInSentence))}.`;
+    if (offers.length) return `${x.p.name}’s strengths: ${listOf(offers.map(tagInSentence))}.`;
     if (rows.length) return rowsLine(rows);
     const fit = ((x.p.profile || {}).goodFit || [])[0];
-    return fit ? `Pick it over ${y.p.name} for ${lowerFirst(fit)}.` : null;
+    return fit ? `${x.p.name} is the better pick for ${tagInSentence(fit)}.` : null;
   }
   // The parts of the score where x beat y, biggest gap first, with wording in TIP
   function gaps(x, y) {
     return [...new Set([...Object.keys(x.pts), ...Object.keys(y.pts)])]
       .map((k) => ({ k, d: (x.pts[k] || 0) - (y.pts[k] || 0) })).filter((g) => g.d > 0 && TIP[g.k]).sort((p, q) => q.d - p.d);
   }
-  // Up to two of them in plain words, each after the answer behind it; an answer behind both is said once
+  // Parts whose other side names something missing (an add-on, a host, code), not just "harder": only these add it
+  const LACKS = new Set(['bookings', 'members', 'blog', 'dev', 'care', 'size']);
+  // Up to two of them in plain words, each after the answer behind it; an answer behind both is said once. The
+  // first also gives the other platform's side when the score marks it down for the same thing ("…, while Framer
+  // needs an add-on for bookings"), so the reason says what the other lacks only where the data says so.
   function reasons(a, x, y) {
     const two = gaps(x, y).slice(0, 2).sort((p, q) => (p.k === 'leave') - (q.k === 'leave'));
     let said = null;
-    const words = two.map(({ k }) => {
-      const [plus, minus] = TIP[k], f = (x.pts[k] || 0) > 0 ? plus || minus : minus || plus, w = f && f(a, y.p.name, x.p.name, x.pts[k] || 0, y.pts[k] || 0);
+    const lacks = [];
+    const words = two.map(({ k }, i) => {
+      const [plus, minus] = TIP[k], own = x.pts[k] || 0, theirs = y.pts[k] || 0;
+      const f = own > 0 ? plus || minus : minus || plus;
+      let w = f && f(a, y.p.name, x.p.name, own, theirs);
       if (!w) return null;
+      const other = !i && LACKS.has(k) && own > 0 && theirs < 0 && minus && minus(a, y.p.name, x.p.name, own, theirs);
+      if (other) { w = `${w}, while ${other}`; lacks.push(k); }
       const lead = LEAD[k] && LEAD[k](a);
       if (!lead || lead === said) return w;
       said = lead;
       return `${lead}, and ${w}`;
     }).filter(Boolean);
-    return words.length > 1 ? `${words[0]}; ${words[1]}` : words[0];
-  }
-  // What put x ahead of y
-  function tipped(a, x, y) {
-    const w = reasons(a, x, y);
-    return w ? `What tipped it: ${w}.` : null;
+    const text = words.length > 1 ? `${words[0]}. ${upperFirst(words[1])}` : words[0];
+    return text && Object.assign(new String(text), { lacks });   // a string, carrying the parts it says the other lacks
   }
   // For a match behind the first: what it scored better on, or else that it starts in a lower cost band
   function better(data, a, x, y) {
@@ -279,7 +285,7 @@
     const bx = band(x), by = band(y);
     if (!(bx in COST_LEVEL) || !(by in COST_LEVEL) || COST_LEVEL[bx] >= COST_LEVEL[by]) return null;
     const label = (v) => (data.verdicts || {})[v] || v;
-    return `Where ${x.p.name} does better for you: it costs less to start (${label(bx)} vs ${label(by)}).`;
+    return `Where ${x.p.name} does better for you: it costs less to start (${lowerFirst(label(bx))}, against ${lowerFirst(label(by))}).`;
   }
   const sameSet = (xs, ys) => xs.length === ys.length && xs.every((w) => ys.includes(w));
   // A box's sentence with its own platform's name taken out, to tell whether two boxes say the same thing
@@ -291,22 +297,26 @@
     const lead = top[0];
     const shared = (r, w) => top.filter((o) => o !== r && o.all.includes(w)).length;
     const order = (r) => [...r.why].sort((u, v) => shared(r, u) - shared(r, v));
+    // kind: 'tie' (level on everything), 'card' (level, first on who it's made for), 'look' (level, first on the look
+    // asked for), 'tipped' (ahead, with the answers behind it in reason), 'other' (ahead, on what it offers), 'versus'
+    const box = (kind, head, than, text, reason) => (text ? { kind, head, than, text, reason } : null);
     const out = top.map((r, i) => {
       if (!i) {
         const next = top[1];
         let vs = null;
         if (next && next.s === r.s) {
-          const level = tied(r, next) ? 'Both fit your answers equally.' : r.tb !== next.tb ? `Level on points, but ${r.p.name}’s own card says it suits ${lowerFirst(r.fit[0])}.` : `Level on points, but ${LOOK_WANT[a.look]}, and ${r.p.name}’s card leads with “${r.lookTag}”.`;
-          vs = { head: tied(r, next) ? `A close call with ${next.p.name}` : `Ahead of ${next.p.name}`, text: [level, better(data, a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' ') };
+          const name = r.p.name, other = next.p.name;
+          if (tied(r, next)) vs = box('tie', `${name} or ${other}`, other, ['They fit your answers equally well.', better(data, a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' '));
+          else if (r.tb !== next.tb) vs = box('card', `Why ${name} first`, other, [`It fits your answers as well as ${other} does, and comes first because it’s made for ${tagInSentence(r.fit[0])}.`, better(data, a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' '));
+          else vs = box('look', `Why ${name} first`, other, [`It fits your answers as well as ${other} does. The difference is the look: ${LEAD.look(a)}, and ${name} is known for its ${tagInSentence(r.lookTag)}.`, better(data, a, r, next)].filter(Boolean).join(' '));
         } else if (next) {
-          const text = tipped(a, r, next) || pickOver(data, a, r, next);
-          if (text) vs = { head: `Ahead of ${next.p.name}`, text };
+          const w = reasons(a, r, next);
+          vs = w ? { ...box('tipped', `Why ${r.p.name} first`, next.p.name, `${upperFirst(`${w}`)}.`, `${w}`), lacks: w.lacks } : box('other', `Why ${r.p.name} first`, next.p.name, pickOver(data, a, r, next));
         }
         return { why: order(r), vs };
       }
       const why = sameSet(r.all, lead.all) ? [`Fits your answers for the same reasons as ${lead.p.name}`] : order(r);
-      const text = better(data, a, r, lead) || pickOver(data, a, r, lead);
-      return { why, vs: text ? { head: `Versus ${lead.p.name}`, text } : null };
+      return { why, vs: box('versus', `Compared with ${lead.p.name}`, lead.p.name, better(data, a, r, lead) || pickOver(data, a, r, lead)) };
     });
     const [, second, third] = top;
     if (third) {
@@ -317,10 +327,22 @@
         // Still the second's sentence ("…has more plugins and apps for that" twice): what the third offers instead
         if (!text || (out[1].vs && generic(out[1].vs.text, second.p.name) === generic(text, third.p.name))) text = pickOver(data, a, third, second);
         if (twin) out[2].why = [`Fits your answers for the same reasons as ${second.p.name}`];
-        if (text) out[2].vs = { head: `Versus ${second.p.name}`, text };
+        if (text) out[2].vs = box('versus', `Compared with ${second.p.name}`, second.p.name, text);
       }
     }
     return out;
+  }
+
+  // How far ahead the first is: level, within CLOSE points ("slightly ahead", a close call), within LEAD_BY ("ahead"),
+  // or more ("well ahead", a clear winner). Score gaps, so the words never overstate a lead (the personas test checks)
+  const CLOSE = 2, LEAD_BY = 5;
+  function standing(top) {
+    if (!top[1]) return null;
+    const gap = top[0].s - top[1].s, x = top[0].p.name, y = top[1].p.name;
+    if (!gap) return { kind: 'level', gap, pill: 'A close call', line: `${x} and ${y} fit your answers equally well, so either is a sound choice.` };
+    if (gap <= CLOSE) return { kind: 'close', gap, pill: 'A close call', line: `${x} is slightly ahead of ${y} for your answers, and either would work.` };
+    if (gap <= LEAD_BY) return { kind: 'lead', gap, pill: 'A clear lead', line: `${x} is ahead of ${y} for what you need.` };
+    return { kind: 'clear', gap, pill: 'A clear winner', line: `${x} is well ahead of ${y} for what you need.` };
   }
 
   // Answers that add and take nothing, used for questions an old shared link (v=1) didn't have
@@ -329,6 +351,6 @@
   const LOW_FIT = 4;
   // Answers that pull against each other, with the question to change
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, options, rank, candidates, explain, tied, fitLines, PHRASE, weight, TIP, LEAD, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
+  const api = { QUESTIONS, options, rank, candidates, explain, standing, tied, fitLines, PHRASE, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

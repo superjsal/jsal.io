@@ -97,23 +97,37 @@ Shared by the page and the tests, so they always run the same code.
   add-on, running it yourself, hosting, budget), `fitScore` also pushes a plain line to `but`, which the
   card shows as "Worth knowing: …" so a top match never hides it. It changes no score; a new negative part
   that answers a question should add its line there too.
-- **"What tipped it":** every part's key has wording in `TIP`: `[what the leader earned, what the
+- **The boxes are plain words, and every phrase comes from the data or the answers.** No scoring talk ("level on
+  points", "what tipped it") and no talk of the page ("its own card says"). Each box has a `kind` the page and the
+  tests read instead of its wording: `tie` ("Wix or Squarespace": "They fit your answers equally well."), `card`
+  ("Why Squarespace first": "It fits your answers as well as Framer does, and comes first because it's made for …",
+  its first matching "Good fit" line), `look` ("… The difference is the look: a good template is enough for you, and
+  Squarespace is known for its designer templates", the `lookBest` tag), `tipped` (ahead, with the answers behind
+  it), `other` (ahead, on what it offers) and `versus` ("Compared with Wix", the second and third cards).
+- **Reasons from the answers:** every part's key has wording in `TIP`: `[what the leader earned, what the
   runner-up lost]`, naming the platform rather than "it". Each one follows the answer that drove it, from
-  `LEAD` ("you're building an app or portal, and Sanity is built to…"), and two reasons are joined with a
-  semicolon. The clear winner's box names the part with the biggest gap. **A new part needs a `TIP` and a
+  `LEAD` ("You're building an app or portal, and Sanity is built to…"), which echoes the answer's own label (the
+  budget one is built from it, so "$25" lives in one place); two reasons are two sentences. The first reason also
+  says what the other platform lacks, but only for parts in `LACKS` (bookings, members, blog, dev, care, size), whose
+  other side names something missing in the data ("…, while Framer needs an add-on for bookings"), and only when the
+  score marks that platform down for it. "Easier" and "harder" pairs say it once. **A new part needs a `TIP` and a
   `LEAD` entry**; the persona test fails without them.
-- **"Pick it over":** rows where a platform does better than its neighbour (built in beats a plugin beats
+- **How sure (`standing`):** the pill and the line under "Your best matches" come from the score gap: level ("fit
+  your answers equally well, so either is a sound choice"), up to `CLOSE` (2: "slightly ahead", a close call), up to
+  `LEAD_BY` (5: "ahead", a clear lead), then "well ahead" (a clear winner). The line says only how close it is; the
+  first card's box says why, so neither repeats the other.
+- **"If you want …, Webflow makes it easier than Wix":** rows where a platform does better than its neighbour (built in beats a plugin beats
   code), described by `PHRASE` (a short phrase per table row; **a new row needs one**, the test checks).
   `weight` decides how much a row matters for the answers, and is 0 for rows the person ruled out
   (design control after "a good template is enough", more languages after "one language", selling when
   not making a store). Only rows that matter to the answers (weight over 1: selling, languages, design
   control, a blog for content sites) come first. Next is what the platform offers: its card tags that
-  the other platform's card doesn't list ("Shopify is known for: app ecosystem, built-in checkout, and
+  the other platform's card doesn't list ("Shopify's strengths: app ecosystem, built-in checkout, and
   theme store"), so **card tags are customer-facing selling points**, written as they should read there.
   Then the smaller rows (the technical SEO ones), and last the platform's first "good fit" line.
 - **Second and third:** both are compared with the first, unless the third would repeat the second (the
   same reasons, or the same box sentence). Then the third says "the same reasons as" the second and is
-  compared with the second instead, falling back to what it's known for if that sentence still matches.
+  compared with the second instead, falling back to its strengths if that sentence still matches.
 - **Paid members** (the "Paid subscribers or members" need) read the "Sell memberships or paid
   posts" row: built in +3, plugin 0, needs code or check manually −2, no −4. Ghost gets +2 more for sending
   newsletters to those members itself (`quiz.members`). HubSpot's card rules it out for paid members.
@@ -132,9 +146,9 @@ Shared by the page and the tests, so they always run the same code.
   leads with, and the tag as it reads there; Wix's "Drag-and-drop editor" for arranging it yourself, Squarespace's
   "Designer templates" for a template; only where a card says so). `rank` sorts by score, then by the line count
   (`tb`), then by that (`tb2`); `tied(x, y)` is true only when all three are equal, and that's what the page calls
-  "Joint best match". A first place level on points says why in its box ("Level on points, but Framer's own card
-  says it suits startups and landing pages." / "Level on points, but you want to arrange things yourself, and
-  Wix's card leads with “Drag-and-drop editor”.") and in the "how sure" line. Before the card lines, a fifth of
+  "Joint best match". A first place level on points says why in its box ("It fits your answers as well as Squarespace
+  does, and comes first because it's made for startups and landing pages." / "… The difference is the look: you want
+  to arrange things visually, and Wix is known for its drag-and-drop editor."). Before the card lines, a fifth of
   all answer sets were ties, and the "Best match" among them was simply the first in the platform list; before
   the design control, 13%. The persona test checks every tagged line is still on its card, every `when` names a
   real question and answer, and every `lookBest` tag is on its card.
@@ -159,15 +173,18 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
   - "the same reasons as X" appears only when the reasons really are the same, the top two never
     show an identical list, and the second and third never show the same box;
   - every score part has `TIP` wording and every row a `PHRASE`;
-  - it reports how many clear winners fall back from "What tipped it" (0 today), how many first places are
-    level on points but ahead on their card's "Good fit" lines (their box must say so) or tied, and how many show a
+  - every sentence is backed by the data and the answers: a "while Wix needs…" clause only where the score marks
+    that platform down for a `LACKS` part, an echoed answer only if this visitor gave it, a figure only from a cost
+    band's label or a budget answer, and the "how sure" words matching the score gap; no box says "undefined";
+  - it reports how many clear winners have no reason from their answers (0 today), how many first places are
+    level on points but ahead on their card's "Good fit" lines or the look (their box must say which) or tied, and how many show a
     "Closest match" (first scores under `LOW_FIT`, 4: 2,171 today). No persona may get only a closest match.
   - every tagged "Good fit" line (`fitFor`) is still on its card and answers a real question and answer.
 - **Seven rules** that must hold for every answer set (a failure names the first few):
   - the first match is made for what they're making, unless the page shows the "Closest match" notice;
   - someone not technical never gets a "Needs a developer" platform first;
   - no top-three platform has a matching "Not ideal if" line (unless fewer than three platforms fit at all);
-  - every "What tipped it" starts from one of their answers (`LEAD`);
+  - every "Why … first" reason starts from one of their answers (`LEAD`);
   - a local business with no technical help never has a "Needs a developer" platform in its top three;
   - a large or B2B catalogue never has Framer in its top three;
   - the platform being moved from is never a match.
