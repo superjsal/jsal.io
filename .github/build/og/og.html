@@ -13,9 +13,10 @@ body { background: #111318; color: #ece6d6; font-family: Inter, "Segoe UI", sans
 .brand { position: absolute; left: 72px; top: 56px; font: 700 30px/1 Inter, sans-serif; letter-spacing: -0.02em; }
 .brand .stop { display: inline-block; width: 0.34em; height: 0.34em; margin: 0 0.05em 0 0.07em; background: #e3b04b; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
 .brand .io, .gold { color: #e3b04b; }
-/* The j is the site's drawn, round-ended j (shell.css), not Inter's; the letter stays for its width */
+/* The j is the site's drawn, round-ended j (shell.css), not Inter's; the letter stays for its width. Its box starts
+   0.03em above the j's usual one so the dot isn't clipped */
 .brand .j { position: relative; color: transparent; }
-.brand .j::before { content: ""; position: absolute; left: -0.45em; width: 0.9em; height: 1.05em; top: calc(round(0.96875em, 1px) - 0.75em); background: #ece6d6; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 277.5V780A100 100 0 0 1 435.5 866.6' fill='none' stroke='black' stroke-width='147' stroke-linecap='round'/%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 277.5V780A100 100 0 0 1 435.5 866.6' fill='none' stroke='black' stroke-width='147' stroke-linecap='round'/%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; }
+.brand .j::before { content: ""; position: absolute; left: -0.45em; width: 0.9em; height: 1.08em; top: calc(round(0.96875em, 1px) - 0.78em); background: #ece6d6; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -30 900 1080'%3E%3Cpath d='M585.5 277.5V780A100 100 0 0 1 435.5 866.6' fill='none' stroke='black' stroke-width='147' stroke-linecap='round'/%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -30 900 1080'%3E%3Cpath d='M585.5 277.5V780A100 100 0 0 1 435.5 866.6' fill='none' stroke='black' stroke-width='147' stroke-linecap='round'/%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; }
 .text { padding-top: 40px; }
 .label { font: 500 19px/1.4 "JetBrains Mono", monospace; letter-spacing: 0.06em; text-transform: uppercase; color: #e3b04b; margin-bottom: 22px; }
 h1 { font: 700 92px/0.95 Lora, Georgia, serif; letter-spacing: -0.03em; }

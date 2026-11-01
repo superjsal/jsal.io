@@ -212,9 +212,10 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 .jsal-brand .jsal-j::before {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 277.5V780A100 100 0 0 1 435.5 866.6' fill='none' stroke='black' stroke-width='147' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 277.5V780A100 100 0 0 1 435.5 866.6' fill='none' stroke='black' stroke-width='147' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
 }
-.jsal-brand .jsal-j::after {
+.jsal-brand .jsal-j::after {   /* the dot rises a little above the stroke's box, so its own box starts 0.03em higher */
+  top: 0.19em; height: 1.08em; top: calc(round(0.96875em, 1px) - 0.78em);
   opacity: var(--jsal-dot, 1);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -30 900 1080'%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -30 900 1080'%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
 }
 /* First page of a visit: the name opens folded into the tab icon's mark, its short j with the deep hook wearing the gem as
    its dot, and /nav.js unfolds it: the j's curve shortens into the name's j while the gem hops over the name to its
