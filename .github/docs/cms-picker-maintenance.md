@@ -111,6 +111,14 @@ hosting question for someone not technical (9% of their results, mostly WordPres
 personas test now walks every set of needs (638,976 answer sets, moving included); two expert cases with two needs
 were added (44 of 45 agree).
 
+**Drupal and small sites** (2026-11-01, agreed with John): Drupal's card line "It's a small site with no developer"
+became "It's a small site, or there's no developer", and the line now also rules Drupal out for local businesses and
+portfolios (`notIdeal`, `when: { what: [site], kind: [local, creative] }`; both rules match on "It's a small site").
+Before, a local site built by a developer in two languages wanting every detail got Drupal first for its developer
+control and built-in languages, though small hospitality sites almost never run it. 422 first places moved (all such
+developer-built sites, moving included; 24 starting fresh), to Squarespace, HubSpot (ticked), Wix, WordPress and
+Webflow; no persona moved, and the tourist café expert case now agrees (45 of 45).
+
 **Baseline** (final review with Claude Reviewer, 2026-10-30, before v3): all four rule tests pass, all 37 personas pass, and
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
 B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
