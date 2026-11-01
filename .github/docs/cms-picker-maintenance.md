@@ -55,7 +55,8 @@ B2B in two languages, a paid-members blog on "Nothing for now", the custom app b
 and an old `v=1` link): tips start from the person's answers, ties are labelled honestly, costs match the
 table, and old links open on their results. Under v3 with the managed-hosting change: seven rules, 48 personas, 2,171 of 80,640 answer sets show
 "Closest match" (2.7%; moving from one of 13 platforms multiplies the sets without changing points). Under v4: 3,713 of
-132,480 (2.8%; the languages tick doubles the sets). With must-haves first and HubSpot's line on publications: 3,827 (2.9%), and 360 clear winners whose
+132,480 (2.8%; the languages tick doubles the sets). After the changes of 2026-11-01 (must-haves first, HubSpot's line on publications, WordPress for local businesses,
+Duda off publications): 3,809 (2.9%), and 357 clear winners whose
 box has no reason from their answers (an agency or developer selling on no budget, where Framer or HubSpot plus a
 separate shop is estimated cheaper than a store plan; the estimate is never given as a reason, so the box falls back to
 the table or card). A change to any of these numbers is a result change: agree it with John first.
@@ -228,10 +229,10 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
 - **Expert cases** (`node .github/scripts/expert-cases.js`, also in `check.py` and the Action): 40 real-world clients
   and the picks an experienced web consultant would accept, written without looking at the quiz's results (drafted by
   Claude on 2026-11-01, set up as a standing report at John's request). It never fails a check; it reports how many
-  agree (38 of 40 when set up, `BASELINE`) and names the ones that differ, and says so when a change takes it below
-  the baseline. Raise `BASELINE` when agreement rises; edit a case only when its expert judgment is wrong, never to
-  match a result. The two that differed when set up: Framer third for a musician selling on no budget, and Duda first
-  for an agency-built news site (Duda's card lists "Blog or content", John's call on the Playbook tab).
+  agree (`BASELINE`: 38 of 40 when set up, 39 once Duda's card stopped listing "Blog or content") and names the ones
+  that differ, and says so when a change takes it below the baseline. Raise `BASELINE` when agreement rises; edit a
+  case only when its expert judgment is wrong, never to match a result. The one that differs: Framer third (marked
+  "Worth a look", selling needs an add-on) for a non-technical musician selling merch on no budget.
 - **Nine rules** that must hold for every answer set (a failure names the first few):
   - the first match is made for what they're making, unless the page shows the "Closest match" notice;
   - someone not technical never gets a "Needs a developer" platform first;
@@ -246,7 +247,9 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
 - **Parked: partial fit.** Being made for what someone's making is all or nothing (+4 if the card's "Fits"
   lists it, −8 if not), so one tick moves a platform 12 points. Wix has a built-in blog but its card doesn't
   list "Blog or content": ticking it would make Wix first in 720 content answer sets and beat Ghost for paid
-  newsletters (3 personas fail), so it was left off (2026-10-30; Duda got it, changing 143). If people
+  newsletters (3 personas fail), so it was left off (2026-10-30; Duda got it, changing 143, and lost it again on 2026-11-01, when the expert cases
+showed agency-built publications getting Duda first: 47 first places moved to Squarespace, Webflow, Ghost and WordPress,
+no persona moved, and Duda keeps its built-in blog for a site that wants one). If people
   report Wix missing from content-site results, add a middle level ("can do it, not what it's made for",
   e.g. 0 points) for platforms whose answer for the matching row is built in, instead of ticking the card.
 
