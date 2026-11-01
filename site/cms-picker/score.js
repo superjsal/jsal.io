@@ -172,7 +172,7 @@
     // The card's own "Not ideal if" lines that match (quiz.notIdeal): ruled out unless nothing else fits
     if (notIdealFor(Q, p.id, a)) add('notIdeal', -30);
     if (a.budget in BUDGET) {
-      // No store plan ("Not for stores") on a site that sells: its site plan plus a separate shop, so at least the lowest
+      // No store plan ("Not offered") on a site that sells: its site plan plus a separate shop, so at least the lowest
       // paid band. No pricing page states that sum, so it counts under its own part, which never gives a reason
       const band = verdict(costRow(a));
       if (band === 'na') {
@@ -186,7 +186,7 @@
         if (over > 0) { add('budget', -3 * over); but.push('it costs more to start than you planned to spend'); } else add('budget', 0, a.budget === 'none' ? 'Free to start' : 'Fits your budget');
         // Starting free where the free plan has only the platform's own address (quiz.freeDomain): a business wants its own
         const fd = a.budget === 'none' && band === 'free' && (Q.freeDomain || {})[p.id];
-        if (fd) but.push(`the free plan uses an address like ${fd.address}; your own domain needs a paid plan`);
+        if (fd) but.push(`the free plan uses an address like ${fd.address}; your own domain needs ${fd.needs || 'a paid plan'}`);
       }
     }
     // Every reason is shown, so two cards' lists match only when their reasons really do; "but" changes no score
@@ -459,8 +459,10 @@
   const NEUTRAL = { needs: 'none', moving: 'no', budget: 'any' };
   // A first match under this fits poorly (less than being made for the thing earns): the page says "closest match"
   const LOW_FIT = 4;
+  // The first is only the closest: something rules it out (gate), as nothing fits at all, or it scores under LOW_FIT
+  const closest = (r) => !!r && (r.gate > 0 || r.s < LOW_FIT);
   // Answers that pull against each other, with the question to change
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
+  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, closest, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

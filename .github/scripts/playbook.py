@@ -146,7 +146,7 @@ def plain(t):
 
 # The "What it costs to start" rows' tags: a band from the platform's own pricing page, never a price
 COST_TAGS = {'free': 'Free to start', 'low': 'Under $25/mo', 'mid': '$25–$100/mo', 'high': 'Over $100/mo',
-             'software': 'Free software + hosting', 'na': 'Not for stores'}
+             'software': 'Free software + hosting', 'na': 'Not offered'}
 
 
 def publish(backup_file=None):

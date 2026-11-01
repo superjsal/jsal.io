@@ -18,7 +18,7 @@ content-site results (under "Persona tests"). Two-step scoring, parked on 2026-1
 **Must-haves first** (2026-11-01): an audit of every answer set found the need people pick as "the one that matters
 most" outvoted by taste. In 38% of paid-members answers, 42% of selling-too answers and 25% of bookings answers the
 first match needed an add-on while a platform that fits had it built in, and a site that sells on a platform with no
-store plan ("Not for stores": Framer, HubSpot, Ghost) skipped the budget, so Framer led 396 of 1,008 selling-on-a-budget
+store plan ("Not offered": Framer, HubSpot, Ghost) skipped the budget, so Framer led 396 of 1,008 selling-on-a-budget
 answers. Ranking now goes by tiers (`rank` in `score.js`): first what rules a platform out (`gate`), then how far it
 falls short of having the must-haves built in (`short`), and only then the points. For a developer or agency a plugin
 counts as built in, as they add them as a matter of course. Two new rules (`need`, `budget`) and a persona pin it.
@@ -86,7 +86,7 @@ repeats its tag ("Yes, with an SEO plugin") is hidden as generic, so name the pl
 `scope` is U (same everywhere), V ("varies": depends on plan, theme or setup) or C (not verified).
 
 **Sources.** Only the platform's own documentation (or the named plugin's own page), never a guess. No
-source is better than a wrong one: `check_data.py --list` shows what's missing. A cost row tagged "Not for stores"
+source is better than a wrong one: `check_data.py --list` shows what's missing. A cost row tagged "Not offered"
 isn't counted as missing one: no pricing page states an absence.
 
 ## The quiz and its explanations (`cms-picker/score.js`)
@@ -134,6 +134,16 @@ Shared by the page and the tests, so they always run the same code.
   `HOW` words ("None of the platforms that fit your answers has everything you need built in. BigCommerce needs an
   add-on for paid members."). Not shown with the "closest" or clashing-answers notice. The personas test checks the
   claim (no fitting platform has them all) and the sentence on every answer set; 13,024 of 132,480 when added.
+- **"Closest match"** (`closest` in `score.js`): the first is only the closest when something rules it out (`gate`,
+  as nothing fits at all) or it scores under `LOW_FIT`. The page, its notice and the tests all use it. (Before
+  2026-11-01 it was the score alone, which let a platform not made for the goal lead without the notice once Substack
+  scored high on a custom build.)
+- **Platforms switched off the picker** keep their `quiz.json` values; the persona test skips them, and drops them
+  from a persona's expected first places as from its top three. That's how a persona can name a platform not yet
+  live (Substack, Square Online) or switched off (Magento 2): `first: ['ghost', 'substack']` holds both ways.
+- **Adding or removing a platform:** the code (its `quiz.json` values, personas, expert cases) ships first and holds
+  with it on or off; then John switches it on the Playbook tab and the publish runs; then the hand-written counts and
+  the home page's Platform guides grid follow (they would link a page that doesn't exist yet if they went first).
 - **Scoring:** `fitScore` builds the score from parts with `add(key, points, reason)`. The reason (if any)
   shows as a bullet on the card. Where a part counts *against* an answer the person gave (a need that takes an
   add-on, running it yourself, hosting, budget), `fitScore` also pushes a plain line to `but`, which the
@@ -188,7 +198,7 @@ Shared by the page and the tests, so they always run the same code.
   Their budget reads "Start a site with paid members" (`cost_members`: the plan that includes paid
   memberships, e.g. Ghost(Pro) Publisher, Wix Core), as does the card's "Cost to start" line; `costRow` in
   `score.js` picks the row for the score, the "costs less to start" box and the card alike (a store, or a site
-  that sells too, reads the store band). A site that sells on a platform with no store plan ("Not for stores") counts
+  that sells too, reads the store band). A site that sells on a platform with no store plan ("Not offered") counts
   its site band plus a separate shop, at least the lowest paid band, under its own part (`shopCost`). No pricing page
   states that sum, so `shopCost` has no wording, and a platform over budget on it never says it costs less than another;
   its "worth knowing" line says a separate shop adds to the cost.
@@ -273,7 +283,7 @@ Platforms change plans and features often. Every few months (or when a platform 
 - Recheck the **"varies" answers**, since they depend on plans and themes that move.
 - Recheck the **"What it costs to start" rows** against each platform's pricing page (links are their sources;
   the research notes are in `private\playbook-research\cms-picker-pricing-*.md`). They're bands, not prices
-  (Free to start, Under $25/mo, $25–$100/mo, Over $100/mo, Free software + hosting, Not for stores), so a
+  (Free to start, Under $25/mo, $25–$100/mo, Over $100/mo, Free software + hosting, Not offered), so a
   small price change rarely matters; a free plan appearing or going, or a plan crossing $25 or $100, does.
   Each band and its pricing-page source are edited on the Playbook's CMS Picker tab, like any answer.
   Update the section's `asOf` month in `cms-picker.json` when you recheck. The quiz's budget question
