@@ -2,7 +2,8 @@
 // checked against the results John agreed (2026-10-29; 37 people since the business-site, members, budget and B2B questions;
 // quiz v3 on 2026-10-31 replaced the language, members, moving-later and adding-features questions with "Anything you'll
 // need from day one?" (needs) and "Moving from somewhere?" (moving), and added the hard cases at the end; quiz v4 the same
-// day made languages a tick on the needs question, lang=yes, beside whichever need is picked). Run by
+// day made languages a tick on the needs question, lang=yes, beside whichever need is picked; quiz v5 on 2026-11-01 added
+// the "We already use HubSpot" tick on "Which is closest to what you do?", hubspot=yes, so the B2B people come both ways). Run by
 // .github\build\check.py (node .github/scripts/personas.test.js), locally and on GitHub.
 // The answers come from cms-picker/data.json and the quiz's own values from cms-picker/quiz.json, as on the
 // page, so a change to either is tested before it goes live. When a result should change, agree it first, then
@@ -10,7 +11,7 @@
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
 const site = path.join(__dirname, '..', '..', 'site');
-const { rank, candidates, explain, standing, tied, ahead, divider, firstGap, HOW, QUESTIONS, options, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
+const { rank, candidates, explain, standing, tied, ahead, divider, firstGap, HOW, QUESTIONS, options, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, closest, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
@@ -20,8 +21,12 @@ const PERSONAS = [
   // Business or work sites (with "Which is closest to what you do?", agreed 2026-10-29)
   ['Local bakery, no tech help', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', look: 'template', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'sanity'] }],
+  // HubSpot only for people already on its tools (agreed 2026-11-01: 1 of 76 B2B client sites in an anonymous tally runs
+  // on it); its card's "You don't otherwise use HubSpot" rules it out otherwise
   ['Multilingual B2B SaaS marketing site, agency-built', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', needs: 'none', lang: 'yes', look: 'pixel', moving: 'no' },
-    { first: ['hubspot', 'webflow'], top3: ['hubspot', 'webflow'] }],   // HubSpot since Webflow's languages became a paid add-on (agreed)
+    { first: ['webflow'], top3: ['webflow', 'wordpress'], not: ['hubspot'] }],
+  ['Multilingual B2B SaaS marketing site, agency-built, already on HubSpot', { what: 'site', kind: 'b2b', hubspot: 'yes', who: 'agency', care: 'no', needs: 'none', lang: 'yes', look: 'pixel', moving: 'no' },
+    { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
   ['Agency-built local service site', { what: 'site', kind: 'local', who: 'agency', care: 'no', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['duda'], top3: ['duda'] }],
   ['Design-led startup landing page', { what: 'site', kind: 'startup', who: 'learn', care: 'no', needs: 'none', look: 'pixel', moving: 'no' },
@@ -30,15 +35,19 @@ const PERSONAS = [
     { first: ['squarespace', 'framer'], top3: ['squarespace'], not: ['magento', 'drupal', 'sanity'] }],
   ['Learns as they go, local business (John’s answers)', { what: 'site', kind: 'local', who: 'learn', care: 'yes', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'] }],
-  // A close call agreed with John: HubSpot if sales run on its CRM, Webflow for design control
+  // A close call agreed with John: HubSpot if sales run on its CRM (the tick), Webflow for design control
   ['Learns as they go, B2B company (John’s answers)', { what: 'site', kind: 'b2b', who: 'learn', care: 'yes', needs: 'none', look: 'visual', moving: 'no' },
-    { first: ['webflow', 'hubspot'], top3: ['webflow', 'hubspot'] }],
+    { first: ['webflow', 'wordpress'], top3: ['webflow', 'wordpress'], not: ['hubspot'] }],
+  ['Learns as they go, B2B company on HubSpot', { what: 'site', kind: 'b2b', hubspot: 'yes', who: 'learn', care: 'yes', needs: 'none', look: 'visual', moving: 'no' },
+    { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
   ['Freelance consultant, one-page site', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', look: 'template', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['magento', 'drupal', 'sanity'] }],
   ['Restaurant in a tourist town, two languages', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', lang: 'yes', look: 'template', moving: 'no' },
     { first: ['wix'], top3: ['wix', 'squarespace'] }],
   ['B2B marketing team with lots of articles', { what: 'site', kind: 'content', who: 'learn', care: 'no', needs: 'none', look: 'visual', moving: 'no' },
-    { first: ['webflow', 'hubspot'], top3: ['webflow', 'hubspot'] }],
+    { first: ['webflow'], top3: ['webflow'], not: ['hubspot'] }],
+  ['B2B marketing team with lots of articles, on HubSpot', { what: 'site', kind: 'content', hubspot: 'yes', who: 'learn', care: 'no', needs: 'none', look: 'visual', moving: 'no' },
+    { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
   ['Estate agent, built by an agency', { what: 'site', kind: 'local', who: 'agency', care: 'no', needs: 'none', look: 'template', moving: 'no' },
     { first: ['duda'], top3: ['duda'] }],
   ['Developer portfolio, owns everything', { what: 'site', kind: 'creative', who: 'dev', care: 'yes', needs: 'none', look: 'pixel', moving: 'no' },
@@ -46,10 +55,11 @@ const PERSONAS = [
   // Stores
   ['Etsy-style maker shop', { what: 'store', who: 'easy', care: 'no', size: 'small', needs: 'none', look: 'template', moving: 'no' },
     { first: ['shopify'], top3: ['shopify'], not: ['magento', 'drupal', 'sanity'] }],
+  // BigCommerce since Magento 2 came off the picker (John, 2026-11-01)
   ['5,000-product store with a dev team', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', look: 'pixel', moving: 'no' },
-    { first: ['magento'], top3: ['magento', 'shopify'], not: ['wix', 'squarespace'] }],
+    { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'], not: ['wix', 'squarespace'] }],
   ['Wholesale B2B store with a developer, two languages', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', lang: 'yes', look: 'pixel', moving: 'no' },
-    { first: ['magento'], top3: ['magento', 'shopify', 'bigcommerce'] }],
+    { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
   ['Clothing brand, about 50 products, wants design control', { what: 'store', who: 'learn', care: 'no', size: 'small', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['shopify', 'wix', 'squarespace'], top3: ['shopify'] }],   // a three-way tie: the store questions don't ask about design
   ['Coffee roaster selling to cafés (B2B), not technical', { what: 'store', who: 'easy', care: 'no', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
@@ -57,7 +67,7 @@ const PERSONAS = [
   ['Wholesaler with trade accounts (B2B), happy to learn', { what: 'store', who: 'learn', care: 'no', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
     { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
   ['Parts supplier selling to businesses (B2B), with a developer', { what: 'store', who: 'dev', care: 'yes', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
-    { first: ['magento'], top3: ['magento', 'bigcommerce'] }],
+    { first: ['bigcommerce'], top3: ['bigcommerce'] }],
   // Quiz v3 (agreed 2026-10-31): without the "adding features" and "moving later" points, these four settle on the builders
   ['Local business that needs bookings, happy to learn', { what: 'site', kind: 'local', who: 'learn', care: 'yes', needs: 'bookings', look: 'template', moving: 'no', budget: 'low' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'] }],
@@ -80,37 +90,44 @@ const PERSONAS = [
     { first: ['squarespace', 'ghost'], top3: ['squarespace', 'ghost'] }],
   ['Online course creator with members', { what: 'content', who: 'easy', care: 'no', needs: 'members', look: 'template', moving: 'no' },
     { first: ['ghost'], top3: ['ghost', 'squarespace'], not: ['hubspot'] }],
+  // Substack or Square Online first since they joined the picker (agreed with John, 2026-11-01)
   ['Paid newsletter, not technical, two languages', { what: 'content', who: 'easy', care: 'no', needs: 'members', lang: 'yes', look: 'template', moving: 'no' },
-    { first: ['ghost'], top3: ['ghost'], not: ['hubspot'] }],
+    { first: ['substack'], top3: ['substack', 'ghost'], not: ['hubspot'] }],
   // HubSpot's card line "You don't otherwise use HubSpot" covers publications (agreed 2026-11-01), so Webflow, the one
   // made for them with languages built in, comes first
+  // Substack or Square Online first since they joined the picker (agreed with John, 2026-11-01)
   ['Nonprofit with news in two languages', { what: 'content', who: 'learn', care: 'no', needs: 'none', lang: 'yes', look: 'template', moving: 'no' },
-    { first: ['webflow'], top3: ['webflow', 'ghost'], not: ['hubspot'] }],
+    { first: ['substack'], top3: ['substack', 'webflow', 'ghost'], not: ['hubspot'] }],
   ['Developer building an app and a site', { what: 'custom', who: 'dev', care: 'yes', needs: 'none', look: 'pixel', moving: 'no' },
     { first: ['sanity'], top3: ['sanity'] }],
   // With "What can you spend each month?" (the "What it costs to start" bands)
   ['Local bakery, no budget yet', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'none', look: 'template', moving: 'no', budget: 'none' },
     { first: ['wix'], top3: ['wix'] }],
+  // Substack or Square Online first since they joined the picker (agreed with John, 2026-11-01)
   ['Etsy-style maker shop, up to $25 a month', { what: 'store', who: 'easy', care: 'no', size: 'small', needs: 'none', look: 'template', moving: 'no', budget: 'low' },
-    { first: ['squarespace'], top3: ['squarespace', 'shopify'] }],
+    { first: ['square'], top3: ['square', 'squarespace', 'shopify'] }],
   ['Etsy-style maker shop, up to $100 a month', { what: 'store', who: 'easy', care: 'no', size: 'small', needs: 'none', look: 'template', moving: 'no', budget: 'mid' },
     { first: ['shopify'], top3: ['shopify'] }],
   ['Photographer, no budget yet', { what: 'site', kind: 'creative', who: 'learn', care: 'no', needs: 'none', look: 'visual', moving: 'no', budget: 'none' },
     { first: ['framer'], top3: ['framer'] }],
+  // Substack or Square Online first since they joined the picker (agreed with John, 2026-11-01)
   ['Newsletter with paid members, up to $25 a month', { what: 'content', who: 'learn', care: 'no', needs: 'members', look: 'template', moving: 'no', budget: 'low' },
-    { first: ['squarespace'], top3: ['squarespace', 'ghost'], not: ['hubspot'] }],
+    { first: ['substack'], top3: ['substack', 'squarespace', 'ghost'], not: ['hubspot'] }],
   ['5,000-product store with a dev team, cost no object', { what: 'store', who: 'dev', care: 'yes', size: 'big', needs: 'none', look: 'pixel', moving: 'no', budget: 'any' },
-    { first: ['magento'], top3: ['magento'] }],
+    { first: ['bigcommerce'], top3: ['bigcommerce'] }],
   // Hard cases for quiz v3 (agreed 2026-10-31): a need the builders cover, needs the quiz can only take one of, a budget
   // against an agency's usual picks, moving from a platform on the picker (no points; the one you're leaving is never a
   // match), and a store that is also a publication
   // WordPress may show third since it counts as suiting local businesses (agreed 2026-11-01); first it must not be
   ['Not technical, wants a blog beside the site, hosting handled', { what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'blog', look: 'template', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['drupal', 'sanity'] }],
+  // Substack or Square Online first since they joined the picker (agreed with John, 2026-11-01)
   ['Publication with paid members, two languages', { what: 'content', who: 'learn', care: 'no', needs: 'members', lang: 'yes', look: 'template', moving: 'no' },
-    { first: ['ghost'], top3: ['ghost', 'squarespace'], not: ['hubspot'] }],
+    { first: ['substack'], top3: ['substack', 'ghost', 'squarespace'], not: ['hubspot'] }],
   ['Agency-built B2B site on a small budget', { what: 'site', kind: 'b2b', who: 'agency', care: 'no', needs: 'none', look: 'visual', moving: 'no', budget: 'low' },
-    { first: ['hubspot', 'webflow'], top3: ['hubspot', 'webflow'] }],
+    { first: ['webflow', 'wordpress'], top3: ['webflow', 'wordpress'], not: ['hubspot'] }],
+  ['Agency-built B2B site on a small budget, on HubSpot', { what: 'site', kind: 'b2b', hubspot: 'yes', who: 'agency', care: 'no', needs: 'none', look: 'visual', moving: 'no', budget: 'low' },
+    { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
   ['Developer who wants to be able to leave later', { what: 'custom', who: 'dev', care: 'yes', needs: 'none', look: 'pixel', moving: 'other' },
     { first: ['sanity'], top3: ['sanity', 'wordpress'] }],
   ['Store that is also a publication', { what: 'content', who: 'learn', care: 'no', needs: 'sell', look: 'template', moving: 'no' },
@@ -126,6 +143,8 @@ const PERSONAS = [
   ['Store moving from Shopify, thousands of products', { what: 'store', who: 'learn', care: 'no', size: 'big', needs: 'none', look: 'template', moving: 'shopify' },
     { first: ['bigcommerce'], top3: ['bigcommerce'], not: ['shopify'] }],
   ['B2B site with two languages, built in-house', { what: 'site', kind: 'b2b', who: 'learn', care: 'no', needs: 'none', lang: 'yes', look: 'visual', moving: 'no' },
+    { first: ['webflow'], top3: ['webflow'], not: ['hubspot'] }],
+  ['B2B site with two languages, built in-house, on HubSpot', { what: 'site', kind: 'b2b', hubspot: 'yes', who: 'learn', care: 'no', needs: 'none', lang: 'yes', look: 'visual', moving: 'no' },
     { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
   // Must-haves first: selling, the need that matters most, isn't outvoted by the design answer, and a platform with no
   // store plan doesn't escape the budget (Framer came first here before)
@@ -137,13 +156,15 @@ let failed = 0;
 for (const [name, answers, want] of PERSONAS) {
   const r = candidates(data, answers), top = r.slice(0, 3).map((x) => x.p.id);
   const errs = [];
-  if (want.first && !want.first.includes(top[0])) errs.push(`first is ${top[0]}, expected ${want.first.join(' or ')}`);
+  // Platforms switched off the picker drop out of what's expected, like the top-three check below
+  const firsts = (want.first || []).filter((id) => ids.has(id));
+  if (want.first && !firsts.includes(top[0])) errs.push(`first is ${top[0]}, expected ${firsts.join(' or ')}`);
   (want.top3 || []).forEach((id) => { if (ids.has(id) && !top.includes(id)) errs.push(`${id} not in the top three`); });
   (want.not || []).forEach((id) => { if (top.includes(id)) errs.push(`${id} in the top three`); });
   // A tie for first (level on points and on matching "Good fit" lines) means the page shows a "Best match" it can't back up
   if (r[1] && tied(r[0], r[1]) && want.first && want.first.length === 1) errs.push(`tied for first: ${r[0].p.id} and ${r[1].p.id}`);
   // Every agreed person gets a real "Best match", never only the closest
-  if (r[0].s < LOW_FIT) errs.push(`first scores ${r[0].s}: only a "Closest match"`);
+  if (closest(r[0])) errs.push(`first scores ${r[0].s}${r[0].gate ? ', and something rules it out' : ''}: only a "Closest match"`);
   const line = r.slice(0, 3).map((x) => `${x.p.name} ${x.s}`).join(', ');
   if (errs.length) { failed++; console.log(`FAIL ${name}: ${errs.join('; ')}  [${line}]`); }
   else console.log(`ok   ${name}  [${line}]`);
@@ -245,8 +266,8 @@ const walk = (a, i) => {
   const fitting = ranked.filter((x) => !notIdealFor(data.quiz, x.p.id, a)).length;
   if (fitting >= 3) r.forEach((x) => { if (notIdealFor(data.quiz, x.p.id, a)) { notIdealTop++; if (notIdealTop <= 3) cardErrs.push(`${at}: ${x.p.id} is in the top three, but its card says it isn't ideal for these answers`); } }); else fewFit++;
   if (JSON.stringify(told[0].why) === JSON.stringify(told[1].why)) cardErrs.push(`${at}: ${r[0].p.id} and ${r[1].p.id} show the same reasons`);
-  if (r[0].s < LOW_FIT) weak++;
-  const notice = r[0].s < LOW_FIT || !!conflict(a);   // the page explains a poor fit above the cards
+  if (closest(r[0])) weak++;
+  const notice = closest(r[0]) || !!conflict(a);   // the page explains a poor fit above the cards
   if (!notice && !((r[0].p.profile || {}).goals || []).includes(a.what)) ruleErr('made', `${at}: ${r[0].p.id} is first but isn't made for "${a.what}"`);
   if (a.who === 'easy' && data.quiz.ease[r[0].p.id] === 0) ruleErr('dev', `${at}: ${r[0].p.id} is first for someone not technical but needs a developer`);
   if (a.what === 'site' && a.kind === 'local' && a.who === 'easy') r.forEach((x) => { if (data.quiz.ease[x.p.id] === 0) ruleErr('local', `${at}: ${x.p.id} is in the top three for a local business with no technical help`); });
@@ -358,19 +379,22 @@ walk({}, 0);
 unworded.forEach((k) => cardErrs.push(`score part "${k}" has no wording in TIP (score.js), so it can't say what tipped a result`));
 // Each part says the answer behind it first (LEAD); null only when its wording already names the answer
 Object.keys(TIP).forEach((k) => { if (!(k in LEAD)) cardErrs.push(`score part "${k}" has no answer lead-in in LEAD (score.js)`); });
+// The checks of quiz.json against the cards skip platforms switched off the picker: their values stay, unused, for when
+// they're switched back on
+const onPicker = ([id]) => ids.has(id);
 // A design-control tie-break (quiz.lookBest) must quote a tag that is on its platform's card
-Object.entries(data.quiz.lookBest || {}).forEach(([id, lb]) => {
+Object.entries(data.quiz.lookBest || {}).filter(onPicker).forEach(([id, lb]) => {
   const p = data.platforms.find((x) => x.id === id);
   if (!p || !((p.profile || {}).tags || []).includes(lb.tag)) cardErrs.push(`lookBest for ${id}: "${lb.tag}" isn't a tag on its card`);
 });
 // Every mapped "Not ideal if" line must still be on its platform's card, or the rule matches a line nobody sees
-Object.entries(data.quiz.notIdeal || {}).forEach(([id, rules]) => {
+Object.entries(data.quiz.notIdeal || {}).filter(onPicker).forEach(([id, rules]) => {
   const lines = ((data.platforms.find((p) => p.id === id) || {}).profile || {}).lessSuited || [];
   rules.forEach((n) => { if (!lines.some((l) => l.startsWith(n.if))) cardErrs.push(`notIdeal for ${id}: "${n.if}" isn't a "Not ideal if" line on its card any more`); });
 });
 // Every tagged "Good fit" line (quiz.fitFor, the tie-break) must still be on its card, and its "when" must name real
 // questions and answers
-Object.entries(data.quiz.fitFor || {}).forEach(([id, tags]) => {
+Object.entries(data.quiz.fitFor || {}).filter(onPicker).forEach(([id, tags]) => {
   const lines = ((data.platforms.find((p) => p.id === id) || {}).profile || {}).goodFit || [];
   tags.forEach((f) => {
     if (!lines.some((l) => l.startsWith(f.line))) cardErrs.push(`fitFor for ${id}: "${f.line}" isn't a "Good fit" line on its card any more`);
@@ -381,12 +405,12 @@ Object.entries(data.quiz.fitFor || {}).forEach(([id, tags]) => {
   });
 });
 // A free plan's address note (quiz.freeDomain) names its address and the platform's own page, on a platform that starts free
-Object.entries(data.quiz.freeDomain || {}).forEach(([id, fd]) => {
+Object.entries(data.quiz.freeDomain || {}).filter(onPicker).forEach(([id, fd]) => {
   if (!fd.address || !/^https:\/\//.test(fd.url || '')) cardErrs.push(`freeDomain for ${id}: needs an address and the platform's own page`);
   if (((data.answers[id] || {}).cost_site || {}).verdict !== 'free') cardErrs.push(`freeDomain for ${id}: its site doesn't start free any more`);
 });
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
-console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}${sentenceErrs ? ` (${sentenceErrs} sentences the data doesn't back)` : ', and every sentence is backed by the data and the answers'}. ${clear} clear winners, ${fallback} without a reason from their answers; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}). ${dividers} put a divider above matches that lack a must-have; ${firstGaps} say even the best match lacks one.`);
+console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}${sentenceErrs ? ` (${sentenceErrs} sentences the data doesn't back)` : ', and every sentence is backed by the data and the answers'}. ${clear} clear winners, ${fallback} without a reason from their answers; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}, or something rules it out). ${dividers} put a divider above matches that lack a must-have; ${firstGaps} say even the best match lacks one.`);
 console.log(`Rules: first is made for what they're making ${broke.made ? `FAILS ${broke.made}` : 'ok'}; not technical never gets "Needs a developer" first ${broke.dev ? `FAILS ${broke.dev}` : 'ok'}; no "Not ideal if" in the top three ${notIdealTop ? `FAILS ${notIdealTop}` : 'ok'}; every reason starts from an answer ${broke.named ? `FAILS ${broke.named}` : 'ok'}; no developer platform for a solo local business ${broke.local ? `FAILS ${broke.local}` : 'ok'}; no Framer for a large catalogue ${broke.catalogue ? `FAILS ${broke.catalogue}` : 'ok'}; the platform you're leaving is never a match ${broke.origin ? `FAILS ${broke.origin}` : 'ok'}; the must-haves come before taste ${broke.need ? `FAILS ${broke.need}` : 'ok'}; every cost is weighed against the budget ${broke.budget ? `FAILS ${broke.budget}` : 'ok'}.`);
 process.exit(failed || cardErrs.length ? 1 : 0);

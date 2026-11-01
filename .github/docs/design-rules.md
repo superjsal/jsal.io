@@ -64,19 +64,9 @@ Corners `--jsal-radius-sm` / `-` / `-lg` / `-pill`; selected `--jsal-selected-*`
 focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead of new values.
 
 - **A bordered pill is a choice** (compare chips, pickers, quiz answers): it toggles, and selected is the gold
-  edge and tint. A set of links is not a choice, so it never wears pills: an index of links (the home page's
-  Platform guides) is a grid of equal-width tiles with the plain `--jsal-line` border, surface background and
-  500 weight, or a text list. Uneven pills stagger; equal tiles don't.
-- **The Platform guides show each platform's logo before its name**, in a 24px slot in `--jsal-muted` (icons at
-  16px; the wordmark-only logos, Wix and Duda, 22px wide so the slot's edge doesn't slice their first letter), the
-  tile's text left-aligned so the names line up. Where a tile is too narrow for the logo and the longest name
-  (beside the intro from 1101 to 1279px, the four and five columns from 521 to 769px, two columns below 340px), the
-  logos drop out and the names centre. From 521 to 619px the guides take four columns rather than five, so
-  "BigCommerce" fits.
-- **An index of links ends even.** Its last tile is the link that covers the whole set (the guides' "Compare all 13
-  →"), set like the others (full ink, the arrow after the words) but centred and without a logo, and stretched across whatever is
-  left of its row by `:last-child:nth-child(…)` rules for each column count, so the grid stays even at any count
-  and adding an entry is adding its link. It never takes gold: the arrow alone says it goes elsewhere.
+  edge and tint. A set of links is not a choice, so it never wears pills: it's a text list (the home page footer's
+  Platform guides) or a grid of equal-width tiles with the plain `--jsal-line` border, surface background and 500
+  weight. Uneven pills stagger; equal tiles don't.
 - **A tick that goes with a choice** (the quiz's "In two or more languages") is a checkbox in a bordered row above
   the choices, selected with the same `--jsal-selected-*` tokens and gold edge as a pressed chip, the box itself in
   `accent-color: var(--jsal-accent)`; one focus ring on the row.
@@ -95,20 +85,33 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - **Tools fill the first screen;** the About section sits below the fold, reached by the top bar's About link.
   On phones the empty work box stretches to the bottom of the screen until there's content.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
-- **Home page:** tools only. The intro beside the CMS Picker's big tile, with the Platform guides (a link tile
-  per platform, three even columns) under the intro and level with the tile's bottom; then the other tools as
-  picture tiles (each tool's name starts with its icon, 32px, the one the logo menu shows; the small label above it
-  says only "web app", or "for my team", with no numbers) (the team Playbook as a one-line tile: its icon, name and sign-in note, the note dropping under the name on phones), Updates (one line
-  per section, each starting with its app's icon, the one the logo menu shows; Site's is the logo tile; the names in ink, the icon carrying
-  the app's colour, gold only on "Full changelog") and a plain "Say hi"
-  row. From 1100px down the guides take the full width under both; on phones they follow the tile. Tab order
-  follows the screen. Gaming parts live on `/play/`.
+- **Home page:** tools only, as a bento grid (six columns, 28px gaps, the wide tile swapping sides each row): the
+  intro (two columns, at the shared distance under the bar) beside the CMS Picker (four); the Image Resizer (four)
+  and Clean Paste (two); Say hi (two) and Updates (four). From 1279px down the intro, the CMS Picker, the Image
+  Resizer and Updates take the full width and Clean Paste sits beside Say hi; that bento holds down to 600px, so a
+  phone on its side keeps it, and only upright phones get one column. Tab order follows the screen.
+  - **Each tile** is its soft tint (CMS Picker lilac, Image Resizer teal, Clean Paste honey; Say hi and Updates
+    plain) with its name in Lora in a deep shade of the tint, and a real-looking piece of its tool drawn in the
+    tools' own colours (`--jsal-surface`, ink and lines, so it changes with the theme as the tool does): the CMS
+    Picker a tilted brick of one card per platform, each in that platform's own colours, logos only; the Image
+    Resizer its crop editor (the box spans the photo at the output's shape and slides one way, as the tool's
+    does) and output list; Clean Paste its clean HTML with a "Copied" status; Say hi an email draft; Updates the
+    newest change in each of the three most recently changed parts as a stack of notes, written from the changelog
+    by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
+  - **Each tool tile has its app icon as a watermark**, drawn large in the tile's ink at 14% with the gem in solid
+    gold, lined up with its words; hidden on upright phones.
+  - **Breakouts:** a piece may poke a little past its tile (about 14px at most), never within 16px of another
+    tile, and two breakouts never crowd each other. Mix straight and tilted pieces.
+  - **The pictures are decoration** (`aria-hidden`): each tile's link reads as its name and line, and Say hi's
+    as "Say hi by email". Tiles have a least height, not a fixed one, and the words keep room clear of the
+    pictures, so enlarged or spaced-out text grows the tile instead of sliding under a picture (WCAG 1.4.12).
+  - **The Platform guides** are a quiet row of links in the footer, with Off the clock beside Privacy. Gaming parts
+    live on `/play/`.
 - **Every new home page tool or section is a bento box:** a `.tile` (22px corners, 26px padding; 18px and 20px
-  on phones), in its own tint if it's a tool, `--plain` like Updates and "Say hi" if it isn't. The home page is
+  on phones), in its own tint if it's a tool, plain like Updates and "Say hi" if it isn't. The home page is
   always bento boxes. Other pages keep an open layout, but may use a card in the same style (the tile's corners,
   padding and a tint, such as the app's own home tile colour) where it helps, for example around a hero; they don't
-  become bento grids. The intro and the Platform guides stay unboxed,
-  so the byline keeps the shared distance and left edge.
+  become bento grids. The intro stays unboxed, so the byline keeps the shared distance and left edge.
 - **The CMS Picker is quiz first:** the platform cards and the comparison table open on request. The quiz box
   reserves its first question's height (`.qz` min-height per column count) so the rows under it don't move at
   load or between questions.
@@ -139,8 +142,12 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - **Page transitions are one slide everywhere** (`shell.css`): the old page drifts up and fades, the new one
   rises in, Back runs it downwards, and the top bar cross-fades in place. Only `shell.css` names
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.
-- Nothing moves on its own for more than 5 seconds (WCAG 2.2.2): the CMS Picker card's shuffle stops after
-  about 3 seconds; its full cycle plays only on hover or focus.
+- **The home page's pictures move only when asked:** pointing at a tile or focusing it plays what its tool does
+  three times, then it rests as the still picture (the cards wave with none singled out, the crop box slides the
+  one way the tool lets it, the clean HTML and the email type themselves). Touch screens play each one once, when
+  its tile reaches the middle of the screen. Updates stays still.
+- Nothing moves on its own for more than 5 seconds (WCAG 2.2.2): the home pictures' one play on touch screens takes
+  under 3 seconds.
 
 ## Touch and accessibility
 

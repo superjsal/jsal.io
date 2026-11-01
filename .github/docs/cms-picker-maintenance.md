@@ -18,7 +18,7 @@ content-site results (under "Persona tests"). Two-step scoring, parked on 2026-1
 **Must-haves first** (2026-11-01): an audit of every answer set found the need people pick as "the one that matters
 most" outvoted by taste. In 38% of paid-members answers, 42% of selling-too answers and 25% of bookings answers the
 first match needed an add-on while a platform that fits had it built in, and a site that sells on a platform with no
-store plan ("Not for stores": Framer, HubSpot, Ghost) skipped the budget, so Framer led 396 of 1,008 selling-on-a-budget
+store plan ("Not offered": Framer, HubSpot, Ghost) skipped the budget, so Framer led 396 of 1,008 selling-on-a-budget
 answers. Ranking now goes by tiers (`rank` in `score.js`): first what rules a platform out (`gate`), then how far it
 falls short of having the must-haves built in (`short`), and only then the points. For a developer or agency a plugin
 counts as built in, as they add them as a matter of course. Two new rules (`need`, `budget`) and a persona pin it.
@@ -49,6 +49,15 @@ builders is settled by the design control their card leads with (`quiz.lookBest`
 fell to 5% of answer sets (moving=no, languages both ways), 530 of the settled ones Wix against Squarespace; the rest
 say "Joint best match" and the box under each card does the work.
 
+**Quiz v5** (2026-11-01): a "We already use HubSpot" tick on "Which is closest to what you do?" (`also` on the kind
+question, `hubspot=yes` in links). HubSpot's card line "You don't otherwise use HubSpot" now rules it out for every
+business site and publication unless it's ticked (`when: { what: [site, content], hubspot: [no] }`; a tick that isn't
+given, or whose question isn't asked, reads as "no"), and a tick gives HubSpot 4 points ("Fits the HubSpot tools you
+already use"). Before, HubSpot came first for most B2B answers, though an anonymous tally of the agency's B2B client
+sites found 1 of 76 on it; its CMS is worth it mainly to companies already on its CRM. Unticked, 798 of 8,832 first
+places moved (9%, HubSpot to Webflow, WordPress or Wix); ticked, HubSpot is first for 652 of 960 B2B answer sets. The
+five B2B personas now come both ways (Webflow or WordPress without the tick, HubSpot with it), agreed with John.
+
 **Baseline** (final review with Claude Reviewer, 2026-10-30, before v3): all four rule tests pass, all 37 personas pass, and
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
 B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
@@ -61,10 +70,9 @@ box has no reason from their answers (an agency or developer selling on no budge
 separate shop is estimated cheaper than a store plan; the estimate is never given as a reason, so the box falls back to
 the table or card). A change to any of these numbers is a result change: agree it with John first.
 
-**Accepted limitation:** old `v=1` links have no "Which is closest to what you do?" answer, so HubSpot's
-"You don't otherwise use HubSpot" rule (matched on that answer) can't apply, and HubSpot can show third on
-an old business-site link. The "newer questions can sharpen this" button above the results asks the missing
-question and fixes it, so it's left as is.
+Old `v=1` links have no "Which is closest to what you do?" answer; since v5 HubSpot's "You don't otherwise use
+HubSpot" rule doesn't read that answer, so it applies to them too. The "newer questions can sharpen this" button
+above the results still asks the missing question.
 
 ## Where everything lives
 
@@ -86,7 +94,7 @@ repeats its tag ("Yes, with an SEO plugin") is hidden as generic, so name the pl
 `scope` is U (same everywhere), V ("varies": depends on plan, theme or setup) or C (not verified).
 
 **Sources.** Only the platform's own documentation (or the named plugin's own page), never a guess. No
-source is better than a wrong one: `check_data.py --list` shows what's missing. A cost row tagged "Not for stores"
+source is better than a wrong one: `check_data.py --list` shows what's missing. A cost row tagged "Not offered"
 isn't counted as missing one: no pricing page states an absence.
 
 ## The quiz and its explanations (`cms-picker/score.js`)
@@ -100,9 +108,12 @@ Shared by the page and the tests, so they always run the same code.
   adds the 13 platforms from the data (each with its platform object as a sixth item, which the page draws as a
   logo chip). The page and the test both go through it. Changing the questions means raising `LINK_VERSION` in
   `app.js` and translating older answers in `readLink`, so shared links keep working (v3 translates the old
-  members and moving-later answers, v4 the languages choice into the tick; see the comment there). A question can
-  carry a tick (`also`: id, title, hint, and `own`, the answer on its own) that goes with whichever choice is picked:
-  the page draws it as a checkbox above the choices and again in the answers editor, and the test walks it both ways.
+  members and moving-later answers, v4 the languages choice into the tick, v5 added the HubSpot tick; see the comment
+  there). A question can carry a tick (`also`: id, title, hint, and `own`, the answer on its own) that goes with
+  whichever choice is picked: the page draws it as a checkbox above the choices and again in the answers editor, and
+  the test walks it both ways. Two do: languages on the needs question, "We already use HubSpot" on the kind question.
+  A tick counts only while its question is asked (`ticked()` in score.js), and in a quiz.json `when` one that isn't
+  given reads as "no".
 - **Needs** ("Anything you'll need from day one?", one choice, plus the languages tick): paid members score as
   before (below), selling too reads the "Sell online" row (+2 / 0 / −2 / −4, and the budget reads the store band), a
   blog reads the "Add a blog" row the same way, bookings read `quiz.bookings` (+3 built in or first-party, else −1 and
@@ -134,6 +145,21 @@ Shared by the page and the tests, so they always run the same code.
   `HOW` words ("None of the platforms that fit your answers has everything you need built in. BigCommerce needs an
   add-on for paid members."). Not shown with the "closest" or clashing-answers notice. The personas test checks the
   claim (no fitting platform has them all) and the sentence on every answer set; 13,024 of 132,480 when added.
+- **"Closest match"** (`closest` in `score.js`): the first is only the closest when something rules it out (`gate`,
+  as nothing fits at all) or it scores under `LOW_FIT`. The page, its notice and the tests all use it. (Before
+  2026-11-01 it was the score alone, which let a platform not made for the goal lead without the notice once Substack
+  scored high on a custom build.)
+- **Platforms switched off the picker** keep their `quiz.json` values; the persona test skips them, and drops them
+  from a persona's expected first places as from its top three. That's how a persona can name a platform not yet
+  live (Substack, Square Online) or switched off (Magento 2): `first: ['ghost', 'substack']` holds both ways.
+- **The lineup since 2026-11-01:** 14 platforms. Magento 2 came off (few start new Magento sites; it stays in the
+  Playbook), and Substack (paid newsletters) and Square Online (shops and cafés on Square) joined, researched against
+  their own help centres (Claude's notes in the worktree's `private\playbook-research\substack-square-draft-2026-11.md`).
+  Three of their answers are "not verified" for want of a docs page: structured data on both, and AI bots on Square
+  Online. Their logos are Simple Icons files in `cms-picker/logos/`.
+- **Adding or removing a platform:** the code (its `quiz.json` values, personas, expert cases) ships first and holds
+  with it on or off; then John switches it on the Playbook tab and the publish runs; then the hand-written counts and
+  the home page's Platform guides grid follow (they would link a page that doesn't exist yet if they went first).
 - **Scoring:** `fitScore` builds the score from parts with `add(key, points, reason)`. The reason (if any)
   shows as a bullet on the card. Where a part counts *against* an answer the person gave (a need that takes an
   add-on, running it yourself, hosting, budget), `fitScore` also pushes a plain line to `but`, which the
@@ -188,11 +214,18 @@ Shared by the page and the tests, so they always run the same code.
   Their budget reads "Start a site with paid members" (`cost_members`: the plan that includes paid
   memberships, e.g. Ghost(Pro) Publisher, Wix Core), as does the card's "Cost to start" line; `costRow` in
   `score.js` picks the row for the score, the "costs less to start" box and the card alike (a store, or a site
-  that sells too, reads the store band). A site that sells on a platform with no store plan ("Not for stores") counts
+  that sells too, reads the store band). A site that sells on a platform with no store plan ("Not offered") counts
   its site band plus a separate shop, at least the lowest paid band, under its own part (`shopCost`). No pricing page
   states that sum, so `shopCost` has no wording, and a platform over budget on it never says it costs less than another;
   its "worth knowing" line says a separate shop adds to the cost.
-- **Hosting, three states** (since 2026-10-31): wanting hosting handled counts +2 where the profile's hosting line starts "Handled for you", −2 where it names a managed option that takes updates and security on (`managedHosting` in quiz.json: WordPress, Magento 2), −6 otherwise; the "worth knowing" line says which.
+- **Hosting, three states** (since 2026-10-31): wanting hosting handled counts +2 where the profile's hosting line starts "Handled for you", −2 where it names a managed option that takes updates and security on (`managedHosting` in quiz.json: WordPress, Magento 2), −6 otherwise; the "worth knowing" line says which. Since 2026-11-01 a managed option counts +2 when an agency or
+  developer builds the site, as they arrange the managed host; it's scored as its own part (`managed`, worded "your
+  agency can put WordPress on managed hosting, which handles them") and `gaps` compares it with `care` as one hosting
+  comparison, so a box never calls equal hosting an advantage. With it WordPress joined `kind.b2b`: an anonymous tally
+  of the agency's client sites (`private\clients\`, platform and business type only, never committed) found WordPress
+  on 63 of 84 local-service and 51 of 58 B2B sites, which the quiz had rarely recommended to an agency. 533 of 8,832
+  first places moved, no persona. HubSpot still came first for agency-built B2B, though 1 of 58 clients ran it; quiz v5's
+  "We already use HubSpot" tick (above) settled that.
 - **Ties** (since 2026-10-31): two platforms level on points are ordered by how many of their card's "Good fit"
   lines answer what the person is making, from `quiz.fitFor`: each tagged line as it reads on the card (`line`)
   with the answers it answers (`when`, the same shape as `notIdeal`; a line that answers two questions is listed
@@ -222,9 +255,9 @@ node .github/scripts/personas.test.js
 
 Also run by `.github\build\check.ps1` before every push, and by the "Site checks" Action on GitHub.
 
-- **49 personas** (bakery, maker shop, B2B wholesaler, government site, since v3 eleven hard cases: a need the
-  builders cover, a store that is also a publication, moving from Wix or Shopify…, and since must-haves first a local
-  shop selling on no budget that wants every detail) must keep the first places and top
+- **54 personas** (bakery, maker shop, B2B wholesaler, government site, since v3 eleven hard cases: a need the
+  builders cover, a store that is also a publication, moving from Wix or Shopify…, since must-haves first a local
+  shop selling on no budget that wants every detail, and since v5 each B2B persona with and without the HubSpot tick) must keep the first places and top
   threes John agreed. A failure means a result changed: agree the new result with John before editing the expectation.
 - **Every answer combination (132,480)**, for every result card:
   - it has a box saying what sets it apart, and never mentions a row those answers rule out;
@@ -238,12 +271,13 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
     level on points but ahead on their card's "Good fit" lines or the look (their box must say which) or tied, and how many show a
     "Closest match" (first scores under `LOW_FIT`, 4: 2,171 today). No persona may get only a closest match.
   - every tagged "Good fit" line (`fitFor`) is still on its card and answers a real question and answer.
-- **Expert cases** (`node .github/scripts/expert-cases.js`, also in `check.py` and the Action): 40 real-world clients
+- **Expert cases** (`node .github/scripts/expert-cases.js`, also in `check.py` and the Action): 43 real-world clients
   and the picks an experienced web consultant would accept, written without looking at the quiz's results (drafted by
   Claude on 2026-11-01, set up as a standing report at John's request). It never fails a check; it reports how many
   agree (`BASELINE`: 38 of 40 when set up, 39 once Duda's card stopped listing "Blog or content", 40 with the
   divider, as a match under it isn't a recommendation; 42 of 42 with the first two real sites, John's friends' own
-  quiz answers and the platform they run, both Squarespace) and names the ones that differ, and says so when a change takes
+  quiz answers and the platform they run, both Squarespace; 43 of 43 with a B2B company already on HubSpot, for the v5
+  tick) and names the ones that differ, and says so when a change takes
   it below the baseline. Raise `BASELINE` when agreement rises; edit a case only when its expert judgment is wrong,
   never to match a result.
 - **Nine rules** that must hold for every answer set (a failure names the first few):
@@ -273,7 +307,7 @@ Platforms change plans and features often. Every few months (or when a platform 
 - Recheck the **"varies" answers**, since they depend on plans and themes that move.
 - Recheck the **"What it costs to start" rows** against each platform's pricing page (links are their sources;
   the research notes are in `private\playbook-research\cms-picker-pricing-*.md`). They're bands, not prices
-  (Free to start, Under $25/mo, $25–$100/mo, Over $100/mo, Free software + hosting, Not for stores), so a
+  (Free to start, Under $25/mo, $25–$100/mo, Over $100/mo, Free software + hosting, Not offered), so a
   small price change rarely matters; a free plan appearing or going, or a plan crossing $25 or $100, does.
   Each band and its pricing-page source are edited on the Playbook's CMS Picker tab, like any answer.
   Update the section's `asOf` month in `cms-picker.json` when you recheck. The quiz's budget question

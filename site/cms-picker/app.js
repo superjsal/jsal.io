@@ -8,7 +8,7 @@
   // Short tag wording for the grid and key (data.json keeps the full labels)
   const SHORT = { yes: 'Built in', auto: 'Automatic', plugin: 'Plugin/app', code: 'Needs code', hosting: 'Hosting/DNS', check: 'Unclear', indirect: 'Indirectly', no: 'Not possible' };
   // "What it costs to start": bands from each platform's own pricing page, never a price (not in the key above the table)
-  const COST = { free: 'Free to start', low: 'Under $25/mo', mid: '$25–$100/mo', high: 'Over $100/mo', software: 'Free software + hosting', na: 'Not for stores' };
+  const COST = { free: 'Free to start', low: 'Under $25/mo', mid: '$25–$100/mo', high: 'Over $100/mo', software: 'Free software + hosting', na: 'Not offered' };
   Object.assign(SHORT, COST);
   // Scope as a symbol, explained once in the key
   // Only the exceptions are marked (a short word after the tag); the longer wording is for the tooltip
@@ -497,12 +497,12 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches; questions and scoring in score.js. The answers live in the page
   // address so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, standing, behind, tied, near, divider, firstGap, conflict, costRow, weight, TIP, LEAD, options } = window.cmsScore;
-  // Shared result links carry the quiz version (v=4; none means 1). When the questions change, raise LINK_VERSION and
+  const { QUESTIONS, NEUTRAL, closest, rank, candidates, explain, standing, behind, tied, near, divider, firstGap, conflict, costRow, weight, TIP, LEAD, options, lessSuited } = window.cmsScore;
+  // Shared result links carry the quiz version (v=5; none means 1). When the questions change, raise LINK_VERSION and
   // translate older answers in readLink, so shared links keep opening a result.
-  const LINK_VERSION = 4;
+  const LINK_VERSION = 5;
   // Returns { answers, old } (old: a link from before some of today's questions, answered neutrally or offered above
-  // the result), or null. v3 folded members into needs and leave into moving (grow dropped); v4 made languages a tick.
+  // the result), or null. v3 folded members into needs and leave into moving (grow dropped); v4 made languages a tick; v5 added the HubSpot tick (absent: not ticked).
   function readLink(params) {
     const v = Number(params.get('v') || 1);
     params.delete('v');
@@ -514,7 +514,7 @@
       ['members', 'leave', 'grow'].forEach((k) => delete answers[k]);
     }
     if (v < 4 && answers.needs === 'lang') { answers.needs = 'none'; answers.lang = 'yes'; }
-    if (answers.lang !== 'yes') delete answers.lang;
+    ['lang', 'hubspot'].forEach((k) => { if (answers[k] !== 'yes') delete answers[k]; });
     return { answers, old: v < 3 };
   }
   // Effort, from values already checked: the quiz's ease score and the profile's hosting line
@@ -529,7 +529,7 @@
   ];
   const LATER = [['noindex', 'hide pages from search'], ['ai_crawlers', 'choose which AI bots may read the site']];
   const LATER_FRESH = ['gsc404', 'point old links to new pages when pages move'];   // starting fresh: the moving step waits
-  // A box's heading; under LOW_FIT the first is only the closest, so its box compares like the others' ("Compared with Wix")
+  // A box's heading; when the first is only the closest, its box compares like the others' ("Compared with Wix")
   const boxHead = (vs, weak) => (vs.head.startsWith('Why ') && weak ? `Compared with ${vs.than}` : vs.head);
   // Reasons the scoring takes from a sourced table row (score.js), so the card can link the platform's own docs for them
   const EVIDENCE = { 'More than one language is built in': 'languages', 'Paid memberships built in': 'members' };
@@ -753,9 +753,9 @@
     function results(source) {
       // The platform being left isn't a match (candidates) but keeps its place in the full ranking, for "Had a platform in mind?"
       const ranked = candidates(data, a), all = rank(data, a), origin = all.find((x) => x.p.id === a.moving);
-      const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => near(r, ranked[0], 5));
-      // A tie for first is shown as one (score.js tied); under LOW_FIT the first is only the closest
-      const isTop = (r) => r === top[0] || tied(r, top[0]), joint = !!top[1] && isTop(top[1]), weak = best < LOW_FIT;
+      const top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => near(r, ranked[0], 5));
+      // A tie for first is shown as one (score.js tied); the first may be only the closest (score.js closest)
+      const isTop = (r) => r === top[0] || tied(r, top[0]), joint = !!top[1] && isTop(top[1]), weak = closest(top[0]);
       // How sure: level or a couple of points apart is a close call (score.js standing)
       const stand = standing(top), close = !!stand && (stand.kind === 'level' || stand.kind === 'close');
       const first = weak ? 'closest match' : 'best match';
@@ -844,7 +844,7 @@
         }
         // Where it counts against an answer given (score.js "but"), so the pick never hides it
         if (r.but && r.but.length) card.append(el('p', 'qz-lim', `Worth knowing: ${r.but.join('; ')}.`));
-        const skip = (pr.lessSuited || [])[0];
+        const skip = lessSuited(data.quiz, r.p, a);
         if (skip) card.append(el('p', 'qz-lim', `Less suited if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);
       });

@@ -129,11 +129,11 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .radii { display: flex; flex-wrap: wrap; gap: 14px; }
 .radii div { display: grid; gap: 6px; justify-items: center; font: 500 12px "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 .radii i { display: block; width: 64px; height: 44px; border: 1px solid var(--jsal-line-hi); background: var(--jsal-surface); }
-.bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
 .bento i { display: block; height: 42px; border-radius: 10px; background: var(--jsal-sunk); border: 1px solid var(--jsal-line); }
-.bento .big { grid-column: span 8; }
-.bento .sm { grid-column: span 4; }
-.bento .full { grid-column: 1 / -1; }
+.bento .big { grid-column: span 4; }
+.bento .sm { grid-column: span 2; }
+.bento .open { background: none; border-style: dashed; }   /* the intro, unboxed */
 
 /* Components (06): the real rules, copied from the apps' stylesheets, named by their source */
 .demo { display: grid; gap: 14px; padding: 20px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
@@ -166,17 +166,11 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .tick input:focus-visible { outline: none; }
 .tick b { display: block; font-size: 15px; font-weight: 600; }
 .tick small { display: block; color: var(--jsal-muted); font-size: 13px; }
-/* An index of links: equal tiles, never pills (home .guides) */
-.ltiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: 100%; }
-.ltiles .all { gap: 6px; }   /* full ink and centred like the platform tiles; the arrow alone says it goes elsewhere */
-.ltiles a:last-child:nth-child(3n+1) { grid-column: span 3; }
-.ltiles a:last-child:nth-child(3n+2) { grid-column: span 2; }
-.ltiles a { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: border-color 0.15s; }
-.ltiles a:hover { border-color: var(--jsal-hover-line); }
-.ltiles a:not(.all) { justify-content: flex-start; gap: 8px; }   /* the logo slot, as on the home page */
-.ltiles a:not(.all)::before { content: ""; flex: none; width: 24px; height: 16px; background: var(--jsal-muted); -webkit-mask: var(--logo) center / 16px 16px no-repeat; mask: var(--logo) center / 16px 16px no-repeat; }
-.ltiles a.wm::before { -webkit-mask-size: 22px auto; mask-size: 22px auto; }   /* a pixel clear of each side, so the edge doesn't slice the first letter */
-.ltiles a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+/* An index of links: plain links in a row, never pills (the home page footer's .fg) */
+.fgdemo { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 14px; font-size: 13px; }
+.fgdemo span { margin-right: 4px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-muted); }
+.fgdemo a { padding: 4px 0; color: var(--jsal-muted); text-decoration: none; }
+.fgdemo a:hover { color: var(--jsal-ink); text-decoration: underline; }
 .tag { display: inline-block; padding: 2px 10px; border-radius: var(--jsal-radius-sm); font-size: 13px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
 .tag.yes { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 .tag.plugin { background: var(--jsal-info-soft); color: var(--jsal-info); }
@@ -242,7 +236,7 @@ footer.end { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--js
 footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 @media (max-width: 720px) { .hero { padding-top: 32px; } .sec { padding-top: 40px; } .roles td:first-child { white-space: normal; } .jsal-top nav { display: none; } }   /* the contents list below does the nav's job on a phone */
-@media (pointer: coarse) { .btn, .cta, .chip, .seg, .chk, .chip-link, .tick, .ltiles a { min-height: 44px; } .chip, .seg, .chip-link { display: inline-flex; align-items: center; } }
+@media (pointer: coarse) { .btn, .cta, .chip, .seg, .chk, .chip-link, .tick, .fgdemo a { min-height: 44px; } .chip, .seg, .chip-link, .fgdemo a { display: inline-flex; align-items: center; } }
 @media (prefers-reduced-motion: reduce) { .cta, .btn, .chip, .seg { transition: none; } .cta:hover { transform: none; } }
 </style>
 </head>
@@ -399,7 +393,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h3>The answer ramp</h3>
     <p>On the CMS Picker a row says how well a platform does something. Its tags are one scale, read left to right, and the scale is the same wherever it appears, on the comparison table, the cards and the platform pages.</p>
     <div class="ramp"><span class="tag yes">Built in</span><span class="arrow">→</span><span class="tag plugin">Plugin/app</span><span class="arrow">→</span><span class="tag code">Needs code</span><span class="arrow">→</span><span class="tag no">Not possible</span><span class="arrow" style="margin-left:8px">·</span><span class="tag check">Unclear</span> <span class="sc">varies</span></div>
-    <div class="suggest"><b>Decided</b><p>The home page's bento tiles keep their own tint tokens (<code>--cream</code>, <code>--blue</code>, <code>--green</code>, <code>--gold</code>, <code>--plum</code>, each with ink, muted and accent values) in <code>index.html</code>. Moving them into <code>shell.css</code> would copy colours only the home page uses into every page, so they stay where they’re used and are listed here instead.</p></div>
+    <div class="suggest"><b>Decided</b><p>The home page's bento tiles keep their own tint tokens (<code>--t-cms</code> lilac, <code>--t-ir</code> teal, <code>--t-cp</code> honey, each with a deep <code>-ink</code> shade for its words, and <code>--t-plain</code> for Say hi and Updates) in <code>index.html</code>. Moving them into <code>shell.css</code> would copy colours only the home page uses into every page, so they stay where they’re used and are listed here instead.</p></div>
   </section>
 
   <section class="sec" id="type">
@@ -461,11 +455,11 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <thead><tr><th>Width</th><th>What changes</th></tr></thead>
       <tbody>
         <tr><td>≤ 520px</td><td>Less space above the top bar (14px); the Privacy page's text starts sooner</td></tr>
-        <tr><td>521–619px</td><td>The home page's Platform guides take four columns rather than five</td></tr>
-        <tr><td>≤ 599px</td><td>Clean Paste's toolbar in two even rows; the CMS Picker's phone rules</td></tr>
+        <tr><td>≤ 599px</td><td>Clean Paste's toolbar in two even rows; the CMS Picker's phone rules; the home page's bento stacks to one column</td></tr>
         <tr><td>≤ 720px</td><td>The CMS Picker's comparison becomes stacked cards, with groups that fold; the platform pages reflow</td></tr>
-        <tr><td>≤ 860px</td><td>The home page's bento grid stacks to one column</td></tr>
-        <tr><td>≤ 1100px</td><td>The home page's Platform guides take the full width under the intro and the CMS Picker tile</td></tr>
+        <tr><td>≤ 759px</td><td>The home page's Updates notes stack above their words; the Image Resizer tile drops its output list</td></tr>
+        <tr><td>600–860px</td><td>The home page keeps its bento for phones on their side, with a shorter CMS Picker tile</td></tr>
+        <tr><td>≤ 1279px</td><td>The home page's intro, CMS Picker, Image Resizer and Updates take the full width, Clean Paste beside Say hi</td></tr>
         <tr><td>&lt; 900px</td><td>Clean Paste in one column; the achievement pop-up moves to the bottom centre, or the top on touch screens</td></tr>
         <tr><td>≥ 1280px</td><td>Column grows to 1120px</td></tr>
         <tr><td>≥ 1800px</td><td>Column grows to 1240px</td></tr>
@@ -486,8 +480,8 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div><i style="border-radius:22px"></i>home tiles · 22px</div>
     </div>
     <h3>The home page's bento</h3>
-    <p>A 12-column grid with 16px gaps. The intro and the Platform guides (a link tile per platform, its logo before its name, three even columns, level with the big tile's bottom) share the first column beside the CMS Picker tile; below, each row has one leading tile and the wide side alternates, so the eye zigzags down the page; the Updates row is full width. Tab order follows the screen. On phones it stacks to one column, the guides after the big tile. The home page is always bento; other pages keep an open layout but may use a card in the tiles’ style (corners, padding, a tint) where it helps.</p>
-    <div class="bento" aria-hidden="true"><i class="big"></i><i class="sm"></i><i class="sm"></i><i class="big"></i><i class="full"></i></div>
+    <p>A six-column grid with 28px gaps: the intro (two columns, unboxed) beside the CMS Picker (four), then the Image Resizer and Clean Paste, then Say hi and Updates, the wide tile swapping sides each row so the eye zigzags down the page. Each tile holds a real-looking piece of its tool in the tools’ own colours, a few of them poking a little past the edge, and its app icon as a faint watermark; pointing at a tile plays what the tool does three times. The bento holds down to 600px, so phones on their side keep it; upright phones get one column. Tab order follows the screen. The home page is always bento; other pages keep an open layout but may use a card in the tiles’ style (corners, padding, a tint) where it helps.</p>
+    <div class="bento" aria-hidden="true"><i class="sm open"></i><i class="big"></i><i class="big"></i><i class="sm"></i><i class="sm"></i><i class="big"></i></div>
     <div class="suggest"><b>Decided</b><p>Spacing isn’t named as tokens either. Most values are even; the odd nudges (5, 7, 9, 11, 13px) were rounded in October 2026, except a few row paddings that repeat down a list, where rounding would change the list’s height. The 1–3px paddings inside small tags and pills stay as set by eye.</p></div>
   </section>
 
@@ -498,7 +492,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <div class="demos">
       <div class="demo">
         <span class="src">Buttons · cms-picker/styles.css .btn, formatter .btn-primary/.btn-accent, image-resizer .btn-danger</span>
-        <div class="row"><button type="button" class="btn primary">Find my fit</button><button type="button" class="btn">Compare all 13</button><button type="button" class="btn" disabled>Download All</button><button type="button" class="btn btn-danger">Clear</button></div>
+        <div class="row"><button type="button" class="btn primary">Find my fit</button><button type="button" class="btn">Compare all 14</button><button type="button" class="btn" disabled>Download All</button><button type="button" class="btn btn-danger">Clear</button></div>
         <span class="src">Home page calls to action · index.html .cta (pill, lifts 2px on hover)</span>
         <div class="row"><button type="button" class="cta main">Find your CMS</button><button type="button" class="cta alt">Say hi</button></div>
       </div>
@@ -511,8 +505,8 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div class="demo">
         <span class="src">A tick that goes with a choice · cms-picker/styles.css .qz-tick (selected like a pressed chip; the box in the accent)</span>
         <div class="row"><label class="tick"><input type="checkbox" checked><span><b>In two or more languages</b><small>Tick it, then pick below</small></span></label><label class="tick"><input type="checkbox"><span><b>In two or more languages</b><small>Tick it, then pick below</small></span></label></div>
-        <span class="src">An index of links · index.html .guides (a bordered pill means a choice, so links get equal tiles, never pills; each platform's logo before its name; the last tile fills out the row at any count)</span>
-        <div class="ltiles"><a href="/cms-picker/wordpress/" style="--logo: url(/cms-picker/logos/wordpress.svg)">WordPress</a><a href="/cms-picker/shopify/" style="--logo: url(/cms-picker/logos/shopify.svg)">Shopify</a><a class="wm" href="/cms-picker/wix/" style="--logo: url(/cms-picker/logos/wix.svg)">Wix</a><a href="/cms-picker/squarespace/" style="--logo: url(/cms-picker/logos/squarespace.svg)">Squarespace</a><a href="/cms-picker/hubspot/" style="--logo: url(/cms-picker/logos/hubspot.svg)">HubSpot CMS</a><a href="/cms-picker/ghost/" style="--logo: url(/cms-picker/logos/ghost.svg)">Ghost</a><a class="all" href="/cms-picker/#seo">Compare all<span aria-hidden="true">→</span></a></div>
+        <span class="src">An index of links · index.html footer .fg (a bordered pill means a choice, so links are plain text in muted ink, never pills)</span>
+        <nav class="fgdemo" aria-label="Platform guides example"><span aria-hidden="true">Platform guides</span><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/substack/">Substack</a></nav>
       </div>
       <div class="demo">
         <span class="src">Tags · cms-picker/styles.css .tag (the answer ramp), with the words that follow a tag</span>

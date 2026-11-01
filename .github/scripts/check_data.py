@@ -89,7 +89,7 @@ def report(d, listing=False, today=None):
         for r, a in answers.items():
             total += 1
             if not a.get('sourceUrl'):
-                if a['verdict'] != 'na': missing.append((pid, r))   # "Not for stores" is an absence: no pricing page states it
+                if a['verdict'] != 'na': missing.append((pid, r))   # "Not offered" is an absence: no pricing page states it
 
             elif not a.get('lastVerified') or (today - datetime.date.fromisoformat(a['lastVerified'])).days > STALE_DAYS: stale.append((pid, r, a.get('lastVerified') or 'no date'))
     out.append(f'CMS Picker data: {total} answers, {total - len(missing)} with a source, {len(missing)} without, {len(stale)} checked over {STALE_DAYS} days ago.')

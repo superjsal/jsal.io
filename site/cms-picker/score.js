@@ -7,7 +7,7 @@
   const QUESTIONS = [
     // Each option: [value, title, hint, the answer on its own (the button above the results), when it's offered?]
     { id: 'what', q: 'What are you making?', opts: [['site', 'A site for my business or work', 'Services, portfolio, about and contact', 'A business or work site'], ['store', 'An online store', 'Products, checkout and payments', 'An online store'], ['content', 'A blog, newsletter or publication', 'Writing is the main thing', 'A blog, newsletter or publication'], ['custom', 'Something custom', 'An app or portal, built with a developer', 'Something custom: an app or portal']] },
-    { id: 'kind', q: 'Which is closest to what you do?', when: (a) => a.what === 'site', opts: [['local', 'A local business or services', 'Shops, trades, salons, clinics, consultants', 'A local business or services'], ['creative', 'Creative work or a portfolio', 'Photography, design, art, music', 'Creative work or a portfolio'], ['startup', 'A startup or product launch', 'A product, an app or a launch page', 'A startup or product launch'], ['b2b', 'A company selling to other businesses', 'B2B: leads, demos and a sales team', 'A company selling to other businesses (B2B)'], ['content', 'Lots of content', 'Articles, guides and resources', 'A site with lots of content']] },
+    { id: 'kind', q: 'Which is closest to what you do?', when: (a) => a.what === 'site', also: { id: 'hubspot', title: 'We already use HubSpot', hint: 'For our CRM, email or marketing', own: 'We already use HubSpot' }, opts: [['local', 'A local business or services', 'Shops, trades, salons, clinics, consultants', 'A local business or services'], ['creative', 'Creative work or a portfolio', 'Photography, design, art, music', 'Creative work or a portfolio'], ['startup', 'A startup or product launch', 'A product, an app or a launch page', 'A startup or product launch'], ['b2b', 'A company selling to other businesses', 'B2B: leads, demos and a sales team', 'A company selling to other businesses (B2B)'], ['content', 'Lots of content', 'Articles, guides and resources', 'A site with lots of content']] },
     { id: 'who', q: 'Who’ll build and update it?', opts: [['easy', 'Me, and I’m not technical', 'It needs to be simple', 'I’ll build it, not technical'], ['learn', 'Me, and I’m happy to learn', 'A bit of a learning curve is fine', 'I’ll build it and learn'], ['agency', 'A designer or agency', 'They build it; I might edit', 'A designer or agency builds it'], ['dev', 'A developer', 'Code is fine', 'A developer builds it']] },
     { id: 'care', q: 'Who should look after hosting, updates and security?', opts: [['no', 'The platform', 'Everything included, nothing to install', 'Hosting and updates handled for me'], ['yes', 'Me, or someone I’ll ask', 'A web host and updates now and then', 'Fine looking after hosting and updates']] },
     { id: 'size', q: 'How big is the shop?', when: (a) => a.what === 'store', opts: [['small', 'Up to a few hundred products', 'A small or growing shop', 'A shop with up to a few hundred products'], ['big', 'Thousands of products', 'A large catalogue', 'Thousands of products'], ['b2b', 'Selling to other businesses (B2B)', 'Wholesale, trade accounts or bulk orders', 'Selling to other businesses (B2B)']] },
@@ -41,10 +41,12 @@
     letters: [(a, y, x) => `${x} sends newsletters to them itself`, null],
     sellOnly: [null, (a, y) => `${y} is made only for selling`],
     frontEnd: [(a, y, x) => `${x} is built to feed a website and an app from one place`, null],
+    hubspot: [(a, y, x) => `${x} works with them directly`, null],
     ease: [(a, y, x) => (a.who === 'easy' ? `${x} is easier to run` : `${x} is easier to learn`), (a, y) => (a.who === 'easy' ? `${y} is harder to run` : `${y} is harder to learn`)],
     agency: [(a, y, x) => `${x} is a common choice for them`, null],
     agencyOnly: [null, (a, y) => `${y} is mainly sold through agencies`],
     dev: [(a, y, x) => `${x} gives them full control`, (a, y) => `${y} isn’t built to be coded`],
+    managed: [(a, y, x) => `${a.who === 'agency' ? 'your agency' : 'your developer'} can put ${x} on managed hosting, which handles them`, null],
     care: [(a, y, x) => `${x} handles them for you`, (a, y, x, own, theirs) => (theirs === -2 ? `${y} needs a managed host or someone to look after it` : `${y} leaves hosting and updates to you`)],
     sell: [(a, y, x) => `selling is easier to set up on ${x}`, (a, y) => `selling is harder to set up on ${y}`],
     sellFirst: [(a, y, x) => `${x} is made for selling first`, null],
@@ -71,11 +73,13 @@
     letters: () => 'you want paid subscribers or members',
     sellOnly: () => 'you’re not making a store',
     frontEnd: () => 'you’re building an app or portal',
+    hubspot: () => 'you already use HubSpot’s tools',
     ease: (a) => (a.who === 'easy' ? 'you’re not technical' : 'you’re building it yourself'),
     agency: () => 'a designer or agency is building it',
     agencyOnly: (a) => (a.who === 'dev' ? 'a developer is building it' : 'you’re building it yourself'),
     dev: () => 'a developer is building it',
     care: () => 'you want hosting, updates and security looked after',
+    managed: () => 'you want hosting, updates and security looked after',
     sell: (a) => (a.what === 'store' ? 'you’re making an online store' : 'you want to sell online too'),
     sellFirst: () => 'you’re making an online store',
     size: (a) => (a.size === 'b2b' ? 'you’re selling to other businesses' : 'you have thousands of products'),
@@ -92,9 +96,14 @@
   };
 
   // Every key in "when" has one of its listed answers (quiz.notIdeal, quiz.fitFor)
-  const matches = (when, a) => Object.entries(when).every(([q, vs]) => vs.includes(a[q]));
+  // A question's tick counts only while that question is asked; one not given reads as "no", so a line can apply unless it's ticked
+  const TICKS = Object.fromEntries(QUESTIONS.filter((q) => q.also).map((q) => [q.also.id, q]));
+  const ticked = (a, id) => a[id] === 'yes' && (!TICKS[id].when || TICKS[id].when(a));
+  const matches = (when, a) => Object.entries(when).every(([q, vs]) => vs.includes(TICKS[q] ? (ticked(a, q) ? 'yes' : 'no') : a[q]));
   // The first of a platform's "Not ideal if" lines (quiz.notIdeal) these answers match
   const notIdealFor = (Q, id, a) => ((Q.notIdeal || {})[id] || []).find((n) => matches(n.when, a));
+  // The card's first "Less suited if" line, skipping one a tick has answered ("You don't otherwise use HubSpot" when it's ticked)
+  const lessSuited = (Q, p, a) => ((p.profile || {}).lessSuited || []).find((l) => !((Q.notIdeal || {})[p.id] || []).some((n) => l.startsWith(n.if) && Object.entries(n.when).some(([q, vs]) => TICKS[q] && ticked(a, q) && !vs.includes('yes'))));
   // The card's "Good fit" lines that answer these answers (quiz.fitFor), in card order; they break an exact tie
   const fitLines = (Q, id, a) => [...new Set(((Q.fitFor || {})[id] || []).filter((f) => matches(f.when, a)).map((f) => f.line))];
 
@@ -115,6 +124,7 @@
       // quiz.members: the platform sends newsletters to those members itself
       if (has('members')) add('letters', 2, 'Newsletters to your members built in');
     }
+    if (ticked(a, 'hubspot') && p.id === 'hubspot') add('hubspot', 4, 'Fits the HubSpot tools you already use');
     if (a.what === 'custom' && has('customFrontEnd')) add('frontEnd', 3, 'One place to manage content for a website and an app');
     const ease = Q.ease[p.id] ?? 1;
     // Building it yourself: one that needs a developer counts as heavily as one not made for what you're making
@@ -128,9 +138,11 @@
     // A developer: platforms built to be coded (quiz.devControl)
     if (a.who === 'dev') { if (has('devControl')) add('dev', 2, 'Gives a developer full control'); else add('dev', -1); }
     if (a.care === 'no') {
-      // Handled by the platform +2; a managed option the hosting line names (quiz.managedHosting) -2; yours -6
+      // Handled by the platform +2; a managed option the hosting line names (quiz.managedHosting) -2, or +2 when an
+      // agency or developer builds it, as they arrange the managed host; yours -6
       const handled = /^Handled for you/.test(pr.hosting || ''), managed = has('managedHosting');
-      add('care', handled ? 2 : managed ? -2 : -6, handled && 'Hosting, updates and security are handled for you');
+      if (managed && (a.who === 'agency' || a.who === 'dev')) add('managed', 2);
+      else add('care', handled ? 2 : managed ? -2 : -6, handled && 'Hosting, updates and security are handled for you');
       if (!handled) but.push(managed ? 'it needs a managed host or someone to look after it' : 'hosting, updates and security are on you');
     }
     if (a.what !== 'store' && a.needs === 'sell') {
@@ -172,7 +184,7 @@
     // The card's own "Not ideal if" lines that match (quiz.notIdeal): ruled out unless nothing else fits
     if (notIdealFor(Q, p.id, a)) add('notIdeal', -30);
     if (a.budget in BUDGET) {
-      // No store plan ("Not for stores") on a site that sells: its site plan plus a separate shop, so at least the lowest
+      // No store plan ("Not offered") on a site that sells: its site plan plus a separate shop, so at least the lowest
       // paid band. No pricing page states that sum, so it counts under its own part, which never gives a reason
       const band = verdict(costRow(a));
       if (band === 'na') {
@@ -186,7 +198,7 @@
         if (over > 0) { add('budget', -3 * over); but.push('it costs more to start than you planned to spend'); } else add('budget', 0, a.budget === 'none' ? 'Free to start' : 'Fits your budget');
         // Starting free where the free plan has only the platform's own address (quiz.freeDomain): a business wants its own
         const fd = a.budget === 'none' && band === 'free' && (Q.freeDomain || {})[p.id];
-        if (fd) but.push(`the free plan uses an address like ${fd.address}; your own domain needs a paid plan`);
+        if (fd) but.push(`the free plan uses an address like ${fd.address}; your own domain needs ${fd.needs || 'a paid plan'}`);
       }
     }
     // Every reason is shown, so two cards' lists match only when their reasons really do; "but" changes no score
@@ -339,8 +351,10 @@
   // The parts of the score where x beat y, those of the tier that put x ahead first, then the biggest gap, with wording in TIP
   function gaps(x, y) {
     const by = TIER_PARTS[ahead(x, y)], first = (g) => (by && by.has(g.k) ? 1 : 0);
-    return [...new Set([...Object.keys(x.pts), ...Object.keys(y.pts)])]
-      .map((k) => ({ k, d: (x.pts[k] || 0) - (y.pts[k] || 0) }))
+    // Hosting is one comparison whichever way it was scored (handled by the platform, or a managed host arranged)
+    const host = (p) => (p.pts.care || 0) + (p.pts.managed || 0);
+    return [...new Set([...Object.keys(x.pts), ...Object.keys(y.pts)].map((k) => (k === 'managed' ? 'care' : k)))]
+      .map((k) => (k === 'care' ? { k: 'managed' in x.pts ? 'managed' : 'care', d: host(x) - host(y) } : { k, d: (x.pts[k] || 0) - (y.pts[k] || 0) }))
       // x's own shop is over the budget too, so beating y on budget would read as if x were within it
       .filter((g) => g.d > 0 && TIP[g.k] && !(g.k === 'budget' && (x.pts.shopCost || 0) < 0)).sort((p, q) => first(q) - first(p) || q.d - p.d);
   }
@@ -459,8 +473,10 @@
   const NEUTRAL = { needs: 'none', moving: 'no', budget: 'any' };
   // A first match under this fits poorly (less than being made for the thing earns): the page says "closest match"
   const LOW_FIT = 4;
+  // The first is only the closest: something rules it out (gate), as nothing fits at all, or it scores under LOW_FIT
+  const closest = (r) => !!r && (r.gate > 0 || r.s < LOW_FIT);
   // Answers that pull against each other, with the question to change
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
+  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, lessSuited, LOW_FIT, closest, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -12,7 +12,7 @@ const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
 
 // Agreement when the report was set up: fewer than this is called out
-const BASELINE = 42;
+const BASELINE = 43;
 const DEV = ['magento', 'drupal', 'sanity'];
 const S = (o) => ({ moving: 'no', needs: 'none', budget: 'any', ...o });
 const CASES = [
@@ -37,20 +37,21 @@ const CASES = [
   ['App launch page, not technical, nothing to spend', S({ what: 'site', kind: 'startup', who: 'easy', care: 'no', look: 'visual', budget: 'none' }), { ok: ['wix', 'framer', 'squarespace'], never: DEV }],
   // B2B and content-heavy business sites
   ['Industrial B2B, lead generation, agency-built', S({ what: 'site', kind: 'b2b', who: 'agency', care: 'no', look: 'template', budget: 'any' }), { ok: ['hubspot', 'wordpress', 'webflow'], never: ['magento', 'sanity'] }],
+  ['B2B company whose sales team runs on HubSpot, agency-built', S({ what: 'site', kind: 'b2b', hubspot: 'yes', who: 'agency', care: 'no', look: 'template', budget: 'any' }), { ok: ['hubspot'], never: ['magento', 'sanity'] }],
   ['B2B software company, in-house marketer, every detail', S({ what: 'site', kind: 'b2b', who: 'learn', care: 'no', look: 'pixel', budget: 'mid' }), { ok: ['webflow', 'hubspot', 'framer'], never: DEV }],
   ['Consultancy publishing guides, agency-built, own hosting', S({ what: 'site', kind: 'content', who: 'agency', care: 'yes', needs: 'blog', look: 'visual', budget: 'any' }), { ok: ['wordpress', 'webflow', 'hubspot'], never: ['magento'] }],
   ['Resource library for a marketing team, happy to learn', S({ what: 'site', kind: 'content', who: 'learn', care: 'no', look: 'visual', budget: 'mid' }), { ok: ['webflow', 'wordpress', 'hubspot'], never: DEV }],
   // Publications
   ['Food blogger, happy to learn, up to $25', S({ what: 'content', who: 'learn', care: 'no', look: 'template', budget: 'low' }), { ok: ['wordpress', 'ghost', 'squarespace'], never: ['hubspot', 'magento', 'shopify'] }],
-  ['Paid newsletter writer, not technical', S({ what: 'content', who: 'easy', care: 'no', needs: 'members', look: 'template', budget: 'mid' }), { ok: ['ghost'], any: ['ghost'], never: ['hubspot', 'magento'] }],
-  ['Podcaster with paid supporters, happy to learn, up to $25', S({ what: 'content', who: 'learn', care: 'no', needs: 'members', look: 'template', budget: 'low' }), { ok: ['ghost', 'squarespace'], any: ['ghost'], never: ['hubspot'] }],
-  ['Hobby blog, not technical, nothing to spend', S({ what: 'content', who: 'easy', care: 'no', look: 'template', budget: 'none' }), { ok: ['ghost', 'squarespace', 'wordpress'], never: ['hubspot', 'magento', 'drupal', 'sanity'] }],
+  ['Paid newsletter writer, not technical', S({ what: 'content', who: 'easy', care: 'no', needs: 'members', look: 'template', budget: 'mid' }), { ok: ['ghost', 'substack'], any: ['ghost', 'substack'], never: ['hubspot', 'magento'] }],
+  ['Podcaster with paid supporters, happy to learn, up to $25', S({ what: 'content', who: 'learn', care: 'no', needs: 'members', look: 'template', budget: 'low' }), { ok: ['ghost', 'squarespace', 'substack'], any: ['ghost', 'substack'], never: ['hubspot'] }],
+  ['Hobby blog, not technical, nothing to spend', S({ what: 'content', who: 'easy', care: 'no', look: 'template', budget: 'none' }), { ok: ['ghost', 'squarespace', 'wordpress', 'substack'], never: ['hubspot', 'magento', 'drupal', 'sanity'] }],
   ['Developer’s own blog, self-hosted', S({ what: 'content', who: 'dev', care: 'yes', look: 'pixel', budget: 'none' }), { ok: ['ghost', 'wordpress', 'sanity'], never: ['magento', 'hubspot'] }],
   ['Online magazine in three languages, developer team', S({ what: 'content', who: 'dev', care: 'yes', lang: 'yes', look: 'pixel', budget: 'any' }), { ok: ['wordpress', 'drupal'], never: ['wix', 'squarespace', 'magento'] }],
   ['Local news site, agency-built, hosting handled', S({ what: 'content', who: 'agency', care: 'no', look: 'template', budget: 'mid' }), { ok: ['wordpress', 'ghost', 'webflow'], never: ['magento', 'hubspot'] }],
   // Stores
   ['Handmade shop, 40 products, not technical', S({ what: 'store', size: 'small', who: 'easy', care: 'no', look: 'template', budget: 'mid' }), { ok: ['shopify', 'squarespace', 'wix'], never: ['magento', 'bigcommerce', 'drupal'] }],
-  ['Small shop, up to $25 a month, not technical', S({ what: 'store', size: 'small', who: 'easy', care: 'no', look: 'template', budget: 'low' }), { ok: ['squarespace', 'shopify', 'wix'], never: ['magento'] }],
+  ['Small shop, up to $25 a month, not technical', S({ what: 'store', size: 'small', who: 'easy', care: 'no', look: 'template', budget: 'low' }), { ok: ['squarespace', 'shopify', 'wix', 'square'], never: ['magento'] }],
   ['Clothing brand, 300 products, wants design control', S({ what: 'store', size: 'small', who: 'learn', care: 'no', look: 'visual', budget: 'mid' }), { ok: ['shopify', 'wix', 'squarespace'], never: ['magento'] }],
   ['Store in two languages, not technical', S({ what: 'store', size: 'small', who: 'easy', care: 'no', lang: 'yes', look: 'template', budget: 'mid' }), { ok: ['shopify', 'wix'], never: ['magento'] }],
   ['Store with a blog, happy to learn', S({ what: 'store', size: 'small', who: 'learn', care: 'no', needs: 'blog', look: 'template', budget: 'mid' }), { ok: ['shopify', 'squarespace', 'wix'], never: ['magento'] }],

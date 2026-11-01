@@ -49,7 +49,7 @@ Anything that fails: note the device, browser, light/dark, and the step, and pas
 - [ ] Phone: the single-platform pickers ("Show steps for", "Had a platform in mind?") use the phone's own picker, and the Compare chips sit in two even columns.
 
 ### 6. Links, Back and Forward
-- [ ] "Copy link to this result", open it in a new tab: the same matches and answers show, and the address says `v=4`.
+- [ ] "Copy link to this result", open it in a new tab: the same matches and answers show, and the address says `v=5`.
 - [ ] Open an old link by hand: `https://jsal.io/cms-picker/#quiz?v=3&what=site&kind=local&who=easy&care=no&needs=lang&look=template&moving=no&budget=low` shows the result with "Two or more languages" ticked and "Nothing special from day one".
 - [ ] Press Back, then Forward: the results follow each time, and Back from the first result leaves the page normally.
 - [ ] "Start over" goes back to question 1 with it in view.
