@@ -120,7 +120,7 @@ const PERSONAS = [
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'], not: ['hubspot'] }],
   ['Consultant selling a few things too, happy to learn', { what: 'site', kind: 'local', who: 'learn', care: 'no', needs: 'sell', look: 'visual', moving: 'no' },
     { first: ['wix', 'squarespace'], top3: ['wix', 'squarespace'] }],
-  ['Store moving from Shopify, hundreds of products', { what: 'store', who: 'learn', care: 'no', size: 'big', needs: 'none', look: 'template', moving: 'shopify' },
+  ['Store moving from Shopify, thousands of products', { what: 'store', who: 'learn', care: 'no', size: 'big', needs: 'none', look: 'template', moving: 'shopify' },
     { first: ['bigcommerce'], top3: ['bigcommerce'], not: ['shopify'] }],
   ['B2B site with two languages, built in-house', { what: 'site', kind: 'b2b', who: 'learn', care: 'no', needs: 'none', lang: 'yes', look: 'visual', moving: 'no' },
     { first: ['hubspot'], top3: ['hubspot', 'webflow'] }],
