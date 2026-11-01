@@ -43,6 +43,12 @@ KEY = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '').strip()
 
 
 def api(method, path, body=None, prefer=None):
+    # Every write to the built-in content goes through here, so a one-off script can't skip the stray-HTML check
+    # that push runs (the content audit's apply once wrote three tags the page then swallowed)
+    if method != 'GET' and path.split('?')[0] == 'app_data' and body is not None:
+        errs = bad_html(body)
+        if errs:
+            sys.exit('Refusing to write app_data: stray HTML in the prose (the page would swallow it as tags):\n  ' + '\n  '.join(errs))
     req = urllib.request.Request(f'{URL}/rest/v1/{path}', method=method,
                                  data=None if body is None else json.dumps(body, ensure_ascii=False).encode('utf-8'))
     req.add_header('apikey', KEY)
