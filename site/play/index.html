@@ -53,37 +53,22 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=907b5eb3">
+<link rel="stylesheet" href="/shell.css?v=0282e7de">
 <style>
-/* Tile colours. The Image Resizer has the strongest contrast: cream on the dark
-   page, ink on the light one. The blue and moss tiles are toned closer to the page so they
-   support it rather than compete, and so is the gold one. Updates and Email are plain, a neutral fill
-   with no border, so the apps keep the colour. */
+/* Tile colours: moss for the WoW UI, toned close to the page; the other tiles are plain, a neutral fill with no border */
 :root {
-  --cream: #1f1a12; --cream-ink: #f5efe2; --cream-muted: #b8b2a3; --cream-btn: #e3b04b; --cream-btn-ink: #1f1a12;
-  --blue: #e6e9f0; --blue-ink: #1f1a12; --blue-acc: #3b5a9a;
   --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
-  --gold: #f0e4c6; --gold-ink: #1f1a12; --gold-muted: #3d362a; --gold-acc: #835c0e;
   --plain: #e8e5dd; --plain-line: #cfc3a9;
-  --plum: #ece4f1; --plum-ink: #1f1a12; --plum-muted: #3d362a; --plum-acc: #674690;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
-    --blue: #1a2034; --blue-ink: #ece6d6; --blue-acc: #8fb1ff;
     --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
-    --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
     --plain: #1c1f27; --plain-line: #3d424e;
-    --plum: #221a2b; --plum-ink: #ece6d6; --plum-muted: #c4bfb2; --plum-acc: #c7a3f0;
   }
 }
 :root[data-theme="dark"] {
-  --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
-  --blue: #1a2034; --blue-ink: #ece6d6; --blue-acc: #8fb1ff;
   --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
-  --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
   --plain: #1c1f27; --plain-line: #3d424e;
-  --plum: #221a2b; --plum-ink: #ece6d6; --plum-muted: #c4bfb2; --plum-acc: #c7a3f0;
 }
 
 * { box-sizing: border-box; }
@@ -505,6 +490,6 @@ addEventListener('DOMContentLoaded', drawAchievements);
 addEventListener('jsal-achievement', drawAchievements);
 addEventListener('pageshow', drawAchievements);   // back from a tool: show what was unlocked there
 </script>
-<script src="/nav.js?v=d300daf6" defer></script>
+<script src="/nav.js?v=0981537d" defer></script>
 </body>
 </html>

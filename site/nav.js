@@ -92,7 +92,7 @@
       icon: '<path class="l" d="M9 19v5M16 14v10M23 21v3" stroke-width="4"/><path class="g" d="M16 4.5l3 3-3 3-3-3z"/>' },
     { href: '/formatter/', name: 'Clean Paste', desc: 'Clean up Word and Google Docs text', tile: 'var(--jsal-tool-paste)',
       icon: '<path class="l" d="M8 10h16M8 16h13M8 22h9" stroke-width="3"/><path class="g" d="M22.5 18.5l2.5 2.5-2.5 2.5-2.5-2.5z"/>' },
-    { href: '/image-resizer/', name: 'Image Resizer', desc: 'Resize, crop and convert images', tile: 'var(--jsal-tool-resize)', edge: true,
+    { href: '/image-resizer/', name: 'Image Resizer', desc: 'Resize, crop and convert images', tile: 'var(--jsal-tool-resize)',
       icon: '<path class="l" d="M6 6h14v14H6z" stroke-width="3"/><path class="g cut" d="M22.5 18l4.5 4.5-4.5 4.5-4.5-4.5z"/>' },
     { href: '/ic/', name: 'Platform Playbook', desc: 'SEO steps by platform, for my team', tag: 'Team', tile: 'var(--jsal-tool-playbook)',
       icon: '<path class="l" d="M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11" stroke-width="3"/><path class="g" d="M8.5 19.5l3 3-3 3-3-3z"/>' },

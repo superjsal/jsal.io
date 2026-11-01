@@ -80,7 +80,7 @@ body { background: var(--jsal-bg); }
   --jsal-focus-ring: 0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent);
   /* The tool icons' tiles (the logo menu), the same in light and dark as the logo's tile is: each tool's accent from
      its home page tile, parchment strokes and the gold gem; the ink tile keeps a thin edge so it holds on a dark page */
-  --jsal-tool-cms: #674690; --jsal-tool-paste: #5e430b; --jsal-tool-resize: #1f1a12; --jsal-tool-playbook: #3b5a9a;
+  --jsal-tool-cms: #674690; --jsal-tool-paste: #5e430b; --jsal-tool-resize: #2a6a61; --jsal-tool-playbook: #3b5a9a;
   --jsal-tool-edge: #3d424e; --jsal-tool-ink: #ece6d6; --jsal-tool-gem: #e3b04b;
   --jsal-tool-home: #111318; --jsal-tool-play: #3f6b3a;   /* the logo's slate; Off the clock's green, as /play/ uses it */
 }
@@ -259,9 +259,8 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 /* Page titles in the home page's serif, the gold word in italic (as "one job" on the home page) */
 .jsal-title { margin: 0; font: 700 20px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
 .jsal-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
-/* The tool's own icon before its name, as in the logo menu; a dark tile keeps an edge on dark pages */
+/* The tool's own icon before its name, as in the logo menu */
 .jsal-title-ico { display: inline-block; width: 22px; height: 22px; margin-right: 10px; vertical-align: -4px; }
-.jsal-dark-tile { border-radius: 5px; box-shadow: 0 0 0 1px var(--jsal-mark-edge); }
 @media (max-width: 429px) { .jsal-title-ico { display: none; } }
 .jsal-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .jsal-theme {

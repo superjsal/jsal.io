@@ -1,8 +1,9 @@
 # Updates on the home page, written from the changelog so a change is described once.
 # A changelog entry meant to lead its section on the home page carries a short line on its <li>:
 #   <li data-short="Saves PNG, with transparency"><span class="log-name">...
-# This script takes, for each section (in SECTIONS order), the newest entry with a data-short and
-# its date, and rewrites the <ul class="upd"> block between the two marker comments in index.html.
+# This script takes, for each section, the newest entry with a data-short and its date, and rewrites the
+# <ul class="upd"> block between the two marker comments in index.html with the SHOWN most recent of them
+# (newest first, SECTIONS order breaking a tie): the Updates tile's fanned cards, the first in front.
 #   python .github/scripts/updates.py            rewrite the block (run after editing the changelog)
 #   python .github/scripts/updates.py --check    only say whether it's current (check.py does this)
 # Each line should fit on one row at 1024px and up: about 40 characters, a warning past that.
@@ -14,9 +15,9 @@ HOME = 'index.html'
 START = '<!-- updates:start'   # the whole comment: <!-- updates:start (written by ...) -->
 END = '<!-- updates:end -->'
 MAX_CHARS = 40
-# Home page sections in order: the changelog tag (the log-name text) and the link, or None for no link
-SECTIONS = [('CMS Picker', '/cms-picker/'), ('Clean Paste', '/formatter/'), ('Image Resizer', '/image-resizer/'),
-            ('Off the clock', '/play/'), ('Site', None)]
+SHOWN = 3
+# Home page sections in order: the changelog tag (the log-name text)
+SECTIONS = ['CMS Picker', 'Clean Paste', 'Image Resizer', 'Off the clock', 'Site']
 # Each section's icon in site/img/icons/ (written by .github/brand/make-brand.py); a new section needs one there too
 ICONS = {'CMS Picker': 'cms-picker', 'Clean Paste': 'clean-paste', 'Image Resizer': 'image-resizer',
          'Off the clock': 'off-the-clock', 'Site': 'jsal-io'}
@@ -45,19 +46,19 @@ def entries():
 def latest():
     """For each section, its newest entry (or None), in SECTIONS order."""
     found = entries()
-    return [(name, href, next((e for e in found if e[0] == name), None)) for name, href in SECTIONS]
+    return [(name, next((e for e in found if e[0] == name), None)) for name in SECTIONS]
 
 
 def render(nl, indent):
+    # The cards overlap, so they carry no links (each tool has its own tile); sorted() is stable, so a tie keeps SECTIONS order
+    shown = sorted((x for x in latest() if x[1]), key=lambda x: x[1][1], reverse=True)[:SHOWN]
     lines = [indent + '<ul class="upd">']
-    for name, href, e in latest():
-        if e is None: continue
-        label = f'<a href="{href}">{name}</a>' if href else name
+    for name, e in shown:
         y, m, d = e[1].split('-')
         sec = name.lower().replace(' ', '-')
-        icon = f'<img class="upd-ico" src="/img/icons/{ICONS[name]}.svg" alt="" width="20" height="20">'
-        lines.append(f'{indent}  <li data-sec="{sec}"><span class="upd-name">{icon}{label}</span><span>{e[2]}</span>'
-                     f'<time datetime="{e[1]}">{MONTHS[int(m) - 1]} {int(d)}</time></li>')
+        icon = f'<img class="upd-ico" src="/img/icons/{ICONS[name]}.svg" alt="" width="28" height="28">'
+        lines.append(f'{indent}  <li data-sec="{sec}"><span class="upd-name">{icon}{name}</span>'
+                     f'<time class="mono" datetime="{e[1]}">{MONTHS[int(m) - 1]} {int(d)}</time><span class="upd-line">{e[2]}</span></li>')
     lines.append(indent + '</ul>')
     return nl.join(lines)
 
@@ -76,9 +77,9 @@ def block():
 def problems():
     out = []
     tags = {e[0] for e in entries()}
-    for name, _ in SECTIONS:
+    for name in SECTIONS:
         if name not in tags: out.append(f'{CHANGELOG}: no entry tagged {name} has a data-short line, so Updates has nothing for that section')
-    for tag in sorted(tags - {n for n, _ in SECTIONS}):
+    for tag in sorted(tags - set(SECTIONS)):
         out.append(f'{CHANGELOG}: a data-short on an entry tagged "{tag}", which is not a home page section (add it to SECTIONS in updates.py)')
     for name, date, short in entries():
         if not date: out.append(f'{CHANGELOG}: the {name} entry "{short}" is above the first date heading')
@@ -91,7 +92,7 @@ def problems():
 
 def warnings():
     out = []
-    for name, _, e in latest():
+    for name, e in latest():
         if e and len(html.unescape(e[2])) > MAX_CHARS:
             out.append(f'{CHANGELOG}: the {name} line "{e[2]}" is {len(html.unescape(e[2]))} characters; keep Updates lines to about {MAX_CHARS} so each fits one row at 1024px')
     return out

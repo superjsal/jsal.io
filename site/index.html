@@ -52,37 +52,31 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=907b5eb3">
+<link rel="stylesheet" href="/shell.css?v=0282e7de">
 <style>
-/* Tile colours. The Image Resizer has the strongest contrast: cream on the dark
-   page, ink on the light one. The blue and moss tiles are toned closer to the page so they
-   support it rather than compete, and so is the gold one. Updates and Email are plain, a neutral fill
-   with no border, so the apps keep the colour. */
+/* Tile colours: each tool keeps its own tint with a deep shade of it for the words; Updates and Say hi are plain.
+   The pieces of each tool laid on the tiles wear the tools' own colours, so they change with the theme as the tools do;
+   in dark mode every piece and platform card has the same faint edge. */
 :root {
-  --cream: #1f1a12; --cream-ink: #f5efe2; --cream-muted: #b8b2a3; --cream-btn: #e3b04b; --cream-btn-ink: #1f1a12;
-  --blue: #e6e9f0; --blue-ink: #1f1a12; --blue-acc: #3b5a9a;
-  --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
-  --gold: #f0e4c6; --gold-ink: #1f1a12; --gold-muted: #3d362a; --gold-acc: #835c0e;
-  --plain: #e8e5dd; --plain-line: #cfc3a9;
-  --plum: #ece4f1; --plum-ink: #1f1a12; --plum-muted: #3d362a; --plum-acc: #674690;
+  --t-cms: #d7c6f0; --t-cms-ink: #3d2466;
+  --t-cp: #f3dc9a; --t-cp-ink: #4f3a08;
+  --t-ir: #c6e2dd; --t-ir-ink: #13453f;
+  --t-plain: #e8e5dd;
+  --obj-shadow: 0 18px 40px rgb(30 20 10 / 0.2), 0 2px 6px rgb(30 20 10 / 0.08);
+  --pc-shadow: 0 8px 20px rgb(40 20 60 / 0.2);
+  --pc-light: inset 0 0 0 1px rgb(31 26 18 / 0.08), 0 8px 20px rgb(40 20 60 / 0.16);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
-    --blue: #1a2034; --blue-ink: #ece6d6; --blue-acc: #8fb1ff;
-    --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
-    --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
-    --plain: #1c1f27; --plain-line: #3d424e;
-    --plum: #221a2b; --plum-ink: #ece6d6; --plum-muted: #c4bfb2; --plum-acc: #c7a3f0;
+    --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-plain: #1c1f27;
+    --obj-shadow: 0 0 0 1px var(--jsal-line-hi), 0 18px 40px rgb(0 0 0 / 0.5);
+    --pc-shadow: 0 0 0 1px var(--jsal-line-hi), 0 8px 20px rgb(0 0 0 / 0.35); --pc-light: var(--pc-shadow);
   }
 }
 :root[data-theme="dark"] {
-  --cream: #f5efe2; --cream-ink: #1f1a12; --cream-muted: #4e4637; --cream-btn: #1f1a12; --cream-btn-ink: #e3b04b;
-  --blue: #1a2034; --blue-ink: #ece6d6; --blue-acc: #8fb1ff;
-  --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
-  --gold: #272114; --gold-ink: #ece6d6; --gold-muted: #c4bfb2; --gold-acc: #e3b04b;
-  --plain: #1c1f27; --plain-line: #3d424e;
-  --plum: #221a2b; --plum-ink: #ece6d6; --plum-muted: #c4bfb2; --plum-acc: #c7a3f0;
+  --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-plain: #1c1f27;
+  --obj-shadow: 0 0 0 1px var(--jsal-line-hi), 0 18px 40px rgb(0 0 0 / 0.5);
+  --pc-shadow: 0 0 0 1px var(--jsal-line-hi), 0 8px 20px rgb(0 0 0 / 0.35); --pc-light: var(--pc-shadow);
 }
 
 * { box-sizing: border-box; }
@@ -91,7 +85,6 @@ a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles keep their own rounded corners, and the outline follows them */
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)) 56px; }
-.label { margin: 0; font: 12px/1.5 "JetBrains Mono", Consolas, monospace; }
 
 /* Top bar: the shared one (/shell.css), with section links */
 .jsal-top nav { display: flex; gap: 2px; font-size: 14px; }
@@ -100,316 +93,276 @@ a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles kee
 @media (pointer: coarse) {
   .jsal-top nav a { position: relative; }
   .jsal-top nav a::after { content: ""; position: absolute; inset: -4px 0; }   /* 36px drawn, 44px to tap */
-  .upd-name a, .upd-all a { position: relative; }
-  .upd-name a::after, .upd-all a::after { content: ""; position: absolute; inset: -13px -4px; }
 }
-
-/* Bento grid: 12 columns, one per tile row; stacks on narrow screens */
-.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: var(--jsal-page-top); }
-.tile { border-radius: 22px; padding: 26px; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
-a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
-/* With a mouse: the tile tilts toward the pointer and a soft light follows it (the script below sets
-   --rx/--ry and --mx/--my). Not on touch screens, and not with reduced motion (the plain lift above). */
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  a.tile { position: relative; isolation: isolate; }
-  a.tile.tilt { transform: perspective(1000px) translateY(-4px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 0.12s ease-out; }
-  a.tile::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
-    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.2), transparent 65%); }
-  a.tile.tilt::after { opacity: 1; }
-  :root[data-theme="dark"] a.tile::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 65%); }
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) a.tile::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 65%); }
-}
-.tile h2 { margin: 2px 0 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
-/* Each tool's name starts with its icon, the one the logo menu and Updates show, at one size on every tile */
-.tile-ico { display: inline-block; width: 32px; height: 32px; margin-right: 12px; vertical-align: calc(0.36em - 16px); }   /* centred on the name, whatever its size */
-/* The Image Resizer's tile is ink in light mode, like its icon, so the icon gets a faint ring to hold its edge */
-.jscale .tile-ico { border-radius: 7px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--cream-ink) 28%, transparent); }
-.tile p { margin: 0; }
-/* Every clickable tile ends with the same round arrow, in that tile's accent colour */
-.foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
-.arrow { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--arrow-bg); color: var(--arrow-ink); transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
-a.tile:hover .arrow, a.tile:focus-visible .arrow { transform: translate(2px, -2px); }
 
 /* Even line breaks: headings split into balanced lines, paragraphs avoid a lone last word */
-h1, h2, .big { text-wrap: balance; }
-p, li { text-wrap: pretty; }
+h1, h2 { text-wrap: balance; }
+p { text-wrap: pretty; }
 
-/* Top padding lines the small line up with the picture's top edge in the CMS Picker tile beside it
-   (tile padding 26px + 1px border) */
-.intro { grid-column: 1 / 6; }   /* its label level with the tile, at the shared distance under the top bar */
-.roles { display: flex; flex-wrap: wrap; margin: 0 0 18px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+/* Bento grid: six columns in three rows, the wide tile swapping sides each row */
+.grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: minmax(440px, auto) minmax(272px, auto) minmax(272px, auto); gap: 28px; margin-top: var(--jsal-page-top); }
+.intro { grid-column: 1 / 3; grid-row: 1; align-self: start; padding-right: 12px; }
+.cms { grid-column: 3 / 7; grid-row: 1; }
+.ir { grid-column: 1 / 5; grid-row: 2; }
+.cp { grid-column: 5 / 7; grid-row: 2; }
+.hi { grid-column: 1 / 3; grid-row: 3; }
+.now { grid-column: 3 / 7; grid-row: 3; }
+
+/* The intro: at the shared distance under the top bar, flush with the logo */
+.roles { display: flex; flex-wrap: wrap; margin: 0; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 .roles span + span::before { content: "·"; margin: 0 10px; color: var(--jsal-muted); }
-.intro h1 { margin: 0; font: 700 clamp(44px, 5vw, 62px)/1.02 "Lora", Georgia, serif; letter-spacing: -0.03em; }
+.intro h1 { margin: 12px 0 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
 .intro h1 em { font-weight: 600; color: var(--jsal-accent); }
-.intro p { margin: 28px 0 0; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
-/* The first click: the CMS Picker (gold, the main action), or the backpack's ways to get in touch */
-.cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; }
-/* The platform guides: a mono label and a quiet tile per platform in even columns (a bordered pill means a choice
-   elsewhere on the site, and uneven pills stagger), ending with a Compare tile that fills out the last row, under the intro with its bottom level with the big tile's (the
-   tile spans both rows); from 1100px down the intro's free space is too short for it, so it takes the full width
-   under the intro and the tile instead of stretching the tile */
-.guides { grid-column: 1 / 6; align-self: end; margin: 0; padding-top: 32px; }
-.cms { grid-row: 1 / 3; }
-.guides .label { margin: 0 0 10px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); letter-spacing: 0.06em; text-transform: uppercase; }
-.guides div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-.guides a { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 10px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: border-color 0.15s; }
-.guides a:hover { border-color: var(--jsal-hover-line); }
-/* Each platform's logo before its name, in a 24px slot so the names line up: icons at 16px, the wordmark-only logos
-   (Wix, Duda) across the slot's width */
-.guides a:not(.all) { justify-content: flex-start; gap: 8px; }
-.guides a:not(.all)::before { content: ""; flex: none; width: 24px; height: 16px; background: var(--jsal-muted); -webkit-mask: var(--logo) center / 16px 16px no-repeat; mask: var(--logo) center / 16px 16px no-repeat; }
-.guides a.wm::before { -webkit-mask-size: 22px auto; mask-size: 22px auto; }   /* a pixel clear of each side, so the edge doesn't slice the first letter */
-/* Where the tiles are too narrow for a logo and the longest names (beside the intro below 1280px, the four and five
-   columns below 770px, two below 340px), names only, centred */
-@media (min-width: 1101px) and (max-width: 1279px), (min-width: 521px) and (max-width: 769px), (max-width: 339px) {
-  .guides a:not(.all) { justify-content: center; }
-  .guides a:not(.all)::before { display: none; }
-}
-.guides a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-@media (pointer: coarse) { .guides a { min-height: 44px; } }
-/* The last tile ("Compare all") stretches across whatever is left of its row, so the grid ends even at any platform count */
-.guides .all { gap: 6px; }   /* full ink and centred like the platform tiles; the arrow alone says it goes elsewhere */
-.guides a:last-child:nth-child(3n+1) { grid-column: span 3; }
-.guides a:last-child:nth-child(3n+2) { grid-column: span 2; }
-.cta a { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; }
-.cta .main { background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); }
-.cta .alt { border: 1px solid var(--jsal-muted); color: var(--jsal-ink); }   /* muted, not line-hi: the outline is the button's edge, so 3:1 */
+.intro p { margin: 16px 0 0; font-size: 17px; color: var(--jsal-ink-2); }
+.cta { display: flex; margin: 20px 0 0; }
+.cta a { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; }
 .cta a:hover { transform: translateY(-2px); }
-.cta .alt:hover { border-color: var(--jsal-ink); }
 .cta a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 @media (pointer: coarse) { .cta a { min-height: 44px; } }
-.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: var(--jsal-radius-pill); border: 1px solid currentColor; white-space: nowrap; }
 
-.jscale { grid-column: 1 / 8; background: var(--cream); color: var(--cream-ink); padding: 14px; display: flex; flex-direction: column; gap: 16px; --arrow-bg: var(--cream-btn); --arrow-ink: var(--cream-btn-ink); }
-.jscale .shot { aspect-ratio: 16 / 8; min-width: 0; }   /* min-width: Safari otherwise sizes it to its content and it sticks out on phones */
-.jscale .foot { padding: 0 8px 6px; }
-.jscale .label, .jscale .desc { color: var(--cream-muted); }
-.desc { margin-top: 4px !important; font-size: 15px; }
+/* Tiles: soft colour, a deep-shade serif name, and real-looking pieces of the tool laid on top. Each tile
+   clips most of its pieces (.clip); one piece per row pokes a little past the edge, never near another tile. */
+.tile { position: relative; display: flex; flex-direction: column; border-radius: 22px; padding: 26px; background: var(--bg); color: var(--ink); text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+a.tile:hover, .hi:has(.hi-mail:hover) { transform: translateY(-4px) rotate(-0.4deg); }
+.tile .txt { position: relative; z-index: 2; }
+.tile h2 { margin: 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
+.tile .txt p { margin: 8px 0 0; font-size: 16px; line-height: 1.45; }
+.clip { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.obj { position: absolute; transform: var(--rest, none); transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--rest, none)); }
+.paper { background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); }
+.mono { font: 600 11px/1.4 "JetBrains Mono", Consolas, monospace; }
+/* Each tool's app icon drawn large and faint in the tile's ink, its gem in solid gold */
+.wm { position: absolute; color: var(--ink); }
+.wm .s { opacity: 0.14; }
+.wm .g { fill: var(--jsal-fill); }
 
-.ic { grid-column: 1 / 13; background: var(--blue); color: var(--blue-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 28px; --arrow-bg: var(--blue-acc); --arrow-ink: var(--blue); }
+/* CMS Picker: one card per platform it compares, its logo in that platform's own colours, in a tilted brick whose
+   corner cards (Shopify, Duda) poke a little past the tile, the row's breakout */
+.cms { --bg: var(--t-cms); --ink: var(--t-cms-ink); justify-content: flex-end; }
+.cms .txt { max-width: 290px; }
+.cms h2 { font-size: 34px; }
+.cms .wm { left: -19px; top: 24px; }   /* the bars centred over the name */
+.pcs { left: 281px; top: 68px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
+.pcs > span { display: flex; gap: 12px; }
+.pcs > span:nth-child(even) { margin-left: 56px; }
+.pc { display: grid; place-items: center; width: 100px; height: 66px; border-radius: 12px; background: var(--b); color: var(--c); box-shadow: var(--pc-shadow); }
+.pc i { width: 30px; height: 30px; background: currentColor; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
+.pc .wide { width: 46px; }
+.pc .wix { -webkit-mask-size: 36px auto; mask-size: 36px auto; }
+.pc-light { box-shadow: var(--pc-light); }
+.p-wordpress { --b: #ffffff; --c: #21759b; }
+.p-shopify { --b: #5e8e3e; --c: #ffffff; }
+.p-substack { --b: #ff6719; --c: #ffffff; }
+.p-wix { --b: #111111; --c: #ffffff; }
+.p-squarespace { --b: #ffffff; --c: #111111; }
+.p-webflow { --b: #146ef5; --c: #ffffff; }
+.p-framer { --b: #0a0a0a; --c: #ffffff; }
+.p-hubspot { --b: #ff7a59; --c: #ffffff; }
+.p-square { --b: #111111; --c: #ffffff; }
+.p-drupal { --b: #0678be; --c: #ffffff; }
+.p-duda { --b: #ffffff; --c: #111111; }
+.p-bigcommerce { --b: #121118; --c: #ffffff; }
+.p-sanity { --b: #f03e2f; --c: #ffffff; }
+.p-ghost { --b: #15171a; --c: #ffffff; }
 
-.fmt { grid-column: 8 / 13; background: var(--gold); color: var(--gold-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--gold-acc); --arrow-ink: var(--gold); }
-.fmt h2, .jscale h2 { font-size: 24px; }   /* the featured app keeps the biggest title */
-.fmt .label { color: var(--gold-acc); }
-.fmt .desc { color: var(--gold-muted); }
+/* Image Resizer: the crop editor (the box spans the photo's full width at the output's shape and slides up or
+   down, as the tool's does) and a tilted list of the files it made, the row's breakout */
+.ir { --bg: var(--t-ir); --ink: var(--t-ir-ink); }
+.ir .txt { max-width: 258px; }
+.ir .wm { left: 100px; top: 110px; }
+.ed { left: 290px; top: 22px; width: 250px; padding: 12px; border-radius: 16px; --hover: translateY(-8px); }
+.ed-head { display: flex; justify-content: space-between; color: var(--jsal-muted); }
+.ed-photo { position: relative; display: block; margin-top: 8px; height: 140px; border-radius: 8px; overflow: hidden; }
+.ed-photo img, .outs img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.crop { position: absolute; left: 0; right: 0; top: 10px; height: 118px; outline: 2px solid var(--jsal-fill); outline-offset: -2px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.42); }   /* gold, as the tool draws it */
+.crop i { position: absolute; width: 12px; height: 12px; border: 0 solid var(--jsal-fill); }
+.crop i:nth-child(1) { left: 0; top: 0; border-width: 4px 0 0 4px; }
+.crop i:nth-child(2) { right: 0; top: 0; border-width: 4px 4px 0 0; }
+.crop i:nth-child(3) { left: 0; bottom: 0; border-width: 0 0 4px 4px; }
+.crop i:nth-child(4) { right: 0; bottom: 0; border-width: 0 4px 4px 0; }
+.sizes { display: flex; gap: 4px; margin-top: 10px; }
+.sizes span { flex: 1; padding: 5px 0; border-radius: 6px; border: 1px solid var(--jsal-line); text-align: center; white-space: nowrap; }
+.sizes .on { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); }
+.sizes .plain { font: 600 11px/1.4 var(--jsal-font); }
+.outs { right: 20px; top: -2px; z-index: 3; width: 214px; padding: 12px 14px; border-radius: 16px; --rest: rotate(4deg); --hover: rotate(6deg) translate(4px, -4px); }
+.outs-head { display: flex; justify-content: space-between; padding-bottom: 6px; color: var(--jsal-muted); }
+.outs-head span { color: var(--jsal-ok); }
+.outs .row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }
+.outs .row img { flex: none; width: 44px; height: 30px; border-radius: 4px; }
+.outs .row span { display: flex; flex-direction: column; font-size: 11px; line-height: 1.4; color: var(--jsal-muted); }
+.outs .row b { color: var(--jsal-ink); }
 
-.cms { grid-column: 6 / 13; background: var(--plum); color: var(--plum-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; --arrow-bg: var(--plum-acc); --arrow-ink: var(--plum); }
-.cms h2 { font-size: 36px; }
-.cms .label { color: var(--plum-acc); }
-.cms .desc { font-size: 16px; max-width: 32em; color: var(--plum-muted); }
+/* Clean Paste: the clean HTML it gives back, straight and poking past the tile's left edge so the watermark shows,
+   and the status it shows once copied */
+.cp { --bg: var(--t-cp); --ink: var(--t-cp-ink); }
+.cp .wm { right: -30px; bottom: 0; }
+.sheet { left: -12px; top: 138px; z-index: 1; width: 258px; padding: 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; --hover: translateY(-6px); }
+.sheet span { color: var(--jsal-muted); }
+.sheet code { font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
+.sheet code i { font-style: normal; color: var(--jsal-info); }
+.sheet .ln { display: block; }
+.copied { left: 174px; top: -10px; z-index: 2; display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 600; box-shadow: 0 6px 16px rgb(0 0 0 / 0.16); --rest: rotate(4deg); --hover: rotate(4deg) scale(1.08); }
 
-.ic { padding: 14px 20px; }   /* the team Playbook is one line: visitors can't open it, so it takes little room */
-.ic h2 { font-size: 18px; }
-.ic .foot { align-items: center; }
-.ic-line { flex: 1; display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; }
-.ic .pill { display: inline-flex; align-items: center; gap: 6px; color: var(--blue-acc); }
+/* Say hi: a draft to the site's address, poking out over the tile's top edge (the row's breakout). The heading's
+   link covers the whole tile, so the GitHub link sits above it. */
+.hi { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
+.hi h2 { font-size: 28px; }
+.hi-mail { text-decoration: none; }
+.hi .txt { position: static; margin-top: 130px; }   /* static: the link's cover below spans the whole tile; the margin keeps the words under the draft */
+.hi-mail::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: 22px; }
+.hi-mail:focus-visible { outline: none; }
+.hi:has(.hi-mail:focus-visible) { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
+.hi .txt a:not(.hi-mail) { position: relative; z-index: 2; color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
+.draft { left: 26px; right: 26px; top: -4px; z-index: 3; padding: 12px 14px; border-radius: 16px; font-size: 12px; pointer-events: none; --hover: translateY(-6px); }   /* a click on the draft reaches the email link under it */
+.draft > span { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }
+.draft > span:first-child { justify-content: space-between; align-items: center; padding: 0 0 6px; border: 0; font-size: 13px; font-weight: 700; }
+.draft > span:first-child i { font-style: normal; font-weight: 400; color: var(--jsal-muted); }
+.draft em { width: 52px; font-style: normal; color: var(--jsal-muted); }
+.draft .body { padding-top: 8px; }
+.draft .body i { overflow: hidden; font-style: normal; color: var(--jsal-ink-2); white-space: nowrap; text-overflow: ellipsis; }
 
-/* App mockups on the tiles: simplified versions of each app's real layout, in the apps' own
-   page colours, so opening an app looks like the picture growing into it. Photos, links and
-   highlights keep some colour. Bars stand in for text. */
-.mock { display: grid; gap: 10px; padding: 12px; border-radius: 12px; background: var(--jsal-bg); border: 1px solid var(--jsal-line); }
-.mock i, .mock b { display: block; }
-.mock .box { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-sm); }
-
-/* Image Resizer: camera photos in (a pile, with crop corners), web-ready files out */
-.m-jscale { grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1fr); align-items: center; gap: 14px; padding: 18px; }
-.m-jscale .to { background: var(--jsal-fill); color: var(--jsal-on-fill); }
-.m-jscale .pile { position: relative; aspect-ratio: 4 / 3; }
-.m-jscale .pile .photo { position: absolute; inset: 0; border-radius: var(--jsal-radius); box-shadow: 0 4px 12px rgb(0 0 0 / 0.25); }
-.m-jscale .pile .back { rotate: -7deg; translate: -4% 2%; }
-.m-jscale .pile .back2 { rotate: 5deg; translate: 4% -2%; }
-.m-jscale .corner { position: absolute; width: 14px; height: 14px; border: 3px solid var(--jsal-fill); }
-.m-jscale .tl { top: 9%; left: 8%; border-right: 0; border-bottom: 0; }
-.m-jscale .tr { top: 9%; right: 8%; border-left: 0; border-bottom: 0; }
-.m-jscale .bl { bottom: 9%; left: 8%; border-right: 0; border-top: 0; }
-.m-jscale .br { bottom: 9%; right: 8%; border-left: 0; border-top: 0; }
-.m-jscale .tag { position: absolute; left: 50%; bottom: -10px; translate: -50% 0; padding: 3px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-warn); color: var(--jsal-bg); font: 600 11px/1.4 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
-.m-jscale .outs { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.m-jscale .out { display: flex; align-items: center; gap: 10px; padding: 6px; min-width: 0; font: 11px/1.35 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
-.m-jscale .out .photo { flex: none; width: 38px; aspect-ratio: 4 / 3; border-radius: 3px; }
-.m-jscale .out b { color: var(--jsal-ink); font-weight: 600; }
-.m-jscale .saved { font-size: 12px; font-weight: 700; color: var(--jsal-ok); text-align: center; }
-.photo { position: relative; overflow: hidden; border-radius: var(--jsal-radius-sm);
-  background: radial-gradient(130% 55% at 15% 100%, #2f5f4c 50%, transparent 51%), radial-gradient(90% 45% at 90% 100%, #2b4866 50%, transparent 51%),   /* style: allow (Image Resizer tile: the photo illustration) */
-    radial-gradient(9% 16% at 70% 34%, #ffe1a1 70%, transparent 74%), linear-gradient(#f2ad6c, #cf6f7c 58%, #6f5aa3); }
-
-/* CMS Picker: the platforms it compares (the CMS Picker's own logo files; Duda and Magento have none). The big
-   tile and the line under the grid cycle through six agreed first places from the persona tests (a blog:
-   WordPress, a small shop: Shopify, a local business: Wix, a paid newsletter: Ghost, a photographer: Framer,
-   an app and a site: Sanity), so the match reads as depending on the visitor, not as a recommendation. On
-   load the tiles pop in and the big tile flicks through all six, then rests on "?" and "Best fit for your
-   site?", about 3s in: no platform is left looking like the site's pick, and anything that moves on its own
-   for over 5s needs a pause control (WCAG 2.2.2), which a card that is one link can't hold. Hovering or
-   focusing the card plays the full cycle, 3s a pair, for as long as the visitor stays. The featured
-   platform's own small tile fades while it's in the big one, so no logo shows twice. Reduced motion: the "?",
-   still. */
-.m-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding: 14px; }
-.m-grid > span { aspect-ratio: 1; display: grid; place-items: center; border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); border: 1px solid var(--jsal-line); }
-.m-grid .logo { width: 46%; height: 46%; background: var(--plum-ink); opacity: 0.75; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
-.m-grid .hero { grid-column: span 2; grid-row: span 2; container-type: inline-size; border-color: var(--plum-acc);
-  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--plum-acc) 24%, var(--jsal-surface)), var(--jsal-surface) 72%);
-  box-shadow: inset 0 0 0 1px var(--plum-acc), 0 0 0 5px color-mix(in srgb, var(--plum-acc) 16%, transparent), 0 10px 26px color-mix(in srgb, var(--plum-acc) 30%, transparent); }
-.m-grid .hero .logo { grid-area: 1 / 1; background: var(--plum-acc); opacity: 0; }
-.m-grid .fitline { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin: 4px 0 0 2px; font-size: 13px; color: var(--jsal-muted); }
-.m-grid .tag { padding: 3px 10px; border-radius: var(--jsal-radius-pill); font: normal 600 12px/1.3 var(--jsal-font); white-space: nowrap; color: var(--jsal-ok); background: var(--jsal-ok-soft); }
-.m-grid .rot { display: inline-grid; }
-.m-grid .rot b { grid-area: 1 / 1; font-weight: 600; color: var(--jsal-ink); opacity: 0; white-space: nowrap; }
-.m-grid .ask { grid-area: 1 / 1; font: 700 52cqi/1 "Lora", Georgia, serif; color: var(--plum-acc); }
-.m-grid .rot .you { opacity: 1; }
-/* Bigger tiles than on phones: lighter logos, a bigger line */
-@media (min-width: 521px) {
-  .m-grid .logo { width: 36%; height: 36%; }
-  .m-grid .hero .logo { width: 40%; height: 40%; }
-  .m-grid .fitline { font-size: 14px; }
-  .m-grid .tag { padding: 4px 12px; font-size: 13px; }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .m-grid > span, .m-grid .fitline { animation: g-in 0.45s calc(0.15s + var(--n) * 55ms) cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-  .m-grid .hero { animation: g-in 0.45s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both, g-glow 0.7s 0.95s ease-out both; }
-  /* On load: the six pairs flick past (0.35s each, from 0.6s), then the "?" lands at 2.7s and stays */
-  .m-grid .hero .logo, .m-grid .rot b { animation: g-flick 0.35s calc(0.6s + var(--k) * 0.35s) both; }
-  .m-grid > span:not(.hero) .logo[style*="--k:"] { animation: g-flick-away 0.35s calc(0.6s + var(--k) * 0.35s) both; }
-  .m-grid .ask, .m-grid .rot .you { animation: g-land 0.3s 2.7s both; }
-  /* Hovered or focused: the full cycle, each pair 3 of the 18 seconds; the logo and its words change together */
-  .tile:is(:hover, :focus-visible) .m-grid .hero .logo, .tile:is(:hover, :focus-visible) .m-grid .rot b { animation: g-rot 18s calc(var(--k) * 3s) infinite both; }
-  .tile:is(:hover, :focus-visible) .m-grid > span:not(.hero) .logo[style*="--k:"] { animation: g-away 18s calc(var(--k) * 3s) infinite both; }
-  .tile:is(:hover, :focus-visible) .m-grid :is(.ask, .rot .you) { animation: none; opacity: 0; }
-}
-@keyframes g-in { from { opacity: 0; scale: 0.82; } to { opacity: 1; scale: 1; } }
-@keyframes g-glow { from { border-color: var(--jsal-line); box-shadow: none; background: var(--jsal-surface); } }
-@keyframes g-rot { 0% { opacity: 0; translate: 0 4px; } 2.5%, 14.5% { opacity: 1; translate: 0 0; } 16.67%, 100% { opacity: 0; translate: 0 0; } }
-@keyframes g-away { 0% { opacity: 0.75; } 2.5%, 14.5% { opacity: 0.12; } 16.67%, 100% { opacity: 0.75; } }
-@keyframes g-flick { 0%, 100% { opacity: 0; } 15%, 85% { opacity: 1; } }
-@keyframes g-flick-away { 0%, 100% { opacity: 0.75; } 15%, 85% { opacity: 0.12; } }
-@keyframes g-land { from { opacity: 0; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }
-
-/* Clean Paste: what Word's formatting looks like going in, and the clean HTML coming out */
-.m-fmt { flex: 1; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
-.m-fmt .doc { padding: 10px; font-size: 13px; line-height: 1.5; overflow: hidden; }
-.m-fmt small { display: block; margin-bottom: 8px; font: 600 10px/1 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
-.m-fmt .word b { font: 700 15px "Times New Roman", Times, serif; color: var(--blue-acc); }
-.m-fmt .word p { margin-top: 3px; font-family: Calibri, Carlito, sans-serif; color: var(--jsal-ink-2); }
-.m-fmt .word mark { padding: 0 2px; background: var(--jsal-fill); color: var(--jsal-on-fill); }
-.m-fmt .word .odd { font: italic 14px Georgia, serif; color: var(--jsal-bad); }
-.m-fmt .html { font: 12px/1.6 "JetBrains Mono", Consolas, monospace; color: var(--jsal-ink-2); }
-.m-fmt .html .ln { display: block; }
-.m-fmt .html .t { color: var(--gold-acc); }
-.mock .to { align-self: center; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; }
-.m-fmt .to { background: var(--gold-acc); color: var(--gold); }
-
-/* Hovering an app tile plays a short loop of what the app does:
-   Image Resizer sends out the resized files one by one;
-   Clean Paste writes out the clean HTML line by line;
-   CMS Picker tries the other platforms in turn while its match stays lit. */
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .tile:is(:hover, :focus-visible) .m-jscale .out, .tile:is(:hover, :focus-visible) .m-jscale .saved { animation: m-line 3s ease-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-jscale .out:nth-child(2) { animation-delay: 0.25s; }
-  .tile:is(:hover, :focus-visible) .m-jscale .out:nth-child(3) { animation-delay: 0.5s; }
-  .tile:is(:hover, :focus-visible) .m-jscale .saved { animation-delay: 0.75s; }
-  .tile:is(:hover, :focus-visible) .m-jscale .to { animation: m-nudge 3s ease-in-out infinite; }
-
-  .tile:is(:hover, :focus-visible) .m-fmt .html .ln { animation: m-line 3s ease-out infinite; }
-  .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(3) { animation-delay: 0.25s; }
-  .tile:is(:hover, :focus-visible) .m-fmt .html .ln:nth-child(4) { animation-delay: 0.5s; }
-  .tile:is(:hover, :focus-visible) .m-fmt .to { animation: m-nudge 3s ease-in-out infinite; }
-  /* Negative delays: every tile's loop is already running, so the sweep starts at once */
-  .tile:is(:hover, :focus-visible) .m-grid > span:not(.hero) { animation: g-try 2.2s calc(var(--n) * 0.2s - 2.2s) infinite; }
-}
-@keyframes m-line { 0%, 10% { opacity: 0; translate: -4px 0; } 25%, 85% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
-@keyframes m-nudge { 0%, 100% { translate: 0 0; } 15% { translate: 3px 0; } 30% { translate: 0 0; } }
-@keyframes g-try { 0%, 8% { border-color: var(--plum-acc); box-shadow: inset 0 0 0 1px var(--plum-acc); } 12%, 100% { border-color: var(--jsal-line); box-shadow: none; } }
-
-.now { grid-column: 1 / 13; background: var(--plain); }
-.now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
-/* Grouped by app: the CMS Picker on the left, the other apps stacked on the right (Site last) */
-.upd { margin: 0; padding: 0; list-style: none; }
-.upd li { display: grid; grid-template-columns: 10em minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--plain-line); }
-.upd-name, .now .upd-name a { font-weight: 600; color: var(--jsal-ink); }   /* ink: each row's icon carries its app's colour */
-.now .upd-name a { text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); }
-.now .upd-name a:hover { text-decoration-color: currentColor; }
-/* Each line starts with its app's icon, the one the logo menu shows; Site's is the logo itself */
-.upd-ico { display: inline-block; width: 20px; height: 20px; margin-right: 10px; vertical-align: -5px; }
-/* The two dark tiles (the Image Resizer, the logo) get the dark-page edge, so they hold on the dark Updates box */
-.upd [data-sec="image-resizer"] .upd-ico, .upd [data-sec="site"] .upd-ico { border-radius: 4px; box-shadow: 0 0 0 1px var(--jsal-mark-edge); }
-.upd time { color: var(--jsal-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
-.upd-all { margin: 12px 0 0; font-weight: 600; }
-.now a { color: var(--jsal-accent); text-underline-offset: 2px; }
+/* Updates: the newest change in each of the three most recently changed parts, as a stack of notes, newest on top,
+   each one whole */
+.now { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
+.now .txt { max-width: 260px; }
+.now .txt a { color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
+.upd { position: absolute; right: 26px; top: 22px; width: min(404px, calc(100% - 340px)); display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.upd li { position: relative; padding: 10px 14px 11px 54px; border-radius: 14px; background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); }
+.upd li:nth-child(1) { z-index: 3; rotate: -1.5deg; }
+.upd li:nth-child(2) { z-index: 2; rotate: 1deg; margin: 0 -14px 0 14px; }
+.upd li:nth-child(3) { z-index: 1; rotate: -0.5deg; margin: 0 6px 0 -6px; }
+.upd-name { display: block; padding-right: 48px; font-size: 13px; font-weight: 700; }
+.upd-ico { position: absolute; left: 14px; top: 50%; translate: 0 -50%; border-radius: 7px; }
+.upd time { position: absolute; right: 14px; top: 11px; color: var(--jsal-muted); }
+.upd-line { display: block; margin-top: 1px; font: 600 16px/1.3 "Lora", Georgia, serif; }
 
 footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
 footer nav { display: flex; gap: 4px; }
 footer a, footer .foot-btn { padding: 8px; color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 2px; }   /* the site's own links: gold, as in every Made by line */
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
-/* Touch screens: the footer links and button at finger size (they're 37px tall with the 8px padding alone) */
-@media (pointer: coarse) { footer a, footer .foot-btn { min-height: 44px; display: inline-flex; align-items: center; } }
+/* The platform guides: a full-width row of plain links in the footer's muted ink, so they don't compete with the tiles */
+.fg { flex: 1 0 100%; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 14px; padding-bottom: 6px; }
+.fg span { margin-right: 4px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+footer .fg a { padding: 4px 0; color: var(--jsal-muted); text-decoration: none; }
+footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
+@media (pointer: coarse) {
+  footer a, footer .foot-btn { min-height: 44px; display: inline-flex; align-items: center; }
+  .hi .txt a:not(.hi-mail)::after, .now .txt a::after { content: ""; position: absolute; inset: -13px -4px; }
+}
 
-@media (max-width: 1100px) {
-  .guides { grid-column: 1 / -1; grid-row: 2; align-self: start; padding-top: 0; }
-  .guides div { grid-template-columns: repeat(5, minmax(0, 1fr)); }   /* five even columns across the full width */
-  .guides a:last-child:nth-child(5n+1) { grid-column: span 5; }
-  .guides a:last-child:nth-child(5n+2) { grid-column: span 4; }
-  .guides a:last-child:nth-child(5n+3) { grid-column: span 3; }
-  .guides a:last-child:nth-child(5n+4) { grid-column: span 2; }
-  .guides a:last-child:nth-child(5n) { grid-column: auto; }
-  .cms { grid-row: 1; }
+/* Narrower desktops and phones on their side: the intro on its own row, the CMS Picker, the Image Resizer and
+   Updates full width, and Clean Paste beside Say hi */
+@media (max-width: 1279px) {
+  .grid { grid-template-rows: none; }
+  .intro { grid-column: 1 / -1; grid-row: auto; padding-right: 0; }
+  .intro p { max-width: 34em; }
+  .cms, .ir, .now { grid-column: 1 / -1; grid-row: auto; }
+  .cms { min-height: 440px; }
+  .ir, .cp, .hi, .now { min-height: 272px; }
+  .cp { grid-column: 1 / 4; grid-row: auto; }
+  .hi { grid-column: 4 / 7; grid-row: auto; }
 }
-/* Below 620px five columns leave "BigCommerce" no room: four even columns, the last tile filling out its row */
-@media (min-width: 521px) and (max-width: 619px) {
-  .guides div { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .guides a:last-child:nth-child(n) { grid-column: auto; }
-  .guides a:last-child:nth-child(4n+1) { grid-column: span 4; }
-  .guides a:last-child:nth-child(4n+2) { grid-column: span 3; }
-  .guides a:last-child:nth-child(4n+3) { grid-column: span 2; }
+/* Phones on their side: a shorter CMS Picker, its brick smaller and anchored to the right, its watermark smaller */
+@media (min-width: 600px) and (max-width: 860px) {
+  .cms { min-height: 300px; }
+  .cms .txt { max-width: 250px; }
+  .pcs { left: auto; right: 310px; top: 46px; translate: 100% 0; --rest: rotate(-10deg) scale(0.66); --hover: rotate(-10deg) scale(0.66) translate(-6px, -6px); }
+  .cms .wm { width: 180px; height: 180px; left: 31px; top: -8px; }
 }
-@media (max-width: 860px) {
-  /* Stacked: the CMS Picker tile first, then the guides, then the other tiles */
-  .guides { grid-row: auto; order: 1; }
-  .cms { grid-row: auto; }
-  .grid > :not(.intro):not(.cms):not(.guides) { order: 2; }
+/* The narrowest of those: a smaller brick inside the tile, narrower words, and room for Say hi's three lines */
+@media (min-width: 600px) and (max-width: 699px) {
+  .cms .txt { max-width: 230px; }
+  .pcs { right: 296px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
+  .cp, .hi { min-height: 304px; }
+}
+/* Too narrow for the output list beside the editor, or for the notes beside the words: the list goes, and the
+   notes stack above the words */
+@media (max-width: 759px) {
+  .outs { display: none; }
+  .now { height: auto; }
+  .now .clip { position: static; overflow: visible; }
+  .upd { position: static; width: auto; max-width: 460px; margin: 0 0 22px; }
+  .upd li:nth-child(n) { margin: 0; }
+  .upd li:nth-child(1) { rotate: -1deg; }
+  .upd li:nth-child(2) { rotate: 0.6deg; }
+  .upd li:nth-child(3) { rotate: -0.4deg; }
+}
+/* One column (phones upright): each tile only as tall as its piece and words, the pieces a little smaller and
+   centred; no watermarks */
+@media (max-width: 599px) {
   .grid > * { grid-column: 1 / -1 !important; }
+  .wm { display: none; }
+  .cms, .ir, .cp, .hi { min-height: 0; }
+  .cms { overflow: hidden; }   /* the smaller brick stays inside the tile */
+  .cms .txt { margin-top: 186px; }   /* room for the brick above the words */
+  .pcs { left: 14px; top: 30px; --rest: rotate(-10deg) scale(0.6); --hover: var(--rest); }
+  /* the editor and the sheet follow their words; a negative margin takes back the room their scaling frees */
+  .ir .clip { position: static; order: 1; overflow: visible; }
+  .ed { position: relative; display: block; left: auto; top: auto; margin: 16px auto -40px; transform-origin: top center; --rest: scale(0.82); --hover: scale(0.82) translateY(-6px); }
+  .sheet { position: relative; left: auto; top: auto; margin: 26px auto -12px; width: min(258px, 100%); transform-origin: top center; --rest: rotate(-2deg) scale(0.9); --hover: rotate(-2deg) scale(0.9) translateY(-6px); }
+  .copied { left: auto; right: -12px; top: -14px; }
+  .hi .txt { margin-top: 136px; }
+  .draft { right: auto; width: min(340px, calc(100% - 52px)); transform-origin: top left; --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
   .intro p { font-size: 16px; }
 }
-#updates, #hi-h { scroll-margin-top: 16px; }   /* #hi-h: where "Say hi" lands */
-/* Phones: the editorial type scaled down rather than squeezed. A smaller name with a shorter
-   indent, one spacing step (14 / 20px) for the grid and tile padding, a smaller corner radius,
-   and only the Updates link kept in the top bar (it's a long scroll down; Email is in Say hi). */
+#updates, #hi-h { scroll-margin-top: 16px; }
+/* Phones: a smaller title and tiles, one spacing step for the grid, and only the Updates link kept in the top bar
+   (Email is in Say hi) */
 @media (max-width: 520px) {
   .jsal-top nav a:not([href="#updates"]) { display: none; }
-  .grid { gap: 14px; }
-  .roles { margin: 0 0 12px; }
+  .grid { gap: 28px; }
   .roles span + span::before { margin: 0 8px; }
-  .intro h1 { font-size: 40px; line-height: 1.05; }
-  .intro p { margin: 16px 0 6px; font-size: 16px; line-height: 1.55; }
-  .cta { margin-top: 18px; }
-  .guides div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .guides a { min-height: 44px; }
-  .guides a:last-child:nth-child(even) { grid-column: auto; }
-  .guides a:last-child:nth-child(odd) { grid-column: span 2; }
+  .intro h1 { font-size: 40px; }
   .tile { padding: 20px; border-radius: 18px; }
-  .jscale { padding: 12px; }
-  .jscale .foot { padding: 0 6px 4px; }
-  .mock { border-radius: 10px; }
-  .m-fmt { grid-template-columns: minmax(0, 1fr); }
-  .m-fmt .to { justify-self: center; rotate: 90deg; }
-  .m-jscale { gap: 10px; padding: 12px; }
-  .m-jscale .out .photo { display: none; }
-  .tile h2 { font-size: 26px; }
-  .ic { padding: 14px 18px; }
-  .ic h2 { font-size: 18px; }
-  .now h2 { font-size: 24px; }
-  .upd li { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; }
-  .upd li > span:nth-child(2) { grid-row: 2; grid-column: 1 / -1; }
+  .clip, .hi-mail::after { border-radius: 18px; }
+  .tile h2 { font-size: 28px; }
+  .cms h2 { font-size: 30px; }
+  .draft { left: 20px; width: calc(100% - 40px); }
   footer { margin-top: 32px; }
 }
-@media (prefers-reduced-motion: reduce) { .tile, .arrow { transition: none; } a.tile:hover, a.tile:hover .arrow, a.tile:focus-visible .arrow { transform: none; } }
-/* Say hi: plain links, a row under Updates */
-.hi { grid-column: 1 / 13; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; padding: 22px 26px; background: var(--plain); }
-.hi h2 { margin: 0; font: italic 600 26px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
-.hi .desc { margin: 0; color: var(--jsal-muted); }
-.hi-links { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-left: auto; }
-.hi-links a { color: var(--jsal-accent); font-weight: 600; text-underline-offset: 3px; }
-@media (pointer: coarse) { .hi-links a { display: inline-flex; align-items: center; min-height: 44px; } }
+/* Pointing at a tile (or focusing it) plays what its tool does three times; on touch screens once, the
+   first time the tile comes into view (the script below sets .play). The cards wave with none singled out, the crop
+   box slides the one way the tool lets it, the clean HTML and the email type themselves. */
+@media (prefers-reduced-motion: no-preference) {
+  .pc { --i: 0; --d: calc((var(--i) * 2 + var(--r, 0)) * 70ms); }
+  .pc:nth-child(2) { --i: 1; }
+  .pc:nth-child(3) { --i: 2; }
+  .pc:nth-child(4) { --i: 3; }
+  .pcs > span:nth-child(even) { --r: 1; }
+  .cms:is(:hover, :focus-visible, .play) .pc { animation: pc-wave 2.4s ease-in-out var(--d) 3; }
+  .ir:is(:hover, :focus-visible, .play) .crop { animation: ir-crop 3.2s ease-in-out 3; }
+  /* each row and line has its own keyframes rather than a delay, so every loop starts them all together; the
+     fading ones stop on their third loop just before they fade (2.86 = the 86% keyframe), so they rest as shown */
+  .ir:is(:hover, :focus-visible, .play) :is(.outs .row, .outs-head span) { animation: var(--k) 3.2s ease-out 2.86 both; }
+  .outs .row:nth-child(2) { --k: ir-r1; }
+  .outs .row:nth-child(3) { --k: ir-r2; }
+  .outs .row:nth-child(4) { --k: ir-r3; }
+  .outs .row:nth-child(5) { --k: ir-r4; }
+  .outs-head span { --k: ir-r5; }
+  .cp:is(:hover, :focus-visible, .play) .sheet .ln { animation: var(--k, cp-l1) 3.4s steps(22, end) 2.88 both; }
+  .sheet .ln:nth-child(2) { --k: cp-l2; }
+  .sheet .ln:nth-child(3) { --k: cp-l3; }
+  .cp:is(:hover, :focus-visible, .play) .copied { animation: cp-copied 3.4s ease-out 2.88 both; }
+  .hi:is(.play, :has(.hi-mail:is(:hover, :focus-visible))) .draft .body i { animation: hi-type 3.6s steps(41, end) 2.9 both; }
+}
+@keyframes pc-wave { 0%, 36%, 100% { translate: 0 0; } 16% { translate: 0 -9px; } }
+@keyframes ir-crop { 0%, 100% { translate: 0 0; } 28% { translate: 0 12px; } 60% { translate: 0 -10px; } 82% { translate: 0 0; } }
+@keyframes ir-r1 { 0%, 9% { opacity: 0; translate: -8px 0; } 19%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
+@keyframes ir-r2 { 0%, 17% { opacity: 0; translate: -8px 0; } 27%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
+@keyframes ir-r3 { 0%, 25% { opacity: 0; translate: -8px 0; } 35%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
+@keyframes ir-r4 { 0%, 33% { opacity: 0; translate: -8px 0; } 43%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
+@keyframes ir-r5 { 0%, 42% { opacity: 0; translate: -8px 0; } 52%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
+@keyframes cp-l1 { 0% { clip-path: inset(0 100% 0 0); } 16%, 88% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
+@keyframes cp-l2 { 0%, 13% { clip-path: inset(0 100% 0 0); } 29%, 88% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
+@keyframes cp-l3 { 0%, 26% { clip-path: inset(0 100% 0 0); } 42%, 88% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
+@keyframes cp-copied { 0%, 46% { opacity: 0; scale: 0.6; } 54% { opacity: 1; scale: 1.12; } 60%, 88% { opacity: 1; scale: 1; } 100% { opacity: 0; scale: 1; } }
+@keyframes hi-type { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .tile, .obj, .cta a { transition: none; }
+  a.tile:hover, .hi:has(.hi-mail:hover), .cta a:hover { transform: none; }
+  a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--rest, none); }
+}
 </style>
 </head>
 <body>
@@ -426,133 +379,113 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     <section class="intro">
       <div class="roles"><span>John Salvador</span><span>Technical SEO</span></div>
       <h1>Small tools that do <em>one job</em> well.</h1>
-      <p>Start with the CMS Picker: answer a few questions to see which website platform fits you, and what it lets you change for SEO. The others are quick, lightweight helpers for the small jobs around a site.</p>
-      <div class="cta"><a class="main" href="/cms-picker/">Find your CMS</a><a class="alt" href="#hi-h">Say hi</a></div>
+      <p>Start with the CMS Picker: answer a few questions to see which website platform fits you, and what it lets you change for SEO.</p>
+      <div class="cta"><a href="/cms-picker/">Find your CMS</a></div>
     </section>
-    <!-- Platform guides: the CMS Picker's one page per platform (its SEO settings and where to find each). Under the intro, its bottom level with the
-       tile's; from 1100px down it takes the full width under both; written by hand in the publish's platform order -->
-    <nav class="guides" aria-labelledby="guides-h"><p class="label" id="guides-h">Platform guides</p><div><a href="/cms-picker/wordpress/" style="--logo: url(/cms-picker/logos/wordpress.svg)">WordPress</a><a href="/cms-picker/shopify/" style="--logo: url(/cms-picker/logos/shopify.svg)">Shopify</a><a class="wm" href="/cms-picker/wix/" style="--logo: url(/cms-picker/logos/wix.svg)">Wix</a><a href="/cms-picker/squarespace/" style="--logo: url(/cms-picker/logos/squarespace.svg)">Squarespace</a><a href="/cms-picker/webflow/" style="--logo: url(/cms-picker/logos/webflow.svg)">Webflow</a><a href="/cms-picker/framer/" style="--logo: url(/cms-picker/logos/framer.svg)">Framer</a><a href="/cms-picker/hubspot/" style="--logo: url(/cms-picker/logos/hubspot.svg)">HubSpot CMS</a><a href="/cms-picker/bigcommerce/" style="--logo: url(/cms-picker/logos/bigcommerce.svg)">BigCommerce</a><a href="/cms-picker/magento/" style="--logo: url(/cms-picker/logos/magento.svg)">Magento 2</a><a href="/cms-picker/drupal/" style="--logo: url(/cms-picker/logos/drupal.svg)">Drupal</a><a class="wm" href="/cms-picker/duda/" style="--logo: url(/cms-picker/logos/duda.svg)">Duda</a><a href="/cms-picker/ghost/" style="--logo: url(/cms-picker/logos/ghost.svg)">Ghost</a><a href="/cms-picker/sanity/" style="--logo: url(/cms-picker/logos/sanity.svg)">Sanity</a><a class="all" href="/cms-picker/#seo">Compare all 13<span aria-hidden="true">→</span></a></div></nav>
 
-    <!-- App tiles (data-app marks the ones that open a tool). CMS Picker is the big one beside
-         the intro; then Image Resizer (wide) and Clean Paste, then the team's Playbook. The wide tile swaps
-         sides each row. -->
+    <!-- App tiles (data-app marks the ones that open a tool): the pictures are decoration, hidden from screen readers -->
     <a class="tile cms" href="/cms-picker/" data-app>
-      <div class="mock m-grid" aria-hidden="true">
-        <span class="hero" style="--n: 0"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i><b class="ask">?</b></span><span style="--n: 1"><i class="logo" style="--k: 0; --logo: url(/cms-picker/logos/wordpress.svg)"></i></span><span style="--n: 2"><i class="logo" style="--k: 1; --logo: url(/cms-picker/logos/shopify.svg)"></i></span><span style="--n: 3"><i class="logo" style="--k: 2; --logo: url(/cms-picker/logos/wix.svg)"></i></span><span style="--n: 4"><i class="logo" style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span style="--n: 5"><i class="logo" style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span style="--n: 6"><i class="logo" style="--k: 4; --logo: url(/cms-picker/logos/framer.svg)"></i></span><span style="--n: 7"><i class="logo" style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span style="--n: 8"><i class="logo" style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span style="--n: 9"><i class="logo" style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span style="--n: 10"><i class="logo" style="--k: 3; --logo: url(/cms-picker/logos/ghost.svg)"></i></span><span style="--n: 11"><i class="logo" style="--k: 5; --logo: url(/cms-picker/logos/sanity.svg)"></i></span>
-        <p class="fitline" style="--n: 12"><em class="tag">Best fit</em><span>for <span class="rot"><b style="--k: 0">a blog</b><b style="--k: 1">a small shop</b><b style="--k: 2">a local business</b><b style="--k: 3">a paid newsletter</b><b style="--k: 4">a photographer</b><b style="--k: 5">an app and a site</b><b class="you">your site?</b></span></span></p>
+      <div class="clip" aria-hidden="true">
+        <svg class="wm" viewBox="0 0 32 32" width="280" height="280"><path class="s" d="M9 19v5M16 14v10M23 21v3" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path class="g" d="M16 4.5l3 3-3 3-3-3z"/></svg>
       </div>
-      <div class="foot">
-        <div>
-          <p class="label">web app</p>
-          <h2><img class="tile-ico" src="/img/icons/cms-picker.svg" alt="" width="32" height="32">CMS Picker</h2>
-          <p class="desc">Find the CMS that fits in a few questions, or compare 13 platforms: who each one suits, what it costs to start, and what you can change for SEO and AI search.</p>
-        </div>
-        <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-      </div>
-    </a>
-
-    <a class="tile jscale" href="/image-resizer/" data-app>
-      <div class="shot mock m-jscale" aria-hidden="true">
-        <div class="pile">
-          <i class="photo back" style="filter: hue-rotate(150deg) brightness(0.9)"></i><i class="photo back2" style="filter: hue-rotate(-60deg) saturate(0.8) brightness(0.9)"></i><i class="photo"></i>
-          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-          <span class="tag">3 photos · 12.4 MB</span>
-        </div>
-        <span class="to"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-        <div class="outs">
-          <span class="out box"><i class="photo"></i><span><b>1600 × 1200</b>WebP · 186 KB</span></span>
-          <span class="out box"><i class="photo" style="filter: hue-rotate(150deg)"></i><span><b>1600 × 1200</b>WebP · 203 KB</span></span>
-          <span class="out box"><i class="photo" style="filter: hue-rotate(-60deg) saturate(0.8)"></i><span><b>1600 × 1200</b>WebP · 171 KB</span></span>
-          <span class="saved">95% smaller</span>
-        </div>
-      </div>
-      <div class="foot">
-        <div>
-          <p class="label">web app</p>
-          <h2><img class="tile-ico" src="/img/icons/image-resizer.svg" alt="" width="32" height="32">Image Resizer</h2>
-          <p class="desc">Resize, crop and convert one image or a whole batch in the browser. Nothing is uploaded.</p>
-        </div>
-        <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+      <span class="obj pcs" aria-hidden="true">
+        <span><span class="pc pc-light p-wordpress"><i style="--logo: url(/cms-picker/logos/wordpress.svg)"></i></span><span class="pc p-wix"><i class="wide wix" style="--logo: url(/cms-picker/logos/wix.svg)"></i></span><span class="pc p-substack"><i style="--logo: url(/cms-picker/logos/substack.svg)"></i></span><span class="pc p-shopify"><i style="--logo: url(/cms-picker/logos/shopify.svg)"></i></span></span>
+        <span><span class="pc pc-light p-squarespace"><i style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span class="pc p-webflow"><i style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span class="pc p-framer"><i style="--logo: url(/cms-picker/logos/framer.svg)"></i></span></span>
+        <span><span class="pc p-hubspot"><i style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span class="pc p-square"><i style="--logo: url(/cms-picker/logos/square.svg)"></i></span><span class="pc p-drupal"><i style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span class="pc pc-light p-duda"><i class="wide" style="--logo: url(/cms-picker/logos/duda.svg)"></i></span></span>
+        <span><span class="pc p-bigcommerce"><i style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span class="pc p-sanity"><i style="--logo: url(/cms-picker/logos/sanity.svg)"></i></span><span class="pc p-ghost"><i style="--logo: url(/cms-picker/logos/ghost.svg)"></i></span></span>
+      </span>
+      <div class="txt">
+        <h2>CMS Picker</h2>
+        <p>Find the CMS that fits in a few questions, or compare 14 platforms side by side.</p>
       </div>
     </a>
 
-    <a class="tile fmt" href="/formatter/" data-app>
-      <div class="mock m-fmt" aria-hidden="true">
-        <div class="doc box word"><small>From Word</small><b>Spring menu</b><p>Our <mark>new dishes</mark> are&nbsp;&nbsp; here, with <span class="odd">seasonal</span> picks.</p></div>
-        <span class="to"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-        <div class="doc box html"><small>Clean HTML</small><span class="ln"><span class="t">&lt;h2&gt;</span>Spring menu<span class="t">&lt;/h2&gt;</span></span><span class="ln"><span class="t">&lt;p&gt;</span>Our new dishes are here,</span><span class="ln">with seasonal picks.<span class="t">&lt;/p&gt;</span></span></div>
+    <a class="tile ir" href="/image-resizer/" data-app>
+      <div class="clip" aria-hidden="true">
+        <svg class="wm" viewBox="0 0 32 32" width="180" height="180"><mask id="wm-ir-cut"><rect width="32" height="32" fill="#fff"/><path d="M22.5 16.6l5.9 5.9-5.9 5.9-5.9-5.9z"/></mask><path class="s" d="M6 6h14v14H6z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" mask="url(#wm-ir-cut)"/><path class="g" d="M22.5 18l4.5 4.5-4.5 4.5-4.5-4.5z"/></svg>
+        <span class="obj paper ed">
+          <span class="ed-head mono">bread.jpg<span>6048 × 4024</span></span>
+          <span class="ed-photo"><img src="/img/home/bakery.webp" alt="" width="392" height="268"><span class="crop"><i></i><i></i><i></i><i></i></span></span>
+          <span class="sizes mono"><span class="on">1200 × 628</span><span>640 × 420</span><span class="plain">Original</span></span>
+        </span>
       </div>
-      <div class="foot">
-        <div>
-          <p class="label">web app</p>
-          <h2><img class="tile-ico" src="/img/icons/clean-paste.svg" alt="" width="32" height="32">Clean Paste</h2>
-          <p class="desc">Paste from Word or Google Docs, get clean HTML. Works both ways: HTML to formatted text, and back.</p>
-        </div>
-        <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-      </div>
-    </a>
-
-
-    <a class="tile ic" href="/ic/" data-app>
-      <div class="foot">
-        <div class="ic-line"><h2><img class="tile-ico" src="/img/icons/platform-playbook.svg" alt="" width="32" height="32">Platform Playbook</h2><span class="pill"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Sign-in, approved team only</span></div>
-        <span class="arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+      <span class="obj paper outs mono" aria-hidden="true">
+        <span class="outs-head">Output<span>95% smaller</span></span>
+        <span class="row"><img src="/img/home/bakery.webp" alt="" width="392" height="268"><span><b>1200 × 628</b>WebP · 182 KB</span></span>
+        <span class="row"><img src="/img/home/hills.webp" alt="" width="392" height="268"><span><b>1200 × 628</b>WebP · 203 KB</span></span>
+        <span class="row"><img src="/img/home/florist.webp" alt="" width="392" height="268"><span><b>1200 × 628</b>WebP · 171 KB</span></span>
+        <span class="row"><img src="/img/home/coffee.webp" alt="" width="392" height="268"><span><b>1200 × 628</b>WebP · 158 KB</span></span>
+      </span>
+      <div class="txt">
+        <h2>Image Resizer</h2>
+        <p>Resize, crop and convert one image or a whole batch. Nothing is uploaded.</p>
       </div>
     </a>
 
+    <a class="tile cp" href="/formatter/" data-app>
+      <div class="txt">
+        <h2>Clean Paste</h2>
+        <p>Paste from Word or Google Docs, get clean HTML.</p>
+      </div>
+      <div class="clip" aria-hidden="true">
+        <svg class="wm" viewBox="0 0 32 32" width="170" height="170"><path class="s" d="M8 10h16M8 16h13M8 22h9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path class="g" d="M22.5 18.5l2.5 2.5-2.5 2.5-2.5-2.5z"/></svg>
+      </div>
+      <span class="obj paper sheet" aria-hidden="true"><span class="mono">CLEAN HTML</span><code><span class="ln"><i>&lt;h2&gt;</i>Spring menu<i>&lt;/h2&gt;</i></span><span class="ln"><i>&lt;p&gt;</i>Our new dishes are here.<i>&lt;/p&gt;</i></span><span class="ln"><i>&lt;ul&gt;&lt;li&gt;</i>Spring pea risotto<i>&lt;/li&gt;</i></span></code><span class="obj copied"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>Copied</span></span>
+    </a>
 
+    <!-- Say hi: the heading's link (email) covers the tile; the draft above it is decoration -->
+    <section class="tile hi" aria-labelledby="hi-h">
+      <span class="obj paper draft" aria-hidden="true">
+        <span>New message<i>×</i></span>
+        <span><em>To</em><b>dev@jsal.io</b></span>
+        <span><em>Subject</em>A question about the tools</span>
+        <span class="body"><i>Hi John, I was trying the CMS Picker and…</i></span>
+      </span>
+      <div class="txt">
+        <h2 id="hi-h"><a class="hi-mail" href="mailto:dev@jsal.io">Say hi<span class="sr-only"> by email</span></a></h2>
+        <p>Questions, tool ideas or SEO talk. Also on <a href="https://github.com/superjsal">GitHub</a>.</p>
+      </div>
+    </section>
 
-    <!-- Site updates, newest first. "Currently" (the WoW tile) says what I'm up to; this lists what shipped. -->
+    <!-- Site updates: the newest change in each of the three most recently changed parts of the site -->
     <section id="updates" class="tile now" aria-labelledby="updates-h">
-      <h2 id="updates-h">Updates</h2>
-      <!-- updates:start (the latest change for each part of the site, written from the changelog; never edited by hand) -->
+      <div class="clip">
+      <!-- updates:start (the latest changes, written from the changelog; never edited by hand) -->
       <ul class="upd">
-        <li data-sec="cms-picker"><span class="upd-name"><img class="upd-ico" src="/img/icons/cms-picker.svg" alt="" width="20" height="20"><a href="/cms-picker/">CMS Picker</a></span><span>The need you pick now comes first</span><time datetime="2026-11-01">Nov 1</time></li>
-        <li data-sec="clean-paste"><span class="upd-name"><img class="upd-ico" src="/img/icons/clean-paste.svg" alt="" width="20" height="20"><a href="/formatter/">Clean Paste</a></span><span>Copy says Copied; Clear can be undone</span><time datetime="2026-10-30">Oct 30</time></li>
-        <li data-sec="image-resizer"><span class="upd-name"><img class="upd-ico" src="/img/icons/image-resizer.svg" alt="" width="20" height="20"><a href="/image-resizer/">Image Resizer</a></span><span>Saves PNG, with transparency</span><time datetime="2026-10-30">Oct 30</time></li>
-        <li data-sec="off-the-clock"><span class="upd-name"><img class="upd-ico" src="/img/icons/off-the-clock.svg" alt="" width="20" height="20"><a href="/play/">Off the clock</a></span><span>Its own page: WoW, my UI, the backpack</span><time datetime="2026-10-31">Oct 31</time></li>
-        <li data-sec="site"><span class="upd-name"><img class="upd-ico" src="/img/icons/jsal-io.svg" alt="" width="20" height="20">Site</span><span>A logo: the j and its gem</span><time datetime="2026-11-01">Nov 1</time></li>
+        <li data-sec="cms-picker"><span class="upd-name"><img class="upd-ico" src="/img/icons/cms-picker.svg" alt="" width="28" height="28">CMS Picker</span><time class="mono" datetime="2026-11-01">Nov 1</time><span class="upd-line">The need you pick now comes first</span></li>
+        <li data-sec="site"><span class="upd-name"><img class="upd-ico" src="/img/icons/jsal-io.svg" alt="" width="28" height="28">Site</span><time class="mono" datetime="2026-11-01">Nov 1</time><span class="upd-line">A logo: the j and its gem</span></li>
+        <li data-sec="off-the-clock"><span class="upd-name"><img class="upd-ico" src="/img/icons/off-the-clock.svg" alt="" width="28" height="28">Off the clock</span><time class="mono" datetime="2026-10-31">Oct 31</time><span class="upd-line">Its own page: WoW, my UI, the backpack</span></li>
       </ul>
       <!-- updates:end -->
-      <p class="upd-all"><a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>
+      </div>
+      <div class="txt">
+        <h2 id="updates-h">Updates</h2>
+        <p>What changed on the site, newest first. <a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>
+      </div>
     </section>
-
-    <!-- Say hi: plain ways to get in touch; the game-styled backpack lives on /play/ -->
-    <section class="tile hi" aria-labelledby="hi-h">
-      <h2 id="hi-h">Say hi</h2>
-      <p class="desc">Questions, tool ideas or SEO talk.</p>
-      <nav class="hi-links" aria-label="Get in touch"><a href="mailto:dev@jsal.io">Email</a><a href="https://github.com/superjsal">GitHub</a><a class="play" href="/play/">Off the clock <span aria-hidden="true">→</span></a></nav>
-    </section>
-
   </main>
 
   <footer>
+    <!-- Platform guides: the CMS Picker's page per platform, in its order, as a quiet row of links -->
+    <nav class="fg" aria-label="Platform guides"><span aria-hidden="true">Platform guides</span><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/webflow/">Webflow</a><a href="/cms-picker/framer/">Framer</a><a href="/cms-picker/hubspot/">HubSpot CMS</a><a href="/cms-picker/bigcommerce/">BigCommerce</a><a href="/cms-picker/drupal/">Drupal</a><a href="/cms-picker/duda/">Duda</a><a href="/cms-picker/ghost/">Ghost</a><a href="/cms-picker/sanity/">Sanity</a><a href="/cms-picker/square/">Square Online</a><a href="/cms-picker/substack/">Substack</a></nav>
     <span><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>© <span id="y">2026</span> John Salvador</span>
-    <nav aria-label="Elsewhere"><a href="/privacy/">Privacy</a><button type="button" class="foot-btn" data-jsal-consent>Analytics</button></nav>
+    <nav aria-label="Elsewhere"><a href="/play/">Off the clock</a><a href="/privacy/">Privacy</a><button type="button" class="foot-btn" data-jsal-consent>Analytics</button></nav>
   </footer>
 </div>
 <script>
 document.getElementById('y').textContent = new Date().getFullYear();
-// Tiles tilt toward the mouse (up to 4°) with a light that follows it; the CSS decides when it applies
-if (matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
-  document.querySelectorAll('a.tile').forEach((tile) => {
-    let frame = 0;
-    tile.addEventListener('pointermove', (e) => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const r = tile.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-        tile.style.setProperty('--ry', `${((x - 0.5) * 8).toFixed(2)}deg`);
-        tile.style.setProperty('--rx', `${((0.5 - y) * 8).toFixed(2)}deg`);
-        tile.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
-        tile.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
-        tile.classList.add('tilt');
-      });
-    });
-    tile.addEventListener('pointerleave', () => { cancelAnimationFrame(frame); tile.classList.remove('tilt'); });
-  });
+// Touch screens have no hover: each tile's picture plays once, the first time half the tile is in the middle of the
+// screen (not while the tile above is still being read), and stops before the loop would fade, so it rests as it started
+if (matchMedia('(hover: none)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window) {
+  const seen = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    seen.unobserve(e.target);
+    e.target.classList.add('play');
+    setTimeout(() => e.target.classList.remove('play'), 2900);
+  }), { rootMargin: '-20% 0px -20% 0px', threshold: 0.5 });
+  document.querySelectorAll('.cms, .ir, .cp, .hi').forEach((tile) => seen.observe(tile));
 }
 </script>
-<script src="/nav.js?v=d300daf6" defer></script>
+<script src="/nav.js?v=0981537d" defer></script>
 </body>
 </html>

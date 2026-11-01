@@ -132,8 +132,8 @@ TOOLS = {   # file name: (tile colour, glyph drawn in ink with the gem's colour,
     'cms-picker': ('#674690', lambda ink, g, bg: stroke('M9 19v5M16 14v10M23 21v3', ink, 4) + gem_at(16, 7.5, 3, g)),
     # Tidy lines of text ending in the gem as their full stop, as the name does
     'clean-paste': ('#5e430b', lambda ink, g, bg: stroke('M8 10h16M8 16h13M8 22h9', ink) + gem_at(22.5, 21, 2.5, g)),
-    # A picture's frame with the gem as the corner handle you drag to resize it
-    'image-resizer': (INK, lambda ink, g, bg: (
+    # A picture's frame with the gem as the corner handle you drag to resize it, on the Image Resizer's teal
+    'image-resizer': ('#2a6a61', lambda ink, g, bg: (
         f'<mask id="cut"><rect width="32" height="32" fill="#fff"/><path d="M22.5 16.6l5.9 5.9-5.9 5.9-5.9-5.9z"/></mask>'
         f'<g mask="url(#cut)">{stroke(FRAME, ink)}</g>' + gem_at(22.5, 22.5, 4.5, g))),
     # A checklist of steps: two done, and the gem marking the one you're on
