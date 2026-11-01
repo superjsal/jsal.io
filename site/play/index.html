@@ -175,58 +175,83 @@ p, li { text-wrap: pretty; }
 @media (max-width: 340px) { .ach-list { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .ach-bar i { transition: none; } }
 
-/* Say hi (the backpack): a plain surface, so cream stays the Image Resizer's colour */
-.mail { grid-column: 9 / 13; background: var(--plain); color: var(--jsal-ink); display: flex; flex-direction: column; gap: 4px; }
-.mail .label, .mail .desc { color: var(--jsal-muted); }
-/* Backpack: where to find me, as gear in a game bag. The tile is the bag (stitched leather, a portrait
-   and title bar like a bag window) and keeps its look in both themes, like the WoW Forever tile. Items
-   are painted icons in WoW's item-quality colours; hover, focus or tap one for its tooltip. */
+/* Say hi (the backpack): the socials as gear in a bag window drawn after the original game's, with a stone frame,
+   a round portrait and a leather title bar. It keeps its look in both themes, like the WoW Forever tile. The items
+   are Blizzard's own icons, shown as Blizzard serves them; hover, focus or tap one for its tooltip. */
+.mail { grid-column: 9 / 13; display: flex; flex-direction: column; gap: 4px; }
 .mail.pack {
   --q-legendary: #ff8000; --q-epic: #a335ee; --q-rare: #0070dd; --q-uncommon: #1eff00; --q-common: #ffffff;
   --cast-hi: #ffd84a; --cast-lo: #b8820f;
-  --pk-hi: #7a4e2a; --pk-top: #5c3a20; --pk-mid: #3a2412; --pk-low: #24160a; --pk-edge: #1a0f06;
-  --pk-shine: rgb(255 220 160 / 0.15); --pk-stitch: rgb(240 205 140 / 0.4);
-  --pk-ink: #f5e6c8; --pk-title: #fbeccd; --pk-text: #f1e4c9; --pk-label: #f4dca8;
-  --pk-gold: #d4a94a; --pk-gold-edge: #3a2206; --pk-pocket: rgb(14 9 5 / 0.82);
-  --pk-empty-line: #2a1a0c; --pk-empty-hi: #2a1d12; --pk-empty-low: #150d06;
-  --pk-black: #000; --tip-bg: rgb(8 10 16 / 0.96); --tip-name: #fff; --tip-line: #5a6b8a; --tip-ink: #e8e8e8; --tip-muted: #8a8f9c; --tip-use: #1eff00; --tip-flavor: #ffd100;
-  position: relative; isolation: isolate; color: var(--pk-ink);
-  background: radial-gradient(120% 90% at 30% 0%, var(--pk-hi), transparent 60%), linear-gradient(160deg, var(--pk-top), var(--pk-mid) 55%, var(--pk-low));
-  box-shadow: inset 0 0 0 1px var(--pk-edge), inset 0 2px 0 var(--pk-shine), 0 10px 24px -14px rgb(0 0 0 / 0.6);
+  --st-hi: #57534b; --st-mid: #3a3732; --st-low: #2a2825; --st-bevel: #77726a; --st-dark: #1c1b19; --st-inner: #4a4640; --st-rim: #8a857a;
+  --lt-hi: #6a4422; --lt-low: #3e2610; --lt-edge: #1a0e04; --lt-shine: rgb(255 210 150 / 0.2);
+  --pk-ink: #f1e4c9; --pk-title: #ffd100; --pk-title-edge: #3a2a00; --pk-text: #e6dcc6; --pk-label: #e0c890; --pk-muted: #b8b0a0;
+  --pk-well: #0c0c0b; --pk-well-rim: #5a564e; --pk-empty-hi: #34322f; --pk-empty-low: #141412; --pk-empty-line: #4a4640;
+  --new-ring: rgb(255 240 180 / 0.9); --new-glow: rgb(255 220 120 / 0.55); --shine: rgb(255 200 120 / 0.6);
+  --b-email: #b8820f; --b-discord: #5865f2; --b-steam: #1b2838; --b-github: #24292f; --b-logo: #fff;
+  --pk-black: #000; --tip-bg: rgb(8 10 16 / 0.96); --tip-name: #fff; --tip-line: #5a6b8a; --tip-ink: #e8e8e8; --tip-muted: #8a8f9c; --tip-use: #1eff00; --tip-flavor: #ffd100; --tip-error: #ff2020;
+  --pk-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  position: relative; isolation: isolate; padding-top: 20px; border-radius: 40px 12px 12px; color: var(--pk-ink);
+  background: var(--pk-grain), linear-gradient(160deg, var(--st-hi), var(--st-mid) 50%, var(--st-low));
+  box-shadow: inset 0 0 0 1px var(--pk-black), inset 0 0 0 4px var(--st-bevel), inset 0 0 0 5px var(--st-dark), inset 0 0 0 7px var(--st-inner), 0 12px 28px -14px rgb(0 0 0 / 0.7);
 }
-.mail.pack::before { content: ""; position: absolute; inset: 9px; z-index: -1; border-radius: 15px; border: 1.5px dashed var(--pk-stitch); pointer-events: none; }
 .mail.pack .label { color: var(--pk-label); }
 .mail.pack .desc { color: var(--pk-text); margin-top: 12px !important; }
-.pack-h { display: flex; align-items: center; gap: 14px; }
-.pack-h h2 { margin: 0; font: 700 24px/1.1 "Lora", Georgia, serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black); }
-.portrait { flex: none; width: 54px; height: 54px; border-radius: 50%; overflow: hidden; border: 3px solid var(--pk-gold); box-shadow: 0 0 0 1px var(--pk-gold-edge), 0 3px 8px rgb(0 0 0 / 0.5); }
-.portrait svg { display: block; width: 100%; height: 100%; }
-.pack-h .count { margin-left: auto; font: 600 12px "JetBrains Mono", Consolas, monospace; color: var(--pk-label); }
-.bag { position: relative; flex: 1; display: flex; flex-direction: column; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-pocket); box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.7), 0 1px 0 var(--pk-shine); }
-.slots { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: max-content; align-content: center; justify-content: center; gap: 8px; }   /* the script below fills it with empty slots */
+.pack-h { display: flex; align-items: center; gap: 14px; padding: 6px 12px 6px 0; border-radius: 30px 8px 8px 30px; background: linear-gradient(var(--lt-hi), var(--lt-low)); box-shadow: inset 0 0 0 1px var(--lt-edge), inset 0 1px 0 var(--lt-shine), 0 2px 4px rgb(0 0 0 / 0.5); }
+.pack-h h2 { margin: 0; font: 700 24px/1.1 "Lora", Georgia, serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black), 0 0 10px rgb(0 0 0 / 0.6); }
+.portrait { flex: none; width: 64px; height: 64px; margin: -10px 0 -10px -6px; border-radius: 50%; overflow: hidden; border: 4px solid var(--st-rim); box-shadow: 0 0 0 2px var(--st-dark), 0 4px 10px rgb(0 0 0 / 0.7); }
+.portrait img, .slot img, .bagtab img { display: block; width: 100%; height: 100%; }
+.bag { position: relative; display: grid; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-well); box-shadow: inset 0 0 0 2px var(--st-dark), inset 0 0 0 3px var(--pk-well-rim), inset 0 2px 12px rgb(0 0 0 / 0.9); }
+/* Both bags share one cell, so switching between them never changes the tile's height */
+.slots { grid-area: 1 / 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: center; gap: 8px; }
+.slots.pouch { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.slots[inert] { visibility: hidden; }
 .slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: var(--jsal-radius); border: 2px solid var(--q); background: var(--pk-black); box-shadow: 0 0 0 1px var(--pk-black), 0 0 12px -3px var(--q); cursor: pointer; font: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
-.slot svg { display: block; width: 100%; height: 100%; }
-/* Bevel and gloss over the icon, like game icons */
-.slot::after { content: ""; position: absolute; inset: 0; border-radius: var(--jsal-radius-sm); pointer-events: none; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18), inset 0 0 10px rgb(0 0 0 / 0.6); background: linear-gradient(to bottom, rgb(255 255 255 / 0.16), transparent 42%); }
+/* A soft bevel over the icon, as the game draws its slots */
+.slot::after { content: ""; position: absolute; inset: 0; border-radius: var(--jsal-radius-sm); pointer-events: none; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 0 6px rgb(0 0 0 / 0.55); background: linear-gradient(to bottom, rgb(255 255 255 / 0.08), transparent 40%); }
 .slot:hover, .slot:focus-visible, .slot.on { transform: translateY(-2px) scale(1.04); filter: brightness(1.15) saturate(1.1); box-shadow: 0 0 0 1px var(--pk-black), 0 0 20px -1px var(--q); outline: none; z-index: 1; }
-.slot.empty { border: 1px solid var(--pk-empty-line); background: radial-gradient(circle at 50% 40%, var(--pk-empty-hi), var(--pk-empty-low)); box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.7); cursor: default; }
+.slot.empty { border: 1px solid var(--pk-black); background: radial-gradient(circle at 50% 35%, var(--pk-empty-hi), var(--pk-empty-low)); box-shadow: inset 0 0 0 1px var(--pk-empty-line), inset 0 4px 8px rgb(0 0 0 / 0.85); cursor: default; }
 .slot.empty::after { display: none; }
+/* A social's logo in the corner of its icon, so it's known at a glance */
+.badge { position: absolute; z-index: 2; right: 3px; bottom: 3px; width: 20px; height: 20px; padding: 3px; border-radius: 50%; background: var(--b); box-shadow: 0 0 0 1.5px var(--pk-black), 0 1px 3px rgb(0 0 0 / 0.7); }
+.badge svg { display: block; width: 100%; height: 100%; }
+/* New loot glows until it's inspected: it pulses three times, then stays lit */
+.slot.new::before { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: var(--jsal-radius-sm); pointer-events: none; box-shadow: inset 0 0 0 1.5px var(--new-ring), inset 0 0 10px var(--new-glow); animation: new-pulse 1.4s ease-in-out 3; }
+@keyframes new-pulse { 50% { opacity: 0.3; } }
+/* The legendary letter shimmers once, when the bag first comes into view */
+.slot.shine::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(115deg, transparent 30%, var(--shine) 48%, transparent 66%) -150% 0 / 250% 100% no-repeat; animation: shine 1.2s ease-out forwards; }
+@keyframes shine { to { background-position: 250% 0; } }
+/* The Hearthstone's cooldown after use, a clock wipe as in game */
+@property --cd { syntax: "<angle>"; inherits: false; initial-value: 360deg; }
+.slot.cd::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: conic-gradient(transparent var(--cd), rgb(0 0 0 / 0.7) 0); animation: cooldown 10s linear forwards; }
+@keyframes cooldown { from { --cd: 0deg; } to { --cd: 360deg; } }
+/* Floating text over an item: "Copied!", or a red error when it isn't ready */
+.float { position: absolute; z-index: 4; translate: -50% 0; font: 700 15px/1 var(--jsal-font); color: var(--tip-flavor); text-shadow: 0 1px 0 var(--pk-black), 0 0 6px rgb(0 0 0 / 0.9); white-space: nowrap; pointer-events: none; animation: float-up 1.4s ease-out forwards; }
+.float.err { color: var(--tip-error); }
+@keyframes float-up { 0% { opacity: 0; transform: translateY(4px); } 15%, 70% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
 /* The tooltip floats over the bag next to the item, like in game */
-.tip { position: absolute; z-index: 2; width: 250px; padding: 10px 12px; border-radius: var(--jsal-radius); background: var(--tip-bg); border: 1px solid var(--tip-line); box-shadow: 0 8px 24px rgb(0 0 0 / 0.5); font-size: 13px; line-height: 1.5; color: var(--tip-ink); }   /* takes the pointer, so it can be hovered (WCAG 1.4.13) */
+.tip { position: absolute; z-index: 5; width: 250px; padding: 10px 12px; border-radius: var(--jsal-radius); background: var(--tip-bg); border: 1px solid var(--tip-line); box-shadow: 0 8px 24px rgb(0 0 0 / 0.5); font-size: 13px; line-height: 1.5; color: var(--tip-ink); }   /* takes the pointer, so it can be hovered (WCAG 1.4.13) */
 .tip .t { font-size: 15px; font-weight: 700; }
 .tip .w { color: var(--tip-name); }
 .tip .s { color: var(--tip-muted); }
 .tip .u { color: var(--tip-use); }
 .tip .f { color: var(--tip-flavor); font-style: italic; }
 /* Hearthstone's cast bar, then back to the top */
-.cast { position: absolute; z-index: 3; left: 50%; bottom: 16px; translate: -50% 0; width: min(70%, 260px); height: 22px; overflow: hidden; border-radius: var(--jsal-radius-sm); border: 1px solid var(--pk-gold); background: var(--pk-black); box-shadow: 0 4px 14px rgb(0 0 0 / 0.6); }
+.cast { position: absolute; z-index: 6; left: 50%; bottom: 16px; translate: -50% 0; width: min(70%, 260px); height: 22px; overflow: hidden; border-radius: var(--jsal-radius-sm); border: 1px solid var(--pk-title); background: var(--pk-black); box-shadow: 0 4px 14px rgb(0 0 0 / 0.6); }
 .cast-fill { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(var(--cast-hi), var(--cast-lo)); }
 .cast.go .cast-fill { animation: cast 1.5s linear forwards; }
 .cast-name { position: relative; display: block; font: 600 12px/20px var(--jsal-font); text-align: center; color: var(--tip-name); text-shadow: 0 1px 2px var(--pk-black); }
 @keyframes cast { to { width: 100%; } }
-@media (max-width: 860px) { .slots { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); } }   /* full width: as many slots as fit */
-@media (max-width: 520px) { .slots { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (prefers-reduced-motion: reduce) { .cast.go .cast-fill { animation-duration: 0.3s; } .slot { transition: none; } .slot:hover, .slot:focus-visible, .slot.on { transform: none; } }
+/* The bag bar switches between the backpack and the trophies, as the game's bag buttons do */
+.bagbar { display: flex; gap: 8px; margin-top: 10px; }
+.bagtab { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 40px; padding: 4px 10px 4px 4px; border-radius: var(--jsal-radius); border: 1px solid var(--pk-well-rim); background: var(--st-dark); color: var(--pk-text); font: 600 13px/1.2 var(--jsal-font); cursor: pointer; }
+.bagtab .bi { flex: none; width: 28px; height: 28px; overflow: hidden; border-radius: 6px; box-shadow: 0 0 0 1px var(--pk-black); }
+.bagtab em { margin-left: auto; font: 600 12px "JetBrains Mono", Consolas, monospace; font-style: normal; color: var(--pk-label); }
+.bagtab[aria-selected="true"] { border-color: var(--pk-title); box-shadow: 0 0 0 1px var(--pk-title-edge), 0 0 10px -2px var(--pk-title); color: var(--tip-name); }   /* style: allow (the bag's own game look, the same in both themes) */
+.bagtab:focus-visible { outline: 2px solid var(--pk-title); outline-offset: 2px; }
+.pack-credit { margin: 8px 2px 0; font-size: 12px; color: var(--pk-muted); }
+@media (pointer: coarse) { .bagtab { min-height: 44px; } .slots.pouch { grid-template-columns: repeat(5, minmax(0, 1fr)); } }   /* trophies at finger size */
+@media (max-width: 420px) { .bagtab { gap: 6px; padding-right: 8px; } .bagtab .bi { width: 24px; height: 24px; } }
+@media (prefers-reduced-motion: reduce) { .cast.go .cast-fill { animation-duration: 0.3s; } .slot { transition: none; } .slot:hover, .slot:focus-visible, .slot.on { transform: none; } .slot.new::before, .float { animation: none; } .slot.shine::before { display: none; } }
 
 footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
 footer nav { display: flex; gap: 4px; }
@@ -297,50 +322,28 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       <div class="row"><span class="pill">Coming soon</span><span class="credit">Art © Blizzard Entertainment</span></div>
     </section>
     <section class="tile mail pack" aria-labelledby="hi-h">
-      <div class="pack-h"><span class="portrait"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="pk-l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b97a42"/><stop offset="1" stop-color="#5a3216"/></linearGradient><radialGradient id="pk-bg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#6a4a2a"/><stop offset="1" stop-color="#1e1208"/></radialGradient></defs><rect width="48" height="48" fill="url(#pk-bg)"/><path d="M17 12a7 7 0 0 1 14 0" fill="none" stroke="#3a220e" stroke-width="3"/><path d="M11 20c0-5 4-8 13-8s13 3 13 8v17c0 3-2 5-5 5H16c-3 0-5-2-5-5Z" fill="url(#pk-l)" stroke="#2a1606" stroke-width="1.2"/><path d="M11 21c0 6 6 9 13 9s13-3 13-9c0-5-4-8-13-8s-13 3-13 8Z" fill="#8a5a2e" stroke="#2a1606" stroke-width="1.2"/><rect x="21" y="26" width="6" height="7" rx="1" fill="#e8b84a" stroke="#6a4810"/><path d="M15 34h18" stroke="#2a1606" stroke-width="1" stroke-dasharray="1.5 1.5" opacity="0.7"/></svg></span><div><p class="label">say hi</p><h2 id="hi-h">Backpack</h2></div><span class="count">5/15</span></div>
+      <div class="pack-h"><span class="portrait"><img src="/img/wow/inv_misc_bag_08.jpg" width="56" height="56" alt=""></span><div><p class="label">say hi</p><h2 id="hi-h">Backpack</h2></div></div>
       <p class="desc">Questions, tool ideas, SEO or WoW. Inspect an item to see what it does.</p>
       <div class="bag">
-        <div class="slots">
-          <a class="slot" href="mailto:dev@jsal.io" style="--q: var(--q-legendary)" data-item="email" aria-label="Email: dev@jsal.io"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="sc-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#a8482a"/><stop offset="1" stop-color="#2a0c06"/></radialGradient><radialGradient id="sc-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="sc-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset="0.35" stop-color="#e8b84a"/><stop offset="0.7" stop-color="#9a6a18"/><stop offset="1" stop-color="#f5cf68"/></linearGradient><linearGradient id="sc-paper" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d8bd80"/><stop offset="0.5" stop-color="#fbeec8"/><stop offset="1" stop-color="#cfae6c"/></linearGradient><linearGradient id="sc-roll" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3d79a"/><stop offset="0.5" stop-color="#b8893e"/><stop offset="1" stop-color="#6e4a18"/></linearGradient><radialGradient id="sc-wax" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#ff6a5a"/><stop offset="0.55" stop-color="#c0221a"/><stop offset="1" stop-color="#5e0c08"/></radialGradient></defs><rect width="48" height="48" fill="url(#sc-bg)"/><path d="M10 9h28v30H10z" fill="url(#sc-paper)"/>
-  <path d="M14 15h20M14 19h20M14 23h16M14 27h11" stroke="#8a6a36" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-  <rect x="5" y="4" width="38" height="8" rx="4" fill="url(#sc-roll)"/><ellipse cx="5.5" cy="8" rx="2.2" ry="4" fill="#5a3a12"/><ellipse cx="42.5" cy="8" rx="2.2" ry="4" fill="#5a3a12"/>
-  <rect x="5" y="36" width="38" height="8" rx="4" fill="url(#sc-roll)"/><ellipse cx="5.5" cy="40" rx="2.2" ry="4" fill="#5a3a12"/><ellipse cx="42.5" cy="40" rx="2.2" ry="4" fill="#5a3a12"/>
-  <path d="M30 37l-2 7 4-3 4 3-2-7" fill="#8a1410"/>
-  <circle cx="32" cy="30" r="9" fill="url(#sc-wax)"/>
-  <circle cx="32" cy="30" r="6.6" fill="none" stroke="#5e0c08" stroke-width="1" opacity="0.6"/>
-  <path d="M28 27.3h8v5.6h-8zM28 27.3l4 3.1 4-3.1" fill="none" stroke="#ffd9d2" stroke-width="1.3" stroke-linejoin="round"/>
-  <ellipse cx="29" cy="25.5" rx="3" ry="1.6" fill="#fff" opacity="0.35"/><rect width="48" height="48" fill="url(#sc-vig)"/></svg></a>
-          <button class="slot" type="button" style="--q: var(--q-epic)" data-item="discord" aria-label="Discord: copy my username, jsal"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="am-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#5a3cc0"/><stop offset="1" stop-color="#100a2c"/></radialGradient><radialGradient id="am-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="am-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset="0.35" stop-color="#e8b84a"/><stop offset="0.7" stop-color="#9a6a18"/><stop offset="1" stop-color="#f5cf68"/></linearGradient><radialGradient id="am-gem" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#b9c0ff"/><stop offset="0.45" stop-color="#5865f2"/><stop offset="1" stop-color="#1a1f6e"/></radialGradient><radialGradient id="am-glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#8f9bff" stop-opacity="0.8"/><stop offset="1" stop-color="#8f9bff" stop-opacity="0"/></radialGradient></defs><rect width="48" height="48" fill="url(#am-bg)"/><circle cx="24" cy="29" r="19" fill="url(#am-glow)"/>
-  <path d="M8 1 24 15 40 1" fill="none" stroke="url(#am-gold)" stroke-width="2.6" stroke-dasharray="3 1.6"/>
-  <circle cx="24" cy="15.5" r="2.8" fill="none" stroke="url(#am-gold)" stroke-width="2.2"/>
-  <circle cx="24" cy="30" r="15" fill="url(#am-gold)"/>
-  <circle cx="24" cy="30" r="15" fill="none" stroke="#5a3a08" stroke-width="0.8"/>
-  <circle cx="24" cy="30" r="11.6" fill="url(#am-gem)" stroke="#6a4810" stroke-width="1"/>
-  <g transform="translate(17.5 24.0) scale(0.5416666666666666)"><path fill="#ffffff" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></g>
-  <path d="M15.5 25a10 10 0 0 1 6-5.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.55"/>
-  <path d="M39 13l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z" fill="#fff" opacity="0.9"/><rect width="48" height="48" fill="url(#am-vig)"/></svg></button>
-          <a class="slot" href="https://steamcommunity.com/id/jsalx87/" style="--q: var(--q-rare)" data-item="steam" aria-label="Steam: profile jsalx87"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="sh-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#2a6aa8"/><stop offset="1" stop-color="#06122a"/></radialGradient><radialGradient id="sh-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="sh-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset="0.35" stop-color="#e8b84a"/><stop offset="0.7" stop-color="#9a6a18"/><stop offset="1" stop-color="#f5cf68"/></linearGradient><linearGradient id="sh-field" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f8ed6"/><stop offset="0.55" stop-color="#1f4d86"/><stop offset="1" stop-color="#0c2448"/></linearGradient></defs><rect width="48" height="48" fill="url(#sh-bg)"/><path d="M24 2.5 43 8.5V24c0 11-8.4 18.2-19 22C13.4 42.2 5 35 5 24V8.5Z" fill="url(#sh-gold)"/>
-  <path d="M24 2.5 43 8.5V24c0 11-8.4 18.2-19 22C13.4 42.2 5 35 5 24V8.5Z" fill="none" stroke="#4a3006" stroke-width="0.8"/>
-  <path d="M24 6.5 39.5 11.4V24c0 9-6.8 15-15.5 18.2C15.3 39 8.5 33 8.5 24V11.4Z" fill="url(#sh-field)"/>
-  <path d="M24 6.5 8.5 11.4V24c0 9 6.8 15 15.5 18.2Z" fill="#fff" opacity="0.08"/>
-  <g transform="translate(15.5 15.0) scale(0.7083333333333334)"><path fill="#ffffff" d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></g>
-  <circle cx="9.5" cy="10" r="1.3" fill="#fff3c0"/><circle cx="38.5" cy="10" r="1.3" fill="#fff3c0"/><circle cx="24" cy="5" r="1.3" fill="#fff3c0"/>
-  <path d="M11 13c2-1.4 5-2.4 8-2.9" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity="0.5" fill="none"/><rect width="48" height="48" fill="url(#sh-vig)"/></svg></a>
-          <a class="slot" href="https://github.com/superjsal" style="--q: var(--q-uncommon)" data-item="github" aria-label="GitHub: superjsal"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="to-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#3f7a32"/><stop offset="1" stop-color="#081806"/></radialGradient><radialGradient id="to-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="to-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset="0.35" stop-color="#e8b84a"/><stop offset="0.7" stop-color="#9a6a18"/><stop offset="1" stop-color="#f5cf68"/></linearGradient><linearGradient id="to-cover" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a6436"/><stop offset="0.6" stop-color="#5a3216"/><stop offset="1" stop-color="#2e180a"/></linearGradient><radialGradient id="to-glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffe08a" stop-opacity="0.75"/><stop offset="1" stop-color="#ffe08a" stop-opacity="0"/></radialGradient></defs><rect width="48" height="48" fill="url(#to-bg)"/><path d="M12 5h30v39H12z" fill="#efe1bd"/><path d="M40 7v35M38 7v35" stroke="#c9b48a" stroke-width="0.8"/>
-  <rect x="6" y="3" width="33" height="40" rx="2.5" fill="url(#to-cover)"/>
-  <rect x="6" y="3" width="6" height="40" rx="2" fill="#3a1f0c"/><path d="M8 8h3M8 38h3" stroke="url(#to-gold)" stroke-width="2"/>
-  <rect x="15" y="7" width="20" height="32" rx="1.5" fill="none" stroke="url(#to-gold)" stroke-width="1.2" opacity="0.8"/>
-  <path d="M31 3h8v8M39 35v8h-8" fill="none" stroke="url(#to-gold)" stroke-width="2.6"/>
-  <circle cx="25" cy="23" r="10" fill="url(#to-glow)"/>
-  <g transform="translate(17.5 15.5) scale(0.625)"><path fill="url(#to-gold)" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></g>
-  <path d="M38 21h5v6h-5z" fill="url(#to-gold)"/>
-  <path d="M10 6c4-1 9-1.5 14-1.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity="0.35" fill="none"/><rect width="48" height="48" fill="url(#to-vig)"/></svg></a>
-          <button class="slot" type="button" style="--q: var(--q-common)" data-item="hearth" aria-label="Hearthstone: back to the top of the page"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="hs-bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#3f5a72"/><stop offset="1" stop-color="#0a1118"/></radialGradient><radialGradient id="hs-vig" cx="50%" cy="50%" r="72%"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.65"/></radialGradient><linearGradient id="hs-stone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c3c8cf"/><stop offset="0.45" stop-color="#7b8189"/><stop offset="1" stop-color="#2f3338"/></linearGradient><radialGradient id="hs-glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#8fe3ff" stop-opacity="0.9"/><stop offset="1" stop-color="#8fe3ff" stop-opacity="0"/></radialGradient><filter id="hs-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.1"/></filter></defs><rect width="48" height="48" fill="url(#hs-bg)"/><ellipse cx="24" cy="41" rx="15" ry="3" fill="#000" opacity="0.45"/><path d="M10 26c0-11 6-19 15-19 8.5 0 14 7 14 17 0 10-6 16-15 16S10 35 10 26Z" fill="url(#hs-stone)" stroke="#1d2024" stroke-width="1"/><path d="M14 18c2-5 6-8 11-8" stroke="#fff" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.45"/><circle cx="24.5" cy="25" r="11" fill="url(#hs-glow)"/><g filter="url(#hs-blur)" opacity="0.9"><path d="M24.5 17.5c4.5 0 7 3 7 6.5s-3 6-6.5 6-5.5-2.5-5.5-5 2-4 4-4 3.5 1.5 3.5 3-1 2.5-2.5 2.5" fill="none" stroke="#4fc8ff" stroke-width="3" stroke-linecap="round"/></g><path d="M24.5 17.5c4.5 0 7 3 7 6.5s-3 6-6.5 6-5.5-2.5-5.5-5 2-4 4-4 3.5 1.5 3.5 3-1 2.5-2.5 2.5" fill="none" stroke="#e6faff" stroke-width="1.4" stroke-linecap="round"/><path d="M37 9l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z" fill="#dff6ff"/><rect width="48" height="48" fill="url(#hs-vig)"/></svg></button>
-          <span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span>
+        <div class="slots" id="bag-pack" role="tabpanel" aria-labelledby="tab-pack">
+          <a class="slot" href="mailto:dev@jsal.io" style="--q: var(--q-legendary)" data-item="email" aria-label="Email: dev@jsal.io"><img src="/img/wow/inv_letter_04.jpg" width="56" height="56" alt=""><span class="badge" style="--b: var(--b-email)" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--b-logo)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span></a>
+          <button class="slot" type="button" style="--q: var(--q-epic)" data-item="discord" aria-label="Discord: copy my username, jsal"><img src="/img/wow/inv_jewelry_amulet_07.jpg" width="56" height="56" alt=""><span class="badge" style="--b: var(--b-discord)" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="var(--b-logo)" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></span></button>
+          <a class="slot" href="https://steamcommunity.com/id/jsalx87/" style="--q: var(--q-rare)" data-item="steam" aria-label="Steam: profile jsalx87"><img src="/img/wow/inv_shield_06.jpg" width="56" height="56" alt=""><span class="badge" style="--b: var(--b-steam)" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="var(--b-logo)" d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></svg></span></a>
+          <a class="slot" href="https://github.com/superjsal" style="--q: var(--q-uncommon)" data-item="github" aria-label="GitHub: superjsal"><img src="/img/wow/inv_misc_book_09.jpg" width="56" height="56" alt=""><span class="badge" style="--b: var(--b-github)" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="var(--b-logo)" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span></a>
+          <button class="slot" type="button" style="--q: var(--q-rare)" data-item="lantern" aria-label="Lantern: switch between light and dark"><img src="/img/wow/inv_misc_lantern_01.jpg" width="56" height="56" alt=""></button>
+          <a class="slot" href="/changelog/" style="--q: var(--q-uncommon)" data-item="watch" aria-label="Pocket watch: what changed lately"><img src="/img/wow/inv_misc_pocketwatch_01.jpg" width="56" height="56" alt=""></a>
+          <button class="slot" type="button" style="--q: var(--q-common)" data-item="hearth" aria-label="Hearthstone: back to the top of the page"><img src="/img/wow/inv_misc_rune_01.jpg" width="56" height="56" alt=""></button>
+          <span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span><span class="slot empty" aria-hidden="true"></span>
         </div>
+        <div class="slots pouch" id="bag-pouch" role="tabpanel" aria-labelledby="tab-pouch" inert></div>
         <div class="tip" id="tip" hidden></div>
         <div class="cast" id="cast" hidden><span class="cast-fill"></span><span class="cast-name">Hearthstone</span></div>
       </div>
+      <div class="bagbar" role="tablist" aria-label="Bags">
+        <button class="bagtab" type="button" role="tab" id="tab-pack" aria-controls="bag-pack" aria-selected="true"><span class="bi"><img src="/img/wow/inv_misc_bag_08.jpg" width="56" height="56" alt=""></span><span>Backpack</span><em>7/12</em></button>
+        <button class="bagtab" type="button" role="tab" id="tab-pouch" aria-controls="bag-pouch" aria-selected="false" tabindex="-1"><span class="bi"><img src="/img/wow/inv_misc_bag_10.jpg" width="56" height="56" alt=""></span><span>Trophies</span><em id="pouch-count"></em></button>
+      </div>
+      <p class="pack-credit">Item icons © Blizzard Entertainment</p>
     </section>
     <section class="tile ach" aria-labelledby="ach-h">
       <div class="ach-top"><h2 id="ach-h">Achievements</h2><span class="ach-count" id="ach-count"></span></div>
@@ -357,26 +360,56 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 <script>
 document.getElementById('y').textContent = new Date().getFullYear();
 // Backpack: hovering, focusing or tapping an item shows its tooltip. On a touch screen the first tap
-// inspects, the second uses it. Using any item unlocks "Social butterfly".
+// inspects, the second uses it. Using a social unlocks "Social butterfly".
 const ITEMS = {
   email: { q: 'legendary', name: 'Sealed Letter of Inquiry', kind: 'Email · dev@jsal.io', use: 'Opens an email to me.', flavor: 'Questions, ideas for a tool, or just to talk SEO.' },
   discord: { q: 'epic', name: 'Amulet of Many Voices', kind: 'Discord · jsal', use: 'Copies my username.', flavor: 'Add me and say hi.' },
   steam: { q: 'rare', name: 'Aegis of the Backlog', kind: 'Steam · jsalx87', use: 'Opens my Steam profile.', flavor: 'Friend requests welcome.' },
   github: { q: 'uncommon', name: 'Tome of Open Source', kind: 'GitHub · superjsal', use: 'Opens the code behind these tools.', flavor: 'Every tool here, page by page.' },
+  lantern: { q: 'rare', name: 'Lantern of the Night Owl', kind: 'Light or dark', use: 'Switches between light and dark.', flavor: 'For late raids and later bug fixes.' },
+  watch: { q: 'uncommon', name: 'Pocket Watch of Recent Changes', kind: 'Changelog', use: 'Shows everything that changed, newest first.', flavor: 'Always a little ahead.' },
   hearth: { q: 'common', name: 'Hearthstone', bind: 'Binds when picked up', kind: 'jsal.io', use: 'Returns you to the top of the page.', flavor: 'Home is just a scroll away.' },
 };
-// "Bag inspector" (a secret): every item looked at, on one visit
+const PACK = Object.keys(ITEMS), SOCIAL = ['email', 'discord', 'steam', 'github'];
+// Each achievement's trophy, dropped into the Trophies bag when it's earned
+const TROPHIES = {
+  first: { icon: 'inv_boots_03', q: 'uncommon', name: 'Worn Leather Boots', flavor: 'Every adventure starts with one step.' },
+  explorer: { icon: 'inv_misc_spyglass_02', q: 'rare', name: 'Explorer’s Spyglass', flavor: 'Saw every tool from up here.' },
+  night: { icon: 'ability_eyeoftheowl', q: 'rare', name: 'Eye of the Owl', flavor: 'Sees fine in the dark theme.' },
+  pixel: { icon: 'inv_misc_gem_01', q: 'uncommon', name: 'Perfectly Cut Gem', flavor: 'Every facet the same size.' },
+  spotless: { icon: 'inv_fabric_silk_01', q: 'uncommon', name: 'Bolt of Spotless Silk', flavor: 'Not a stray tag on it.' },
+  decision: { icon: 'inv_misc_key_04', q: 'rare', name: 'Key That Fits', flavor: 'Opens exactly one door. Yours.' },
+  compare: { icon: 'inv_misc_dice_01', q: 'uncommon', name: 'Fair Dice', flavor: 'Compared, not left to chance.' },
+  twocents: { icon: 'inv_misc_coin_05', q: 'common', name: 'Two Copper Coins', flavor: 'Worth exactly what you think.' },
+  social: { icon: 'inv_misc_flower_02', q: 'uncommon', name: 'Friendly Daisy', flavor: 'Butterflies love these.' },
+  lost: { icon: 'inv_misc_questionmark', q: 'epic', name: 'Mark of the Lost', flavor: 'Page not found. You were.' },
+  inspector: { icon: 'inv_misc_bag_07', q: 'epic', name: 'Inspector’s Satchel', flavor: 'You looked in every pocket.' },
+  persistent: { icon: 'inv_gauntlets_04', q: 'epic', name: 'Gauntlet of Persistence', flavor: 'Ten clicks. Not one more.' },
+  secret: { icon: 'inv_gizmo_02', q: 'legendary', name: 'Contraption of Secrets', flavor: 'You know the rest of the code.' },
+};
+const SPARE = { icon: 'inv_misc_bag_10', q: 'common', flavor: 'A keepsake.' };   // an achievement with no trophy of its own yet
+// New loot glows until it's inspected; what's been seen is kept in this browser
+const NEW = ['lantern', 'watch'];
+const seen = new Set((() => { try { return JSON.parse(localStorage.getItem('jsal-bag-seen')) || []; } catch (e) { return []; } })());
+const isNew = (id) => (NEW.includes(id) || id.startsWith('t-')) && !seen.has(id);
+document.querySelectorAll('#bag-pack .slot[data-item]').forEach((sl) => sl.classList.toggle('new', isNew(sl.dataset.item)));
+// "Bag inspector" (a secret): every item in the backpack looked at, on one visit
 const inspected = new Set();
 const bag = document.querySelector('.bag'), tip = document.getElementById('tip');
 let shown = null, touch = false;
 function inspect(sl) {
-  const i = ITEMS[sl.dataset.item];
+  const id = sl.dataset.item, i = ITEMS[id];
   document.querySelectorAll('.slot.on').forEach((x) => x.classList.remove('on'));
   sl.classList.add('on');
   shown = sl;
-  inspected.add(sl.dataset.item);
-  if (inspected.size === Object.keys(ITEMS).length && window.jsalAchieve) jsalAchieve('inspector');
-  tip.innerHTML = `<div class="t" style="color: var(--q-${i.q})">${i.name}</div><div class="w">${i.bind || 'Binds when used'}</div><div class="s">${i.kind}</div><div class="u">Use: ${i.use}</div><div class="f">"${i.flavor}"</div>`;
+  inspected.add(id);
+  if (PACK.every((k) => inspected.has(k)) && window.jsalAchieve) jsalAchieve('inspector');
+  if (sl.classList.contains('new')) {
+    sl.classList.remove('new');
+    seen.add(id);
+    try { localStorage.setItem('jsal-bag-seen', JSON.stringify([...seen])); } catch (e) {}
+  }
+  tip.innerHTML = `<div class="t" style="color: var(--q-${i.q})">${i.name}</div><div class="w">${i.bind || 'Binds when used'}</div><div class="s">${i.kind}</div>${i.use ? `<div class="u">Use: ${i.use}</div>` : ''}${i.ach ? `<div class="u">Achievement: ${i.ach}</div>` : ''}<div class="f">"${i.flavor}"</div>`;
   tip.hidden = false;
   // Below the item, or above it when the bag is too short (phones), kept inside the bag's width
   const b = bag.getBoundingClientRect(), r = sl.getBoundingClientRect();
@@ -402,7 +435,19 @@ tip.addEventListener('pointermove', (e) => {
 });
 tip.addEventListener('click', (e) => { const sl = itemUnder(e); if (sl) { clearTimeout(handTimer); inspect(sl); } });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && shown) hide(); });
-document.querySelectorAll('.slot:not(.empty)').forEach((sl) => {
+// Floating text over an item, as the game shows it
+function float(sl, text, err) {
+  const b = bag.getBoundingClientRect(), r = sl.getBoundingClientRect();
+  const f = document.createElement('span');
+  f.className = err ? 'float err' : 'float';
+  f.setAttribute('aria-hidden', 'true');
+  f.textContent = text;
+  f.style.left = (r.left - b.left + r.width / 2) + 'px';
+  f.style.top = (r.top - b.top - 20) + 'px';
+  bag.append(f);
+  setTimeout(() => f.remove(), 1400);
+}
+function bindSlot(sl) {
   sl.addEventListener('pointerdown', (e) => { touch = e.pointerType === 'touch'; });
   sl.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch') { clearTimeout(hideTimer); inspect(sl); } });
   sl.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') hideSoon(); });
@@ -410,56 +455,58 @@ document.querySelectorAll('.slot:not(.empty)').forEach((sl) => {
   sl.addEventListener('blur', hide);
   sl.addEventListener('click', async (e) => {
     if (touch && shown !== sl) { e.preventDefault(); inspect(sl); return; }
-    if (sl.dataset.item === 'hearth') { hearth(); return; }
-    window.jsalAchieve && jsalAchieve('social');
-    if (sl.dataset.item === 'discord') {
+    const id = sl.dataset.item;
+    if (id === 'hearth') { hearth(sl); return; }
+    if (id === 'lantern') { document.querySelector('[data-jsal-theme]').click(); return; }
+    if (SOCIAL.includes(id) && window.jsalAchieve) jsalAchieve('social');
+    if (id === 'discord') {
       let ok = true;
       try { await navigator.clipboard.writeText('jsal'); } catch (err) { ok = false; }
       inspect(sl);
       tip.querySelector('.u').textContent = ok ? 'Copied: jsal' : 'Username: jsal';
+      if (ok) float(sl, 'Copied!');
     }
   });
-});
-document.addEventListener('pointerdown', (e) => { if (shown && !e.target.closest('.slot, #tip')) hide(); });
-// The bag fills the room beside "Currently":
-// fill whatever room there is with rows of empty slots, so it never shows a gap (on phones, one spare row)
-const slots = document.querySelector('.slots'), count = document.querySelector('.pack-h .count');
-const items = slots.querySelectorAll('.slot:not(.empty)').length;
-function fitBag() {
-  slots.style.gridTemplateColumns = '';   // back to the stylesheet's columns before counting them
-  const cols = getComputedStyle(slots).gridTemplateColumns.split(' ').length;
-  const least = (Math.ceil(items / cols) + 1) * cols;
-  const setTotal = (n) => {
-    slots.querySelectorAll('.slot.empty').forEach((x) => x.remove());
-    slots.insertAdjacentHTML('beforeend', '<span class="slot empty" aria-hidden="true"></span>'.repeat(n - items));
-    count.textContent = `${items}/${n}`;
-  };
-  setTotal(least);   // smallest bag first, so it only grows into room the tile already has
-  const gap = parseFloat(getComputedStyle(slots).rowGap), size = slots.querySelector('.slot').offsetWidth, h = slots.clientHeight;
-  let rows = Math.max(least / cols, Math.floor((h + gap) / (size + gap)));
-  // Whole rows rarely fit exactly: either leave the spare height as a gap, or add a row and make the
-  // slots a little smaller to fit it, whichever wastes less room
-  const spare = h - (rows * (size + gap) - gap), smaller = (h - gap * rows) / (rows + 1);
-  if (h > least / cols * (size + gap) && cols * (size - smaller) < spare) {
-    rows += 1;
-    slots.style.gridTemplateColumns = `repeat(${cols}, ${smaller}px)`;
-  }
-  if (rows * cols !== least) setTotal(rows * cols);
 }
-// Refit when the room changes (the pocket's size, the Currently tile's height, fonts arriving). Each fit
-// notes the sizes it left behind, so its own changes don't set off another.
-const nowTile = document.querySelector('.now-playing');
-const sizes = () => `${slots.clientWidth}:${slots.clientHeight}:${nowTile.offsetHeight}`;
-let fitted = '';
-const refit = () => { if (sizes() !== fitted) { fitBag(); fitted = sizes(); } };
-const watcher = new ResizeObserver(refit);
-watcher.observe(slots);
-watcher.observe(nowTile);
-if (document.fonts) document.fonts.ready.then(() => { fitted = ''; refit(); });
-// Hearthstone: a cast bar fills, then the page goes back to the top
+document.querySelectorAll('#bag-pack .slot:not(.empty)').forEach(bindSlot);
+document.addEventListener('pointerdown', (e) => { if (shown && !e.target.closest('.slot, #tip')) hide(); });
+// The bag bar: two tabs, switched by click or the arrow keys
+const tabs = [...document.querySelectorAll('.bagtab')];
+function pick(t) {
+  hide();
+  tabs.forEach((x) => {
+    const on = x === t;
+    x.setAttribute('aria-selected', on);
+    x.tabIndex = on ? 0 : -1;
+    document.getElementById(x.getAttribute('aria-controls')).inert = !on;
+  });
+}
+tabs.forEach((t, n) => {
+  t.addEventListener('click', () => pick(t));
+  t.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const next = tabs[(n + 1) % tabs.length];
+    pick(next);
+    next.focus();
+  });
+});
+// The legendary letter shimmers once, when the bag first comes into view
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+  const letter = document.querySelector('[data-item="email"]');
+  const io = new IntersectionObserver((es) => {
+    if (!es[0].isIntersecting) return;
+    io.disconnect();
+    letter.classList.add('shine');
+    setTimeout(() => letter.classList.remove('shine'), 1300);
+  }, { threshold: 0.6 });
+  io.observe(bag);
+}
+// Hearthstone: a cast bar fills, the page goes back to the top, and the stone is on cooldown for a few seconds
 const cast = document.getElementById('cast');
-function hearth() {
+let cooling = false;
+function hearth(sl) {
   if (!cast.hidden) return;
+  if (cooling) { float(sl, 'Item is not ready yet.', true); return; }
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   hide();
   cast.hidden = false;
@@ -468,7 +515,25 @@ function hearth() {
     cast.hidden = true;
     cast.classList.remove('go');
     scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' });
+    cooling = true;
+    sl.classList.add('cd');
+    setTimeout(() => { cooling = false; sl.classList.remove('cd'); }, 10000);
   }, calm ? 300 : 1500);
+}
+// Trophies: a slot for each achievement, rounded up to whole rows; each earned one holds its trophy, in the
+// order of the list
+const when = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+function drawPouch(A, got) {
+  const pouch = document.getElementById('bag-pouch'), earned = A.list.filter((a) => got[a.id]);
+  const cols = getComputedStyle(pouch).gridTemplateColumns.split(' ').length, total = Math.ceil(A.list.length / cols) * cols;
+  document.getElementById('pouch-count').textContent = `${earned.length}/${A.list.length}`;
+  if (shown && pouch.contains(shown)) hide();
+  pouch.innerHTML = earned.map((a) => {
+    const t = TROPHIES[a.id] || { ...SPARE, name: a.name }, id = `t-${a.id}`;
+    ITEMS[id] = { q: t.q, name: t.name, bind: 'Trophy', kind: `Earned ${when(got[a.id])}`, ach: a.name, flavor: t.flavor };
+    return `<button class="slot${isNew(id) ? ' new' : ''}" type="button" style="--q: var(--q-${t.q})" data-item="${id}" aria-label="${t.name}, for ${a.name}"><img src="/img/wow/${t.icon}.jpg" width="56" height="56" alt=""></button>`;
+  }).join('') + '<span class="slot empty" aria-hidden="true"></span>'.repeat(total - earned.length);
+  pouch.querySelectorAll('.slot:not(.empty)').forEach(bindSlot);
 }
 // Achievements: drawn from /nav.js's list (it loads after this, so wait for it), redrawn on each unlock
 const LOCK = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
@@ -479,6 +544,7 @@ function drawAchievements() {
   const icon = (p) => `<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
   document.getElementById('ach-count').textContent = `${n} of ${A.list.length}`;
   document.getElementById('ach-bar').style.setProperty('--p', String(n / A.list.length));
+  drawPouch(A, got);
   document.getElementById('ach-list').innerHTML = A.list.map((a) => {
     const on = !!got[a.id], hidden = a.secret && !on;
     return `<li class="${on ? '' : 'locked'}"><span class="medal">${icon(hidden ? LOCK : a.icon)}</span><span><b>${hidden ? '???' : a.name}</b><small>${on ? a.done : a.todo}</small></span><span class="sr-only">${on ? ' (unlocked)' : ' (locked)'}</span></li>`;
