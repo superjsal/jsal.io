@@ -116,6 +116,38 @@ files = {
     'wordmark-light.svg': lockup(INK, DEEP, None),
     'wordmark-dark.svg': lockup(PARCH, GOLD, None),
 }
+# Tool icons: one glyph per tool in the mark's language (32 grid, round-ended strokes, the gold gem used once for what
+# the tool does), on a tile in the tool's accent from its home page tile, and in one colour
+def stroke(d, c, w=3):
+    return f'<path d="{d}" fill="none" stroke="{c}" stroke-width="{w}" stroke-linecap="round" stroke-linejoin="round"/>'
+
+
+def gem_at(cx, cy, h, fill):
+    return f'<path d="M{cx} {cy - h}l{h} {h}-{h} {h}-{h}-{h}z" fill="{fill}"/>'
+
+
+FRAME = 'M6 6h14v14H6z'
+TOOLS = {   # file name: (tile colour, glyph drawn in ink with the gem's colour, and with a gap cut around an overlapping gem)
+    # Three platforms side by side; the one that fits stands tallest, wearing the gem like the mark's j
+    'cms-picker': ('#674690', lambda ink, g, bg: stroke('M9 19v5M16 14v10M23 21v3', ink, 4) + gem_at(16, 7.5, 3, g)),
+    # Tidy lines of text ending in the gem as their full stop, as the name does
+    'clean-paste': ('#5e430b', lambda ink, g, bg: stroke('M8 10h16M8 16h13M8 22h9', ink) + gem_at(22.5, 21, 2.5, g)),
+    # A picture's frame with the gem as the corner handle you drag to resize it
+    'image-resizer': (INK, lambda ink, g, bg: (
+        f'<mask id="cut"><rect width="32" height="32" fill="#fff"/><path d="M22.5 16.6l5.9 5.9-5.9 5.9-5.9-5.9z"/></mask>'
+        f'<g mask="url(#cut)">{stroke(FRAME, ink)}</g>' + gem_at(22.5, 22.5, 4.5, g))),
+    # A checklist of steps: two done, and the gem marking the one you're on
+    'platform-playbook': ('#3b5a9a', lambda ink, g, bg: stroke(
+        'M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11', ink) + gem_at(8.5, 22.5, 3, g)),
+}
+(OUT / 'tools').mkdir(exist_ok=True)
+for name, (bg, draw) in TOOLS.items():
+    # The ink tile carries the dark tile's 1px edge everywhere, so it doesn't sink into a dark page
+    rect = (f'<rect x=".5" y=".5" width="31" height="31" rx="6.5" fill="{bg}" stroke="{EDGE}"/>' if bg == INK
+            else f'<rect width="32" height="32" rx="7" fill="{bg}"/>')
+    files[f'tools/{name}.svg'] = f'<svg {XMLNS} viewBox="0 0 32 32">{rect}{draw(PARCH, GOLD, bg)}</svg>'
+    files[f'tools/{name}-mono.svg'] = f'<svg {XMLNS} viewBox="2 2 28 28">{draw("currentColor", "currentColor", None)}</svg>'
+
 for name, svg in files.items():
     (OUT / name).write_text(svg + '\n', encoding='utf-8', newline='\n')
 (ROOT / 'site' / 'favicon.svg').write_text(mark(), encoding='utf-8', newline='\n')

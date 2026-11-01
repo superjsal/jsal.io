@@ -33,3 +33,22 @@ foreach ($p in $data.platforms) {
   $q = "p=platform&name=$([uri]::EscapeDataString($p.name))&tags=$tags" + $(if ($where) { "" } else { "&how=1" })
   Shot "$($tpl)?$q" (Join-Path $site "og\cms-picker-$($p.id).png") 1200 628
 }
+
+# The brand kit (.github/brand/kit/, not served) from kit.html: the LinkedIn banner, the GitHub social preview, an avatar,
+# the tool icons and the email signature's lockups. Icons and signatures keep a transparent background.
+$kitDir = Join-Path $here "..\..\brand\kit"
+New-Item -ItemType Directory -Force $kitDir | Out-Null
+$kit = "file:///" + ((Join-Path $here "kit.html") -replace '\\', '/')
+function ShotClear($url, $out, $w, $h) {
+  & $edge --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=1 --default-background-color=00000000 `
+    --virtual-time-budget=6000 --window-size="$w,$h" --screenshot="$out" $url 2>$null | Out-Null
+  Write-Output "$out  $((Get-Item $out).Length) bytes"
+}
+Shot "$($kit)?p=linkedin" (Join-Path $kitDir "linkedin-banner.png") 1584 396
+Shot "$($kit)?p=github" (Join-Path $kitDir "github-social-preview.png") 1280 640
+Shot "$($kit)?p=avatar" (Join-Path $kitDir "avatar-800.png") 800 800
+foreach ($t in "cms-picker", "clean-paste", "image-resizer", "platform-playbook") {
+  ShotClear "$($kit)?p=icon&t=$t" (Join-Path $kitDir "tool-$t-512.png") 512 512
+}
+ShotClear "$($kit)?p=signature&theme=light" (Join-Path $kitDir "signature-light.png") 369 112
+ShotClear "$($kit)?p=signature&theme=dark" (Join-Path $kitDir "signature-dark.png") 369 112

@@ -19,6 +19,8 @@ gold. Its j is a drawing, not Inter's: the one letter with round ends.
 | `wordmark-light.svg`, `wordmark-dark.svg` | The wordmark alone |
 | `png/mark-16.png`, `-32`, `-512` | PNG exports of `mark.svg` |
 | `png/mark-180.png` | PNG export of `mark-square.svg` |
+| `tools/<tool>.svg`, `tools/<tool>-mono.svg` | The tool icons (below), in colour and in one colour (`currentColor`) |
+| `kit/` | The brand kit as PNGs, rendered from `.github/build/og/kit.html` by `make-og.ps1` (below) |
 
 The lockups' text is outlined, and their j is the same drawing the top bar shows, so they look the same without
 Inter installed. `make-brand.py` rewrites every SVG here and `site/favicon.svg`; edit the mark in that script, not
@@ -70,6 +72,34 @@ places throughout, so nothing beside the logo moves.
   the rest, reshaping the short path itself, frame by frame, until it is exactly the name's path, which then takes
   its place. Later pages in the visit, pages loaded ahead and reduced motion show the name as it is.
 - Nothing is swapped mid-way, so the name ends pixel for pixel as every page shows it.
+
+## Tool icons
+
+One icon per tool on the home page, drawn like the mark: the 32 grid, round-ended strokes, and the gold gem used once
+for what the tool does, on a tile in the tool's accent from its home page tile. `make-brand.py` writes them.
+
+| Tool | Tile | Glyph |
+|---|---|---|
+| CMS Picker (`cms-picker`) | plum #674690 | Three platforms side by side; the one that fits stands tallest, wearing the gem like the mark's j |
+| Clean Paste (`clean-paste`) | deep gold #5e430b (darker than the home tile's gold, so the gold gem keeps its contrast) | Tidy lines of text ending in the gem as their full stop |
+| Image Resizer (`image-resizer`) | ink #1f1a12, with the dark tile's 1px #3d424e edge everywhere | A picture's frame with the gem as the corner handle |
+| Platform Playbook (`platform-playbook`) | blue #3b5a9a | A checklist: two steps done, the gem marking the current one |
+
+They are for places outside the site (the brand kit, a portfolio, a README). The site's own app menu keeps its small
+line icons.
+
+## Brand kit
+
+PNGs in `kit/`, made for the places the name shows up outside the site. `.github/build/og/make-og.ps1` renders them from
+`kit.html`, which draws on the files in this folder, so re-running it after a change here keeps them in step.
+
+| File | Size | Where it goes |
+|---|---|---|
+| `linkedin-banner.png` | 1584 × 396 | LinkedIn profile banner. The content sits on the right two thirds, clear of the profile photo |
+| `github-social-preview.png` | 1280 × 640 | GitHub: the repo's Settings → Social preview |
+| `avatar-800.png` | 800 × 800 | Profile pictures (GitHub, LinkedIn, Discord). Square; round crops keep the j and gem whole |
+| `tool-<tool>-512.png` | 512 × 512 | Each tool icon, with transparent corners |
+| `signature-light.png`, `signature-dark.png` | 369 × 112 | The lockup for an email signature at twice its size, so it's sharp on high-density screens: show it 185 × 56. Light for white emails, dark for dark ones |
 
 ## Colours
 
