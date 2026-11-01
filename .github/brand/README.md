@@ -33,10 +33,12 @@ in the files.
   sit inside the middle 80% that Android keeps). Each page's head also sets the browser bar's colour to the page's
   (`theme-color`: cream #f5efe2 in light, slate #111318 in dark); a theme picked with the theme button wins.
 - **Anywhere the name fits** (the site's top bar, the link previews' corner): the wordmark alone. The tab icon
-  already shows the tile, so the page doesn't repeat it. In the top bar the name is real text: the j is drawn over
-  the hidden letter (`.jsal-j` in `site/shell.css`: the stroke as `::before`, the dot as `::after`), and the gem is its
-  "." clipped to a diamond (`.jsal-stop`), so copying it or reading it aloud gives "jsal.io". The link previews
-  (`.github/build/og/og.html`) draw the j the same way.
+  already shows the tile, so the page doesn't repeat it. In the top bar the name is real text: the j is an inline
+  SVG in the top bar's markup, laid over the hidden letter (`.jsal-j-draw`, styled in `site/shell.css`), and the gem is
+  its "." clipped to a diamond (`.jsal-stop`), so copying it or reading it aloud gives "jsal.io". Being markup rather
+  than a CSS mask, the j is as sharp as the text on high-density screens (a mask was painted softer, so handing over
+  between the two showed as the j shifting). The link previews (`.github/build/og/og.html`) draw it as a mask, which is
+  fine for a still image.
 - **The lockups** (tile and name together) are for places where neither appears on its own, such as an email
   signature.
 
@@ -61,11 +63,12 @@ a turn and growing to full size, with "sal" showing in its wake, while the j's c
 "io" and the menu arrow fade in, and a light runs across the gem and on over "io". About 1.4 seconds, then the glint.
 The letters keep their places throughout, so nothing beside the logo moves.
 
-- Each page's head script folds the name before the first paint (`html.jsal-intro` in `site/shell.css` draws the short
-  j, hides the dot, "sal", "io" and the arrow, and puts the gem on the j), and `site/nav.js` plays the rest, drawing each
-  frame of the j into the same mask (`--jsal-j-draw`). Later pages in the visit, pages loaded ahead and reduced motion
-  show the name as it is.
-- The first and last frames are the stylesheet's own drawings, so the name ends pixel for pixel as every page shows it.
+- The j's inline SVG holds both shapes: the name's path (`.jsal-j-line`) and the icon's short j (`.jsal-j-fold`). Each
+  page's head script folds the name before the first paint (`html.jsal-intro` in `site/shell.css` shows the short j,
+  hides the dot, "sal", "io" and the arrow, and puts the gem on the j), and `site/nav.js` plays the rest, reshaping the
+  short path itself, frame by frame, until it is exactly the name's path, which then takes its place. Later pages in
+  the visit, pages loaded ahead and reduced motion show the name as it is.
+- Nothing is swapped mid-way, so the name ends pixel for pixel as every page shows it.
 
 ## Colours
 

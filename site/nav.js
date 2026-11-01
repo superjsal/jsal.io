@@ -429,7 +429,8 @@
     const logo = document.querySelector('[data-jsal-nav]');
     const part = (c) => logo && logo.querySelector('.jsal-' + c);
     const [j, sal, stop, io, caret] = ['j', 'sal', 'stop', 'io', 'caret'].map(part);
-    if (!root.classList.contains('jsal-intro') || document.prerendering || !(j && sal && stop && io)) return unfold();
+    const [fold, dot] = ['fold', 'dot'].map((c) => j && j.querySelector('.jsal-j-' + c));
+    if (!root.classList.contains('jsal-intro') || document.prerendering || !(j && sal && stop && io && fold && dot)) return unfold();
     try { sessionStorage.setItem('jsal-intro', '1'); } catch (e) {}
     const lerp = (a, b, t) => a + (b - a) * t;
     const clamp = (t) => Math.max(0, Math.min(1, t));
@@ -439,42 +440,37 @@
       if (!root.classList.contains('jsal-intro')) return;
       const em = parseFloat(getComputedStyle(logo).fontSize);
       // The gem is moved from where it sits unfolded: its centre is 0.24em after the end of "sal" (the stop's 0.07em
-      // margin and half its 0.34em width) and 0.17em above the baseline. Measured to the sub-pixel from boxes the fold
-      // doesn't move (whole-pixel offsets left it a fifth of a pixel off the j). Folded, it sits on the short j as its dot, 0.1355em into the
-      // j's box and 0.559em above the baseline, at 0.657 of its size, as the stylesheet folds it.
+      // margin and half its 0.34em width) and 0.17em above the baseline, measured to the sub-pixel from boxes the fold
+      // doesn't move. Folded, it sits on the short j as its dot, 0.1355em into the j's box and 0.559em above the
+      // baseline, at 0.657 of its size, as the stylesheet folds it.
       const salBox = sal.getBoundingClientRect(), home = salBox.right + 0.24 * em;
       const x0 = j.getBoundingClientRect().left + 0.1355 * em - home, y0 = -0.389 * em;
-      // The j, in the drawing's units (shell.css): from the icon's short j (a half-circle hook) to the name's j (taller,
-      // its hook turning a third past the quarter), round ends throughout. From the start until it has reshaped it's a
-      // small SVG over the letter's box (.jsal-j-draw), as the fold stops at the first frame; then the stylesheet's own
-      // j shows again, so the last frame matches every page exactly.
+      // The j is reshaped in its own drawing (the top bar's inline SVG, in thousandths of an em): its short path goes
+      // from the icon's j (a half-circle hook) to the name's j (taller, its hook turning a third past the quarter), round
+      // ends throughout. Its last frame is the name's path exactly, which then shows in its place.
       const n = (v) => Math.round(v * 100) / 100;
-      const NS = 'http://www.w3.org/2000/svg';
-      const svg = document.createElementNS(NS, 'svg'), path = document.createElementNS(NS, 'path');
-      svg.setAttribute('class', 'jsal-j-draw'); svg.setAttribute('viewBox', '0 0 900 1050'); svg.setAttribute('aria-hidden', 'true');
-      svg.appendChild(path);
+      const foldD = fold.getAttribute('d'), foldW = fold.getAttribute('stroke-width');
       const shape = (m) => {
         const x = 585.5, r = lerp(167.6, 100, m), y = lerp(638, 780, m), th = lerp(Math.PI, (2 * Math.PI) / 3, m);
         const top = lerp(452, 277.5, m), w = lerp(149, 147, m);
         const ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th);
-        path.setAttribute('d', `M${x} ${n(top)}V${n(y)}A${n(r)} ${n(r)} 0 0 1 ${n(ex)} ${n(ey)}`);
-        path.setAttribute('stroke-width', n(w));
+        fold.setAttribute('d', `M${x} ${n(top)}V${n(y)}A${n(r)} ${n(r)} 0 0 1 ${n(ex)} ${n(ey)}`);
+        fold.setAttribute('stroke-width', n(w));
       };
       logo.classList.add('jsal-unfolding');
       // t in ms: 300 still, the gem lifts (300-500), arcs over the name (480-1100) and lands with a small swell
       // (1100-1260); the j reshapes (560-1040) and its dot fills in over the second half of that; "io" and the
       // arrow fade in (1000-1320)
       const draw = (t) => {
-        const m = ease(clamp((t - 560) / 480)), drawing = m < 1;
-        if (drawing) { shape(m); if (!svg.isConnected) j.appendChild(svg); } else if (svg.isConnected) svg.remove();
-        j.classList.toggle('jsal-drawing', drawing);
+        const m = ease(clamp((t - 560) / 480));
+        shape(m);
+        dot.style.opacity = clamp((m - 0.55) / 0.45);
         const lift = out(clamp((t - 300) / 200)), f = ease(clamp((t - 480) / 620));
         const ax = x0, ay = y0 - 0.09 * em * lift, cx = x0 / 2, cy = -1.08 * em;   // the arc: from above the j, high over "sal"
         const gx = (1 - f) ** 2 * ax + 2 * (1 - f) * f * cx;
         const gy = (1 - f) ** 2 * ay + 2 * (1 - f) * f * cy;
         const scale = lerp(0.657, 1, f) * (1 + 0.1 * Math.sin(Math.PI * clamp((t - 1100) / 160)));
         stop.style.transform = `translate(${gx}px, ${gy}px) rotate(${180 * f}deg) scale(${scale})`;
-        j.style.setProperty('--jsal-dot', clamp((m - 0.55) / 0.45));
         // "sal" shows just behind the gem through a soft edge (none once it lands), so no letter slips out ahead of it
         const edge = home + gx - 0.6 * 0.17 * em * scale - salBox.left, soft = 0.35 * em * (1 - f);
         sal.style.webkitMaskImage = sal.style.maskImage = `linear-gradient(90deg, black ${edge - soft}px, transparent ${edge}px)`;
@@ -490,12 +486,12 @@
         const t = now - start;
         draw(Math.min(t, 1320));
         if (t < 1320) return requestAnimationFrame(step);
-        // Settle: everything is where the stylesheet puts it, so the inline styles go; "sal"'s mask is left fully open
-        // as drawn, so no pixel changes. Then the glint
-        stop.style.transform = io.style.transform = io.style.opacity = '';
+        // Settle: the name's own path takes over from the reshaped one (the same shape), the short path goes back to
+        // the fold, and the inline styles go; "sal"'s mask is left fully open as drawn, so no pixel changes. Then the glint
+        stop.style.transform = io.style.transform = io.style.opacity = dot.style.opacity = '';
         if (caret) caret.style.opacity = '';
-        j.style.removeProperty('--jsal-dot');
         logo.classList.remove('jsal-unfolding');
+        fold.setAttribute('d', foldD); fold.setAttribute('stroke-width', foldW);
         setTimeout(() => logo.classList.add('jsal-glint'), 130);
         setTimeout(() => logo.classList.remove('jsal-glint'), 980);
       };

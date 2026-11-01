@@ -199,39 +199,25 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 /* The name's parts sit in one line of text (.jsal-name), so the gem stands on the baseline like a full stop */
 .jsal-brand .jsal-io { display: inline-block; position: relative; }
 .jsal-brand .jsal-stop { position: relative; }
-/* The j is drawn (the letter stays in the text for copying and screen readers): the one letter with round ends, its
-   hook turning a little past the quarter, the same on every page. The stroke is ::before and the dot ::after, so the
-   unfold can fade the dot in on its own. Its box runs from 0.75em above the baseline to 0.3em below it; the drawings'
-   units are thousandths of an em. */
+/* The j is drawn (the letter stays in the text for copying and screen readers): an inline SVG in the top bar's markup,
+   the one letter with round ends, its hook turning a little past the quarter, the same on every page. Its box runs from
+   0.78em above the baseline to 0.3em below it; the drawing's units are thousandths of an em. Being markup rather than a
+   painted mask, it's as sharp as the text on every screen, and the unfold reshapes this same drawing. */
 .jsal-brand .jsal-j { position: relative; color: transparent; }
-.jsal-brand .jsal-j::before, .jsal-brand .jsal-j::after {
-  position: absolute; left: -0.45em; top: 0.22em; width: 0.9em; height: 1.05em;
-  top: calc(round(0.96875em, 1px) - 0.75em);   /* the baseline sits a whole number of pixels below the top */
-  content: ""; background: var(--jsal-ink);
+.jsal-brand .jsal-j-draw {
+  position: absolute; left: -0.45em; top: 0.19em; width: 0.9em; height: 1.08em;
+  top: calc(round(0.96875em, 1px) - 0.78em);   /* the baseline sits a whole number of pixels below the top */
+  overflow: visible; pointer-events: none; fill: var(--jsal-ink); stroke: var(--jsal-ink); stroke-linecap: round;
 }
-.jsal-brand .jsal-j::before {
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 277.5V780A100 100 0 0 1 435.5 866.6' fill='none' stroke='black' stroke-width='147' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 277.5V780A100 100 0 0 1 435.5 866.6' fill='none' stroke='black' stroke-width='147' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
-}
-.jsal-brand .jsal-j::after {   /* the dot rises a little above the stroke's box, so its own box starts 0.03em higher */
-  top: 0.19em; height: 1.08em; top: calc(round(0.96875em, 1px) - 0.78em);
-  opacity: var(--jsal-dot, 1);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -30 900 1080'%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -30 900 1080'%3E%3Ccircle cx='586' cy='57.5' r='77'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
-}
-/* First page of a visit: the name opens folded into the tab icon's mark, its short j with the deep hook wearing the gem as
-   its dot, and /nav.js unfolds it: the j's curve shortens into the name's j while the gem hops over the name to its
-   place as the full stop. The letters keep their places, so nothing beside the logo moves. */
-html.jsal-intro [data-jsal-nav] .jsal-j::before {
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 452V638A167.6 167.6 0 0 1 250.3 638' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M585.5 452V638A167.6 167.6 0 0 1 250.3 638' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E");
-}
-/* While the j reshapes, /nav.js draws it as a small SVG laid exactly over the letter's box (a path it reshapes each
-   frame, which every browser repaints), and the stylesheet's own j steps aside until it's done */
-[data-jsal-nav] .jsal-j-draw {
-  position: absolute; left: -0.45em; top: 0.22em; width: 0.9em; height: 1.05em;
-  top: calc(round(0.96875em, 1px) - 0.75em);   /* the same box as the drawn j's */
-  overflow: visible; pointer-events: none; fill: none; stroke: var(--jsal-ink); stroke-linecap: round;
-}
-[data-jsal-nav] .jsal-j.jsal-drawing::before { visibility: hidden; }
-html.jsal-intro [data-jsal-nav] .jsal-j { --jsal-dot: 0; }
+.jsal-brand .jsal-j-draw path { fill: none; }
+/* First page of a visit: the name opens folded into the tab icon's mark, its short j with the deep hook (the drawing's
+   second path) wearing the gem as its dot, and /nav.js unfolds it: the short j's curve shortens into the name's j while
+   the gem hops over the name to its place as the full stop. The letters keep their places, so nothing beside the logo
+   moves. */
+.jsal-brand .jsal-j-fold,
+html.jsal-intro [data-jsal-nav] .jsal-j-line, [data-jsal-nav].jsal-unfolding .jsal-j-line { display: none; }
+html.jsal-intro [data-jsal-nav] .jsal-j-fold, [data-jsal-nav].jsal-unfolding .jsal-j-fold { display: inline; }
+html.jsal-intro [data-jsal-nav] .jsal-j-dot { opacity: 0; }
 html.jsal-intro [data-jsal-nav] .jsal-sal { clip-path: inset(0 100% 0 0); }
 html.jsal-intro [data-jsal-nav] .jsal-stop { transform: translate(-1.707em, -0.389em) scale(0.657); }
 html.jsal-intro [data-jsal-nav] .jsal-io, html.jsal-intro [data-jsal-nav] .jsal-caret { opacity: 0; }
