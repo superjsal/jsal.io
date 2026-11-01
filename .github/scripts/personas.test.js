@@ -11,7 +11,7 @@
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
 const site = path.join(__dirname, '..', '..', 'site');
-const { rank, candidates, explain, standing, tied, ahead, divider, firstGap, HOW, QUESTIONS, options, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, closest, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
+const { rank, candidates, explain, standing, tied, ahead, sameTier, divider, firstGap, HOW, QUESTIONS, options, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, closest, conflict, stay } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
@@ -201,6 +201,9 @@ function shortOf(id, a) {
   if (a.lang === 'yes') s += 3 - lvl('languages');
   if (a.what === 'store' && (a.size === 'big' || a.size === 'b2b') && !data.quiz.largeCatalogue.includes(id)) s += 3;
   if (a.what === 'store' && a.size === 'b2b' && !data.quiz.b2b.includes(id)) s += 1;
+  // Moving an existing site: old links kept working (the redirects row), where a plugin counts as built in for everyone,
+  // and code for a developer
+  if (a.moving && a.moving !== 'no') s += { code: a.who === 'dev' ? 0 : 2, check: 2, no: 3 }[((data.answers[id] || {}).gsc404 || {}).verdict] || 0;
   return s;
 }
 // A platform that fits at all: made for what they're making, its card doesn't rule it out, and it doesn't need a
@@ -233,8 +236,8 @@ const saying = [...verdictOf.keys()].map((w) => w.replace(/[.*+?^${}()|[\]\\]/g,
 const TABLE_LINE = new RegExp(`^If you want (.+?), (.+?) (${saying}), while (.+?) (${saying})\\.$`);
 const SAME_LINE = /^The same goes if you want (.+)\.$/;
 // The must-haves as the divider names them, and the table row (or quiz list) behind each
-const MUST_ROW = { bookings: 'bookings', 'paid members': 'members', 'a blog': 'blog', 'selling online': 'store', 'more than one language': 'languages', 'a large catalogue': 'size', 'selling to other businesses': 'b2b' };
-let dividers = 0, firstGaps = 0;
+const MUST_ROW = { bookings: 'bookings', 'paid members': 'members', 'a blog': 'blog', 'selling online': 'store', 'more than one language': 'languages', 'a large catalogue': 'size', 'selling to other businesses': 'b2b', 'redirects from old links': 'gsc404' };
+let dividers = 0, firstGaps = 0, stays = 0;
 let combos = 0, clear = 0, fallback = 0, byCard = 0, ties = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0, weak = 0, fewFit = 0;
 const cardErrs = [];
 const walk = (a, i) => {
@@ -277,6 +280,13 @@ const walk = (a, i) => {
   if (fitting2.length) {
     const most = Math.min(...fitting2.map((x) => shortOf(x.p.id, a))), better = fitting2.find((x) => shortOf(x.p.id, a) === most);
     if (shortOf(r[0].p.id, a) > most) ruleErr('need', `${at}: ${r[0].p.id} is first, but ${better.p.id} has more of the must-haves built in`);
+  }
+  // "Staying may be the better choice" (score.js stay): only when the platform being left isn't behind the first match
+  const keep = stay(data, a);
+  if (keep) {
+    stays++;
+    const o = keep.origin, l = ranked[0];
+    if (keep.lead.p.id !== l.p.id || closest(o) || ahead(l, o) || (sameTier(o, l) && o.s < l.s)) cardErrs.push(`${at}: says staying on ${a.moving} may be better, but it's behind ${l.p.id}`);
   }
   if (['none', 'low', 'mid'].includes(a.budget)) ranked.forEach((x) => { if (!('budget' in x.pts) && !('shopCost' in x.pts)) ruleErr('budget', `${at}: ${x.p.id}'s cost isn't weighed against the budget`); });
   if ((told[0].vs || {}).kind === 'tipped') {
@@ -411,6 +421,6 @@ Object.entries(data.quiz.freeDomain || {}).filter(onPicker).forEach(([id, fd]) =
 });
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
-console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}${sentenceErrs ? ` (${sentenceErrs} sentences the data doesn't back)` : ', and every sentence is backed by the data and the answers'}. ${clear} clear winners, ${fallback} without a reason from their answers; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}, or something rules it out). ${dividers} put a divider above matches that lack a must-have; ${firstGaps} say even the best match lacks one.`);
+console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}${sentenceErrs ? ` (${sentenceErrs} sentences the data doesn't back)` : ', and every sentence is backed by the data and the answers'}. ${clear} clear winners, ${fallback} without a reason from their answers; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}, or something rules it out). ${dividers} put a divider above matches that lack a must-have; ${firstGaps} say even the best match lacks one; ${stays} say staying on the platform being left may be better.`);
 console.log(`Rules: first is made for what they're making ${broke.made ? `FAILS ${broke.made}` : 'ok'}; not technical never gets "Needs a developer" first ${broke.dev ? `FAILS ${broke.dev}` : 'ok'}; no "Not ideal if" in the top three ${notIdealTop ? `FAILS ${notIdealTop}` : 'ok'}; every reason starts from an answer ${broke.named ? `FAILS ${broke.named}` : 'ok'}; no developer platform for a solo local business ${broke.local ? `FAILS ${broke.local}` : 'ok'}; no Framer for a large catalogue ${broke.catalogue ? `FAILS ${broke.catalogue}` : 'ok'}; the platform you're leaving is never a match ${broke.origin ? `FAILS ${broke.origin}` : 'ok'}; the must-haves come before taste ${broke.need ? `FAILS ${broke.need}` : 'ok'}; every cost is weighed against the budget ${broke.budget ? `FAILS ${broke.budget}` : 'ok'}.`);
 process.exit(failed || cardErrs.length ? 1 : 0);

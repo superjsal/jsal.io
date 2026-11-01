@@ -36,6 +36,8 @@
   // Shared by the budget score, the "costs less" box and the card's cost line, so they agree.
   const costRow = (a) => (a.what === 'store' || a.needs === 'sell' ? 'cost_store' : a.needs === 'members' ? 'cost_members' : 'cost_site');
   const LOOKS = { template: 'Good templates to start from', visual: 'Arrange your pages visually', pixel: 'Full control over the design' };
+  // Moving an existing site, from a platform on the picker or another one
+  const moving = (a) => !!a.moving && a.moving !== 'no';
 
   // What each part of the score says when it tipped a result: [the leader earned it, the runner-up lost it], given
   // (answers, runner-up, leader, the leader's points, the runner-up's points). Keys match fitScore's parts.
@@ -63,6 +65,7 @@
     bookings: [(a, y, x) => `${x} has bookings built in`, (a, y) => `${y} needs an add-on for bookings`],
     blog: [(a, y, x) => `${x} has a blog built in`, (a, y) => `${y} needs more than its own tools for a blog`],
     imports: [(a, y, x) => `${x} imports your content from there`, null],   // no points, so never tips; here so every part has words
+    links: [null, (a, y, x, own, theirs) => (theirs === -4 ? `${y} can’t keep old links working` : `${y} needs custom code to keep old links working`)],
     shopCost: [null, null],   // an estimate from two bands, not a stated price, so it's never given as a reason
     notIdeal: [null, (a, y) => `${y} isn’t ideal for answers like yours`],
     // Minus: when the leader is over the budget too (lost points of its own), it only costs less than the runner-up
@@ -95,6 +98,7 @@
     bookings: () => 'you need bookings from day one',
     blog: () => 'you want a blog alongside the site',
     imports: (a) => (a.moving && a.moving !== 'no' && a.moving !== 'other' ? `you’re moving from ${a.moving}` : null),
+    links: (a) => (moving(a) ? 'you’re moving an existing site' : null),
     shopCost: null,
     notIdeal: null,
     budget: (a) => (a.budget === 'none' ? 'you want to start free' : ['low', 'mid'].includes(a.budget) ? `you want to spend ${lowerFirst(answerLabel('budget', a.budget))} a month` : undefined),
@@ -129,6 +133,9 @@
       add('members', { yes: 3, plugin: 0, code: -2, check: -2, no: -4 }[m] ?? 0, m === 'yes' && 'Paid memberships built in');
       // quiz.members: the platform sends newsletters to those members itself
       if (has('members')) add('letters', 2, 'Newsletters to your members built in');
+      // A cut of what members pay (quiz.revenueShare), which the monthly cost bands don't show
+      const cut = (Q.revenueShare || {})[p.id];
+      if (cut) but.push(`it keeps ${cut.share}`);
     }
     // Already on HubSpot: its card's first "Good fit" line
     if (ticked(a, 'hubspot') && p.id === 'hubspot') add('hubspot', 4, 'Fits the HubSpot tools you already use');
@@ -188,6 +195,15 @@
     const imp = ((Q.imports || {})[p.id] || {})[a.moving];
     const origin = imp && data.platforms.find((x) => x.id === a.moving);
     if (origin) { const line = `Imports your ${origin.name} ${imp.what}`; add('imports', 0, line); links[line] = imp.url; }
+    // Moving an existing site: its old links must keep working (the "Keep old links working" row). A redirect plugin is
+    // routine, so only needing code or not being possible counts against, and code not for a developer, who writes the
+    // redirects into the front end they build
+    if (moving(a)) {
+      const v = verdict('gsc404');
+      add('links', { code: a.who === 'dev' ? 0 : -2, check: -2, no: -4 }[v] ?? 0);
+      const w = { code: 'keeping old links working needs custom code', check: 'keeping old links working needs custom code', no: 'it can’t keep old links working, so links to your current pages would break' }[v];
+      if (w) but.push(w);
+    }
     // The card's own "Not ideal if" lines that match (quiz.notIdeal): ruled out unless nothing else fits
     if (notIdealFor(Q, p.id, a)) add('notIdeal', -30);
     if (a.budget in BUDGET) {
@@ -237,6 +253,9 @@
     if (a.lang === 'yes') row('lang', 'more than one language', 'languages');
     if (a.what === 'store' && (a.size === 'big' || a.size === 'b2b')) { const has = (Q.largeCatalogue || []).includes(id); out.push({ key: 'size', what: 'a large catalogue', how: has ? 'yes' : 'notMade', short: has ? 0 : 3 }); }
     if (a.what === 'store' && a.size === 'b2b') { const has = (Q.b2b || []).includes(id); out.push({ key: 'b2b', what: 'selling to other businesses', how: has ? 'yes' : 'notMade', short: has ? 0 : 1 }); }
+    // Moving an existing site: old links kept working, where a plugin counts as built in for everyone, and code for a
+    // developer (see fitScore)
+    if (moving(a)) { const v = verdict('gsc404'); out.push({ key: 'links', what: 'redirects from old links', how: v, short: { code: a.who === 'dev' ? 0 : 2, check: 2, no: 3 }[v] || 0 }); }
     return out;
   }
   // What a match lacks that the first has, for the divider above the matches that don't have every must-have built in:
@@ -354,7 +373,7 @@
     return fit ? `${none}${x.p.name} is a good fit for ${tagInSentence(fit)}.` : null;
   }
   // The parts each must-have tier is made of, so a result won on a tier leads with what decided it
-  const TIER_PARTS = { gate: new Set(['goal', 'sellOnly', 'notIdeal', 'ease']), need: new Set(['bookings', 'members', 'sell', 'blog', 'lang', 'size', 'b2b']) };
+  const TIER_PARTS = { gate: new Set(['goal', 'sellOnly', 'notIdeal', 'ease']), need: new Set(['bookings', 'members', 'sell', 'blog', 'lang', 'size', 'b2b', 'links']) };
   // The parts of the score where x beat y, those of the tier that put x ahead first, then the biggest gap, with wording in TIP
   function gaps(x, y) {
     const by = TIER_PARTS[ahead(x, y)], first = (g) => (by && by.has(g.k) ? 1 : 0);
@@ -485,6 +504,14 @@
   const closest = (r) => !!r && (r.gate > 0 || r.s < LOW_FIT);
   // Answers that pull against each other, with the question to change
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, lessSuited, LOW_FIT, closest, conflict, costRow };
+  // The platform being left fits these answers as well as the first match or better (and isn't only the closest
+  // itself): the page says staying may be the better choice. Null otherwise, or when not moving from the picker.
+  const stay = (data, a) => {
+    const all = rank(data, a), origin = all.find((r) => r.p.id === a.moving), lead = candidates(data, a)[0];
+    if (!origin || !lead || closest(origin)) return null;
+    const where = behind(origin, lead);
+    return where === 'ahead of' || where === 'level with' ? { origin, lead, where } : null;
+  };
+  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, firstGap, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, lessSuited, LOW_FIT, closest, conflict, costRow, stay };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);
