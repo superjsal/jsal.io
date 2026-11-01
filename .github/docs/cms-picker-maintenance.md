@@ -27,7 +27,9 @@ link also kept the languages tick from then on (it had been dropped, so a shared
 The same day HubSpot's card line "You don't otherwise use HubSpot" was extended from local and creative sites to blogs,
 newsletters and publications, where HubSpot had come first in 37% of answers mostly for being free to start: 205 first
 places moved (to Squarespace, Webflow, Ghost, Duda), and the nonprofit persona moved to Webflow first, agreed with John.
-Content-heavy business sites keep HubSpot, as the B2B marketing team persona answers that way.
+Content-heavy business sites keep HubSpot, as the B2B marketing team persona answers that way. A result that starts
+free on Wix, Webflow or Framer also says, as "worth knowing", that the free plan has only the platform's own address
+(`quiz.freeDomain`, each with the platform's page saying so; no points, and HubSpot left out as its pages disagree).
 
 **Quiz v3** (2026-10-31): the questions on languages, paid members, moving later and adding features became "Anything
 you'll need from day one?" and "Moving from somewhere?" (eight questions at most). The audit behind it is in the
@@ -257,6 +259,7 @@ Platforms change plans and features often. Every few months (or when a platform 
   Shopify (apps.shopify.com/zendra), Paid Member Subscriptions for WordPress
   (wordpress.org/plugins/paid-member-subscriptions/), and Duda's own Membership add-on (duda.co/membership).
   A change can move a band: Webflow ($15 + $25) and Framer ($10 + $24) sit just over $25.
+- Recheck **`freeDomain`** in `cms-picker/quiz.json` with the pricing: a free plan gaining custom domains comes off it.
 - Recheck the **bookings list and the import pages** (`bookings` and `imports` in `cms-picker/quiz.json`): a
   platform adding or dropping its own bookings product moves the bookings need, and an import guide that moves or
   disappears should come off the list (only the destination's own docs count; the `_about` note says what was

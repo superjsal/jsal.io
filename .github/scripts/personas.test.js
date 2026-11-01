@@ -338,6 +338,11 @@ Object.entries(data.quiz.fitFor || {}).forEach(([id, tags]) => {
     });
   });
 });
+// A free plan's address note (quiz.freeDomain) names its address and the platform's own page, on a platform that starts free
+Object.entries(data.quiz.freeDomain || {}).forEach(([id, fd]) => {
+  if (!fd.address || !/^https:\/\//.test(fd.url || '')) cardErrs.push(`freeDomain for ${id}: needs an address and the platform's own page`);
+  if (((data.answers[id] || {}).cost_site || {}).verdict !== 'free') cardErrs.push(`freeDomain for ${id}: its site doesn't start free any more`);
+});
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
 console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}${sentenceErrs ? ` (${sentenceErrs} sentences the data doesn't back)` : ', and every sentence is backed by the data and the answers'}. ${clear} clear winners, ${fallback} without a reason from their answers; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}).`);

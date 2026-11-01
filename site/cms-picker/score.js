@@ -184,6 +184,9 @@
       if (level !== undefined) {
         const over = level - BUDGET[a.budget];
         if (over > 0) { add('budget', -3 * over); but.push('it costs more to start than you planned to spend'); } else add('budget', 0, a.budget === 'none' ? 'Free to start' : 'Fits your budget');
+        // Starting free where the free plan has only the platform's own address (quiz.freeDomain): a business wants its own
+        const fd = a.budget === 'none' && band === 'free' && (Q.freeDomain || {})[p.id];
+        if (fd) but.push(`the free plan uses an address like ${fd.address}; your own domain needs a paid plan`);
       }
     }
     // Every reason is shown, so two cards' lists match only when their reasons really do; "but" changes no score
