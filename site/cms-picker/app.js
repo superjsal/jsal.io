@@ -497,7 +497,7 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches; questions and scoring in score.js. The answers live in the page
   // address so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, closest, rank, candidates, explain, standing, behind, tied, near, divider, firstGap, conflict, costRow, weight, TIP, LEAD, options, lessSuited } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL, closest, rank, candidates, explain, standing, behind, tied, near, divider, firstGap, conflict, costRow, weight, TIP, LEAD, options, lessSuited, stay } = window.cmsScore;
   // Shared result links carry the quiz version (v=5; none means 1). When the questions change, raise LINK_VERSION and
   // translate older answers in readLink, so shared links keep opening a result.
   const LINK_VERSION = 5;
@@ -936,6 +936,13 @@
         const gap = firstGap(top);
         if (gap) { const note = el('p', 'qz-note'); note.append(el('span', null, gap)); box.append(note); }
       }
+      // The platform being left fits as well as the first match or better (score.js stay): moving may not be worth it
+      const keep = stay(data, a);
+      if (keep) {
+        const note = el('p', 'qz-note'), o = keep.origin.p.name, l = keep.lead.p.name;
+        note.append(el('span', null, `${o}, where your site is now, ${keep.where === 'ahead of' ? `fits your answers best: it ranks ahead of ${l}` : `fits your answers as well as ${l}`}, the best of the others below. Moving takes work and can cost search traffic, so staying may be the better choice.`));
+        box.append(note);
+      }
       // Moving from somewhere: what the old platform lets you take, and that a match importing from it says so
       if (a.moving && a.moving !== 'no') {
         const mig = el('p', 'qz-mig'), origin = data.platforms.find((p) => p.id === a.moving);
@@ -960,7 +967,7 @@
           const r = all.find((x) => x.p.id === id), i = all.indexOf(r), lead = ranked[0];
           // Where it lost most to the first match (TIP's words, after the answer behind them, so "that" has something to
           // point to); parts its own "worth knowing" lines cover aren't said twice
-          const SAID = new Set(['ease', 'care', 'lang', 'bookings', 'blog', 'budget']);
+          const SAID = new Set(['ease', 'care', 'lang', 'bookings', 'blog', 'budget', 'links']);
           const lost = [...new Set([...Object.keys(lead.pts), ...Object.keys(r.pts)])].map((k) => [k, (lead.pts[k] || 0) - (r.pts[k] || 0)])
             .filter(([k, d]) => d > 0 && TIP[k] && TIP[k][1] && !SAID.has(k)).sort((p, q) => q[1] - p[1]).slice(0, 2)
             .map(([k]) => { const w = TIP[k][1](a, r.p.name, lead.p.name, lead.pts[k] || 0, r.pts[k] || 0), l = LEAD[k] && LEAD[k](a); return w && (l ? `${l}, and ${w}` : w); }).filter(Boolean);

@@ -84,6 +84,21 @@ Drupal, or to Wix as the closest fallback); and HubSpot's "(cost)" became "(it c
 developer answer (+3/−2) was measured and left: 808 first places move with no persona or expert case to judge them,
 so it waits for the "Is … what you'd pick?" data, as does "A close call" (62% of results: 26% level, 36% within 2).
 
+**Moving and paid members** (2026-11-01, from a review of the quiz's gaps; agreed with John): three changes
+for people moving a site and for paid newsletters. (1) **Staying may be better:** in 17,656 of 204,480 moving answer
+sets the platform being left fits as well as the first match or better (`stay` in `score.js`, the same words as
+`behind`), and a blue note above the cards now says so ("Wix, where your site is now, fits your answers as well as
+Squarespace…; staying may be the better choice"); before, it was said only under "Had a platform in mind?". No result
+moves. (2) **Old links are a must-have when moving:** moving from any platform (one on the picker or another) reads
+the "Keep old links working" row (`gsc404`) as a must-have (`links`: needs code −2 and 2 short, not possible −4 and 3
+short; a plugin is routine, so it counts as built in for everyone, and code too for a developer, who writes the
+redirects into the front end they build), with a "worth knowing" line. 2,968 first places moved (1.4% of all 218,112
+sets, all moving ones): Substack (no redirects) to Squarespace, WordPress, Ghost or Webflow, and Sanity (code) to
+WordPress or Drupal for non-developers. No persona or expert case moved; the persona "Developer who wants to be able
+to leave later" is why code counts as built in for a developer. (3) **Substack's 10%:** `quiz.revenueShare` names
+platforms that keep a share of what paid members pay, which the cost bands don't show; a paid-members result on one
+says it as "worth knowing", no points (Substack: 10% plus Stripe's card fees, from its cost answer's source).
+
 **Baseline** (final review with Claude Reviewer, 2026-10-30, before v3): all four rule tests pass, all 37 personas pass, and
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
 B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
@@ -145,7 +160,9 @@ Shared by the page and the tests, so they always run the same code.
   blog reads the "Add a blog" row the same way, bookings read `quiz.bookings` (+3 built in or first-party, else −1 and
   a "worth knowing" line). Nothing special scores nothing. The tick (`lang=yes`) reads the "More than one language"
   row: built in +2, plugin −1, code −2, no −4, with a "worth knowing" line when it isn't built in.
-- **Moving from** ("Moving from somewhere?"): no points. The result shows what the old platform lets you take (its
+- **Moving from** ("Moving from somewhere?"): no points for where they're coming from, but old links must keep working
+  wherever they go (the `links` must-have, under "Moving and paid members" above), and when the platform being left
+  fits as well as the first match or better a note says staying may be the better choice (`stay`). The result shows what the old platform lets you take (its
   profile's "If you leave" line) above the cards, a match whose own docs describe an import from it gets a 0-point
   reason linked to those docs (`quiz.imports`, through `links` on the score), and the platform being left is never
   a match: `candidates` (the list the page and the test rank from) leaves it out and also puts platforms whose
@@ -154,8 +171,8 @@ Shared by the page and the tests, so they always run the same code.
   ranks 3rd of 13 for your answers").
 - **Ranking, must-haves first:** `rank` sorts by `gate` (how many of these rule it out: not made for what they're
   making, made only for selling, its card's "Not ideal if", needing a developer when they're building it themselves),
-  then `short` (`shortfall`: steps short of "built in" on the need picked, the languages tick, and for a store selling
-  itself and a large or B2B catalogue; bookings count one step; for a developer or agency a plugin counts as built in),
+  then `short` (`shortfall`: steps short of "built in" on the need picked, the languages tick, for a store selling
+  itself and a large or B2B catalogue, and old links kept working when moving; bookings count one step; for a developer or agency a plugin counts as built in),
   then the points below, then the tie-breaks. `ahead(x, y)` says which tier put one ahead ('gate', 'need' or null),
   `sameTier` whether two are level on both, `near` whether one is level on both and within n points (the page's "Good
   match" and "Also worth a look"). A result won on a tier leads its box with that tier's parts (`gaps`).
@@ -236,7 +253,8 @@ Shared by the page and the tests, so they always run the same code.
   "Against" reason follows the answer behind it, like the boxes.
 - **Paid members** (the "Paid subscribers or members" need) read the "Sell memberships or paid
   posts" row: built in +3, plugin 0, needs code or check manually −2, no −4. Ghost gets +2 more for sending
-  newsletters to those members itself (`quiz.members`). HubSpot's card rules it out for paid members.
+  newsletters to those members itself (`quiz.members`). A platform that keeps a share of what members pay
+  (`quiz.revenueShare`, Substack) says so as "worth knowing"; recheck it with the pricing. HubSpot's card rules it out for paid members.
   Their budget reads "Start a site with paid members" (`cost_members`: the plan that includes paid
   memberships, e.g. Ghost(Pro) Publisher, Wix Core), as does the card's "Cost to start" line; `costRow` in
   `score.js` picks the row for the score, the "costs less to start" box and the card alike (a store, or a site
@@ -294,7 +312,8 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
   - it reports how many clear winners have no reason from their answers (0 today), how many first places are
     level on points but ahead on their card's "Good fit" lines or the look (their box must say which) or tied, and how many show a
     "Closest match" (first scores under `LOW_FIT`, 4: 2,171 today). No persona may get only a closest match.
-  - every tagged "Good fit" line (`fitFor`) is still on its card and answers a real question and answer.
+  - every tagged "Good fit" line (`fitFor`) is still on its card and answers a real question and answer;
+  - "staying may be the better choice" (`stay`) appears only when the platform being left isn't behind the first match.
 - **Expert cases** (`node .github/scripts/expert-cases.js`, also in `check.py` and the Action): 43 real-world clients
   and the picks an experienced web consultant would accept, written without looking at the quiz's results (drafted by
   Claude on 2026-11-01, set up as a standing report at John's request). It never fails a check; it reports how many
