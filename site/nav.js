@@ -438,11 +438,12 @@
     const play = () => {
       if (!root.classList.contains('jsal-intro')) return;
       const em = parseFloat(getComputedStyle(logo).fontSize);
-      // The gem is moved from where it sits unfolded (offsets ignore the fold's transforms): its centre is half its
-      // width into the stop and 0.17em above the baseline. Folded, it sits on the short j as its dot, 0.1355em into the
+      // The gem is moved from where it sits unfolded: its centre is 0.24em after the end of "sal" (the stop's 0.07em
+      // margin and half its 0.34em width) and 0.17em above the baseline. Measured to the sub-pixel from boxes the fold
+      // doesn't move (whole-pixel offsets left it a fifth of a pixel off the j). Folded, it sits on the short j as its dot, 0.1355em into the
       // j's box and 0.559em above the baseline, at 0.657 of its size, as the stylesheet folds it.
-      const home = stop.offsetLeft + stop.offsetWidth / 2;
-      const x0 = j.offsetLeft + 0.1355 * em - home, y0 = -0.389 * em;
+      const salBox = sal.getBoundingClientRect(), home = salBox.right + 0.24 * em;
+      const x0 = j.getBoundingClientRect().left + 0.1355 * em - home, y0 = -0.389 * em;
       // The j, in the drawing's units (shell.css): from the icon's short j (a half-circle hook) to the name's j (taller,
       // its hook turning a third past the quarter), round ends throughout. From the start until it has reshaped it's a
       // small SVG over the letter's box (.jsal-j-draw), as the fold stops at the first frame; then the stylesheet's own
@@ -475,7 +476,7 @@
         stop.style.transform = `translate(${gx}px, ${gy}px) rotate(${180 * f}deg) scale(${scale})`;
         j.style.setProperty('--jsal-dot', clamp((m - 0.55) / 0.45));
         // "sal" shows just behind the gem through a soft edge (none once it lands), so no letter slips out ahead of it
-        const edge = home + gx - 0.6 * 0.17 * em * scale - sal.offsetLeft, soft = 0.35 * em * (1 - f);
+        const edge = home + gx - 0.6 * 0.17 * em * scale - salBox.left, soft = 0.35 * em * (1 - f);
         sal.style.webkitMaskImage = sal.style.maskImage = `linear-gradient(90deg, black ${edge - soft}px, transparent ${edge}px)`;
         const o = ease(clamp((t - 1000) / 320));
         io.style.opacity = o;
