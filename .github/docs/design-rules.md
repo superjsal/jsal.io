@@ -107,9 +107,12 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   like the answers, tiles and cards around it, so the quiz reads as one set of shapes; selected is the same gold. A set of links is not a choice, so it never wears pills: it's a text list (the home page footer's
   Platform guides) or a grid of equal-width tiles with the plain `--jsal-line` border, surface background and 500
   weight. Uneven pills stagger; equal tiles don't.
-- **A tick that goes with a choice** (the quiz's "In two or more languages") is a checkbox in a bordered row above
+- **A tick that goes with a choice** (the quiz's "We already use HubSpot") is a checkbox in a bordered row above
   the choices, selected with the same `--jsal-selected-*` tokens and gold edge as a pressed chip, the box itself in
   `accent-color: var(--jsal-accent)`; one focus ring on the row.
+- **A question that takes several answers** ("Anything you'll need from day one?") is a list of those same checkbox
+  rows (two columns where they fit, one on phones) with Back and a gold Next, never answer tiles, which move on at one
+  tap; nothing ticked is an answer too, and the hint says so.
 
 ## Layout
 

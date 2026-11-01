@@ -12,7 +12,7 @@ const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
 
 // Agreement when the report was set up: fewer than this is called out
-const BASELINE = 42;
+const BASELINE = 44;
 const DEV = ['magento', 'drupal', 'sanity'];
 const S = (o) => ({ moving: 'no', needs: 'none', budget: 'any', ...o });
 const CASES = [
@@ -21,6 +21,9 @@ const CASES = [
   ['Plumber, not technical, the usual pages, up to $25', S({ what: 'site', kind: 'local', who: 'easy', care: 'no', look: 'template', budget: 'low' }), { ok: ['wix', 'squarespace'], never: [...DEV, 'webflow'] }],
   ['Restaurant in two languages with table bookings, not technical', S({ what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'bookings', lang: 'yes', look: 'template', budget: 'low' }), { ok: ['wix'], any: ['wix'], never: DEV }],
   ['Yoga studio with paid members, not technical', S({ what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'members', look: 'template', budget: 'mid' }), { ok: ['wix', 'squarespace'], never: [...DEV, 'hubspot'] }],
+  // Two needs at once (quiz v6)
+  ['Yoga studio with class bookings and paid members, not technical', S({ what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'bookings,members', look: 'template', budget: 'mid' }), { ok: ['wix', 'squarespace'], never: [...DEV, 'hubspot', 'square'] }],
+  ['Café taking table bookings and online orders, not technical, up to $25', S({ what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'bookings,sell', look: 'template', budget: 'low' }), { ok: ['square', 'squarespace', 'wix'], never: [...DEV, 'framer', 'hubspot'] }],
   ['Local accountant, agency-built', S({ what: 'site', kind: 'local', who: 'agency', care: 'no', look: 'template', budget: 'mid' }), { ok: ['duda', 'wordpress', 'squarespace', 'wix'], never: DEV }],
   ['Dental clinic, agency-built, bookings', S({ what: 'site', kind: 'local', who: 'agency', care: 'no', needs: 'bookings', look: 'visual', budget: 'mid' }), { ok: ['duda', 'wix', 'wordpress', 'squarespace'], never: DEV }],
   ['Bakery selling cakes online too, not technical, up to $25', S({ what: 'site', kind: 'local', who: 'easy', care: 'no', needs: 'sell', look: 'template', budget: 'low' }), { ok: ['squarespace', 'wix'], never: [...DEV, 'framer', 'hubspot', 'ghost'] }],

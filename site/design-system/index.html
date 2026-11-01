@@ -156,6 +156,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .tick:has(:focus-visible) { box-shadow: var(--jsal-focus-ring); }
 .tick input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: var(--jsal-accent); cursor: pointer; }
 .tick input:focus-visible { outline: none; }
+/* A question that takes several answers: the same ticks as a list (cms-picker .qz-checks) */
+.checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 8px; margin-bottom: 14px; }
+.checks .tick { width: auto; }
 .tick b { display: block; font-size: 15px; font-weight: 600; }
 .tick small { display: block; color: var(--jsal-muted); font-size: 13px; }
 /* An index of links: plain links in a row, never pills (the home page footer's .fg) */
@@ -531,7 +534,9 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </div>
       <div class="demo">
         <span class="src">A tick that goes with a choice · cms-picker/styles.css .qz-tick (selected like a pressed chip; the box in the accent)</span>
-        <div class="row"><label class="tick"><input type="checkbox" checked><span><b>I need two or more languages</b><small>Tick this as well as picking one below</small></span></label><label class="tick"><input type="checkbox"><span><b>I need two or more languages</b><small>Tick this as well as picking one below</small></span></label></div>
+        <div class="row"><label class="tick"><input type="checkbox" checked><span><b>We already use HubSpot</b><small>For our CRM, email or marketing</small></span></label><label class="tick"><input type="checkbox"><span><b>We already use HubSpot</b><small>For our CRM, email or marketing</small></span></label></div>
+        <span class="src">A question that takes several answers · cms-picker/styles.css .qz-checks (the same ticks as a list, two columns where they fit, then Back and a gold Next)</span>
+        <div class="checks"><label class="tick"><input type="checkbox" checked><span><b>Bookings or appointments</b><small>Clients book a time online</small></span></label><label class="tick"><input type="checkbox"><span><b>A blog or news section</b><small>Posts alongside the main pages</small></span></label><label class="tick"><input type="checkbox" checked><span><b>Selling online too</b><small>A few products or services to sell</small></span></label><label class="tick"><input type="checkbox"><span><b>Two or more languages</b><small>The same pages in each language</small></span></label></div>
         <span class="src">An index of links · index.html footer .fg (a bordered pill means a choice, so links are plain text in muted ink, never pills)</span>
         <nav class="fgdemo" aria-label="Platform guides example"><span aria-hidden="true">Platform guides</span><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/substack/">Substack</a></nav>
       </div>
@@ -560,7 +565,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div class="demo">
         <span class="src">Your answers · cms-picker/styles.css .qz-ans-tiles (equal tiles, a short name over each answer, gold while one is being changed; a ticked extra sits on a line beneath, so a tick never makes a tile taller)</span>
         <div class="ans"><button type="button"><small>Making</small>A business or work site</button><button type="button" aria-expanded="true"><small>Built by</small>Me, and I’m not technical</button><button type="button"><small>From day one</small>Bookings or appointments</button><button type="button"><small>Each month</small>Nothing for now</button></div>
-        <div class="ans-also"><i aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></i>I need two or more languages</div>
+        <div class="ans-also"><i aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></i>Two or more languages</div>
       </div>
       <div class="demo">
         <span class="src">A match that lacks a must-have · cms-picker/styles.css .qz-div, .fitp (a label with a rule above, one plain sentence per match from the table's verdicts; under it the pill is neutral)</span>

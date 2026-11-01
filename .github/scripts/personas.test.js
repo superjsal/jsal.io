@@ -194,10 +194,11 @@ function shortOf(id, a) {
   const pro = a.who === 'dev' || a.who === 'agency';
   const lvl = (row) => { const v = ((data.answers[id] || {})[row] || {}).verdict; return pro && v === 'plugin' ? 3 : HAS[v] ?? 0; };
   let s = 0;
-  if (a.needs === 'bookings' && !data.quiz.bookings.includes(id)) s += pro ? 0 : 1;
-  if (a.needs === 'members') s += 3 - lvl('members');
-  if (a.needs === 'blog' && a.what !== 'content') s += 3 - lvl('blog');
-  if (a.needs === 'sell' || a.what === 'store') s += 3 - lvl('store');
+  const needs = String(a.needs).split(',');   // several needs, each a must-have
+  if (needs.includes('bookings') && !data.quiz.bookings.includes(id)) s += pro ? 0 : 1;
+  if (needs.includes('members')) s += 3 - lvl('members');
+  if (needs.includes('blog') && a.what !== 'content') s += 3 - lvl('blog');
+  if (needs.includes('sell') || a.what === 'store') s += 3 - lvl('store');
   if (a.lang === 'yes') s += 3 - lvl('languages');
   if (a.what === 'store' && (a.size === 'big' || a.size === 'b2b') && !data.quiz.largeCatalogue.includes(id)) s += 3;
   if (a.what === 'store' && a.size === 'b2b' && !data.quiz.b2b.includes(id)) s += 1;
@@ -246,7 +247,14 @@ const walk = (a, i) => {
     if (q.when && !q.when(a)) return walk(a, i + 1);
     // A question's tick (q.also: two or more languages) is a yes or no beside every choice
     const ticks = q.also ? [{}, { [q.also.id]: 'yes' }] : [{}];
-    ticks.forEach((x) => options(q, { ...a, ...x }, data).forEach(([v]) => walk({ ...a, ...x, [q.id]: v }, i + 1)));
+    // A checklist (q.multi): every set of its choices, nothing ticked being its own answer
+    const answers = (o) => {
+      const vs = options(q, o, data).map(([v]) => v);
+      if (!q.multi) return vs;
+      const each = vs.filter((v) => v !== q.multi);
+      return [q.multi, ...Array.from({ length: 2 ** each.length - 1 }, (_, n) => each.filter((_, k) => (n + 1) & (1 << k)).join(','))];
+    };
+    ticks.forEach((x) => answers({ ...a, ...x }).forEach((v) => walk({ ...a, ...x, [q.id]: v }, i + 1)));
     return;
   }
   combos++;
