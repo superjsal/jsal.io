@@ -54,18 +54,18 @@ Two drawings of one letter, both with round ends:
 
 ## The unfold
 
-On the first page of a visit the top bar's name opens folded into the mark: the j, with the gem in place of its dot
-and the rest of the name hidden. The gem lifts off, the j's own dot fills in behind it, and the gem arcs over the
-name, turning half a turn and growing to full size, with "sal" showing in its wake. It lands on the baseline as the
-full stop with a small swell, "io" and the menu arrow fade in, and a light runs across the gem and on over "io".
-About 1.4 seconds, then the glint. Only the gem moves: the j holds still, and the letters keep their places
-throughout, so nothing beside the logo moves.
+On the first page of a visit the top bar's name opens folded into the tab icon's mark: the icon's short j with its
+deep hook, the gem as its dot, and the rest of the name hidden. The gem lifts off and arcs over the name, turning half
+a turn and growing to full size, with "sal" showing in its wake, while the j's curve shortens into the name's taller j
+(round ends throughout) and its own dot fills in. The gem lands on the baseline as the full stop with a small swell,
+"io" and the menu arrow fade in, and a light runs across the gem and on over "io". About 1.4 seconds, then the glint.
+The letters keep their places throughout, so nothing beside the logo moves.
 
-- Each page's head script folds the name before the first paint (`html.jsal-intro` in `site/shell.css` hides the
-  dot, "sal", "io" and the arrow and puts the gem on the j), and `site/nav.js` plays the rest. Later pages in the
-  visit, pages loaded ahead and reduced motion show the name as it is.
-- The last frame is the name every page shows, pixel for pixel: the unfold only moves the gem and reveals letters,
-  then hands everything back to the stylesheet.
+- Each page's head script folds the name before the first paint (`html.jsal-intro` in `site/shell.css` draws the short
+  j, hides the dot, "sal", "io" and the arrow, and puts the gem on the j), and `site/nav.js` plays the rest, drawing each
+  frame of the j into the same mask (`--jsal-j-draw`). Later pages in the visit, pages loaded ahead and reduced motion
+  show the name as it is.
+- The first and last frames are the stylesheet's own drawings, so the name ends pixel for pixel as every page shows it.
 
 ## Colours
 

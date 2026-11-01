@@ -418,10 +418,11 @@
   window.jsalNavReady = true;
   if (document.prerendering) document.addEventListener('prerenderingchange', replayEarly, { once: true }); else replayEarly();
 
-  // The logo on the first page of a visit: it opens as the mark, the j wearing the gem as its dot (folded by the head
-  // script before the first paint). The gem lifts off, the j's own dot fills in, and the gem arcs over the name to land
-  // as the full stop, with "sal" showing in its wake; then "io" fades in and a light runs across the gem and on over
-  // "io". The j never moves. Once per visit; a page loaded ahead shows the name as it is.
+  // The logo on the first page of a visit: it opens as the tab icon's mark, the short j with the deep hook wearing the
+  // gem as its dot (folded by the head script before the first paint). The gem lifts off and arcs over the name to land
+  // as the full stop, with "sal" showing in its wake, while the j's curve shortens into the name's j and its own dot
+  // fills in; then "io" fades in and a light runs across the gem and on over "io". Once per visit; a page loaded ahead
+  // shows the name as it is.
   (() => {
     const root = document.documentElement;
     const unfold = () => root.classList.remove('jsal-intro');
@@ -438,21 +439,36 @@
       if (!root.classList.contains('jsal-intro')) return;
       const em = parseFloat(getComputedStyle(logo).fontSize);
       // The gem is moved from where it sits unfolded (offsets ignore the fold's transforms): its centre is half its
-      // width into the stop and 0.17em above the baseline. Folded, it sits on the j as its dot, 0.136em into the j's box
-      // and 0.6925em above the baseline, at 0.565 of its size, as the stylesheet folds it.
+      // width into the stop and 0.17em above the baseline. Folded, it sits on the short j as its dot, 0.1355em into the
+      // j's box and 0.559em above the baseline, at 0.657 of its size, as the stylesheet folds it.
       const home = stop.offsetLeft + stop.offsetWidth / 2;
-      const x0 = j.offsetLeft + 0.136 * em - home, y0 = -0.5225 * em;
+      const x0 = j.offsetLeft + 0.1355 * em - home, y0 = -0.389 * em;
+      // The j, in the drawing's units (shell.css): from the icon's short j (a half-circle hook) to the name's j (taller,
+      // its hook turning a third past the quarter), round ends throughout. Each frame is a small SVG in --jsal-j-draw;
+      // at the two ends the stylesheet's own drawings show, so the first and last frames match them exactly.
+      const n = (v) => Math.round(v * 100) / 100;
+      const jFrame = (m) => {
+        const x = 585.5, r = lerp(167.6, 100, m), y = lerp(638, 780, m), th = lerp(Math.PI, (2 * Math.PI) / 3, m);
+        const top = lerp(452, 277.5, m), w = lerp(149, 147, m);
+        const ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th);
+        return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'><path d='M${x} ${n(top)}V${n(y)}A${n(r)} ${n(r)} 0 0 1 ${n(ex)} ${n(ey)}' fill='none' stroke='black' stroke-width='${n(w)}' stroke-linecap='round'/></svg>`;
+      };
       logo.classList.add('jsal-unfolding');
       // t in ms: 300 still, the gem lifts (300-500), arcs over the name (480-1100) and lands with a small swell
-      // (1100-1260); the j's dot fills in once the gem is clear (500-740); "io" and the arrow fade in (1000-1320)
+      // (1100-1260); the j reshapes (560-1040) and its dot fills in over the second half of that; "io" and the
+      // arrow fade in (1000-1320)
       const draw = (t) => {
+        const m = ease(clamp((t - 560) / 480));
+        logo.classList.toggle('jsal-j-done', m >= 1);
+        if (m <= 0 || m >= 1) j.style.removeProperty('--jsal-j-draw');
+        else j.style.setProperty('--jsal-j-draw', `url("data:image/svg+xml,${encodeURIComponent(jFrame(m))}")`);
         const lift = out(clamp((t - 300) / 200)), f = ease(clamp((t - 480) / 620));
         const ax = x0, ay = y0 - 0.09 * em * lift, cx = x0 / 2, cy = -1.08 * em;   // the arc: from above the j, high over "sal"
         const gx = (1 - f) ** 2 * ax + 2 * (1 - f) * f * cx;
         const gy = (1 - f) ** 2 * ay + 2 * (1 - f) * f * cy;
-        const scale = lerp(0.565, 1, f) * (1 + 0.1 * Math.sin(Math.PI * clamp((t - 1100) / 160)));
+        const scale = lerp(0.657, 1, f) * (1 + 0.1 * Math.sin(Math.PI * clamp((t - 1100) / 160)));
         stop.style.transform = `translate(${gx}px, ${gy}px) rotate(${180 * f}deg) scale(${scale})`;
-        j.style.setProperty('--jsal-dot', clamp((t - 500) / 240));
+        j.style.setProperty('--jsal-dot', clamp((m - 0.55) / 0.45));
         // "sal" shows just behind the gem through a soft edge (none once it lands), so no letter slips out ahead of it
         const edge = home + gx - 0.6 * 0.17 * em * scale - sal.offsetLeft, soft = 0.35 * em * (1 - f);
         sal.style.webkitMaskImage = sal.style.maskImage = `linear-gradient(90deg, black ${edge - soft}px, transparent ${edge}px)`;
@@ -473,7 +489,7 @@
         stop.style.transform = io.style.transform = io.style.opacity = '';
         if (caret) caret.style.opacity = '';
         j.style.removeProperty('--jsal-dot');
-        logo.classList.remove('jsal-unfolding');
+        logo.classList.remove('jsal-unfolding', 'jsal-j-done');
         setTimeout(() => logo.classList.add('jsal-glint'), 130);
         setTimeout(() => logo.classList.remove('jsal-glint'), 980);
       };
