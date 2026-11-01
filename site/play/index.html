@@ -254,12 +254,12 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .grid > * { grid-column: 1 / -1 !important; }
   .intro p { font-size: 16px; }
 }
-#work, #updates, #hi-h { scroll-margin-top: 16px; }   /* #hi-h: where "Say hi" lands */
+#ach-h, #hi-h { scroll-margin-top: 16px; }   /* where the Achievements link and "Say hi" land */
 /* Phones: the editorial type scaled down rather than squeezed. A smaller name with a shorter
    indent, one spacing step (14 / 20px) for the grid and tile padding, a smaller corner radius,
-   and only the Work link kept in the top bar (Updates and Email are a short scroll away). */
+   and only the page's own Achievements link kept in the top bar (the logo menu goes to the tools). */
 @media (max-width: 520px) {
-  .jsal-top nav a:not([href="#work"]) { display: none; }
+  .jsal-top nav a:not([href="#ach-h"]) { display: none; }
   .grid { gap: 14px; }
   .roles { margin: 0 0 12px; }
   .roles span + span::before { margin: 0 8px; }

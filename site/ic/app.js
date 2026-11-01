@@ -1683,10 +1683,12 @@ async function boot() {
   applyShared(shared);
   lastLoad = Date.now();
   writeCache({ uid: user.id, role: mem.data.role, data, shared });
-  startApp(me);
+  startApp(me, true);
 }
 
-function startApp(me) {
+// fresh: the data and sign-in were just loaded, not the saved copy. Admin data (Team, CMS Picker) is fetched only
+// then, so opening from the saved copy and refreshing a moment later doesn't fetch it twice.
+function startApp(me, fresh = false) {
   $('#gate').hidden = true;
   $('#side').hidden = false;
   $('#main').hidden = false;
@@ -1723,9 +1725,11 @@ function startApp(me) {
   } catch {}
   if (link) openLink(link); else select(start);
   renderRequests();
-  if (R.manage) { loadTeam(); loadPicker(); }
+  // A #team or #picker link opens that tab, which fetches its own data
+  const toPicker = /^picker(\/|$)/.test(h);
+  if (R.manage && fresh) { if (h !== 'team') loadTeam(); if (!toPicker) loadPicker(); }
   if (h === 'team' || h === 'requests') showView(h);
-  if (/^picker(\/|$)/.test(h)) openPickerLink(h);
+  if (toPicker) openPickerLink(h);
   addEventListener('hashchange', () => {
     const k = location.hash.slice(1), l = parseLink(location.hash);
     if (k === 'team' || k === 'requests') showView(k);
