@@ -220,7 +220,9 @@ html.jsal-intro [data-jsal-nav] .jsal-j-fold, [data-jsal-nav].jsal-unfolding .js
 html.jsal-intro [data-jsal-nav] .jsal-j-dot { opacity: 0; }
 html.jsal-intro [data-jsal-nav] .jsal-sal { clip-path: inset(0 100% 0 0); }
 html.jsal-intro [data-jsal-nav] .jsal-stop { transform: translate(-1.707em, -0.389em) scale(0.657); }
-html.jsal-intro [data-jsal-nav] .jsal-io, html.jsal-intro [data-jsal-nav] .jsal-caret { opacity: 0; }
+html.jsal-intro [data-jsal-nav] .jsal-io { opacity: 0; }
+/* The arrow fades in to its own resting strength: the unfold scales --jsal-show from 0 to 1 */
+html.jsal-intro [data-jsal-nav] .jsal-caret { --jsal-show: 0; }
 [data-jsal-nav].jsal-unfolding .jsal-caret { transition: none; }
 /* Once unfolded, a light runs across the gem and on over "io", like loot catching the light. It passes over the
    letters as a layer of its own, so the letters underneath are never repainted. */
@@ -255,9 +257,9 @@ html.jsal-intro [data-jsal-nav] .jsal-io, html.jsal-intro [data-jsal-nav] .jsal-
 /* The caret and both theme icons are in each page's HTML (not added by nav.js), so the top bar
    is complete on the first frame and doesn't change during page transitions. CSS shows the
    moon in light mode and the sun in dark mode. */
-.jsal-caret { display: inline-block; margin-left: 6px; opacity: .55; transition: transform .15s; vertical-align: middle; }
+.jsal-caret { display: inline-block; margin-left: 6px; opacity: calc(0.55 * var(--jsal-show, 1)); transition: transform .15s; vertical-align: middle; }
 [data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
-[data-jsal-nav]:hover .jsal-caret { opacity: .9; }
+[data-jsal-nav]:hover .jsal-caret { opacity: calc(0.9 * var(--jsal-show, 1)); }
 .jsal-theme .i-sun { display: none; }
 :root[data-theme="dark"] .jsal-theme .i-sun { display: block; }
 :root[data-theme="dark"] .jsal-theme .i-moon { display: none; }

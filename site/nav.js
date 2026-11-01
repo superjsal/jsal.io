@@ -477,7 +477,7 @@
         const o = ease(clamp((t - 1000) / 320));
         io.style.opacity = o;
         io.style.transform = `translateX(${-(1 - o) * 0.12 * em}px)`;
-        if (caret) caret.style.opacity = o;
+        if (caret) caret.style.setProperty('--jsal-show', o);
       };
       draw(0);
       unfold();
@@ -489,7 +489,7 @@
         // Settle: the name's own path takes over from the reshaped one (the same shape), the short path goes back to
         // the fold, and the inline styles go; "sal"'s mask is left fully open as drawn, so no pixel changes. Then the glint
         stop.style.transform = io.style.transform = io.style.opacity = dot.style.opacity = '';
-        if (caret) caret.style.opacity = '';
+        if (caret) caret.style.removeProperty('--jsal-show');
         logo.classList.remove('jsal-unfolding');
         fold.setAttribute('d', foldD); fold.setAttribute('stroke-width', foldW);
         setTimeout(() => logo.classList.add('jsal-glint'), 130);
