@@ -13,10 +13,11 @@ import json, pathlib, re, sys
 ROOT = pathlib.Path(__file__).resolve().parents[2]   # .github\build\check.py -> the project folder
 SITE = ROOT / 'site'                                   # what jsal.io serves
 BUILD = ROOT / '.github' / 'build'                      # this folder: scripts, node_modules and the share-image templates, not site content
-PAGES = ['index.html', '404.html', 'formatter/index.html', 'image-resizer/index.html', 'cms-picker/index.html', 'ic/index.html', 'privacy/index.html', 'play/index.html', 'changelog/index.html']
+# Every page in site\: each folder's index.html and the 404 page, found the same way as browser-check.mjs, so a new page
+# is checked without a list to keep
+PAGES = sorted(str(p.relative_to(SITE)).replace('\\', '/') for p in SITE.rglob('index.html')) + ['404.html']
 # CMS Picker platform pages, written by playbook.py publish (cms-picker/<platform>/index.html)
 PLATFORM_PAGES = sorted(str(p.relative_to(SITE)).replace('\\', '/') for p in SITE.glob('cms-picker/*/index.html'))
-PAGES += PLATFORM_PAGES
 # App code that goes with each page (for the unused-CSS check)
 APP_FILES = {
     'formatter/index.html': ['formatter/styles.css', 'formatter/js/*.js'],

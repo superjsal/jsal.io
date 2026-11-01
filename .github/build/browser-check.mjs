@@ -5,15 +5,25 @@
 //   node .github\build\browser-check.mjs          axe on every public page (light and dark), then 375 and 390px in
 //                                         Chromium, WebKit and Firefox: errors, sideways scroll, and each tool's
 //                                         main flow (Clean Paste's example and Show; the resizer loading images)
-//   node .github\build\browser-check.mjs --axe    only the axe part (quick; used by check.ps1 when the server is up)
+//   node .github\build\browser-check.mjs --axe    only the axe part and Clean Paste's cases (quick; check.ps1 runs it
+//                                         when the server is up)
 // Exits 1 if axe finds a serious or critical problem or a page breaks.
 import { chromium, webkit, firefox } from 'playwright';
 import { createRequire } from 'module';
 import fs from 'fs';
+import { cleanPasteCases } from './clean-paste-cases.mjs';
 
 const BASE = 'http://localhost:8765';
 const AXE = fs.readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
-const PAGES = ['/', '/cms-picker/', '/cms-picker/squarespace/', '/cms-picker/sanity/', '/privacy/', '/play/', '/changelog/', '/formatter/', '/image-resizer/', '/404.html'];   // two platform pages: a full one and a sparse one
+// Every page in site\ (each folder's index.html, and the 404 page), found the same way as check.py, so a new page is
+// checked without a list to keep; left out on purpose: the team Playbook (/ic/ shows only its sign-in here) and all but
+// two platform pages, a full one and a sparse one, which stand for the 14 (they share one template)
+const SITE = new URL('../../site/', import.meta.url);
+const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true })
+  .flatMap((e) => (e.isDirectory() ? walk(new URL(`${e.name}/`, dir)) : e.name === 'index.html' ? [dir.href.slice(SITE.href.length - 1)] : []));
+const SAMPLE = ['/cms-picker/squarespace/', '/cms-picker/sanity/'];
+const PAGES = [...walk(SITE), '/404.html'].sort()
+  .filter((p) => !p.startsWith('/ic/') && (!/^\/cms-picker\/[^/]+\/$/.test(p) || SAMPLE.includes(p)));
 const axeOnly = process.argv.includes('--axe');
 // Chromium runs on the installed Edge here (Playwright's own build doesn't start on this PC); on a machine without
 // Edge, such as the GitHub runner, Playwright's own Chromium does the same job
@@ -110,6 +120,12 @@ if (axeBrowser) {
     await page.click('#sampleBtn');
     await page.waitForTimeout(400);
     await axe(page, `/formatter/ with the example ${scheme}`);
+    if (scheme === 'light') {
+      // Clean Paste's cleaner on typical pastes (clean-paste-cases.mjs)
+      const cases = await cleanPasteCases(page);
+      failed += cases.problems.length;
+      log(`Clean Paste cases, chromium: ${cases.problems.length ? cases.problems.join('\n  ') : `all ${cases.count} pass`}`);
+    }
     if (scheme === 'light') await headingFonts(page, '/formatter/ with the example');
     const show = await showCheck(page, false);
     if (show) failed++;
@@ -155,6 +171,10 @@ if (!axeOnly) {
       if (show) { failed++; notes.push(`Clean Paste ${show}`); } else notes.push('Clean Paste Show ok');
       if ((await overflow()) > 0) notes.push('Clean Paste with content scrolls sideways');
       const touchPaste = await page.evaluate(() => document.querySelector('#pasteZone').isContentEditable);
+      if (width === 375) {
+        const cases = await cleanPasteCases(page);
+        if (cases.problems.length) { failed += cases.problems.length; notes.push(`Clean Paste cases: ${cases.problems.join(' | ')}`); } else notes.push(`Clean Paste cases ok (${cases.count})`);
+      }
       // Image Resizer: load images, see the cards, and the file names keep their accents
       await page.goto(BASE + '/image-resizer/', { waitUntil: 'networkidle' });
       await page.setInputFiles('#file', await testImages(page));

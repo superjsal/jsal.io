@@ -47,7 +47,8 @@ body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webk
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 20px 56px; }
 .log { margin-top: var(--jsal-page-top); max-width: 44em; }
 .code { margin: 0 0 12px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-h1 { margin: 0; font: 700 clamp(40px, 7vw, 64px)/1.1 "Lora", Georgia, serif; letter-spacing: -0.03em; }
+h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }   /* every page title's size, as on the home page */
+@media (max-width: 520px) { h1 { font-size: 40px; } }
 h1 em { font-weight: 600; color: var(--jsal-accent); }
 .log .lead { margin: 28px 0 0; padding-bottom: 40px; border-bottom: 1px solid var(--jsal-line); font-size: 17px; color: var(--jsal-ink-2); text-wrap: pretty; }   /* the intro ends in a thin line */
 .log .lead + h2 { margin-top: 40px; }
@@ -86,6 +87,7 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
       <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>Results open with a clear verdict on how far ahead the first match is, and your answers sit in tidy tiles, one per question.</span></li>
       <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>On phones the comparison is a third shorter: one line per answer, and a tap opens its note in place.</span></li>
       <li><span class="log-name"><a href="/cms-picker/">CMS Picker</a></span><span>Small fixes: “A close call” sits on one line on phones, comparison answers are corrected against each platform’s own docs, first steps name the site you’re moving from, a shared result keeps “In two or more languages”, shop sizes read “up to a few hundred” or “thousands” of products, starting free says when the free plan can’t use your own domain, platform pages ask “Allow or block AI crawlers” rather than assuming you want to block them, on phones each new question scrolls fully into view, and four quiz questions and the result boxes use plainer words.</span></li>
+      <li><span class="log-name"><a href="/formatter/">Clean Paste</a></span><span>Small fixes: one Word comment now counts as one, not two, in “Removed … Word comments”.</span></li>
       <li><span class="log-name">Site</span><span>Each tool has its own icon: beside its name at the top, in the logo menu, on its home page tile and in its tab.</span></li>
       <li><span class="log-name">Site</span><span>On phones, the browser bar matches the page, and Android home screens get the logo.</span></li>
       <li data-short="A logo: the j and its gem"><span class="log-name">Site</span><span>A logo: a j with a gold gem. It signs off every page and unfolds into jsal.io on your first visit.</span></li>

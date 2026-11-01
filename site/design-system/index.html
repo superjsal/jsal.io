@@ -34,7 +34,8 @@ a { color: inherit; }
 /* Hero */
 .hero { padding: 56px 0 40px; border-bottom: 1px solid var(--jsal-line); }
 .eyebrow { margin: 0 0 12px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-.hero h1 { margin: 0; max-width: 14em; font: 700 clamp(40px, 6vw, 64px)/1.05 "Lora", Georgia, serif; letter-spacing: -0.03em; text-wrap: balance; }
+.hero h1 { margin: 0; max-width: 14em; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; text-wrap: balance; }
+@media (max-width: 520px) { .hero h1 { font-size: 40px; } }
 .hero h1 em { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
 .hero .lede { margin: 24px 0 0; max-width: 36em; font-size: 17px; line-height: 1.6; color: var(--jsal-ink-2); text-wrap: pretty; }
 .facts { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 28px 0 0; padding: 0; list-style: none; }
@@ -77,8 +78,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .theme { padding: 18px; border-radius: var(--jsal-radius-lg); border: 1px solid var(--t-line); background: var(--t-bg); color: var(--t-ink); }
 .theme h3 { margin: 0 0 14px; font: 700 16px/1.2 "Lora", Georgia, serif; color: inherit; }
 .theme h3 small { display: block; margin-top: 3px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
-.theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #e8e0d1; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #d8cfc0; --t-linehi: #bdb3a3; --t-accent: #7e5a00; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-onfill: #1f1a12; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
-.theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-onfill: #16130c; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #f0956a; --t-warnsoft: #34231b; --t-bad: #ff8c96; --t-badsoft: #3a1b22; --t-info: #8fb1ff; --t-infosoft: #1d2540; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
+.theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #e8e0d1; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #d8cfc0; --t-linehi: #bdb3a3; --t-accent: #7e5a00; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
+.theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #f0956a; --t-warnsoft: #34231b; --t-bad: #ff8c96; --t-badsoft: #3a1b22; --t-info: #8fb1ff; --t-infosoft: #1d2540; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
 .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
 .sw { display: grid; gap: 6px; }
 .sw i { display: block; height: 56px; border-radius: var(--jsal-radius); border: 1px solid var(--t-line); }
@@ -436,7 +437,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h2>A serif that speaks, a sans that works, a mono that labels.</h2>
     <p class="intro">Three families, all self-hosted as Latin-subset variable fonts with <code>font-display: swap</code>, so nothing blocks the first paint. Lora carries every H1 and H2 on the public pages; Inter carries everything else, down to the smallest interface label; JetBrains Mono is reserved for the small uppercase labels above headings (gold on the site's own pages, muted on the tools), code and keyboard keys. A pre-push check fails any visible H1 or H2 of 16px or more that isn't Lora.</p>
     <div class="spec">
-      <div><span class="who">Lora 700 · home title · 46px / 1.05 · −0.02em</span><div class="t-h1">Small tools that do <em>one job</em> well.</div><span class="t-small">The gold word is Lora italic 600, the site's one typographic flourish. Clean <em style="color:var(--jsal-accent)">Paste</em>, CMS <em style="color:var(--jsal-accent)">Picker</em>, Your <em style="color:var(--jsal-accent)">privacy</em>.</span></div>
+      <div><span class="who">Lora 700 · page title · 46px / 1.05 · −0.02em</span><div class="t-h1">Small tools that do <em>one job</em> well.</div><span class="t-small">The gold word is Lora italic 600, the site's one typographic flourish. Clean <em style="color:var(--jsal-accent)">Paste</em>, CMS <em style="color:var(--jsal-accent)">Picker</em>, Your <em style="color:var(--jsal-accent)">privacy</em>.</span></div>
       <div><span class="who">Lora 700 · tile name · 30px / 1.1 (the CMS Picker's 34px)</span><div class="t-tile">Image Resizer</div></div>
       <div><span class="who">Lora 700 · section heading · 26px / 1.25 · −0.01em</span><div class="t-h2">What can each one do?</div></div>
       <div><span class="who">Inter 600 · H3 and subheadings · 16px</span><div class="t-h3">How to use it</div></div>
@@ -458,9 +459,8 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <div class="table-wrap" tabindex="0" role="region" aria-label="The type scale"><table class="scale">
       <thead><tr><th>Role</th><th>Size</th><th>Face, weight</th><th>Where</th></tr></thead>
       <tbody>
-        <tr><td>Home title</td><td>46px (40px on phones)</td><td>Lora 700, −0.02em</td><td>Home</td></tr>
-        <tr><td>Page title</td><td>clamp(40–44px, 5–7vw, 62–72px)</td><td>Lora 700, −0.03em</td><td>Off the clock, Privacy, Changelog, 404</td></tr>
-        <tr><td>Platform page title</td><td>clamp(28px, 4.4vw, 40px)</td><td>Lora 700, −0.02em</td><td>/cms-picker/&lt;platform&gt;/</td></tr>
+        <tr><td>Page title</td><td>46px (40px on phones)</td><td>Lora 700, −0.02em</td><td>Home, Off the clock, Privacy, Changelog, 404, this page</td></tr>
+        <tr><td>Long page title</td><td>clamp(30px, 4.6vw, 46px)</td><td>Lora 700, −0.02em</td><td>The CMS Picker's heading and /cms-picker/&lt;platform&gt;/, which shrink further on phones</td></tr>
         <tr><td>Tile name</td><td>34px CMS Picker, 30px the others, 28px Say hi (30px and 28px on phones)</td><td>Lora 700, in the tile's deep shade</td><td>Home tiles</td></tr>
         <tr><td>Section heading</td><td>24–28px</td><td>Lora 700 (italic 600 for Currently, Achievements)</td><td>Every H2</td></tr>
         <tr><td>Verdict line</td><td>24px (22px on phones)</td><td>Lora 600, −0.01em</td><td>The CMS Picker's result</td></tr>

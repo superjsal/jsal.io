@@ -45,7 +45,7 @@ export function detectSource(html, text) {
 export function clean(input) {
   const out = document.implementation.createHTMLDocument("");
   const root = out.createElement("div");
-  const stats = { googleLinks: 0, fixedLinks: 0, images: 0, comments: 0 };
+  const stats = { googleLinks: 0, fixedLinks: 0, images: 0, comments: 0, commentMarks: 0, commentTexts: 0 };
 
   // HTML code pasted as text: treat the code as the content
   const html = input.html && input.html.trim() ? input.html : looksLikeHtml(input.text) ? input.text : "";
@@ -67,6 +67,7 @@ export function clean(input) {
     }
   }
 
+  stats.comments = Math.max(stats.commentMarks, stats.commentTexts);
   tidy(root, out);
   const checks = runChecks(root, stats);
   return { html: serialize(root).trim(), text: toText(root).trim(), stats, checks, root };
@@ -92,7 +93,14 @@ function convert(node, ctx) {
 
   if (/display:\s*none|mso-hide:\s*all/.test(style)) return [];
   if (/mso-list:\s*ignore/.test(style)) return [];   // Word's typed bullet "·" or "1." (we build real lists)
-  if (/mso-element:\s*comment/.test(style) || /MsoComment/i.test(cls)) { ctx.stats.comments++; return []; }
+  // Word comments: a marker in the text, and the comments themselves in a list when the copy reaches it. Both go; one
+  // comment shows in both, so the count is whichever finds more (clean() works it out)
+  if (/MsoCommentReference/i.test(cls)) { ctx.stats.commentMarks++; return []; }
+  if (/mso-element:\s*comment-list/i.test(style)) {
+    ctx.stats.commentTexts += [...node.querySelectorAll("[style]")].filter((e) => /mso-element:\s*comment(?!-)/i.test(e.getAttribute("style"))).length;
+    return [];
+  }
+  if (/mso-element:\s*comment/.test(style) || /MsoComment/i.test(cls)) { ctx.stats.commentTexts++; return []; }
 
   const kids = () => convertChildren(node, ctx);
   const el = (name, children) => { const e = out.createElement(name); e.append(...children); return e; };
