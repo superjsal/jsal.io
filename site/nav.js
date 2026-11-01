@@ -213,15 +213,38 @@
     if (document.prerendering) document.addEventListener('prerenderingchange', () => unlock('lost'), { once: true }); else unlock('lost');
   }
 
-  // Pages load ahead when a link is hovered (or pressed, on touch), so the click opens them at once (Chrome family;
-  // others ignore it). Not the Playbook (it signs in as it loads) or the logo (it opens the menu)
-  if (window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
+  // Pages load ahead when a link is hovered (or pressed, on touch), so the click opens them at once. The Chrome family
+  // prerenders them; browsers without speculation rules that can prefetch (Brave, Firefox) fetch the page instead, a
+  // moment into the hover. Not the Playbook (it signs in as it loads) or the logo (it opens the menu)
+  const SPECULATES = !!(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'));
+  const PREFETCHES = !SPECULATES && document.createElement('link').relList.supports('prefetch');
+  const fetched = new Set();
+  function fetchAhead(href) {
+    if (fetched.has(href)) return;
+    fetched.add(href);
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = href;
+    document.head.append(link);
+  }
+  if (SPECULATES) {
     const rules = document.createElement('script');
     rules.type = 'speculationrules';
     rules.textContent = JSON.stringify({ prerender: [{ eagerness: 'moderate', where: { and: [
       { href_matches: '/*' }, { not: { href_matches: '/ic/*' } }, { not: { selector_matches: '[data-jsal-nav]' } },
     ] } }] });
     document.head.append(rules);
+  } else if (PREFETCHES) {
+    // Another page of this site, the same exclusions as the rules above
+    const target = (e) => {
+      const a = e.target.closest && e.target.closest('a[href]');
+      if (!a || a.matches('[data-jsal-nav]') || a.target || a.origin !== location.origin || a.pathname.startsWith('/ic/') || a.pathname === location.pathname) return null;
+      return a.pathname + a.search;
+    };
+    let wait = 0;
+    document.addEventListener('pointerover', (e) => { clearTimeout(wait); const href = target(e); if (href) wait = setTimeout(() => fetchAhead(href), 150); });
+    document.addEventListener('pointerout', () => clearTimeout(wait));
+    document.addEventListener('pointerdown', (e) => { const href = target(e); if (href) fetchAhead(href); });
   }
   // The secret: the Konami code, anywhere but in a text field
   const CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -325,12 +348,14 @@
     menu.style.left = `${Math.round(Math.max(12, Math.min(r.left, innerWidth - w - 12)))}px`;
   }
   const links = () => [...menu.querySelectorAll('a')];
-  // Opening the menu loads the pages it lists ahead (Chrome family), so picking one swaps at once. Not the Playbook
+  // Opening the menu loads the pages it lists ahead (prerendered in the Chrome family, fetched in Brave and Firefox),
+  // so picking one swaps at once. Not the Playbook
   let warmed = false;
   function warm() {
-    if (warmed || !(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'))) return;
+    if (warmed || !(SPECULATES || PREFETCHES)) return;
     warmed = true;
     const urls = [...APPS.map((a) => a.href), HOME.href, PLAY.href].filter((h) => h !== '/ic/' && h !== here && !isHere(h));
+    if (!SPECULATES) return urls.forEach(fetchAhead);
     const rules = document.createElement('script');
     rules.type = 'speculationrules';
     rules.textContent = JSON.stringify({ prerender: [{ urls, eagerness: 'immediate' }] });

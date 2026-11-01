@@ -16,6 +16,7 @@ Anything that fails: note the device, browser, light/dark, and the step, and pas
 
 ### 1. Moving between pages
 - [ ] Firefox: from the home page open the CMS Picker, a platform guide and Updates, then press Back twice: each page just appears (Firefox has no page transitions) and the top bar stays put; nothing flashes or lands scrolled down.
+- [ ] Firefox: hover a link to another page for a moment, and the developer tools' Network panel shows that page fetched before the click (a prefetch); a quick pass over a link, the logo and the Playbook link fetch nothing.
 - [ ] Phone: the same route: the page slides up on the way in and down on Back, and the logo and theme button don't move.
 - [ ] After Back, the logo menu still opens and its links still work (the page came back from the browser's cache).
 - [ ] The logo menu: open it, pick a tool before the page has finished loading: you land on that tool, not on the home page.
