@@ -82,8 +82,10 @@ const PERSONAS = [
     { first: ['ghost'], top3: ['ghost', 'squarespace'], not: ['hubspot'] }],
   ['Paid newsletter, not technical, two languages', { what: 'content', who: 'easy', care: 'no', needs: 'members', lang: 'yes', look: 'template', moving: 'no' },
     { first: ['ghost'], top3: ['ghost'], not: ['hubspot'] }],
+  // HubSpot's card line "You don't otherwise use HubSpot" covers publications (agreed 2026-11-01), so Webflow, the one
+  // made for them with languages built in, comes first
   ['Nonprofit with news in two languages', { what: 'content', who: 'learn', care: 'no', needs: 'none', lang: 'yes', look: 'template', moving: 'no' },
-    { first: ['hubspot', 'ghost'], top3: ['hubspot', 'ghost'] }],
+    { first: ['webflow'], top3: ['webflow', 'ghost'], not: ['hubspot'] }],
   ['Developer building an app and a site', { what: 'custom', who: 'dev', care: 'yes', needs: 'none', look: 'pixel', moving: 'no' },
     { first: ['sanity'], top3: ['sanity'] }],
   // With "What can you spend each month?" (the "What it costs to start" bands)

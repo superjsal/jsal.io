@@ -24,6 +24,10 @@ falls short of having the must-haves built in (`short`), and only then the point
 counts as built in, as they add them as a matter of course. Two new rules (`need`, `budget`) and a persona pin it.
 593 of 8,832 first places changed (6.7%, moving fixed at "starting fresh"), no persona moved, and John agreed them. Opening a shared
 link also kept the languages tick from then on (it had been dropped, so a shared result could differ from the one seen).
+The same day HubSpot's card line "You don't otherwise use HubSpot" was extended from local and creative sites to blogs,
+newsletters and publications, where HubSpot had come first in 37% of answers mostly for being free to start: 205 first
+places moved (to Squarespace, Webflow, Ghost, Duda), and the nonprofit persona moved to Webflow first, agreed with John.
+Content-heavy business sites keep HubSpot, as the B2B marketing team persona answers that way.
 
 **Quiz v3** (2026-10-31): the questions on languages, paid members, moving later and adding features became "Anything
 you'll need from day one?" and "Moving from somewhere?" (eight questions at most). The audit behind it is in the
@@ -44,7 +48,7 @@ B2B in two languages, a paid-members blog on "Nothing for now", the custom app b
 and an old `v=1` link): tips start from the person's answers, ties are labelled honestly, costs match the
 table, and old links open on their results. Under v3 with the managed-hosting change: seven rules, 48 personas, 2,171 of 80,640 answer sets show
 "Closest match" (2.7%; moving from one of 13 platforms multiplies the sets without changing points). Under v4: 3,713 of
-132,480 (2.8%; the languages tick doubles the sets). With must-haves first: 3,787 (2.9%), and 418 clear winners whose
+132,480 (2.8%; the languages tick doubles the sets). With must-haves first and HubSpot's line on publications: 3,827 (2.9%), and 360 clear winners whose
 box has no reason from their answers (an agency or developer selling on no budget, where Framer or HubSpot plus a
 separate shop is estimated cheaper than a store plan; the estimate is never given as a reason, so the box falls back to
 the table or card). A change to any of these numbers is a result change: agree it with John first.
