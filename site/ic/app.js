@@ -225,9 +225,9 @@ function editRowHtml(e, p = P.find((x) => x.id === state.platform)) {
         </details>`;
         })()}
         <div class="edit-actions">
-          <button type="submit" class="btn primary">Save</button>
-          <button type="button" class="btn" data-cancel>Cancel</button>
-          ${e.own ? `<button type="button" class="btn" data-reset="${e.key}">Reset to original</button>` : ''}
+          <button type="submit" class="jsal-btn primary small">Save</button>
+          <button type="button" class="jsal-btn small" data-cancel>Cancel</button>
+          ${e.own ? `<button type="button" class="jsal-btn small" data-reset="${e.key}">Reset to original</button>` : ''}
           <span class="muted edit-hint">Saved for everyone who can open this page${ptypeOf(e.sec) ? `, for ${esc(PTYPES[ptypeOf(e.sec)])} only` : ''}.</span>
         </div>
       </form>
@@ -331,7 +331,7 @@ function renderPanel() {
       </div>
       <div class="panel-meta">
         <div class="tally">${updatedHtml(p)}${searching ? `<span>${shown.length} ${shown.length === 1 ? 'match' : 'matches'}${state.onlyCheck ? ' to check' : ''}</span>` : state.onlyCheck ? `<span>Showing ${shown.length} of ${all.length}</span>` : ''}</div>
-        <button type="button" class="btn" id="copy-all">Copy all notes</button>
+        <button type="button" class="jsal-btn small" id="copy-all">Copy all notes</button>
       </div>
     </div>
     ${body}`;
@@ -349,9 +349,9 @@ function platformNoteHtml(p) {
         <label><span>Watch out for ${esc(p.name)} <span style="font-weight:400">(shown on every section and page type; Markdown works)</span></span>
           <textarea name="warn" maxlength="600" rows="3">${esc(n ? n.warn : '')}</textarea></label>
         <div class="edit-actions">
-          <button type="submit" class="btn primary">Save</button>
-          <button type="button" class="btn" data-cancel>Cancel</button>
-          ${n ? '<button type="button" class="btn" data-note-remove>Remove</button>' : ''}
+          <button type="submit" class="jsal-btn primary small">Save</button>
+          <button type="button" class="jsal-btn small" data-cancel>Cancel</button>
+          ${n ? '<button type="button" class="jsal-btn small" data-note-remove>Remove</button>' : ''}
           <span class="muted edit-hint">Saved for everyone who can open this page.</span>
         </div>
       </form>`;
@@ -721,7 +721,7 @@ function pkRowHtml(p, r, it) {
           ${PK.sourcesOn ? `<label class="pk-src-field">Source <span style="font-weight:400">(the platform’s own docs; saving records today as checked)</span><input name="source" type="url" pattern="https://.*" maxlength="500" placeholder="https://help.example.com/…" value="${esc(src ? src.url || '' : '')}"></label>` : ''}
           ${PK.sourcesOn && it.group !== 'cost' ? `<label class="pk-src-field">Where to find it <span style="font-weight:400">(menu path from those docs, e.g. Pages → page settings → SEO; shown on the CMS Picker)</span><input name="where" maxlength="200" value="${esc(src ? src.where || '' : '')}"></label>` : ''}
           <div class="pk-hints" aria-live="polite"></div>
-          <div class="edit-actions"><button type="submit" class="btn primary">Save</button><button type="button" class="btn" data-pk-cancel>Cancel</button>
+          <div class="edit-actions"><button type="submit" class="jsal-btn primary small">Save</button><button type="button" class="jsal-btn small" data-pk-cancel>Cancel</button>
             <span class="muted edit-hint">Public on jsal.io/cms-picker after the next publish. Ctrl+Enter saves, Esc cancels.</span></div>
         </form>
       </article>`;
@@ -736,7 +736,7 @@ function pkProfileHtml(p, r) {
     return `<article class="card editing pk-profile"><h4 class="item">Card<small>CMS Picker · editing ${esc(plain(p.name))}</small></h4>
         <form class="edit-form" data-pk-profile>
           ${PK_FIELDS.map(([f, l, k]) => pkField(pr, f, l, k)).join('')}
-          <div class="edit-actions"><button type="submit" class="btn primary">Save</button><button type="button" class="btn" data-pk-cancel>Cancel</button>
+          <div class="edit-actions"><button type="submit" class="jsal-btn primary small">Save</button><button type="button" class="jsal-btn small" data-pk-cancel>Cancel</button>
             <span class="muted edit-hint">Public on jsal.io/cms-picker after the next publish.</span></div>
         </form></article>`;
   }
@@ -768,7 +768,7 @@ function pkPlatformHtml(p) {
   const link = '<a href="/cms-picker/" target="_blank" rel="noopener">CMS Picker</a>';
   if (!r || !pkPublic(p)) {
     return `<section class="pk-plat" id="pk-plat"><h3>${p.name}</h3><div class="pk-off"><p class="muted" style="margin:0">${p.name} isn’t on the public ${link}${pkSwitchWaiting(p) ? ' any more after the next publish' : ''}.${r ? ' Its card, logo and answers are kept.' : ''}</p>
-      <button type="button" class="btn" data-pk-public="on">Add to the CMS Picker</button></div></section>`;
+      <button type="button" class="jsal-btn small" data-pk-public="on">Add to the CMS Picker</button></div></section>`;
   }
   return `<section class="pk-plat" id="pk-plat"><h3>${p.name}${pkSwitchWaiting(p) ? ` ${pkWaitTag}` : ''}</h3>
       ${(r.profile || {}).type ? '' : '<div class="warn"><div><b>Not shown yet:</b> it appears on the CMS Picker once its card has a type. Fill it in with Edit.</div></div>'}
@@ -966,7 +966,7 @@ function guideBlock(b, i) {
   if (b.note) return `<p class="tip">${b.note}</p>`;
   if (b.ol) return `<ol>${b.ol.map((x) => `<li>${x}</li>`).join('')}</ol>`;
   if (b.ul) return `<ul>${b.ul.map((x) => `<li>${x}</li>`).join('')}</ul>`;
-  if (b.code) return `<div class="snippet"><div class="snippet-head"><span>${esc(b.label || b.lang || 'Code')}</span><button type="button" class="btn" data-snippet="${i}">Copy</button></div><pre tabindex="0" aria-label="${esc(b.label || b.lang || 'Code')}"><code>${esc(b.code)}</code></pre></div>`;
+  if (b.code) return `<div class="snippet"><div class="snippet-head"><span>${esc(b.label || b.lang || 'Code')}</span><button type="button" class="jsal-btn small" data-snippet="${i}">Copy</button></div><pre tabindex="0" aria-label="${esc(b.label || b.lang || 'Code')}"><code>${esc(b.code)}</code></pre></div>`;
   return '';
 }
 let openGuideId = null, guideOpener = null;
@@ -1104,11 +1104,11 @@ function renderTeam() {
   const members = [...R.members.values()].sort((a, b) => (a.role === b.role ? String(a.name).localeCompare(String(b.name)) : a.role === 'admin' ? -1 : 1));
   $('#team-tally').textContent = `${members.length} member${members.length === 1 ? '' : 's'} · ${n} waiting`;
   $('#pending-list').innerHTML = n ? R.pending.map((p) => personHtml(p,
-    `<button type="button" class="btn primary" data-approve="${esc(p.user_id)}">Approve</button><button type="button" class="btn" data-decline="${esc(p.user_id)}">Decline</button>`)).join('')
+    `<button type="button" class="jsal-btn primary" data-approve="${esc(p.user_id)}">Approve</button><button type="button" class="jsal-btn small" data-decline="${esc(p.user_id)}">Decline</button>`)).join('')
     : '<p class="empty">Nobody is waiting. When someone signs in with Discord and isn’t on the team yet, they show up here.</p>';
   renderPlatformList();
   $('#member-list').innerHTML = members.map((m) => personHtml(m, m.user_id === R.me ? '<span class="muted">You</span>' :
-    `<button type="button" class="btn" data-role="${esc(m.user_id)}" data-to="${m.role === 'admin' ? 'member' : 'admin'}">${m.role === 'admin' ? 'Make member' : 'Make admin'}</button><button type="button" class="link-btn" data-remove="${esc(m.user_id)}">Remove</button>`)).join('');
+    `<button type="button" class="jsal-btn small" data-role="${esc(m.user_id)}" data-to="${m.role === 'admin' ? 'member' : 'admin'}">${m.role === 'admin' ? 'Make member' : 'Make admin'}</button><button type="button" class="link-btn" data-remove="${esc(m.user_id)}">Remove</button>`)).join('');
 }
 // Platforms: admins add one (every answer starts "Check manually") and switch each on or off the Playbook (hidden:
 // answers kept; set_platform_hidden also takes it off the CMS Picker) and the CMS Picker (the picker table's own switch)
@@ -1123,7 +1123,7 @@ function renderPlatformList() {
     return `<div class="person plat-row${p.hidden ? ' is-hidden' : ''}"><span class="avatar-blank plat-badge" aria-hidden="true">${esc(plain(p.name).slice(0, 1))}</span>
       <div><b>${p.name}</b>${note ? `<small>${note}</small>` : ''}</div>
       ${sw('data-plat-team', p.id, !p.hidden, 'Playbook', p.name, '')}${sw('data-plat-pick', p.id, !p.hidden && pkPublic(p), 'CMS Picker', p.name, why)}
-      <div class="person-actions">${p.hidden ? '' : `<button type="button" class="btn" data-plat-open="${p.id}">Open</button>`}</div></div>`;
+      <div class="person-actions">${p.hidden ? '' : `<button type="button" class="jsal-btn small" data-plat-open="${p.id}">Open</button>`}</div></div>`;
   }).join('');
 }
 async function reloadContent() {
@@ -1314,7 +1314,7 @@ function reqHtml(r) {
         <b>${r.votes}</b></button>
       <div class="req-body">
         <h3>${esc(r.title)}</h3>
-        <div class="req-meta"><span class="st ${esc(r.status)}">${REQ_STATUS[r.status] || ''}</span><span class="chip">${REQ_TYPES[r.type] || ''}</span>${target ? `<span class="chip">${esc(target)}</span>` : ''}</div>
+        <div class="req-meta"><span class="st ${esc(r.status)}">${REQ_STATUS[r.status] || ''}</span><span class="badge">${REQ_TYPES[r.type] || ''}</span>${target ? `<span class="badge">${esc(target)}</span>` : ''}</div>
         ${r.details ? `<div class="req-details">${md(r.details)}</div>` : ''}
         <div class="req-foot"><span>Posted by ${esc(personName(r.author))} · ${ago(r.at)}</span>
           ${R.manage ? `<label>Status <select data-status="${esc(r.id)}">${Object.keys(REQ_STATUS).map((k) => `<option value="${k}"${k === r.status ? ' selected' : ''}>${REQ_STATUS[k]}</option>`).join('')}</select></label>` : ''}
@@ -1336,7 +1336,7 @@ function threadHtml(r) {
       </div>`).join('')}
       <form class="edit-form comment-form" data-comment-form="${esc(r.id)}">
         <label><span class="sr-only">Add a comment</span><textarea name="body" rows="2" maxlength="1000" placeholder="Add a comment (Markdown works, Ctrl+Enter posts)">${esc(R.drafts.get(r.id) || '')}</textarea></label>
-        <div class="edit-actions"><button type="submit" class="btn primary">Post comment</button></div>
+        <div class="edit-actions"><button type="submit" class="jsal-btn primary small">Post comment</button></div>
       </form>
     </div>`;
 }
@@ -1554,14 +1554,14 @@ function gate(kind, opts = {}) {
     loading: '<p class="muted">Loading…</p>',
     signin: `<h2>Team sign-in</h2>
       <p class="muted">Platform Playbook is for the team. Sign in with your Discord account. You don’t need to be in any particular server.</p>
-      <button type="button" class="btn discord" data-act="signin"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18.2 18.2 0 0 0-5.6 0L8.6 3a19.6 19.6 0 0 0-4.9 1.4C.6 9 0 13.5.3 17.9A19.8 19.8 0 0 0 6.3 21l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14 14 0 0 0 11.8 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.7 19.7 0 0 0 6-3.1c.4-5.1-.8-9.6-3.4-13.5ZM8.5 15.2c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Z"/></svg>Sign in with Discord</button>`,
+      <button type="button" class="jsal-btn discord" data-act="signin"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18.2 18.2 0 0 0-5.6 0L8.6 3a19.6 19.6 0 0 0-4.9 1.4C.6 9 0 13.5.3 17.9A19.8 19.8 0 0 0 6.3 21l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14 14 0 0 0 11.8 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.7 19.7 0 0 0 6-3.1c.4-5.1-.8-9.6-3.4-13.5ZM8.5 15.2c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Z"/></svg>Sign in with Discord</button>`,
     pending: `<h2>Almost in</h2>${who}
       <p class="muted">You’re not on the team list yet. Your request is waiting for an admin to approve it. Once you’re approved, refresh this page.</p>
-      <div class="edit-actions"><button type="button" class="btn primary" data-act="recheck">Check again</button><button type="button" class="btn" data-act="signout">Use a different account</button></div>`,
+      <div class="edit-actions"><button type="button" class="jsal-btn primary small" data-act="recheck">Check again</button><button type="button" class="jsal-btn small" data-act="signout">Use a different account</button></div>`,
     setup: `<h2>Not connected yet</h2>
       <p class="muted">The database isn’t set up. Add the Supabase project URL and anon key at the top of the script (see the README).</p>`,
     error: `<h2>Something went wrong</h2><p class="muted">${esc(opts.message || 'Please try again.')}</p>
-      <div class="edit-actions"><button type="button" class="btn primary" data-act="recheck">Try again</button>${opts.user ? '<button type="button" class="btn" data-act="signout">Sign out</button>' : ''}</div>`,
+      <div class="edit-actions"><button type="button" class="jsal-btn primary small" data-act="recheck">Try again</button>${opts.user ? '<button type="button" class="jsal-btn small" data-act="signout">Sign out</button>' : ''}</div>`,
   };
   $('#gate .gate-card').innerHTML = screens[kind];
 }

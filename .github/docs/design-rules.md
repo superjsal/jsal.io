@@ -70,6 +70,15 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 Corners `--jsal-radius-sm` / `-` / `-lg` / `-pill`; selected `--jsal-selected-*`; hover `--jsal-hover-line`;
 focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead of new values.
 
+- **One button and one switch, defined once in `shell.css`.** `.jsal-btn` is every page's button: outlined in
+  `--jsal-line-hi` on a `--jsal-surface` fill, 14px at 600, 40px tall (44px on touch screens). `.primary` makes it
+  the gold main action, `.small` (32px, 13px) suits dense screens such as the Playbook's forms, and `.danger`
+  removes or clears (red text, a red edge and tint on hover). `.jsal-seg` is the switch for picking one of a few
+  options (a sunk track; the chosen button `aria-pressed`, `aria-selected` or `.active`, in the selected gold). An
+  app adds only layout (width, order, a compact height in a tight spot) and never its own look; a new button or
+  switch uses these. The Image Resizer's two-line size presets are their own control, as they show a size and a
+  use; the CMS Picker's chips, quiz answers and tiles are choices, not buttons, and keep their own rules.
+
 - **A bordered pill is a choice** (compare chips, the comparison's pickers): it toggles, and selected is the gold
   edge and tint. Inside the CMS Picker quiz and its result, a choice is a rounded square (`--jsal-radius`) instead,
   like the answers, tiles and cards around it, so the quiz reads as one set of shapes; selected is the same gold. A set of links is not a choice, so it never wears pills: it's a text list (the home page footer's

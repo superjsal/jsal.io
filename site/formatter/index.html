@@ -65,8 +65,8 @@
 
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update -->
-  <link rel="stylesheet" href="/shell.css?v=0282e7de">
-  <link rel="stylesheet" href="styles.css?v=5536d265" />
+  <link rel="stylesheet" href="/shell.css?v=d5468721">
+  <link rel="stylesheet" href="styles.css?v=007acccf" />
   <script type="importmap">
     {
       "imports": {
@@ -108,17 +108,17 @@
       </div>
 
       <div class="actions" data-needs-content>
-        <button class="btn-primary btn-accent" id="copyRich" title="For visual editors like Squarespace, Wix, Shopify and WordPress">
+        <button class="jsal-btn primary" id="copyRich" title="For visual editors like Squarespace, Wix, Shopify and WordPress">
           <span class="ico" data-icon="copy"></span>Copy formatted
         </button>
         <div class="actions-row">
-          <button class="btn-primary" id="copyHtml" title="For HTML / code views"><span class="ico" data-icon="code"></span>Copy HTML</button>
-          <button class="btn-primary" id="copyText" title="Plain text, no formatting"><span class="ico" data-icon="text"></span>Copy text</button>
+          <button class="jsal-btn" id="copyHtml" title="For HTML / code views"><span class="ico" data-icon="code"></span>Copy HTML</button>
+          <button class="jsal-btn" id="copyText" title="Plain text, no formatting"><span class="ico" data-icon="text"></span>Copy text</button>
         </div>
-        <button class="btn-primary" id="copyWp" title="Gutenberg block markup: paste into the WordPress block editor to get real blocks"><span class="ico" data-icon="code"></span>Copy WordPress blocks</button>
+        <button class="jsal-btn" id="copyWp" title="Gutenberg block markup: paste into the WordPress block editor to get real blocks"><span class="ico" data-icon="code"></span>Copy WordPress blocks</button>
         <div class="actions-foot">
           <span class="toolbar-hint" id="copyNote" aria-live="polite"></span>
-          <button class="btn-clear" id="clearBtn"><span class="ico" data-icon="trash"></span>Clear</button>
+          <button class="jsal-btn danger small" id="clearBtn"><span class="ico" data-icon="trash"></span>Clear</button>
         </div>
       </div>
     </section>
@@ -138,7 +138,7 @@
       <div class="pane pane-out" data-needs-content>
         <div class="pane-head">
           <span class="pane-title">Clean <span class="pane-meta" id="outMeta"></span></span>
-          <div class="option-track" role="tablist" aria-label="Clean view">
+          <div class="jsal-seg" role="tablist" aria-label="Clean view">
             <button type="button" role="tab" id="tabPage" data-tab="out" data-view="page" aria-selected="true" aria-controls="editor" title="Edit the formatted text">Text</button>
             <button type="button" role="tab" id="tabCode" data-tab="out" data-view="code" aria-selected="false" aria-controls="htmlEdit" tabindex="-1" title="Edit the HTML directly">HTML</button>
           </div>

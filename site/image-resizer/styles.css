@@ -166,33 +166,11 @@ body {
 }
 .option-label { width: 58px; }
 
-.option-track {
-  display: flex;
-  gap: 2px;
-  padding: 3px;
-  border-radius: var(--jsal-radius);
-  background: var(--jsal-sunk);
-}
-
-.quality-btn, .format-btn, .dest-btn {
-  padding: 4px 12px;
-  border-radius: var(--jsal-radius-sm);
-  color: var(--jsal-muted);
-  font-weight: 600;
-  transition: color 0.12s;
-}
-.quality-btn:hover, .format-btn:hover, .dest-btn:hover { color: var(--jsal-ink); }
-.quality-btn:focus-visible, .format-btn:focus-visible, .dest-btn:focus-visible { outline-offset: -2px; }
-/* The chosen option is gold (like the size presets) with its own edge, and switches instantly. It used
-   to be the card's own colour, so it blended into the card and the track looked like it changed size. */
-.quality-btn.active, .format-btn.active, .dest-btn.active { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
-.quality-btn:disabled, .format-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.quality-btn:disabled:hover, .format-btn:disabled:hover { color: var(--jsal-muted); }
 .option-hint { flex: 1 1 160px; font-size: 12px; color: var(--jsal-muted); line-height: 1.4; }
 
 /* "Save to" row spans the full width, with its buttons sharing the space */
 .option-row-wide { margin-bottom: 6px; }
-.option-row-wide .option-track { flex: 1; }
+.option-row-wide .jsal-seg { flex: 1; }
 .option-row-wide .dest-btn { flex: 1; }
 
 .folder-row {
@@ -303,50 +281,8 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.btn-apply,
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 14px;
-  height: 40px;
-  border-radius: var(--jsal-radius);
-  border: 1px solid var(--jsal-line);
-  background: var(--jsal-surface);
-  color: var(--jsal-ink);
-  white-space: nowrap;
-  box-shadow: var(--jsal-shadow);
-  transition: background 0.12s, border-color 0.12s, opacity 0.12s;
-}
-.btn-apply { font-weight: 600; }
-.btn-apply:hover, .btn-primary:hover { background: var(--jsal-sunk); border-color: var(--jsal-line-hi); }
-.btn-primary:active { transform: scale(0.98); }
-.btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
-
-.btn-accent {
-  background: var(--jsal-fill);
-  border-color: var(--jsal-fill-edge);
-  color: var(--jsal-on-fill);
-  font-weight: 600;
-  box-shadow: none;
-}
-.btn-accent:hover { background: var(--jsal-fill); border-color: var(--jsal-fill-edge); filter: brightness(1.08); }   /* style: allow (the main action keeps its gold) */
-.btn-accent:disabled { box-shadow: none; filter: none; }
-
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 10px;
-  height: 40px;
-  border-radius: var(--jsal-radius);
-  border: 1px solid transparent;
-  font-weight: 500;
-  margin-left: auto;
-  transition: background 0.12s, border-color 0.12s;
-}
-.btn-danger { color: var(--jsal-bad); }
-.btn-danger:hover { background: var(--jsal-bad-soft); border-color: var(--jsal-bad); }
+.toolbar .jsal-btn, #customResize { white-space: nowrap; }
+#clear { margin-left: auto; }   /* Clear sits at the far end, away from Download All */
 
 .status-bar {
   display: flex;
@@ -707,9 +643,9 @@ body {
   .controls > .divider { margin: 4px 0; }
   .controls > .section-label { margin-bottom: -2px; }
   .option-hint { display: none; }
-  .option-track { flex: 1; }
+  .controls .jsal-seg { flex: 1; }
   /* Slim enough that "QUALITY  Low Med High" stays on one line with Windows scrollbars (~200px) */
-  .quality-btn, .format-btn, .dest-btn { flex: 1; padding: 6px 4px; }
+  .jsal-seg > .quality-btn, .jsal-seg > .format-btn, .jsal-seg > .dest-btn { flex: 1; padding: 6px 4px; }
   .app { --thumb-h: 64px; }
   .preview-item { flex-basis: 140px; }   /* three cards across in a narrow window */
   .src-dims { font-size: 11px; }
@@ -733,8 +669,11 @@ body {
 
 /* Short windows (small laptop screens): tighten spacing too */
 @media (max-height: 820px) {
-  .input-group, .btn-apply, .btn-primary, .btn-ghost { height: 34px; }
+  .input-group { height: 34px; }
   .app { --thumb-h: 60px; }
+}
+@media (max-height: 820px) and (pointer: fine) {
+  #customResize, .toolbar .jsal-btn { min-height: 34px; padding-block: 4px; }   /* mouse only: touch keeps 44px */
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -743,7 +682,7 @@ body {
 
 /* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact controls) */
 @media (pointer: coarse) {
-  .seg-btn, .quality-btn, .format-btn, .dest-btn, .btn-apply, .btn-primary, .btn-accent, .btn-ghost, .btn-danger,
+  .seg-btn,
   .recent-pill-apply, .folder-change, .card-dl-btn, .input-group { min-height: 44px; }
   .recent-pill-del, .card-remove { min-width: 44px; min-height: 44px; }
 }

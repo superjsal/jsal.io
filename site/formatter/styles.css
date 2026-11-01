@@ -57,24 +57,7 @@ body {
 .side { display: flex; flex-direction: column; gap: 6px; }
 .side-empty { color: var(--jsal-muted); line-height: 1.5; }
 
-.option-track {
-  display: flex;
-  gap: 2px;
-  padding: 3px;
-  border-radius: var(--jsal-radius);
-  background: var(--jsal-sunk);
-}
-.option-track button {
-  flex: 1;
-  padding: 4px 10px;
-  border-radius: var(--jsal-radius-sm);
-  color: var(--jsal-muted);
-  font-weight: 600;
-  white-space: nowrap;
-  transition: background 0.12s, color 0.12s;
-}
-.option-track button:hover { color: var(--jsal-ink); }
-.option-track button[aria-pressed="true"], .option-track [role="tab"][aria-selected="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+.pane-head .jsal-seg > button { flex: 1; }   /* Text and HTML, the same width */
 
 /* ── Checks ────────────────────────────────────────────────────────────── */
 
@@ -123,38 +106,12 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .actions-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 28px; }
 
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0 14px;
-  height: 40px;
-  border-radius: var(--jsal-radius);
-  border: 1px solid var(--jsal-line);
-  background: var(--jsal-surface);
-  color: var(--jsal-ink);
-  font-weight: 500;
-  white-space: nowrap;
-  box-shadow: var(--jsal-shadow);
-  transition: background 0.12s, border-color 0.12s, filter 0.12s;
-}
-.btn-primary:hover { background: var(--jsal-sunk); border-color: var(--jsal-line-hi); }
-.btn-primary:active { transform: scale(0.98); }
-.btn-accent {
-  background: var(--jsal-fill);
-  border-color: var(--jsal-fill-edge);
-  color: var(--jsal-on-fill);
-  font-weight: 600;
-  box-shadow: none;
-}
-.btn-accent:hover { background: var(--jsal-fill); border-color: var(--jsal-fill-edge); filter: brightness(1.08); }   /* style: allow (the main action keeps its gold) */
-.btn-primary.done { border-color: var(--jsal-ok); }
-.btn-accent.done { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
+.actions .jsal-btn { white-space: nowrap; }
+/* A copy button says it worked: green for two seconds */
+.jsal-btn.done { border-color: var(--jsal-ok); }
+.jsal-btn.primary.done { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 
 .toolbar-hint { font-size: 12px; color: var(--jsal-muted); }
-.btn-clear { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px; color: var(--jsal-bad); font-weight: 500; border-radius: var(--jsal-radius-sm); }
-.btn-clear:hover { background: var(--jsal-bad-soft); }
 .btn-link { padding: 4px 0; color: var(--jsal-info); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }   /* 24px tall: easier to hit (WCAG 2.5.8); blue: link-styled controls inside the tool, gold is for the main action */
 
 /* ── Workspace ─────────────────────────────────────────────────────────── */
@@ -393,12 +350,12 @@ textarea.code {
   /* Before anything is pasted the paste box stretches to the bottom of the first screen, so the space reads as
      room for your content rather than the page running out */
   .app:not(.has-content) .work { flex: 1 1 auto; }
-  .option-track button { padding: 6px 8px; }
+  .pane-head .jsal-seg > button { padding: 6px 8px; }
   .pane { height: 75vh; }
 }
 /* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact controls) */
 @media (pointer: coarse) {
-  .toolbar button, .option-track button, .btn-primary, .btn-clear, .btn-link, .link-box button, .link-box a { min-height: 44px; }
+  .toolbar button, .btn-link, .link-box button, .link-box a { min-height: 44px; }
   .toolbar button { min-width: 44px; }
   button.check { min-height: 44px; }
   /* The paste area is editable on touch screens (to take a tap-and-hold Paste): iPhones zoom into an editable

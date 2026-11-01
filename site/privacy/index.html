@@ -39,7 +39,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours and top bar: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=0282e7de">
+<link rel="stylesheet" href="/shell.css?v=d5468721">
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
@@ -58,10 +58,6 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
 .policy li + li { margin-top: 4px; }
 .policy a { color: var(--jsal-accent); text-underline-offset: 2px; }
 .policy code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
-.choice { min-height: 40px; padding: 0 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); cursor: pointer; }
-.choice:hover { border-color: var(--jsal-hover-line); }
-.choice:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-@media (pointer: coarse) { .choice { min-height: 44px; } }
 </style>
 </head>
 <body>
@@ -91,7 +87,7 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     <p>More on how Google handles this data: <a href="https://policies.google.com/technologies/partner-sites">How Google uses information from sites that use its services</a>.</p>
 
     <h2>Changing your choice</h2>
-    <p>Your choice is kept in this browser. <button type="button" class="choice" data-jsal-consent>Change analytics choice</button></p>
+    <p>Your choice is kept in this browser. <button type="button" class="jsal-btn" data-jsal-consent>Change analytics choice</button></p>
     <p>Choosing “No thanks” stops Google Analytics and removes its cookies. The same button is in the footer of the <a href="/">home page</a>.</p>
 
     <h2>Kept in your browser only</h2>

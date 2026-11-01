@@ -26,15 +26,6 @@ body {
 .byline { margin-bottom: 4px; color: var(--jsal-muted); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }   /* muted, so gold stays for what you act on */
 .hero-title { margin-top: 14px; color: var(--jsal-ink); font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the home page's serif, like the page title */
 .lede { max-width: 520px; margin-top: 20px; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.6; }
-.btn {
-  display: inline-block; height: 40px; padding: 0 18px; line-height: 38px; text-align: center;   /* not flex: that drops the space before the count */
-  border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius);
-  color: var(--jsal-ink); font-size: 14px; font-weight: var(--jsal-btn-weight); text-decoration: none;
-  transition: border-color 0.15s;
-}
-.btn:hover { border-color: var(--jsal-hover-line); }   /* hover is neutral; gold means selected, focused or the main action */
-.btn.primary { border-color: var(--jsal-fill-edge); background: var(--jsal-fill); color: var(--jsal-on-fill); }
-.btn.primary:hover { filter: brightness(1.06); }
 
 /* Under the quiz: the cards and the table, each behind a button (app.js opens them) */
 .more { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: -8px 0 48px; }
@@ -82,7 +73,8 @@ body {
 .cbar-logos .logo.badge { width: 22px; height: 22px; border-radius: var(--jsal-radius); font-size: 10px; }
 .cbar-logos .pop { animation: cbar-pop 0.3s ease-out; }
 .cbar-more { color: var(--jsal-muted); font-size: 13px; font-weight: 700; }
-.cbar .btn { flex: none; height: 38px; padding: 0 18px; line-height: 36px; font-size: 14px; white-space: nowrap; border-radius: var(--jsal-radius-pill); }   /* round ends, like the bar */
+.cbar .jsal-btn { flex: none; min-height: 38px; padding: 0 18px; white-space: nowrap; border-radius: var(--jsal-radius-pill); }   /* round ends, like the bar */
+@media (pointer: coarse) { .cbar .jsal-btn { min-height: 44px; } }
 @keyframes cbar-pop { from { opacity: 0; transform: scale(0.4); } }
 
 /* ── Controls ──────────────────────────────────────────────────────────── */
@@ -301,7 +293,7 @@ body {
   .plats .chip { text-align: center; }
   .more { grid-template-columns: minmax(0, 1fr); }
   .lede { font-size: 16px; }
-  .btn { flex: 1 1 auto; }
+  .jsal-btn { flex: 1 1 auto; }
   .totop { width: 44px; height: 44px; padding: 0; justify-content: center; }
   .totop span { display: none; }
   /* Full width on phones; the Top button moves up out of its way */
@@ -579,7 +571,7 @@ body {
 
 /* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact chips) */
 @media (pointer: coarse) {
-  .chip, .qz-opt, .btn, .trk button, .qz-pick { min-height: 44px; }
+  .chip, .qz-opt, .trk button, .qz-pick { min-height: 44px; }
   /* the Compare chips and actions look 36px tall; the tap area reaches 44px (the rows are 8px apart) */
   .plats { row-gap: 8px; }
   .plats .chip, .plats-act { position: relative; min-height: 36px; }

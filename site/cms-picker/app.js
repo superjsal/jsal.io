@@ -691,7 +691,7 @@
       }
       box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');
       if (step) {
-        const nav = el('div', 'qz-nav'), back = el('button', 'btn', 'Back');
+        const nav = el('div', 'qz-nav'), back = el('button', 'jsal-btn', 'Back');
         back.type = 'button';
         back.addEventListener('click', () => { step--; ask(); reveal(); box.querySelector('h3')?.focus({ preventScroll: true }); });
         nav.append(back);
@@ -911,7 +911,7 @@
       });
       box.append(h, verdict || head);
       if (pending.size) {
-        const more = el('button', 'btn qz-more', `${pending.size} newer question${pending.size === 1 ? '' : 's'} can sharpen this`);
+        const more = el('button', 'jsal-btn qz-more', `${pending.size} newer question${pending.size === 1 ? '' : 's'} can sharpen this`);
         more.type = 'button';
         more.addEventListener('click', () => { step = steps().findIndex((q) => pending.has(q.id)); resume = true; ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
         box.append(more);
@@ -1025,15 +1025,15 @@
         box.append(p);
       }
       const nav = el('div', 'qz-nav');
-      const cmp = el('button', 'btn primary', 'Compare these side by side');
+      const cmp = el('button', 'jsal-btn primary', 'Compare these side by side');
       cmp.type = 'button';
       cmp.addEventListener('click', compareThese);
-      const copy = el('button', 'btn', 'Copy link to this result');
+      const copy = el('button', 'jsal-btn', 'Copy link to this result');
       copy.type = 'button';
       copy.addEventListener('click', async () => {
         try { await navigator.clipboard.writeText(location.href); copy.textContent = 'Link copied'; } catch (e) { copy.textContent = 'Copy the address bar to share'; }
       });
-      const again = el('button', 'btn', 'Start over');
+      const again = el('button', 'jsal-btn', 'Start over');
       again.type = 'button';
       again.addEventListener('click', () => { a = {}; step = 0; editing = null; resume = false; ansOpen = false; checking = null; pending.clear(); history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
       nav.append(cmp, copy, again);

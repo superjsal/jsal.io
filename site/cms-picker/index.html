@@ -65,12 +65,12 @@
 
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update -->
-  <link rel="stylesheet" href="/shell.css?v=0282e7de">
-  <link rel="stylesheet" href="styles.css?v=bb20912b" />
+  <link rel="stylesheet" href="/shell.css?v=d5468721">
+  <link rel="stylesheet" href="styles.css?v=0b40ac0f" />
   <!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app's own scripts have run -->
   <script src="/nav.js?v=c5bdd8f2" defer></script>
   <script src="score.js?v=91f58b64" defer></script>
-  <script src="app.js?v=66b1717b" data-quiz-v="00c68a38" defer></script>
+  <script src="app.js?v=71a60451" data-quiz-v="00c68a38" defer></script>
 </head>
 <body>
   <main class="app">
@@ -181,7 +181,7 @@
     <div class="cbar" id="cbar" role="region" aria-label="Your comparison">
       <span class="cbar-count" id="cbar-count"></span>
       <span class="cbar-logos" id="cbar-logos" aria-hidden="true"></span>
-      <a class="btn primary cbar-go" href="#seo">Compare <span aria-hidden="true">→</span></a>
+      <a class="jsal-btn primary cbar-go" href="#seo">Compare <span aria-hidden="true">→</span></a>
     </div>
     <!-- Shows once the hero is out of view (app.js) -->
     <button type="button" class="totop" id="totop" aria-label="Back to top"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span>Top</span></button>

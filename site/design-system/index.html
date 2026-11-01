@@ -18,7 +18,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=0282e7de">
+<link rel="stylesheet" href="/shell.css?v=d5468721">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -141,13 +141,6 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .demo .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .demo .src { font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 .demos { display: grid; gap: 18px; }
-.btn { display: inline-block; height: 40px; padding: 0 18px; line-height: 38px; text-align: center; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: none; color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px var(--jsal-font); text-decoration: none; cursor: pointer; transition: border-color 0.15s; }
-.btn:hover { border-color: var(--jsal-hover-line); }
-.btn.primary { border-color: var(--jsal-fill-edge); background: var(--jsal-fill); color: var(--jsal-on-fill); }
-.btn.primary:hover { filter: brightness(1.06); }   /* style: allow (the main action keeps its gold) */
-.btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.btn-danger { color: var(--jsal-bad); border-color: transparent; }
-.btn-danger:hover { background: var(--jsal-bad-soft); border-color: var(--jsal-bad); }
 .cta { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; cursor: pointer; border: 0; font-family: inherit; }
 .cta.main { background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); }
 .cta:hover { transform: translateY(-2px); }
@@ -177,10 +170,6 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .tag.no { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
 .tag.check, .tag.cost { background: var(--jsal-sunk); color: var(--jsal-ink-2); }
 .sc { color: var(--jsal-muted); font-size: 13px; font-weight: 600; }
-.track { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
-.seg { padding: 4px 12px; border: 0; background: none; border-radius: var(--jsal-radius-sm); color: var(--jsal-muted); font: 600 14px var(--jsal-font); cursor: pointer; transition: color 0.12s; }
-.seg:hover { color: var(--jsal-ink); }
-.seg.active { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .field { display: grid; gap: 6px; font-size: 13px; color: var(--jsal-muted); max-width: 320px; }
 .field input { height: 40px; padding: 0 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: 15px var(--jsal-font); }
 .field input:focus-visible { outline: none; border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
@@ -261,8 +250,8 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 @media (max-width: 720px) { .hero { padding-top: 32px; } .sec { padding-top: 40px; } .roles td:first-child { white-space: normal; } .jsal-top nav { display: none; } .ans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }   /* the contents list below does the nav's job on a phone */
 @media (max-width: 560px) { .verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: 16px; } .verdict .line { font-size: 22px; } .verdict .jump { margin-top: 8px; } }
-@media (pointer: coarse) { .btn, .cta, .chip, .seg, .chk, .chip-link, .tick, .fgdemo a, .ans button { min-height: 44px; } .chip, .seg, .chip-link, .fgdemo a { display: inline-flex; align-items: center; } }
-@media (prefers-reduced-motion: reduce) { .cta, .btn, .chip, .seg, .ans button { transition: none; } .cta:hover { transform: none; } }
+@media (pointer: coarse) { .cta, .chip, .chk, .chip-link, .tick, .fgdemo a, .ans button { min-height: 44px; } .chip, .chip-link, .fgdemo a { display: inline-flex; align-items: center; } }
+@media (prefers-reduced-motion: reduce) { .cta, .chip, .ans button { transition: none; } .cta:hover { transform: none; } }
 </style>
 </head>
 <body>
@@ -529,16 +518,16 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <p class="intro">These are live, built from the same rules the apps use (each demo names its source). Hover is neutral everywhere: a firmer border or a slight tint. Gold means selected, focused, a file being dragged over, or the main action. Every control has one focus ring, and on touch screens every control is at least 44px tall.</p>
     <div class="demos">
       <div class="demo">
-        <span class="src">Buttons · cms-picker/styles.css .btn, formatter .btn-primary/.btn-accent, image-resizer .btn-danger</span>
-        <div class="row"><button type="button" class="btn primary">Find my fit</button><button type="button" class="btn">Compare all 14</button><button type="button" class="btn" disabled>Download All</button><button type="button" class="btn btn-danger">Clear</button></div>
+        <span class="src">Buttons · shell.css .jsal-btn, the one button every page uses: plain, .primary (the gold main action), .small for dense screens, .danger to remove or clear</span>
+        <div class="row"><button type="button" class="jsal-btn primary">Find my fit</button><button type="button" class="jsal-btn">Compare all 14</button><button type="button" class="jsal-btn" disabled>Download All</button><button type="button" class="jsal-btn danger">Clear</button><button type="button" class="jsal-btn small">Cancel</button></div>
         <span class="src">Home page call to action · index.html .cta (the one gold pill, lifts 2px on hover)</span>
         <div class="row"><button type="button" class="cta main">Find your CMS</button></div>
       </div>
       <div class="demo">
         <span class="src">Chips and link-styled controls · cms-picker/styles.css .chip, .chip-link</span>
         <div class="row"><button type="button" class="chip" aria-pressed="true">WordPress</button><button type="button" class="chip" aria-pressed="true">Shopify</button><button type="button" class="chip" aria-pressed="false">Webflow</button><button type="button" class="chip" aria-pressed="false">Ghost</button><button type="button" class="chip-link">All</button><button type="button" class="chip-link">Deselect all</button></div>
-        <span class="src">Segmented control · image-resizer/styles.css .option-track, .quality-btn</span>
-        <div class="row"><span class="track"><button type="button" class="seg">Low</button><button type="button" class="seg">Med</button><button type="button" class="seg active">High</button></span><span class="track"><button type="button" class="seg active">JPG</button><button type="button" class="seg">PNG</button><button type="button" class="seg">WebP</button></span></div>
+        <span class="src">Switch · shell.css .jsal-seg, the one switch for picking one of a few options</span>
+        <div class="row"><div class="jsal-seg" role="group" aria-label="Example switch"><button type="button" aria-pressed="false">Low</button><button type="button" aria-pressed="false">Med</button><button type="button" aria-pressed="true">High</button></div><div class="jsal-seg" role="group" aria-label="Example switch"><button type="button" aria-pressed="true">JPG</button><button type="button" aria-pressed="false">PNG</button><button type="button" aria-pressed="false">WebP</button></div></div>
       </div>
       <div class="demo">
         <span class="src">A tick that goes with a choice · cms-picker/styles.css .qz-tick (selected like a pressed chip; the box in the accent)</span>
@@ -617,7 +606,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     </table></div>
     <h3>Focus</h3>
     <p>One ring for every control, text fields included: <code>0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent)</code>. The gap of background colour keeps the ring legible on gold buttons and on tinted chips alike.</p>
-    <div class="focus-demo"><button type="button" class="btn primary ring">Find my fit</button><button type="button" class="chip ring" aria-pressed="false">Webflow</button></div>
+    <div class="focus-demo"><button type="button" class="jsal-btn primary ring">Find my fit</button><button type="button" class="chip ring" aria-pressed="false">Webflow</button></div>
     <h3>Feedback</h3>
     <p>Actions answer in words where it matters: a Copy button says "Copied" for two seconds in green; a saved edit says "Saved"; a cleared post offers "Undo clear". Small notes in muted text carry the longer hints.</p>
   </section>
