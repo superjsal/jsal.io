@@ -72,8 +72,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 /* Colour (03): the swatch board shows both themes at once, so it carries literal values on purpose */
 .themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
 .theme { padding: 18px; border-radius: var(--jsal-radius-lg); border: 1px solid var(--t-line); background: var(--t-bg); color: var(--t-ink); }
-.theme h4 { margin: 0 0 14px; font: 700 16px/1.2 "Lora", Georgia, serif; }
-.theme h4 small { display: block; margin-top: 3px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.theme h3 { margin: 0 0 14px; font: 700 16px/1.2 "Lora", Georgia, serif; color: inherit; }
+.theme h3 small { display: block; margin-top: 3px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
 .theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #e8e0d1; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #d8cfc0; --t-linehi: #bdb3a3; --t-accent: #7e5a00; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-onfill: #1f1a12; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
 .theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-onfill: #16130c; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #f0956a; --t-warnsoft: #34231b; --t-bad: #ff8c96; --t-badsoft: #3a1b22; --t-info: #8fb1ff; --t-infosoft: #1d2540; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
 .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
@@ -93,6 +93,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .roles td:first-child { white-space: nowrap; font-weight: 600; }
 .dot { display: inline-block; width: 12px; height: 12px; margin-right: 8px; border-radius: 50%; vertical-align: -1px; }
 .table-wrap { overflow-x: auto; }
+.table-wrap:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius); }
 
 /* Typography (04) */
 .spec { display: grid; gap: 22px; }
@@ -196,7 +197,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .chk.warn .ico { color: var(--jsal-warn); background: var(--jsal-warn-soft); }
 .chk .show { margin-left: auto; align-self: center; font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
 .card { padding: 16px 18px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); max-width: 420px; }
-.card h4 { margin: 0 0 4px; font: 700 18px/1.2 "Lora", Georgia, serif; }
+.card h3 { margin: 0 0 4px; font: 700 18px/1.2 "Lora", Georgia, serif; }
 .card p { margin: 0; font-size: 14px; color: var(--jsal-ink-2); }
 .card .foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
 .card .cseo { margin-left: auto; color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; }
@@ -252,6 +253,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     </div>
   </header>
 
+  <main>
   <section class="hero">
     <p class="eyebrow">jsal.io · Visual identity &amp; UI design system · October 2026</p>
     <h1>Small tools, <em>one</em> design language.</h1>
@@ -305,7 +307,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <p class="intro">Every colour on the site comes from a <code>--jsal-*</code> token defined in <code>shell.css</code>, with a light value and a dark one. Written-out colours fail the pre-push check. The gold is two tokens on purpose: <code>--jsal-accent</code> for text and links (dark enough for 4.5:1 on every light surface) and <code>--jsal-fill</code> for the main button's fill and for text over images.</p>
     <div class="themes">
       <article class="theme light">
-        <h4>Light<small>default · prefers-color-scheme: light</small></h4>
+        <h3>Light<small>default · prefers-color-scheme: light</small></h3>
         <p class="group">Surfaces</p>
         <div class="swatches">
           <div class="sw"><i style="background:var(--t-bg)"></i><b>Background</b><code>--jsal-bg</code><code>#f5efe2</code></div>
@@ -341,7 +343,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         </div>
       </article>
       <article class="theme dark">
-        <h4>Dark<small>prefers-color-scheme: dark · or the theme button</small></h4>
+        <h3>Dark<small>prefers-color-scheme: dark · or the theme button</small></h3>
         <p class="group">Surfaces</p>
         <div class="swatches">
           <div class="sw"><i style="background:var(--t-bg)"></i><b>Background</b><code>--jsal-bg</code><code>#111318</code></div>
@@ -380,7 +382,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
     <h3>What each colour means</h3>
     <p>Colour reinforces a word; it never carries meaning alone. Gold is the accent and the rest are roles, so a reader learns the system once and it holds on every page, the team Playbook included.</p>
-    <div class="table-wrap"><table class="roles">
+    <div class="table-wrap" tabindex="0" role="region" aria-label="What each colour means"><table class="roles">
       <thead><tr><th>Colour</th><th>Means</th><th>Where you see it</th></tr></thead>
       <tbody>
         <tr><td><span class="dot" style="background:var(--jsal-accent)"></span>Gold</td><td>The site's accent: selected states, the main action, the one insight line, brand touches and the site's own text links. Never hover; focus is the ring, not a gold fill.</td><td>A pressed chip, "Find your CMS", "What tipped it", the gold word in each title, ".io", About links</td></tr>
@@ -421,7 +423,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <span style="font:italic 600 20px 'Lora',Georgia,serif;color:var(--jsal-accent)">Lora italic 600<small>the gold word</small></span>
     </div>
     <h3>The scale, as the pages set it</h3>
-    <div class="table-wrap"><table class="scale">
+    <div class="table-wrap" tabindex="0" role="region" aria-label="The type scale"><table class="scale">
       <thead><tr><th>Role</th><th>Size</th><th>Face, weight</th><th>Where</th></tr></thead>
       <tbody>
         <tr><td>Page title</td><td>clamp(40–44px, 5–7vw, 62–64px)</td><td>Lora 700, −0.03em</td><td>Home, Privacy, 404</td></tr>
@@ -452,10 +454,11 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h3>Under the top bar</h3>
     <p>Pages that open with a heading (home, Off the clock, the CMS Picker and its platform pages, Privacy, Changelog, 404) start their first line at <code>--jsal-page-top</code>: 30px under the bar, 22px at 720px and under, and flush with the logo's left edge, with no optical indent on the mono line, the heading or the text beneath it. So the small line under the bar never shifts between pages. The tools' "for" line sits 16px under the bar instead, so the work area fills the first screen.</p>
     <h3>Breakpoints the pages use</h3>
-    <div class="table-wrap"><table class="scale">
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Breakpoints"><table class="scale">
       <thead><tr><th>Width</th><th>What changes</th></tr></thead>
       <tbody>
         <tr><td>≤ 520px</td><td>Less space above the top bar (14px); the Privacy page's text starts sooner</td></tr>
+        <tr><td>521–619px</td><td>The home page's Platform guides take four columns rather than five</td></tr>
         <tr><td>≤ 599px</td><td>Clean Paste's toolbar in two even rows; the CMS Picker's phone rules</td></tr>
         <tr><td>≤ 720px</td><td>The CMS Picker's comparison becomes stacked cards, with groups that fold; the platform pages reflow</td></tr>
         <tr><td>≤ 860px</td><td>The home page's bento grid stacks to one column</td></tr>
@@ -523,7 +526,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </div>
       <div class="demo">
         <span class="src">Platform card · cms-picker/styles.css .card, with the card's one gold action</span>
-        <div class="card"><h4>Squarespace</h4><p>For small businesses and creatives who want a designed site without a developer.</p><div class="foot"><button type="button" class="chip" aria-pressed="false">+ Add to compare</button><a class="cseo" href="/cms-picker/squarespace/">SEO settings →</a></div></div>
+        <div class="card"><h3>Squarespace</h3><p>For small businesses and creatives who want a designed site without a developer.</p><div class="foot"><button type="button" class="chip" aria-pressed="false">+ Add to compare</button><a class="cseo" href="/cms-picker/squarespace/">SEO settings →</a></div></div>
       </div>
       <div class="demo">
         <span class="src">The insight line and a caveat · cms-picker quiz result (.qz-vs, .qz-lim)</span>
@@ -546,7 +549,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <p class="eyebrow">07 · Motion &amp; interaction</p>
     <h2>Quick, physical, and easy to switch off.</h2>
     <p class="intro">Motion is short and tied to a cause: a control answers a hover in 0.12s, a page changes in 0.3s, a tile lifts when the mouse arrives. Everything with movement has a <code>prefers-reduced-motion</code> fallback (checked before each push), and nothing moves on its own for more than five seconds.</p>
-    <div class="table-wrap"><table class="motion">
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Motion and interaction"><table class="motion">
       <thead><tr><th>Moment</th><th>Timing</th><th>What happens</th></tr></thead>
       <tbody>
         <tr><td>Hover on a control</td><td>0.12–0.15s</td><td>Border firms to <code>--jsal-hover-line</code> or the surface tints to <code>--jsal-sunk</code>. Never gold.</td></tr>
@@ -610,6 +613,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </div>
     </div>
   </section>
+  </main>
 
   <footer class="end">
     <span>Made by <a href="/">John Salvador</a>. Values taken from the site's code on 31 October 2026; the rules themselves live in <code>design-rules.md</code> in the repository.</span>

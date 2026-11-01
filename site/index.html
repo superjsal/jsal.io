@@ -148,8 +148,9 @@ p, li { text-wrap: pretty; }
 .guides a:not(.all) { justify-content: flex-start; gap: 8px; }
 .guides a:not(.all)::before { content: ""; flex: none; width: 24px; height: 16px; background: var(--jsal-muted); -webkit-mask: var(--logo) center / 16px 16px no-repeat; mask: var(--logo) center / 16px 16px no-repeat; }
 .guides a.wm::before { -webkit-mask-size: 22px auto; mask-size: 22px auto; }   /* a pixel clear of each side, so the edge doesn't slice the first letter */
-/* Where the tiles are too narrow for a logo and the longest names (the five columns below 770px, two below 340px), names only, centred */
-@media (min-width: 521px) and (max-width: 769px), (max-width: 339px) {
+/* Where the tiles are too narrow for a logo and the longest names (beside the intro below 1280px, the four and five
+   columns below 770px, two below 340px), names only, centred */
+@media (min-width: 1101px) and (max-width: 1279px), (min-width: 521px) and (max-width: 769px), (max-width: 339px) {
   .guides a:not(.all) { justify-content: center; }
   .guides a:not(.all)::before { display: none; }
 }
@@ -350,6 +351,14 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .guides a:last-child:nth-child(5n) { grid-column: auto; }
   .cms { grid-row: 1; }
 }
+/* Below 620px five columns leave "BigCommerce" no room: four even columns, the last tile filling out its row */
+@media (min-width: 521px) and (max-width: 619px) {
+  .guides div { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .guides a:last-child:nth-child(n) { grid-column: auto; }
+  .guides a:last-child:nth-child(4n+1) { grid-column: span 4; }
+  .guides a:last-child:nth-child(4n+2) { grid-column: span 3; }
+  .guides a:last-child:nth-child(4n+3) { grid-column: span 2; }
+}
 @media (max-width: 860px) {
   /* Stacked: the CMS Picker tile first, then the guides, then the other tiles */
   .guides { grid-row: auto; order: 1; }
@@ -387,6 +396,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .tile h2 { font-size: 26px; }
   .ic h2 { font-size: 22px; }
   .ic { padding: 20px; }
+  .ic .foot { flex-wrap: wrap; }   /* the arrow drops under the text only when the pill leaves it no room (below about 360px) */
+  .ic .foot .arrow { margin-left: auto; }
   .now h2 { font-size: 24px; }
   .upd li { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; }
   .upd li > span:nth-child(2) { grid-row: 2; grid-column: 1 / -1; }
