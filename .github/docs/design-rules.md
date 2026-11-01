@@ -32,9 +32,25 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 
 ## Sizes and spacing
 
-- **Text sizes are whole pixels**, picked by role: small labels 12px, secondary text 13px, boxed tips and
-  warnings 14px, reading text in the tools 15px, leads 17px; headings by page. **Check:** `check.py` fails on a
-  half-pixel font size. Relative sizes (inline code at `0.86em`) are fine.
+- **Ten text sizes, picked by role:**
+
+  | Size | Role |
+  |---|---|
+  | 12px | Small labels: eyebrows, tags, section labels, the short name over each quiz answer |
+  | 13px | Secondary text: hints, chips, footers |
+  | 14px | Controls and boxed tips: buttons, top-bar links, answer tiles, notes and warnings, the tools' "for" line |
+  | 15px | Reading text in the tools |
+  | 17px | Leads and H3s (Inter 600/700): "How to use it", quiz questions, result card names |
+  | 20px | The tool title in the top bar (17px at 420px and under), the platform cards' names |
+  | 24px | Section headings: every H2, the CMS Picker's verdict line, the changelog's dates |
+  | 30px | Home tile names and big callouts (Off the clock's line over the art, 24px on phones) |
+  | 40 / 46px | Page titles (above); the long titles' clamp runs from 30px |
+
+  Body and H3 are two pixels and a weight apart, so a subheading reads as one at a glance. **Exceptions**, each
+  marked `style: allow` where it's set: the wordmark (18px, the logo's size), text boxes on touch screens (16px,
+  below), the visitor's own headings in Clean Paste's preview, and the home tiles' miniature pictures.
+  **Check:** `check.py` fails on any other px font size, and on half pixels. Relative sizes (inline code at
+  `0.86em`) are fine.
 - **Spacing values are even** (2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28…). Two kinds of odd value stay on
   purpose: the 1–3px padding inside small tags and pills, and row paddings that repeat down a list (the
   Playbook's sidebar, the achievement list, Clean Paste's checks), where rounding would change the list's
@@ -93,7 +109,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - **The top bar never moves between pages:** the same `.jsal-top` markup everywhere (`check.py` compares it). A tool's name
   in the bar starts with its icon (22px, `.jsal-title-ico`, the same file as its tab icon), as in
   the logo menu; the icon drops out below 430px. From 360px up the bar keeps one row on every tool (at 420px and under the
-  title is 18px and the gaps tighten), so the work area starts at the same height on each.
+  title is 17px and the gaps tighten), so the work area starts at the same height on each.
 - **One distance under the top bar:** pages that open with a heading (home, Off the clock, the CMS Picker and
   its platform pages, Privacy, Changelog, 404) start their first thing at `--jsal-page-top` from `shell.css`
   (30px, 22px at 720px and under), flush with the logo's left edge: no optical indent on the mono line, the

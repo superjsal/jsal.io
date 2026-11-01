@@ -33,7 +33,7 @@ body {
   border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); cursor: pointer; transition: border-color 0.15s; }
 .more-btn:hover { border-color: var(--jsal-hover-line); }
 .more-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-.more-btn b { display: block; font-size: 16px; font-weight: 600; }
+.more-btn b { display: block; font-size: 17px; font-weight: 600; }
 .more-btn small { display: block; margin-top: 4px; color: var(--jsal-muted); font-size: 14px; line-height: 1.45; }
 .more-btn .chev { flex: none; width: 9px; height: 9px; margin: -4px 4px 0 0; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: 45deg; transition: rotate 0.15s, margin 0.15s; }
 .more-btn[aria-expanded="true"] .chev { rotate: -135deg; margin-top: 4px; }
@@ -70,7 +70,7 @@ body {
 .cbar-count { color: var(--jsal-ink); font-size: 14px; font-weight: 700; white-space: nowrap; }
 .cbar-logos { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .cbar-logos .logo { width: 20px; height: 20px; }
-.cbar-logos .logo.badge { width: 22px; height: 22px; border-radius: var(--jsal-radius); font-size: 10px; }
+.cbar-logos .logo.badge { width: 22px; height: 22px; border-radius: var(--jsal-radius); font-size: 12px; }
 .cbar-logos .pop { animation: cbar-pop 0.3s ease-out; }
 .cbar-more { color: var(--jsal-muted); font-size: 13px; font-weight: 700; }
 .cbar .jsal-btn { flex: none; min-height: 38px; padding: 0 18px; white-space: nowrap; border-radius: var(--jsal-radius-pill); }   /* round ends, like the bar */
@@ -185,7 +185,7 @@ body {
 /* Section heading row inside the table: a quiet label, a step darker than a ruled-out row so the two never read alike */
 .row.group { display: block; padding: 16px 14px 6px; color: var(--jsal-ink-2); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 .row.group > .gtitle { position: sticky; left: 14px; }
-.row.group .gnote { margin-left: 8px; color: var(--jsal-muted); font-weight: 500; letter-spacing: 0; text-transform: none; }   /* the qualifiers, quietly */
+.row.group .gnote { margin-left: 8px; color: var(--jsal-muted); font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; }   /* the qualifiers, quietly */
 .row.group > .gtitle .gnote::before { content: "· "; }
 /* Phones: each group's rows fold behind its heading (a button; the first group starts open); desktop shows every row */
 .row.group .gfold { display: none; }
@@ -245,7 +245,7 @@ body {
 .seo-chip:hover { border-color: var(--jsal-hover-line); }
 .seo-chip:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .seo-chip .logo { width: 18px; height: 18px; }
-.seo-chip .logo.badge { border-radius: var(--jsal-radius-sm); font-size: 10px; }
+.seo-chip .logo.badge { border-radius: var(--jsal-radius-sm); font-size: 12px; }
 @media (pointer: coarse) { .seo-chip { min-height: 44px; } }
 .note { margin-top: 12px; max-width: 680px; color: var(--jsal-muted); font-size: 13px; }
 
@@ -292,7 +292,7 @@ body {
   .plats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .plats .chip { text-align: center; }
   .more { grid-template-columns: minmax(0, 1fr); }
-  .lede { font-size: 16px; }
+  .lede { font-size: 17px; }
   .jsal-btn { flex: 1 1 auto; }
   .totop { width: 44px; height: 44px; padding: 0; justify-content: center; }
   .totop span { display: none; }
@@ -313,7 +313,7 @@ body {
 .block { margin-bottom: 34px; padding-top: 18px; border-top: 1px solid var(--jsal-line-hi); scroll-margin-top: 16px; }
 .block h2 .num { display: block; margin-bottom: 6px; color: var(--jsal-muted); font-family: var(--jsal-font); font-size: 13px; font-weight: 700; letter-spacing: 0; }   /* the small label stays in Inter */
 .block h2 .num-d { color: var(--jsal-accent); }   /* only the section's number keeps the gold */
-.block h2 { margin-bottom: 14px; color: var(--jsal-ink); font-family: "Lora", Georgia, serif; font-size: 26px; line-height: 1.25; letter-spacing: -0.01em; }
+.block h2 { margin-bottom: 14px; color: var(--jsal-ink); font-family: "Lora", Georgia, serif; font-size: 24px; line-height: 1.25; letter-spacing: -0.01em; }
 /* "What are you building?" narrows the cards; each is short, in larger text than the grid, since this is what people read */
 .types { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
 .types .chip { padding: 6px 14px; font-size: 15px; }
@@ -334,7 +334,7 @@ body {
 .card.open .mini-btn svg { transform: rotate(180deg); }
 .cbody { display: flex; flex-direction: column; padding: 4px 16px 16px; }
 .card { display: flex; flex-direction: column; padding: 20px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink-2); }
-.card h3 { color: var(--jsal-ink); font-size: 21px; letter-spacing: -0.01em; }
+.card h3 { color: var(--jsal-ink); font-size: 20px; letter-spacing: -0.01em; }
 /* Logo beside the name, in the text colour (the SVG is a mask), so it suits light and dark */
 .ctop { display: flex; align-items: center; gap: 12px; }
 .logo { flex: none; width: 30px; height: 30px; background: var(--jsal-ink); -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
@@ -413,7 +413,7 @@ body {
 .qz-from .chip { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 12px; border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font-size: 14px; text-align: left; }
 .qz-from .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .qz-from .logo { width: 20px; height: 20px; }
-.qz-from-else { flex: none; display: grid; place-items: center; width: 20px; height: 20px; color: var(--jsal-muted); font-size: 18px; font-weight: 700; line-height: 1; }   /* "Somewhere else": a plain mark in the logo's place */
+.qz-from-else { flex: none; display: grid; place-items: center; width: 20px; height: 20px; color: var(--jsal-muted); font-size: 17px; font-weight: 700; line-height: 1; }   /* "Somewhere else": a plain mark in the logo's place */
 /* "Yes, I have a site" opens the list, and stays marked while it's open */
 .qz-opt[aria-expanded="true"] { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 /* Selected: a small tick, the same mark wherever a choice is made */
@@ -461,7 +461,7 @@ body {
 .qz-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; padding: 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); color: var(--jsal-ink-2); }
 .qz-card.top { border-color: var(--jsal-line-hi); }   /* the green badge says which wins; gold stays for interaction */
 .qz-card .logo { grid-row: span 2; width: 34px; height: 34px; }
-.qz-card h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--jsal-ink); font-size: 18px; }
+.qz-card h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--jsal-ink); font-size: 17px; }
 .fitp { padding: 2px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
 .fitp.low { background: var(--jsal-line); color: var(--jsal-ink-2); }   /* the closest, not a fit: neutral, not green */
 /* Before the matches that lack a must-have the first has built in: a label with a rule above, like a group heading */
@@ -508,7 +508,7 @@ body {
 .qz-later { margin-top: 12px; color: var(--jsal-ink-2); font-size: 14px; }
 .qz-later b { font-weight: 600; }
 .qz-panel { margin-top: 12px; padding: 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
-.qz-panel h4 { color: var(--jsal-ink); font-size: 16px; }
+.qz-panel h4 { color: var(--jsal-ink); font-size: 17px; }
 .qz-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 14px; }
 .qz-switch-l { margin-right: 4px; color: var(--jsal-muted); font-size: 14px; }
 .qz-pick-chips { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -526,7 +526,6 @@ body {
 .qz-verdict .qz-jump { grid-area: jump; margin-left: 0; }
 @media (max-width: 560px) {
   .qz-verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: 16px; }
-  .qz-verdict-line { font-size: 22px; }
   .qz-verdict .qz-jump { margin-top: 8px; }
 }
 .qz-jump { order: 2; position: relative; margin-left: auto; padding: 4px 0; border: 0; background: none; color: var(--jsal-accent); font: 600 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; white-space: nowrap; }
@@ -549,7 +548,7 @@ body {
 @media (pointer: coarse) { .qz-fb .qz-fb-row .chip { min-height: 44px; } }
 /* "Had a platform in mind?": any platform ranked for these answers, with what counted for and against it */
 .qz-check { margin-top: 12px; padding: 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
-.qz-check h4 { color: var(--jsal-ink); font-size: 16px; }
+.qz-check h4 { color: var(--jsal-ink); font-size: 17px; }
 .qz-check .lead { margin: 2px 0 10px; color: var(--jsal-muted); font-size: 14px; }
 .qz-check .res { margin-top: 12px; padding: 12px 14px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); }
 .qz-check .rank { display: block; margin-bottom: 8px; color: var(--jsal-ink); font-size: 15px; }

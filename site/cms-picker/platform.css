@@ -4,12 +4,12 @@
 .pp-crumbs a { color: var(--jsal-accent); text-underline-offset: 3px; }
 /* Headings in the home page's serif, like the page titles and the CMS Picker's own headings; the gold word italic */
 .pp-title { margin: 14px 0 10px; font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the CMS Picker's heading size */
-.pp-title-sub { display: block; margin-top: 8px; color: var(--jsal-ink-2); font: 500 clamp(20px, 2.6vw, 26px)/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }   /* the heading's second line */
+.pp-title-sub { display: block; margin-top: 8px; color: var(--jsal-ink-2); font: 500 clamp(20px, 2.6vw, 24px)/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }   /* the heading's second line */
 .pp-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
 .pp-lede { max-width: 680px; margin: 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.55; }
 .pp-meta { margin: 10px 0 0; color: var(--jsal-muted); font-size: 13px; }
 .pp-h { margin: 44px 0 6px; font-family: "Lora", Georgia, serif; font-size: 24px; letter-spacing: -0.01em; }
-.pp-h3 { margin: 26px 0 10px; font-size: 16px; }
+.pp-h3 { margin: 26px 0 10px; font-size: 17px; }
 .pp-sub { margin: 0 0 16px; color: var(--jsal-muted); font-size: 14px; }
 
 /* One card per SEO question: heading, answer, menu path, docs link */

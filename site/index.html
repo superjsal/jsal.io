@@ -52,7 +52,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=d5468721">
+<link rel="stylesheet" href="/shell.css?v=6691ec6a">
 <style>
 /* Tile colours: each tool keeps its own tint with a deep shade of it for the words; Updates and Say hi are plain.
    The pieces of each tool laid on the tiles wear the tools' own colours, so they change with the theme as the tools do;
@@ -126,12 +126,12 @@ p { text-wrap: pretty; }
 a.tile:hover, .hi:has(.hi-mail:hover) { transform: translateY(-4px) rotate(-0.4deg); }
 .tile .txt { position: relative; z-index: 2; }
 .tile h2 { margin: 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
-.tile .txt p { margin: 8px 0 0; font-size: 16px; line-height: 1.45; }
+.tile .txt p { margin: 8px 0 0; font-size: 17px; line-height: 1.45; }
 .clip { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
 .obj { position: absolute; transform: var(--rest, none); transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
 a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--rest, none)); }
 .paper { background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); }
-.mono { font: 600 11px/1.4 "JetBrains Mono", Consolas, monospace; }
+.mono { font: 600 11px/1.4 "JetBrains Mono", Consolas, monospace; }   /* style: allow (the pictures are miniatures of the tools) */
 /* Each tool's app icon drawn large and faint in the tile's ink, its gem in solid gold */
 .wm { position: absolute; color: var(--ink); }
 .wm .s { opacity: 0.14; }
@@ -141,7 +141,6 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
    corner cards (Shopify, Duda) poke a little past the tile, the row's breakout */
 .cms { --bg: var(--t-cms); --ink: var(--t-cms-ink); justify-content: flex-end; }
 .cms .txt { max-width: 290px; }
-.cms h2 { font-size: 34px; }
 .cms .wm { left: -19px; top: 24px; }   /* the bars centred over the name */
 .pcs { left: 281px; top: 68px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
 .pcs > span { display: flex; gap: 12px; }
@@ -184,13 +183,13 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .sizes { display: flex; gap: 4px; margin-top: 10px; }
 .sizes span { flex: 1; padding: 5px 0; border-radius: 6px; border: 1px solid var(--jsal-line); text-align: center; white-space: nowrap; }
 .sizes .on { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); }
-.sizes .plain { font: 600 11px/1.4 var(--jsal-font); }
+.sizes .plain { font: 600 11px/1.4 var(--jsal-font); }   /* style: allow (miniature) */
 .outs { right: 20px; top: -2px; z-index: 3; width: 214px; padding: 12px 14px; border-radius: 16px; --rest: rotate(4deg); --hover: rotate(6deg) translate(4px, -4px); }
 .outs-head { display: flex; justify-content: space-between; padding-bottom: 6px; color: var(--jsal-muted); }
 .outs-head span { color: var(--jsal-ok); }
 .outs .row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }
 .outs .row img { flex: none; width: 44px; height: 30px; border-radius: 4px; }
-.outs .row span { display: flex; flex-direction: column; font-size: 11px; line-height: 1.4; color: var(--jsal-muted); }
+.outs .row span { display: flex; flex-direction: column; font-size: 11px; line-height: 1.4; color: var(--jsal-muted); }   /* style: allow (miniature) */
 .outs .row b { color: var(--jsal-ink); }
 
 /* Clean Paste: the clean HTML it gives back, straight and poking past the tile's left edge so the watermark shows,
@@ -207,7 +206,6 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 /* Say hi: a draft to the site's address, poking out over the tile's top edge (the row's breakout). The heading's
    link covers the whole tile, so the GitHub link sits above it. */
 .hi { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
-.hi h2 { font-size: 28px; }
 .hi-mail { text-decoration: none; }
 .hi .txt { position: static; margin-top: 130px; }   /* static: the link's cover below spans the whole tile; the margin keeps the words under the draft */
 .hi-mail::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: 22px; }
@@ -234,8 +232,8 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .upd li:nth-child(3) { z-index: 1; rotate: -0.5deg; margin: 0 6px 0 -6px; }
 .upd-name { display: block; padding-right: 48px; font-size: 13px; font-weight: 700; }
 .upd-ico { position: absolute; left: 14px; top: 50%; translate: 0 -50%; border-radius: 7px; }
-.upd time { position: absolute; right: 14px; top: 11px; color: var(--jsal-muted); }
-.upd-line { display: block; margin-top: 1px; font: 600 16px/1.3 "Lora", Georgia, serif; }
+.upd time { position: absolute; right: 14px; top: 11px; color: var(--jsal-muted); font-size: 12px; }
+.upd-line { display: block; margin-top: 1px; font: 600 17px/1.3 "Lora", Georgia, serif; }
 
 footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
 footer nav { display: flex; gap: 4px; }
@@ -304,7 +302,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .copied { left: auto; right: -12px; top: -14px; }
   .hi .txt { margin-top: 136px; }
   .draft { right: auto; width: min(340px, calc(100% - 52px)); transform-origin: top left; --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
-  .intro p { font-size: 16px; }
+  .intro p { font-size: 17px; }
 }
 #updates, #hi-h { scroll-margin-top: 16px; }
 /* Phones: a smaller title and tiles, one spacing step for the grid, and only the Updates link kept in the top bar
@@ -316,8 +314,6 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .intro h1 { font-size: 40px; }
   .tile { padding: 20px; border-radius: 18px; }
   .clip, .hi-mail::after { border-radius: 18px; }
-  .tile h2 { font-size: 28px; }
-  .cms h2 { font-size: 30px; }
   .draft { left: 20px; width: calc(100% - 40px); }
   footer { margin-top: 32px; }
 }

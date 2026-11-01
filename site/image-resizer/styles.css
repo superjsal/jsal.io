@@ -489,7 +489,7 @@ body {
   left: 6px;
   padding: 2px 8px;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   background: var(--jsal-warn);   /* orange: a genuine warning (gold is for selected) */
   color: var(--jsal-bg);
@@ -648,7 +648,7 @@ body {
   .jsal-seg > .quality-btn, .jsal-seg > .format-btn, .jsal-seg > .dest-btn { flex: 1; padding: 6px 4px; }
   .app { --thumb-h: 64px; }
   .preview-item { flex-basis: 140px; }   /* three cards across in a narrow window */
-  .src-dims { font-size: 11px; }
+  .src-dims { font-size: 12px; }
 }
 
 /* Very narrow: the shortcut hint makes way so Download All and Clear fit on one line */

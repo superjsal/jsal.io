@@ -18,7 +18,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=d5468721">
+<link rel="stylesheet" href="/shell.css?v=6691ec6a">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -40,7 +40,7 @@ a { color: inherit; }
 .hero .lede { margin: 24px 0 0; max-width: 36em; font-size: 17px; line-height: 1.6; color: var(--jsal-ink-2); text-wrap: pretty; }
 .facts { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 28px 0 0; padding: 0; list-style: none; }
 .facts li { display: grid; gap: 2px; }
-.facts b { font: 700 26px/1.1 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.facts b { font: 700 24px/1.1 "Lora", Georgia, serif; letter-spacing: -0.01em; }
 .facts span { font-size: 13px; color: var(--jsal-muted); }
 .toc { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 28px 0 0; padding: 0; list-style: none; font-size: 13px; }
 .toc a { color: var(--jsal-muted); text-decoration: none; }
@@ -50,9 +50,9 @@ a { color: inherit; }
 /* Sections */
 .sec { padding: 56px 0 8px; scroll-margin-top: 16px; }
 .sec + .sec { border-top: 1px solid var(--jsal-line); }
-.sec h2 { margin: 0 0 10px; font: 700 clamp(28px, 3.4vw, 36px)/1.15 "Lora", Georgia, serif; letter-spacing: -0.02em; text-wrap: balance; }
+.sec h2 { margin: 0 0 10px; font: 700 30px/1.15 "Lora", Georgia, serif; letter-spacing: -0.02em; text-wrap: balance; }
 .sec .intro { margin: 0 0 32px; max-width: 42em; font-size: 17px; line-height: 1.6; color: var(--jsal-ink-2); text-wrap: pretty; }
-.sec h3 { margin: 36px 0 12px; font-size: 16px; font-weight: 600; color: var(--jsal-ink); }
+.sec h3 { margin: 36px 0 12px; font-size: 17px; font-weight: 600; color: var(--jsal-ink); }
 .sec h3:first-of-type { margin-top: 0; }
 .sec p { margin: 0 0 12px; max-width: 42em; color: var(--jsal-ink-2); }
 .sec p.note { font-size: 13px; color: var(--jsal-muted); }
@@ -69,14 +69,14 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 /* Principle cards (02) */
 .principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
 .principles li { padding: 18px 18px 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
-.principles b { display: block; margin-bottom: 6px; font: 700 18px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.principles b { display: block; margin-bottom: 6px; font: 700 17px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
 .principles span { display: block; font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
 .principles small { display: block; margin-top: 10px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 
 /* Colour (03): the swatch board shows both themes at once, so it carries literal values on purpose */
 .themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
 .theme { padding: 18px; border-radius: var(--jsal-radius-lg); border: 1px solid var(--t-line); background: var(--t-bg); color: var(--t-ink); }
-.theme h3 { margin: 0 0 14px; font: 700 16px/1.2 "Lora", Georgia, serif; color: inherit; }
+.theme h3 { margin: 0 0 14px; font: 700 17px/1.2 "Lora", Georgia, serif; color: inherit; }
 .theme h3 small { display: block; margin-top: 3px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
 .theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #e8e0d1; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #d8cfc0; --t-linehi: #bdb3a3; --t-accent: #7e5a00; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
 .theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #f0956a; --t-warnsoft: #34231b; --t-bad: #ff8c96; --t-badsoft: #3a1b22; --t-info: #8fb1ff; --t-infosoft: #1d2540; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
@@ -106,8 +106,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .t-h1 { font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
 .t-h1 em { font-weight: 600; color: var(--jsal-accent); }
 .t-tile { font: 700 30px/1.1 "Lora", Georgia, serif; }
-.t-h2 { font: 700 26px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
-.t-h3 { font: 600 16px/1.4 var(--jsal-font); }
+.t-h2 { font: 700 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.t-h3 { font: 600 17px/1.4 var(--jsal-font); }
 .t-body { font: 15px/1.6 var(--jsal-font); color: var(--jsal-ink-2); max-width: 40em; }
 .t-lede { font: 17px/1.6 var(--jsal-font); color: var(--jsal-ink-2); max-width: 36em; }
 .t-small { font: 13px/1.5 var(--jsal-font); color: var(--jsal-muted); }
@@ -176,13 +176,13 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .field .focused { border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
 .chk { display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 8px 10px; border-radius: var(--jsal-radius); border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink-2); font: inherit; line-height: 1.45; text-align: left; cursor: pointer; }
 .chk:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
-.chk .ico { flex: none; margin-top: 1px; width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 800; }
+.chk .ico { flex: none; margin-top: 1px; width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
 .chk.ok .ico { color: var(--jsal-ok); background: var(--jsal-ok-soft); }
 .chk.warn { border-color: var(--jsal-warn-soft); }
 .chk.warn .ico { color: var(--jsal-warn); background: var(--jsal-warn-soft); }
 .chk .show { margin-left: auto; align-self: center; font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
 .card { padding: 16px 18px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); max-width: 420px; }
-.card h3 { margin: 0 0 4px; font: 700 18px/1.2 "Lora", Georgia, serif; }
+.card h3 { margin: 0 0 4px; font: 700 17px/1.2 "Lora", Georgia, serif; }
 .card p { margin: 0; font-size: 14px; color: var(--jsal-ink-2); }
 .card .foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
 .card .cseo { margin-left: auto; color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; }
@@ -212,7 +212,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .ans-also { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
 .ans-also i { display: grid; place-items: center; width: 16px; height: 16px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 /* A match that lacks a must-have the first has built in, under a divider; its pill neutral (cms-picker .qz-div, .fitp) */
-.match { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font: 700 18px/1.3 var(--jsal-font); }
+.match { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font: 700 17px/1.3 var(--jsal-font); }
 .fitp { padding: 2px 10px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
 .fitp.low { background: var(--jsal-line); color: var(--jsal-ink-2); }
 .div { max-width: 36em; padding-top: 14px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
@@ -249,7 +249,7 @@ footer.end { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--js
 footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 @media (max-width: 720px) { .hero { padding-top: 32px; } .sec { padding-top: 40px; } .roles td:first-child { white-space: normal; } .jsal-top nav { display: none; } .ans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }   /* the contents list below does the nav's job on a phone */
-@media (max-width: 560px) { .verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: 16px; } .verdict .line { font-size: 22px; } .verdict .jump { margin-top: 8px; } }
+@media (max-width: 560px) { .verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: 16px; } .verdict .jump { margin-top: 8px; } }
 @media (pointer: coarse) { .cta, .chip, .chk, .chip-link, .tick, .fgdemo a, .ans button { min-height: 44px; } .chip, .chip-link, .fgdemo a { display: inline-flex; align-items: center; } }
 @media (prefers-reduced-motion: reduce) { .cta, .chip, .ans button { transition: none; } .cta:hover { transform: none; } }
 </style>
@@ -427,9 +427,9 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <p class="intro">Three families, all self-hosted as Latin-subset variable fonts with <code>font-display: swap</code>, so nothing blocks the first paint. Lora carries every H1 and H2 on the public pages; Inter carries everything else, down to the smallest interface label; JetBrains Mono is reserved for the small uppercase labels above headings (gold on the site's own pages, muted on the tools), code and keyboard keys. A pre-push check fails any visible H1 or H2 of 16px or more that isn't Lora.</p>
     <div class="spec">
       <div><span class="who">Lora 700 · page title · 46px / 1.05 · −0.02em</span><div class="t-h1">Small tools that do <em>one job</em> well.</div><span class="t-small">The gold word is Lora italic 600, the site's one typographic flourish. Clean <em style="color:var(--jsal-accent)">Paste</em>, CMS <em style="color:var(--jsal-accent)">Picker</em>, Your <em style="color:var(--jsal-accent)">privacy</em>.</span></div>
-      <div><span class="who">Lora 700 · tile name · 30px / 1.1 (the CMS Picker's 34px)</span><div class="t-tile">Image Resizer</div></div>
-      <div><span class="who">Lora 700 · section heading · 26px / 1.25 · −0.01em</span><div class="t-h2">What can each one do?</div></div>
-      <div><span class="who">Inter 600 · H3 and subheadings · 16px</span><div class="t-h3">How to use it</div></div>
+      <div><span class="who">Lora 700 · tile name · 30px / 1.1</span><div class="t-tile">Image Resizer</div></div>
+      <div><span class="who">Lora 700 · section heading · 24px / 1.25 · −0.01em</span><div class="t-h2">What can each one do?</div></div>
+      <div><span class="who">Inter 600 · H3 and subheadings · 17px</span><div class="t-h3">How to use it</div></div>
       <div><span class="who">Inter 400 · lede · 17px / 1.6</span><div class="t-lede">Start with the CMS Picker: answer a few questions to see which website platform fits you, and what it lets you change for SEO.</div></div>
       <div><span class="who">Inter 400 · body · 15px / 1.6 · ink-2</span><div class="t-body">It turns content copied from Word, Google Docs or a web page into clean, minimal HTML, keeping the real structure: headings, lists, links, tables, bold and italic.</div></div>
       <div><span class="who">Inter 400 · secondary text · 13px · muted</span><div class="t-small">For writers and editors pasting from Word or Google Docs into WordPress, Shopify, Wix or any CMS.</div></div>
@@ -450,18 +450,17 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <tbody>
         <tr><td>Page title</td><td>46px (40px on phones)</td><td>Lora 700, −0.02em</td><td>Home, Off the clock, Privacy, Changelog, 404, this page</td></tr>
         <tr><td>Long page title</td><td>clamp(30px, 4.6vw, 46px)</td><td>Lora 700, −0.02em</td><td>The CMS Picker's heading and /cms-picker/&lt;platform&gt;/, which shrink further on phones</td></tr>
-        <tr><td>Tile name</td><td>34px CMS Picker, 30px the others, 28px Say hi (30px and 28px on phones)</td><td>Lora 700, in the tile's deep shade</td><td>Home tiles</td></tr>
-        <tr><td>Section heading</td><td>24–28px</td><td>Lora 700 (italic 600 for Currently, Achievements)</td><td>Every H2</td></tr>
-        <tr><td>Verdict line</td><td>24px (22px on phones)</td><td>Lora 600, −0.01em</td><td>The CMS Picker's result</td></tr>
-        <tr><td>Tool title in the top bar</td><td>20px (18px on phones)</td><td>Lora 700, gold word italic, after the tool's 22px icon</td><td>.jsal-title</td></tr>
-        <tr><td>Lede</td><td>17px</td><td>Inter 400</td><td>Under titles</td></tr>
-        <tr><td>H3</td><td>16–17px</td><td>Inter 600</td><td>How to use it, quiz questions</td></tr>
+        <tr><td>Tile name, big callout</td><td>30px (24px callout on phones)</td><td>Lora 700, in the tile's deep shade</td><td>Home tiles, the line over Off the clock's art</td></tr>
+        <tr><td>Section heading</td><td>24px</td><td>Lora 700 (italic 600 for Currently, Achievements)</td><td>Every H2, the CMS Picker's verdict line, the changelog's dates</td></tr>
+        <tr><td>Tool title in the top bar</td><td>20px (17px on phones)</td><td>Lora 700, gold word italic, after the tool's 22px icon</td><td>.jsal-title; the platform cards' names</td></tr>
+        <tr><td>Lede, H3</td><td>17px</td><td>Inter 400 for ledes, 600 or 700 for H3s</td><td>Under titles; How to use it, quiz questions, result card names</td></tr>
         <tr><td>Body</td><td>15px / 1.6</td><td>Inter 400</td><td>Everywhere</td></tr>
-        <tr><td>Interface</td><td>13–14px</td><td>Inter 600 (controls) or 400</td><td>Buttons, chips, tags, top-bar links</td></tr>
-        <tr><td>Small labels</td><td>12px</td><td>Inter or JetBrains Mono</td><td>Hints, eyebrows, the short name over each quiz answer</td></tr>
+        <tr><td>Controls, boxed tips</td><td>14px</td><td>Inter 600 (controls) or 400</td><td>Buttons, top-bar links, answer tiles, notes</td></tr>
+        <tr><td>Secondary text</td><td>13px</td><td>Inter 400 or 600</td><td>Hints under fields, chips, footers</td></tr>
+        <tr><td>Small labels</td><td>12px</td><td>Inter or JetBrains Mono</td><td>Eyebrows, tags, the short name over each quiz answer</td></tr>
       </tbody>
     </table></div>
-    <div class="suggest"><b>Decided</b><p>Sizes are whole pixels only (<code>check.py</code> fails on a half pixel), after a clean-up in October 2026 that removed 76 half steps. They aren’t named as tokens: the scale above is the common set, and a page picks from it.</p></div>
+    <div class="suggest"><b>Decided</b><p>Ten sizes and no others: 12, 13, 14, 15, 17, 20, 24, 30, 40 and 46px, whole pixels only, and the checks fail any other. They aren’t named as tokens: the scale above is the set, and a page picks from it. The exceptions are marked where they're set: the wordmark (18px), text boxes on touch screens (16px, so iPhones don't zoom), the visitor's own headings in Clean Paste's preview and the home tiles' miniature pictures.</p></div>
   </section>
 
   <section class="sec" id="layout">
@@ -480,7 +479,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <div class="table-wrap" tabindex="0" role="region" aria-label="Breakpoints"><table class="scale">
       <thead><tr><th>Width</th><th>What changes</th></tr></thead>
       <tbody>
-        <tr><td>≤ 420px</td><td>A tool's title in the top bar drops to 18px and the bar's gaps tighten, so it stays one row from 360px up; below 430px the title's icon drops out</td></tr>
+        <tr><td>≤ 420px</td><td>A tool's title in the top bar drops to 17px and the bar's gaps tighten, so it stays one row from 360px up; below 430px the title's icon drops out</td></tr>
         <tr><td>≤ 520px</td><td>Less space above the top bar (14px); the Privacy page's text starts sooner</td></tr>
         <tr><td>≤ 599px</td><td>Clean Paste's toolbar in two even rows; the CMS Picker's phone rules; the home page's bento stacks to one column</td></tr>
         <tr><td>≤ 720px</td><td>The CMS Picker's comparison becomes a card per question, one 44px line per platform, with groups that fold; the quiz's answer tiles go two across; the platform pages reflow</td></tr>

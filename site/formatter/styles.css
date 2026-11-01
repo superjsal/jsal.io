@@ -228,7 +228,7 @@ textarea.code {
 .preview > * + * { margin-top: 0.9em; }
 .preview h1, .preview h2, .preview h3, .preview h4, .preview h5, .preview h6 { line-height: 1.3; letter-spacing: -0.01em; margin-top: 1.4em; }
 .preview > :first-child { margin-top: 0; }
-.preview h1 { font-size: 26px; } .preview h2 { font-size: 21px; } .preview h3 { font-size: 18px; } .preview h4, .preview h5, .preview h6 { font-size: 16px; }
+.preview h1 { font-size: 26px; } .preview h2 { font-size: 21px; } .preview h3 { font-size: 18px; } .preview h4, .preview h5, .preview h6 { font-size: 16px; }   /* style: allow (the visitor's own headings, sized like a document) */
 /* Marks in the editor follow the site's colour roles: neutral for plain information (heading tags), blue for
    links, orange for anything a check wants fixed, and gold only for what's selected or just shown */
 /* Small tag before each heading so the level is visible at a glance. Screen readers already say "heading level 2",
@@ -241,7 +241,7 @@ textarea.code {
   padding: 1px 6px;
   border-radius: var(--jsal-radius-sm);
   vertical-align: 3px;
-  font: 700 10px/1.4 var(--jsal-font);
+  font: 700 12px/1.4 var(--jsal-font);
   color: var(--jsal-ink-2);
   background: var(--jsal-sunk);
 }
@@ -307,7 +307,7 @@ textarea.code {
   outline: none;
 }
 /* iPhones zoom the whole page into any text box under 16px and stay zoomed, so touch screens get 16px */
-@media (pointer: coarse) { .link-box input { height: 36px; font-size: 16px; } }
+@media (pointer: coarse) { .link-box input { height: 36px; font-size: 16px; } }   /* style: allow (iPhones zoom into a text box under 16px) */
 .link-box input:focus { border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
 .link-box button, .link-box a {
   height: 28px;
@@ -360,7 +360,7 @@ textarea.code {
   button.check { min-height: 44px; }
   /* The paste area is editable on touch screens (to take a tap-and-hold Paste): iPhones zoom into an editable
      element under 16px, so it gets 16px, and its unsized lines keep the size they had */
-  .paste-zone { font-size: 16px; }
+  .paste-zone { font-size: 16px; }   /* style: allow (iPhones zoom into a text box under 16px) */
   .paste-sub, .paste-links { font-size: 13px; }
 }
 /* Phones: the link row wraps, so the dots between links go (one would start the second line) and spacing does the job */

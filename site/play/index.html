@@ -53,7 +53,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=d5468721">
+<link rel="stylesheet" href="/shell.css?v=6691ec6a">
 <style>
 /* Tile colours: moss for the WoW UI, toned close to the page; the other tiles are plain, a neutral fill with no border */
 :root {
@@ -131,7 +131,7 @@ p, li { text-wrap: pretty; }
 .now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }   /* style: allow (WoW tile: shade over the art for the text) */
 .now-playing .label { margin-bottom: 10px; }
 .now-playing .label, .now-playing .pill { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
-.now-playing .big { font: 700 36px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
+.now-playing .big { font: 700 30px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
 .now-playing .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; }
 .now-playing .credit { font-size: 12px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: var(--jsal-radius-pill); border: 1px solid currentColor; white-space: nowrap; }
@@ -139,7 +139,7 @@ p, li { text-wrap: pretty; }
 
 /* The UI tile is text only and a step smaller than the live tools */
 .ui { padding: 22px 26px; }
-.ui h2 { font-size: 22px; }
+.ui h2 { font-size: 24px; }
 .ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); }
 .ui .label { color: var(--green-acc); }
 .ui .desc { color: var(--green-muted); margin-top: 8px !important; }
@@ -148,8 +148,8 @@ p, li { text-wrap: pretty; }
 .tile.soon { background: none; border: 2px dashed var(--jsal-line-hi); }
 
 .now { grid-column: 1 / 13; background: var(--plain); }
-.now h2 { margin: 0 0 10px; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
-.now h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
+.now h2 { margin: 0 0 10px; font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
+.now h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; font-size: 17px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
 .now h3 time { font-size: 14px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now ul { margin: 0; padding: 0; list-style: none; }
 .now li { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--plain-line); }
@@ -159,7 +159,7 @@ p, li { text-wrap: pretty; }
 /* Achievements (/nav.js unlocks them and keeps them in this browser; the script below lists them) */
 .ach { grid-column: 1 / 13; background: var(--plain); }
 .ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-.ach h2 { margin: 0; font: italic 600 28px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
+.ach h2 { margin: 0; font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
 .ach-count { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .ach-bar { height: 6px; margin: 12px 0 16px; border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
 .ach-bar i { display: block; height: 100%; background: var(--jsal-fill); border-radius: inherit; transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }   /* a transform, so filling it doesn't re-lay-out the page */
@@ -198,7 +198,7 @@ p, li { text-wrap: pretty; }
 .mail.pack .label { color: var(--pk-label); }
 .mail.pack .desc { color: var(--pk-text); margin-top: 12px !important; }
 .pack-h { display: flex; align-items: center; gap: 14px; }
-.pack-h h2 { margin: 0; font: 700 26px/1.1 "Lora", Georgia, serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black); }
+.pack-h h2 { margin: 0; font: 700 24px/1.1 "Lora", Georgia, serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black); }
 .portrait { flex: none; width: 54px; height: 54px; border-radius: 50%; overflow: hidden; border: 3px solid var(--pk-gold); box-shadow: 0 0 0 1px var(--pk-gold-edge), 0 3px 8px rgb(0 0 0 / 0.5); }
 .portrait svg { display: block; width: 100%; height: 100%; }
 .pack-h .count { margin-left: auto; font: 600 12px "JetBrains Mono", Consolas, monospace; color: var(--pk-label); }
@@ -237,7 +237,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
 @media (max-width: 860px) {
   .grid > * { grid-column: 1 / -1 !important; }
-  .intro p { font-size: 16px; }
+  .intro p { font-size: 17px; }
 }
 #ach-h, #hi-h { scroll-margin-top: 16px; }   /* where the Achievements link and "Say hi" land */
 /* Phones: the editorial type scaled down rather than squeezed. A smaller name with a shorter
@@ -249,14 +249,12 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .roles { margin: 0 0 12px; }
   .roles span + span::before { margin: 0 8px; }
   .intro h1 { font-size: 40px; line-height: 1.05; }
-  .intro p { margin: 16px 0 6px; font-size: 16px; line-height: 1.55; }
+  .intro p { margin: 16px 0 6px; font-size: 17px; line-height: 1.55; }
   .tile { padding: 20px; border-radius: 18px; }
-  .tile h2 { font-size: 26px; }
-  .ui h2 { font-size: 22px; }
+  .tile h2 { font-size: 24px; }
   .ui { padding: 20px; }
   .now-playing { gap: 14px; min-height: 300px; }
-  .now-playing .big { font-size: 27px; }
-  .now h2 { font-size: 24px; }
+  .now-playing .big { font-size: 24px; }
   footer { margin-top: 32px; }
 }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } a.tile:hover { transform: none; } }

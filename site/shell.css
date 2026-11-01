@@ -110,7 +110,7 @@ body { background: var(--jsal-bg); }
 /* Phones (iOS) zoom into any text field under 16px when it's tapped or focused, which throws the page
    sideways and away from what you were doing. Touch screens get 16px fields; desktop keeps each app's size. */
 @media (pointer: coarse) {
-  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]), select, textarea { font-size: 16px !important; }
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]), select, textarea { font-size: 16px !important; }   /* style: allow (iPhones zoom into a text box under 16px) */
   /* Top bar: a finger-sized (44px+) hit area round the logo, links and theme button, without changing how
      they look or where they sit, so the bar still doesn't move between pages */
   .jsal-brand, .jsal-link, .jsal-theme { position: relative; }
@@ -217,7 +217,7 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 @media (max-width: 520px) { .jsal-top { padding-top: 14px; } }
 .jsal-brand {
   display: inline-flex; align-items: center; height: 36px; flex-shrink: 0;
-  font-weight: 700; font-size: 18px; line-height: 1.65; letter-spacing: -0.02em;
+  font-weight: 700; font-size: 18px; line-height: 1.65; letter-spacing: -0.02em;   /* style: allow (the wordmark, at the logo's size) */
   color: var(--jsal-ink); text-decoration: none; white-space: nowrap;
 }
 .jsal-brand .jsal-io, .jsal-brand .jsal-caret { color: var(--jsal-accent); }
@@ -313,7 +313,7 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 /* Phones: the bar keeps one row on every tool, so the work area starts at the same height on each */
 @media (max-width: 420px) {
   .jsal-top { column-gap: 12px; }
-  .jsal-title { font-size: 18px; }
+  .jsal-title { font-size: 17px; }
   .jsal-link { padding-inline: 6px; }
 }
 .jsal-link:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
@@ -327,8 +327,8 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
   font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 }
 .jsal-about > * { max-width: 680px; }
-.jsal-about h2 { margin: 0 0 10px; font: 700 26px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
-.jsal-about h3 { margin: 28px 0 8px; font-size: 16px; color: var(--jsal-ink); }
+.jsal-about h2 { margin: 0 0 10px; font: 700 24px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-about h3 { margin: 28px 0 8px; font-size: 17px; color: var(--jsal-ink); }
 .jsal-about p { margin: 0 0 12px; }
 .jsal-about ul, .jsal-about ol { margin: 0 0 12px; padding-left: 1.3em; }
 .jsal-about li + li { margin-top: 4px; }

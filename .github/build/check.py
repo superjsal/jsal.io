@@ -184,6 +184,7 @@ for f in files(['*/js/*.js']):
 #  - hover uses no gold (--jsal-accent / --jsal-fill): it's a neutral border or tint (--jsal-hover-line, --jsal-sunk)
 #  - button and chip corners from the scale: 4px, 6px, 8px, 999px (or a variable)
 #  - font weights 400, 500, 600, 700 or 800
+#  - font sizes in px from the type scale (TEXT_SIZES)
 #  - a stylesheet with animation has a prefers-reduced-motion fallback
 def stylesheets():
     """(name, css text, line number of its first line) for shell.css, each app's CSS and each page's own <style>."""
@@ -196,6 +197,7 @@ def stylesheets():
 NEUTRAL = re.compile(r'rgba?\(\s*(0[ ,]+0[ ,]+0|255[ ,]+255[ ,]+255)\s*(/|,)\s*[\d.]+\s*\)')
 COLOUR = re.compile(r'#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?)\(')
 RADII = {'0', '50%', '999px', '4px', '6px', '8px', 'inherit'}
+TEXT_SIZES = {12, 13, 14, 15, 17, 20, 24, 30, 40, 46}   # the type scale in design-rules.md
 for name, css, first in stylesheets():
     lines = css.splitlines()
     plain_css = re.sub(r'/\*.*?\*/', lambda m: re.sub(r'[^\n]', ' ', m.group(0)), css, flags=re.S)   # comments out, line numbers kept
@@ -226,7 +228,11 @@ for name, css, first in stylesheets():
                     fail(f'{where}: font weight {w} (use 400, 500, 600, 700 or 800)')
             if prop in ('font', 'font-size'):
                 for s in re.findall(r'\b(\d+\.\d+)px', val):
-                    fail(f'{where}: font size {s}px (whole pixels only: 11, 12, 13, 14, 15, 16, 17…)')
+                    fail(f'{where}: font size {s}px (whole pixels only: 12, 13, 14, 15, 17…)')
+                size = re.sub(r'/\s*[\d.]+[a-z%]*', '', val) if prop == 'font' else val   # line heights out
+                for s in re.findall(r'(?<![\d.])(\d+)px', size):
+                    if int(s) not in TEXT_SIZES:
+                        fail(f'{where}: font size {s}px is off the scale ({", ".join(map(str, sorted(TEXT_SIZES)))})')
 
 # CMS Picker data fits cms-picker.schema.json (the same check runs before every publish, and on GitHub)
 sys.path.insert(0, str(ROOT / '.github' / 'scripts'))
