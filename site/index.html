@@ -147,7 +147,7 @@ p, li { text-wrap: pretty; }
    (Wix, Duda) across the slot's width */
 .guides a:not(.all) { justify-content: flex-start; gap: 8px; }
 .guides a:not(.all)::before { content: ""; flex: none; width: 24px; height: 16px; background: var(--jsal-muted); -webkit-mask: var(--logo) center / 16px 16px no-repeat; mask: var(--logo) center / 16px 16px no-repeat; }
-.guides a.wm::before { -webkit-mask-size: 24px auto; mask-size: 24px auto; }
+.guides a.wm::before { -webkit-mask-size: 22px auto; mask-size: 22px auto; }   /* a pixel clear of each side, so the edge doesn't slice the first letter */
 /* Where the tiles are too narrow for a logo and the longest names (the five columns below 770px, two below 340px), names only, centred */
 @media (min-width: 521px) and (max-width: 769px), (max-width: 339px) {
   .guides a:not(.all) { justify-content: center; }

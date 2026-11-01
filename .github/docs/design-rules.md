@@ -68,7 +68,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   Platform guides) is a grid of equal-width tiles with the plain `--jsal-line` border, surface background and
   500 weight, or a text list. Uneven pills stagger; equal tiles don't.
 - **The Platform guides show each platform's logo before its name**, in a 24px slot in `--jsal-muted` (icons at
-  16px; the wordmark-only logos, Wix and Duda, across the slot's width), the tile's text left-aligned so the names
+  16px; the wordmark-only logos, Wix and Duda, 22px wide so the slot's edge doesn't slice their first letter), the tile's text left-aligned so the names
   line up. Where a tile is too narrow for the logo and the longest name (the five columns below 770px, two below
   340px), the logos drop out and the names centre.
 - **An index of links ends even.** Its last tile is the link that covers the whole set (the guides' "Compare all 13
@@ -97,8 +97,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   row. From 1100px down the guides take the full width under both; on phones they follow the tile. Tab order
   follows the screen. Gaming parts live on `/play/`.
 - **Every new home page tool or section is a bento box:** a `.tile` (22px corners, 26px padding; 18px and 20px
-  on phones), in its own tint if it's a tool, `--plain` like Updates and "Say hi" if it isn't. Bento boxes are
-  for the home page only; other pages keep their open layouts. The intro and the Platform guides stay unboxed,
+  on phones), in its own tint if it's a tool, `--plain` like Updates and "Say hi" if it isn't. The home page is
+  always bento boxes. Other pages keep an open layout, but may use a card in the same style (the tile's corners,
+  padding and a tint, such as the app's own home tile colour) where it helps, for example around a hero; they don't
+  become bento grids. The intro and the Platform guides stay unboxed,
   so the byline keeps the shared distance and left edge.
 - **The CMS Picker is quiz first:** the platform cards and the comparison table open on request. The quiz box
   reserves its first question's height (`.qz` min-height per column count) so the rows under it don't move at
