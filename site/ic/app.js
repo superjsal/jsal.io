@@ -1632,23 +1632,33 @@ function readCache(uid) {
 function writeCache(c) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(c)); } catch {} }
 function clearCache() { try { localStorage.removeItem(CACHE_KEY); } catch {} }
 
+// Who was signed in here last, from the session the sign-in library keeps in this browser. Read directly, so the
+// saved copy opens before the library has renewed a sign-in that expired (an hour after it was last renewed)
+function storedUser() {
+  try { const s = JSON.parse(localStorage.getItem(`sb-${new URL(SUPABASE_URL).hostname.split('.')[0]}-auth-token`)); return (s && s.user && s.user.id && s.user) || null; } catch { return null; }
+}
+function openCached(c, user) {
+  R.me = user.id;
+  R.manage = canEditAnswers = c.role === 'admin';
+  useContent(c.data);
+  applyShared(c.shared);
+  startApp(identity(user));
+}
+
 async function boot() {
   if (!CONFIGURED) return gate('setup');
   if (!sb) return gate('error', { message: 'Couldn’t load the sign-in library. Check your connection and reload.' });
-  gate('loading');
+  const stored = storedUser();
+  let cached = stored && readCache(stored.id);
+  if (cached) openCached(cached, stored); else gate('loading');
   const { data: { session } } = await sb.auth.getSession();
   if (/[?&](code|error)=/.test(location.search)) history.replaceState(null, '', location.pathname + location.hash);
-  if (!session) { clearCache(); return gate('signin'); }
+  if (!session) { clearCache(); return cached ? location.reload() : gate('signin'); }   // the saved copy was showing
   const user = session.user;
   const me = identity(user);
+  if (cached && cached.uid !== user.id) { clearCache(); return location.reload(); }   // another account: start afresh
   R.me = user.id;
-  const cached = readCache(user.id);
-  if (cached) {
-    R.manage = canEditAnswers = cached.role === 'admin';
-    useContent(cached.data);
-    applyShared(cached.shared);
-    startApp(me);
-  }
+  if (!cached && (cached = readCache(user.id))) openCached(cached, user);
   // Access check, answers and team data all at once (one round trip instead of three)
   const [mem, app, shared] = await Promise.all([
     sb.from('members').select('role').eq('user_id', user.id).maybeSingle(),

@@ -99,6 +99,11 @@
   // Page transitions (/shell.css): while one plays the page is a picture, so a click straight after arriving did
   // nothing; a press during a transition ends it at once and the click lands on what's under the pointer
   let replay = false;
+  // Each page loads this file before its own scripts, so the logo works sooner; a click replayed on the page itself
+  // waits for them (DOMContentLoaded), or it would land on a button with nothing listening yet
+  let appsReady = document.readyState === 'complete';
+  for (const ev of ['DOMContentLoaded', 'load']) addEventListener(ev, () => { appsReady = true; }, { once: true });
+  const whenApps = (fn) => { if (appsReady) fn(); else addEventListener('DOMContentLoaded', fn, { once: true }); };
   const quiet = (vt) => { for (const p of [vt.ready, vt.finished, vt.updateCallbackDone]) p.catch(() => {}); };   // a skipped transition rejects them all
   const watch = (vt) => {
     if (!vt) return;
@@ -125,7 +130,7 @@
     if (e.target !== document.documentElement && e.target !== document.body) return;
     const t = document.elementFromPoint(e.clientX, e.clientY);
     const hit = t && t.closest('a[href], button, summary, label, input, select, textarea, [role="button"], [tabindex]');
-    if (hit) { e.preventDefault(); e.stopPropagation(); hit.click(); }
+    if (hit) { e.preventDefault(); e.stopPropagation(); whenApps(() => hit.click()); }
   }, true);
 
   const svg = (paths, size = 16) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
@@ -358,6 +363,7 @@
   // file runs, the one-line script in each page's <head> holds the click; after an app was picked but before the new
   // page took over, the old page holds it in sessionStorage. The new page replays them here, in order (the logo opens
   // the menu, anything else is clicked) with the transition cut short; a prerendered page looks again when shown.
+  // From the first click on the page itself, the rest wait for the app's scripts (whenApps).
   const KEY = 'jsal-early-clicks';
   let leaving = false;
   const heldHere = [];
@@ -392,12 +398,16 @@
     if (!early.length) return;
     const vt = document.activeViewTransition;
     if (vt) { quiet(vt); vt.skipTransition(); }
-    for (const c of early) {
-      if (c.logo) { menu.hidden ? open(false) : close(); continue; }
+    const play = (c) => {
+      if (c.logo) { menu.hidden ? open(false) : close(); return; }
       const t = document.elementFromPoint(c.x, c.y);
       const hit = t && t.closest('a[href], button, summary, label, input, select, textarea, [role="button"], [tabindex]');
       if (hit) hit.click();
-    }
+    };
+    const onPage = early.findIndex((c) => !c.logo);
+    early.slice(0, onPage < 0 ? early.length : onPage).forEach(play);
+    if (onPage < 0) return;
+    whenApps(() => early.slice(onPage).forEach(play));
   }
   window.jsalNavReady = true;
   if (document.prerendering) document.addEventListener('prerenderingchange', replayEarly, { once: true }); else replayEarly();
