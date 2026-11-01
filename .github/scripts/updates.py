@@ -17,6 +17,9 @@ MAX_CHARS = 40
 # Home page sections in order: the changelog tag (the log-name text) and the link, or None for no link
 SECTIONS = [('CMS Picker', '/cms-picker/'), ('Clean Paste', '/formatter/'), ('Image Resizer', '/image-resizer/'),
             ('Mostly Warcraft', '/play/'), ('Site', None)]
+# Each section's icon in site/img/icons/ (written by .github/brand/make-brand.py); a new section needs one there too
+ICONS = {'CMS Picker': 'cms-picker', 'Clean Paste': 'clean-paste', 'Image Resizer': 'image-resizer',
+         'Mostly Warcraft': 'off-the-clock', 'Site': 'jsal-io'}
 MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 
@@ -51,8 +54,9 @@ def render(nl, indent):
         if e is None: continue
         label = f'<a href="{href}">{name}</a>' if href else name
         y, m, d = e[1].split('-')
-        sec = name.lower().replace(' ', '-')   # styles each line's mark in its app's colour
-        lines.append(f'{indent}  <li data-sec="{sec}"><span class="upd-name">{label}</span><span>{e[2]}</span>'
+        sec = name.lower().replace(' ', '-')
+        icon = f'<img class="upd-ico" src="/img/icons/{ICONS[name]}.svg" alt="" width="20" height="20">'
+        lines.append(f'{indent}  <li data-sec="{sec}"><span class="upd-name">{icon}{label}</span><span>{e[2]}</span>'
                      f'<time datetime="{e[1]}">{MONTHS[int(m) - 1]} {int(d)}</time></li>')
     lines.append(indent + '</ul>')
     return nl.join(lines)

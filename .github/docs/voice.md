@@ -56,10 +56,20 @@ client would use.
 | The line under a tool's title | Who it's for, by name | "For writers and editors pasting from Word or Google Docs into WordPress, Shopify, Wix or any CMS." |
 | About sections | A bold tagline, then how to use it, then two or three FAQs | "Exact sizes for one image or a batch, with a crop you control, and nothing ever leaves your device." |
 | Warnings | What happened and what it means, with no apology and no blame | "May look blurry" |
-| Changelog | What changed, from the visitor's side, in a sentence or two | "The quiz box reserves its first question’s height, so the rows under it no longer jump when the page loads or between questions." |
+| Changelog | One sentence on what changed, from the visitor's side (rules below) | "The mouse wheel scrolls the page again over the settings column." |
 | Achievements, the Backpack, Off the clock | Where the playfulness goes | "Night owl", "Pixel pusher", "Lost adventurer" |
 | LinkedIn and social | First person, one idea a post, one link | The first-person bio in the brand README |
 | Email | First name, short, the signature lockup | |
+
+## The changelog
+
+It's for visitors, not a record of every commit, so it stays short enough to read.
+
+1. **Only what a visitor would notice.** Internal fixes, tuning and refactors don't get a line of their own; at most
+   one "Small fixes: …" line a day gathers the ones worth naming.
+2. **One sentence, about 20 words at most.** Say what changed, not why or how it was built.
+3. **One feature, one line, per day.** A follow-up on the same day (a fix to something just shipped, a second pass)
+   edits that day's line instead of adding another.
 
 ## Before and after
 

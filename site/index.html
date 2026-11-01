@@ -326,13 +326,8 @@ p, li { text-wrap: pretty; }
 .upd { margin: 0; padding: 0; list-style: none; }
 .upd li { display: grid; grid-template-columns: 10em minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--plain-line); }
 .upd-name { font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link */
-/* A mark in each app's own tile colour ties the line to its tile above; Site's is the logo's gem */
-.upd-name::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 10px; vertical-align: 1px; border-radius: 2px; background: var(--mark, var(--jsal-muted)); }
-.upd [data-sec="cms-picker"] { --mark: var(--plum-acc); }
-.upd [data-sec="clean-paste"] { --mark: var(--gold-acc); }
-.upd [data-sec="image-resizer"] { --mark: var(--cream); }
-.upd [data-sec="mostly-warcraft"] { --mark: var(--green-acc); }
-.upd [data-sec="site"] .upd-name::before { width: 10px; height: 10px; vertical-align: 0; border-radius: 0; background: var(--jsal-accent); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+/* Each line starts with its app's icon, the one the logo menu shows; Site's is the logo itself */
+.upd-ico { display: inline-block; width: 20px; height: 20px; margin-right: 10px; vertical-align: -5px; }
 .upd time { color: var(--jsal-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
 .upd-all { margin: 12px 0 0; font-weight: 600; }
 .now a { color: var(--jsal-accent); text-underline-offset: 2px; }
@@ -517,11 +512,11 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       <h2 id="updates-h">Updates</h2>
       <!-- updates:start (the latest change for each part of the site, written from the changelog; never edited by hand) -->
       <ul class="upd">
-        <li data-sec="cms-picker"><span class="upd-name"><a href="/cms-picker/">CMS Picker</a></span><span>Languages as a tick; fewer joint results</span><time datetime="2026-10-31">Oct 31</time></li>
-        <li data-sec="clean-paste"><span class="upd-name"><a href="/formatter/">Clean Paste</a></span><span>Copy says Copied; Clear can be undone</span><time datetime="2026-10-30">Oct 30</time></li>
-        <li data-sec="image-resizer"><span class="upd-name"><a href="/image-resizer/">Image Resizer</a></span><span>Saves PNG, with transparency</span><time datetime="2026-10-30">Oct 30</time></li>
-        <li data-sec="mostly-warcraft"><span class="upd-name"><a href="/play/">Mostly Warcraft</a></span><span>Its own page: WoW, my UI, the backpack</span><time datetime="2026-10-31">Oct 31</time></li>
-        <li data-sec="site"><span class="upd-name">Site</span><span>A logo: the j and its gem</span><time datetime="2026-11-01">Nov 1</time></li>
+        <li data-sec="cms-picker"><span class="upd-name"><img class="upd-ico" src="/img/icons/cms-picker.svg" alt="" width="20" height="20"><a href="/cms-picker/">CMS Picker</a></span><span>Languages as a tick; fewer joint results</span><time datetime="2026-10-31">Oct 31</time></li>
+        <li data-sec="clean-paste"><span class="upd-name"><img class="upd-ico" src="/img/icons/clean-paste.svg" alt="" width="20" height="20"><a href="/formatter/">Clean Paste</a></span><span>Copy says Copied; Clear can be undone</span><time datetime="2026-10-30">Oct 30</time></li>
+        <li data-sec="image-resizer"><span class="upd-name"><img class="upd-ico" src="/img/icons/image-resizer.svg" alt="" width="20" height="20"><a href="/image-resizer/">Image Resizer</a></span><span>Saves PNG, with transparency</span><time datetime="2026-10-30">Oct 30</time></li>
+        <li data-sec="mostly-warcraft"><span class="upd-name"><img class="upd-ico" src="/img/icons/off-the-clock.svg" alt="" width="20" height="20"><a href="/play/">Mostly Warcraft</a></span><span>Its own page: WoW, my UI, the backpack</span><time datetime="2026-10-31">Oct 31</time></li>
+        <li data-sec="site"><span class="upd-name"><img class="upd-ico" src="/img/icons/jsal-io.svg" alt="" width="20" height="20">Site</span><span>A logo: the j and its gem</span><time datetime="2026-11-01">Nov 1</time></li>
       </ul>
       <!-- updates:end -->
       <p class="upd-all"><a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>

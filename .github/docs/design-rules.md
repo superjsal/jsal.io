@@ -95,7 +95,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - **Home page:** tools only. The intro beside the CMS Picker's big tile, with the Platform guides (a link tile
   per platform, three even columns) under the intro and level with the tile's bottom; then the other tools as
   picture tiles (the team Playbook as a slim tile, a preview of three checks beside its text, dropped from 860px
-  down), Updates (one line per section, marked in its app's tile colour; Site's mark is the logo's gem) and a plain "Say hi"
+  down), Updates (one line per section, each starting with its app's icon, the one the logo menu shows; Site's is the logo tile) and a plain "Say hi"
   row. From 1100px down the guides take the full width under both; on phones they follow the tile. Tab order
   follows the screen. Gaming parts live on `/play/`.
 - **Every new home page tool or section is a bento box:** a `.tile` (22px corners, 26px padding; 18px and 20px
