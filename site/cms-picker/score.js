@@ -250,7 +250,8 @@
     const theirs = new Set(((y.p.profile || {}).tags || []).map((t) => t.toLowerCase()));
     const offers = ((x.p.profile || {}).tags || []).filter((t) => !theirs.has(t.toLowerCase())
       && !Object.keys(TAG_ABOUT).some((row) => weight(row, a) === 0 && TAG_ABOUT[row].test(t))).slice(0, 3);
-    if (offers.length) return `${none}${x.p.name}’s card lists ${listOf(offers.map((t) => `“${t}”`))}, and ${y.p.name}’s doesn’t.`;
+    // Only what x's card highlights: another card leaving a tag out doesn't mean that platform lacks it
+    if (offers.length) return `${none}${x.p.name}’s card highlights ${listOf(offers.map((t) => `“${t}”`))}.`;
     const fit = ((x.p.profile || {}).goodFit || [])[0];
     return fit ? `${none}${x.p.name}’s card says it’s a good fit for ${tagInSentence(fit)}.` : null;
   }

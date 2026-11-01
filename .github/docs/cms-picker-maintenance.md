@@ -127,8 +127,9 @@ Shared by the page and the tests, so they always run the same code.
   (design control after "a good template is enough", more languages after "one language", selling when
   not making a store). Rows that matter to the answers (weight over 1: selling, languages, design control, a blog
   for content sites) come first, then the technical SEO rows. Only when no row differs does a box fall back to the
-  cards: "Nothing in your answers or the table puts Squarespace ahead of Wix. Squarespace's card lists “Designer
-  templates” and “All-in-one”, and Wix's doesn't" (the tags quoted, as they're labels, not sentences), and last the
+  cards: "Nothing in your answers or the table puts Squarespace ahead of Wix. Squarespace's card highlights “Designer
+  templates” and “All-in-one”" (the tags quoted, as they're labels, not sentences; never "and Wix's doesn't", since a
+  tag missing from a card doesn't mean the platform lacks it), and last the
   platform's first "Good fit" line, said as the card's.
 - **Second and third:** both are compared with the first, unless the third would repeat the second (the
   same reasons, or the same box sentence). Then the third says "the same reasons as" the second and is
