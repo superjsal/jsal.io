@@ -784,7 +784,10 @@
       const key = location.hash, wrap = el('div', 'qz-fb');
       wrap.setAttribute('aria-live', 'polite');
       const answers = [...steps().map((q) => a[q.id] || '-'), ...(a.lang === 'yes' ? ['lang'] : []), ...(a.hubspot === 'yes' ? ['hubspot'] : [])].join('.');
-      const send = (name, params) => window.jsalTrack?.(name, { top_match: r.p.id, answers, ...params });
+      const send = (name, params) => {
+        window.jsalTrack?.(name, { top_match: r.p.id, answers, ...params });
+        window.jsalAchieve?.('twocents');   // "Two cents" (/nav.js), on Yes or No
+      };
       const thanks = () => { fbDone = key; wrap.replaceChildren(el('p', 'qz-fb-thanks', 'Thanks, that helps make the quiz better.')); };
       if (fbDone === key) { thanks(); return wrap; }
       const row = el('div', 'qz-fb-row'), yes = el('button', 'chip', 'Yes'), no = el('button', 'chip', 'No');
