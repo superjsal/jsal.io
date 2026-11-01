@@ -95,6 +95,11 @@ early_ref = home_t[home_t.find(EARLY):home_t.find('</script>', home_t.find(EARLY
 for p, t in html.items():
     i = t.find(early_ref)
     if i < 0 or i > t.find('</head>'): fail(f'{p}: needs the data-jsal-early script in <head>, the same as on index.html')
+# /nav.js comes before the page's own deferred and module scripts (they run in page order once it's parsed), or the
+# logo menu waits for an app's modules to load (a round trip or two on a first visit)
+for p, t in html.items():
+    later = [m.group(0) for m in re.finditer(r'<script\b[^>]*\bsrc="[^"]*"[^>]*>', t) if re.search(r'\bdefer\b|type="module"', m.group(0))]
+    if later and '/nav.js' not in later[0]: fail(f"{p}: load /nav.js before the page's own deferred and module scripts")
 
 # Page transitions: only shell.css names them. Two elements with one name make the browser drop the transition
 # silently (it happened once, through a class that shell.css named)
