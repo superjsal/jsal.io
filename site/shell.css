@@ -45,7 +45,7 @@
     --jsal-bad: #ff8c96; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
     --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill);
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-    --jsal-mark-edge: #3d424e;
+    --jsal-mark-edge: #6b7180; --jsal-tool-edge: #6b7180;   /* a dark tile's edge, 3:1 on every dark surface */
     color-scheme: dark;
   }
 }
@@ -59,7 +59,7 @@
     --jsal-bad: #ff8c96; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
     --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill);
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-    --jsal-mark-edge: #3d424e;
+    --jsal-mark-edge: #6b7180; --jsal-tool-edge: #6b7180;   /* a dark tile's edge, 3:1 on every dark surface */
     color-scheme: dark;
   }
 }

@@ -144,7 +144,7 @@ PNGs in `kit/`, made for the places the name shows up outside the site. `.github
 
 | Part | Light background | Dark background |
 |---|---|---|
-| Tile | #111318 (slate), on both | #111318, with a 1px #3d424e edge so it doesn't sink into the page |
+| Tile | #111318 (slate), on both | #111318, with a 1px edge so it doesn't sink into the page: #3d424e in the brand files, #6b7180 on the site in dark mode (`--jsal-tool-edge`, `--jsal-mark-edge`), 3:1 on every dark surface |
 | Icon's j | #ece6d6 (parchment), on both | #ece6d6 |
 | Gem | #e3b04b (gold), on both | #e3b04b |
 | "jsal" | #1f1a12 (ink) | #ece6d6 |

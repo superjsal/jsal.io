@@ -27,7 +27,7 @@ client would use.
 | Image Resizer | JScale | JScale is an internal code name only |
 | Clean Paste | the formatter | `/formatter/` is the folder, not the name |
 | Platform Playbook, or the team Playbook | IC | `/ic/` is the folder |
-| Off the clock (the menu), Mostly Warcraft (the page) | the play page | |
+| Off the clock (the menu, Updates, the changelog, links), Mostly Warcraft (only the page's own headline) | the play page | One place, one name wherever it's linked |
 | Keep old links working when pages move | 301 redirect management | The words a client would use |
 | Free, in your browser, nothing uploaded | client-side, serverless, zero-upload | Say what it means for them |
 | Find the CMS that fits | find the perfect solution | |

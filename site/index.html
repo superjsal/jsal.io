@@ -52,7 +52,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=90cc2d43">
+<link rel="stylesheet" href="/shell.css?v=eb002775">
 <style>
 /* Tile colours. The Image Resizer has the strongest contrast: cream on the dark
    page, ink on the light one. The blue and moss tiles are toned closer to the page so they
@@ -332,6 +332,8 @@ p, li { text-wrap: pretty; }
 .upd-name { font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link */
 /* Each line starts with its app's icon, the one the logo menu shows; Site's is the logo itself */
 .upd-ico { display: inline-block; width: 20px; height: 20px; margin-right: 10px; vertical-align: -5px; }
+/* The two dark tiles (the Image Resizer, the logo) get the dark-page edge, so they hold on the dark Updates box */
+.upd [data-sec="image-resizer"] .upd-ico, .upd [data-sec="site"] .upd-ico { border-radius: 4px; box-shadow: 0 0 0 1px var(--jsal-mark-edge); }
 .upd time { color: var(--jsal-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
 .upd-all { margin: 12px 0 0; font-weight: 600; }
 .now a { color: var(--jsal-accent); text-underline-offset: 2px; }
@@ -519,7 +521,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
         <li data-sec="cms-picker"><span class="upd-name"><img class="upd-ico" src="/img/icons/cms-picker.svg" alt="" width="20" height="20"><a href="/cms-picker/">CMS Picker</a></span><span>Languages as a tick; fewer joint results</span><time datetime="2026-10-31">Oct 31</time></li>
         <li data-sec="clean-paste"><span class="upd-name"><img class="upd-ico" src="/img/icons/clean-paste.svg" alt="" width="20" height="20"><a href="/formatter/">Clean Paste</a></span><span>Copy says Copied; Clear can be undone</span><time datetime="2026-10-30">Oct 30</time></li>
         <li data-sec="image-resizer"><span class="upd-name"><img class="upd-ico" src="/img/icons/image-resizer.svg" alt="" width="20" height="20"><a href="/image-resizer/">Image Resizer</a></span><span>Saves PNG, with transparency</span><time datetime="2026-10-30">Oct 30</time></li>
-        <li data-sec="mostly-warcraft"><span class="upd-name"><img class="upd-ico" src="/img/icons/off-the-clock.svg" alt="" width="20" height="20"><a href="/play/">Mostly Warcraft</a></span><span>Its own page: WoW, my UI, the backpack</span><time datetime="2026-10-31">Oct 31</time></li>
+        <li data-sec="off-the-clock"><span class="upd-name"><img class="upd-ico" src="/img/icons/off-the-clock.svg" alt="" width="20" height="20"><a href="/play/">Off the clock</a></span><span>Its own page: WoW, my UI, the backpack</span><time datetime="2026-10-31">Oct 31</time></li>
         <li data-sec="site"><span class="upd-name"><img class="upd-ico" src="/img/icons/jsal-io.svg" alt="" width="20" height="20">Site</span><span>A logo: the j and its gem</span><time datetime="2026-11-01">Nov 1</time></li>
       </ul>
       <!-- updates:end -->
@@ -537,7 +539,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 
   <footer>
     <span><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>© <span id="y">2026</span> John Salvador</span>
-    <nav aria-label="Elsewhere"><a href="https://github.com/superjsal">GitHub</a><a href="mailto:dev@jsal.io">Email</a><a href="/privacy/">Privacy</a><button type="button" class="foot-btn" data-jsal-consent>Analytics</button></nav>
+    <nav aria-label="Elsewhere"><a href="/privacy/">Privacy</a><button type="button" class="foot-btn" data-jsal-consent>Analytics</button></nav>
   </footer>
 </div>
 <script>
