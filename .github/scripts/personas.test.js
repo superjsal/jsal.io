@@ -10,7 +10,7 @@
 //   first: the platform(s) allowed in first place   top3: must all be in the top three   not: none may be
 const path = require('path');
 const site = path.join(__dirname, '..', '..', 'site');
-const { rank, candidates, explain, standing, tied, ahead, QUESTIONS, options, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
+const { rank, candidates, explain, standing, tied, ahead, divider, HOW, QUESTIONS, options, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
@@ -211,6 +211,9 @@ const rowOf = new Map(Object.entries(PHRASE).map(([id, p]) => [p, id]));
 const saying = [...verdictOf.keys()].map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
 const TABLE_LINE = new RegExp(`^If you want (.+?), (.+?) (${saying}), while (.+?) (${saying})\\.$`);
 const SAME_LINE = /^The same goes if you want (.+)\.$/;
+// The must-haves as the divider names them, and the table row (or quiz list) behind each
+const MUST_ROW = { bookings: 'bookings', 'paid members': 'members', 'a blog': 'blog', 'selling online': 'store', 'more than one language': 'languages', 'a large catalogue': 'size', 'selling to other businesses': 'b2b' };
+let dividers = 0;
 let combos = 0, clear = 0, fallback = 0, byCard = 0, ties = 0, boxes = 0, tagBoxes = 0, notIdealTop = 0, weak = 0, fewFit = 0;
 const cardErrs = [];
 const walk = (a, i) => {
@@ -294,6 +297,28 @@ const walk = (a, i) => {
     echoes.forEach((e) => { if (text.toLowerCase().includes(e.toLowerCase()) && !own.has(e)) sentenceErr(at, `${x.p.id}'s box echoes "${e}", which isn't one of these answers`); });
     for (const f of text.match(/\$[\d,]+(?:–\$[\d,]+)?/g) || []) if (!figures.includes(f)) sentenceErr(at, `${x.p.id}'s box shows ${f}, which no cost band or answer says`);
   });
+  // The divider before matches that lack a must-have (score.js divider): every "X needs an add-on for selling online" is
+  // the table's verdict for X, the first does better on it, and it appears exactly when a match below falls short
+  const dv = divider(r), shortBelow = r.some((x, i) => i && x.gate === r[0].gate && x.short > r[0].short);
+  if (dv) {
+    dividers++;
+    if (!shortBelow) cardErrs.push(`${at}: a divider with no match short of a must-have`);
+    dv.lines.forEach((line) => {
+      const x = r.slice(dv.at).find((o) => line.startsWith(`${o.p.name} `));
+      if (!x || !line.endsWith('.')) return sentenceErr(at, `divider line "${line}" names no match below it`);
+      line.slice(x.p.name.length + 1, -1).split(', and ').forEach((group) => {
+        const how = Object.keys(HOW).find((h) => group.startsWith(`${HOW[h]} `));
+        if (!how) return sentenceErr(at, `divider line "${line}" says something other than a verdict`);
+        group.slice(HOW[how].length + 1).split(/, | and /).forEach((what) => {
+          const row = MUST_ROW[what], first = r[0].p.id;
+          const v = (id) => (row === 'bookings' ? ((data.quiz.bookings || []).includes(id) ? 'yes' : 'plugin') : row === 'size' ? (data.quiz.largeCatalogue.includes(id) ? 'yes' : 'notMade')
+            : row === 'b2b' ? (data.quiz.b2b.includes(id) ? 'yes' : 'notMade') : ((data.answers[id] || {})[row] || {}).verdict);
+          const rank = (w) => ({ yes: 3, auto: 3, plugin: 2, indirect: 2, code: 1, check: 1, no: 0, notMade: 0 })[w] ?? -1;
+          if (!row || HOW[v(x.p.id)] !== HOW[how] || !(rank(v(first)) > rank(v(x.p.id)))) sentenceErr(at, `divider says "${x.p.name} ${HOW[how]} ${what}", which the table doesn't back against ${r[0].p.name}`);
+        });
+      });
+    });
+  } else if (shortBelow && r.slice(1).some((x) => x.gate === r[0].gate && x.must.some((m) => m.short > ((r[0].must.find((l) => l.key === m.key) || {}).short || 0)))) cardErrs.push(`${at}: a match short of a must-have with no divider above it`);
   const st = standing(r);
   if (st) {
     // Ahead on a must-have: a clear lead, or a clear winner when the second is ruled out or also well behind on points
@@ -346,6 +371,6 @@ Object.entries(data.quiz.freeDomain || {}).forEach(([id, fd]) => {
 });
 data.items.forEach((it) => { if (!PHRASE[it.id]) cardErrs.push(`table row "${it.id}" has no short phrase in PHRASE (score.js)`); });
 cardErrs.slice(0, 10).forEach((e) => console.log(`FAIL ${e}`));
-console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}${sentenceErrs ? ` (${sentenceErrs} sentences the data doesn't back)` : ', and every sentence is backed by the data and the answers'}. ${clear} clear winners, ${fallback} without a reason from their answers; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}).`);
+console.log(`${combos} answer combinations: ${cardErrs.length ? `${cardErrs.length} card problems` : 'every result card checks out'}${sentenceErrs ? ` (${sentenceErrs} sentences the data doesn't back)` : ', and every sentence is backed by the data and the answers'}. ${clear} clear winners, ${fallback} without a reason from their answers; ${byCard} first by their card's "Good fit" lines, ${ties} tied. ${tagBoxes} of ${boxes} boxes use the card tags (${Math.round(100 * tagBoxes / boxes)}%). ${notIdealTop} top-three places that their own card calls not ideal (${fewFit} sets have fewer than three platforms that fit at all). ${weak} show a "Closest match" (first scores under ${LOW_FIT}). ${dividers} put a divider above matches that lack a must-have.`);
 console.log(`Rules: first is made for what they're making ${broke.made ? `FAILS ${broke.made}` : 'ok'}; not technical never gets "Needs a developer" first ${broke.dev ? `FAILS ${broke.dev}` : 'ok'}; no "Not ideal if" in the top three ${notIdealTop ? `FAILS ${notIdealTop}` : 'ok'}; every reason starts from an answer ${broke.named ? `FAILS ${broke.named}` : 'ok'}; no developer platform for a solo local business ${broke.local ? `FAILS ${broke.local}` : 'ok'}; no Framer for a large catalogue ${broke.catalogue ? `FAILS ${broke.catalogue}` : 'ok'}; the platform you're leaving is never a match ${broke.origin ? `FAILS ${broke.origin}` : 'ok'}; the must-haves come before taste ${broke.need ? `FAILS ${broke.need}` : 'ok'}; every cost is weighed against the budget ${broke.budget ? `FAILS ${broke.budget}` : 'ok'}.`);
 process.exit(failed || cardErrs.length ? 1 : 0);

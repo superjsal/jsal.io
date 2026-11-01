@@ -117,6 +117,11 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   share, and no hiding long lists. The reasons are the evidence the pick stands on. The one exception: a card whose
   list is an exact copy of another card's collapses to "Fits your answers for the same reasons as …" (the full list
   is on the card above), and its box still says how it differs. The personas test checks this on every answer set.
+- **A match that lacks a must-have goes under a divider.** When a match lacks something the first has built in (the
+  need picked, languages, selling, a large catalogue), a divider sits above it: a label with a rule above, like a
+  group heading ("Also possible, with an add-on", or with custom code, or "Missing something you need"), and one
+  plain sentence per match from the table's verdicts ("Framer needs an add-on for selling online."). Above it every
+  card has the must-haves and none reads "Worth a look"; under it the pill is neutral, not green, as it isn't a fit.
 - **"Varies" is a "*" right after the tag** in the comparison, at every width: never a word on its own line, which made
   wide and narrow tags read unevenly down a row. The key above the table and the note under it say what it means,
   and screen readers hear "varies". The rarer "not verified" stays in words, under the tag.

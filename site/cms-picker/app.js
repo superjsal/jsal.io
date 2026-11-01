@@ -497,7 +497,7 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches; questions and scoring in score.js. The answers live in the page
   // address so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, standing, behind, tied, near, conflict, costRow, weight, TIP, LEAD, options } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, standing, behind, tied, near, divider, conflict, costRow, weight, TIP, LEAD, options } = window.cmsScore;
   // Shared result links carry the quiz version (v=4; none means 1). When the questions change, raise LINK_VERSION and
   // translate older answers in readLink, so shared links keep opening a result.
   const LINK_VERSION = 4;
@@ -759,7 +759,9 @@
       // How sure: level or a couple of points apart is a close call (score.js standing)
       const stand = standing(top), close = !!stand && (stand.kind === 'level' || stand.kind === 'close');
       const first = weak ? 'closest match' : 'best match';
-      const label = (r) => (isTop(r) ? (joint ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : close && !weak && r === top[1] ? 'Close second' : near(r, top[0], 4) && !weak ? 'Good match' : 'Worth a look');
+      // Matches that lack a must-have the first has built in go under a divider (score.js divider); above it each has them all
+      const split = divider(top), above = (r) => !split || top.indexOf(r) < split.at;
+      const label = (r) => (isTop(r) ? (joint ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : close && !weak && r === top[1] ? 'Close second' : above(r) && !weak && (split || near(r, top[0], 4)) ? 'Good match' : 'Worth a look');
       const told = explain(data, a, top);   // reasons without repeats, and what sets each apart
       // An old link stays v=1 (its own answers) until its newer questions are answered
       const kept = Object.entries(a).filter(([k, v]) => (steps().some((q) => q.id === k) && !pending.has(k)) || (v === 'yes' && steps().some((q) => q.also && q.also.id === k)));
@@ -779,7 +781,7 @@
         // After the colon the sentence carries on in lower case, unless it starts with a platform's name
         const named = vs && data.platforms.some((p) => vs.text.startsWith(p.name));
         const line = !vs ? '' : `${boxHead(vs, weak)}: ${named ? vs.text : vs.text.charAt(0).toLowerCase() + vs.text.slice(1)}`;
-        state.quiz = { fit: Object.fromEntries(top.map((r) => [r.p.id, { label: label(r), low: weak }])), line, eyebrow: `Your ${first}`, answers: { ...a }, cost: costRow(a) };
+        state.quiz = { fit: Object.fromEntries(top.map((r) => [r.p.id, { label: label(r), low: weak || !above(r) }])), line, eyebrow: `Your ${first}`, answers: { ...a }, cost: costRow(a) };
         state.folded = new Set();   // every group open: three platforms and folded ruled-out rows keep a phone's table short
         renderCards();
         openPanel('seo');
@@ -802,9 +804,14 @@
       h.tabIndex = -1;
       const list = el('div', 'qz-res');
       top.forEach((r, i) => {
+        if (split && i === split.at) {
+          const div = el('div', 'qz-div');
+          div.append(el('p', 'qz-div-h', split.head), el('p', null, split.lines.join(' ')));
+          list.append(div);
+        }
         const card = el('article', `qz-card${isTop(r) ? ' top' : ''}`), pr = r.p.profile || {};
         const name = el('h4', null, r.p.name);
-        name.append(el('span', `fitp${weak ? ' low' : ''}`, label(r)));
+        name.append(el('span', `fitp${weak || !above(r) ? ' low' : ''}`, label(r)));   // under the divider: neutral, not a fit
         card.append(logo(r.p), name, el('p', 'sum', pr.summary || ''));
         // The key facts people compare first: skill, hosting and updates, and the cost band for what's being made
         const fx = el('dl', 'qz-facts'), ease = data.quiz.ease[r.p.id] ?? 1;

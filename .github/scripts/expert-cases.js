@@ -6,13 +6,13 @@
 //   ok: acceptable first picks; any: at least one of these in the top three; never: shouldn't be in the top three
 const path = require('path');
 const site = path.join(__dirname, '..', '..', 'site');
-const { candidates } = require(path.join(site, 'cms-picker', 'score.js'));
+const { candidates, divider } = require(path.join(site, 'cms-picker', 'score.js'));
 const data = require(path.join(site, 'cms-picker', 'data.json'));
 const quiz = require(path.join(site, 'cms-picker', 'quiz.json'));
 data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));   // as app.js does
 
 // Agreement when the report was set up: fewer than this is called out
-const BASELINE = 39;
+const BASELINE = 42;
 const DEV = ['magento', 'drupal', 'sanity'];
 const S = (o) => ({ moving: 'no', needs: 'none', budget: 'any', ...o });
 const CASES = [
@@ -62,13 +62,18 @@ const CASES = [
   ['Mobile app and website from one content source, developers', S({ what: 'custom', who: 'dev', care: 'yes', look: 'pixel', budget: 'any' }), { ok: ['sanity'], any: ['sanity'], never: ['wix', 'squarespace'] }],
   ['Member portal, agency-built', S({ what: 'custom', who: 'agency', care: 'yes', needs: 'members', look: 'pixel', budget: 'any' }), { ok: ['wordpress', 'drupal', 'sanity'], never: ['squarespace', 'framer'] }],
   ['Multilingual custom site, developers, hosting handled', S({ what: 'custom', who: 'dev', care: 'no', lang: 'yes', look: 'pixel', budget: 'any' }), { ok: ['sanity', 'wordpress', 'drupal'], never: ['wix', 'squarespace'] }],
+  // Real sites: people who took the quiz themselves (their own answers, from their shared result link) and the platform
+  // they actually run and are happy with. Stronger evidence than the cases above, which are judgment.
+  ['Real: musician who books lessons, on Squarespace', S({ what: 'site', kind: 'creative', who: 'easy', care: 'no', needs: 'bookings', look: 'template', budget: 'low' }), { ok: ['squarespace'] }],
+  ['Real: photographer who may sell prints, on Squarespace', S({ what: 'site', kind: 'creative', who: 'easy', care: 'no', needs: 'sell', look: 'template', budget: 'none' }), { ok: ['squarespace'] }],
 ];
 
 const ids = new Set(data.platforms.map((p) => p.id));
 let agree = 0;
 const misses = [];
 for (const [name, a, want] of CASES) {
-  const top = candidates(data, a).slice(0, 3), got = top.map((x) => x.p.id), why = [];
+  // The recommendations are the matches above the divider; one below it is shown as lacking a must-have, not recommended
+  const all = candidates(data, a).slice(0, 3), dv = divider(all), top = dv ? all.slice(0, dv.at) : all, got = top.map((x) => x.p.id), why = [];
   if (!want.ok.includes(got[0])) why.push(`first is ${top[0].p.name}`);
   if (want.any && !want.any.some((id) => got.includes(id) || !ids.has(id))) why.push(`none of ${want.any.join(', ')} in the top three`);
   (want.never || []).forEach((id) => { if (got.includes(id)) why.push(`${top.find((x) => x.p.id === id).p.name} in the top three`); });

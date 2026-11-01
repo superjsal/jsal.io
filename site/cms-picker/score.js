@@ -197,26 +197,50 @@
     // card says not ideal, needs a developer someone building it themselves can't be), short how far it falls short of
     // having the must-haves built in
     const gate = (pts.goal < 0) + (pts.sellOnly < 0) + (pts.notIdeal < 0) + (pts.ease === -8);
-    return { p, s, why, all: why, but, pts, fit, tb: fit.length, tb2: lb && lb.look === a.look ? 1 : 0, lookTag: lb && lb.tag, links, gate, short: shortfall(data, p.id, a) };
+    const must = musts(data, p.id, a);
+    return { p, s, why, all: why, but, pts, fit, tb: fit.length, tb2: lb && lb.look === a.look ? 1 : 0, lookTag: lb && lb.tag, links, gate, must, short: must.reduce((n, m) => n + m.short, 0) };
   }
 
-  // How far a platform falls short of having the must-haves built in (0: all built in): the need that matters most, the
-  // languages tick, and for a store selling itself and a large or B2B catalogue. A developer or agency adds plugins as a
-  // matter of course, so for them only "needs code" or "not possible" falls short; bookings count one step, as every
-  // platform takes them with an add-on.
+  // The must-haves for these answers (the need that matters most, the languages tick, and for a store selling itself and
+  // a large or B2B catalogue), each with how the platform does it (how: the table's verdict, or 'notMade' for a
+  // catalogue it isn't made for) and how far that falls short of built in. A developer or agency adds plugins as a matter
+  // of course, so for them only "needs code" or "not possible" falls short; bookings count one step, as every platform
+  // takes them with an add-on.
   const HAS = { yes: 3, auto: 3, plugin: 2, indirect: 2, code: 1, check: 1, no: 0 };
-  function shortfall(data, id, a) {
-    const Q = data.quiz, pro = a.who === 'dev' || a.who === 'agency';
-    const lvl = (row) => { const v = ((data.answers[id] || {})[row] || {}).verdict; return pro && v === 'plugin' ? 3 : HAS[v] ?? 0; };
-    let n = 0;
-    if (a.needs === 'bookings' && !pro && !(Q.bookings || []).includes(id)) n += 1;
-    if (a.needs === 'members') n += 3 - lvl('members');
-    if (a.needs === 'blog' && a.what !== 'content') n += 3 - lvl('blog');
-    if (a.needs === 'sell' || a.what === 'store') n += 3 - lvl('store');
-    if (a.lang === 'yes') n += 3 - lvl('languages');
-    if (a.what === 'store' && (a.size === 'big' || a.size === 'b2b') && !(Q.largeCatalogue || []).includes(id)) n += 3;
-    if (a.what === 'store' && a.size === 'b2b' && !(Q.b2b || []).includes(id)) n += 1;
-    return n;
+  function musts(data, id, a) {
+    const Q = data.quiz, pro = a.who === 'dev' || a.who === 'agency', out = [];
+    const verdict = (row) => ((data.answers[id] || {})[row] || {}).verdict;
+    const row = (key, what, r) => { const v = verdict(r), lvl = pro && v === 'plugin' ? 3 : HAS[v] ?? 0; out.push({ key, what, how: v, short: 3 - lvl }); };
+    if (a.needs === 'bookings') { const has = (Q.bookings || []).includes(id); out.push({ key: 'bookings', what: 'bookings', how: has ? 'yes' : 'plugin', short: !pro && !has ? 1 : 0 }); }
+    if (a.needs === 'members') row('members', 'paid members', 'members');
+    if (a.needs === 'blog' && a.what !== 'content') row('blog', 'a blog', 'blog');
+    if (a.needs === 'sell' || a.what === 'store') row('sell', 'selling online', 'store');
+    if (a.lang === 'yes') row('lang', 'more than one language', 'languages');
+    if (a.what === 'store' && (a.size === 'big' || a.size === 'b2b')) { const has = (Q.largeCatalogue || []).includes(id); out.push({ key: 'size', what: 'a large catalogue', how: has ? 'yes' : 'notMade', short: has ? 0 : 3 }); }
+    if (a.what === 'store' && a.size === 'b2b') { const has = (Q.b2b || []).includes(id); out.push({ key: 'b2b', what: 'selling to other businesses', how: has ? 'yes' : 'notMade', short: has ? 0 : 1 }); }
+    return out;
+  }
+  // What a match lacks that the first has, for the divider above the matches that don't have every must-have built in:
+  // the must-haves where it falls further short than the first, grouped by how it would get there, as one sentence
+  // ("Framer needs an add-on for selling online.") and the worst of them, for the divider's heading
+  const HOW = { plugin: 'needs an add-on for', indirect: 'needs an add-on for', code: 'needs custom code for', check: 'needs custom code for', no: 'can’t do', notMade: 'isn’t made for' };
+  const HOW_RANK = { plugin: 1, indirect: 1, code: 2, check: 2, no: 3, notMade: 3 };
+  function lacks(x, lead) {
+    const gaps = x.must.filter((m) => m.short > ((lead.must.find((l) => l.key === m.key) || {}).short || 0) && HOW[m.how]);
+    if (!gaps.length) return null;
+    const groups = [...new Set(gaps.map((m) => HOW[m.how]))].map((h) => `${h} ${listAnd(gaps.filter((m) => HOW[m.how] === h).map((m) => m.what))}`);
+    return { text: `${x.p.name} ${groups.join(', and ')}.`, worst: Math.max(...gaps.map((m) => HOW_RANK[m.how])) };
+  }
+  const listAnd = (xs) => (xs.length > 1 ? `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}` : xs[0]);
+  // The divider in the top three: before the first match that lacks a must-have the first has built in, with a heading by
+  // the worst of what's missing and a sentence per match below it. Null when every match has them all.
+  const DIVIDER = { 1: 'Also possible, with an add-on', 2: 'Also possible, with custom code', 3: 'Missing something you need' };
+  function divider(top) {
+    const at = top.findIndex((r, i) => i && r.gate === top[0].gate && r.short > top[0].short);
+    if (at < 0) return null;
+    const below = top.slice(at).map((r) => lacks(r, top[0])).filter(Boolean);
+    if (!below.length) return null;
+    return { at, head: DIVIDER[Math.max(...below.map((b) => b.worst))], lines: below.map((b) => b.text) };
   }
   // Which tier puts x ahead of y: 'gate' (y is ruled out), 'need' (x has more of the must-haves built in), or null when
   // they're level on both and the points decide
@@ -425,6 +449,6 @@
   const LOW_FIT = 4;
   // Answers that pull against each other, with the question to change
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
+  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, divider, HOW, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

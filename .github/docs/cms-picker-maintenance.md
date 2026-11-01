@@ -122,6 +122,13 @@ Shared by the page and the tests, so they always run the same code.
   then the points below, then the tie-breaks. `ahead(x, y)` says which tier put one ahead ('gate', 'need' or null),
   `sameTier` whether two are level on both, `near` whether one is level on both and within n points (the page's "Good
   match" and "Also worth a look"). A result won on a tier leads its box with that tier's parts (`gaps`).
+- **The divider** (`divider` in `score.js`, drawn by `results` in `app.js`): each score carries its must-haves
+  (`must`: what, how the platform does it, how far short), and a match in the top three whose must-haves fall further
+  short than the first's goes under a divider with one sentence each from `HOW` ("Framer needs an add-on for selling
+  online."), headed by the worst (add-on, custom code, or "Missing something you need"). The page labels cards above it
+  "Good match" at least and gives the ones under it a neutral "Worth a look"; the expert cases count only the cards
+  above it as recommendations; the personas test checks every divider sentence against the table and that the divider
+  appears exactly when a match falls short (55,000 of 132,480 answer sets when added, 2026-11-01).
 - **Scoring:** `fitScore` builds the score from parts with `add(key, points, reason)`. The reason (if any)
   shows as a bullet on the card. Where a part counts *against* an answer the person gave (a need that takes an
   add-on, running it yourself, hosting, budget), `fitScore` also pushes a plain line to `but`, which the
@@ -229,10 +236,11 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
 - **Expert cases** (`node .github/scripts/expert-cases.js`, also in `check.py` and the Action): 40 real-world clients
   and the picks an experienced web consultant would accept, written without looking at the quiz's results (drafted by
   Claude on 2026-11-01, set up as a standing report at John's request). It never fails a check; it reports how many
-  agree (`BASELINE`: 38 of 40 when set up, 39 once Duda's card stopped listing "Blog or content") and names the ones
-  that differ, and says so when a change takes it below the baseline. Raise `BASELINE` when agreement rises; edit a
-  case only when its expert judgment is wrong, never to match a result. The one that differs: Framer third (marked
-  "Worth a look", selling needs an add-on) for a non-technical musician selling merch on no budget.
+  agree (`BASELINE`: 38 of 40 when set up, 39 once Duda's card stopped listing "Blog or content", 40 with the
+  divider, as a match under it isn't a recommendation; 42 of 42 with the first two real sites, John's friends' own
+  quiz answers and the platform they run, both Squarespace) and names the ones that differ, and says so when a change takes
+  it below the baseline. Raise `BASELINE` when agreement rises; edit a case only when its expert judgment is wrong,
+  never to match a result.
 - **Nine rules** that must hold for every answer set (a failure names the first few):
   - the first match is made for what they're making, unless the page shows the "Closest match" notice;
   - someone not technical never gets a "Needs a developer" platform first;
