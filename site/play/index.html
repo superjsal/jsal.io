@@ -156,23 +156,28 @@ p, li { text-wrap: pretty; }
 .now li time { flex: none; min-width: 4em; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
-/* Achievements (/nav.js unlocks them and keeps them in this browser; the script below lists them) */
+/* Achievements (/nav.js unlocks them and keeps them in this browser; the script below lists them, grouped by
+   where each is earned, in columns as wide as fit) */
 .ach { grid-column: 1 / 13; background: var(--plain); }
 .ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .ach h2 { margin: 0; font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
 .ach-count { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
-.ach-bar { height: 6px; margin: 12px 0 16px; border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
+.ach-bar { height: 6px; margin: 12px 0 20px; border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
 .ach-bar i { display: block; height: 100%; background: var(--jsal-fill); border-radius: inherit; transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }   /* a transform, so filling it doesn't re-lay-out the page */
-.ach-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
-.ach-list li { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
-.ach-list .medal { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
-.ach-list b { display: block; font-weight: 600; }
-.ach-list small { display: block; font-size: 13px; color: var(--jsal-muted); }
-.ach-list li.locked { background: transparent; border: 1px dashed var(--plain-line); }
-.ach-list li.locked b { color: var(--jsal-muted); }
-.ach-list li.locked .medal { background: none; color: var(--jsal-muted); border: 1px dashed var(--plain-line); }
-@media (max-width: 760px) { .ach-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 340px) { .ach-list { grid-template-columns: minmax(0, 1fr); } }
+.ach-groups { columns: 3 280px; column-gap: 24px; }
+.ach-grp { break-inside: avoid; padding-bottom: 20px; }
+.ach-grp h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-size: 14px; font-weight: 600; }
+.ach-grp h3 img, .ach-grp h3 .lk { flex: none; width: 20px; height: 20px; border-radius: var(--jsal-radius-sm); }
+.ach-grp h3 .lk { display: grid; place-items: center; background: var(--jsal-tool-home); color: var(--jsal-fill); }
+.ach-grp h3 .n { margin-left: auto; font-size: 13px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
+.ach-grp ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.ach-grp li { display: flex; align-items: center; gap: 10px; padding: 6px 10px 6px 6px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
+.ach-grp .medal { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.ach-grp b { display: block; font-weight: 600; }
+.ach-grp small { display: block; font-size: 13px; color: var(--jsal-muted); }
+.ach-grp li.locked { background: transparent; box-shadow: inset 0 0 0 1px var(--plain-line); }
+.ach-grp li.locked b { color: var(--jsal-muted); }
+.ach-grp li.locked .medal { background: none; color: var(--jsal-muted); box-shadow: inset 0 0 0 1px var(--plain-line); }
 @media (prefers-reduced-motion: reduce) { .ach-bar i { transition: none; } }
 
 /* Say hi (the backpack): the socials as gear in a bag window drawn after the original game's, with a stone frame,
@@ -348,7 +353,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     <section class="tile ach" aria-labelledby="ach-h">
       <div class="ach-top"><h2 id="ach-h">Achievements</h2><span class="ach-count" id="ach-count"></span></div>
       <div class="ach-bar" aria-hidden="true"><i id="ach-bar"></i></div>
-      <ul class="ach-list" id="ach-list"></ul>
+      <div class="ach-groups" id="ach-list"></div>
     </section>
   </main>
 
@@ -535,19 +540,28 @@ function drawPouch(A, got) {
   }).join('') + '<span class="slot empty" aria-hidden="true"></span>'.repeat(total - earned.length);
   pouch.querySelectorAll('.slot:not(.empty)').forEach(bindSlot);
 }
-// Achievements: drawn from /nav.js's list (it loads after this, so wait for it), redrawn on each unlock
+// Achievements: drawn from /nav.js's list (it loads after this, so wait for it), redrawn on each unlock. Each sits
+// under the tool it's earned in; one not listed here goes under Around the site, and every secret under Secrets.
+const GROUP = { decision: 'cms', compare: 'cms', twocents: 'cms', pixel: 'ir', spotless: 'cp' };
+const GROUPS = [['cms', 'CMS Picker', '/img/icons/cms-picker.svg'], ['ir', 'Image Resizer', '/img/icons/image-resizer.svg'], ['cp', 'Clean Paste', '/img/icons/clean-paste.svg'], ['site', 'Around the site', '/img/icons/jsal-io.svg'], ['secret', 'Secrets']];
 const LOCK = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
+const line = (p, s) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 function drawAchievements() {
   const A = window.jsalAchievements;
   if (!A) return;
   const got = A.got(), n = A.list.filter((a) => got[a.id]).length;
-  const icon = (p) => `<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
   document.getElementById('ach-count').textContent = `${n} of ${A.list.length}`;
   document.getElementById('ach-bar').style.setProperty('--p', String(n / A.list.length));
   drawPouch(A, got);
-  document.getElementById('ach-list').innerHTML = A.list.map((a) => {
-    const on = !!got[a.id], hidden = a.secret && !on;
-    return `<li class="${on ? '' : 'locked'}"><span class="medal">${icon(hidden ? LOCK : a.icon)}</span><span><b>${hidden ? '???' : a.name}</b><small>${on ? a.done : a.todo}</small></span><span class="sr-only">${on ? ' (unlocked)' : ' (locked)'}</span></li>`;
+  const where = (a) => (a.secret ? 'secret' : GROUP[a.id] || 'site');
+  document.getElementById('ach-list').innerHTML = GROUPS.map(([k, name, img]) => {
+    const xs = A.list.filter((a) => where(a) === k);
+    if (!xs.length) return '';
+    const g = xs.filter((a) => got[a.id]).length;
+    return `<div class="ach-grp"><h3>${img ? `<img src="${img}" alt="" width="20" height="20">` : `<span class="lk">${line(LOCK, 13)}</span>`}${name}<span class="n">${g}/${xs.length}<span class="sr-only"> earned</span></span></h3><ul>${xs.map((a) => {
+      const on = !!got[a.id], hidden = a.secret && !on;
+      return `<li class="${on ? '' : 'locked'}"><span class="medal">${line(hidden ? LOCK : a.icon, 18)}</span><span><b>${hidden ? 'Secret' : a.name}</b><small>${on ? a.done : hidden ? 'Find it somewhere on the site' : a.todo}</small></span><span class="sr-only">${on ? ' (unlocked)' : ' (locked)'}</span></li>`;
+    }).join('')}</ul></div>`;
   }).join('');
 }
 addEventListener('DOMContentLoaded', drawAchievements);
