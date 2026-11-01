@@ -12,9 +12,18 @@ CMS Picker answer and source, the Playbook, and the items both cover, checked ag
 findings to John first, then applied) left every answer's checked date at 2026-10-31, so the quarterly rechecks below
 ("Keeping the answers current") run from there.
 
-The parked ideas are revisited only on their stated triggers: **two-step scoring** if the seven rule tests start
-failing in new ways, and **partial fit** if people report Wix missing from content-site results (both under
-"Persona tests").
+The parked idea is revisited only on its stated trigger: **partial fit** if people report Wix missing from
+content-site results (under "Persona tests"). Two-step scoring, parked on 2026-10-30, came in on 2026-11-01 (below).
+
+**Must-haves first** (2026-11-01): an audit of every answer set found the need people pick as "the one that matters
+most" outvoted by taste. In 38% of paid-members answers, 42% of selling-too answers and 25% of bookings answers the
+first match needed an add-on while a platform that fits had it built in, and a site that sells on a platform with no
+store plan ("Not for stores": Framer, HubSpot, Ghost) skipped the budget, so Framer led 396 of 1,008 selling-on-a-budget
+answers. Ranking now goes by tiers (`rank` in `score.js`): first what rules a platform out (`gate`), then how far it
+falls short of having the must-haves built in (`short`), and only then the points. For a developer or agency a plugin
+counts as built in, as they add them as a matter of course. Two new rules (`need`, `budget`) and a persona pin it.
+593 of 8,832 first places changed (6.7%, moving fixed at "starting fresh"), no persona moved, and John agreed them. Opening a shared
+link also kept the languages tick from then on (it had been dropped, so a shared result could differ from the one seen).
 
 **Quiz v3** (2026-10-31): the questions on languages, paid members, moving later and adding features became "Anything
 you'll need from day one?" and "Moving from somewhere?" (eight questions at most). The audit behind it is in the
@@ -35,8 +44,10 @@ B2B in two languages, a paid-members blog on "Nothing for now", the custom app b
 and an old `v=1` link): tips start from the person's answers, ties are labelled honestly, costs match the
 table, and old links open on their results. Under v3 with the managed-hosting change: seven rules, 48 personas, 2,171 of 80,640 answer sets show
 "Closest match" (2.7%; moving from one of 13 platforms multiplies the sets without changing points). Under v4: 3,713 of
-132,480 (2.8%; the languages tick doubles the sets). A change to any of these numbers is a result change: agree it with
-John first.
+132,480 (2.8%; the languages tick doubles the sets). With must-haves first: 3,787 (2.9%), and 418 clear winners whose
+box has no reason from their answers (an agency or developer selling on no budget, where Framer or HubSpot plus a
+separate shop is estimated cheaper than a store plan; the estimate is never given as a reason, so the box falls back to
+the table or card). A change to any of these numbers is a result change: agree it with John first.
 
 **Accepted limitation:** old `v=1` links have no "Which is closest to what you do?" answer, so HubSpot's
 "You don't otherwise use HubSpot" rule (matched on that answer) can't apply, and HubSpot can show third on
@@ -92,6 +103,13 @@ Shared by the page and the tests, so they always run the same code.
   "Not ideal if" line matches behind every other, so the gap it leaves never brings a ruled-out platform into the
   top three. It still ranks in full under "Had a platform in mind?", which opens on it ("You're on Wix now: it
   ranks 3rd of 13 for your answers").
+- **Ranking, must-haves first:** `rank` sorts by `gate` (how many of these rule it out: not made for what they're
+  making, made only for selling, its card's "Not ideal if", needing a developer when they're building it themselves),
+  then `short` (`shortfall`: steps short of "built in" on the need picked, the languages tick, and for a store selling
+  itself and a large or B2B catalogue; bookings count one step; for a developer or agency a plugin counts as built in),
+  then the points below, then the tie-breaks. `ahead(x, y)` says which tier put one ahead ('gate', 'need' or null),
+  `sameTier` whether two are level on both, `near` whether one is level on both and within n points (the page's "Good
+  match" and "Also worth a look"). A result won on a tier leads its box with that tier's parts (`gaps`).
 - **Scoring:** `fitScore` builds the score from parts with `add(key, points, reason)`. The reason (if any)
   shows as a bullet on the card. Where a part counts *against* an answer the person gave (a need that takes an
   add-on, running it yourself, hosting, budget), `fitScore` also pushes a plain line to `but`, which the
@@ -116,7 +134,8 @@ Shared by the page and the tests, so they always run the same code.
   `LEAD` entry**; the persona test fails without them.
 - **How sure (`standing`):** the pill and the line under "Your best matches" come from the score gap: level ("fit
   your answers equally well, so either is a sound choice"), up to `CLOSE` (2: "slightly ahead", a close call), up to
-  `LEAD_BY` (5: "ahead", a clear lead), then "well ahead" (a clear winner). The line says only how close it is; the
+  `LEAD_BY` (5: "ahead", a clear lead), then "well ahead" (a clear winner). Ahead on a must-have is at least a clear
+  lead, and a clear winner when the second is ruled out (`gate`) or also more than `LEAD_BY` behind on points. The line says only how close it is; the
   first card's box says why, so neither repeats the other.
 - **"If you want to keep a page out of search results, Webflow has it built in, while HubSpot CMS needs code for
   it":** when the answers don't separate two platforms, the comparison table does, in its own verdicts (`DOES`; a
@@ -145,7 +164,10 @@ Shared by the page and the tests, so they always run the same code.
   Their budget reads "Start a site with paid members" (`cost_members`: the plan that includes paid
   memberships, e.g. Ghost(Pro) Publisher, Wix Core), as does the card's "Cost to start" line; `costRow` in
   `score.js` picks the row for the score, the "costs less to start" box and the card alike (a store, or a site
-  that sells too, reads the store band).
+  that sells too, reads the store band). A site that sells on a platform with no store plan ("Not for stores") counts
+  its site band plus a separate shop, at least the lowest paid band, under its own part (`shopCost`). No pricing page
+  states that sum, so `shopCost` has no wording, and a platform over budget on it never says it costs less than another;
+  its "worth knowing" line says a separate shop adds to the cost.
 - **Hosting, three states** (since 2026-10-31): wanting hosting handled counts +2 where the profile's hosting line starts "Handled for you", −2 where it names a managed option that takes updates and security on (`managedHosting` in quiz.json: WordPress, Magento 2), −6 otherwise; the "worth knowing" line says which.
 - **Ties** (since 2026-10-31): two platforms level on points are ordered by how many of their card's "Good fit"
   lines answer what the person is making, from `quiz.fitFor`: each tagged line as it reads on the card (`line`)
@@ -176,8 +198,9 @@ node .github/scripts/personas.test.js
 
 Also run by `.github\build\check.ps1` before every push, and by the "Site checks" Action on GitHub.
 
-- **48 personas** (bakery, maker shop, B2B wholesaler, government site, and since v3 eleven hard cases: a need the
-  builders cover, a store that is also a publication, moving from Wix or Shopify…) must keep the first places and top
+- **49 personas** (bakery, maker shop, B2B wholesaler, government site, since v3 eleven hard cases: a need the
+  builders cover, a store that is also a publication, moving from Wix or Shopify…, and since must-haves first a local
+  shop selling on no budget that wants every detail) must keep the first places and top
   threes John agreed. A failure means a result changed: agree the new result with John before editing the expectation.
 - **Every answer combination (132,480)**, for every result card:
   - it has a box saying what sets it apart, and never mentions a row those answers rule out;
@@ -191,16 +214,17 @@ Also run by `.github\build\check.ps1` before every push, and by the "Site checks
     level on points but ahead on their card's "Good fit" lines or the look (their box must say which) or tied, and how many show a
     "Closest match" (first scores under `LOW_FIT`, 4: 2,171 today). No persona may get only a closest match.
   - every tagged "Good fit" line (`fitFor`) is still on its card and answers a real question and answer.
-- **Seven rules** that must hold for every answer set (a failure names the first few):
+- **Nine rules** that must hold for every answer set (a failure names the first few):
   - the first match is made for what they're making, unless the page shows the "Closest match" notice;
   - someone not technical never gets a "Needs a developer" platform first;
   - no top-three platform has a matching "Not ideal if" line (unless fewer than three platforms fit at all);
   - every "Why … first" reason starts from one of their answers (`LEAD`);
   - a local business with no technical help never has a "Needs a developer" platform in its top three;
   - a large or B2B catalogue never has Framer in its top three;
-  - the platform being moved from is never a match.
-  If one starts failing in new ways, that's the point to revisit two-step scoring (must-haves filter first,
-  then preferences), simulated and parked on 2026-10-30.
+  - the platform being moved from is never a match;
+  - the first match has the must-haves as fully built in as any platform that fits (the test works the shortfall out
+    from the table itself, not from `score.js`, so it checks the ranking);
+  - with a budget given, every platform's cost is weighed against it (`budget` or `shopCost`), none skipped.
 - **Parked: partial fit.** Being made for what someone's making is all or nothing (+4 if the card's "Fits"
   lists it, −8 if not), so one tick moves a platform 12 points. Wix has a built-in blog but its card doesn't
   list "Blog or content": ticking it would make Wix first in 720 content answer sets and beat Ghost for paid

@@ -497,7 +497,7 @@
   // ---------- Find my fit: a short guided quiz ----------
   // One question at a time, then the best matches; questions and scoring in score.js. The answers live in the page
   // address so a result can be shared; nothing is stored.
-  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, standing, behind, tied, conflict, costRow, weight, TIP, LEAD, options } = window.cmsScore;
+  const { QUESTIONS, NEUTRAL, LOW_FIT, rank, candidates, explain, standing, behind, tied, near, conflict, costRow, weight, TIP, LEAD, options } = window.cmsScore;
   // Shared result links carry the quiz version (v=4; none means 1). When the questions change, raise LINK_VERSION and
   // translate older answers in readLink, so shared links keep opening a result.
   const LINK_VERSION = 4;
@@ -753,13 +753,13 @@
     function results(source) {
       // The platform being left isn't a match (candidates) but keeps its place in the full ranking, for "Had a platform in mind?"
       const ranked = candidates(data, a), all = rank(data, a), origin = all.find((x) => x.p.id === a.moving);
-      const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => r.s > best - 6);
+      const best = ranked[0].s, top = ranked.slice(0, 3), also = ranked.slice(3, 6).filter((r) => near(r, ranked[0], 5));
       // A tie for first is shown as one (score.js tied); under LOW_FIT the first is only the closest
       const isTop = (r) => r === top[0] || tied(r, top[0]), joint = !!top[1] && isTop(top[1]), weak = best < LOW_FIT;
       // How sure: level or a couple of points apart is a close call (score.js standing)
       const stand = standing(top), close = !!stand && (stand.kind === 'level' || stand.kind === 'close');
       const first = weak ? 'closest match' : 'best match';
-      const label = (r) => (isTop(r) ? (joint ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : close && !weak && r === top[1] ? 'Close second' : r.s >= best - 4 && !weak ? 'Good match' : 'Worth a look');
+      const label = (r) => (isTop(r) ? (joint ? `Joint ${first}` : `${first.charAt(0).toUpperCase()}${first.slice(1)}`) : close && !weak && r === top[1] ? 'Close second' : near(r, top[0], 4) && !weak ? 'Good match' : 'Worth a look');
       const told = explain(data, a, top);   // reasons without repeats, and what sets each apart
       // An old link stays v=1 (its own answers) until its newer questions are answered
       const kept = Object.entries(a).filter(([k, v]) => (steps().some((q) => q.id === k) && !pending.has(k)) || (v === 'yes' && steps().some((q) => q.also && q.also.id === k)));
@@ -896,7 +896,7 @@
           const against = [...r.but, ...lost].map((w) => w.charAt(0).toUpperCase() + w.slice(1));
           const nth = `${i + 1}${['st', 'nd', 'rd'][i] || 'th'} of ${all.length}`;
           const rankText = el('b', 'rank', r === origin ? `You’re on ${r.p.name} now: it ranks ${nth} for your answers` : `${r.p.name} ranks ${nth} for you`);
-          rankText.append(el('span', 'gap', ` · ${behind(lead.s - r.s)} ${lead.p.name}`));
+          rankText.append(el('span', 'gap', ` · ${behind(r, lead)} ${lead.p.name}`));
           const cols = el('div', 'cols');
           [['For', r.why, 'for'], ['Against', against, 'against']].forEach(([t, items, cls]) => {
             const c = el('div', cls);
@@ -980,7 +980,10 @@
       editing = null;
       resume = false;
       pending.clear();
-      QUESTIONS.forEach((q) => { if (options(q, shared, data).some(([v]) => v === shared[q.id])) a[q.id] = shared[q.id]; });
+      QUESTIONS.forEach((q) => {
+        if (options(q, shared, data).some(([v]) => v === shared[q.id])) a[q.id] = shared[q.id];
+        if (q.also && shared[q.also.id] === 'yes') a[q.also.id] = 'yes';   // a ticked "also" (languages) comes along
+      });
       // An old link (v=1): questions it didn't have score nothing (NEUTRAL) or wait, offered above the results
       if (link.old && 'what' in a) {
         steps().forEach((q) => { if (!(q.id in a)) { pending.add(q.id); if (q.id in NEUTRAL) a[q.id] = NEUTRAL[q.id]; } });

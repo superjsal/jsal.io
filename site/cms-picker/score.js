@@ -56,6 +56,7 @@
     bookings: [(a, y, x) => `${x} has bookings built in`, (a, y) => `${y} needs an add-on for bookings`],
     blog: [(a, y, x) => `${x} has a blog built in`, (a, y) => `${y} needs more than its own tools for a blog`],
     imports: [(a, y, x) => `${x} imports your content from there`, null],   // no points, so never tips; here so every part has words
+    shopCost: [null, null],   // an estimate from two bands, not a stated price, so it's never given as a reason
     notIdeal: [null, (a, y) => `${y}’s own card says it isn’t ideal for answers like yours`],
     // Minus: when the leader is over the budget too (lost points of its own), it only costs less than the runner-up
     budget: [(a, y, x) => (a.budget === 'none' ? `${x} is free to start` : `${x} fits it`), (a, y, x, own) => (own < 0 ? `${x} costs less than ${y}` : `${y} costs more than that`)],
@@ -85,6 +86,7 @@
     bookings: () => 'you need bookings from day one',
     blog: () => 'you want a blog alongside the site',
     imports: (a) => (a.moving && a.moving !== 'no' && a.moving !== 'other' ? `you’re moving from ${a.moving}` : null),
+    shopCost: null,
     notIdeal: null,
     budget: (a) => (a.budget === 'none' ? 'you want to start free' : ['low', 'mid'].includes(a.budget) ? `you want to spend ${lowerFirst(answerLabel('budget', a.budget))} a month` : undefined),
   };
@@ -170,7 +172,15 @@
     // The card's own "Not ideal if" lines that match (quiz.notIdeal): ruled out unless nothing else fits
     if (notIdealFor(Q, p.id, a)) add('notIdeal', -30);
     if (a.budget in BUDGET) {
-      const level = COST_LEVEL[verdict(costRow(a))];
+      // No store plan ("Not for stores") on a site that sells: its site plan plus a separate shop, so at least the lowest
+      // paid band. No pricing page states that sum, so it counts under its own part, which never gives a reason
+      const band = verdict(costRow(a));
+      if (band === 'na') {
+        const over = Math.max(COST_LEVEL[verdict('cost_site')] ?? 1, 1) - BUDGET[a.budget];
+        add('shopCost', -3 * Math.max(0, over));
+        if (over > 0) but.push('a separate shop adds to the cost of its site plan');
+      }
+      const level = COST_LEVEL[band];
       if (level !== undefined) {
         const over = level - BUDGET[a.budget];
         if (over > 0) { add('budget', -3 * over); but.push('it costs more to start than you planned to spend'); } else add('budget', 0, a.budget === 'none' ? 'Free to start' : 'Fits your budget');
@@ -180,11 +190,39 @@
     const fit = fitLines(Q, p.id, a);
     // Second tie-break, after the card lines: the builder whose card leads with the design control asked for (quiz.lookBest)
     const lb = (Q.lookBest || {})[p.id] || null;
-    return { p, s, why, all: why, but, pts, fit, tb: fit.length, tb2: lb && lb.look === a.look ? 1 : 0, lookTag: lb && lb.tag, links };
+    // Must-haves, ranked before the points: gate counts what rules it out (not made for it, made only for selling, its
+    // card says not ideal, needs a developer someone building it themselves can't be), short how far it falls short of
+    // having the must-haves built in
+    const gate = (pts.goal < 0) + (pts.sellOnly < 0) + (pts.notIdeal < 0) + (pts.ease === -8);
+    return { p, s, why, all: why, but, pts, fit, tb: fit.length, tb2: lb && lb.look === a.look ? 1 : 0, lookTag: lb && lb.tag, links, gate, short: shortfall(data, p.id, a) };
   }
 
-  // Best fit first; an exact tie goes to the card with more matching "Good fit" lines, then to lookBest, else stays a tie
-  const rank = (data, a) => data.platforms.map((p) => fitScore(data, p, a)).sort((x, y) => y.s - x.s || y.tb - x.tb || y.tb2 - x.tb2);
+  // How far a platform falls short of having the must-haves built in (0: all built in): the need that matters most, the
+  // languages tick, and for a store selling itself and a large or B2B catalogue. A developer or agency adds plugins as a
+  // matter of course, so for them only "needs code" or "not possible" falls short; bookings count one step, as every
+  // platform takes them with an add-on.
+  const HAS = { yes: 3, auto: 3, plugin: 2, indirect: 2, code: 1, check: 1, no: 0 };
+  function shortfall(data, id, a) {
+    const Q = data.quiz, pro = a.who === 'dev' || a.who === 'agency';
+    const lvl = (row) => { const v = ((data.answers[id] || {})[row] || {}).verdict; return pro && v === 'plugin' ? 3 : HAS[v] ?? 0; };
+    let n = 0;
+    if (a.needs === 'bookings' && !pro && !(Q.bookings || []).includes(id)) n += 1;
+    if (a.needs === 'members') n += 3 - lvl('members');
+    if (a.needs === 'blog' && a.what !== 'content') n += 3 - lvl('blog');
+    if (a.needs === 'sell' || a.what === 'store') n += 3 - lvl('store');
+    if (a.lang === 'yes') n += 3 - lvl('languages');
+    if (a.what === 'store' && (a.size === 'big' || a.size === 'b2b') && !(Q.largeCatalogue || []).includes(id)) n += 3;
+    if (a.what === 'store' && a.size === 'b2b' && !(Q.b2b || []).includes(id)) n += 1;
+    return n;
+  }
+  // Which tier puts x ahead of y: 'gate' (y is ruled out), 'need' (x has more of the must-haves built in), or null when
+  // they're level on both and the points decide
+  const ahead = (x, y) => (x.gate < y.gate ? 'gate' : x.gate > y.gate ? null : x.short < y.short ? 'need' : null);
+  const sameTier = (x, y) => x.gate === y.gate && x.short === y.short;
+
+  // Must-haves first, then points; an exact tie goes to the card with more matching "Good fit" lines, then to lookBest,
+  // else stays a tie
+  const rank = (data, a) => data.platforms.map((p) => fitScore(data, p, a)).sort((x, y) => x.gate - y.gate || x.short - y.short || y.s - x.s || y.tb - x.tb || y.tb2 - x.tb2);
   // The matches: every platform but the one being left (it still ranks, for "Had a platform in mind?"), with the
   // ones whose card says not ideal behind every other
   function candidates(data, a) {
@@ -192,7 +230,9 @@
     const ok = rs.filter((r) => !notIdealFor(data.quiz, r.p.id, a));
     return [...ok, ...rs.filter((r) => !ok.includes(r))];
   }
-  const tied = (x, y) => x.s === y.s && x.tb === y.tb && x.tb2 === y.tb2;
+  const tied = (x, y) => sameTier(x, y) && x.s === y.s && x.tb === y.tb && x.tb2 === y.tb2;
+  // Level on the must-haves and within n points: a "Good match" beside the first, or worth a look
+  const near = (r, lead, n) => sameTier(r, lead) && lead.s - r.s <= n;
 
   // ---------- Telling the top matches apart, from the published answers and cards only ----------
   // How well an answer does it, and the table's verdict as the end of a sentence ("Webflow has it built in")
@@ -255,11 +295,18 @@
     const fit = ((x.p.profile || {}).goodFit || [])[0];
     return fit ? `${none}${x.p.name}’s card says it’s a good fit for ${tagInSentence(fit)}.` : null;
   }
-  // The parts of the score where x beat y, biggest gap first, with wording in TIP
+  // The parts each must-have tier is made of, so a result won on a tier leads with what decided it
+  const TIER_PARTS = { gate: new Set(['goal', 'sellOnly', 'notIdeal', 'ease']), need: new Set(['bookings', 'members', 'sell', 'blog', 'lang', 'size', 'b2b']) };
+  // The parts of the score where x beat y, those of the tier that put x ahead first, then the biggest gap, with wording in TIP
   function gaps(x, y) {
+    const by = TIER_PARTS[ahead(x, y)], first = (g) => (by && by.has(g.k) ? 1 : 0);
     return [...new Set([...Object.keys(x.pts), ...Object.keys(y.pts)])]
-      .map((k) => ({ k, d: (x.pts[k] || 0) - (y.pts[k] || 0) })).filter((g) => g.d > 0 && TIP[g.k]).sort((p, q) => q.d - p.d);
+      .map((k) => ({ k, d: (x.pts[k] || 0) - (y.pts[k] || 0) }))
+      // x's own shop is over the budget too, so beating y on budget would read as if x were within it
+      .filter((g) => g.d > 0 && TIP[g.k] && !(g.k === 'budget' && (x.pts.shopCost || 0) < 0)).sort((p, q) => first(q) - first(p) || q.d - p.d);
   }
+  // x comes after y in the ranking and is behind it: on a must-have, or on points
+  const isBehind = (x, y) => !sameTier(x, y) || x.s < y.s;
   // Parts whose other side names something missing (an add-on, a host, code), not just "harder": only these add it
   const LACKS = new Set(['bookings', 'members', 'blog', 'dev', 'care', 'size']);
   // Up to two of them in plain words, each after the answer behind it; an answer behind both is said once. The
@@ -313,7 +360,7 @@
       if (!i) {
         const next = top[1];
         let vs = null;
-        if (next && next.s === r.s) {
+        if (next && sameTier(r, next) && next.s === r.s) {
           const name = r.p.name, other = next.p.name;
           if (tied(r, next)) vs = box('tie', `${name} or ${other}`, other, ['They fit your answers equally well.', better(data, a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' '));
           else if (r.tb !== next.tb) vs = box('card', `Why ${name} first`, other, [`It fits your answers as well as ${other} does. It comes first because its card says it’s made for ${tagInSentence(r.fit[0])}, which matches your answers.`, better(data, a, r, next) || pickOver(data, a, r, next)].filter(Boolean).join(' '));
@@ -325,7 +372,7 @@
         return { why: order(r), vs };
       }
       const why = sameSet(r.all, lead.all) ? [`Fits your answers for the same reasons as ${lead.p.name}`] : order(r);
-      return { why, vs: box('versus', `Compared with ${lead.p.name}`, lead.p.name, better(data, a, r, lead) || pickOver(data, a, r, lead, r.s < lead.s)) };
+      return { why, vs: box('versus', `Compared with ${lead.p.name}`, lead.p.name, better(data, a, r, lead) || pickOver(data, a, r, lead, isBehind(r, lead))) };
     });
     const [, second, third] = top;
     if (third) {
@@ -334,7 +381,7 @@
       if (twin || echo) {
         let text = better(data, a, third, second);
         // Still the second's sentence ("…has more plugins and apps for that" twice): what the third offers instead
-        if (!text || (out[1].vs && generic(out[1].vs.text, second.p.name) === generic(text, third.p.name))) text = pickOver(data, a, third, second, third.s < second.s);
+        if (!text || (out[1].vs && generic(out[1].vs.text, second.p.name) === generic(text, third.p.name))) text = pickOver(data, a, third, second, isBehind(third, second));
         if (twin) out[2].why = [`Fits your answers for the same reasons as ${second.p.name}`];
         if (text) out[2].vs = box('versus', `Compared with ${second.p.name}`, second.p.name, text);
       }
@@ -342,19 +389,32 @@
     return out;
   }
 
-  // How far ahead the first is: level, within CLOSE points ("slightly ahead", a close call), within LEAD_BY ("ahead"),
-  // or more ("well ahead", a clear winner). Score gaps, so the words never overstate a lead (the personas test checks)
+  // How far ahead the first is. Level on the must-haves: level, within CLOSE points ("slightly ahead", a close call),
+  // within LEAD_BY ("ahead"), or more ("well ahead", a clear winner). Ahead on a must-have it's at least a clear lead,
+  // and a clear winner when the other is ruled out or also behind on points by more than LEAD_BY. The words never
+  // overstate a lead (the personas test checks)
   const CLOSE = 2, LEAD_BY = 5;
+  const STEP = (x, y) => {
+    const by = ahead(x, y), gap = x.s - y.s;
+    if (by) return by === 'gate' || gap > LEAD_BY ? 'clear' : 'lead';
+    return !gap ? 'level' : gap <= CLOSE ? 'close' : gap <= LEAD_BY ? 'lead' : 'clear';
+  };
   function standing(top) {
     if (!top[1]) return null;
-    const gap = top[0].s - top[1].s, x = top[0].p.name, y = top[1].p.name;
-    if (!gap) return { kind: 'level', gap, pill: 'A close call', line: `${x} and ${y} fit your answers equally well, so either is a sound choice.` };
-    if (gap <= CLOSE) return { kind: 'close', gap, pill: 'A close call', line: `${x} is slightly ahead of ${y} for your answers, and either would work.` };
-    if (gap <= LEAD_BY) return { kind: 'lead', gap, pill: 'A clear lead', line: `${x} is ahead of ${y} for what you need.` };
-    return { kind: 'clear', gap, pill: 'A clear winner', line: `${x} is well ahead of ${y} for what you need.` };
+    const kind = STEP(top[0], top[1]), gap = top[0].s - top[1].s, tier = ahead(top[0], top[1]), x = top[0].p.name, y = top[1].p.name;
+    const line = {
+      level: ['A close call', `${x} and ${y} fit your answers equally well, so either is a sound choice.`],
+      close: ['A close call', `${x} is slightly ahead of ${y} for your answers, and either would work.`],
+      lead: ['A clear lead', `${x} is ahead of ${y} for what you need.`],
+      clear: ['A clear winner', `${x} is well ahead of ${y} for what you need.`],
+    }[kind];
+    return { kind, gap, tier, pill: line[0], line: line[1] };
   }
   // The same steps for any platform against the first ("Had a platform in mind?"); the one being left can be ahead
-  const behind = (gap) => (gap < 0 ? 'ahead of' : !gap ? 'level with' : gap <= CLOSE ? 'slightly behind' : gap <= LEAD_BY ? 'behind' : 'well behind');
+  const behind = (r, lead) => {
+    if (ahead(r, lead) || (sameTier(r, lead) && r.s > lead.s)) return 'ahead of';
+    return { level: 'level with', close: 'slightly behind', lead: 'behind', clear: 'well behind' }[STEP(lead, r)];
+  };
 
   // Answers that add and take nothing, used for questions an old shared link (v=1) didn't have
   const NEUTRAL = { needs: 'none', moving: 'no', budget: 'any' };
@@ -362,6 +422,6 @@
   const LOW_FIT = 4;
   // Answers that pull against each other, with the question to change
   const conflict = (a) => (a.what === 'custom' && a.who === 'easy' ? 'who' : null);
-  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
+  const api = { QUESTIONS, options, rank, candidates, explain, standing, behind, tied, near, ahead, sameTier, fitLines, PHRASE, DOES, weight, TIP, LEAD, LACKS, NEUTRAL, notIdealFor, LOW_FIT, conflict, costRow };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.cmsScore = api;
 })(typeof window !== 'undefined' ? window : globalThis);
