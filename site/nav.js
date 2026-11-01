@@ -288,15 +288,16 @@
     .jsal-menu .home .ico { background: none; color: var(--jsal-muted); }
     .jsal-menu .ico .l { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
     .jsal-menu .ico .g { fill: currentColor; }
-    .jsal-menu .ico.tile { background: none; color: var(--jsal-tool-ink); }
-    .jsal-menu .ico.tile .t { fill: var(--tile); stroke: var(--tile-edge, none); }
-    .jsal-menu .ico.tile .g { fill: var(--jsal-tool-gem); }
-    .jsal-menu .ico.tile .cut { stroke: var(--tile); stroke-width: 2.4; paint-order: stroke; }   /* the gem cuts its gap where it overlaps the frame */
+    /* jsal-ico-tile, not "tile": the menu sits on every page, and the home page's bento boxes are .tile */
+    .jsal-menu .jsal-ico-tile { background: none; color: var(--jsal-tool-ink); }
+    .jsal-menu .jsal-ico-tile .t { fill: var(--tile); stroke: var(--tile-edge, none); }
+    .jsal-menu .jsal-ico-tile .g { fill: var(--jsal-tool-gem); }
+    .jsal-menu .jsal-ico-tile .cut { stroke: var(--tile); stroke-width: 2.4; paint-order: stroke; }   /* the gem cuts its gap where it overlaps the frame */
   </style>`);
 
   const isHere = (href) => href !== '/' && here.startsWith(href);
   const item = (a, home) => `<a href="${a.href}" role="menuitem"${isHere(a.href) ? ' aria-current="page"' : ''}${home ? ' class="home"' : ''}>
-      <span class="ico${a.tile ? ' tile' : ''}">${appIcon(a)}</span>
+      <span class="ico${a.tile ? ' jsal-ico-tile' : ''}">${appIcon(a)}</span>
       <span><b>${a.name}</b>${a.desc ? `<small>${a.desc}</small>` : ''}</span>
       ${home ? '' : isHere(a.href) ? '<span class="here">You’re here</span>' : a.tag ? `<span class="tag">${a.tag}</span>` : '<span></span>'}
     </a>`;
