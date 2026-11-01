@@ -444,24 +444,29 @@
       const home = stop.offsetLeft + stop.offsetWidth / 2;
       const x0 = j.offsetLeft + 0.1355 * em - home, y0 = -0.389 * em;
       // The j, in the drawing's units (shell.css): from the icon's short j (a half-circle hook) to the name's j (taller,
-      // its hook turning a third past the quarter), round ends throughout. Each frame is a small SVG in --jsal-j-draw;
-      // at the two ends the stylesheet's own drawings show, so the first and last frames match them exactly.
+      // its hook turning a third past the quarter), round ends throughout. From the start until it has reshaped it's a
+      // small SVG over the letter's box (.jsal-j-draw), as the fold stops at the first frame; then the stylesheet's own
+      // j shows again, so the last frame matches every page exactly.
       const n = (v) => Math.round(v * 100) / 100;
-      const jFrame = (m) => {
+      const NS = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(NS, 'svg'), path = document.createElementNS(NS, 'path');
+      svg.setAttribute('class', 'jsal-j-draw'); svg.setAttribute('viewBox', '0 0 900 1050'); svg.setAttribute('aria-hidden', 'true');
+      svg.appendChild(path);
+      const shape = (m) => {
         const x = 585.5, r = lerp(167.6, 100, m), y = lerp(638, 780, m), th = lerp(Math.PI, (2 * Math.PI) / 3, m);
         const top = lerp(452, 277.5, m), w = lerp(149, 147, m);
         const ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th);
-        return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'><path d='M${x} ${n(top)}V${n(y)}A${n(r)} ${n(r)} 0 0 1 ${n(ex)} ${n(ey)}' fill='none' stroke='black' stroke-width='${n(w)}' stroke-linecap='round'/></svg>`;
+        path.setAttribute('d', `M${x} ${n(top)}V${n(y)}A${n(r)} ${n(r)} 0 0 1 ${n(ex)} ${n(ey)}`);
+        path.setAttribute('stroke-width', n(w));
       };
       logo.classList.add('jsal-unfolding');
       // t in ms: 300 still, the gem lifts (300-500), arcs over the name (480-1100) and lands with a small swell
       // (1100-1260); the j reshapes (560-1040) and its dot fills in over the second half of that; "io" and the
       // arrow fade in (1000-1320)
       const draw = (t) => {
-        const m = ease(clamp((t - 560) / 480));
-        logo.classList.toggle('jsal-j-done', m >= 1);
-        if (m <= 0 || m >= 1) j.style.removeProperty('--jsal-j-draw');
-        else j.style.setProperty('--jsal-j-draw', `url("data:image/svg+xml,${encodeURIComponent(jFrame(m))}")`);
+        const m = ease(clamp((t - 560) / 480)), drawing = m < 1;
+        if (drawing) { shape(m); if (!svg.isConnected) j.appendChild(svg); } else if (svg.isConnected) svg.remove();
+        j.classList.toggle('jsal-drawing', drawing);
         const lift = out(clamp((t - 300) / 200)), f = ease(clamp((t - 480) / 620));
         const ax = x0, ay = y0 - 0.09 * em * lift, cx = x0 / 2, cy = -1.08 * em;   // the arc: from above the j, high over "sal"
         const gx = (1 - f) ** 2 * ax + 2 * (1 - f) * f * cx;
@@ -489,7 +494,7 @@
         stop.style.transform = io.style.transform = io.style.opacity = '';
         if (caret) caret.style.opacity = '';
         j.style.removeProperty('--jsal-dot');
-        logo.classList.remove('jsal-unfolding', 'jsal-j-done');
+        logo.classList.remove('jsal-unfolding');
         setTimeout(() => logo.classList.add('jsal-glint'), 130);
         setTimeout(() => logo.classList.remove('jsal-glint'), 980);
       };
