@@ -31,7 +31,6 @@
   --jsal-shadow: 0 1px 2px rgba(60, 40, 10, 0.08);
   --jsal-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --jsal-radius: 6px;
-  --jsal-mark-edge: transparent;   /* the logo's slate tile needs an edge only on the dark page */
   color-scheme: light;
 }
 /* Dark is for screens only: printing always uses the light colours (dark ink on white paper) */
@@ -43,7 +42,7 @@
     --jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
     --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0956a; --jsal-warn-soft: #34231b;
     --jsal-bad: #ff8c96; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
-    --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill); --jsal-mark-edge: var(--jsal-line-hi);
+    --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill);
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
     color-scheme: dark;
   }
@@ -56,7 +55,7 @@
     --jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
     --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0956a; --jsal-warn-soft: #34231b;
     --jsal-bad: #ff8c96; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
-    --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill); --jsal-mark-edge: var(--jsal-line-hi);
+    --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill);
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
     color-scheme: dark;
   }
@@ -191,19 +190,45 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
   font-weight: 700; font-size: 18px; line-height: 1.65; letter-spacing: -0.02em;
   color: var(--jsal-ink); text-decoration: none; white-space: nowrap;
 }
-.jsal-brand span { color: var(--jsal-accent); }
-/* The mark beside the wordmark: the j and its gem on a slate tile, the same drawing as /favicon.svg */
-.jsal-brand::before {
-  content: ""; width: 28px; height: 28px; margin-right: 10px; flex-shrink: 0; border-radius: var(--jsal-radius);
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111318'/%3E%3Cpath d='M16 8V19a4.5 4.5 0 0 1-9 0' fill='none' stroke='%23ece6d6' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M24 18l4 4-4 4-4-4z' fill='%23e3b04b'/%3E%3C/svg%3E") center / 100% no-repeat;
-  box-shadow: 0 0 0 1px var(--jsal-mark-edge);
-}
-/* Phones: the wordmark alone (its gem still says jsal.io), so a tool's title and About keep to one row */
-@media (max-width: 520px) { .jsal-brand::before { display: none; } }
-/* The wordmark's full stop drawn as the gem; the "." stays in the text for copying and screen readers */
+.jsal-brand .jsal-io, .jsal-brand .jsal-caret { color: var(--jsal-accent); }
+/* The name's full stop drawn as the gem; the "." stays in the text for copying and screen readers */
 .jsal-brand .jsal-stop {
   display: inline-block; width: 0.34em; height: 0.34em; margin: 0 0.05em 0 0.07em; overflow: hidden;
   color: transparent; background: var(--jsal-accent); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+/* First page of a visit: the name opens folded into the mark, a J and its gem, and /nav.js unfolds it. The letters
+   keep their places, so nothing beside the logo moves; the J is drawn over the j, in a box from 0.75em above the
+   baseline to 0.3em below it (its units are thousandths of an em). */
+.jsal-brand .jsal-j { position: relative; }
+html.jsal-intro [data-jsal-nav] .jsal-j, [data-jsal-nav].jsal-unfolding .jsal-j { color: transparent; }
+html.jsal-intro [data-jsal-nav] .jsal-sal { clip-path: inset(0 100% 0 0); }
+html.jsal-intro [data-jsal-nav] .jsal-stop, html.jsal-intro [data-jsal-nav] .jsal-io { transform: translateX(-1.14em); }
+html.jsal-intro [data-jsal-nav] .jsal-io { opacity: 0; }
+html.jsal-intro [data-jsal-nav] .jsal-j::before, .jsal-morph {
+  position: absolute; left: -0.1em; top: 0.42em; width: 0.9em; height: 1.05em;
+}
+html.jsal-intro [data-jsal-nav] .jsal-j::before {
+  content: ""; background: var(--jsal-ink);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M486 97V507.5A168 168 0 0 1 150 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1050'%3E%3Cpath d='M486 97V507.5A168 168 0 0 1 150 507.5' fill='none' stroke='black' stroke-width='149' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+}
+.jsal-morph { overflow: visible; color: var(--jsal-ink); pointer-events: none; }
+/* Once unfolded, a light runs across the gem and on over "io", like loot catching the light */
+.jsal-brand .jsal-stop { position: relative; }
+[data-jsal-nav].jsal-glint .jsal-stop::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-120%);
+  background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 0.85) 50%, transparent 70%);
+  animation: jsal-glint .3s ease-in;
+}
+[data-jsal-nav].jsal-glint .jsal-io {
+  background: linear-gradient(115deg, var(--jsal-accent) 40%, rgb(255 255 255 / 0.85) 50%, var(--jsal-accent) 60%) 100% 0 / 300% 100% no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: jsal-glint-text .5s ease-out .18s both;
+}
+@keyframes jsal-glint { to { transform: translateX(120%); } }
+@keyframes jsal-glint-text { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@media (prefers-reduced-motion: reduce) {
+  [data-jsal-nav].jsal-glint .jsal-stop::after { display: none; }
+  [data-jsal-nav].jsal-glint .jsal-io { animation: none; background: none; color: var(--jsal-accent); }
 }
 /* Page titles in the home page's serif, the gold word in italic (as "one job" on the home page) */
 .jsal-title { margin: 0; font: 700 20px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }

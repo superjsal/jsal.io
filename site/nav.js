@@ -401,4 +401,65 @@
   }
   window.jsalNavReady = true;
   if (document.prerendering) document.addEventListener('prerenderingchange', replayEarly, { once: true }); else replayEarly();
+
+  // The logo on the first page of a visit: it opens as the mark, a J and its gem (folded by the head script before the
+  // first paint), then the J sinks through the line into the j of jsal while the gem slides right and the rest of the
+  // name comes out from behind it, and a light runs across the gem and on over "io". Once per visit; a page loaded ahead shows the name
+  // as it is.
+  (() => {
+    const root = document.documentElement;
+    const unfold = () => root.classList.remove('jsal-intro');
+    const logo = document.querySelector('[data-jsal-nav]');
+    const part = (c) => logo && logo.querySelector('.jsal-' + c);
+    const [j, sal, stop, io] = ['j', 'sal', 'stop', 'io'].map(part);
+    if (!root.classList.contains('jsal-intro') || document.prerendering || !(j && sal && stop && io)) return unfold();
+    try { sessionStorage.setItem('jsal-intro', '1'); } catch (e) {}
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const clamp = (t) => Math.max(0, Math.min(1, t));
+    const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - (2 - 2 * t) ** 2 / 2);
+    const play = () => {
+      if (!root.classList.contains('jsal-intro')) return;
+      const em = parseFloat(getComputedStyle(logo).fontSize);
+      // Where the letters sit unfolded (offsets ignore the fold's transforms); folded, the gem sits 0.535em after the j
+      const shift = stop.offsetLeft - (j.offsetLeft + 0.535 * em), salW = sal.offsetWidth;
+      j.insertAdjacentHTML('beforeend', '<svg class="jsal-morph" viewBox="0 0 900 1050" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-linecap="round"/><circle fill="currentColor" cx="236" cy="58" r="0"/></svg>');
+      const svg = j.lastElementChild, path = svg.firstElementChild, dot = svg.lastElementChild;
+      // Its box starts 0.75em above the j's baseline, measured here in case the font's line metrics differ
+      const probe = document.createElement('span');
+      probe.style.cssText = 'display:inline-block;width:0;height:0';
+      j.append(probe);
+      svg.style.top = `${probe.getBoundingClientRect().bottom - j.getBoundingClientRect().top - 0.75 * em}px`;
+      probe.remove();
+      logo.classList.add('jsal-unfolding');
+      unfold();
+      // m: the J becomes the j (the stem sinks and steps left, the hook turns from a half circle to a quarter, the dot
+      // appears); u: the gem and "io" slide to their places, "sal" shows from the left a step behind the gem, "io" fades in
+      const draw = (m, u) => {
+        const x = lerp(486, 235.5, m), r = lerp(168, 70, m), y = lerp(507.5, 810, m), th = lerp(Math.PI, Math.PI / 2, m), tail = lerp(0, 15.5, m);
+        const ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th);
+        path.setAttribute('d', `M${x} ${lerp(97, 277.5, m)}V${y}A${r} ${r} 0 0 1 ${ex} ${ey}l${-Math.sin(th) * tail} ${Math.cos(th) * tail}`);
+        path.setAttribute('stroke-width', lerp(149, 147, m));
+        dot.setAttribute('r', 80 * clamp((m - 0.55) / 0.45));
+        const back = `translateX(${-(1 - u) * shift}px)`;
+        stop.style.transform = io.style.transform = back;
+        sal.style.clipPath = `inset(0 ${(1 - u) * salW}px 0 0)`;
+        io.style.opacity = clamp((u - 0.55) / 0.45);
+      };
+      draw(0, 0);
+      const start = performance.now() + 300;
+      const step = (now) => {
+        const t = now - start;
+        draw(ease(clamp(t / 520)), ease(clamp((t - 440) / 520)));
+        if (t < 960) return requestAnimationFrame(step);
+        // Hand over to the real letters: the drawn j fades as the j of the text comes back
+        stop.style.transform = io.style.transform = sal.style.clipPath = io.style.opacity = '';
+        j.style.transition = 'color .15s'; svg.style.transition = 'opacity .15s';
+        logo.classList.remove('jsal-unfolding'); svg.style.opacity = '0';
+        setTimeout(() => { svg.remove(); j.style.transition = ''; logo.classList.add('jsal-glint'); }, 200);
+        setTimeout(() => logo.classList.remove('jsal-glint'), 1000);
+      };
+      requestAnimationFrame(step);
+    };
+    document.fonts.ready.then(play, play);
+  })();
 })();

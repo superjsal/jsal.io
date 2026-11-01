@@ -10,8 +10,7 @@
 * { box-sizing: border-box; margin: 0; }
 html, body { width: 1200px; height: 628px; overflow: hidden; }
 body { background: #111318; color: #ece6d6; font-family: Inter, "Segoe UI", sans-serif; padding: 64px 72px; display: grid; grid-template-columns: 1fr 470px; gap: 56px; align-items: center; }
-.brand { position: absolute; left: 72px; top: 48px; display: flex; align-items: center; gap: 16px; font: 700 30px/1 Inter, sans-serif; letter-spacing: -0.02em; }
-.brand img { width: 46px; height: 46px; display: block; border-radius: 10px; box-shadow: 0 0 0 1.5px #3d424e; }
+.brand { position: absolute; left: 72px; top: 56px; font: 700 30px/1 Inter, sans-serif; letter-spacing: -0.02em; }
 .brand .stop { display: inline-block; width: 0.34em; height: 0.34em; margin: 0 0.05em 0 0.07em; background: #e3b04b; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
 .brand .io, .gold { color: #e3b04b; }
 .text { padding-top: 40px; }
@@ -53,7 +52,7 @@ h1 em { display: inline-block; margin-left: 0.9em; font-weight: 600; color: #e3b
 </style>
 </head>
 <body>
-<div class="brand"><img src="../../brand/mark.svg" alt=""><span>jsal<span class="io"><i class="stop"></i>io</span></span></div>
+<div class="brand">jsal<span class="io"><i class="stop"></i>io</span></div>
 <div class="text">
   <p class="label" id="label"></p>
   <h1 id="title"></h1>

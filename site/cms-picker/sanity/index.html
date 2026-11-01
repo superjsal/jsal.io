@@ -9,8 +9,8 @@
   <meta name="description" content="Sanity SEO answered: titles, URLs, redirects, schema, noindex and AI crawlers, and what each takes, checked against Sanity’s own docs." />
   <link rel="canonical" href="https://jsal.io/cms-picker/sanity/" />
   <link rel="icon" href="/favicon.svg?v=fce72ce3" type="image/svg+xml">
-  <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet -->
-  <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});</script>
+  <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet; the first page of a visit folds the logo into its mark before the first paint, for /nav.js to unfold -->
+  <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});try{if(!sessionStorage.getItem("jsal-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){var h=document.documentElement;h.classList.add("jsal-intro");setTimeout(function(){h.classList.remove("jsal-intro")},4e3);}}catch(e){}</script>
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
@@ -93,17 +93,17 @@
 
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <!-- The shared styles (each ?v= is its file's content hash) -->
-  <link rel="stylesheet" href="/shell.css?v=bf30df23">
+  <link rel="stylesheet" href="/shell.css?v=08d15ade">
   <link rel="stylesheet" href="../styles.css?v=67c47b60" />
   <link rel="stylesheet" href="../platform.css?v=abda2545" />
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=f9645058" defer></script>
+  <script src="/nav.js?v=06673705" defer></script>
 </head>
 <body>
   <main class="app">
 
     <header class="app-header jsal-top">
-      <a class="jsal-brand" href="/" data-jsal-nav>jsal<span><span class="jsal-stop">.</span>io</span><span class="jsal-caret"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></a>
+      <a class="jsal-brand" href="/" data-jsal-nav><span class="jsal-j">j</span><span class="jsal-sal">sal</span><span class="jsal-stop">.</span><span class="jsal-io">io</span><span class="jsal-caret"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></a>
       <p class="jsal-title">CMS <span class="hl">Picker</span></p>
       <div class="jsal-actions">
         <a class="jsal-link" href="#about">About</a>

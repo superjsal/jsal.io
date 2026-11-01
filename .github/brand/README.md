@@ -12,7 +12,7 @@ tracked -0.02em, with the same gem as its full stop and "io" in gold.
 | `mark-large.svg` | The icon from about 96px up: the gem gets two light facets |
 | `mark-square.svg` | The phone home-screen icon: square corners, since iOS and Android round them |
 | `mark-mono.svg` | The j and gem without the tile, in one colour (`currentColor`) |
-| `lockup-light.svg`, `lockup-dark.svg` | The tile and the wordmark, for light and dark backgrounds |
+| `lockup-light.svg`, `lockup-dark.svg` | The tile and the wordmark, for light and dark backgrounds (see below for where) |
 | `lockup-mono.svg` | The j, the gem and the wordmark in one colour (`currentColor`), no tile |
 | `wordmark-light.svg`, `wordmark-dark.svg` | The wordmark alone |
 | `png/mark-16.png`, `-32`, `-180`, `-512` | PNG exports of the icon |
@@ -20,10 +20,25 @@ tracked -0.02em, with the same gem as its full stop and "io" in gold.
 The lockups' text is outlined, so they look the same without Inter installed. `make-brand.py` rewrites every
 SVG here and `site/favicon.svg`; edit the mark in that script, not in the files.
 
-On the site the top bar draws the lockup with CSS (`.jsal-brand` in `site/shell.css`): the tile is the same
-drawing as `favicon.svg`, and the gem is the "." of the text clipped to a diamond, so copying the name or
-reading it aloud still gives "jsal.io". `site/favicon.ico` (16 and 32) and `site/apple-touch-icon.png` (180,
-from `.github/build/og/icon.html`) are exports of the mark. The link previews draw it from `og.html`.
+## Where each version goes
+
+- **Square spaces** (the browser tab, the phone home screen, bookmarks): the tile. `site/favicon.svg` is
+  `mark.svg`; `site/favicon.ico` (16 and 32) and `site/apple-touch-icon.png` (180, from
+  `.github/build/og/icon.html`) are exports of it.
+- **Anywhere the name fits** (the site's top bar, the link previews' corner): the wordmark alone. The tab icon
+  already shows the tile, so the page doesn't repeat it. In the top bar the name is real text, and the gem is its
+  "." clipped to a diamond (`.jsal-stop` in `site/shell.css`), so copying it or reading it aloud gives "jsal.io".
+- **The lockups** (tile and name together) are for places where neither appears on its own, such as an email
+  signature.
+
+## The unfold
+
+On the first page of a visit the top bar's name opens as the tile's mark, a J and its gem, without the tile.
+The J sinks through the line into the lowercase j of jsal and gets its dot, the gem slides right with "sal"
+coming out behind it, "io" fades in, and a light runs across the gem and on over "io". About two seconds in all;
+the letters keep their places throughout, so nothing beside the logo moves. Each page's head script folds the
+name before the first paint, `site/nav.js` plays it, and later pages in the visit, pages loaded ahead and reduced
+motion show the name as it is.
 
 ## Colours
 
