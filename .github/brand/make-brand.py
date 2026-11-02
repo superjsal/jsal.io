@@ -116,41 +116,51 @@ files = {
     'wordmark-light.svg': lockup(INK, DEEP, None),
     'wordmark-dark.svg': lockup(PARCH, GOLD, None),
 }
-# Tool icons: one glyph per tool in the mark's language (32 grid, round-ended strokes, the gold gem used once for what
-# the tool does), on a tile in the tool's accent from its home page tile, and in one colour
-def stroke(d, c, w=3):
+# Tool icons: one picture per tool, line drawings with round ends and softened corners (line 2.2 on the 32 grid) and
+# the gold gem used once for what the tool does, on a tile in the tool's accent from its home page tile, and in one
+# colour. Each was drawn to fill a 32 grid and is set here at 70% about the tile's centre.
+def stroke(d, c, w=2.2):
     return f'<path d="{d}" fill="none" stroke="{c}" stroke-width="{w}" stroke-linecap="round" stroke-linejoin="round"/>'
 
 
-def gem_at(cx, cy, h, fill):
-    return f'<path d="M{cx} {cy - h}l{h} {h}-{h} {h}-{h}-{h}z" fill="{fill}"/>'
+def solid(d, c):
+    # A filled shape (an arrowhead) with its points rounded by a stroke of its own colour
+    return f'<path d="{d}" fill="{c}" stroke="{c}" stroke-width="1.45" stroke-linejoin="round"/>'
 
 
-FRAME = 'M6 6h14v14H6z'
-TOOLS = {   # file name: (tile colour, glyph drawn in ink with the gem's colour, and with a gap cut around an overlapping gem)
-    # Three platforms side by side; the one that fits stands tallest, wearing the gem like the mark's j
-    'cms-picker': ('#674690', lambda ink, g, bg: stroke('M9 19v5M16 14v10M23 21v3', ink, 4) + gem_at(16, 7.5, 3, g)),
-    # Tidy lines of text ending in the gem as their full stop, as the name does
-    'clean-paste': ('#5e430b', lambda ink, g, bg: stroke('M8 10h16M8 16h13M8 22h9', ink) + gem_at(22.5, 21, 2.5, g)),
-    # A picture's frame with the gem as the corner handle you drag to resize it, on the Image Resizer's teal
-    'image-resizer': ('#2a6a61', lambda ink, g, bg: (
-        f'<mask id="cut"><rect width="32" height="32" fill="#fff"/><path d="M22.5 16.6l5.9 5.9-5.9 5.9-5.9-5.9z"/></mask>'
-        f'<g mask="url(#cut)">{stroke(FRAME, ink)}</g>' + gem_at(22.5, 22.5, 4.5, g))),
-    # A checklist of steps: two done, and the gem marking the one you're on
-    'platform-playbook': ('#3b5a9a', lambda ink, g, bg: stroke(
-        'M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11', ink) + gem_at(8.5, 22.5, 3, g)),
+def gem(d, fill):
+    return f'<path d="{d}" fill="{fill}"/>'
+
+
+TOOLS = {   # file name: (tile colour, glyph drawn in ink with the gem's colour)
+    # A podium: the platform that fits stands on the top step, wearing the gem like the mark's j
+    'cms-picker': ('#674690', lambda ink, g: stroke(
+        'M9.21 23.35Q7.95 23.35 7.95 22.09L7.95 17.96Q7.95 16.7 9.21 16.7L11.59 16.7Q12.85 16.7 12.85 15.44L12.85 14.46'
+        'Q12.85 13.2 14.11 13.2L17.89 13.2Q19.15 13.2 19.15 14.46L19.15 17.89Q19.15 19.15 20.41 19.15L22.79 19.15'
+        'Q24.05 19.15 24.05 20.41L24.05 22.09Q24.05 23.35 22.79 23.35zM12.85 16.7v6.65M19.15 19.15v4.2', ink)
+        + gem('M16 6.9l2.1 2.1-2.1 2.1-2.1-2.1z', g)),
+    # A clipboard holding clean lines, the gem its clip
+    'clean-paste': ('#5e430b', lambda ink, g: stroke('M12.85 9.7H10.4v13.3h11.2V9.7h-2.45M13.2 15.3h5.6M13.2 19.15h3.5', ink)
+                    + gem('M16 7.25l2.1 2.1-2.1 2.1-2.1-2.1z', g)),
+    # A photo: its frame and hills, the gem the sun in its corner, on the Image Resizer's teal
+    'image-resizer': ('#2a6a61', lambda ink, g: stroke('M8.65 10.4h14.7v11.9h-14.7zM8.65 19.5l4.55-4.55 3.5 3.5 2.1-2.1 4.55 4.55', ink)
+                      + gem('M20.2 11.73l1.61 1.61-1.61 1.61-1.61-1.61z', g)),
+    # An open book, the gem its bookmark
+    'platform-playbook': ('#3b5a9a', lambda ink, g: stroke(
+        'M16 12.15C13.9 10.75 11.1 10.4 8.65 11.1v10.5c2.45-.7 5.25-.35 7.35 1.05 2.1-1.4 4.9-1.75 7.35-1.05V11.1'
+        'C20.9 10.4 18.1 10.75 16 12.15zM16 12.15v10.5', ink) + gem('M16 6.48l1.82 1.82-1.82 1.82-1.82-1.82z', g)),
     # Off the clock (/play/, not a tool, but in the same family): a loot bag holding the gem, on /play/'s green
-    'off-the-clock': ('#3f6b3a', lambda ink, g, bg: stroke(
-        'M13.6 10.6 12.4 7h7.2l-1.2 3.6M13.6 10.6C8.8 12.5 6.5 16 6.5 19.6c0 3.6 3 5.6 9.5 5.6s9.5-2 9.5-5.6c0-3.6-2.3-7.1-7.1-9zM13.4 10.6h5.2',
-        ink, 2.8) + gem_at(16, 18.6, 3.4, g)),
+    'off-the-clock': ('#3f6b3a', lambda ink, g: stroke(
+        'M14.18 12.08 13.34 9.35h5.32l-.84 2.73M14.18 12.08C10.82 13.48 9 16 9 18.66c0 2.66 2.24 4.13 7 4.13s7-1.47 7-4.13'
+        'c0-2.66-1.82-5.18-5.18-6.58zM14.04 12.08h3.92', ink) + gem('M16 15.44l2.38 2.38-2.38 2.38-2.38-2.38z', g)),
 }
 (OUT / 'tools').mkdir(exist_ok=True)
 for name, (bg, draw) in TOOLS.items():
     # The ink tile carries the dark tile's 1px edge everywhere, so it doesn't sink into a dark page
     rect = (f'<rect x=".5" y=".5" width="31" height="31" rx="6.5" fill="{bg}" stroke="{EDGE}"/>' if bg == INK
             else f'<rect width="32" height="32" rx="7" fill="{bg}"/>')
-    files[f'tools/{name}.svg'] = f'<svg {XMLNS} viewBox="0 0 32 32">{rect}{draw(PARCH, GOLD, bg)}</svg>'
-    files[f'tools/{name}-mono.svg'] = f'<svg {XMLNS} viewBox="2 2 28 28">{draw("currentColor", "currentColor", None)}</svg>'
+    files[f'tools/{name}.svg'] = f'<svg {XMLNS} viewBox="0 0 32 32">{rect}{draw(PARCH, GOLD)}</svg>'
+    files[f'tools/{name}-mono.svg'] = f'<svg {XMLNS} viewBox="5 5 22 22">{draw("currentColor", "currentColor")}</svg>'
 
 for name, svg in files.items():
     (OUT / name).write_text(svg + '\n', encoding='utf-8', newline='\n')

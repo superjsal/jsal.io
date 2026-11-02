@@ -153,7 +153,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
     newest change in each of the three most recently changed parts as a stack of notes, written from the changelog
     by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
   - **Each tool tile has its app icon as a watermark**, drawn large in the tile's ink at 14% with the gem in solid
-    gold, lined up with its words; hidden on upright phones.
+    gold, behind the tile's picture and never under its words (the CMS Picker's podium tilted like its cards, beside
+    and under them, and upright over its name on phones on their side); set per breakpoint, and hidden on upright phones. Updates has one too, a faint stack of notes with the gem on the
+    newest, over its words; Say hi stays plain.
   - **Breakouts:** a piece may poke a little past its tile (about 14px at most), never within 16px of another
     tile, and two breakouts never crowd each other. Mix straight and tilted pieces.
   - **The pictures are decoration** (`aria-hidden`): each tile's link reads as its name and line, and Say hi's

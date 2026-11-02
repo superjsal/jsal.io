@@ -106,23 +106,23 @@
       else el.remove();
     }
   }
-  // Each app's icon is drawn like the logo, on its 32-unit grid: round-ended strokes (.l) and the gold gem (.g) used once
-  // for what the tool does, on a tile in the tool's colour (--jsal-tool-*). Home is the logo's own tile, and Off the
-  // clock a loot bag holding the gem, on /play/'s green.
+  // Each app's icon is a small line drawing of what it does on its 32-unit grid: round-ended lines (.l), a solid shape
+  // where one is needed (.f) and the gold gem (.g) used once, on a tile in the tool's colour (--jsal-tool-*). Home is
+  // the logo's own tile, and Off the clock a loot bag holding the gem, on /play/'s green.
   const APPS = [   // the homepage's order: CMS Picker first, the team's Playbook last
     { href: '/cms-picker/', name: 'CMS Picker', tile: 'var(--jsal-tool-cms)',
-      icon: '<path class="l" d="M9 19v5M16 14v10M23 21v3" stroke-width="4"/><path class="g" d="M16 4.5l3 3-3 3-3-3z"/>' },
+      icon: '<path class="l" d="M9.21 23.35Q7.95 23.35 7.95 22.09L7.95 17.96Q7.95 16.7 9.21 16.7L11.59 16.7Q12.85 16.7 12.85 15.44L12.85 14.46Q12.85 13.2 14.11 13.2L17.89 13.2Q19.15 13.2 19.15 14.46L19.15 17.89Q19.15 19.15 20.41 19.15L22.79 19.15Q24.05 19.15 24.05 20.41L24.05 22.09Q24.05 23.35 22.79 23.35zM12.85 16.7v6.65M19.15 19.15v4.2" stroke-width="2.2"/><path class="g" d="M16 6.9l2.1 2.1-2.1 2.1-2.1-2.1z"/>' },
     { href: '/formatter/', name: 'Clean Paste', tile: 'var(--jsal-tool-paste)',
-      icon: '<path class="l" d="M8 10h16M8 16h13M8 22h9" stroke-width="3"/><path class="g" d="M22.5 18.5l2.5 2.5-2.5 2.5-2.5-2.5z"/>' },
+      icon: '<path class="l" d="M12.85 9.7H10.4v13.3h11.2V9.7h-2.45M13.2 15.3h5.6M13.2 19.15h3.5" stroke-width="2.2"/><path class="g" d="M16 7.25l2.1 2.1-2.1 2.1-2.1-2.1z"/>' },
     { href: '/image-resizer/', name: 'Image Resizer', tile: 'var(--jsal-tool-resize)',
-      icon: '<path class="l" d="M6 6h14v14H6z" stroke-width="3"/><path class="g cut" d="M22.5 18l4.5 4.5-4.5 4.5-4.5-4.5z"/>' },
+      icon: '<path class="l" d="M8.65 10.4h14.7v11.9h-14.7zM8.65 19.5l4.55-4.55 3.5 3.5 2.1-2.1 4.55 4.55" stroke-width="2.2"/><path class="g" d="M20.2 11.73l1.61 1.61-1.61 1.61-1.61-1.61z"/>' },
     { href: '/ic/', name: 'Platform Playbook', tag: 'Team', tile: 'var(--jsal-tool-playbook)',
-      icon: '<path class="l" d="M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11" stroke-width="3"/><path class="g" d="M8.5 19.5l3 3-3 3-3-3z"/>' },
+      icon: '<path class="l" d="M16 12.15C13.9 10.75 11.1 10.4 8.65 11.1v10.5c2.45-0.7 5.25-0.35 7.35 1.05 2.1-1.4 4.9-1.75 7.35-1.05V11.1C20.9 10.4 18.1 10.75 16 12.15zM16 12.15v10.5" stroke-width="2.2"/><path class="g" d="M16 6.48l1.82 1.82-1.82 1.82-1.82-1.82z"/>' },
   ];
   const HOME = { href: '/', name: 'jsal.io home', tile: 'var(--jsal-tool-home)', edge: true,
     icon: '<path class="l" d="M20 15V20a4.5 4.5 0 0 1-9 0" stroke-width="4"/><path class="g" d="M20 5l3 3-3 3-3-3z"/>' };
   const PLAY = { href: '/play/', name: 'Off the clock', tile: 'var(--jsal-tool-play)',
-    icon: '<path class="l" d="M13.6 10.6 12.4 7h7.2l-1.2 3.6M13.6 10.6C8.8 12.5 6.5 16 6.5 19.6c0 3.6 3 5.6 9.5 5.6s9.5-2 9.5-5.6c0-3.6-2.3-7.1-7.1-9zM13.4 10.6h5.2" stroke-width="2.8"/><path class="g" d="M16 15.2l3.4 3.4-3.4 3.4-3.4-3.4z"/>' };
+    icon: '<path class="l" d="M14.18 12.08 13.34 9.35h5.32l-0.84 2.73M14.18 12.08C10.82 13.48 9 16 9 18.66c0 2.66 2.24 4.13 7 4.13s7-1.47 7-4.13c0-2.66-1.82-5.18-5.18-6.58zM14.04 12.08h3.92" stroke-width="2.2"/><path class="g" d="M16 15.44l2.38 2.38-2.38 2.38-2.38-2.38z"/>' };
   // An app's icon on its tile, or a plain one (home, Off the clock) in the row's ink
   const appIcon = (a) => `<svg viewBox="0 0 32 32" width="${a.tile ? 32 : 22}" height="${a.tile ? 32 : 22}" aria-hidden="true"${a.tile ? ` style="--tile: ${a.tile}${a.edge ? '; --tile-edge: var(--jsal-tool-edge)' : ''}"` : ''}>${a.tile ? '<rect class="t" x=".5" y=".5" width="31" height="31" rx="6.5"/>' : ''}${a.icon}</svg>`;
   // Page transitions (/shell.css): while one plays the page is a picture, so a click straight after arriving did
@@ -337,11 +337,11 @@
     .jsal-menu .home .ico { background: none; color: var(--jsal-muted); }
     .jsal-menu .ico .l { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
     .jsal-menu .ico .g { fill: currentColor; }
+    .jsal-menu .ico .f { fill: currentColor; stroke: currentColor; stroke-width: 1.45; stroke-linejoin: round; }   /* an arrowhead, its points rounded */
     /* jsal-ico-tile, not "tile": the menu sits on every page, and the home page's bento boxes are .tile */
     .jsal-menu .ico.jsal-ico-tile { background: none; color: var(--jsal-tool-ink); }   /* outranks the home rows' muted ink */
     .jsal-menu .jsal-ico-tile .t { fill: var(--tile); stroke: var(--tile-edge, none); }
     .jsal-menu .jsal-ico-tile .g { fill: var(--jsal-tool-gem); }
-    .jsal-menu .jsal-ico-tile .cut { stroke: var(--tile); stroke-width: 2.4; paint-order: stroke; }   /* the gem cuts its gap where it overlaps the frame */
   </style>`);
 
   const isHere = (href) => href !== '/' && here.startsWith(href);
