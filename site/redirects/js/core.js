@@ -15,6 +15,8 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
 
 // Characters that stop an address working, each with how it's shown and the one-click fix if there's an obvious one
 const CHECKS = [
+  // Reports shorten long addresses for display (…/how-to-choose-a…), and copying the text copies the shortened one
+  { re: /\u2026|\.{3,}/g, say: (w) => `The ${w} was cut short, with … where a report left part of it out. Copy the whole address from its source`, fixes: [] },
   { re: /[  ]/g, say: (w) => `A space in the ${w}`, fixes: [["Encode it", (s) => s.replace(/[  ]/g, "%20")], ["Use a hyphen", (s) => s.replace(/[  ]+/g, "-")]] },
   { re: /[–—]/g, say: () => "A long dash, often from Word", fixes: [["Use - instead", (s) => s.replace(/[–—]/g, "-")]] },
   { re: /[‘’“”]/g, say: () => "Curly quotes, often from Word", fixes: [["Remove them", (s) => s.replace(/[‘’“”]/g, "")]] },
@@ -66,7 +68,7 @@ function characters(path, which, keepLetters) {
   let encodedNote = "";
   if (keepLetters) return { problems, path, encodedNote };
   const enc = path.replace(/[^\x00-\x7F]/gu, (ch) => {
-    if (/[ –—‘’“”]/.test(ch)) return ch;
+    if (/[\u2026 –—‘’“”]/.test(ch)) return ch;
     const e = encodeURIComponent(ch);
     if (!encodedNote) encodedNote = `${esc(ch)} written as ${e}, the way browsers send it`;   // the first one stands for the rest
     return e;
