@@ -148,6 +148,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
   .bar-actions { margin-left: auto; }
 }
 @media (max-width: 640px) {
+  /* The empty state's links stack one per line, without the dots that end up stranded when they wrap */
+  .drop-links { flex-direction: column; align-items: center; gap: 2px; }
+  .drop-links > span[aria-hidden] { display: none; }
   .pane { height: auto; max-height: none; }
   .pane-body { overflow: visible; }
   .sheet thead { display: none; }
@@ -164,7 +167,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 @media (pointer: coarse) {
   .cell, .txt, .head-in, .field { font-size: 16px; }   /* style: allow (iPhones zoom into smaller text boxes) */
   .del { width: 44px; height: 44px; margin-top: 0; }
-  .cell, .field, .fixes .jsal-btn.small, .overview .jsal-btn.small, .pane-foot .jsal-btn.link { min-height: 44px; }
+  .cell, .field, .fixes .jsal-btn.small, .overview .jsal-btn.small, .pane-foot .jsal-btn.link, .drop-links .jsal-btn.link { min-height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .drop, .fmt-btn svg { transition: none; }
