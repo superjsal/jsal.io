@@ -506,6 +506,8 @@ function renderFile() {
   const gone = missing ? `<span class="count">${plural(missing, "row", "rows")}</span> ${missing === 1 ? "isn’t" : "aren’t"} in this file until ${missing === 1 ? "it’s" : "they’re"} fixed. <button type="button" class="jsal-btn link" data-needs-you>Show ${missing === 1 ? "it" : "them"}</button>` : "";
   if ($("fileMissing").dataset.h !== gone) { $("fileMissing").innerHTML = gone; $("fileMissing").dataset.h = gone; }
   $("fileMissing").hidden = !missing;
+  $("foldCount").textContent = plural(inFile, "redirect", "redirects");
+  $("foldFmt").textContent = $("fmtSummary").textContent + (p.length > 1 ? ` · ${p.length} parts` : "");
 }
 
 // ── The file pane's controls ───────────────────────────────────────────────
@@ -570,6 +572,15 @@ $("downloadBtn").addEventListener("click", (e) => {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   window.jsalDone?.(e.currentTarget, "Downloaded");
 });
+
+// Hiding the file gives the sheet the width on a laptop screen; the choice is remembered for next time
+function fold(on) {
+  work.classList.toggle("folded", on);
+  store.set("jsal-redirects-folded", on ? "1" : "");
+}
+$("foldBtn").addEventListener("click", () => { fold(true); $("unfoldBtn").focus(); });
+$("unfoldBtn").addEventListener("click", () => { fold(false); $("foldBtn").focus(); });
+if (store.get("jsal-redirects-folded") === "1") fold(true);
 
 // Phones show one pane at a time
 for (const b of [$("viewSheet"), $("viewFile")]) b.addEventListener("click", () => {

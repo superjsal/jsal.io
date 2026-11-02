@@ -144,6 +144,19 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .file { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre; tab-size: 4; }
 .file:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius-sm); }
 
+/* ── Hiding the file: a narrow strip that says what's in it, so the sheet gets the width ── */
+
+.fold-btn { margin-left: -6px; padding: 4px 6px; min-height: 28px; }
+.fold-sum { display: grid; gap: 8px; padding: 12px 14px 0; font-size: 13px; line-height: 1.45; color: var(--jsal-ink-2); }
+.fold-sum p { margin: 0; }
+.fold-sum b { color: var(--jsal-ink); font-weight: 600; }
+.work:not(.folded) .fold-sum { display: none; }
+@media (min-width: 1100px) {
+  .app.has-content .work.folded { grid-template-columns: minmax(0, 1fr) 240px; }
+  .work.folded .file-pane :is(#parts, #fmtBtn, #foldBtn, #fmt, #fileInfo, .file-body) { display: none; }
+  .work.folded .file-missing:not([hidden]) { display: block; }   /* runs on as one sentence in the narrow strip */
+}
+
 /* ── Narrow screens: one pane at a time ─────────────────────────────────── */
 
 @media (max-width: 1099px) {
@@ -151,6 +164,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
   .app.has-content .views { display: flex; }
   .views > button { flex: 1; }
   .work[data-view="sheet"] .file-pane, .work[data-view="file"] .sheet-pane { display: none; }
+  .fold-btn, .fold-sum { display: none !important; }   /* the panes already take turns */
   .plat { flex: 1 1 100%; }
   .filter { flex: 1 1 100%; }
   /* Five filters as two even rows: three on top, two below */

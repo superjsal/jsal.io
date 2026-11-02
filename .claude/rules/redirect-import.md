@@ -32,7 +32,7 @@ paths:
 - **Kept in this browser:** the sheet (rows, edits, deletes, the platform's Format settings) is saved to localStorage
   (`jsal-redirects-sheet`) after each change and on `pagehide`, and comes back on load; Clear forgets it. The other
   columns of a loaded file aren't kept, so the column pickers hide after a restore. `/privacy/` says so; update it if
-  what's kept changes.
+  what's kept changes. `jsal-redirects-folded` remembers Hide file (desktop only; phones already show one pane).
 - **Copy sheet** copies the two columns as edited (deleted and empty rows dropped, the file's own headings first if it
   had them), tab-separated, to paste back over the source spreadsheet.
 - **Clipboard buttons:** read `e.currentTarget` before `await navigator.clipboard…`; after the await it's null, and

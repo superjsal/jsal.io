@@ -65,11 +65,11 @@
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update -->
   <link rel="stylesheet" href="/shell.css?v=df5ef931">
-  <link rel="stylesheet" href="styles.css?v=ea3b4fb3" />
+  <link rel="stylesheet" href="styles.css?v=87b4c235" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":    "./js/main.js?v=5ca5684c",
+        "./js/main.js":    "./js/main.js?v=cf12c3c5",
         "./js/core.js":    "./js/core.js?v=da3b22b3",
         "./js/formats.js": "./js/formats.js?v=5a99f0ac",
         "./js/xlsx.js":    "./js/xlsx.js?v=8b577352"
@@ -78,7 +78,7 @@
   </script>
   <!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app's modules have loaded -->
   <script src="/nav.js?v=4ae8b3c7" defer></script>
-  <script type="module" src="js/main.js?v=5ca5684c"></script>
+  <script type="module" src="js/main.js?v=cf12c3c5"></script>
 </head>
 <body>
   <main class="app" id="app">
@@ -169,6 +169,13 @@
           <h2 class="pane-title mono" id="fileName"></h2>
           <div class="jsal-seg parts" id="parts" aria-label="Part" hidden></div>
           <button type="button" class="fmt-btn" id="fmtBtn" aria-expanded="false" aria-controls="fmt"><span id="fmtSummary"></span> <b>Format</b><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <button type="button" class="fmt-btn fold-btn" id="foldBtn" aria-label="Hide file" title="Hide file"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16M8 9l3 3-3 3"/></svg></button>
+        </div>
+        <!-- With the file hidden, the pane folds to a narrow strip and the sheet takes the width -->
+        <div class="fold-sum" id="foldSum">
+          <p><b id="foldCount"></b> in the file</p>
+          <p id="foldFmt"></p>
+          <button type="button" class="jsal-btn small" id="unfoldBtn">Show the file</button>
         </div>
         <div class="fmt" id="fmt" hidden>
           <div class="opt" id="optNew"><span>New addresses</span><span class="jsal-seg"><button type="button" data-new="path" aria-pressed="true">Paths</button><button type="button" data-new="url" aria-pressed="false">Full URLs</button></span></div>
