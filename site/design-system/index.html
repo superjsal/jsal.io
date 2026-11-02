@@ -78,8 +78,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .theme { padding: 18px; border-radius: var(--jsal-radius-lg); border: 1px solid var(--t-line); background: var(--t-bg); color: var(--t-ink); }
 .theme h3 { margin: 0 0 14px; font: 700 17px/1.2 "Lora", Georgia, serif; color: inherit; }
 .theme h3 small { display: block; margin-top: 3px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
-.theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #e8e0d1; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #d8cfc0; --t-linehi: #bdb3a3; --t-accent: #7e5a00; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
-.theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #f0956a; --t-warnsoft: #34231b; --t-bad: #ff8c96; --t-badsoft: #3a1b22; --t-info: #8fb1ff; --t-infosoft: #1d2540; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
+.theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #e8e0d1; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #d8cfc0; --t-linehi: #bdb3a3; --t-accent: #7e5a00; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; --t-onfill: #1f1a12; --t-ring: rgba(126, 90, 0, 0.4); --t-markedge: transparent; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
+.theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #f0956a; --t-warnsoft: #34231b; --t-bad: #ff8c96; --t-badsoft: #3a1b22; --t-info: #8fb1ff; --t-infosoft: #1d2540; --t-onfill: #16130c; --t-ring: rgba(227, 176, 75, 0.35); --t-markedge: #6b7180; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
 .swatches { display: grid; gap: 8px; }
 .sw { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 0 12px; }
 .sw i { display: block; grid-row: span 2; height: 40px; border-radius: var(--jsal-radius); border: 1px solid var(--t-line); }
@@ -312,7 +312,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <ul class="facts">
       <li><b>3</b><span>typefaces, self-hosted</span></li>
       <li><b>24</b><span>colour tokens × 2 themes</span></li>
-      <li><b>6</b><span>tool icons, one family</span></li>
+      <li><b>7</b><span>tool icons, one family</span></li>
       <li><b>6</b><span>corner radii</span></li>
       <li><b>1</b><span>column, three widths</span></li>
       <li><b>0</b><span>build steps</span></li>
@@ -327,7 +327,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h2>A web developer's <em style="font-style:italic;font-weight:600;color:var(--jsal-accent)">workbench</em>, open to anyone.</h2>
     <p class="intro">jsal.io is John Salvador's personal site: a web developer working in technical SEO, publishing the small browser tools he builds for the jobs around a website. Nothing is uploaded, nothing is sold, and the tools do one job each.</p>
     <h3>Identity</h3>
-    <p>The name is always written <b>jsal.io</b>, with the <span style="color:var(--jsal-accent);font-weight:700">.io</span> in gold, or <b>John Salvador</b> in full. Never the four letters on their own as a name: a well-known YouTuber uses them. The logo is a lowercase j on a slate tile, its dot a gold gem: the tab icon and the home-screen icon. In the top bar the name stands on its own, in Inter at 700, 18px, tracked slightly tight (−0.02em), with two drawn touches: the j has round ends, the one soft letter (friends say the letter J, then Sal), and the full stop is cut as the gem.</p>
+    <p>The name is always written <b>jsal.io</b>, with the <span style="color:var(--jsal-accent);font-weight:700">.io</span> in gold, or <b>John Salvador</b> in full. Never the four letters on their own as a name: a well-known YouTuber uses them. The logo is a lowercase j on a slate tile, its dot a gold gem: the tab icon and the home-screen icon. In the top bar the name stands on its own, in Inter at 700, 18px, tracked slightly tight (−0.02em), with two drawn touches: the j has round ends, the one soft letter (friends say the letter J, then Sal), and the full stop is cut as the gem. On the first page of a visit the name unfolds from the logo: the j's stem rises, its dot pinches off and knocks the gem along to the full stop, and "io" slides out of the landed gem. On the 404 the gem falls from the i and hops along the letter tops to land as the full stop.</p>
     <h3>Tool icons</h3>
     <p>Each tool has an icon in the logo's family: a rounded tile in the tool's colour (the deep shade of its home tile's tint), a simple drawing of what it does in parchment strokes, and the gold gem. One file does every job: the tab icon, the mark before the tool's name in the top bar and the logo menu, and the faint watermark on its home tile. Like the logo, the tiles keep their colours in both themes, from the <code>--jsal-tool-*</code> tokens in <code>shell.css</code>.</p>
     <ul class="icons">
@@ -340,11 +340,11 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><img src="/img/icons/jsal-io.svg?v=f9148b71" alt="" width="48" height="48">jsal.io home</li>
     </ul>
     <h3>Personality</h3>
-    <p>Plain-spoken and exact: the copy says what a thing does and who it's for, in words a client would use ("Keep old links working when pages move", not "301 redirect management"). A little playful at the edges: a gamer's touches that never get in the way of the work, such as achievements for using the tools, a game-inventory "Backpack" for contact details, and a Warcraft lore sample post in Clean Paste.</p>
+    <p>Plain-spoken and exact: the copy says what a thing does and who it's for, in words a client would use ("Keep old links working when pages move", not "301 redirect management"). A little playful at the edges: a gamer's touches that never get in the way of the work, such as achievements for using the tools, a game-inventory "Backpack" for contact details, a Warcraft lore sample post in Clean Paste, the home tiles' pictures (Clean Paste's is a raid night note) and the 404's hopping gem.</p>
     <h3>Visual direction</h3>
-    <p>The palette is named in the code as "the home page's Azeroth one": parchment and gold in light mode; dark slate, gold and arcane blue in dark. Serif headings (Lora) over a humanist sans (Inter), with a monospace (JetBrains Mono) for the small gold labels that sit above headings. The result reads as editorial rather than as a SaaS dashboard, which is deliberate: the tools are presented, not marketed.</p>
+    <p>The palette is named in the code as "the home page's Azeroth one": parchment and gold in light mode; dark slate, gold and arcane blue in dark. Serif headings (Lora) over a humanist sans (Inter), with a monospace (JetBrains Mono) for the small labels that sit above headings, gold on the site's own pages and muted on the tools, where gold is kept for what you act on. The result reads as editorial rather than as a SaaS dashboard, which is deliberate: the tools are presented, not marketed.</p>
     <h3>Audience</h3>
-    <p>Writers and editors pasting into a CMS (Clean Paste); anyone resizing images for a site (Image Resizer); people choosing a website platform and the agencies advising them (CMS Picker); and John's own team, through a sign-in-only Platform Playbook that follows the same rules.</p>
+    <p>Writers and editors pasting into a CMS (Clean Paste); anyone resizing images for a site (Image Resizer); people choosing a website platform and the agencies advising them (CMS Picker); anyone moving a site to a new platform, and the SEOs and developers doing the move (Redirect Import); and John's own team, through a sign-in-only Platform Playbook that follows the same rules.</p>
   </section>
 
   <section class="sec" id="philosophy">
@@ -378,6 +378,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
           <div class="sw"><i style="background:var(--t-sunk)"></i><b>Sunk</b><code>--jsal-sunk</code><code>#e8e0d1</code></div>
           <div class="sw"><i style="background:var(--t-line)"></i><b>Line</b><code>--jsal-line</code><code>#d8cfc0</code></div>
           <div class="sw"><i style="background:var(--t-linehi)"></i><b>Line, firm</b><code>--jsal-line-hi</code><code>#bdb3a3</code></div>
+          <div class="sw"><i style="background:var(--t-markedge)"></i><b>Logo edge</b><code>--jsal-mark-edge</code><code>none</code><small>the logo tile needs no edge on cream</small></div>
         </div>
         <p class="group">Text</p>
         <div class="swatches">
@@ -390,6 +391,10 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
           <div class="sw"><i style="background:var(--t-accent)"></i><b>Accent</b><code>--jsal-accent</code><code>#7e5a00</code><small>text and links, 4.5:1</small></div>
           <div class="sw"><i style="background:var(--t-fill)"></i><b>Fill</b><code>--jsal-fill</code><code>#e3b04b</code><small>main buttons, text on images</small></div>
           <div class="sw"><i style="background:var(--t-accentsoft)"></i><b>Accent, soft</b><code>--jsal-accent-soft</code><code>#f1e3c2</code><small>selected tint</small></div>
+          <div class="sw"><i style="background:var(--t-onfill)"></i><b>On fill</b><code>--jsal-on-fill</code><code>#1f1a12</code><small>text on a gold button</small></div>
+          <div class="sw"><i style="background:var(--t-fill)"></i><b>Gold line</b><code>--jsal-gold-line</code><code>= fill</code><small>the insight bar, selected borders</small></div>
+          <div class="sw"><i style="background:var(--t-accent)"></i><b>Fill edge</b><code>--jsal-fill-edge</code><code>= accent</code><small>a gold button's edge on cream</small></div>
+          <div class="sw"><i style="background:var(--t-ring)"></i><b>Ring</b><code>--jsal-accent-ring</code><code>40%</code><small>accent at 40%, a soft gold glow</small></div>
         </div>
         <p class="group">Meaning</p>
         <div class="swatches">
@@ -414,6 +419,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
           <div class="sw"><i style="background:var(--t-sunk)"></i><b>Sunk</b><code>--jsal-sunk</code><code>#22262f</code></div>
           <div class="sw"><i style="background:var(--t-line)"></i><b>Line</b><code>--jsal-line</code><code>#2a2e38</code></div>
           <div class="sw"><i style="background:var(--t-linehi)"></i><b>Line, firm</b><code>--jsal-line-hi</code><code>#3d424e</code></div>
+          <div class="sw"><i style="background:var(--t-markedge)"></i><b>Logo edge</b><code>--jsal-mark-edge</code><code>#6b7180</code><small>keeps the slate tile from sinking, 3:1</small></div>
         </div>
         <p class="group">Text</p>
         <div class="swatches">
@@ -424,8 +430,12 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <p class="group">Gold</p>
         <div class="swatches">
           <div class="sw"><i style="background:var(--t-accent)"></i><b>Accent</b><code>--jsal-accent</code><code>#e3b04b</code><small>one gold in the dark</small></div>
-          <div class="sw"><i style="background:var(--t-fill)"></i><b>Fill</b><code>--jsal-fill</code><code>#e3b04b</code><small>on-fill ink #16130c</small></div>
+          <div class="sw"><i style="background:var(--t-fill)"></i><b>Fill</b><code>--jsal-fill</code><code>#e3b04b</code><small>main buttons</small></div>
           <div class="sw"><i style="background:var(--t-accentsoft)"></i><b>Accent, soft</b><code>--jsal-accent-soft</code><code>#2c2618</code><small>selected tint</small></div>
+          <div class="sw"><i style="background:var(--t-onfill)"></i><b>On fill</b><code>--jsal-on-fill</code><code>#16130c</code><small>text on a gold button</small></div>
+          <div class="sw"><i style="background:var(--t-accent)"></i><b>Gold line</b><code>--jsal-gold-line</code><code>= accent</code><small>the insight bar, selected borders</small></div>
+          <div class="sw"><i style="background:var(--t-fill)"></i><b>Fill edge</b><code>--jsal-fill-edge</code><code>= fill</code><small>the gold button is its own edge</small></div>
+          <div class="sw"><i style="background:var(--t-ring)"></i><b>Ring</b><code>--jsal-accent-ring</code><code>35%</code><small>accent at 35%, a soft gold glow</small></div>
         </div>
         <p class="group">Meaning</p>
         <div class="swatches">
