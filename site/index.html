@@ -203,15 +203,16 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .cp { --bg: var(--t-cp); --ink: var(--t-cp-ink); }
 .cp .wm { width: 354px; height: 354px; right: -134px; top: 64px; }   /* under the words, off the right edge */
 .sheet { left: -12px; top: 138px; z-index: 1; width: 258px; padding: 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
-/* the tool's switch in miniature: a sunk track and a gold thumb that slides under the picked view */
-.sw { position: relative; display: flex; align-self: flex-start; padding: 2px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
-.sw::before { content: ""; position: absolute; left: 2px; top: 2px; bottom: 2px; width: 44px; border-radius: var(--jsal-radius-sm); background: var(--jsal-selected-bg); box-shadow: var(--jsal-selected-ring); translate: 44px 0; }
-.sw span { position: relative; width: 44px; padding: 2px 0; text-align: center; font: 600 11px/1.4 var(--jsal-font); color: var(--jsal-muted); }   /* style: allow (miniature) */
+/* the tool's switch in miniature, across the sheet: Text over the formatted half, HTML over the code, the gold line running
+   up through it and the selected gold filling the HTML side of the line */
+.sw { position: relative; display: grid; grid-template-columns: 54% 1fr; padding: 2px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
+.sw::before { content: ""; position: absolute; left: calc(54% + 3px); right: 2px; top: 2px; bottom: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-selected-bg); box-shadow: var(--jsal-selected-ring); }
+.sw span { position: relative; padding: 2px 0; text-align: center; font: 600 11px/1.4 var(--jsal-font); color: var(--jsal-muted); }   /* style: allow (miniature) */
 .sw .h { color: var(--jsal-selected-ink); }
 /* the formatted text lies over its HTML, the same three lines, wiped away up to the line */
 .views { position: relative; display: grid; }
 .views > * { grid-area: 1 / 1; }
-.views::after { content: ""; position: absolute; top: -4px; bottom: -4px; left: 54%; width: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); }
+.views::after { content: ""; position: absolute; top: -36px; bottom: -4px; left: 54%; width: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); }
 .tx { display: flex; flex-direction: column; background: var(--jsal-surface); color: var(--jsal-ink-2); font-size: 12px; line-height: 1.6; clip-path: inset(0 46% 0 0); }
 .tx b { color: var(--jsal-ink); font: 700 14px/1.37 "Lora", Georgia, serif; }   /* one line of the code's height */
 .tx .li::before { content: "\2022"; margin-right: 7px; color: var(--jsal-muted); }
@@ -383,12 +384,12 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes ir-r5 { 0%, 42% { opacity: 0; translate: -8px 0; } 52%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
 /* Clean Paste, from the rest and back to it by 84% (where the one play on touch screens stops): the line moves
    right to show all the text (Text picked), sweeps left wiping it all into HTML (HTML picked), then returns to rest; it
-   hides at the edges */
+   hides at the edges, and the switch's gold follows it */
 @keyframes cp-tx { 0% { clip-path: inset(0 46% 0 0); } 14%, 30% { clip-path: inset(0); } 56%, 70% { clip-path: inset(0 100% 0 0); } 84%, 100% { clip-path: inset(0 46% 0 0); } }
 @keyframes cp-line { 0% { left: 54%; opacity: 1; } 13% { left: 100%; opacity: 1; } 15%, 29% { left: 100%; opacity: 0; } 31% { left: 100%; opacity: 1; } 56% { left: 0; opacity: 1; } 58%, 69% { left: 0; opacity: 0; } 71% { left: 0; opacity: 1; } 84%, 100% { left: 54%; opacity: 1; } }
-@keyframes cp-thumb { 0% { translate: 44px 0; } 10%, 38% { translate: 0 0; } 46%, 100% { translate: 44px 0; } }
-@keyframes cp-t { 0% { color: var(--jsal-muted); } 10%, 38% { color: var(--jsal-selected-ink); } 46%, 100% { color: var(--jsal-muted); } }
-@keyframes cp-h { 0% { color: var(--jsal-selected-ink); } 10%, 38% { color: var(--jsal-muted); } 46%, 100% { color: var(--jsal-selected-ink); } }
+@keyframes cp-thumb { 0% { left: calc(54% + 3px); } 13%, 31% { left: calc(100% + 3px); } 56%, 71% { left: 3px; } 84%, 100% { left: calc(54% + 3px); } }
+@keyframes cp-t { 0% { color: var(--jsal-muted); } 10%, 31% { color: var(--jsal-selected-ink); } 40%, 100% { color: var(--jsal-muted); } }
+@keyframes cp-h { 0% { color: var(--jsal-selected-ink); } 10%, 31% { color: var(--jsal-muted); } 40%, 100% { color: var(--jsal-selected-ink); } }
 @keyframes hi-type { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .tile, .obj, .cta a { transition: none; }
