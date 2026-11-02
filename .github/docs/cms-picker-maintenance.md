@@ -408,6 +408,14 @@ Platforms change plans and features often. Every few months (or when a platform 
   platform adding or dropping its own bookings product moves the bookings need, and an import guide that moves or
   disappears should come off the list (only the destination's own docs count; the `_about` note says what was
   checked and when).
+- Recheck the **store lists** (`b2b` and `largeCatalogue` in `cms-picker/quiz.json`) against each store platform's
+  own docs, not only the cards: a platform adding B2B tools or moving them between plans changes who comes first for a
+  B2B shop. Each `b2b` entry carries the page that says which plans have them (`b2bDocs`; the persona test fails one
+  without). Shopify's B2B came to every plan from Basic on 2026-04-02 and wasn't picked up until 2026-11-01, because
+  the list followed the cards and no table row asks about wholesale. A new B2B entry also needs a "Good fit" line on
+  its card saying so. Shopify's ("Stores selling wholesale (B2B) as well as retail") isn't tagged in `fitFor`, so
+  BigCommerce's tagged line still breaks a tie for B2B shops built by someone happy to learn, an agency or a developer
+  (its price lists and customer groups go further); tagged, those tied and Shopify came first.
 - Recheck the **AI crawlers row**: the bots and how each platform lets you block them change fastest.
   The row's SEO name (`term` in `cms-picker.json`) carries its "as of" month; update it when you recheck.
 - Update each answer's checked date in the Playbook when you confirm it, so `check_data.py` (sources
