@@ -221,6 +221,10 @@ export function analyse(rows, fmt, opts) {
     const problems = (fmt.rules?.(r) || []).filter(Boolean);
     // A website platform always has a home page, and its redirects only run for addresses that don't exist
     if (r.from === "/" && fmt.group !== "Hosting and servers" && !problems.length) problems.push({ cell: "o", id: "home", text: `${fmt.name} won’t redirect the home page while the site has one.` });
+    // An address with no letters or numbers (/,,., or a stray /-) is allowed, but almost never a real page
+    const noWords = (a) => { const p = a.split(/[?#]/)[0]; return p !== "/" && !/^https?:/i.test(a) && !/[a-z0-9]/i.test(p); };
+    if (noWords(r.from)) problems.push({ cell: "o", warn: true, text: "This doesn’t look like a page address. Check it’s what you meant." });
+    if (noWords(r.to)) problems.push({ cell: "n", warn: true, text: "This doesn’t look like a page address. Check it’s what you meant." });
     const l = live.find((x) => x.id === r.id);
     for (const p of problems) {
       if (p.warn) l.it.notes.push({ cell: p.cell, kind: "warn", text: p.text });   // said, but the row still goes in

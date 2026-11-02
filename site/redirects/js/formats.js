@@ -37,6 +37,8 @@ export const FORMATS = [
       SHOPIFY_FIXED.test(r.from) && { cell: "o", id: "fixed", text: "Shopify won’t redirect its own list pages (/products, /collections and /collections/all)." },
       /\.html$/i.test(r.from) && r.to.toLowerCase() === r.from.toLowerCase().replace(/\.html$/, "") && { cell: "n", id: "html", text: "Shopify treats an address with and without .html as the same page, so this can’t redirect." },
       r.from.includes("?") && { cell: "o", id: "query", warn: true, text: "Shopify says addresses with ? “might not work as expected”. Test this one after importing." },
+      // From a third-party test of 100 address formats: the only one Shopify's import refused had a semicolon
+      (r.from.includes(";") || r.to.includes(";")) && { cell: r.from.includes(";") ? "o" : "n", id: "semicolon", warn: true, text: "Shopify’s import may not take a semicolon. Check this one after importing." },
     ] },
   { id: "wix", name: "Wix", group: "Website platforms", kind: "csv", file: "wix-redirects.csv", limit: 500,
     where: "SEO & GEO → URL Redirect Manager → More Actions → Import redirects",
