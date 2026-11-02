@@ -87,6 +87,9 @@ for p, t in html.items():
     if 'G-Z0BSTC9TT9' in t:
         c, g = t.find("gtag('consent', 'default'"), t.find("gtag('config'")
         if c < 0 or c > g: fail(f"{p}: the GA4 tag needs the Consent Mode defaults before gtag('config'), as on index.html")
+# /privacy/ names GA4's cookie, which carries the measurement ID: a new property changes it
+for m in re.findall(r'_ga_([A-Z0-9]+)', html['privacy/index.html']):
+    if m != 'Z0BSTC9TT9': fail(f"privacy/index.html: the cookie _ga_{m} isn't the current property's (_ga_Z0BSTC9TT9)")
 
 # Every page's <head> holds clicks that land before /nav.js runs (the logo, or a page mid-transition) for
 # nav.js to replay; without it a fast click after picking an app was lost, or followed the logo's plain link home
