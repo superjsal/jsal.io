@@ -229,6 +229,13 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 }
 /* Phones: less empty space above the top bar (same on every page, so the logo still doesn't move) */
 @media (max-width: 520px) { .jsal-top { padding-top: 14px; } }
+/* On paper the top bar says where the page came from: the name, the app's name and the page's address (written in
+   by /nav.js from its canonical link), without the controls */
+@media print {
+  .jsal-top { padding: 0 0 8px; border-bottom: 1px solid var(--jsal-line); }
+  .jsal-top .jsal-actions, .jsal-top .jsal-caret { display: none; }
+  .jsal-top[data-jsal-address]::after { content: attr(data-jsal-address); margin-left: auto; font-size: 13px; color: var(--jsal-muted); }
+}
 .jsal-brand {
   display: inline-flex; align-items: center; height: 36px; flex-shrink: 0;
   font-weight: 700; font-size: 18px; line-height: 1.65; letter-spacing: -0.02em;   /* style: allow (the wordmark, at the logo's size) */

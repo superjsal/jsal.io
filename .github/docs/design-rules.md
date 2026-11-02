@@ -196,8 +196,8 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - **Two timings and one curve.** A state change (a hover, a colour, a chevron turning, a short fade such as a quiz
   step) takes `--jsal-quick` (0.15s); something that moves or arrives (a tile lifting, a bar filling, a pop-up sliding
   in) takes `--jsal-settle` (0.3s). Plain `ease`, or `--jsal-ease-out` when something comes in, so it lands softly. Choreographed pieces keep their
-  own timing and carry `style: allow`: the page change, the logo unfold, the home pictures, /play/'s effects and
-  Clean Paste's Show. **Check:** `check.py` fails any other timing, and any `--jsal-*` used without being defined.
+  own timing and carry `style: allow`: the page change, the logo unfold, the 404's dropped dot, the home pictures,
+  /play/'s effects and Clean Paste's Show. **Check:** `check.py` fails any other timing, and any `--jsal-*` used without being defined.
 - **Page transitions are one slide everywhere** (`shell.css`): the old page drifts up and fades, the new one
   rises in, Back runs it downwards, and the top bar cross-fades in place. Only `shell.css` names
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.

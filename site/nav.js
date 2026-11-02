@@ -279,6 +279,11 @@
     if (step === CODE.length) { step = 0; unlock('secret'); }
   });
 
+  // The page's address for the top bar on paper (/shell.css), as jsal.io gives it, so a printout says where it's from;
+  // none on the home page, where it would only repeat the name
+  const topBar = document.querySelector('.jsal-top'), canon = document.querySelector('link[rel="canonical"]');
+  if (topBar && canon && new URL(canon.href).pathname !== '/') topBar.dataset.jsalAddress = canon.href.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
   // Theme button: flips light/dark and remembers it for every app (each page applies it in its <head>, so no flash);
   // apps that draw with theme colours can listen for the "jsal-theme" event
   const themeBtn = document.querySelector('[data-jsal-theme]');

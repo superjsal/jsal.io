@@ -18,7 +18,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=a7ccf99b">
+<link rel="stylesheet" href="/shell.css?v=35608266">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -728,6 +728,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <tr><td>Call-to-action hover</td><td>quick, 0.15s</td><td>Lifts 2px.</td></tr>
         <tr><td>Page change</td><td>0.3s, old page out in 0.12s, new page in over 0.2s</td><td>Cross-document view transitions, one slide everywhere: the old page drifts up 12px and fades (0.16s), the new one rises 18px into place (0.28s), and Back runs it downwards. The top bar cross-fades in place; the logo and theme button stay put and sharp. Pages load ahead on hover: prerendered in Chrome and Edge, fetched in Brave and Firefox.</td></tr>
         <tr><td>Logo unfold</td><td>about 1.3s, then the glint, once per visit</td><td>The name opens as the tab icon: the short j wearing the gem, the menu arrow beside it. The j stretches into the name’s j until its stem touches the gem; the stem’s top pinches off as the j’s dot and knocks the gem over the name to land as the full stop, the dot bouncing into place, while the arrow slides out ahead; then “io” slides out of the gem and a light runs across. Not with reduced motion, and not on later pages of the visit.</td></tr>
+        <tr><td>404’s dropped dot</td><td>about 3.8s, once</td><td>The title’s i has lost its dot: the gem starts there, falls onto the i’s stem and hops along the tops of the n, the g, the h and both e’s, a beat on each, then drops to the line and tips over to lie as the full stop. Not with reduced motion, where it simply lies there.</td></tr>
         <tr><td>Achievement pop-up</td><td>0.3s in, 0.3s out, 4s on screen</td><td>Slides in at full opacity (so a contrast check never catches it half-faded), fades on the way out. Transform and opacity only.</td></tr>
         <tr><td>Selected state</td><td>instant</td><td>Gold tint, gold text, a thin gold ring. A chosen option shouldn't lag the click.</td></tr>
         <tr><td>Clean Paste "Show"</td><td>held, then fades</td><td>The line a check means gets a gold wash and a bar beside it, scrolls into view first, then fades.</td></tr>
@@ -779,6 +780,6 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <span>Decisions about suggested changes are marked in blue.</span>
   </footer>
 </div>
-<script src="/nav.js?v=3aea67c6" defer></script>
+<script src="/nav.js?v=3aefb8c3" defer></script>
 </body>
 </html>
