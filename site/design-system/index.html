@@ -18,7 +18,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=2b6c010a">
+<link rel="stylesheet" href="/shell.css?v=dee1ef84">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -26,7 +26,7 @@
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
-.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-space-20), env(safe-area-inset-left, 0px)) var(--jsal-space-64); }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-left, 0px)) var(--jsal-page-end); }
 .jsal-top nav { display: flex; gap: var(--jsal-space-2); font-size: 14px; }
 .jsal-top nav a { padding: var(--jsal-space-8) var(--jsal-space-8); line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }
 .jsal-top nav a:hover { color: var(--jsal-ink); }
@@ -54,9 +54,9 @@ a { color: inherit; }
 .sec .intro { margin: 0 0 var(--jsal-space-32); max-width: 42em; font-size: 17px; line-height: 1.6; color: var(--jsal-ink-2); text-wrap: pretty; }
 .sec h3 { margin: var(--jsal-space-40) 0 var(--jsal-space-12); font-size: 17px; font-weight: 600; color: var(--jsal-ink); }
 .sec h3:first-of-type { margin-top: 0; }
-.sec p { margin: 0 0 var(--jsal-space-12); max-width: 42em; color: var(--jsal-ink-2); }
+.sec p { margin: 0 0 var(--jsal-flow); max-width: 42em; color: var(--jsal-ink-2); }
 .sec p.note { font-size: 13px; color: var(--jsal-muted); }
-.sec ul { margin: 0 0 var(--jsal-space-12); padding-left: 1.2em; color: var(--jsal-ink-2); }
+.sec ul { margin: 0 0 var(--jsal-flow); padding-left: 1.2em; color: var(--jsal-ink-2); }
 .sec li + li { margin-top: var(--jsal-space-4); }
 code, .mono { font: 500 12px/1.6 "JetBrains Mono", Consolas, monospace; }
 code { padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-sm); background: var(--jsal-sunk); color: var(--jsal-ink); }
@@ -94,7 +94,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .ramp { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); align-items: center; margin: 0 0 var(--jsal-space-8); }
 .ramp .arrow { color: var(--jsal-muted); }
 .roles { width: 100%; border-collapse: collapse; font-size: 14px; }
-.roles th, .roles td { padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); text-align: left; vertical-align: top; }
+.roles th, .roles td { padding: var(--jsal-pad-cell); border-bottom: 1px solid var(--jsal-line); text-align: left; vertical-align: top; }
 .roles th { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
 .roles td:first-child { white-space: nowrap; font-weight: 600; }
 .dot { display: inline-block; width: 12px; height: 12px; margin-right: var(--jsal-space-8); border-radius: 50%; vertical-align: -1px; }
@@ -117,7 +117,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .weights { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8) var(--jsal-space-24); font-size: 20px; }
 .weights span small { display: block; font-size: 12px; color: var(--jsal-muted); }
 .scale { width: 100%; border-collapse: collapse; font-size: 14px; }
-.scale th, .scale td { padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); text-align: left; }
+.scale th, .scale td { padding: var(--jsal-pad-cell); border-bottom: 1px solid var(--jsal-line); text-align: left; }
 .scale th { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
 .scale td:nth-child(2), .scale td:nth-child(3) { font-family: "JetBrains Mono", Consolas, monospace; font-size: 12px; white-space: nowrap; }
 
@@ -159,7 +159,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .ref-rules .no dt { color: var(--jsal-bad); }
 .ref-rules dd { margin: 0; font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
 .dd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--jsal-space-12); }
-.do, .dont { display: grid; grid-template-rows: auto 1fr auto; gap: var(--jsal-space-8); align-items: start; padding: var(--jsal-space-12) var(--jsal-space-16); border-top: 3px solid var(--jsal-ok); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
+.do, .dont { display: grid; grid-template-rows: auto 1fr auto; gap: var(--jsal-space-8); align-items: start; padding: var(--jsal-pad-card); border-top: 3px solid var(--jsal-ok); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
 .dont { border-top-color: var(--jsal-bad); }
 .do > b, .dont > b { display: flex; align-items: center; gap: var(--jsal-space-8); font-size: 13px; color: var(--jsal-ok); }
 .dont > b { color: var(--jsal-bad); }
@@ -171,15 +171,15 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .x-fill { border-color: var(--jsal-bad) !important; background: var(--jsal-bad) !important; color: var(--jsal-surface) !important; }
 .x-solid { border-color: var(--jsal-fill) !important; background: var(--jsal-fill) !important; color: var(--jsal-on-fill) !important; }
 .x-pill { padding: var(--jsal-space-4) var(--jsal-space-12); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); font-size: 13px; color: var(--jsal-ink); }
-.x-toast { padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius-lg); background: var(--jsal-ink); color: var(--jsal-bg); font-size: 14px; font-weight: 600; box-shadow: 0 6px 16px rgb(0 0 0 / .2); }
+.x-toast { padding: var(--jsal-pad-note); border-radius: var(--jsal-radius-lg); background: var(--jsal-ink); color: var(--jsal-bg); font-size: 14px; font-weight: 600; box-shadow: 0 6px 16px rgb(0 0 0 / .2); }
 .cta { display: inline-flex; align-items: center; padding: var(--jsal-space-8) var(--jsal-space-20); border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform var(--jsal-quick) ease; cursor: pointer; border: 0; font-family: inherit; }
 .cta.main { background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); }
 .cta:hover { transform: translateY(-2px); }
 .cta:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-.chip { padding: 3px var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: transparent; color: var(--jsal-muted); font: 600 13px var(--jsal-font); cursor: pointer; transition: background var(--jsal-quick), color var(--jsal-quick), border-color var(--jsal-quick); }
+.chip { padding: var(--jsal-pad-pill); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: transparent; color: var(--jsal-muted); font: 600 13px var(--jsal-font); cursor: pointer; transition: background var(--jsal-quick), color var(--jsal-quick), border-color var(--jsal-quick); }
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
-.chip-link { padding: 3px var(--jsal-space-8); border: 0; background: none; color: var(--jsal-info); font: 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.chip-link { padding: var(--jsal-pad-pill); border: 0; background: none; color: var(--jsal-info); font: 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 /* A checkbox row, selected like a pressed chip (cms-picker .qz-tick); plain, with no box, when it goes with a choice */
 .tick { display: flex; align-items: center; gap: var(--jsal-space-12); width: max-content; max-width: 100%; padding: var(--jsal-space-8) var(--jsal-space-12) var(--jsal-space-8) var(--jsal-space-12); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick); }
 .tick:hover { border-color: var(--jsal-hover-line); }
@@ -200,7 +200,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .fgdemo span { margin-right: var(--jsal-space-4); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-muted); }
 .fgdemo a { padding: var(--jsal-space-4) 0; color: var(--jsal-muted); text-decoration: none; }
 .fgdemo a:hover { color: var(--jsal-ink); text-decoration: underline; }
-.tag { display: inline-block; padding: var(--jsal-space-2) var(--jsal-space-8); border-radius: var(--jsal-radius-sm); font-size: 13px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
+.tag { display: inline-block; padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-sm); font-size: 13px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
 .tag.yes { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 .tag.plugin { background: var(--jsal-info-soft); color: var(--jsal-info); }
 .tag.code { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
@@ -250,7 +250,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .ans-also i { display: grid; place-items: center; width: 16px; height: 16px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 /* A match that lacks a must-have the first has built in, under a divider; its pill neutral (cms-picker .qz-div, .fitp) */
 .match { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-8); font: 700 17px/1.3 var(--jsal-font); }
-.fitp { padding: var(--jsal-space-2) var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
+.fitp { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
 .fitp.low { background: var(--jsal-line); color: var(--jsal-ink-2); }
 .div { max-width: 36em; padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
 .div b { display: block; margin-bottom: var(--jsal-space-2); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -261,7 +261,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 
 /* Motion (07) */
 .motion { width: 100%; border-collapse: collapse; font-size: 14px; }
-.motion th, .motion td { padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); text-align: left; vertical-align: top; }
+.motion th, .motion td { padding: var(--jsal-pad-cell); border-bottom: 1px solid var(--jsal-line); text-align: left; vertical-align: top; }
 .motion th { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
 .motion td:nth-child(2) { font-family: "JetBrains Mono", Consolas, monospace; font-size: 12px; white-space: nowrap; }
 .focus-demo { display: inline-grid; gap: var(--jsal-space-12); grid-template-columns: auto auto; align-items: center; }
@@ -276,7 +276,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 /* In practice (09): the live pages, as a grid of equal link tiles */
 .live { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--jsal-space-12); margin: 0; padding: 0; list-style: none; }
 .sec :is(.live, .icons, .principles, .a11y) li + li { margin-top: 0; }   /* grids space their items with gap */
-.live a { display: grid; gap: var(--jsal-space-4); height: 100%; box-sizing: border-box; padding: var(--jsal-space-12) var(--jsal-space-16); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); font-weight: 500; text-decoration: none; }
+.live a { display: grid; gap: var(--jsal-space-4); height: 100%; box-sizing: border-box; padding: var(--jsal-pad-card); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); font-weight: 500; text-decoration: none; }
 .live a:hover { border-color: var(--jsal-hover-line); }
 .live b { font-weight: 600; }
 .live span { font-size: 13px; color: var(--jsal-muted); }
@@ -547,6 +547,22 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <div class="steps">
       <div><i style="--s:var(--jsal-space-2)"></i>2</div><div><i style="--s:var(--jsal-space-4)"></i>4</div><div><i style="--s:var(--jsal-space-8)"></i>8</div><div><i style="--s:var(--jsal-space-12)"></i>12</div><div><i style="--s:var(--jsal-space-16)"></i>16</div><div><i style="--s:var(--jsal-space-20)"></i>20</div><div><i style="--s:var(--jsal-space-24)"></i>24</div><div><i style="--s:var(--jsal-space-32)"></i>32</div><div><i style="--s:var(--jsal-space-40)"></i>40</div><div><i style="--s:var(--jsal-space-48)"></i>48</div><div><i style="--s:var(--jsal-space-64)"></i>64</div>
     </div>
+    <p>On top of the scale, roles say what a space is for. A new thing of one of these kinds uses its role, so they all change together; anything else takes the scale directly.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Spacing roles"><table class="scale">
+      <thead><tr><th>Role</th><th>Value</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td><code>--jsal-gutter</code></td><td>20</td><td>A page's side margin</td></tr>
+        <tr><td><code>--jsal-page-top</code></td><td>32 (24 on phones)</td><td>Above a page's first heading</td></tr>
+        <tr><td><code>--jsal-page-end</code></td><td>64</td><td>Below a page's last section</td></tr>
+        <tr><td><code>--jsal-flow</code></td><td>12</td><td>After a paragraph or list in reading text</td></tr>
+        <tr><td><code>--jsal-pad-tag</code></td><td>2 × 8</td><td>Inside a tag that labels: "Built in", a platform's type</td></tr>
+        <tr><td><code>--jsal-pad-pill</code></td><td>3 × 8</td><td>Inside a bordered pill: a compare chip, a guide link</td></tr>
+        <tr><td><code>--jsal-pad-note</code></td><td>8 × 12</td><td>Inside a boxed note, tip or error</td></tr>
+        <tr><td><code>--jsal-pad-cell</code></td><td>8 × 12</td><td>Inside a table cell</td></tr>
+        <tr><td><code>--jsal-pad-card</code></td><td>12 × 16</td><td>Inside a card: a Playbook item, the analytics card</td></tr>
+        <tr><td><code>--jsal-pad-panel</code></td><td>16</td><td>Inside a quiz panel or result box</td></tr>
+      </tbody>
+    </table></div>
     <h3>Corners</h3>
     <p>Six radii, all tokens: small controls and chips inside a control 4px; buttons and fields 6px; cards 8px; a tool's main panel (the quiz box, Clean Paste's editor, the Image Resizer's canvas), icon tiles and the achievement pop-up 12px; pills and round buttons 999px; the home and Off the clock tiles 22px (18px on phones). Every step is larger than the one inside it, so a card in a panel in a tile nests evenly. The checks fail any corner that isn't a token; the home tiles' miniature pictures are the marked exception.</p>
     <div class="radii">

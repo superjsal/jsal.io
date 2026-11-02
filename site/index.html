@@ -52,7 +52,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=2b6c010a">
+<link rel="stylesheet" href="/shell.css?v=dee1ef84">
 <style>
 /* Tile colours: each tool keeps its own tint with a deep shade of it for the words; Updates and Say hi are plain.
    The pieces of each tool laid on the tiles wear the tools' own colours, so they change with the theme as the tools do;
@@ -90,7 +90,7 @@ a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles keep their own rounded corners, and the outline follows them */
 /* The column: a 20px gutter each side, wider where a notch or rounded corner cuts in (phones on their side) */
-.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-space-20), env(safe-area-inset-right, 0px)) var(--jsal-space-64) max(var(--jsal-space-20), env(safe-area-inset-left, 0px)); }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) var(--jsal-page-end) max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
 
 /* Top bar: the shared one (/shell.css), with section links */
 .jsal-top nav { display: flex; gap: var(--jsal-space-2); font-size: 14px; }

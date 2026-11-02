@@ -53,7 +53,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=2b6c010a">
+<link rel="stylesheet" href="/shell.css?v=dee1ef84">
 <style>
 /* Tile colours: moss for the WoW UI, toned close to the page; the other tiles are plain, a neutral fill with no border */
 :root {
@@ -76,7 +76,7 @@ body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webk
 a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles keep their own rounded corners, and the outline follows them */
-.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-space-20), env(safe-area-inset-left, 0px)) var(--jsal-space-64); }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-left, 0px)) var(--jsal-page-end); }
 .label { margin: 0; font: 12px/1.5 "JetBrains Mono", Consolas, monospace; }
 
 /* Top bar: the shared one (/shell.css), with section links */
@@ -134,7 +134,7 @@ p, li { text-wrap: pretty; }
 .now-playing .big { font: 700 30px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
 .now-playing .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-12); }
 .now-playing .credit { font-size: 12px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
-.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: var(--jsal-space-2) var(--jsal-space-8); border-radius: var(--jsal-radius-pill); border: 1px solid currentColor; white-space: nowrap; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); border: 1px solid currentColor; white-space: nowrap; }
 .desc { margin-top: var(--jsal-space-4) !important; font-size: 15px; }
 
 /* The UI tile is text only and a step smaller than the live tools */
@@ -234,7 +234,7 @@ p, li { text-wrap: pretty; }
 .float.err { color: var(--tip-error); }
 @keyframes float-up { 0% { opacity: 0; transform: translateY(4px); } 15%, 70% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
 /* The tooltip floats over the bag next to the item, like in game */
-.tip { position: absolute; z-index: 5; width: 250px; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--tip-bg); border: 1px solid var(--tip-line); box-shadow: 0 8px 24px rgb(0 0 0 / 0.5); font-size: 13px; line-height: 1.5; color: var(--tip-ink); }   /* takes the pointer, so it can be hovered (WCAG 1.4.13) */
+.tip { position: absolute; z-index: 5; width: 250px; padding: var(--jsal-pad-note); border-radius: var(--jsal-radius); background: var(--tip-bg); border: 1px solid var(--tip-line); box-shadow: 0 8px 24px rgb(0 0 0 / 0.5); font-size: 13px; line-height: 1.5; color: var(--tip-ink); }   /* takes the pointer, so it can be hovered (WCAG 1.4.13) */
 .tip .t { font-size: 15px; font-weight: 700; }
 .tip .w { color: var(--tip-name); }
 .tip .s { color: var(--tip-muted); }

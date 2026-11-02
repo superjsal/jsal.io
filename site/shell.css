@@ -78,6 +78,17 @@ body { background: var(--jsal-bg); }
   --jsal-space-2: 2px; --jsal-space-4: 4px; --jsal-space-8: 8px; --jsal-space-12: 12px;
   --jsal-space-16: 16px; --jsal-space-20: 20px; --jsal-space-24: 24px; --jsal-space-32: 32px; --jsal-space-40: 40px;
   --jsal-space-48: 48px; --jsal-space-64: 64px;
+  /* Spacing roles: what a space is for, built from the scale. Use the role when a thing is one of these, so all of
+     them change together; anything else takes the scale directly */
+  --jsal-gutter: var(--jsal-space-20);                           /* a page's side margin */
+  --jsal-page-end: var(--jsal-space-64);                         /* below a page's last section */
+  --jsal-flow: var(--jsal-space-12);                             /* after a paragraph or list in reading text */
+  --jsal-pad-tag: var(--jsal-space-2) var(--jsal-space-8);       /* inside a tag that labels */
+  --jsal-pad-pill: 3px var(--jsal-space-8);                      /* inside a bordered pill: a chip or a link */
+  --jsal-pad-note: var(--jsal-space-8) var(--jsal-space-12);     /* inside a boxed note, tip or message */
+  --jsal-pad-cell: var(--jsal-space-8) var(--jsal-space-12);     /* inside a table cell */
+  --jsal-pad-card: var(--jsal-space-12) var(--jsal-space-16);    /* inside a card */
+  --jsal-pad-panel: var(--jsal-space-16);                        /* inside a quiz panel or result box */
   /* Motion: a state change (hover, a colour, a chevron) takes --jsal-quick; something that moves or arrives takes
      --jsal-settle, easing out so it lands softly. Longer, choreographed pieces are marked where they're set */
   --jsal-quick: 0.15s; --jsal-settle: 0.3s; --jsal-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -120,7 +131,7 @@ body { background: var(--jsal-bg); }
 .jsal-done > svg, .jsal-done > .ico { display: none; }
 .jsal-done::before { content: ""; flex: none; width: 14px; height: 14px; background: currentColor; -webkit-mask: var(--jsal-tick) center / contain no-repeat; mask: var(--jsal-tick) center / contain no-repeat; }
 /* Something failed: said next to it in red, and it stays until the next try there (never in a message that fades) */
-.jsal-error { display: flex; gap: var(--jsal-space-8); margin: var(--jsal-space-8) 0 0; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-size: 14px; line-height: 1.45; text-align: left; }
+.jsal-error { display: flex; gap: var(--jsal-space-8); margin: var(--jsal-space-8) 0 0; padding: var(--jsal-pad-note); border-radius: var(--jsal-radius); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-size: 14px; line-height: 1.45; text-align: left; }
 .jsal-error::before { content: "!"; flex: none; display: grid; place-items: center; width: 17px; height: 17px; margin-top: 1px; border-radius: 50%; background: var(--jsal-bad); color: var(--jsal-surface); font-size: 12px; font-weight: 800; }
 /* The one switch for picking one of a few options: a sunk track, the chosen option selected in gold */
 .jsal-seg { display: inline-flex; gap: var(--jsal-space-2); padding: 3px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
@@ -208,7 +219,7 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 .jsal-ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
 /* Analytics choice card (/nav.js): bottom left, above a page's own bottom bar; full width on phones */
 .jsal-consent { position: fixed; z-index: 2147483000; left: 16px; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(380px, calc(100vw - 32px));
-  padding: var(--jsal-space-12) var(--jsal-space-16); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink-2);
+  padding: var(--jsal-pad-card); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink-2);
   box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
 .jsal-consent p { margin: 0; }
 .jsal-consent b { color: var(--jsal-ink); }
@@ -357,8 +368,8 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 .jsal-about > * { max-width: 680px; }
 .jsal-about h2 { margin: 0 0 var(--jsal-space-8); font: 700 24px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
 .jsal-about h3 { margin: var(--jsal-space-32) 0 var(--jsal-space-8); font-size: 17px; color: var(--jsal-ink); }
-.jsal-about p { margin: 0 0 var(--jsal-space-12); }
-.jsal-about ul, .jsal-about ol { margin: 0 0 var(--jsal-space-12); padding-left: 1.3em; }
+.jsal-about p { margin: 0 0 var(--jsal-flow); }
+.jsal-about ul, .jsal-about ol { margin: 0 0 var(--jsal-flow); padding-left: 1.3em; }
 .jsal-about li + li { margin-top: var(--jsal-space-4); }
 .jsal-about a { color: var(--jsal-accent); text-underline-offset: 2px; }
 /* A tool's one line under the top bar saying who it's for */
@@ -366,7 +377,7 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 /* The About section's first line: what the tool does that others don't */
 .jsal-about .jsal-lead { font-size: 17px; line-height: 1.5; color: var(--jsal-ink); }
 /* The About section's common questions */
-.jsal-about dl { margin: 0 0 var(--jsal-space-12); }
+.jsal-about dl { margin: 0 0 var(--jsal-flow); }
 .jsal-about dt { margin-top: var(--jsal-space-12); font-weight: 600; color: var(--jsal-ink); }
 .jsal-about dd { margin: 3px 0 0; }
 .jsal-about .jsal-feedback { margin-top: var(--jsal-space-24); }

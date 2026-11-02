@@ -23,7 +23,7 @@
 .pp-path { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-8); margin: 0; }
 .pp-path + .pp-path { margin-top: var(--jsal-space-8); }
 .pp-path-l { margin-right: var(--jsal-space-2); color: var(--jsal-muted); font-size: 13px; }
-.pp-step { padding: var(--jsal-space-2) var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); font-size: 13px; line-height: 1.45; }
+.pp-step { padding: var(--jsal-pad-tag); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); font-size: 13px; line-height: 1.45; }
 .pp-sep { color: var(--jsal-muted); font-size: 13px; }   /* the arrow; screen readers hear ", then" */
 .pp-src { display: inline-block; margin-top: var(--jsal-space-8); color: var(--jsal-info); font-size: 13px; text-underline-offset: 2px; }   /* a source link inside the content, blue like the Playbook's */
 @media (pointer: coarse) { .pp-src { position: relative; } .pp-src::after { content: ""; position: absolute; inset: -13px -4px; } }   /* 44px to tap */
@@ -34,7 +34,7 @@
 .pp-facts dt { color: var(--jsal-muted); font-size: 12px; }
 .pp-facts dd { margin: var(--jsal-space-4) 0 0; font-size: 15px; }
 .pp-fit { display: grid; grid-template-columns: 1fr 1fr; gap: var(--jsal-space-12); margin-top: var(--jsal-space-12); }
-.pp-fit > div { padding: var(--jsal-space-12) var(--jsal-space-16); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
+.pp-fit > div { padding: var(--jsal-pad-card); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
 .pp-fit h3 { margin: 0 0 var(--jsal-space-8); font-size: 15px; }
 .pp-fit ul { margin: 0; padding-left: 1.2em; color: var(--jsal-ink-2); font-size: 15px; }
 .pp-built { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; font-size: 15px; }

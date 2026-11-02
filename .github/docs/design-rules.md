@@ -58,6 +58,13 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   small tag or pill stays as written. A value that has to match something else (room kept clear for a home tile's
   picture, a number level with the text in a cell) carries a `style: allow (reason)` note, and the home tiles'
   pictures keep their own measures. **Check:** `check.py` fails any other px margin, padding or gap.
+- **Spacing roles** sit on top of the scale and say what a space is for: `--jsal-gutter` (a page's side margin),
+  `--jsal-page-end` (below a page's last section), `--jsal-flow` (after a paragraph or list in reading text), and
+  the paddings inside a tag (`--jsal-pad-tag`), a bordered pill (`--jsal-pad-pill`), a boxed note or message
+  (`--jsal-pad-note`), a table cell (`--jsal-pad-cell`), a card (`--jsal-pad-card`) and a quiz panel
+  (`--jsal-pad-panel`). A new thing of one of these kinds uses its role, so all of them change together; anything
+  else takes the scale directly. Two roles can share a value (a note and a cell are both 8px 12px) and still change
+  apart.
 - No named text-size tokens: the type scale above is the set.
 
 ## Colour

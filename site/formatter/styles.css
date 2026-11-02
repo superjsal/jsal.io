@@ -64,7 +64,7 @@ body {
 .results { min-height: 0; }
 .stats { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin-bottom: var(--jsal-space-8); }
 .stat {
-  padding: 3px var(--jsal-space-8);
+  padding: var(--jsal-pad-pill);
   border-radius: var(--jsal-radius-pill);
   border: 1px solid var(--jsal-line);
   background: var(--jsal-surface);

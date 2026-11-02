@@ -99,7 +99,7 @@ details.fold[open] > summary::before { rotate: 45deg; }
 .panel-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--jsal-space-8) var(--jsal-space-16); padding-top: var(--jsal-space-8); border-top: 1px solid var(--jsal-line); }
 .tally { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8) var(--jsal-space-12); font-size: 13px; color: var(--jsal-muted); font-variant-numeric: tabular-nums; align-items: center; }
 .jsal-btn { white-space: nowrap; }
-.card { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); padding: var(--jsal-space-12) var(--jsal-space-16); display: grid; gap: var(--jsal-space-8); min-width: 0; container-type: inline-size; }
+.card { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); padding: var(--jsal-pad-card); display: grid; gap: var(--jsal-space-8); min-width: 0; container-type: inline-size; }
 .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--jsal-space-8) var(--jsal-space-16); }
 .card .item { flex: 1 1 auto; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; min-width: 0; }
 .card .item small { display: block; font-weight: 400; color: var(--jsal-muted); font-size: 13px; letter-spacing: 0; margin-top: 1px; }
@@ -199,7 +199,7 @@ details.fold[open] > summary::before { rotate: 45deg; }
 .pk-attn .why { margin-left: auto; font-size: 12px; color: var(--jsal-muted); white-space: nowrap; }
 .pk-attn .fix, .pk-attn-line .fix { color: var(--jsal-warn); font-weight: 600; }
 .pk-attn .inflight, .pk-attn-line .inflight { color: var(--jsal-info); }
-.pk-attn-line { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8) var(--jsal-space-12); align-items: center; margin: 0 0 var(--jsal-space-12); padding: var(--jsal-space-8) var(--jsal-space-12); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); font-size: 14px; }
+.pk-attn-line { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8) var(--jsal-space-12); align-items: center; margin: 0 0 var(--jsal-space-12); padding: var(--jsal-pad-note); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); font-size: 14px; }
 .pk-attn-line .jsal-btn.link { margin-left: auto; }
 /* Phones: one platform at a time (the chips), no table */
 @media (max-width: 720px) {
@@ -247,7 +247,7 @@ a.pk-twin { color: var(--jsal-info); text-decoration: underline; text-underline-
 /* Team page: platforms */
 .person .plat-badge { display: grid; place-items: center; font-weight: 700; color: var(--jsal-muted); }
 .person.is-hidden b { color: var(--jsal-muted); }
-.add-plat { margin-top: var(--jsal-space-8); padding: var(--jsal-space-12) var(--jsal-space-16); background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); }
+.add-plat { margin-top: var(--jsal-space-8); padding: var(--jsal-pad-card); background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); }
 .add-plat h4 { font-size: 15px; }
 .add-plat .edit-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: end; }
 /* The CMS Picker's "What it costs to start" bands (CMS Picker tab) */
@@ -294,7 +294,7 @@ footer a { color: var(--jsal-accent); }
 
 #toast {
   position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
-  background: var(--jsal-ink); color: var(--jsal-bg); padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius-lg); font-weight: 600; font-size: 14px;
+  background: var(--jsal-ink); color: var(--jsal-bg); padding: var(--jsal-pad-note); border-radius: var(--jsal-radius-lg); font-weight: 600; font-size: 14px;
   opacity: 0; transition: opacity var(--jsal-quick); pointer-events: none; max-width: calc(100% - 32px);
 }
 #toast.show { opacity: 1; }
@@ -302,7 +302,7 @@ footer a { color: var(--jsal-accent); }
 
 /* Guides: links under How-to, a list on the page, and a side panel that opens them */
 .guide-links { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); align-items: center; margin-top: var(--jsal-space-8); font-size: 13px; color: var(--jsal-muted); }
-.guide-link { font: 600 13px var(--jsal-font); color: var(--jsal-info); background: var(--jsal-info-soft); border: 0; border-radius: var(--jsal-radius-pill); padding: 3px var(--jsal-space-8); cursor: pointer; }
+.guide-link { font: 600 13px var(--jsal-font); color: var(--jsal-info); background: var(--jsal-info-soft); border: 0; border-radius: var(--jsal-radius-pill); padding: var(--jsal-pad-pill); cursor: pointer; }
 .guide-link:hover { filter: brightness(0.96); }
 .guide-link::before { content: "📖 "; font-size: 12px; }
 .side .guide-nav { display: grid; gap: 1px; margin-top: var(--jsal-space-8); }
@@ -326,7 +326,7 @@ footer a { color: var(--jsal-accent); }
 .guide-body ol, .guide-body ul { margin: 0; padding-left: var(--jsal-space-24); display: grid; gap: var(--jsal-space-8); }
 .guide-body a { color: var(--jsal-info); }
 .guide-body .intro { color: var(--jsal-muted); }
-.guide-body .tip { font-size: 14px; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--jsal-sunk); color: var(--jsal-ink); }
+.guide-body .tip { font-size: 14px; padding: var(--jsal-pad-note); border-radius: var(--jsal-radius); background: var(--jsal-sunk); color: var(--jsal-ink); }
 .guide-body .tip::before { content: "Tip: "; font-weight: 700; color: var(--jsal-ink); }
 .snippet { border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); overflow: hidden; }
 .snippet-head { display: flex; justify-content: space-between; align-items: center; gap: var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-8) var(--jsal-space-8) var(--jsal-space-12); background: var(--jsal-sunk); font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
@@ -375,7 +375,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 .team-view { display: grid; gap: var(--jsal-space-8); }
 .team-h { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--jsal-muted); margin-top: var(--jsal-space-8); }
 .people { background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); }
-.person { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: var(--jsal-space-12); align-items: center; padding: var(--jsal-space-12) var(--jsal-space-16); border-bottom: 1px solid var(--jsal-line); }
+.person { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: var(--jsal-space-12); align-items: center; padding: var(--jsal-pad-card); border-bottom: 1px solid var(--jsal-line); }
 .person:last-child { border-bottom: 0; }
 .person img, .avatar-blank { width: 36px; height: 36px; border-radius: 50%; background: var(--jsal-sunk); display: block; }
 .person small { display: block; color: var(--jsal-muted); font-size: 12px; overflow-wrap: anywhere; }
@@ -401,7 +401,7 @@ header.top .viewnav:not([hidden]) ~ .jsal-theme { margin-left: 0; }
 .req-form { gap: var(--jsal-space-12); }
 .req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--jsal-space-8); }
 .req-list { display: grid; gap: var(--jsal-space-8); }
-.req { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: var(--jsal-space-12); background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); padding: var(--jsal-space-12) var(--jsal-space-16); }
+.req { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: var(--jsal-space-12); background: var(--jsal-surface); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); padding: var(--jsal-pad-card); }
 .vote { align-self: start; display: grid; justify-items: center; gap: var(--jsal-space-2); padding: var(--jsal-space-8) var(--jsal-space-4); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-muted); cursor: pointer; }
 .vote b { font-size: 17px; color: var(--jsal-ink); font-variant-numeric: tabular-nums; }
 .vote:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }

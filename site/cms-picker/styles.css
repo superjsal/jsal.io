@@ -82,7 +82,7 @@ body {
 .plats { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8); margin-bottom: var(--jsal-space-12); }
 .plats-label { color: var(--jsal-muted); font-size: 12px; font-weight: 600; margin-right: var(--jsal-space-2); }
 .chip {
-  padding: 3px var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill);
+  padding: var(--jsal-pad-pill); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill);
   background: transparent; color: var(--jsal-muted); font-size: 13px; font-weight: 600;
   transition: background var(--jsal-quick), color var(--jsal-quick), border-color var(--jsal-quick);
 }
@@ -113,7 +113,7 @@ body {
 /* ── Verdict tags ──────────────────────────────────────────────────────── */
 
 .tag {
-  display: inline-block; padding: var(--jsal-space-2) var(--jsal-space-8); border-radius: var(--jsal-radius-sm);
+  display: inline-block; padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-sm);
   font-size: 13px; font-weight: 700; line-height: 1.5; white-space: nowrap;
 }
 .tag.yes, .tag.auto { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
@@ -257,7 +257,7 @@ body {
   /* Who's compared, said once: each platform's name, its match label and its type, so the rows needn't repeat them */
   .row.head { background: var(--jsal-surface); font-weight: 400; }
   .row.head > .item { display: none; }
-  .row.head > .hcell { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: var(--jsal-space-2) var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-12); border-top: 1px solid var(--jsal-line); }
+  .row.head > .hcell { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: var(--jsal-space-2) var(--jsal-space-8); padding: var(--jsal-pad-cell); border-top: 1px solid var(--jsal-line); }
   .row.head > .hcell:nth-child(2) { border-top: 0; }
   .hcell .pname { padding-bottom: 0; background: none; font-size: 14px; }
   .hcell.col-on:not(.col-pick) .pname { color: var(--jsal-ink); }   /* only the best match is gold here: a tap isn't a hover */
@@ -266,7 +266,7 @@ body {
   .row { display: block; margin-bottom: var(--jsal-space-8); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); overflow: hidden; }
   .item { position: static; border-right: 0; background: var(--jsal-sunk); }
   .row.group { padding: var(--jsal-space-12) var(--jsal-space-2) var(--jsal-space-8); border: 0; background: none; }
-  .cell { position: relative; display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: var(--jsal-space-8) var(--jsal-space-8); align-items: center; min-height: 44px; padding: var(--jsal-space-8) var(--jsal-space-12); border-top: 1px solid var(--jsal-line); }
+  .cell { position: relative; display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: var(--jsal-space-8) var(--jsal-space-8); align-items: center; min-height: 44px; padding: var(--jsal-pad-cell); border-top: 1px solid var(--jsal-line); }
   .cell .plat { position: static; width: auto; height: auto; margin: 0; overflow: hidden; clip-path: none; white-space: nowrap; text-overflow: ellipsis; display: block; color: var(--jsal-ink-2); font-weight: 600; font-size: 14px; }
   .cell.col-pick .plat { color: var(--jsal-accent); }   /* the quiz's best match, named in gold on every row (its column is underlined on desktop) */
   .cell .mark, .cell .where { grid-column: 1 / -1; }   /* a note runs the card's full width */
@@ -339,13 +339,13 @@ body {
 .ctop { display: flex; align-items: center; gap: var(--jsal-space-12); }
 .logo { flex: none; width: 30px; height: 30px; background: var(--jsal-ink); -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
 .logo.badge { display: grid; place-items: center; border-radius: var(--jsal-radius-lg); background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 14px; font-weight: 800; -webkit-mask: none; mask: none; }
-.ptype { align-self: flex-start; margin-top: var(--jsal-space-8); padding: var(--jsal-space-2) var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 13px; font-weight: 700; }
+.ptype { align-self: flex-start; margin-top: var(--jsal-space-8); padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 13px; font-weight: 700; }
 .summary { margin-top: var(--jsal-space-12); min-height: 3em; font-size: 17px; line-height: 1.5; }   /* two lines on every card, so they line up */
 .ktags { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin-top: var(--jsal-space-12); }
-.ktag { padding: 3px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 13px; font-weight: 600; }
+.ktag { padding: var(--jsal-pad-pill); border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); color: var(--jsal-ink-2); font-size: 13px; font-weight: 600; }
 .aitags { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8); margin-top: var(--jsal-space-8); }
 .ailabel { color: var(--jsal-info); font-size: 13px; font-weight: 800; letter-spacing: 0.04em; }
-.aitag { padding: 3px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-info-soft); color: var(--jsal-info); font-size: 13px; font-weight: 600; }
+.aitag { padding: var(--jsal-pad-pill); border-radius: var(--jsal-radius-pill); background: var(--jsal-info-soft); color: var(--jsal-info); font-size: 13px; font-weight: 600; }
 /* Running it: two short facts per platform (hosting and updates, what you can export) */
 .run { display: grid; gap: var(--jsal-space-12); margin-top: var(--jsal-space-16); padding: var(--jsal-space-12) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
 .run > div { display: grid; grid-template-columns: 18px minmax(0, 1fr); column-gap: var(--jsal-space-8); }
@@ -474,18 +474,18 @@ body {
 .qz-ans-ed p { margin-bottom: var(--jsal-space-2); color: var(--jsal-ink); font-size: 15px; font-weight: 600; }
 .qz-ans-ed .chip { display: flex; align-items: center; width: 100%; padding: var(--jsal-space-8) var(--jsal-space-12); text-align: left; }
 .qz-res { display: grid; gap: var(--jsal-space-12); }
-.qz-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--jsal-space-4) var(--jsal-space-12); padding: var(--jsal-space-16); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); color: var(--jsal-ink-2); }
+.qz-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--jsal-space-4) var(--jsal-space-12); padding: var(--jsal-pad-panel); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); color: var(--jsal-ink-2); }
 .qz-card.top { border-color: var(--jsal-line-hi); }   /* the green badge says which wins; gold stays for interaction */
 .qz-card .logo { grid-row: span 2; width: 34px; height: 34px; }
 .qz-card h4 { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-8); color: var(--jsal-ink); font-size: 17px; }
-.fitp { padding: var(--jsal-space-2) var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
+.fitp { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
 .fitp.low { background: var(--jsal-line); color: var(--jsal-ink-2); }   /* the closest, not a fit: neutral, not green */
 /* Before the matches that lack a must-have the first has built in: a label with a rule above, like a group heading */
 .qz-div { padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
 .qz-div-h { margin-bottom: var(--jsal-space-2); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 /* Above the cards when nothing fits well, the answers pull against each other, or no match has every must-have built
    in: information, so blue */
-.qz-note { display: flex; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-12); padding: var(--jsal-space-8) var(--jsal-space-12); border-left: 3px solid var(--jsal-info); border-radius: var(--jsal-radius-sm); background: var(--jsal-info-soft); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
+.qz-note { display: flex; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-12); padding: var(--jsal-pad-note); border-left: 3px solid var(--jsal-info); border-radius: var(--jsal-radius-sm); background: var(--jsal-info-soft); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
 .qz-note::before { content: ""; flex: none; width: 16px; height: 16px; margin-top: var(--jsal-space-2); background: var(--jsal-info); -webkit-mask: var(--info) center / contain no-repeat; mask: var(--info) center / contain no-repeat; }
 .qz-note-a { display: inline; padding: 0; text-align: left; border: 0; background: none; color: var(--jsal-info); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .qz-card .sum { color: var(--jsal-muted); font-size: 15px; }
@@ -526,7 +526,7 @@ body {
 .qz-steps a, .qz-later a { color: var(--jsal-info); text-underline-offset: 2px; white-space: nowrap; }   /* links inside the result's content */
 .qz-later { margin-top: var(--jsal-space-12); color: var(--jsal-ink-2); font-size: 14px; }
 .qz-later b { font-weight: 600; }
-.qz-panel { margin-top: var(--jsal-space-12); padding: var(--jsal-space-16); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
+.qz-panel { margin-top: var(--jsal-space-12); padding: var(--jsal-pad-panel); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
 .qz-panel h4 { color: var(--jsal-ink); font-size: 17px; }
 .qz-switch { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8); margin-bottom: var(--jsal-space-12); }
 .qz-switch-l { margin-right: var(--jsal-space-4); color: var(--jsal-muted); font-size: 14px; }
@@ -544,7 +544,7 @@ body {
 .qz-verdict-line { grid-area: line; color: var(--jsal-ink); font: 600 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; text-wrap: balance; }
 .qz-verdict .qz-jump { grid-area: jump; margin-left: 0; }
 @media (max-width: 560px) {
-  .qz-verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: var(--jsal-space-16); }
+  .qz-verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: var(--jsal-pad-panel); }
   .qz-verdict .qz-jump { margin-top: var(--jsal-space-8); }
 }
 .qz-jump { order: 2; position: relative; margin-left: auto; padding: var(--jsal-space-4) 0; border: 0; background: none; color: var(--jsal-accent); font: 600 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; white-space: nowrap; }
@@ -566,7 +566,7 @@ body {
 @media (max-width: 560px) { .qz-fb-q { flex-basis: 100%; } }
 @media (pointer: coarse) { .qz-fb .qz-fb-row .chip { min-height: 44px; } }
 /* "Had a platform in mind?": any platform ranked for these answers, with what counted for and against it */
-.qz-check { margin-top: var(--jsal-space-12); padding: var(--jsal-space-16); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
+.qz-check { margin-top: var(--jsal-space-12); padding: var(--jsal-pad-panel); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
 .qz-check h4 { color: var(--jsal-ink); font-size: 17px; }
 .qz-check .lead { margin: var(--jsal-space-2) 0 var(--jsal-space-8); color: var(--jsal-muted); font-size: 14px; }
 .qz-check .res { margin-top: var(--jsal-space-12); padding: var(--jsal-space-12) var(--jsal-space-12); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); }

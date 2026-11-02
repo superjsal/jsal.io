@@ -33,11 +33,11 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours and top bar: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=2b6c010a">
+<link rel="stylesheet" href="/shell.css?v=dee1ef84">
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
-.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 var(--jsal-space-20) var(--jsal-space-64); }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 var(--jsal-gutter) var(--jsal-page-end); }
 .lost { margin-top: var(--jsal-page-top); max-width: 36em; }
 .code { margin: 0 0 var(--jsal-space-12); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; text-wrap: balance; }   /* every page title's size, as on the home page */
@@ -52,7 +52,7 @@ h1[data-drop] .lost-gem { opacity: 0; }
 .lost-e { display: inline-block; transform-origin: 50% 90%; }
 .lost .lead { margin: var(--jsal-space-32) 0 0; padding-bottom: var(--jsal-space-40); border-bottom: 1px solid var(--jsal-line); font-size: 17px; color: var(--jsal-muted); text-wrap: pretty; }   /* the intro ends in a thin line */
 .links { margin: var(--jsal-space-40) 0 0; padding: 0; list-style: none; display: grid; gap: var(--jsal-space-8); max-width: 420px; }
-.links a { display: flex; justify-content: space-between; align-items: center; gap: var(--jsal-space-12); padding: var(--jsal-space-12) var(--jsal-space-16); border-radius: var(--jsal-radius-xl); border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink); text-decoration: none; font-weight: 600; }
+.links a { display: flex; justify-content: space-between; align-items: center; gap: var(--jsal-space-12); padding: var(--jsal-pad-card); border-radius: var(--jsal-radius-xl); border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink); text-decoration: none; font-weight: 600; }
 .links a span { font-weight: 400; color: var(--jsal-muted); font-size: 14px; }
 .links a:hover { border-color: var(--jsal-hover-line); }
 .links a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
