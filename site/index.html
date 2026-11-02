@@ -467,8 +467,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes cp-t { 0% { color: var(--jsal-muted); } 10%, 31% { color: var(--jsal-selected-ink); } 40%, 100% { color: var(--jsal-muted); } }
 @keyframes cp-h { 0% { color: var(--jsal-selected-ink); } 10%, 31% { color: var(--jsal-muted); } 40%, 100% { color: var(--jsal-selected-ink); } }
 @keyframes hi-type { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
-/* Redirect Import: the rows are checked one at a time and each ready row's line lands in the file just after (the café's
-   with its é written safely); the row with a space gets its "!" and note and adds nothing, and the row left out its dash.
+/* Redirect Import: the rows are checked one at a time and each ready row's line lands in the file just after (the full
+   address with the site's own domain left off); the row with a space gets its "!" and note and adds nothing, and the row left out its dash.
    All held to 97%, past where the one play on touch screens stops, then cleared for the next loop */
 @keyframes ri-d1 { 0%, 4% { scale: 0; } 10% { scale: 1.25; } 14%, 97% { scale: 1; } 100% { scale: 0; } }
 @keyframes ri-f1 { 0%, 12% { opacity: 0; translate: -10px 0; } 20%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
@@ -580,12 +580,12 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
         <span class="rs-head"><b>Your sheet</b><span class="mono">5 rows</span></span>
         <span class="rs-row"><span class="n mono">2</span><i class="dot ok">✓</i><span class="mono">/about-us/</span><span class="mono">/pages/about</span></span>
         <span class="rs-row"><span class="n mono">3</span><i class="dot ok">✓</i><span class="mono">/blog/sale</span><span class="mono">/blogs/news/sale</span></span>
-        <span class="rs-row"><span class="n mono">4</span><i class="dot ok">✓</i><span class="mono">/café-menu</span><span class="mono">/pages/menu</span></span>
+        <span class="rs-row"><span class="n mono">4</span><i class="dot ok">✓</i><span class="mono">mysite.com/faq</span><span class="mono">/pages/faq</span></span>
         <span class="rs-row"><span class="n mono">5</span><i class="dot bad">!</i><span class="mono bad-cell">/our team</span><span class="mono">/pages/team</span></span>
         <span class="rs-note">Has a space: /our team</span>
         <span class="rs-row last"><span class="n mono">6</span><i class="dot out">–</i><span class="mono">/old-promo</span><span class="mono out-cell">Left out</span></span>
       </span>
-      <span class="obj paper rf" aria-hidden="true"><span class="mono rf-head">shopify-redirects.csv<span>3 ready</span></span><code><span class="ln mute">Redirect from,Redirect to</span><span class="ln">/about-us,/pages/about</span><span class="ln">/blog/sale,/blogs/news/sale</span><span class="ln">/caf%C3%A9-menu,/pages/menu</span></code></span>
+      <span class="obj paper rf" aria-hidden="true"><span class="mono rf-head">shopify-redirects.csv<span>3 ready</span></span><code><span class="ln mute">Redirect from,Redirect to</span><span class="ln">/about-us,/pages/about</span><span class="ln">/blog/sale,/blogs/news/sale</span><span class="ln">/faq,/pages/faq</span></code></span>
     </a>
 
     <!-- Site updates: the newest change in each of the three most recently changed parts of the site -->
