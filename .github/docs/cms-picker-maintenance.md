@@ -119,6 +119,16 @@ control and built-in languages, though small hospitality sites almost never run 
 developer-built sites, moving included; 24 starting fresh), to Squarespace, HubSpot (ticked), Wix, WordPress and
 Webflow; no persona moved, and the tourist café expert case now agrees (45 of 45).
 
+**Plain words** (2026-11-01, agreed with John): every card and note on the CMS Picker reworded for someone choosing a
+platform, not someone building it: plain words first ("the end of each page's address", "a spreadsheet", "the file that
+tells bots what they may read", "a keep-out-of-search tag", "run it yourself", "a fee on each sale"), and, in brackets,
+the term a visitor meets in that platform's own settings (robots.txt, noindex, URL slug, module, CMS, Code Injection,
+Head HTML). Template languages (Liquid, Stencil, Twig) and Stripe's name were dropped. Facts, prices and verdicts are
+unchanged, so no result moved. Four "Good fit" lines the quiz matches on changed with the cards (`quiz.fitFor`):
+WordPress's REST API line, HubSpot's marketing teams line and BigCommerce's two. A new note keeps to this: the platform
+pages' headings already pair plain words with the term ("Redirect old links (301s)"). The team Playbook keeps its
+technical terms; its readers build the sites.
+
 **Baseline** (final review with Claude Reviewer, 2026-10-30, before v3): all four rule tests pass, all 37 personas pass, and
 241 answer sets show "Closest match". The review checked five answer sets on the live page (a small store,
 B2B in two languages, a paid-members blog on "Nothing for now", the custom app built by someone not technical,
