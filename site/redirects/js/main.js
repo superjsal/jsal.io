@@ -382,7 +382,9 @@ function renderFile() {
   // Squarespace's lines are pasted, so Copy is the main action there
   $("copyBtn").classList.toggle("primary", !!fmt.paste);
   $("downloadBtn").classList.toggle("primary", !fmt.paste);
-  $("downloadBtn").textContent = p.length > 1 ? `Download part ${part + 1}` : "Download";
+  // Both buttons name what they take: the file on the right, or the part of it on show
+  $("downloadBtn").textContent = p.length > 1 ? `Download part ${part + 1}` : "Download file";
+  $("copyBtn").textContent = p.length > 1 ? `Copy part ${part + 1}` : "Copy file";
   $("copyBtn").disabled = $("downloadBtn").disabled = !result.ready.length;
 }
 
