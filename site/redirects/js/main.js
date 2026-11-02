@@ -1,5 +1,5 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=ad523613";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=fc5e68cc";
 import { FORMATS, byId } from "./formats.js?v=1a0bf951";
 
 const $ = (id) => document.getElementById(id);
@@ -279,7 +279,7 @@ function notesHtml(r, it, cell) {
   let h = it.notes.filter((x) => x.cell === cell).map((x, i) => `<p class="note ${x.kind}">${x.text}</p>` + (x.fixes?.length
     ? `<div class="fixes">${x.fixes.map(([label, f], j) => `<button type="button" class="jsal-btn small" data-fix="${cell}:${i}:${j}">${esc(label)}${f(r[field]).length <= 48 ? ": " + esc(f(r[field])) : ""}</button>`).join("")}</div>` : "")).join("");
   if (cell === "o" && it.clash) {
-    if (!it.clash.kept) h += `<div class="fixes">${it.clash.options.map((o) => `<button type="button" class="jsal-btn small" data-keep="${o.id}">${esc(o.to)} <span class="from-row">(row ${o.n})</span></button>`).join("")}</div>`;
+    if (!it.clash.kept) h += `<div class="fixes">${it.clash.options.map((o) => `<button type="button" class="jsal-btn small" data-keep="${o.id}">→ ${esc(o.to)} <span class="from-row">(row ${o.n})</span></button>`).join("")}</div>`;
     else h += `<p class="note edited"><button type="button" class="jsal-btn link" data-unkeep>Choose again</button></p>`;
   }
   if (!r.added && r[field] !== r[field + "0"]) h += `<p class="note edited">Edited · <button type="button" class="jsal-btn link" data-undo="${field}">Undo</button></p>`;

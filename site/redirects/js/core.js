@@ -222,12 +222,16 @@ export function analyse(rows, fmt, opts) {
     }
     const chosen = g.find((l) => l.id === opts.keep?.[k]);
     const options = g.map((l) => ({ id: l.id, n: l.it.n, to: l.to }));
-    const others = (l) => g.filter((x) => x !== l).map((x) => `row ${x.it.n}`).join(" and ");
+    const rowList = (ls) => { const n = ls.map((x) => x.it.n); return n.length > 1 ? `${n.slice(0, -1).join(", ")} and ${n[n.length - 1]}` : `${n[0]}`; };
+    const others = (l) => g.filter((x) => x !== l);
+    // The rows may write the address differently (/about-us/ and /about-us), so say the platform reads them as one
+    const spellings = [...new Set(g.map((l) => l.from))];
+    const same = spellings.length > 1 ? ` ${esc(fmt.name)} treats ${spellings.map((s) => `<code>${esc(s)}</code>`).join(" and ")} as one address.` : "";
     for (const l of g) {
       l.it.clash = { key: k, kept: chosen?.id, options };
-      if (!chosen) l.bad("o", `<code>${esc(l.from)}</code> is also in ${others(l)}. Send it to:`, [], "clash", "The same old address in two rows");
-      else if (l === chosen) l.fix("o", `You chose this row over ${others(l)}`);
-      else l.out("o", `You chose row ${chosen.it.n} instead: left out`);
+      if (!chosen) l.bad("o", `Rows ${rowList(g)} ${g.length === 2 ? "both" : "all"} redirect <code>${esc(l.from)}</code>, to different pages.${same} Which page should it go to?`, [], "clash", "The same old address in two rows");
+      else if (l === chosen) l.fix("o", `Goes to <code>${esc(l.to)}</code>. ${others(l).length > 1 ? "Rows" : "Row"} ${rowList(others(l))} ${others(l).length > 1 ? "are" : "is"} left out.`);
+      else l.out("o", `Left out: row ${chosen.it.n} sends this address to <code>${esc(chosen.to)}</code>`);
     }
     if (chosen) kept.push(chosen);
   }
