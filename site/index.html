@@ -309,7 +309,6 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .grid > * { grid-column: 1 / -1 !important; }
   .wm { display: none; }
   .cms, .ir, .cp, .hi { min-height: 0; }
-  .cms { overflow-x: clip; }   /* on the narrowest phones the brick is wider than the tile: its sides are cut, its top still pokes out */
   .cms .txt { margin-top: 186px; }   /* room for the brick above the words */
   .pcs { left: 14px; top: 31px; --rest: rotate(-10deg) scale(0.6); --hover: var(--rest); }   /* its top cards poke out, as on desktop */
   /* the editor and the sheet follow their words; the editor at the tile's full width pokes out of its bottom (the
@@ -327,6 +326,10 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 #updates, #hi-h { scroll-margin-top: 16px; }
 /* Phones: a smaller title and tiles, one spacing step for the grid, and only the Updates link kept in the top bar
    (Email is in Say hi) */
+/* The narrowest phones: a smaller brick, so it fits across the tile and the page never scrolls sideways */
+@media (max-width: 339px) {
+  .pcs { --rest: rotate(-10deg) scale(0.54); }
+}
 @media (max-width: 520px) {
   .jsal-top nav a:not([href="#updates"]) { display: none; }
   .grid { gap: 28px; }
