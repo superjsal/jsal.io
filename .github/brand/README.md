@@ -115,15 +115,24 @@ the gem lets out "io".
 
 ## Tool icons
 
-One icon per tool on the home page, drawn like the mark: the 32 grid, round-ended strokes, and the gold gem used once
-for what the tool does, on a tile in the tool's accent from its home page tile. `make-brand.py` writes them.
+One icon per tool on the home page: a small line drawing of what the tool does, with round ends and softened corners
+(line 2.2 on the 32 grid), and the gold gem used once for its job, on a tile in the tool's accent from its home page
+tile. Each picture was drawn to fill a 32 grid and sits on the tile at 70%, so every icon has the same margin.
+`make-brand.py` writes them.
 
 | Tool | Tile | Glyph |
 |---|---|---|
+<<<<<<< HEAD
 | CMS Picker (`cms-picker`) | plum #674690 | Three platforms side by side; the one that fits stands tallest, wearing the gem like the mark's j |
 | Clean Paste (`clean-paste`) | deep gold #5e430b (darker than the home tile's gold, so the gold gem keeps its contrast) | Tidy lines of text ending in the gem as their full stop |
 | Image Resizer (`image-resizer`) | teal #2a6a61, from the home page tile's teal | A picture's frame with the gem as the corner handle |
 | Platform Playbook (`platform-playbook`) | blue #3b5a9a | A checklist: two steps done, the gem marking the current one |
+=======
+| CMS Picker (`cms-picker`) | plum #674690 | A podium with three places; the platform that fits stands on the top step, wearing the gem like the mark's j |
+| Clean Paste (`clean-paste`) | deep gold #5e430b (darker than the home tile's gold, so the gold gem keeps its contrast) | A clipboard holding clean lines, the gem its clip |
+| Image Resizer (`image-resizer`) | teal #2a6a61, from the home page tile's teal | A photo, its frame and hills, with the gem as the sun in its corner |
+| Platform Playbook (`platform-playbook`) | blue #3b5a9a | An open book, the gem its bookmark |
+>>>>>>> f35730e (Site: new tool icons, a small picture of each tool's job)
 | Off the clock (`off-the-clock`) | green #3f6b3a, as `/play/` uses it | A loot bag holding the gem, a nod to the Backpack. Not a tool, so it's not in the kit's tool row |
 
 The site's logo menu draws them inline (`APPS` in `site/nav.js`, its tile colours the `--jsal-tool-*` tokens in
