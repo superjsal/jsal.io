@@ -52,7 +52,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=f92b2afa">
+<link rel="stylesheet" href="/shell.css?v=2b6c010a">
 <style>
 /* Tile colours: each tool keeps its own tint with a deep shade of it for the words; Updates and Say hi are plain.
    The pieces of each tool laid on the tiles wear the tools' own colours, so they change with the theme as the tools do;
@@ -163,7 +163,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .pc-light { --edge: color-mix(in srgb, var(--b) 80%, black); background: linear-gradient(180deg, var(--b), color-mix(in srgb, var(--b) 94%, black) 60%); }
 /* the need being played, in a pill under the tile's line */
 .fit-for { position: absolute; left: var(--pad); top: 106px; z-index: 4; display: grid; pointer-events: none; }
-.fit-for span { grid-area: 1 / 1; justify-self: start; padding: var(--jsal-space-6) var(--jsal-space-12); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); font-size: 12px; white-space: nowrap; opacity: 0; }
+.fit-for span { grid-area: 1 / 1; justify-self: start; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); font-size: 12px; white-space: nowrap; opacity: 0; }
 .p-wordpress { --b: #ffffff; --c: #21759b; }
 .p-shopify { --b: #5e8e3e; --c: #ffffff; }
 .p-substack { --b: #ff6719; --c: #ffffff; }
@@ -200,7 +200,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .sizes span { flex: 1; padding: 5px 0; border-radius: var(--jsal-radius); border: 1px solid var(--jsal-line); font-size: 10px; text-align: center; white-space: nowrap; }   /* style: allow (miniature: three sizes across the editor) */
 .sizes .on { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); }
 .outs { right: 20px; top: -2px; z-index: 3; width: 214px; padding: 12px 14px; border-radius: 16px; --rest: rotate(4deg); --hover: rotate(6deg) translate(4px, -4px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
-.outs-head { display: flex; justify-content: space-between; padding-bottom: var(--jsal-space-6); color: var(--jsal-muted); }
+.outs-head { display: flex; justify-content: space-between; padding-bottom: var(--jsal-space-8); color: var(--jsal-muted); }
 .outs-head span { color: var(--jsal-ok); }
 .outs .row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }   /* style: allow (a picture, drawn to its own measure) */
 /* each file's thumbnail at its own shape, in the same 44 × 30 slot */
@@ -257,7 +257,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .ri .txt { max-width: 258px; }
 .ri .wm { width: 360px; height: 360px; left: -60px; top: 64px; }   /* the window under the words, its arrow pointing at the sheet */
 .rs { left: 290px; top: 10px; z-index: 2; width: 300px; padding: 10px 14px 8px; border-radius: 16px; display: flex; flex-direction: column; font-size: 12px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
-.rs-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: var(--jsal-space-6); font-size: 13px; }
+.rs-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: var(--jsal-space-8); font-size: 13px; }
 .rs-head .mono, .rs .n, .rs .out-cell { color: var(--jsal-muted); }
 .rs-row { display: grid; grid-template-columns: 12px 18px 1fr 1.2fr; gap: var(--jsal-space-8); align-items: center; padding: 3px 0; border-top: 1px solid var(--jsal-sunk); }
 .rs-row .mono { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 500; }
@@ -295,7 +295,7 @@ footer nav { display: flex; gap: var(--jsal-space-4); }
 footer a, footer .foot-btn { padding: var(--jsal-space-8); color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 2px; }   /* the site's own links: gold, as in every Made by line */
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
 /* The platform guides: a full-width row of plain links in the footer's muted ink, so they don't compete with the tiles */
-.fg { flex: 1 0 100%; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--jsal-space-12); padding-bottom: var(--jsal-space-6); }
+.fg { flex: 1 0 100%; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--jsal-space-12); padding-bottom: var(--jsal-space-8); }
 .fg span { margin-right: var(--jsal-space-4); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
 footer .fg a { padding: var(--jsal-space-4) 0; color: var(--jsal-muted); text-decoration: none; }
 footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
@@ -403,7 +403,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 /* The narrowest phones: the sheet takes the tile's padding too, its addresses smaller, so every one shows whole */
 @media (max-width: 389px) {
   .rs { width: calc(100% + 20px); margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px; }   /* style: allow (a picture, drawn to its own measure) */
-  .rs-row { grid-template-columns: 12px 18px 1fr 1fr; gap: var(--jsal-space-6); }
+  .rs-row { grid-template-columns: 12px 18px 1fr 1fr; gap: var(--jsal-space-8); }
   .rs-row .mono { font-size: 10px; }   /* style: allow (miniature) */
 }
 @media (max-width: 520px) {
@@ -648,6 +648,6 @@ if (matchMedia('(hover: none)').matches && matchMedia('(prefers-reduced-motion: 
   document.querySelectorAll('.cms, .ir, .cp, .hi, .ri').forEach((tile) => seen.observe(tile));
 }
 </script>
-<script src="/nav.js?v=bac8461f" defer></script>
+<script src="/nav.js?v=8e6a6b80" defer></script>
 </body>
 </html>

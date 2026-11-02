@@ -72,10 +72,10 @@ body { background: var(--jsal-bg); }
 :root {
   --jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-xl: 12px; --jsal-radius-pill: 999px;
   --jsal-radius-tile: 22px;
-  /* Spacing: every margin, padding and gap comes from this scale, named by its size in pixels: fine steps up to 8,
-     then fours to 24, then eights. Tight inside a component, roomier between sections. A 1px or 3px nudge inside a
+  /* Spacing: every margin, padding and gap comes from this scale, named by its size in pixels: a 4px rhythm (2px
+     for the finest work), in fours to 24, then eights. Tight inside a component, roomier between sections. A 1px or 3px nudge inside a
      tag stays as written; anything else off the scale carries a style: allow note */
-  --jsal-space-2: 2px; --jsal-space-4: 4px; --jsal-space-6: 6px; --jsal-space-8: 8px; --jsal-space-12: 12px;
+  --jsal-space-2: 2px; --jsal-space-4: 4px; --jsal-space-8: 8px; --jsal-space-12: 12px;
   --jsal-space-16: 16px; --jsal-space-20: 20px; --jsal-space-24: 24px; --jsal-space-32: 32px; --jsal-space-40: 40px;
   --jsal-space-48: 48px; --jsal-space-64: 64px;
   /* Motion: a state change (hover, a colour, a chevron) takes --jsal-quick; something that moves or arrives takes
@@ -101,7 +101,7 @@ body { background: var(--jsal-bg); }
 
 /* The one button every page uses: outlined on a light fill; .primary is the gold main action, .small suits dense
    screens, .danger removes or clears. An app adds only layout (width, order), never its own look */
-.jsal-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--jsal-space-8); min-height: 40px; padding: var(--jsal-space-6) var(--jsal-space-20); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px/1.2 var(--jsal-font); text-align: center; text-decoration: none; cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick), filter var(--jsal-quick); }
+.jsal-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--jsal-space-8); min-height: 40px; padding: var(--jsal-space-8) var(--jsal-space-20); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px/1.2 var(--jsal-font); text-align: center; text-decoration: none; cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick), filter var(--jsal-quick); }
 .jsal-btn:hover { border-color: var(--jsal-hover-line); }
 .jsal-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .jsal-btn:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -324,7 +324,7 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 /* The caret and both theme icons are in each page's HTML (not added by nav.js), so the top bar
    is complete on the first frame and doesn't change during page transitions. CSS shows the
    moon in light mode and the sun in dark mode. */
-.jsal-caret { display: inline-block; margin-left: var(--jsal-space-6); opacity: .55; transition: transform var(--jsal-quick); vertical-align: middle; }
+.jsal-caret { display: inline-block; margin-left: var(--jsal-space-8); opacity: .55; transition: transform var(--jsal-quick); vertical-align: middle; }
 [data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
 [data-jsal-nav]:hover .jsal-caret { opacity: .9; }
 .jsal-theme .i-sun { display: none; }
@@ -342,7 +342,7 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 @media (max-width: 420px) {
   .jsal-top { column-gap: var(--jsal-space-12); }
   .jsal-title { font-size: 17px; }
-  .jsal-link { padding-inline: var(--jsal-space-6); }
+  .jsal-link { padding-inline: var(--jsal-space-8); }
 }
 .jsal-link:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 
@@ -383,5 +383,5 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 .jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
 .jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .jsal-about details > ul { margin-bottom: var(--jsal-space-12); }
-.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
+.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 @media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }

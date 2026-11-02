@@ -54,7 +54,7 @@ body {
 
 /* ── Sidebar ───────────────────────────────────────────────────────────── */
 
-.side { display: flex; flex-direction: column; gap: var(--jsal-space-6); }
+.side { display: flex; flex-direction: column; gap: var(--jsal-space-8); }
 .side-empty { color: var(--jsal-muted); line-height: 1.5; }
 
 .pane-head .jsal-seg > button { flex: 1; }   /* Text and HTML, the same width */
@@ -62,7 +62,7 @@ body {
 /* ── Checks ────────────────────────────────────────────────────────────── */
 
 .results { min-height: 0; }
-.stats { display: flex; flex-wrap: wrap; gap: var(--jsal-space-6); margin-bottom: var(--jsal-space-8); }
+.stats { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin-bottom: var(--jsal-space-8); }
 .stat {
   padding: 3px var(--jsal-space-8);
   border-radius: var(--jsal-radius-pill);
@@ -102,8 +102,8 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 
 /* ── Actions ───────────────────────────────────────────────────────────── */
 
-.actions { display: grid; gap: var(--jsal-space-6); margin-top: var(--jsal-space-12); }
-.actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--jsal-space-6); }
+.actions { display: grid; gap: var(--jsal-space-8); margin-top: var(--jsal-space-12); }
+.actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--jsal-space-8); }
 .actions-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--jsal-space-8); min-height: 28px; }
 
 .actions .jsal-btn { white-space: nowrap; }
@@ -138,7 +138,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .paste-privacy { margin-top: var(--jsal-space-8); font-size: 12px; color: var(--jsal-muted); }
 .paste-note { margin-top: var(--jsal-space-8); color: var(--jsal-warn); font-size: 13px; }
 .paste-note:empty { display: none; }
-kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-bg); }
+kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-bg); }
 
 .pane {
   display: flex;
@@ -182,7 +182,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-
   flex-wrap: wrap;
   align-items: center;
   gap: var(--jsal-space-2);
-  padding: var(--jsal-space-6) var(--jsal-space-8);
+  padding: var(--jsal-space-8) var(--jsal-space-8);
   border-bottom: 1px solid var(--jsal-line);
   background: var(--jsal-surface);
 }
@@ -234,7 +234,7 @@ textarea.code {
   content: "H1" / "";
   display: inline-block;
   margin-right: var(--jsal-space-8);
-  padding: 1px var(--jsal-space-6);
+  padding: 1px var(--jsal-space-8);
   border-radius: var(--jsal-radius-sm);
   vertical-align: 3px;
   font: 700 12px/1.4 var(--jsal-font);
@@ -250,7 +250,7 @@ textarea.code {
 .preview ul, .preview ol { padding-left: 1.5em; }
 .preview li + li, .preview li > ul, .preview li > ol { margin-top: 0.3em; }
 .preview table { border-collapse: collapse; width: 100%; font-size: 14px; }
-.preview td, .preview th { border: 1px solid var(--jsal-line-hi); padding: var(--jsal-space-6) var(--jsal-space-8); text-align: left; vertical-align: top; }
+.preview td, .preview th { border: 1px solid var(--jsal-line-hi); padding: var(--jsal-space-8) var(--jsal-space-8); text-align: left; vertical-align: top; }
 .preview blockquote { border-left: 3px solid var(--jsal-line-hi); padding-left: var(--jsal-space-12); color: var(--jsal-ink-2); }
 .preview [data-image] { display: inline-block; padding: var(--jsal-space-4) var(--jsal-space-8); border-radius: var(--jsal-radius); border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); font-size: 13px; font-weight: 600; }
 .preview .flag { text-decoration-color: var(--jsal-warn); text-decoration-style: wavy; text-decoration-line: underline; }   /* a word a check points at */
@@ -346,7 +346,7 @@ textarea.code {
   /* Before anything is pasted the paste box stretches to the bottom of the first screen, so the space reads as
      room for your content rather than the page running out */
   .app:not(.has-content) .work { flex: 1 1 auto; }
-  .pane-head .jsal-seg > button { padding: var(--jsal-space-6) var(--jsal-space-8); }
+  .pane-head .jsal-seg > button { padding: var(--jsal-space-8) var(--jsal-space-8); }
   .pane { height: 75vh; }
 }
 /* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact controls) */
@@ -364,7 +364,7 @@ textarea.code {
 /* Phones: the toolbar in two even rows (formatting, then links, fixes and undo) instead of wrapping onto three */
 .tb-break { display: none; }
 @media (max-width: 599px) {
-  .toolbar { gap: 1px; padding: var(--jsal-space-4) var(--jsal-space-6); }
+  .toolbar { gap: 1px; padding: var(--jsal-space-4) var(--jsal-space-8); }
   #toolbar .tb-sep, #toolbar .tb-grow { display: none; }
   #toolbar .tb-break { display: block; flex-basis: 100%; }
   #toolbar button { flex: 1 1 0; min-width: 0; padding: 0; }

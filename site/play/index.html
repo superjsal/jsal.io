@@ -53,7 +53,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=f92b2afa">
+<link rel="stylesheet" href="/shell.css?v=2b6c010a">
 <style>
 /* Tile colours: moss for the WoW UI, toned close to the page; the other tiles are plain, a neutral fill with no border */
 :root {
@@ -149,7 +149,7 @@ p, li { text-wrap: pretty; }
 
 .now { grid-column: 1 / 13; background: var(--plain); }
 .now h2 { margin: 0 0 var(--jsal-space-8); font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
-.now h3 { display: flex; align-items: baseline; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-6); font-size: 17px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
+.now h3 { display: flex; align-items: baseline; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-8); font-size: 17px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
 .now h3 time { font-size: 14px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now ul { margin: 0; padding: 0; list-style: none; }
 .now li { display: flex; gap: var(--jsal-space-12); padding: var(--jsal-space-8) 0; border-top: 1px solid var(--plain-line); }
@@ -170,8 +170,8 @@ p, li { text-wrap: pretty; }
 .ach-grp h3 img, .ach-grp h3 .lk { flex: none; width: 20px; height: 20px; border-radius: var(--jsal-radius-sm); }
 .ach-grp h3 .lk { display: grid; place-items: center; background: var(--jsal-tool-home); color: var(--jsal-fill); }
 .ach-grp h3 .n { margin-left: auto; font-size: 13px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
-.ach-grp ul { display: grid; gap: var(--jsal-space-6); margin: 0; padding: 0; list-style: none; }
-.ach-grp li { display: flex; align-items: center; gap: var(--jsal-space-8); padding: var(--jsal-space-6) var(--jsal-space-8) var(--jsal-space-6) var(--jsal-space-6); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
+.ach-grp ul { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; }
+.ach-grp li { display: flex; align-items: center; gap: var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-8) var(--jsal-space-8) var(--jsal-space-8); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
 .ach-grp .medal { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .ach-grp b { display: block; font-weight: 600; }
 .ach-grp small { display: block; font-size: 13px; color: var(--jsal-muted); }
@@ -203,12 +203,12 @@ p, li { text-wrap: pretty; }
 .mail.pack .desc { color: var(--pk-text); margin-top: var(--jsal-space-12) !important; }
 .pack-h { display: flex; align-items: center; gap: 14px; padding: 6px 12px 6px 0; border-radius: 30px 8px 8px 30px; background: linear-gradient(var(--lt-hi), var(--lt-low)); box-shadow: inset 0 0 0 1px var(--lt-edge), inset 0 1px 0 var(--lt-shine), 0 2px 4px rgb(0 0 0 / 0.5); }   /* style: allow (part of the backpack drawing) */
 .pack-h h2 { margin: 0; font: 700 24px/1.1 "Lora", Georgia, serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black), 0 0 10px rgb(0 0 0 / 0.6); }
-.portrait { flex: none; width: 64px; height: 64px; margin: calc(var(--jsal-space-8) * -1) 0 calc(var(--jsal-space-8) * -1) calc(var(--jsal-space-6) * -1); border-radius: 50%; overflow: hidden; border: 4px solid var(--st-rim); box-shadow: 0 0 0 2px var(--st-dark), 0 4px 10px rgb(0 0 0 / 0.7); }
+.portrait { flex: none; width: 64px; height: 64px; margin: -8px 0 -8px -6px; border-radius: 50%; overflow: hidden; border: 4px solid var(--st-rim); box-shadow: 0 0 0 2px var(--st-dark), 0 4px 10px rgb(0 0 0 / 0.7); }   /* style: allow (part of the bag drawing, as drawn) */
 .portrait img, .slot img, .bagtab img { display: block; width: 100%; height: 100%; }
 .bag { position: relative; display: grid; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-well); box-shadow: inset 0 0 0 2px var(--st-dark), inset 0 0 0 3px var(--pk-well-rim), inset 0 2px 12px rgb(0 0 0 / 0.9); }   /* style: allow (part of the backpack drawing) */
 /* Both bags share one cell, so switching between them never changes the tile's height */
 .slots { grid-area: 1 / 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: center; gap: var(--jsal-space-8); }
-.slots.pouch { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--jsal-space-6); }
+.slots.pouch { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--jsal-space-8); }
 .slots[inert] { visibility: hidden; }
 .slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: var(--jsal-radius); border: 2px solid var(--q); background: var(--pk-black); box-shadow: 0 0 0 1px var(--pk-black), 0 0 12px -3px var(--q); cursor: pointer; font: inherit; transition: transform var(--jsal-quick) ease, box-shadow var(--jsal-quick) ease, filter var(--jsal-quick) ease; }
 /* A soft bevel over the icon, as the game draws its slots */
@@ -255,7 +255,7 @@ p, li { text-wrap: pretty; }
 .bagtab:focus-visible { outline: 2px solid var(--pk-title); outline-offset: 2px; }
 .pack-credit { margin: var(--jsal-space-8) var(--jsal-space-2) 0; font-size: 12px; color: var(--pk-muted); }
 @media (pointer: coarse) { .bagtab { min-height: 44px; } .slots.pouch { grid-template-columns: repeat(5, minmax(0, 1fr)); } }   /* trophies at finger size */
-@media (max-width: 420px) { .bagtab { gap: var(--jsal-space-6); padding-right: var(--jsal-space-8); } .bagtab .bi { width: 24px; height: 24px; } }
+@media (max-width: 420px) { .bagtab { gap: var(--jsal-space-8); padding-right: var(--jsal-space-8); } .bagtab .bi { width: 24px; height: 24px; } }
 @media (prefers-reduced-motion: reduce) { .cast.go .cast-fill { animation-duration: var(--jsal-settle); } .slot { transition: none; } .slot:hover, .slot:focus-visible, .slot.on { transform: none; } .slot.new::before, .float { animation: none; } .slot.shine::before { display: none; } }
 
 footer { margin-top: var(--jsal-space-48); padding-top: var(--jsal-space-8); border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--jsal-space-12); font-size: 13px; color: var(--jsal-muted); }
@@ -279,7 +279,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .roles { margin: 0 0 var(--jsal-space-12); }
   .roles span + span::before { margin: 0 var(--jsal-space-8); }
   .intro h1 { font-size: 40px; line-height: 1.05; }
-  .intro p { margin: var(--jsal-space-16) 0 var(--jsal-space-6); font-size: 17px; line-height: 1.55; }
+  .intro p { margin: var(--jsal-space-16) 0 var(--jsal-space-8); font-size: 17px; line-height: 1.55; }
   .tile { padding: var(--jsal-space-20); }
   .tile h2 { font-size: 24px; }
   .ui { padding: var(--jsal-space-20); }
@@ -573,6 +573,6 @@ addEventListener('DOMContentLoaded', drawAchievements);
 addEventListener('jsal-achievement', drawAchievements);
 addEventListener('pageshow', drawAchievements);   // back from a tool: show what was unlocked there
 </script>
-<script src="/nav.js?v=bac8461f" defer></script>
+<script src="/nav.js?v=8e6a6b80" defer></script>
 </body>
 </html>

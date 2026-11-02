@@ -51,8 +51,8 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   below), the visitor's own headings in Clean Paste's preview, and the home tiles' miniature pictures.
   **Check:** `check.py` fails on any other px font size, and on half pixels. Relative sizes (inline code at
   `0.86em`) are fine.
-- **Spacing comes from twelve tokens**, `--jsal-space-*` in `shell.css`, named by their size in pixels: 2, 4, 6
-  and 8 for fine steps, then 12, 16, 20, 24, then 32, 40, 48 and 64. Every margin, padding and gap reads one
+- **Spacing comes from eleven tokens** on a 4px rhythm, `--jsal-space-*` in `shell.css`, named by their size in
+  pixels: 2 for the finest work, then 4, 8, 12, 16, 20, 24, then 32, 40, 48 and 64. Every margin, padding and gap reads one
   (`var(--jsal-space-12)`; a negative one is `calc(var(--jsal-space-8) * -1)`). Tight inside a component (a
   button's or a row's padding, the gap between controls) and roomier between sections. A 1px or 3px nudge inside a
   small tag or pill stays as written. A value that has to match something else (room kept clear for a home tile's
