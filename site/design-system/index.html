@@ -97,6 +97,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .roles th, .roles td { padding: var(--jsal-pad-cell); border-bottom: 1px solid var(--jsal-line); text-align: left; vertical-align: top; }
 .roles th { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
 .roles td:first-child { white-space: nowrap; font-weight: 600; }
+.roles code { white-space: nowrap; }   /* a token name stays whole, even where the column wraps on phones */
 .dot { display: inline-block; width: 12px; height: 12px; margin-right: var(--jsal-space-8); border-radius: 50%; vertical-align: -1px; }
 .table-wrap { overflow-x: auto; }
 .table-wrap:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius); }
@@ -308,12 +309,13 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
   <section class="hero">
     <p class="eyebrow">jsal.io · Visual identity &amp; UI design system · November 2026</p>
     <h1>Small tools, <em>one</em> design language.</h1>
-    <p class="lede">How jsal.io looks and behaves, taken from the site's own code rather than written for it: the colour tokens, the three typefaces, the column, the components the tools share, how things move, and what keeps it accessible. Every value on this page is the one the live site uses; decisions about it are marked as such.</p>
+    <p class="lede">How jsal.io looks and behaves, taken from the site's own code rather than written for it: the colour tokens, the three typefaces, the spacing scale and its roles, the column, the components the tools share, how things move, and what keeps it accessible. Every value on this page is the one the live site uses; decisions about it are marked as such.</p>
     <ul class="facts">
       <li><b>3</b><span>typefaces, self-hosted</span></li>
       <li><b>24</b><span>colour tokens × 2 themes</span></li>
       <li><b>7</b><span>tool icons, one family</span></li>
       <li><b>6</b><span>corner radii</span></li>
+      <li><b>11</b><span>spacing steps, 10 roles</span></li>
       <li><b>1</b><span>column, three widths</span></li>
       <li><b>0</b><span>build steps</span></li>
     </ul>
@@ -360,7 +362,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><b>Words over widgets</b><span>Plain tags ("Built in", "Needs code") and plain states ("not verified", and "*" for varies, spelled out in the key and for screen readers) carry the meaning; colour reinforces, it never explains alone. Instructions swap "click" for "tap" on touch screens.</span><small>nav.js · data-touch</small></li>
       <li><b>Motion that steps aside</b><span>Two timings, 0.15s for a change and 0.3s for a move, every one with a reduced-motion fallback, and nothing moving on its own for more than five seconds.</span><small>check.py · WCAG 2.2.2</small></li>
       <li><b>Everything stays in the browser</b><span>Files, pasted documents and settings never leave the device; the only thing sent anywhere is basic analytics, and in Europe only with consent. The design makes the promise visible ("Nothing is uploaded") on every tool.</span><small>/privacy/</small></li>
-      <li><b>Checked, not assumed</b><span>Contrast, fonts, text sizes, corners, timings, touch sizes and page markup are verified by scripts before each push; axe runs on every page in both themes. Design rules live in the repo next to the code they govern.</span><small>build\check.ps1</small></li>
+      <li><b>Checked, not assumed</b><span>Contrast, fonts, text sizes, spacing, corners, timings, touch sizes and page markup are verified by scripts before each push; axe runs on every page in both themes. Design rules live in the repo next to the code they govern.</span><small>build\check.ps1</small></li>
     </ul>
   </section>
 
@@ -516,8 +518,8 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
   <section class="sec" id="layout">
     <p class="eyebrow">05 · Spacing &amp; layout</p>
-    <h2>One column, three widths, and a grid that stacks.</h2>
-    <p class="intro">Every page shares a single content column so the top bar never shifts between pages. Each page's wrapper is <code>max-width: calc(var(--jsal-col) + 40px)</code> with a 20px gutter each side, and the column grows at two breakpoints.</p>
+    <h2>One spacing scale, one column, and a grid that stacks.</h2>
+    <p class="intro">Every page shares a single content column so the top bar never shifts between pages. Each page's wrapper is <code>max-width: calc(var(--jsal-col) + 40px)</code> with a 20px gutter each side (<code>--jsal-gutter</code>), and the column grows at two breakpoints.</p>
     <h3>The column</h3>
     <div class="cols">
       <div class="col-demo"><i style="width:60%"></i><span>840px · default</span></div>
@@ -527,7 +529,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h3>Under the top bar</h3>
     <p>Pages that open with a heading (home, Off the clock, the CMS Picker and its platform pages, Privacy, Changelog, 404) start their first line at <code>--jsal-page-top</code>: 32px under the bar, 24px at 720px and under, and flush with the logo's left edge, with no optical indent on the mono line, the heading or the text beneath it. So the small line under the bar never shifts between pages. The tools' "for" line sits 16px under the bar instead, so the work area fills the first screen.</p>
     <h3>Breakpoints the pages use</h3>
-    <div class="table-wrap" tabindex="0" role="region" aria-label="Breakpoints"><table class="scale">
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Breakpoints"><table class="roles">
       <thead><tr><th>Width</th><th>What changes</th></tr></thead>
       <tbody>
         <tr><td>≤ 420px</td><td>A tool's title in the top bar drops to 17px and the bar's gaps tighten, so it stays one row from 360px up; below 430px the title's icon drops out</td></tr>
@@ -548,18 +550,18 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div><i style="--s:var(--jsal-space-2)"></i>2</div><div><i style="--s:var(--jsal-space-4)"></i>4</div><div><i style="--s:var(--jsal-space-8)"></i>8</div><div><i style="--s:var(--jsal-space-12)"></i>12</div><div><i style="--s:var(--jsal-space-16)"></i>16</div><div><i style="--s:var(--jsal-space-20)"></i>20</div><div><i style="--s:var(--jsal-space-24)"></i>24</div><div><i style="--s:var(--jsal-space-32)"></i>32</div><div><i style="--s:var(--jsal-space-40)"></i>40</div><div><i style="--s:var(--jsal-space-48)"></i>48</div><div><i style="--s:var(--jsal-space-64)"></i>64</div>
     </div>
     <p>On top of the scale, roles say what a space is for. A new thing of one of these kinds uses its role, so they all change together; anything else takes the scale directly.</p>
-    <div class="table-wrap" tabindex="0" role="region" aria-label="Spacing roles"><table class="scale">
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Spacing roles"><table class="roles">
       <thead><tr><th>Role</th><th>Value</th><th>Used for</th></tr></thead>
       <tbody>
         <tr><td><code>--jsal-gutter</code></td><td>20</td><td>A page's side margin</td></tr>
-        <tr><td><code>--jsal-page-top</code></td><td>32 (24 on phones)</td><td>Above a page's first heading</td></tr>
+        <tr><td><code>--jsal-page-top</code></td><td>32</td><td>Above a page's first heading (24 on phones)</td></tr>
         <tr><td><code>--jsal-page-end</code></td><td>64</td><td>Below a page's last section</td></tr>
         <tr><td><code>--jsal-flow</code></td><td>12</td><td>After a paragraph or list in reading text</td></tr>
-        <tr><td><code>--jsal-pad-tag</code></td><td>2 × 8</td><td>Inside a tag that labels: "Built in", a platform's type</td></tr>
-        <tr><td><code>--jsal-pad-pill</code></td><td>3 × 8</td><td>Inside a bordered pill: a compare chip, a guide link</td></tr>
-        <tr><td><code>--jsal-pad-note</code></td><td>8 × 12</td><td>Inside a boxed note, tip or error</td></tr>
-        <tr><td><code>--jsal-pad-cell</code></td><td>8 × 12</td><td>Inside a table cell</td></tr>
-        <tr><td><code>--jsal-pad-card</code></td><td>12 × 16</td><td>Inside a card: a Playbook item, the analytics card</td></tr>
+        <tr><td><code>--jsal-pad-tag</code></td><td>2&nbsp;×&nbsp;8</td><td>Inside a tag that labels: "Built in", a platform's type</td></tr>
+        <tr><td><code>--jsal-pad-pill</code></td><td>3&nbsp;×&nbsp;8</td><td>Inside a bordered pill: a compare chip, a guide link</td></tr>
+        <tr><td><code>--jsal-pad-note</code></td><td>8&nbsp;×&nbsp;12</td><td>Inside a boxed note, tip or error</td></tr>
+        <tr><td><code>--jsal-pad-cell</code></td><td>8&nbsp;×&nbsp;12</td><td>Inside a table cell</td></tr>
+        <tr><td><code>--jsal-pad-card</code></td><td>12&nbsp;×&nbsp;16</td><td>Inside a card: a Playbook item, the analytics card</td></tr>
         <tr><td><code>--jsal-pad-panel</code></td><td>16</td><td>Inside a quiz panel or result box</td></tr>
       </tbody>
     </table></div>
@@ -599,7 +601,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </article>
 
       <article class="ref" id="c-chip">
-        <div class="ref-h"><h3>Chip</h3><code>.chip</code><code>.chip-link</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-h"><h3>Chip</h3><code>.chip</code><code>.chip-link</code><code>--jsal-pad-pill</code><span class="file">cms-picker/styles.css</span></div>
         <div class="ref-row"><span>States</span><div><button type="button" class="chip" aria-pressed="true">WordPress</button><button type="button" class="chip" aria-pressed="true">Shopify</button><button type="button" class="chip" aria-pressed="false">Webflow</button><button type="button" class="chip ring" aria-pressed="false">Ghost</button><button type="button" class="chip-link">All</button><button type="button" class="chip-link">Deselect all</button></div></div>
         <div class="dd">
           <div class="do"><b>Do</b><div class="row"><button type="button" class="chip" aria-pressed="true">Shopify</button><button type="button" class="chip" aria-pressed="false">Wix</button></div><p>A bordered pill is a choice that toggles; chosen is the gold edge and tint.</p></div>
@@ -638,7 +640,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </article>
 
       <article class="ref" id="c-tag">
-        <div class="ref-h"><h3>Tag</h3><code>.tag</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-h"><h3>Tag</h3><code>.tag</code><code>--jsal-pad-tag</code><span class="file">cms-picker/styles.css</span></div>
         <div class="ref-row"><span>The ramp</span><div><span class="tag yes">Built in</span><span class="tag yes">Automatic</span><span class="tag plugin">Plugin/app</span><span class="tag plugin">Indirectly</span><span class="tag code">Needs code</span><span class="tag no">Not possible</span></div></div>
         <div class="ref-row"><span>Neutral</span><div><span class="tag check">Unclear</span><span class="tag cost">Under $25/mo</span><span class="sc">* varies</span><span class="sc">not verified</span></div></div>
         <div class="dd">
@@ -675,7 +677,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </article>
 
       <article class="ref" id="c-verdict">
-        <div class="ref-h"><h3>The result's verdict</h3><code>.qz-verdict</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-h"><h3>The result's verdict</h3><code>.qz-verdict</code><code>--jsal-pad-panel</code><span class="file">cms-picker/styles.css</span></div>
         <div class="ref-row"><span>A lead</span><div><div class="verdict"><p class="eye">A clear lead</p><p class="line">Wix is ahead of Squarespace for what you need.</p><a class="jump" href="/cms-picker/">Compare these side by side ↓</a></div></div></div>
         <div class="ref-row"><span>A close call</span><div><div class="verdict close"><p class="eye">A close call</p><p class="line">Squarespace is slightly ahead of Wix for your answers, and either would work.</p></div></div></div>
         <dl class="ref-rules">
@@ -712,7 +714,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </article>
 
       <article class="ref" id="c-feedback">
-        <div class="ref-h"><h3>Feedback</h3><code>.jsal-done</code><code>window.jsalDone</code><code>.jsal-error</code><span class="file">shell.css, nav.js</span></div>
+        <div class="ref-h"><h3>Feedback</h3><code>.jsal-done</code><code>window.jsalDone</code><code>.jsal-error</code><code>--jsal-pad-note</code><span class="file">shell.css, nav.js</span></div>
         <div class="ref-row"><span>States</span><div><button type="button" class="jsal-btn primary">Copy formatted</button><button type="button" class="jsal-btn" disabled>Zipping…</button><button type="button" class="jsal-btn primary jsal-done">Copied</button><button type="button" class="jsal-btn jsal-done">Link copied</button></div></div>
         <div class="ref-row"><span>Error</span><div><p class="jsal-error">Couldn’t save: check your connection and try again. Your changes are still here.</p></div></div>
         <div class="dd">
