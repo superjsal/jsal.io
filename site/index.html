@@ -328,16 +328,16 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @media (min-width: 600px) and (max-width: 860px) {
   .cms { min-height: 300px; }
   .cms .txt { max-width: 250px; }
-  .pcs { left: auto; right: 357px; top: 42px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
+  .pcs { left: auto; right: 357px; top: 46px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
   .cms .wm { width: 240px; height: 240px; left: -20px; top: 112px; rotate: none; }   /* upright and whole, under the words */
   .fit-for { top: 130px; }   /* under the line's two lines */
 }
 /* The narrowest of those: a smaller brick inside the tile, narrower words, and room for Say hi's three lines */
 @media (min-width: 600px) and (max-width: 699px) {
   .cms .txt { max-width: 220px; }
-  .pcs { right: 290px; top: 32px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
+  .pcs { right: 290px; top: 36px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
   .cp, .hi { min-height: 304px; }
-  .sheet { top: 140px; }   /* the words take a second line here, so the sheet starts lower */
+  .sheet { top: 140px; transform-origin: top left; --rest: scale(0.86); --hover: scale(0.86) translateY(-6px); }   /* the words take a second line here, so the sheet starts lower, and the tile is narrower than the sheet */
 }
 /* Too narrow for the output list beside the editor, the file beside the sheet, or the updates beside the words: the
    list and the file go and the editor and sheet grow into their room, and the updates run across the tile under the words */
