@@ -1,5 +1,5 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=430ce5a7";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=92b5f7d5";
 import { FORMATS, byId } from "./formats.js?v=5a99f0ac";
 
 const $ = (id) => document.getElementById(id);
@@ -9,7 +9,7 @@ const store = { get: (k) => { try { return localStorage.getItem(k); } catch (e) 
 
 let table = null;        // what was loaded: { raw, name, pick }
 let rows = [];           // { id, old, new, old0, new0, added, deleted }
-let nextId = 1, keep = {}, filter = "all", part = 0, result = null, cleared = null, used = false;
+let nextId = 1, filter = "all", part = 0, result = null, cleared = null, used = false;
 // Rows worked on since a filter was picked stay on screen, as in a spreadsheet, so a row being fixed under
 // "Needs you" doesn't vanish mid-word; picking a filter again applies it afresh
 const stay = new Set();
@@ -44,7 +44,7 @@ function load(raw, name) {
 function build() {
   const { raw, pick } = table;
   rows = raw.slice(pick.header ? 1 : 0).map((r) => row(r[pick.o], r[pick.n]));
-  keep = {}; part = 0;
+  part = 0;
   const label = (i) => `${colLetter(i)}${pick.names[i] ? ": " + pick.names[i] : ""}`;
   $("cols").hidden = pick.width < 3;
   for (const [sel, at] of [[$("colOld"), pick.o], [$("colNew"), pick.n]]) {
@@ -229,10 +229,6 @@ tbody.addEventListener("click", (e) => {
     const field = cell === "o" ? "old" : "new";
     setCell(r, field, note.fixes[+fi][1](r[field]));
   } else if (b.dataset.undo) setCell(r, b.dataset.undo, r[b.dataset.undo + "0"]);
-  else if (b.dataset.keep) {
-    keep[it.clash.key] = +b.dataset.keep;
-    for (const o of it.clash.options) stay.add(o.id);
-  } else if (b.hasAttribute("data-unkeep")) delete keep[it.clash.key];
   else return;
   update();
   tr.querySelector(".cell").focus();
@@ -249,18 +245,17 @@ $("addRow").addEventListener("click", () => { const r = addRow(); rowOf(r).query
 $("undoAll").addEventListener("click", () => {
   rows = rows.filter((r) => !r.added);
   for (const r of rows) { r.old = r.old0; r.new = r.new0; r.deleted = false; }
-  keep = {};
   show();
 });
 $("clearBtn").addEventListener("click", () => {
-  cleared = { table, rows, keep };
+  cleared = { table, rows };
   table = null; rows = []; tbody.innerHTML = "";
   app.classList.remove("has-content");
   $("undoClear").hidden = $("undoSep").hidden = false;
   $("drop").focus();
 });
 function undoClear() {
-  ({ table, rows, keep } = cleared);
+  ({ table, rows } = cleared);
   cleared = null;
   $("undoClear").hidden = $("undoSep").hidden = true;
   show();
@@ -273,15 +268,11 @@ for (const b of $("filter").children) b.addEventListener("click", () => {
   update();
 });
 
-// The notes under one cell: what's wrong and its fixes, what the file does with it, a clash's choice, and Undo
+// The notes under one cell: what's wrong and its fixes, what the file does with it, and Undo
 function notesHtml(r, it, cell) {
   const field = cell === "o" ? "old" : "new";
   let h = it.notes.filter((x) => x.cell === cell).map((x, i) => `<p class="note ${x.kind}">${x.text}</p>` + (x.fixes?.length
     ? `<div class="fixes">${x.fixes.map(([label, f, preview], j) => `<button type="button" class="jsal-btn small" data-fix="${cell}:${i}:${j}">${esc(label)}${preview && f(r[field]).length <= 48 ? ": " + esc(f(r[field])) : ""}</button>`).join("")}</div>` : "")).join("");
-  if (cell === "o" && it.clash) {
-    if (!it.clash.kept) h += `<div class="fixes">${it.clash.options.map((o) => `<button type="button" class="jsal-btn small" data-keep="${o.id}">→ ${esc(o.to)} <span class="from-row">(row ${o.n})</span></button>`).join("")}</div>`;
-    else h += `<p class="note edited"><button type="button" class="jsal-btn link" data-unkeep>Choose again</button></p>`;
-  }
   if (!r.added && r[field] !== r[field + "0"]) h += `<p class="note edited">Edited · <button type="button" class="jsal-btn link" data-undo="${field}">Undo</button></p>`;
   return h;
 }
@@ -296,7 +287,7 @@ const GROUP = { ok: "ready", fixed: "ready", warn: "check", bad: "bad", out: "ou
 function update() {
   if (!table) return;
   const live = rows.filter((r) => !r.deleted);
-  result = analyse(live, fmt, { ...opts, keep });
+  result = analyse(live, fmt, opts);
   const count = { all: 0, ready: 0, check: 0, bad: 0, out: 0 };
   live.forEach((r, i) => {
     const it = result.items.get(r.id), tr = rowOf(r);
@@ -358,7 +349,7 @@ function overview(live) {
       if (!g.ids.includes(r.id)) g.ids.push(r.id);
     }
   }
-  // A clash always spans rows, and each one is a choice, so clashes aren't listed as repeats
+  // Duplicates always come in twos or more, and each pair is its own, so they aren't listed as repeats
   const repeats = [...groups].filter(([k, g]) => g.ids.length > 1 && !k.endsWith(":clash")).sort((a, b) => b[1].ids.length - a[1].ids.length);
   const domainOnly = live.filter((r) => result.items.get(r.id).notes.some((x) => x.group === "domain-only")).length;
   const html = (done.length ? `<p class="done"><b>Done for you:</b> ${done.join("; ")}.</p>` : "") +

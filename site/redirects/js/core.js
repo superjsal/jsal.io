@@ -127,9 +127,8 @@ export function siteHosts(rows) {
 }
 
 /**
- * rows: [{ id, old, new }]; fmt: a platform from formats.js; opts: { code, newAddr: "path" | "url", newSite, keep }
- * keep maps a clash's old address to the row id the visitor kept.
- * Returns { items: Map(id -> { state, notes, clash, routine }), ready: [{ id, from, to, code }], done, site }
+ * rows: [{ id, old, new }]; fmt: a platform from formats.js; opts: { code, newAddr: "path" | "url", newSite }
+ * Returns { items: Map(id -> { state, notes, routine }), ready: [{ id, from, to, code }], done, site }
  * state: "ok", "fixed", "warn" (goes in the file, but check it after importing), "bad" (needs the visitor), "out"
  * (left out on purpose) or "blank". A bad note carries a group
  * (the same problem on another row has the same one) and a generic title, so repeats can be fixed all at once.
@@ -210,7 +209,8 @@ export function analyse(rows, fmt, opts) {
     live.push({ id: r.id, it, from: oc.path, to, own: !external, internal: !external && !(domainOnly && opts.newAddr === "url"), fix, bad, out });
   });
 
-  // The same old address on more than one row: every row of a clash offers all of its choices side by side
+  // The same old address on more than one row: to the same page, the repeats are dropped; to different pages, each
+  // row is a duplicate to delete until one is left
   const groups = new Map();
   for (const l of live) {
     const k = key(l.from);
@@ -225,20 +225,11 @@ export function analyse(rows, fmt, opts) {
       g.slice(1).forEach((l) => l.out("o", `Same as row ${g[0].it.n}: left out`));
       continue;
     }
-    const chosen = g.find((l) => l.id === opts.keep?.[k]);
-    const options = g.map((l) => ({ id: l.id, n: l.it.n, to: l.to }));
-    const rowList = (ls) => { const n = ls.map((x) => x.it.n); return n.length > 1 ? `${n.slice(0, -1).join(", ")} and ${n[n.length - 1]}` : `${n[0]}`; };
-    const others = (l) => g.filter((x) => x !== l);
-    // The rows may write the address differently (/about-us/ and /about-us), so say the platform reads them as one
+    const rowList = (ls) => { const n = ls.map((x) => x.it.n); return (n.length > 1 ? "rows " : "row ") + (n.length > 1 ? `${n.slice(0, -1).join(", ")} and ${n[n.length - 1]}` : n[0]); };
+    // The rows may write the address differently (/about-us/ and /about-us), so say they count as one
     const spellings = [...new Set(g.map((l) => l.from))];
-    const same = spellings.length > 1 ? ` (${spellings.map((s) => `<code>${esc(s)}</code>`).join(" and ")} count as one.)` : "";
-    for (const l of g) {
-      l.it.clash = { key: k, kept: chosen?.id, options };
-      if (!chosen) l.bad("o", `Rows ${rowList(g)} send this to different pages.${same} Pick one:`, [], "clash", "The same old address in two rows");
-      else if (l === chosen) l.fix("o", `Chosen: goes to <code>${esc(l.to)}</code>`);
-      else l.out("o", `Left out: row ${chosen.it.n} chosen`);
-    }
-    if (chosen) kept.push(chosen);
+    const same = spellings.length > 1 ? ` (${spellings.map((s) => `<code>${esc(s)}</code>`).join(" and ")} count as one)` : "";
+    for (const l of g) l.bad("o", `Duplicate of ${rowList(g.filter((x) => x !== l))}${same}. Delete ${g.length > 2 ? "all but one" : "one"}.`, [], "clash", "Duplicates");
   }
 
   // Chains (A → B, then B → C) are written as A → C; a chain that comes back round is a loop
