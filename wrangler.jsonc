@@ -1,0 +1,13 @@
+// Cloudflare Workers config: serves site/ as plain files, no Worker code.
+// Builds run from the repo on every push: main is jsal.io, other branches get preview addresses.
+{
+  "name": "jsal-io",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./site",
+    // Unknown addresses get site/404.html with a real 404 status
+    "not_found_handling": "404-page",
+    // /cms-picker redirects to /cms-picker/, as GitHub Pages does
+    "html_handling": "auto-trailing-slash"
+  }
+}
