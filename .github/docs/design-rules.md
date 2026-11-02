@@ -162,9 +162,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
     rule between them, never cards, as they aren't links; nothing tilted, as people read them), written from the
     changelog by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
   - **Each tool tile has its app icon as a watermark**, drawn large in the tile's ink at 7% with the gem in gold at
-    35%, a texture that never draws the eye before the picture, behind the tile's picture and never under its words (the CMS Picker's podium tilted like its cards, beside
-    and under them, and upright over its name on phones on their side); set per breakpoint, and hidden on upright phones. Updates has one too, a faint stack of notes with the gem on the
-    newest, over its words; Say hi stays plain.
+    35%, a texture that never draws the eye before the picture, behind the tile's picture and never under its words, and whole, so its shape reads (the CMS Picker's podium
+    tilted like its keys, under the words and left of the keys, upright on phones on their side); set per breakpoint, and
+    hidden on upright phones. Updates has one too, a faint stack of notes with the gem on the newest, in the open middle
+    between its words and its list (above the words where there's no room); Say hi stays plain.
   - **Breakouts:** a piece may poke a little past its tile (about 14px at most), never within 16px of another
     tile, never into the page's side gutter (nothing reaches past the column at any width, and the column's gutter
     widens for a notch: `viewport-fit=cover` with the safe-area insets), and two breakouts never crowd each other.

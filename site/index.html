@@ -149,7 +149,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
    column's, so the tilted brick never reaches the gutter however wide the tile is. Playing, three needs take turns, each pressing the keys the quiz puts first for it (.fit-for names it). */
 .cms { --bg: var(--t-cms); --ink: var(--t-cms-ink); }
 .cms .txt { max-width: 290px; }
-.cms .wm { width: 420px; height: 420px; left: calc(100% - 790px); top: 170px; rotate: -10deg; }   /* a podium tilted like the keys, at the bottom left under the words, cut by the tile's edge */
+.cms .wm { width: 420px; height: 420px; left: calc(100% - 816px); top: 80px; rotate: -10deg; }   /* a podium tilted like the keys, whole, under the words and left of the keys */
 .pcs { left: calc(100% - 481px); top: 116px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
 .pcs > span { display: flex; gap: 12px; }
 .pcs > span:nth-child(even) { margin-left: 56px; }
@@ -278,7 +278,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .now { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
 .now .txt { max-width: 260px; }
 .now .txt a { color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
-.now .wm { width: 260px; height: 260px; left: -18px; top: -71px; }   /* a stack of notes, the gem on the newest, over the words */
+.now .wm { width: 300px; height: 300px; left: calc(50% - 202px); top: -48px; }   /* a stack of notes, the gem on the newest, whole, in the open middle between the words and the list */
 .upd { position: absolute; right: 26px; top: 16px; width: min(404px, calc(100% - 340px)); display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
 .upd li { position: relative; padding: 10px 0 11px 42px; border-top: 1px solid var(--jsal-line); }
 .upd li:first-child { border-top: 0; }
@@ -304,6 +304,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 /* Narrower desktops and phones on their side: the intro on its own row, the CMS Picker, the Image Resizer, Redirect
    Import and Updates full width, and Clean Paste beside Say hi */
 @media (max-width: 1279px) {
+  .now .wm { width: 200px; height: 200px; left: -8px; top: -24px; }   /* no open middle here: above the words, in line with them */
   .grid { grid-template-rows: none; }
   .intro { grid-column: 1 / -1; grid-row: auto; padding-right: 0; }
   .intro p { max-width: 34em; }
@@ -311,7 +312,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .cms { min-height: 440px; }
   .ir, .cp { min-height: 256px; }
   .ri { min-height: 292px; }   /* room for the sheet's four rows above the file */
-  .hi, .now { min-height: 272px; }
+  .hi { min-height: 292px; }   /* the draft clear of the words under it */
+  .now { min-height: 272px; }
   .cp { grid-column: 1 / 4; grid-row: auto; }
   .hi { grid-column: 4 / 7; grid-row: auto; }
   .sheet { left: 26px; }   /* the column's edge: in line with the words instead of poking into the gutter */
@@ -320,23 +322,26 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 /* Narrower desktops: the CMS Picker's tile is wider than its keys need, so its podium moves out from under them into
    the open space under the words */
 @media (min-width: 861px) and (max-width: 1279px) {
-  .cms .wm { width: 460px; height: 460px; left: -40px; top: 150px; }
+  .cms .wm { width: 460px; height: 460px; left: -40px; top: 60px; }
 }
 /* Phones on their side: a shorter CMS Picker, its brick smaller, anchored to the right and filling the tile (its top
    keys poking out, beside the words), its watermark under the words */
 @media (min-width: 600px) and (max-width: 860px) {
   .cms { min-height: 300px; }
   .cms .txt { max-width: 250px; }
-  .pcs { left: auto; right: 357px; top: 42px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
-  .cms .wm { width: 260px; height: 260px; left: -20px; top: 130px; rotate: none; }   /* upright, under the words */
+  .pcs { left: auto; right: 357px; top: 46px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
+  .cms .wm { width: 240px; height: 240px; left: -20px; top: 112px; rotate: none; }   /* upright and whole, under the words */
   .fit-for { top: 130px; }   /* under the line's two lines */
 }
 /* The narrowest of those: a smaller brick inside the tile, narrower words, and room for Say hi's three lines */
 @media (min-width: 600px) and (max-width: 699px) {
   .cms .txt { max-width: 220px; }
-  .pcs { right: 290px; top: 32px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
+  .pcs { right: 290px; top: 36px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
   .cp, .hi { min-height: 304px; }
-  .sheet { top: 140px; }   /* the words take a second line here, so the sheet starts lower */
+  .sheet { top: 140px; transform-origin: top left; --rest: scale(0.86); --hover: scale(0.86) translateY(-6px); }
+  .ri .txt { max-width: 236px; }   /* the name on one line, clear of the sheet */
+  .tile.ri { min-height: 224px; }   /* the smaller sheet needs less */
+  .ri .rs { left: auto; right: 26px; width: 300px; transform-origin: top right; --rest: scale(0.8); --hover: scale(0.8) translateY(-6px); }   /* the whole sheet, smaller, rather than its cells cut short */   /* the words take a second line here, so the sheet starts lower, and the tile is narrower than the sheet */
 }
 /* Too narrow for the output list beside the editor, the file beside the sheet, or the updates beside the words: the
    list and the file go and the editor and sheet grow into their room, and the updates run across the tile under the words */
@@ -345,6 +350,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .ed { left: 290px; right: 26px; width: auto; min-width: 250px; }
   .ed-photo { height: 160px; }
   .rf { display: none; }
+  .ri { min-height: 256px; }   /* no file under the sheet here */
   .rs { right: 26px; width: auto; }
 }
 /* Clean Paste's line takes two lines here too */
@@ -386,8 +392,14 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
    (Email is in Say hi) */
 /* The narrowest phones: a smaller brick, so it fits across the tile and the page never scrolls sideways */
 @media (max-width: 374px) {
-  .pcs { left: calc(50% - 130px); top: 170px; --rest: rotate(-10deg) scale(0.54); }   /* under the line's two lines */
-  .tile.cms { padding-bottom: 262px; }   /* centred: the tilted brick is 275px across here, its box starting 8px left of its corner */
+  .pcs { left: calc(50% - 130px); top: 170px; --rest: rotate(-10deg) scale(0.54); }   /* centred (275px across, its box starting 8px left of its corner) and under the line's two lines */
+  .tile.cms { padding-bottom: 262px; }
+}
+/* The narrowest phones: the sheet takes the tile's padding too, its addresses smaller, so every one shows whole */
+@media (max-width: 389px) {
+  .rs { width: calc(100% + 20px); margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px; }
+  .rs-row { grid-template-columns: 12px 18px 1fr 1fr; gap: 6px; }
+  .rs-row .mono { font-size: 10px; }   /* style: allow (miniature) */
 }
 @media (max-width: 520px) {
   .jsal-top nav a:not([href="#updates"]) { display: none; }
@@ -467,8 +479,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes cp-t { 0% { color: var(--jsal-muted); } 10%, 31% { color: var(--jsal-selected-ink); } 40%, 100% { color: var(--jsal-muted); } }
 @keyframes cp-h { 0% { color: var(--jsal-selected-ink); } 10%, 31% { color: var(--jsal-muted); } 40%, 100% { color: var(--jsal-selected-ink); } }
 @keyframes hi-type { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
-/* Redirect Import: the rows are checked one at a time and each ready row's line lands in the file just after (the café's
-   with its é written safely); the row with a space gets its "!" and note and adds nothing, and the row left out its dash.
+/* Redirect Import: the rows are checked one at a time and each ready row's line lands in the file just after (the full
+   address with the site's own domain left off); the row with a space gets its "!" and note and adds nothing, and the row left out its dash.
    All held to 97%, past where the one play on touch screens stops, then cleared for the next loop */
 @keyframes ri-d1 { 0%, 4% { scale: 0; } 10% { scale: 1.25; } 14%, 97% { scale: 1; } 100% { scale: 0; } }
 @keyframes ri-f1 { 0%, 12% { opacity: 0; translate: -10px 0; } 20%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
@@ -580,12 +592,12 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
         <span class="rs-head"><b>Your sheet</b><span class="mono">5 rows</span></span>
         <span class="rs-row"><span class="n mono">2</span><i class="dot ok">✓</i><span class="mono">/about-us/</span><span class="mono">/pages/about</span></span>
         <span class="rs-row"><span class="n mono">3</span><i class="dot ok">✓</i><span class="mono">/blog/sale</span><span class="mono">/blogs/news/sale</span></span>
-        <span class="rs-row"><span class="n mono">4</span><i class="dot ok">✓</i><span class="mono">/café-menu</span><span class="mono">/pages/menu</span></span>
+        <span class="rs-row"><span class="n mono">4</span><i class="dot ok">✓</i><span class="mono">mysite.com/faq</span><span class="mono">/pages/faq</span></span>
         <span class="rs-row"><span class="n mono">5</span><i class="dot bad">!</i><span class="mono bad-cell">/our team</span><span class="mono">/pages/team</span></span>
         <span class="rs-note">Has a space: /our team</span>
         <span class="rs-row last"><span class="n mono">6</span><i class="dot out">–</i><span class="mono">/old-promo</span><span class="mono out-cell">Left out</span></span>
       </span>
-      <span class="obj paper rf" aria-hidden="true"><span class="mono rf-head">shopify-redirects.csv<span>3 ready</span></span><code><span class="ln mute">Redirect from,Redirect to</span><span class="ln">/about-us,/pages/about</span><span class="ln">/blog/sale,/blogs/news/sale</span><span class="ln">/caf%C3%A9-menu,/pages/menu</span></code></span>
+      <span class="obj paper rf" aria-hidden="true"><span class="mono rf-head">shopify-redirects.csv<span>3 ready</span></span><code><span class="ln mute">Redirect from,Redirect to</span><span class="ln">/about-us,/pages/about</span><span class="ln">/blog/sale,/blogs/news/sale</span><span class="ln">/faq,/pages/faq</span></code></span>
     </a>
 
     <!-- Site updates: the newest change in each of the three most recently changed parts of the site -->
