@@ -84,7 +84,7 @@ for p, t in html.items():
 # GA4: a page with the tag sets the Consent Mode defaults before configuring it (analytics off in the EU,
 # EEA, UK and Switzerland until the visitor allows it in the /nav.js card)
 for p, t in html.items():
-    if 'G-ND4L6CSD8S' in t:
+    if 'G-Z0BSTC9TT9' in t:
         c, g = t.find("gtag('consent', 'default'"), t.find("gtag('config'")
         if c < 0 or c > g: fail(f"{p}: the GA4 tag needs the Consent Mode defaults before gtag('config'), as on index.html")
 
