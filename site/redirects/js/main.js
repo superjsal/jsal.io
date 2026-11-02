@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=de601e4f";
-import { FORMATS, byId } from "./formats.js?v=1a0bf951";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=ae13d661";
+import { FORMATS, byId } from "./formats.js?v=5a99f0ac";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -277,7 +277,7 @@ for (const b of $("filter").children) b.addEventListener("click", () => {
 function notesHtml(r, it, cell) {
   const field = cell === "o" ? "old" : "new";
   let h = it.notes.filter((x) => x.cell === cell).map((x, i) => `<p class="note ${x.kind}">${x.text}</p>` + (x.fixes?.length
-    ? `<div class="fixes">${x.fixes.map(([label, f], j) => `<button type="button" class="jsal-btn small" data-fix="${cell}:${i}:${j}">${esc(label)}${f(r[field]).length <= 48 ? ": " + esc(f(r[field])) : ""}</button>`).join("")}</div>` : "")).join("");
+    ? `<div class="fixes">${x.fixes.map(([label, f, preview], j) => `<button type="button" class="jsal-btn small" data-fix="${cell}:${i}:${j}">${esc(label)}${preview && f(r[field]).length <= 48 ? ": " + esc(f(r[field])) : ""}</button>`).join("")}</div>` : "")).join("");
   if (cell === "o" && it.clash) {
     if (!it.clash.kept) h += `<div class="fixes">${it.clash.options.map((o) => `<button type="button" class="jsal-btn small" data-keep="${o.id}">→ ${esc(o.to)} <span class="from-row">(row ${o.n})</span></button>`).join("")}</div>`;
     else h += `<p class="note edited"><button type="button" class="jsal-btn link" data-unkeep>Choose again</button></p>`;

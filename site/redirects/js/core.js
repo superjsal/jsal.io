@@ -16,14 +16,14 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
 // Characters that stop an address working, each with how it's shown and the one-click fix if there's an obvious one
 const CHECKS = [
   // Reports shorten long addresses for display (…/how-to-choose-a…), and copying the text copies the shortened one
-  { re: /\u2026|\.{3,}/g, say: (w) => `The ${w} was cut short, with … where a report left part of it out. Copy the whole address from its source`, fixes: [] },
+  { re: /\u2026|\.{3,}/g, say: () => "Cut short (…). Copy the full address", fixes: [] },
   // No fix offered: only the original says whether the space was real (sent as %20) or crept in when copying
-  { re: /[  ]/g, say: (w) => `A space in the ${w}`, fixes: [] },
-  { re: /[–—]/g, say: () => "A long dash, often from Word", fixes: [["Use - instead", (s) => s.replace(/[–—]/g, "-")]] },
-  { re: /[‘’“”]/g, say: () => "Curly quotes, often from Word", fixes: [["Remove them", (s) => s.replace(/[‘’“”]/g, "")]] },
+  { re: /[  ]/g, say: () => "Has a space", fixes: [] },
+  { re: /[–—]/g, say: () => "Long dash (–), not a hyphen", fixes: [["Use a hyphen", (s) => s.replace(/[–—]/g, "-")]] },
+  { re: /[‘’“”]/g, say: () => "Curly quotes", fixes: [["Remove them", (s) => s.replace(/[‘’“”]/g, "")]] },
   { re: /[<>"{}|\\^`]/g, say: () => "Not allowed in an address", fixes: [] },
-  { re: /[\x00-\x1F\x7F]/g, say: () => "A hidden control character (a tab or line break)", fixes: [["Remove it", (s) => s.replace(/[\x00-\x1F\x7F]/g, "")]] },
-  { re: /%(?![0-9a-f]{2})/gi, say: () => "A % that isn’t part of a code like %20", fixes: [["Encode it as %25", (s) => s.replace(/%(?![0-9a-f]{2})/gi, "%25")]] },
+  { re: /[\x00-\x1F\x7F]/g, say: () => "Hidden tab or line break", fixes: [["Remove it", (s) => s.replace(/[\x00-\x1F\x7F]/g, "")]] },
+  { re: /%(?![0-9a-f]{2})/gi, say: () => "Stray %", fixes: [["Encode it as %25", (s) => s.replace(/%(?![0-9a-f]{2})/gi, "%25")]] },
 ];
 
 // The address with each problem character marked, for the note under the cell
@@ -71,7 +71,7 @@ function characters(path, which, keepLetters) {
   const enc = path.replace(/[^\x00-\x7F]/gu, (ch) => {
     if (/[\u2026 –—‘’“”]/.test(ch)) return ch;
     const e = encodeURIComponent(ch);
-    if (!encodedNote) encodedNote = `${esc(ch)} written as ${e}, the way browsers send it`;   // the first one stands for the rest
+    if (!encodedNote) encodedNote = `${esc(ch)} encoded`;   // the first one stands for the rest
     return e;
   });
   return { problems, path: enc, encodedNote };
@@ -153,11 +153,11 @@ export function analyse(rows, fmt, opts) {
 
     if (o.kind === "empty" && n.kind === "empty") { it.state = "blank"; return; }
     if (o.kind === "junk") return out("o", "Not an address: left out");
-    if (o.kind === "empty") return bad("o", "No old address. Add one, or this row stays out");
+    if (o.kind === "empty") return bad("o", "No old address");
     if (o.kind === "scheme") return bad("o", `A ${esc(o.scheme)}: link, not a page address`, [], "scheme", "A link that isn’t a page address");
     if (o.kind === "badhost") return bad("o", `Not a valid domain: <code>${esc(o.host)}</code>`, [], "host", "Not a valid domain");
-    if (n.kind === "empty") return bad("n", "No new address. Add one, or this row stays out");
-    if (n.kind === "junk") return bad("n", "Not an address. Add the new address, or delete the row");
+    if (n.kind === "empty") return bad("n", "No new address");
+    if (n.kind === "junk") return bad("n", "Not an address");
     if (n.kind === "scheme") return bad("n", `A ${esc(n.scheme)}: link, not a page address`, [], "scheme", "A link that isn’t a page address");
     if (n.kind === "badhost") return bad("n", `Not a valid domain: <code>${esc(n.host)}</code>`, [], "host", "Not a valid domain");
 
@@ -188,20 +188,20 @@ export function analyse(rows, fmt, opts) {
       nc.encodedNote && { text: nc.encodedNote }].filter(Boolean));
     const host = esc(n.host.replace(/^www\./i, ""));
     if (pv && external) {
-      const fixes = [["Use the path", usePath]];
-      if (pv === "preview") bad("n", `This points at <code>${host}</code>, a preview address, not the live site.`, fixes, "preview:" + host, `point at <code>${host}</code>, a preview site`);
+      const fixes = [["Use the path", usePath, true]];   // true: the button shows the result, as it visibly differs
+      if (pv === "preview") bad("n", `Preview site: <code>${host}</code>`, fixes, "preview:" + host, `point at <code>${host}</code>, a preview site`);
       else notes.push({ cell: "n", kind: "warn", fixes, group: "n:check:" + host, title: `point at <code>${host}</code>, which ${pv === "maybe" ? "is usually a preview or hosting address" : "looks like a staging site"}`, text: pv === "maybe"
-        ? `<code>${host}</code> is usually a preview or hosting address. Check it’s the live site.`
-        : `<code>${host}</code> looks like a staging site. Check it’s the live address.` });
+        ? `Preview or hosting site? <code>${host}</code>`
+        : `Staging site? <code>${host}</code>` });
     }
-    if (PREVIEW_QUERY.test(n.path)) bad("n", "This is a preview link: the live page doesn’t have the ?preview part.", [["Remove the preview part", dropPreview]], "preview-link", "Preview links");
+    if (PREVIEW_QUERY.test(n.path)) bad("n", "Preview link", [["Remove the preview part", dropPreview, true]], "preview-link", "Preview links");
     if (it.state === "bad") return;
 
     // With full URLs, old.com/page to new.com/page is a real redirect; as paths it would point to itself
     const domainOnly = o.host && n.host && bare(o.host) !== bare(n.host);
     if (!external && key(oc.path) === key(nc.path) && !(domainOnly && opts.newAddr === "url")) {
-      if (domainOnly) return out("n", "Only the domain changes, so a domain redirect covers this: left out", "domain-only");
-      return out("n", oc.path === nc.path ? "Points to itself: left out" : "Only a / or capital differs, which this platform treats as the same address: left out");
+      if (domainOnly) return out("n", "Only the domain changes: left out", "domain-only");
+      return out("n", oc.path === nc.path ? "Points to itself: left out" : "Same page, only a / or capital differs: left out");
     }
     live.push({ id: r.id, it, from: oc.path, to, own: !external, internal: !external && !(domainOnly && opts.newAddr === "url"), fix, bad, out });
   });
@@ -227,12 +227,12 @@ export function analyse(rows, fmt, opts) {
     const others = (l) => g.filter((x) => x !== l);
     // The rows may write the address differently (/about-us/ and /about-us), so say the platform reads them as one
     const spellings = [...new Set(g.map((l) => l.from))];
-    const same = spellings.length > 1 ? ` ${esc(fmt.name)} treats ${spellings.map((s) => `<code>${esc(s)}</code>`).join(" and ")} as one address.` : "";
+    const same = spellings.length > 1 ? ` (${spellings.map((s) => `<code>${esc(s)}</code>`).join(" and ")} count as one.)` : "";
     for (const l of g) {
       l.it.clash = { key: k, kept: chosen?.id, options };
-      if (!chosen) l.bad("o", `Rows ${rowList(g)} ${g.length === 2 ? "both" : "all"} redirect <code>${esc(l.from)}</code>, to different pages.${same} Which page should it go to?`, [], "clash", "The same old address in two rows");
-      else if (l === chosen) l.fix("o", `Goes to <code>${esc(l.to)}</code>. ${others(l).length > 1 ? "Rows" : "Row"} ${rowList(others(l))} ${others(l).length > 1 ? "are" : "is"} left out.`);
-      else l.out("o", `Left out: row ${chosen.it.n} sends this address to <code>${esc(chosen.to)}</code>`);
+      if (!chosen) l.bad("o", `Rows ${rowList(g)} send this to different pages.${same} Pick one:`, [], "clash", "The same old address in two rows");
+      else if (l === chosen) l.fix("o", `Chosen: goes to <code>${esc(l.to)}</code>`);
+      else l.out("o", `Left out: row ${chosen.it.n} chosen`);
     }
     if (chosen) kept.push(chosen);
   }
@@ -251,8 +251,8 @@ export function analyse(rows, fmt, opts) {
       seen.add(key(next.from)); hops.push(next); to = next.to; internal = next.internal; own = next.own;
       if (hops.length > 50) { loop = true; break; }
     }
-    if (loop) { l.bad("n", `A loop: ${[l, ...hops].map((h) => `row ${h.it.n}`).join(" → ")} comes back here. Change one of them`, [], "loop", "A loop"); continue; }
-    if (hops.length) l.fix("n", `In the file: <code>${esc(to)}</code> (${hops.map((h) => `row ${h.it.n}`).join(" and ")} ${hops.length > 1 ? "move" : "moves"} ${esc(l.to)} on, so this goes straight to the end)`);
+    if (loop) { l.bad("n", `Loop: rows ${[l, ...hops].map((h) => h.it.n).join(" → ")} → back here`, [], "loop", "A loop"); continue; }
+    if (hops.length) l.fix("n", `In the file: <code>${esc(to)}</code> (skips the chain through ${hops.map((h) => `row ${h.it.n}`).join(" and ")})`);
     if (!own || opts.newAddr !== "url") ready.push({ id: l.id, from: l.from, to, code: opts.code || "301" });
     else ready.push({ id: l.id, from: l.from, to: site ? site.replace(/\/$/, "") + to : to, code: opts.code || "301" });
   }
@@ -261,11 +261,11 @@ export function analyse(rows, fmt, opts) {
   for (const r of ready) {
     const problems = (fmt.rules?.(r) || []).filter(Boolean);
     // A website platform always has a home page, and its redirects only run for addresses that don't exist
-    if (r.from === "/" && fmt.group !== "Hosting and servers" && !problems.length) problems.push({ cell: "o", id: "home", text: `${fmt.name} won’t redirect the home page while the site has one.` });
+    if (r.from === "/" && fmt.group !== "Hosting and servers" && !problems.length) problems.push({ cell: "o", id: "home", text: "Can’t redirect the home page" });
     // An address with no letters or numbers (/,,., or a stray /-) is allowed, but almost never a real page
     const noWords = (a) => { const p = a.split(/[?#]/)[0]; return p !== "/" && !/^https?:/i.test(a) && !/[a-z0-9]/i.test(p); };
-    if (noWords(r.from)) problems.push({ cell: "o", warn: true, text: "This doesn’t look like a page address. Check it’s what you meant." });
-    if (noWords(r.to)) problems.push({ cell: "n", warn: true, text: "This doesn’t look like a page address. Check it’s what you meant." });
+    if (noWords(r.from)) problems.push({ cell: "o", warn: true, text: "Doesn’t look like a page address" });
+    if (noWords(r.to)) problems.push({ cell: "n", warn: true, text: "Doesn’t look like a page address" });
     const l = live.find((x) => x.id === r.id);
     for (const p of problems) {
       if (p.warn) l.it.notes.push({ cell: p.cell, kind: "warn", text: p.text });   // said, but the row still goes in

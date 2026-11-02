@@ -18,8 +18,8 @@ const quoteIfSpace = (s) => (/\s/.test(s) ? `"${s.replace(/"/g, '\\"')}"` : s);
 const yamlQuote = (s) => `'${s.replace(/'/g, "''")}'`;
 const noSlash = (p) => (p.length > 1 ? p.replace(/\/$/, "") : p);
 // The one-click fix for a platform that can't match what comes after ?: drop that part from the cell
-const DROP_QUERY = [["Remove the ? part", (s) => s.replace(/\?[^#]*/, "")]];
-const QUERY = (name) => ({ cell: "o", id: "query", fixes: DROP_QUERY, text: `${name} can’t redirect an address with ? in it.` });
+const DROP_QUERY = [["Remove the ? part", (s) => s.replace(/\?[^#]*/, ""), true]];
+const QUERY = (name) => ({ cell: "o", id: "query", fixes: DROP_QUERY, text: `${name} can’t redirect a ? address` });
 // Webflow's old paths escape these characters with %, and a / just before ? stops the redirect firing
 const webflowPath = (p) => p.replace(/\/(?=\?)/, "").replace(/[%\-&*()=_+?]/g, "%$&");
 // Shopify: paths it keeps for itself (whole path segments), and its fixed list pages
@@ -33,12 +33,12 @@ export const FORMATS = [
     doc: "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect",
     cols: () => [FROM("Redirect from"), TO("Redirect to")], codes: false, slashSame: true,
     rules: (r) => [
-      SHOPIFY_PREFIX.test(r.from) && { cell: "o", id: "reserved", text: `Shopify keeps addresses starting <code>${r.from.match(SHOPIFY_PREFIX)[0].replace(/[/?]$/, "")}</code> for itself and won’t redirect them.` },
-      SHOPIFY_FIXED.test(r.from) && { cell: "o", id: "fixed", text: "Shopify won’t redirect its own list pages (/products, /collections and /collections/all)." },
-      /\.html$/i.test(r.from) && r.to.toLowerCase() === r.from.toLowerCase().replace(/\.html$/, "") && { cell: "n", id: "html", text: "Shopify treats an address with and without .html as the same page, so this can’t redirect." },
-      r.from.includes("?") && { cell: "o", id: "query", warn: true, text: "Shopify says addresses with ? “might not work as expected”. Test this one after importing." },
+      SHOPIFY_PREFIX.test(r.from) && { cell: "o", id: "reserved", text: `Shopify reserves <code>${r.from.match(SHOPIFY_PREFIX)[0].replace(/[/?]$/, "")}</code>` },
+      SHOPIFY_FIXED.test(r.from) && { cell: "o", id: "fixed", text: "Shopify’s own list page: can’t redirect" },
+      /\.html$/i.test(r.from) && r.to.toLowerCase() === r.from.toLowerCase().replace(/\.html$/, "") && { cell: "n", id: "html", text: "Same page to Shopify (.html): can’t redirect" },
+      r.from.includes("?") && { cell: "o", id: "query", warn: true, text: "? may not work on Shopify. Test after import" },
       // From a third-party test of 100 address formats: the only one Shopify's import refused had a semicolon
-      (r.from.includes(";") || r.to.includes(";")) && { cell: r.from.includes(";") ? "o" : "n", id: "semicolon", warn: true, text: "Shopify’s import may not take a semicolon. Check this one after importing." },
+      (r.from.includes(";") || r.to.includes(";")) && { cell: r.from.includes(";") ? "o" : "n", id: "semicolon", warn: true, text: "; may not import on Shopify. Test after import" },
     ] },
   { id: "wix", name: "Wix", group: "Website platforms", kind: "csv", file: "wix-redirects.csv", limit: 500,
     where: "SEO & GEO → URL Redirect Manager → More Actions → Import redirects",
@@ -51,9 +51,9 @@ export const FORMATS = [
     line: (r) => `${r.from} -> ${r.to} ${r.code}`, codes: "required", slashSame: true,
     rules: (r) => [
       r.from.includes("?") && QUERY("Squarespace"),
-      r.from === "/" && { cell: "o", id: "home", text: "Squarespace can’t redirect the home page." },
-      /\.(jpe?g|png|gif|webp|svg|pdf|docx?|xlsx?|pptx?|zip|mp3|mp4|mov)$/i.test(r.from) && { cell: "o", id: "file", text: "Squarespace can’t redirect an image or file address." },
-      /\?(?!format=rss$)/.test(r.to) && { cell: "n", id: "query", fixes: DROP_QUERY, text: "Squarespace takes a ? in the new address only for ?format=rss." },
+      r.from === "/" && { cell: "o", id: "home", text: "Can’t redirect the home page" },
+      /\.(jpe?g|png|gif|webp|svg|pdf|docx?|xlsx?|pptx?|zip|mp3|mp4|mov)$/i.test(r.from) && { cell: "o", id: "file", text: "Squarespace can’t redirect files" },
+      /\?(?!format=rss$)/.test(r.to) && { cell: "n", id: "query", fixes: DROP_QUERY, text: "Squarespace allows ? here only for ?format=rss" },
     ] },
   { id: "webflow", name: "Webflow", group: "Website platforms", kind: "csv", file: "webflow-redirects.csv", headerOff: true,
     caution: "An import replaces every redirect already there: export yours first and add them to this file. Webflow’s help doesn’t mention a header row, so the file has none.",
@@ -72,8 +72,8 @@ export const FORMATS = [
     cols: () => [FROM("original url"), TO("redirect to"), col("redirect type", () => "STANDARD"), CODE("redirect style")],
     codes: "required", slashSame: true,
     rules: (r) => [
-      r.from.length > 140 && { cell: "o", id: "long", text: `HubSpot takes addresses up to 140 characters; this one has ${r.from.length}.` },
-      r.to.length > 140 && { cell: "n", id: "long", text: `HubSpot takes addresses up to 140 characters; this one has ${r.to.length}.` },
+      r.from.length > 140 && { cell: "o", id: "long", text: `Over HubSpot’s 140 characters (${r.from.length})` },
+      r.to.length > 140 && { cell: "n", id: "long", text: `Over HubSpot’s 140 characters (${r.to.length})` },
     ] },
   { id: "bigcommerce", name: "BigCommerce", group: "Website platforms", kind: "csv", file: "bigcommerce-redirects.csv", needsDomain: "Store domain",
     where: "Settings → 301 Redirects → Import",
@@ -87,9 +87,9 @@ export const FORMATS = [
     cols: () => [FROM("Old Page URL"), TO("Destination Page URL"), CODE("Redirect Type")], codes: "required", slashSame: true,
     rules: (r) => [
       r.from.includes("?") && QUERY("Duda"),
-      r.from.includes("%") && { cell: "o", id: "percent", text: "Duda returns an error for any % in an address. Use plain characters instead." },
-      r.to.includes("%") && { cell: "n", id: "percent", text: "Duda returns an error for any % in an address. Use plain characters instead." },
-      /\.php/i.test(r.from) && { cell: "o", id: "php", text: "Duda can’t redirect an address with .php in it." },
+      r.from.includes("%") && { cell: "o", id: "percent", text: "Duda errors on any %" },
+      r.to.includes("%") && { cell: "n", id: "percent", text: "Duda errors on any %" },
+      /\.php/i.test(r.from) && { cell: "o", id: "php", text: "Duda can’t redirect .php addresses" },
     ] },
   { id: "ghost", name: "Ghost", group: "Website platforms", kind: "file", file: "redirects.yaml",
     where: "Settings → Advanced → Labs → Beta features → Redirects",
@@ -126,29 +126,29 @@ export const FORMATS = [
     note: "Netlify matches capitals exactly: /About and /about are different addresses.",
     doc: "https://docs.netlify.com/routing/redirects/",
     line: (r) => `${r.from}  ${r.to}  ${r.code}`, codes: "required",
-    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "A _redirects line can’t match ? in the old path; Netlify matches query strings another way." }] },
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "_redirects can’t match the ? part" }] },
   { id: "vercel", name: "Vercel (vercel.json)", group: "Hosting and servers", kind: "file", file: "vercel.json", max: 2048,
     where: "The redirects list in vercel.json at the root of the project (up to 2,048 redirects)",
     doc: "https://vercel.com/docs/routing/redirects/configuration-redirects",
     codes: "required",
-    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Vercel matches the path only, so the ? part would be ignored." }],
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Vercel ignores the ? part" }],
     write: (rows) => JSON.stringify({ redirects: rows.map((r) => ({
       source: r.from.replace(/[:()*+?{}]/g, "\\$&"), destination: r.to, statusCode: +r.code })) }, null, 2) },
   { id: "vercel-bulk", name: "Vercel bulk redirects (CSV)", group: "Hosting and servers", kind: "csv", file: "redirects.csv",
     where: "Pro and Enterprise plans: point bulkRedirectsPath in vercel.json at this file, or upload it in the project’s redirects",
     doc: "https://vercel.com/docs/routing/redirects/bulk-redirects",
     cols: () => [FROM("source"), TO("destination"), CODE("statusCode")], codes: "required",
-    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Vercel matches the path only, so the ? part would be ignored." }] },
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Vercel ignores the ? part" }] },
   { id: "apache", name: "Apache (.htaccess)", group: "Hosting and servers", kind: "lines", file: "htaccess-redirects.txt",
     where: "Add the lines to .htaccess, above any other rewrite rules",
     doc: "https://httpd.apache.org/docs/current/mod/mod_alias.html#redirectmatch",
     line: (r) => `RedirectMatch ${r.code} ${quoteIfSpace("^" + reEscape(noSlash(decoded(r.from))) + "/?$")} ${r.to}`, codes: "required", slashSame: true,
-    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "RedirectMatch can’t see what comes after ?; that needs a rewrite rule." }] },
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "RedirectMatch can’t match the ? part" }] },
   { id: "nginx", name: "Nginx", group: "Hosting and servers", kind: "lines", file: "nginx-redirects.conf",
     where: "Add the lines inside the site’s server block",
     doc: "https://nginx.org/en/docs/http/ngx_http_core_module.html#location",
     line: (r) => `location = ${quoteIfSpace(decoded(r.from))} { return ${r.code} ${r.to}; }`, codes: "required",
-    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "An nginx location can’t match what comes after ?." }] },
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "nginx can’t match the ? part" }] },
   { id: "plain", name: "Plain CSV", group: "Hosting and servers", kind: "csv", file: "redirects.csv",
     where: "Change the header row and separator to fit any importer",
     cols: (code) => code ? [FROM("old"), TO("new"), CODE("status")] : [FROM("old"), TO("new")], codes: "optional" },
