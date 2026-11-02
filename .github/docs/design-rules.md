@@ -86,6 +86,11 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 Corners `--jsal-radius-sm` / `-` / `-lg` / `-xl` / `-pill` / `-tile`; selected `--jsal-selected-*`; hover `--jsal-hover-line`;
 focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead of new values.
 
+- **Focus is one gold line on everything:** the shared ring, a gap of background colour and then gold, around the
+  control. The gap keeps it visible on gold buttons. A text field keeps its own border when focused, so focus is never
+  two gold lines. Where an outside line would be cut off (the CMS Picker's table cells, tabs inside a strip, the Image
+  Resizer's canvas), the same 2px line sits just inside the edge instead.
+
 - **Corners by size of thing:** 4px small controls and chips inside a control, 6px buttons and fields, 8px cards,
   12px a tool's main panel (the quiz box, Clean Paste's editor, the Image Resizer's canvas), icon tiles and the
   achievement pop-up, 999px pills and round buttons, 22px the home and Off the clock tiles (18px at 520px and

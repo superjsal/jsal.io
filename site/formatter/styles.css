@@ -130,7 +130,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
   transition: border-color var(--jsal-quick), background var(--jsal-quick);
 }
 .paste-zone:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
-.paste-zone:focus-visible { border-color: var(--jsal-accent); background: var(--jsal-accent-soft); outline: none; box-shadow: var(--jsal-focus-ring); }   /* focused: ready to paste */
+.paste-zone:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }   /* focused: ready to paste */
 .paste-icon { width: 44px; height: 44px; border-radius: var(--jsal-radius-xl); display: grid; place-items: center; background: var(--jsal-accent-soft); color: var(--jsal-accent); border: 1px solid var(--jsal-accent-ring); margin-bottom: 4px; }
 .paste-title { font-size: 15px; font-weight: 600; }
 .paste-sub { max-width: 34em; color: var(--jsal-ink-2); line-height: 1.5; }
@@ -304,7 +304,7 @@ textarea.code {
 }
 /* iPhones zoom the whole page into any text box under 16px and stay zoomed, so touch screens get 16px */
 @media (pointer: coarse) { .link-box input { height: 36px; font-size: 16px; } }   /* style: allow (iPhones zoom into a text box under 16px) */
-.link-box input:focus { border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
+.link-box input:focus { box-shadow: var(--jsal-focus-ring); }
 .link-box button, .link-box a {
   height: 28px;
   min-width: 28px;
