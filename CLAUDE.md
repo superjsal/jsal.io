@@ -53,7 +53,7 @@ Type, colour roles, building blocks, sizes and spacing, layout, motion and touch
 
 ## Secrets
 
-- **Never** put secrets in chat or files: Discord client secret, Supabase database password or service_role key. The Supabase URL and anon key in `ic\index.html` are public by design.
+- **Never** put secrets in chat or files: Discord client secret, Supabase database password or service_role key. The Supabase URL and anon key in `ic\app.js` are public by design.
 - The scripts need `SUPABASE_SERVICE_ROLE_KEY` set in John's own terminal; never ask for it in chat or write it to a file.
 
 ## Working on this machine

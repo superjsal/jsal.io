@@ -6,7 +6,7 @@ Team reference for the Implement Check Form: what each CMS lets us change (Conte
 
 ## How it works
 
-- `index.html` is the whole app: plain HTML, CSS and JavaScript, no build step. GitHub Pages serves it.
+- `index.html` (markup), `styles.css` and `app.js` are the whole app: plain HTML, CSS and JavaScript, no build step. GitHub Pages serves it.
 - Sign-in is **Discord** through **Supabase Auth**. Anyone with a Discord account can sign in, but only people an admin approves on the **Team** page can see anything.
 - The content is **not in this repo**: the Supabase database is its source of truth, and it loads only for approved members. The tables, access rules and admin functions are all in [`supabase/schema.sql`](supabase/schema.sql):
   - **Members** read everything, and post requests, upvotes and comments.
@@ -21,7 +21,7 @@ Team reference for the Implement Check Form: what each CMS lets us change (Conte
 2. Load the content from the latest private backup (kept outside this repo).
 3. Turn on the Discord provider in Supabase (Authentication → Providers) with a Discord app's client ID and secret, and add Supabase's callback URL to the Discord app's OAuth2 redirects.
 4. In Supabase → Authentication → URL Configuration, set the Site URL and a redirect URL to `https://jsal.io/ic/`.
-5. Put the project URL and anon key into `SUPABASE_URL` / `SUPABASE_ANON_KEY` in `index.html`.
+5. Put the project URL and anon key into `SUPABASE_URL` / `SUPABASE_ANON_KEY` at the top of `app.js`.
 6. Sign in once, then make yourself admin with the private `make-me-admin.sql`.
 
 ## Updating content

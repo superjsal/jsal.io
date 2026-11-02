@@ -47,7 +47,7 @@ function ShotClear($url, $out, $w, $h) {
 Shot "$($kit)?p=linkedin" (Join-Path $kitDir "linkedin-banner.png") 1584 396
 Shot "$($kit)?p=github" (Join-Path $kitDir "github-social-preview.png") 1280 640
 Shot "$($kit)?p=avatar" (Join-Path $kitDir "avatar-800.png") 800 800
-foreach ($t in "cms-picker", "clean-paste", "image-resizer", "platform-playbook") {
+foreach ($t in "cms-picker", "clean-paste", "image-resizer", "redirect-import", "platform-playbook") {
   ShotClear "$($kit)?p=icon&t=$t" (Join-Path $kitDir "tool-$t-512.png") 512 512
 }
 ShotClear "$($kit)?p=signature&theme=light" (Join-Path $kitDir "signature-light.png") 369 112

@@ -255,7 +255,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .div { max-width: 36em; padding-top: 14px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
 .div b { display: block; margin-bottom: 2px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 /* The tool icons, one family with the logo */
-.icons { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px 12px; margin: 4px 0 16px; padding: 0; list-style: none; }
+.icons { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 14px 12px; margin: 4px 0 16px; padding: 0; list-style: none; }
 .icons li { display: grid; justify-items: center; align-content: start; gap: 6px; font-size: 12px; line-height: 1.35; text-align: center; color: var(--jsal-muted); }
 .icons img { display: block; width: 48px; height: 48px; }
 
@@ -275,7 +275,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 
 /* In practice (09): the live pages, as a grid of equal link tiles */
 .live { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
-.sec .live li + li { margin-top: 0; }
+.sec :is(.live, .icons, .principles, .a11y) li + li { margin-top: 0; }   /* grids space their items with gap */
 .live a { display: grid; gap: 4px; height: 100%; box-sizing: border-box; padding: 14px 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); font-weight: 500; text-decoration: none; }
 .live a:hover { border-color: var(--jsal-hover-line); }
 .live b { font-weight: 600; }
@@ -286,7 +286,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 @media (max-width: 999px) { .a11y { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 719px) { .principles, .a11y { grid-template-columns: minmax(0, 1fr); } .live { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 599px) { .icons { grid-template-columns: repeat(3, minmax(0, 1fr)); } .checks { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 599px) { .icons { grid-template-columns: repeat(4, minmax(0, 1fr)); } .checks { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 479px) { .live { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 720px) { .hero { padding-top: 32px; } .sec { padding-top: 40px; } .roles td:first-child { white-space: normal; } .jsal-top nav { display: none; } .ans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }   /* the contents list below does the nav's job on a phone */
 @media (max-width: 560px) { .ref-row, .dd { grid-template-columns: minmax(0, 1fr); } .ref { padding: 16px; } .verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: 16px; } .verdict .jump { margin-top: 8px; } }
@@ -334,6 +334,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><img src="/img/icons/cms-picker.svg?v=ff76afa2" alt="" width="48" height="48">CMS Picker</li>
       <li><img src="/img/icons/image-resizer.svg?v=467f1019" alt="" width="48" height="48">Image Resizer</li>
       <li><img src="/img/icons/clean-paste.svg?v=dcd6c8ab" alt="" width="48" height="48">Clean Paste</li>
+      <li><img src="/img/icons/redirect-import.svg?v=cbb0df29" alt="" width="48" height="48">Redirect Import</li>
       <li><img src="/img/icons/platform-playbook.svg?v=1bb049ca" alt="" width="48" height="48">Platform Playbook</li>
       <li><img src="/img/icons/off-the-clock.svg?v=b02e67f6" alt="" width="48" height="48">Off the clock</li>
       <li><img src="/img/icons/jsal-io.svg?v=f9148b71" alt="" width="48" height="48">jsal.io home</li>
@@ -525,7 +526,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <tr><td>≤ 720px</td><td>The CMS Picker's comparison becomes a card per question, one 44px line per platform, with groups that fold; the quiz's answer tiles go two across; the platform pages reflow</td></tr>
         <tr><td>≤ 759px</td><td>The home page's Updates notes stack above their words; the Image Resizer tile drops its output list and Redirect Import its file</td></tr>
         <tr><td>600–860px</td><td>The home page keeps its bento for phones on their side, with a shorter CMS Picker tile</td></tr>
-        <tr><td>≤ 1279px</td><td>The home page's intro, CMS Picker, Image Resizer and Updates take the full width, Clean Paste beside Say hi</td></tr>
+        <tr><td>≤ 1279px</td><td>The home page's intro, CMS Picker, Image Resizer, Redirect Import and Updates take the full width, Clean Paste beside Say hi</td></tr>
         <tr><td>&lt; 900px</td><td>Clean Paste in one column; the achievement pop-up moves to the bottom centre, or the top on touch screens</td></tr>
         <tr><td>≥ 1280px</td><td>Column grows to 1120px</td></tr>
         <tr><td>≥ 1800px</td><td>Column grows to 1240px</td></tr>
@@ -547,7 +548,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div><i style="border-radius:var(--jsal-radius-tile)"></i>--jsal-radius-tile · 22px</div>
     </div>
     <h3>The home page's bento</h3>
-    <p>A six-column grid with 28px gaps: the intro (two columns, unboxed) beside the CMS Picker (four), then the Image Resizer and Clean Paste, then Say hi and Redirect Import, the wide tile swapping sides each row so the eye zigzags down the page, and Updates across the bottom. Each tile holds a real-looking piece of its tool in the tools’ own colours, a few of them poking a little past the edge, and its app icon as a faint watermark; pointing at a tile plays what the tool does three times. Every tool tile reads the same way: its name and one line at the top left, then the picture. The bento holds down to 600px, so phones on their side keep it; upright phones get one column, where Say hi comes after every tool, never above one. Tab order follows the screen. The home page is always bento; other pages keep an open layout but may use a card in the tiles’ style (corners, padding, a tint) where it helps.</p>
+    <p>A six-column grid with 28px gaps: the intro (two columns, unboxed) beside the CMS Picker (four), then the Image Resizer and Clean Paste, then Say hi and Redirect Import, the wide tile swapping sides each row so the eye zigzags down the page, and Updates across the bottom. Each tile holds a real-looking piece of its tool in the tools’ own colours, a few of them poking a little past the edge, and its app icon as a faint watermark; pointing at a tile plays what the tool does three times. Every tool tile reads the same way: its name and one line at the top left, then the picture. The bento holds down to 600px, so phones on their side keep it; upright phones get one column, where Say hi comes after every tool, never above one (there alone the keyboard still reaches it in its wider-screen place). Elsewhere tab order follows the screen. The home page is always bento; other pages keep an open layout but may use a card in the tiles’ style (corners, padding, a tint) where it helps.</p>
     <div class="bento" aria-hidden="true"><i class="sm open"></i><i class="big"></i><i class="big"></i><i class="sm"></i><i class="sm"></i><i class="big"></i><i class="full"></i></div>
     <div class="suggest"><b>Decided</b><p>Spacing isn’t named as tokens either. Most values are even; the odd nudges (5, 7, 9, 11, 13px) were rounded in October 2026, except a few row paddings that repeat down a list, where rounding would change the list’s height. The 1–3px paddings inside small tags and pills stay as set by eye.</p></div>
   </section>
@@ -752,7 +753,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><b>Contrast</b><span>Every text/background pair at least 4.5:1, graphics people need to see at 3:1. Light-mode gold text is <code>#7e5a00</code> for that reason; the brighter <code>#e3b04b</code> is only a fill or text over images.</span><small>tokens · axe</small></li>
       <li><b>Touch targets</b><span>On touch screens every control is at least 44px tall; the top bar's 32px theme button carries a 44px tap area. Desktop targets are at least 24px.</span><small>pointer: coarse</small></li>
       <li><b>No zoom surprises</b><span>Text fields are 16px on touch screens, so iPhones don't zoom into them and leave the page zoomed.</span><small>shell.css</small></li>
-      <li><b>Keyboard</b><span>Every control reachable, one visible focus ring, Esc closes menus and tooltips, Ctrl+Enter saves, Tab order follows the screen on the home page's bento.</span><small>NVDA-tested 30 Oct 2026</small></li>
+      <li><b>Keyboard</b><span>Every control reachable, one visible focus ring, Esc closes menus and tooltips, Ctrl+Enter saves, Tab order follows the screen on the home page's bento, except Say hi on upright phones, which the keyboard still reaches in its wider-screen place.</span><small>NVDA-tested 30 Oct 2026</small></li>
       <li><b>Wording for the device</b><span>Instructions that say click, drop or name a shortcut carry a touch version, swapped in on touch screens ("tap one to change it").</span><small>data-touch</small></li>
       <li><b>Motion</b><span>Every animation has a reduced-motion fallback; nothing moves on its own beyond five seconds (WCAG 2.2.2).</span><small>check.py</small></li>
       <li><b>Screen readers</b><span>Live regions for check summaries and copy results; headings that read as sentences; hidden text where a tag alone would be ambiguous ("(not verified)").</span><small>aria-live · .sr-only</small></li>
@@ -770,6 +771,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><a href="/cms-picker/"><b>CMS Picker</b><span>Quiz first; then the verdict, your answers and the matches</span></a></li>
       <li><a href="/formatter/"><b>Clean Paste</b><span>Checks as rows, the editor, one gold Copy</span></a></li>
       <li><a href="/image-resizer/"><b>Image Resizer</b><span>Switches, the drop area, the status line</span></a></li>
+      <li><a href="/redirects/"><b>Redirect Import</b><span>The sheet with each row's check, beside the file it writes</span></a></li>
       <li><a href="/cms-picker/shopify/"><b>A platform page</b><span>Written by the publish; the gold word is "SEO"</span></a></li>
       <li><a href="/play/"><b>Off the clock</b><span>The editorial side: the art, the backpack, achievements</span></a></li>
     </ul>
@@ -777,7 +779,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
   </main>
 
   <footer class="end">
-    <span><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. Values taken from the site's code on 1 November 2026; the rules themselves live in <code>design-rules.md</code> in the repository.</span>
+    <span><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. Values taken from the site's code on 2 November 2026; the rules themselves live in <code>design-rules.md</code> in the repository.</span>
     <span>Decisions about suggested changes are marked in blue.</span>
   </footer>
 </div>
