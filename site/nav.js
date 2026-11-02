@@ -179,11 +179,16 @@
     { id: 'decision', name: 'Decision made', done: 'Found a CMS fit', todo: 'Find your CMS fit', icon: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>' },
     { id: 'compare', name: 'Side by side', done: 'Compared platforms', todo: 'Compare platforms', icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/>' },
     { id: 'twocents', name: 'Two cents', done: 'Told the quiz what you’d pick', todo: 'Tell the quiz what you’d pick', icon: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8.5 12 2.5 2.5 4.5-5"/>' },
+    { id: 'opinion', name: 'Second opinion', done: 'Checked a platform you had in mind', todo: 'Check a platform you had in mind', icon: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>' },
+    { id: 'share', name: 'Word of mouth', done: 'Copied the link to a result', todo: 'Copy the link to a result', icon: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>' },
+    { id: 'batch', name: 'Batch job', done: 'Resized 10 images at once', todo: 'Resize 10 images at once', icon: '<rect x="7" y="3" width="14" height="14" rx="2"/><path d="M17 21H5a2 2 0 0 1-2-2V7"/>' },
+    { id: 'blocks', name: 'Ready to publish', done: 'Copied WordPress blocks', todo: 'Copy WordPress blocks', icon: '<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="18" height="8" rx="1.5"/>' },
     { id: 'social', name: 'Social butterfly', done: 'Said hi', todo: 'Say hi', icon: '<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20.5l1.4-5.1A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01"/>' },
     { id: 'lost', name: 'Lost adventurer', done: 'Found the 404 page', todo: 'Secret', secret: true, icon: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>' },
     { id: 'inspector', name: 'Bag inspector', done: 'Inspected every item', todo: 'Secret', secret: true, icon: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.3-4.3"/>' },
     { id: 'persistent', name: 'Persistent', done: 'Clicked the logo 10 times', todo: 'Secret', secret: true, icon: '<path d="M6 3l13 7-5.5 1.5L11 17z"/><path d="M14 14l5 5"/>' },
     { id: 'secret', name: 'Up, up, down, down', done: 'Found the secret', todo: 'Secret', secret: true, icon: '<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4M15.5 12h.01M18 14h.01"/>' },
+    { id: 'complete', name: 'Completionist', done: 'Earned every achievement', todo: 'Secret', secret: true, icon: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>' },
   ];
   const TOOLS = ['/image-resizer/', '/formatter/', '/redirects/', '/cms-picker/'];   // "Explorer": the public tools
   const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } };
@@ -220,6 +225,8 @@
     queue.push(a);
     if (document.body) showNext(); else addEventListener('DOMContentLoaded', showNext);
     dispatchEvent(new CustomEvent('jsal-achievement', { detail: id }));
+    // "Completionist" (a secret): every other one earned
+    if (ACH.every((x) => x.id === 'complete' || got[x.id])) unlock('complete');
   }
   window.jsalAchieve = unlock;
   (window.requestIdleCallback || setTimeout)(makeToast);

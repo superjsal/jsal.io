@@ -386,11 +386,16 @@ const TROPHIES = {
   decision: { icon: 'inv_misc_key_04', q: 'rare', name: 'Key That Fits', flavor: 'Opens exactly one door. Yours.' },
   compare: { icon: 'inv_misc_dice_01', q: 'uncommon', name: 'Fair Dice', flavor: 'Compared, not left to chance.' },
   twocents: { icon: 'inv_misc_coin_05', q: 'common', name: 'Two Copper Coins', flavor: 'Worth exactly what you think.' },
+  opinion: { icon: 'inv_misc_eye_02', q: 'uncommon', name: 'Eye of Second Sight', flavor: 'Looked twice before choosing.' },
+  share: { icon: 'inv_misc_horn_03', q: 'uncommon', name: 'Herald’s Horn', flavor: 'Heard from three zones away.' },
+  batch: { icon: 'inv_crate_03', q: 'rare', name: 'Crate of Even Sizes', flavor: 'Ten in, ten out, none uploaded.' },
+  blocks: { icon: 'inv_misc_scrollrolled04', q: 'uncommon', name: 'Scroll of Clean Blocks', flavor: 'Ready for the editor.' },
   social: { icon: 'inv_misc_flower_02', q: 'uncommon', name: 'Friendly Daisy', flavor: 'Butterflies love these.' },
   lost: { icon: 'inv_misc_questionmark', q: 'epic', name: 'Mark of the Lost', flavor: 'Page not found. You were.' },
   inspector: { icon: 'inv_misc_bag_07', q: 'epic', name: 'Inspector’s Satchel', flavor: 'You looked in every pocket.' },
   persistent: { icon: 'inv_gauntlets_04', q: 'epic', name: 'Gauntlet of Persistence', flavor: 'Ten clicks. Not one more.' },
   secret: { icon: 'inv_gizmo_02', q: 'legendary', name: 'Contraption of Secrets', flavor: 'You know the rest of the code.' },
+  complete: { icon: 'inv_crown_01', q: 'legendary', name: 'Crown of the Completionist', flavor: 'Nothing left to unlock. For now.' },
 };
 const SPARE = { icon: 'inv_misc_bag_10', q: 'common', flavor: 'A keepsake.' };   // an achievement with no trophy of its own yet
 // New loot glows until it's inspected; what's been seen is kept in this browser
@@ -542,7 +547,7 @@ function drawPouch(A, got) {
 }
 // Achievements: drawn from /nav.js's list (it loads after this, so wait for it), redrawn on each unlock. Each sits
 // under the tool it's earned in; one not listed here goes under Around the site, and every secret under Secrets.
-const GROUP = { decision: 'cms', compare: 'cms', twocents: 'cms', pixel: 'ir', spotless: 'cp' };
+const GROUP = { decision: 'cms', compare: 'cms', twocents: 'cms', opinion: 'cms', share: 'cms', pixel: 'ir', batch: 'ir', spotless: 'cp', blocks: 'cp' };
 const GROUPS = [['cms', 'CMS Picker', '/img/icons/cms-picker.svg'], ['ir', 'Image Resizer', '/img/icons/image-resizer.svg'], ['cp', 'Clean Paste', '/img/icons/clean-paste.svg'], ['site', 'Around the site', '/img/icons/jsal-io.svg'], ['secret', 'Secrets']];
 const LOCK = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
 const line = (p, s) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
@@ -568,6 +573,6 @@ addEventListener('DOMContentLoaded', drawAchievements);
 addEventListener('jsal-achievement', drawAchievements);
 addEventListener('pageshow', drawAchievements);   // back from a tool: show what was unlocked there
 </script>
-<script src="/nav.js?v=a202b2c9" defer></script>
+<script src="/nav.js?v=719ffd1d" defer></script>
 </body>
 </html>
