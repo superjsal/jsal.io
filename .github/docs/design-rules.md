@@ -158,7 +158,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
     newest change in each of the three most recently changed parts as a stack of notes, written from the changelog
     by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
   - **Each tool tile has its app icon as a watermark**, drawn large in the tile's ink at 14% with the gem in solid
-    gold, lined up with its words; hidden on upright phones.
+    gold, behind the tile's picture and never under its words (the CMS Picker's podium tilted like its cards, beside
+    and under them, and upright over its name on phones on their side); set per breakpoint, and hidden on upright phones. Updates has one too, a faint stack of notes with the gem on the
+    newest, over its words; Say hi stays plain.
   - **Breakouts:** a piece may poke a little past its tile (about 14px at most), never within 16px of another
     tile, and two breakouts never crowd each other. Mix straight and tilted pieces.
   - **The pictures are decoration** (`aria-hidden`): each tile's link reads as its name and line, and Say hi's
@@ -201,8 +203,8 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - **Two timings and one curve.** A state change (a hover, a colour, a chevron turning, a short fade such as a quiz
   step) takes `--jsal-quick` (0.15s); something that moves or arrives (a tile lifting, a bar filling, a pop-up sliding
   in) takes `--jsal-settle` (0.3s). Plain `ease`, or `--jsal-ease-out` when something comes in, so it lands softly. Choreographed pieces keep their
-  own timing and carry `style: allow`: the page change, the logo unfold, the home pictures, /play/'s effects and
-  Clean Paste's Show. **Check:** `check.py` fails any other timing, and any `--jsal-*` used without being defined.
+  own timing and carry `style: allow`: the page change, the logo unfold, the 404's dropped dot, the home pictures,
+  /play/'s effects and Clean Paste's Show. **Check:** `check.py` fails any other timing, and any `--jsal-*` used without being defined.
 - **Page transitions are one slide everywhere** (`shell.css`): the old page drifts up and fades, the new one
   rises in, Back runs it downwards, and the top bar cross-fades in place. Only `shell.css` names
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.

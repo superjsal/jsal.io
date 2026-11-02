@@ -596,9 +596,10 @@ body {
   .plats .chip::after, .plats-act::after { content: ""; position: absolute; inset: -4px 0; }
 }
 
-/* Printing: the result and the table with every note written out and link addresses shown; controls left off */
+/* Printing: the result and the table with every note written out and link addresses shown; controls left off. The
+   top bar stays, as on paper it names the page and its address */
 @media print {
-  .jsal-top, .jsal-about, .more, .qz-hint, .qz-nav, .qz-switch, .qz-check, .qz-fb, .qz-ans-l, .qz-ans-ed, .qz-opts, .qz-tick, .types, .plats, .plats-head, .trks, .cbar, .totop, .tip, .cfoot { display: none !important; }
+  .jsal-about, .more, .qz-hint, .qz-nav, .qz-switch, .qz-check, .qz-fb, .qz-ans-l, .qz-ans-ed, .qz-opts, .qz-tick, .types, .plats, .plats-head, .trks, .cbar, .totop, .tip, .cfoot { display: none !important; }
   .grid.compact .mark, .grid.compact .where { position: static; width: auto; height: auto; margin: 4px 0 0; overflow: visible; clip-path: none; white-space: normal; }
   .thead { position: static; overflow: visible; }
   .scroll { overflow: visible; }

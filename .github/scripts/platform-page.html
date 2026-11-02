@@ -8,7 +8,7 @@
   <title>{{NAME}} SEO: What You Can Change and Where | jsal.io</title>
   <meta name="description" content="{{DESCRIPTION}}" />
   <link rel="canonical" href="https://jsal.io/cms-picker/{{ID}}/" />
-  <link rel="icon" href="/img/icons/cms-picker.svg?v=2d6c80ca" type="image/svg+xml">
+  <link rel="icon" href="/img/icons/cms-picker.svg?v=ff76afa2" type="image/svg+xml">
   <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet; the first page of a visit folds the logo into its mark before the first paint, for /nav.js to unfold -->
   <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});try{if(!sessionStorage.getItem("jsal-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){var h=document.documentElement;h.classList.add("jsal-intro");setTimeout(function(){h.classList.remove("jsal-intro")},4e3);}}catch(e){}</script>
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -54,11 +54,11 @@
 
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <!-- The shared styles (each ?v= is its file's content hash) -->
-  <link rel="stylesheet" href="/shell.css?v=aef150a9">
-  <link rel="stylesheet" href="../styles.css?v=0e23d86a" />
+  <link rel="stylesheet" href="/shell.css?v=df5ef931">
+  <link rel="stylesheet" href="../styles.css?v=a4812acb" />
   <link rel="stylesheet" href="../platform.css?v=4e43d062" />
   <!-- jsal.io app switcher (shared by all the apps) -->
-  <script src="/nav.js?v=829de57a" defer></script>
+  <script src="/nav.js?v=4ae8b3c7" defer></script>
 </head>
 <body>
   <main class="app">

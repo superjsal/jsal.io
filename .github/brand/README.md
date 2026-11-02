@@ -93,12 +93,18 @@ Two drawings of one letter, both with round ends:
 ## The unfold
 
 On the first page of a visit the top bar's name opens folded into the tab icon's mark: the icon's short j with its
-deep hook, the gem as its dot, the menu arrow tucked just after it, and the rest of the name hidden. The gem lifts
-off and arcs over the name, turning half a turn and growing to full size, with "sal" showing in its wake, while the
-j's curve shortens into the name's taller j (round ends throughout), its own dot fills in, and the arrow slides out
-ahead of the name. The gem lands on the baseline as the full stop with a small swell, "io" fades in behind the
-arrow, and a light runs across the gem and on over "io". About 1.4 seconds, then the glint. The letters keep their
-places throughout, so nothing beside the logo moves.
+deep hook, the gem as its dot, the menu arrow tucked just after it, and the rest of the name hidden. The j's curve
+shortens into the name's taller j (round ends throughout) while its stem rises, speeding up, until its top touches
+the gem. The top pinches off as the j's own dot and shoots up, throwing the gem over the name on a high arc, turning
+half a turn and growing to full size, with "sal" showing in its wake; the dot flies a little past its place, dips
+just below it and settles, and the arrow slides out ahead of the name. The gem lands on the baseline as the full
+stop with a small swell, "io" slides out from behind it, and a light runs across the gem and on over "io". About
+1.3 seconds, then the glint. The letters keep their places throughout, so nothing beside the logo moves.
+Each part is set off by the one before: the hook feeds the stem, the stem makes the dot, the dot sends the gem, and
+the gem lets out "io".
+
+- The dot's dip is kept small on purpose: at 18px only one row of pixels separates it from the stem, and a deeper
+  dip fills that row at 100% and 150% scaling, so the j blinks into one bar.
 
 - The j's inline SVG holds both shapes: the name's path (`.jsal-j-line`) and the icon's short j (`.jsal-j-fold`).
   Each page's head script folds the name before the first paint (`html.jsal-intro` in `site/shell.css` shows the
@@ -109,16 +115,18 @@ places throughout, so nothing beside the logo moves.
 
 ## Tool icons
 
-One icon per tool on the home page, drawn like the mark: the 32 grid, round-ended strokes, and the gold gem used once
-for what the tool does, on a tile in the tool's accent from its home page tile. `make-brand.py` writes them.
+One icon per tool on the home page: a small line drawing of what the tool does, with round ends and softened corners
+(line 2.2 on the 32 grid), and the gold gem used once for its job, on a tile in the tool's accent from its home page
+tile. Each picture was drawn to fill a 32 grid and sits on the tile at 70%, so every icon has the same margin.
+`make-brand.py` writes them.
 
 | Tool | Tile | Glyph |
 |---|---|---|
-| CMS Picker (`cms-picker`) | plum #674690 | Three platforms side by side; the one that fits stands tallest, wearing the gem like the mark's j |
-| Clean Paste (`clean-paste`) | deep gold #5e430b (darker than the home tile's gold, so the gold gem keeps its contrast) | Tidy lines of text ending in the gem as their full stop |
-| Image Resizer (`image-resizer`) | teal #2a6a61, from the home page tile's teal | A picture's frame with the gem as the corner handle |
-| Redirect Import (`redirect-import`) | berry #8a3a4f | An arrow sending an old address on to the gem, its new home |
-| Platform Playbook (`platform-playbook`) | blue #3b5a9a | A checklist: two steps done, the gem marking the current one |
+| CMS Picker (`cms-picker`) | plum #674690 | A podium with three places; the platform that fits stands on the top step, wearing the gem like the mark's j |
+| Clean Paste (`clean-paste`) | deep gold #5e430b (darker than the home tile's gold, so the gold gem keeps its contrast) | A clipboard holding clean lines, the gem its clip |
+| Image Resizer (`image-resizer`) | teal #2a6a61, from the home page tile's teal | A photo, its frame and hills, with the gem as the sun in its corner |
+| Redirect Import (`redirect-import`) | berry #8a3a4f | A browser window, a hooked arrow inside taking the visitor on to the gem, their new page |
+| Platform Playbook (`platform-playbook`) | blue #3b5a9a | An open book, the gem its bookmark |
 | Off the clock (`off-the-clock`) | green #3f6b3a, as `/play/` uses it | A loot bag holding the gem, a nod to the Backpack. Not a tool, so it's not in the kit's tool row |
 
 The site's logo menu draws them inline (`APPS` in `site/nav.js`, its tile colours the `--jsal-tool-*` tokens in
