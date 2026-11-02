@@ -32,13 +32,17 @@ Anything that fails: note the device, browser, light/dark, and the step, and pas
 
 ## CMS Picker
 
-### 4. Quiz (v4)
-- [ ] Open https://jsal.io/cms-picker/ and take the quiz as a local business, not technical, hosting by the platform. On "Anything you'll need from day one?" tick **In two or more languages**, then pick **Bookings or appointments**: both show on the result's answers ("Bookings or appointments from day one", "Two or more languages"), and the first card's box mentions languages.
-- [ ] Firefox: the tick shows its selected look (gold edge and tinted fill) when checked, and the checkbox itself is gold.
-- [ ] On the result, tap "Two or more languages": the question's choices open with the tick in them; untick it: the result re-ranks and the chip goes.
+### 4. Quiz (v6)
+- [ ] Open https://jsal.io/cms-picker/ and take the quiz as a local business, not technical, hosting by the platform. "Anything you'll need from day one?" is a checklist: tick **Bookings or appointments** and **Selling online too** (a tap anywhere on a row ticks it), then **Next**. The result's "From day one" tile reads "Bookings or appointments, Selling online too".
+- [ ] On that checklist: Back and then Next again keeps your ticks; Next with nothing ticked shows "Nothing special" on the result; "Two or more languages" is the list's last row.
+- [ ] Firefox: ticked rows show their selected look (gold edge and tinted fill) and the checkbox itself is gold.
+- [ ] "Which best describes you or your site?": "We already pay for HubSpot" is a plain line with a checkbox above the answers, with no box around it; ticking it fills only the checkbox, and the answer tiles below still move on at one tap.
+- [ ] On the result, tap the "From day one" tile: its choices open as equal rows (one column on a phone) and stay open while you switch needs on and off; each tap re-ranks, and taking them all off shows "Nothing special".
 - [ ] Phone: "Your answers" is folded under the heading; the first card is in view without scrolling past the answers; opening the fold and tapping an answer re-ranks straight away.
-- [ ] Take it again with "Arrange things visually myself": Wix is "Best match" and Squarespace "Close second", and Wix's box says "Level on points, but you want to arrange things yourself, and Wix's card leads with 'Drag-and-drop editor'." With "A good template is enough", the two swap.
-- [ ] "Moving from somewhere?": the 13 logos are easy to tap on a phone; pick Wix: Wix never appears as a match, the result says what Wix lets you take, and "Had a platform in mind?" shows where Wix ranks.
+- [ ] Take it again with "Arrange things visually myself", nothing special from day one, up to about $25: Wix is "Best match" and Squarespace "Close second", and Wix's box says why it comes first.
+- [ ] "Moving from somewhere?": the 14 logos are easy to tap on a phone; pick Wix: Wix never appears as a match, the result says what Wix lets you take, and "Had a platform in mind?" shows where Wix ranks.
+- [ ] Staying put: a local business, not technical, the platform hosting, nothing special, a good template, moving from **Squarespace**, up to about $25: a blue note above the cards says Squarespace, where the site is now, fits as well as Wix, so staying may be the better choice.
+- [ ] Changing an answer on the result: every question's choices open as equal rows; "Moving from somewhere?" lists its 16 choices in two columns on a phone, and nothing runs off the edge.
 - [ ] "How sure" line: a close call, a clear lead or a clear winner, and it matches the gap you'd expect from the cards.
 
 ### 5. From the result into the table
@@ -49,14 +53,16 @@ Anything that fails: note the device, browser, light/dark, and the step, and pas
 - [ ] Phone: the single-platform pickers ("Show steps for", "Had a platform in mind?") use the phone's own picker, and the Compare chips sit in two even columns.
 
 ### 6. Links, Back and Forward
-- [ ] "Copy link to this result", open it in a new tab: the same matches and answers show, and the address says `v=5`.
+- [ ] "Copy link to this result", open it in a new tab: the same matches and answers show, and the address says `v=6` (two needs read `needs=bookings%2Csell`).
+- [ ] An older link still opens on its result: `https://jsal.io/cms-picker/#quiz?v=5&what=site&kind=local&who=easy&care=no&needs=bookings&lang=yes&look=template&moving=no&budget=low` shows "Bookings or appointments" and "Two or more languages".
 - [ ] Open an old link by hand: `https://jsal.io/cms-picker/#quiz?v=3&what=site&kind=local&who=easy&care=no&needs=lang&look=template&moving=no&budget=low` shows the result with "Two or more languages" ticked and "Nothing special from day one".
 - [ ] Press Back, then Forward: the results follow each time, and Back from the first result leaves the page normally.
 - [ ] "Start over" goes back to question 1 with it in view.
 
 ### 7. Platform pages
 - [ ] Open a guide (e.g. https://jsal.io/cms-picker/wix/): the breadcrumb lines up with the home page's name line; "Compare Wix with others" opens the table with Wix as the first column.
-- [ ] Phone: the facts grid is two columns and nothing scrolls sideways.
+- [ ] Phone: the four facts at the top (type, starting cost, hosting, what you can take with you) take a row each and read in one to three lines; nothing scrolls sideways.
+- [ ] The notes read in plain words, with the platform's own term in brackets where you'd meet it in its settings (e.g. "the bots file (robots.txt)", "add-on (module)" on Drupal).
 - [ ] A "docs" link beside a reason on the result opens the platform's own help page in a new tab.
 
 ### 8. Notes and the table

@@ -293,7 +293,8 @@ Shared by the page and the tests, so they always run the same code.
   Their budget reads "Start a site with paid members" (`cost_members`: the plan that includes paid
   memberships, e.g. Ghost(Pro) Publisher, Wix Core), as does the card's "Cost to start" line; `costRow` in
   `score.js` picks the row for the score, the "costs less to start" box and the card alike (a store, or a site
-  that sells too, reads the store band). A site that sells on a platform with no store plan ("Not offered") counts
+  that sells too, reads the store band). Framer, Ghost, HubSpot and Sanity sell through Shopify, so their store band is
+  their plan plus Shopify Basic. A site that sells on a platform with no store plan ("Not offered", e.g. Substack) counts
   its site band plus a separate shop, at least the lowest paid band, under its own part (`shopCost`). No pricing page
   states that sum, so `shopCost` has no wording, and a platform over budget on it never says it costs less than another;
   its "worth knowing" line says a separate shop adds to the cost.
@@ -399,6 +400,9 @@ Platforms change plans and features often. Every few months (or when a platform 
   Shopify (apps.shopify.com/zendra), Paid Member Subscriptions for WordPress
   (wordpress.org/plugins/paid-member-subscriptions/), and Duda's own Membership add-on (duda.co/membership).
   A change can move a band: Webflow ($15 + $25) and Framer ($10 + $24) sit just over $25.
+- Recheck **Shopify Basic** (shopify.com/pricing, $29/mo billed yearly in November 2026) with them: it's in the
+  "Start an online store" band of Framer, Ghost, HubSpot and Sanity, which sell through Shopify (the Buy Button works
+  on every Shopify plan). HubSpot's free plan and Shopify alone come to $29, just over $25.
 - Recheck **`freeDomain`** in `cms-picker/quiz.json` with the pricing: a free plan gaining custom domains comes off it.
 - Recheck the **bookings list and the import pages** (`bookings` and `imports` in `cms-picker/quiz.json`): a
   platform adding or dropping its own bookings product moves the bookings need, and an import guide that moves or
