@@ -188,8 +188,8 @@ export function analyse(rows, fmt, opts) {
     const host = esc(n.host.replace(/^www\./i, ""));
     if (pv && external) {
       const fixes = [["Use the path", usePath]];
-      if (pv === "preview") bad("n", `This points at <code>${host}</code>, a preview address, not the live site.`, fixes, "preview", "New addresses pointing at a preview site");
-      else notes.push({ cell: "n", kind: "warn", fixes, text: pv === "maybe"
+      if (pv === "preview") bad("n", `This points at <code>${host}</code>, a preview address, not the live site.`, fixes, "preview:" + host, `point at <code>${host}</code>, a preview site`);
+      else notes.push({ cell: "n", kind: "warn", fixes, group: "n:check:" + host, title: `point at <code>${host}</code>, which ${pv === "maybe" ? "is usually a preview or hosting address" : "looks like a staging site"}`, text: pv === "maybe"
         ? `<code>${host}</code> is usually a preview or hosting address. Check it’s the live site.`
         : `<code>${host}</code> looks like a staging site. Check it’s the live address.` });
     }

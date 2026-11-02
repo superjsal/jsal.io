@@ -69,6 +69,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .overview .done b, .overview .count { color: var(--jsal-ink); font-weight: 600; }
 .overview .repeat { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; color: var(--jsal-bad); }
 .overview .count { padding: 1px 7px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); }
+.overview .repeat.warn { color: var(--jsal-warn); }
+.overview .repeat.warn .count { background: var(--jsal-warn-soft); }
 .overview .jsal-btn.small { min-height: 28px; padding: 3px 10px; font-size: 13px; }
 
 /* ── The sheet ──────────────────────────────────────────────────────────── */

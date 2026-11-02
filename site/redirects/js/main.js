@@ -1,5 +1,5 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=3973fd80";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=ad523613";
 import { FORMATS, byId } from "./formats.js?v=1a0bf951";
 
 const $ = (id) => document.getElementById(id);
@@ -347,12 +347,15 @@ function overview(live) {
   const list = (a) => a.length > 1 ? a.slice(0, -1).join(", ") + " and " + a[a.length - 1] : a[0];
   const done = [said.length && `removed ${list(said)}`, slash && `added the / at the start of ${plural(slash, "address", "addresses")}`].filter(Boolean);
 
+  // Repeats are counted by colour, so a line's number always matches the rows of its colour: problems on rows that
+  // need you (red), and warnings on rows to check (terracotta)
   const groups = new Map();
   for (const r of live) {
     const it = result.items.get(r.id);
-    if (it.state !== "bad") continue;
-    for (const x of it.notes) if (x.kind === "bad" && x.group) {
-      const g = groups.get(x.group) || groups.set(x.group, { title: x.title, fixes: x.fixes || [], ids: [] }).get(x.group);
+    const kind = it.state === "bad" ? "bad" : it.state === "warn" ? "warn" : "";
+    if (!kind) continue;
+    for (const x of it.notes) if (x.kind === kind && x.group) {
+      const g = groups.get(x.group) || groups.set(x.group, { title: x.title, kind, fixes: x.fixes || [], ids: [] }).get(x.group);
       if (!g.ids.includes(r.id)) g.ids.push(r.id);
     }
   }
@@ -362,8 +365,8 @@ function overview(live) {
   const html = (done.length ? `<p class="done"><b>Done for you:</b> ${done.join("; ")}.</p>` : "") +
     (domainOnly ? `<p class="done">${plural(domainOnly, "row only changes", "rows only change")} the domain, so ${domainOnly === 1 ? "it’s" : "they’re"} left out: connecting the old domain to the new site redirects ${domainOnly === 1 ? "it" : "them"}. <button type="button" class="jsal-btn link" data-full>Put ${domainOnly === 1 ? "it" : "them"} in with full URLs</button></p>` : "") +
     repeats.map(([key, g]) =>
-    `<p class="repeat"><span class="count">${g.ids.length} rows</span> ${g.title}${g.fixes.map(([label], i) =>
-      ` <button type="button" class="jsal-btn small" data-fixall="${esc(key)}|${i}">${esc(label)} in all ${g.ids.length}</button>`).join("")}</p>`).join("");
+    `<p class="repeat ${g.kind}"><span class="count">${g.ids.length} rows</span> <span>${g.title}</span>${g.fixes.map(([label], i) =>
+      ` <button type="button" class="jsal-btn small" data-fixall="${esc(key)}|${i}">${esc(label)} in ${g.ids.length === 2 ? "both" : "all " + g.ids.length}</button>`).join("")}</p>`).join("");
   const box = $("overview");
   if (box.dataset.h !== html) { box.innerHTML = html; box.dataset.h = html; }
   box.hidden = !html;
