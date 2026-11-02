@@ -61,6 +61,7 @@
   --t-cms: #d7c6f0; --t-cms-ink: #3d2466;
   --t-cp: #f3dc9a; --t-cp-ink: #4f3a08;
   --t-ir: #c6e2dd; --t-ir-ink: #13453f;
+  --t-ri: #f0d2dc; --t-ri-ink: #5c1a30;
   --t-plain: #e8e5dd;
   --obj-shadow: 0 18px 40px rgb(30 20 10 / 0.2), 0 2px 6px rgb(30 20 10 / 0.08);
   --key-sheen: inset 0 1px 0 rgb(255 255 255 / 0.35);
@@ -69,13 +70,13 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-plain: #1c1f27;
+    --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de; --t-plain: #1c1f27;
     --obj-shadow: 0 0 0 1px var(--jsal-line-hi), 0 18px 40px rgb(0 0 0 / 0.5);
     --key-drop: 0 18px 24px rgb(0 0 0 / 0.45); --key-drop-low: 0 7px 11px rgb(0 0 0 / 0.4);
   }
 }
 :root[data-theme="dark"] {
-  --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-plain: #1c1f27;
+  --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de; --t-plain: #1c1f27;
   --obj-shadow: 0 0 0 1px var(--jsal-line-hi), 0 18px 40px rgb(0 0 0 / 0.5);
   --key-drop: 0 18px 24px rgb(0 0 0 / 0.45); --key-drop-low: 0 7px 11px rgb(0 0 0 / 0.4);
 }
@@ -101,14 +102,15 @@ a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles kee
 h1, h2 { text-wrap: balance; }
 p { text-wrap: pretty; }
 
-/* Bento grid: six columns in three rows, the wide tile swapping sides each row */
-.grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: minmax(440px, auto) minmax(256px, auto) minmax(272px, auto); gap: 28px; margin-top: var(--jsal-page-top); }
+/* Bento grid: six columns, the wide tile swapping sides each row, and Updates across the bottom */
+.grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: minmax(440px, auto) minmax(256px, auto) minmax(272px, auto) minmax(220px, auto); gap: 28px; margin-top: var(--jsal-page-top); }
 .intro { grid-column: 1 / 3; grid-row: 1; align-self: start; padding-right: 12px; }
 .cms { grid-column: 3 / 7; grid-row: 1; }
 .ir { grid-column: 1 / 5; grid-row: 2; }
 .cp { grid-column: 5 / 7; grid-row: 2; }
 .hi { grid-column: 1 / 3; grid-row: 3; }
-.now { grid-column: 3 / 7; grid-row: 3; }
+.ri { grid-column: 3 / 7; grid-row: 3; }
+.now { grid-column: 1 / 7; grid-row: 4; }
 
 /* The intro: at the shared distance under the top bar, flush with the logo */
 .roles { display: flex; flex-wrap: wrap; margin: 0; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
@@ -245,6 +247,32 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .draft .body { padding-top: 8px; }
 .draft .body i { overflow: hidden; font-style: normal; color: var(--jsal-ink-2); white-space: nowrap; text-overflow: ellipsis; }
 
+/* Redirect Import: the tool's sheet of old and new addresses, each row with its check, and the file it writes for the
+   platform, poking out of the tile's bottom edge towards Updates; both straight. The sheet's last row shows only on
+   phones, where the file is left out. */
+.ri { --bg: var(--t-ri); --ink: var(--t-ri-ink); }
+.ri .txt { max-width: 258px; }
+.ri .wm { width: 360px; height: 360px; left: -60px; top: 64px; }   /* the window under the words, its arrow pointing at the sheet */
+.rs { left: 290px; top: 22px; z-index: 2; width: 300px; padding: 10px 14px 8px; border-radius: 16px; display: flex; flex-direction: column; font-size: 12px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
+.rs-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 6px; font-size: 13px; }
+.rs-head .mono, .rs .n, .rs .out-cell { color: var(--jsal-muted); }
+.rs-row { display: grid; grid-template-columns: 12px 18px 1fr 1.2fr; gap: 8px; align-items: center; padding: 5px 0; border-top: 1px solid var(--jsal-sunk); }
+.rs-row .mono { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 500; }
+.rs .bad-cell { color: var(--jsal-bad); }
+.rs .last { display: none; }
+.rs-note { margin: -2px 0 4px 46px; color: var(--jsal-bad); font-size: 11px; }   /* style: allow (miniature) */
+/* each row's check, as the tool marks it: ready, needs you, or left out on purpose */
+.dot { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; font-style: normal; font-size: 11px; font-weight: 700; line-height: 1; }   /* style: allow (miniature) */
+.dot.ok { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
+.dot.bad { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
+.dot.out { background: var(--jsal-sunk); color: var(--jsal-muted); }
+.rf { right: 22px; bottom: -10px; z-index: 3; width: 252px; padding: 10px 14px 12px; border-radius: 16px; display: flex; flex-direction: column; gap: 6px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
+.rf-head { display: flex; justify-content: space-between; color: var(--jsal-muted); }
+.rf-head span { color: var(--jsal-ok); }
+.rf code { font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
+.rf .ln { display: block; overflow: hidden; text-overflow: ellipsis; }
+.rf .mute { color: var(--jsal-muted); }
+
 /* Updates: the newest change in each of the three most recently changed parts, as a plain list, newest first (the
    rows aren't links, so they don't look like cards), and a faint stack of notes as its watermark */
 .now { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
@@ -273,15 +301,15 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .hi .txt a:not(.hi-mail)::after, .now .txt a::after { content: ""; position: absolute; inset: -13px -4px; }
 }
 
-/* Narrower desktops and phones on their side: the intro on its own row, the CMS Picker, the Image Resizer and
-   Updates full width, and Clean Paste beside Say hi */
+/* Narrower desktops and phones on their side: the intro on its own row, the CMS Picker, the Image Resizer, Redirect
+   Import and Updates full width, and Clean Paste beside Say hi */
 @media (max-width: 1279px) {
   .grid { grid-template-rows: none; }
   .intro { grid-column: 1 / -1; grid-row: auto; padding-right: 0; }
   .intro p { max-width: 34em; }
-  .cms, .ir, .now { grid-column: 1 / -1; grid-row: auto; }
+  .cms, .ir, .ri, .now { grid-column: 1 / -1; grid-row: auto; }
   .cms { min-height: 440px; }
-  .ir, .cp { min-height: 256px; }
+  .ir, .cp, .ri { min-height: 256px; }
   .hi, .now { min-height: 272px; }
   .cp { grid-column: 1 / 4; grid-row: auto; }
   .hi { grid-column: 4 / 7; grid-row: auto; }
@@ -309,12 +337,14 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .cp, .hi { min-height: 304px; }
   .sheet { top: 140px; }   /* the words take a second line here, so the sheet starts lower */
 }
-/* Too narrow for the output list beside the editor, or for the updates beside the words: the list goes and the editor
-   grows into its room, and the updates run across the tile under the words */
+/* Too narrow for the output list beside the editor, the file beside the sheet, or the updates beside the words: the
+   list and the file go and the editor and sheet grow into their room, and the updates run across the tile under the words */
 @media (min-width: 600px) and (max-width: 759px) {
   .ir { min-height: 272px; }   /* the taller editor */
   .ed { left: 290px; right: 26px; width: auto; min-width: 250px; }
   .ed-photo { height: 160px; }
+  .rf { display: none; }
+  .rs { right: 26px; width: auto; }
 }
 /* Clean Paste's line takes two lines here too */
 @media (min-width: 700px) and (max-width: 799px) {
@@ -332,7 +362,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @media (max-width: 599px) {
   .grid > * { grid-column: 1 / -1 !important; }
   .wm { display: none; }
-  .cms, .ir, .cp, .hi { min-height: 0; }
+  .cms, .ir, .cp, .hi, .ri { min-height: 0; }
   .tile.cms { padding-bottom: 262px; }   /* room for the brick under the words */
   .pcs { left: 14px; top: 146px; --rest: rotate(-10deg) scale(0.6); --hover: var(--rest); }
   .fit-for { left: 20px; top: -12px; }   /* no room under the line here, so it pokes out of the tile's top */
@@ -342,6 +372,10 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .ed { position: relative; display: block; left: auto; top: auto; width: auto; margin: 18px 0 0; --rest: none; --hover: translateY(-6px); }
   .ed-photo { height: 170px; }
   .sheet { position: relative; left: auto; top: auto; margin: 26px auto -12px; width: min(258px, 100%); transform-origin: top center; --rest: rotate(-2deg) scale(0.9); --hover: rotate(-2deg) scale(0.9) translateY(-6px); }
+  /* Redirect Import's sheet under its words, inside the tile, with all four rows; no file */
+  .rs { position: relative; left: auto; top: auto; margin: 22px auto -8px; width: min(300px, 100%); }
+  .rs .last { display: grid; }
+  .rf { display: none; }
   .hi .txt { margin-top: 136px; }
   .draft { left: 20px; right: 20px; width: auto; max-width: 340px; margin: 0 auto; transform-origin: top center; --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
   .intro p { font-size: 17px; }
@@ -364,7 +398,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 }
 /* Pointing at a tile (or focusing it) plays what its tool does three times; on touch screens once, the
    first time the tile comes into view (the script below sets .play). The CMS Picker's keys show what fits three needs
-   in turn (one, picked at random, on touch screens), the crop box takes each size's shape in turn, the formatted text wipes into its HTML and the email types itself. */
+   in turn (one, picked at random, on touch screens), the crop box takes each size's shape in turn, the formatted text wipes into its HTML, the email types itself and the
+   redirect sheet's rows are checked into their file. */
 @media (prefers-reduced-motion: no-preference) {
   /* each need lights the keys the real quiz ranks first for it: a small shop, a paid newsletter, a startup that wants
      to design every detail; --fit-start skips ahead to one of them (2.7s each) */
@@ -393,6 +428,15 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .sw .t { --k: cp-t; }
   .sw .h { --k: cp-h; }
   .hi:is(.play, :has(.hi-mail:is(:hover, :focus-visible))) .draft .body i { animation: hi-type 3.6s steps(41, end) 2.9 both; }   /* style: allow (the home pictures play) */
+  .ri:is(:hover, :focus-visible, .play) :is(.rs .dot, .rs-note, .rf .ln:not(.mute)) { animation: var(--k) 3s ease-out 2.9 both; }   /* style: allow (the home pictures play) */
+  .rs-row:nth-of-type(2) .dot { --k: ri-d1; }
+  .rs-row:nth-of-type(3) .dot { --k: ri-d2; }
+  .rs-row:nth-of-type(4) .dot { --k: ri-d3; }
+  .rs-row:nth-of-type(6) .dot { --k: ri-d4; }
+  .rs-note { --k: ri-note; }
+  .rf .ln:nth-child(2) { --k: ri-f1; }
+  .rf .ln:nth-child(3) { --k: ri-f2; }
+  .rf .ln:nth-child(4) { --k: ri-f3; }
 }
 /* CMS Picker: three needs of 2.3s, a 0.4s pause after each with every key back up */
 @keyframes fit-0 { 0% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 3%, 26% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 29%, 33% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 36%, 59% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 62%, 66% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 69%, 92% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 95%, 100% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } }
@@ -421,6 +465,17 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes cp-t { 0% { color: var(--jsal-muted); } 10%, 31% { color: var(--jsal-selected-ink); } 40%, 100% { color: var(--jsal-muted); } }
 @keyframes cp-h { 0% { color: var(--jsal-selected-ink); } 10%, 31% { color: var(--jsal-muted); } 40%, 100% { color: var(--jsal-selected-ink); } }
 @keyframes hi-type { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
+/* Redirect Import: the rows are checked one at a time and each ready row's line lands in the file just after; the row with
+   a space gets its "!" and note and adds nothing, then the rows past the sheet's edge add the last line. All held to 97%,
+   past where the one play on touch screens stops, then cleared for the next loop */
+@keyframes ri-d1 { 0%, 4% { scale: 0; } 10% { scale: 1.25; } 14%, 97% { scale: 1; } 100% { scale: 0; } }
+@keyframes ri-f1 { 0%, 12% { opacity: 0; translate: -10px 0; } 20%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
+@keyframes ri-d2 { 0%, 22% { scale: 0; } 28% { scale: 1.25; } 32%, 97% { scale: 1; } 100% { scale: 0; } }
+@keyframes ri-f2 { 0%, 30% { opacity: 0; translate: -10px 0; } 38%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
+@keyframes ri-d3 { 0%, 40% { scale: 0; } 46% { scale: 1.25; } 50%, 97% { scale: 1; } 100% { scale: 0; } }
+@keyframes ri-note { 0%, 48% { opacity: 0; translate: 0 -4px; } 54%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
+@keyframes ri-d4 { 0%, 56% { scale: 0; } 62% { scale: 1.25; } 66%, 97% { scale: 1; } 100% { scale: 0; } }
+@keyframes ri-f3 { 0%, 62% { opacity: 0; translate: -10px 0; } 70%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .tile, .obj, .cta a { transition: none; }
   a.tile:hover, .hi:has(.hi-mail:hover), .cta a:hover { transform: none; }
@@ -510,6 +565,25 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
       </div>
     </section>
 
+    <a class="tile ri" href="/redirects/" data-app>
+      <div class="txt">
+        <h2>Redirect Import</h2>
+        <p>Old and new addresses to a redirect file.</p>
+      </div>
+      <div class="clip" aria-hidden="true">
+        <svg class="wm" viewBox="0 0 32 32" width="180" height="180"><g class="s"><path d="M9.35 8.65H22.65a2.45 2.45 0 0 1 2.45 2.45V20.9a2.45 2.45 0 0 1-2.45 2.45H9.35a2.45 2.45 0 0 1-2.45-2.45V11.1a2.45 2.45 0 0 1 2.45-2.45zM10.75 20.55V18.94C10.75 16.28 12.15 14.95 14.6 14.95H15.3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.36 14.95L15.16 11.87V18.03z" fill="currentColor" stroke="currentColor" stroke-width="1.45" stroke-linejoin="round"/></g><path class="g" d="M21.67 13.27l1.68 1.68-1.68 1.68-1.68-1.68z"/></svg>
+      </div>
+      <span class="obj paper rs" aria-hidden="true">
+        <span class="rs-head"><b>Your sheet</b><span class="mono">12 rows</span></span>
+        <span class="rs-row"><span class="n mono">2</span><i class="dot ok">✓</i><span class="mono">/about-us/</span><span class="mono">/pages/about</span></span>
+        <span class="rs-row"><span class="n mono">3</span><i class="dot ok">✓</i><span class="mono">/blog/sale</span><span class="mono">/blogs/news/sale</span></span>
+        <span class="rs-row"><span class="n mono">4</span><i class="dot bad">!</i><span class="mono bad-cell">/our team</span><span class="mono">/pages/team</span></span>
+        <span class="rs-note">Has a space: /our team</span>
+        <span class="rs-row last"><span class="n mono">5</span><i class="dot out">–</i><span class="mono">/old-promo</span><span class="mono out-cell">Left out</span></span>
+      </span>
+      <span class="obj paper rf" aria-hidden="true"><span class="mono rf-head">shopify-redirects.csv<span>4 ready</span></span><code><span class="ln mute">Redirect from,Redirect to</span><span class="ln">/about-us,/pages/about</span><span class="ln">/blog/sale,/blogs/news/sale</span><span class="ln">/caf%C3%A9-menu,/pages/menu</span></code></span>
+    </a>
+
     <!-- Site updates: the newest change in each of the three most recently changed parts of the site -->
     <section id="updates" class="tile now" aria-labelledby="updates-h">
       <div class="txt">
@@ -550,7 +624,7 @@ if (matchMedia('(hover: none)').matches && matchMedia('(prefers-reduced-motion: 
     e.target.classList.add('play');
     setTimeout(() => e.target.classList.remove('play'), cms ? 2600 : 2900);
   }), { rootMargin: '-20% 0px -20% 0px', threshold: 0.5 });
-  document.querySelectorAll('.cms, .ir, .cp, .hi').forEach((tile) => seen.observe(tile));
+  document.querySelectorAll('.cms, .ir, .cp, .hi, .ri').forEach((tile) => seen.observe(tile));
 }
 </script>
 <script src="/nav.js?v=4ae8b3c7" defer></script>

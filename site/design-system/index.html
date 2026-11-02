@@ -136,6 +136,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .bento i { display: block; height: 42px; border-radius: var(--jsal-radius-xl); background: var(--jsal-sunk); border: 1px solid var(--jsal-line); }
 .bento .big { grid-column: span 4; }
 .bento .sm { grid-column: span 2; }
+.bento .full { grid-column: 1 / -1; }
 .bento .open { background: none; border-style: dashed; }   /* the intro, unboxed */
 
 /* Components (06): one card per piece, its kinds and states drawn with the real rules, then the right way beside a
@@ -457,7 +458,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h3>The answer ramp</h3>
     <p>On the CMS Picker a row says how well a platform does something. Its tags are one scale, read left to right, and the scale is the same wherever it appears, on the comparison table, the cards and the platform pages.</p>
     <div class="ramp"><span class="tag yes">Built in</span><span class="arrow">→</span><span class="tag plugin">Plugin/app</span><span class="arrow">→</span><span class="tag code">Needs code</span><span class="arrow">→</span><span class="tag no">Not possible</span><span class="arrow" style="margin-left:8px">·</span><span class="tag check">Unclear</span> <span class="sc">* varies</span></div>
-    <div class="suggest"><b>Decided</b><p>The home page's bento tiles keep their own tint tokens (<code>--t-cms</code> lilac, <code>--t-ir</code> teal, <code>--t-cp</code> honey, each with a deep <code>-ink</code> shade for its words, and <code>--t-plain</code> for Say hi and Updates) in <code>index.html</code>. Moving them into <code>shell.css</code> would copy colours only the home page uses into every page, so they stay where they’re used and are listed here instead.</p></div>
+    <div class="suggest"><b>Decided</b><p>The home page's bento tiles keep their own tint tokens (<code>--t-cms</code> lilac, <code>--t-ir</code> teal, <code>--t-cp</code> honey, <code>--t-ri</code> berry, each with a deep <code>-ink</code> shade for its words, and <code>--t-plain</code> for Say hi and Updates) in <code>index.html</code>. Moving them into <code>shell.css</code> would copy colours only the home page uses into every page, so they stay where they’re used and are listed here instead.</p></div>
   </section>
 
   <section class="sec" id="type">
@@ -522,7 +523,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <tr><td>≤ 520px</td><td>Less space above the top bar (14px); the Privacy page's text starts sooner</td></tr>
         <tr><td>≤ 599px</td><td>Clean Paste's toolbar in two even rows; the CMS Picker's phone rules; the home page's bento stacks to one column</td></tr>
         <tr><td>≤ 720px</td><td>The CMS Picker's comparison becomes a card per question, one 44px line per platform, with groups that fold; the quiz's answer tiles go two across; the platform pages reflow</td></tr>
-        <tr><td>≤ 759px</td><td>The home page's Updates notes stack above their words; the Image Resizer tile drops its output list</td></tr>
+        <tr><td>≤ 759px</td><td>The home page's Updates notes stack above their words; the Image Resizer tile drops its output list and Redirect Import its file</td></tr>
         <tr><td>600–860px</td><td>The home page keeps its bento for phones on their side, with a shorter CMS Picker tile</td></tr>
         <tr><td>≤ 1279px</td><td>The home page's intro, CMS Picker, Image Resizer and Updates take the full width, Clean Paste beside Say hi</td></tr>
         <tr><td>&lt; 900px</td><td>Clean Paste in one column; the achievement pop-up moves to the bottom centre, or the top on touch screens</td></tr>
@@ -546,8 +547,8 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <div><i style="border-radius:var(--jsal-radius-tile)"></i>--jsal-radius-tile · 22px</div>
     </div>
     <h3>The home page's bento</h3>
-    <p>A six-column grid with 28px gaps: the intro (two columns, unboxed) beside the CMS Picker (four), then the Image Resizer and Clean Paste, then Say hi and Updates, the wide tile swapping sides each row so the eye zigzags down the page. Each tile holds a real-looking piece of its tool in the tools’ own colours, a few of them poking a little past the edge, and its app icon as a faint watermark; pointing at a tile plays what the tool does three times. The bento holds down to 600px, so phones on their side keep it; upright phones get one column. Tab order follows the screen. The home page is always bento; other pages keep an open layout but may use a card in the tiles’ style (corners, padding, a tint) where it helps.</p>
-    <div class="bento" aria-hidden="true"><i class="sm open"></i><i class="big"></i><i class="big"></i><i class="sm"></i><i class="sm"></i><i class="big"></i></div>
+    <p>A six-column grid with 28px gaps: the intro (two columns, unboxed) beside the CMS Picker (four), then the Image Resizer and Clean Paste, then Say hi and Redirect Import, the wide tile swapping sides each row so the eye zigzags down the page, and Updates across the bottom. Each tile holds a real-looking piece of its tool in the tools’ own colours, a few of them poking a little past the edge, and its app icon as a faint watermark; pointing at a tile plays what the tool does three times. The bento holds down to 600px, so phones on their side keep it; upright phones get one column. Tab order follows the screen. The home page is always bento; other pages keep an open layout but may use a card in the tiles’ style (corners, padding, a tint) where it helps.</p>
+    <div class="bento" aria-hidden="true"><i class="sm open"></i><i class="big"></i><i class="big"></i><i class="sm"></i><i class="sm"></i><i class="big"></i><i class="full"></i></div>
     <div class="suggest"><b>Decided</b><p>Spacing isn’t named as tokens either. Most values are even; the odd nudges (5, 7, 9, 11, 13px) were rounded in October 2026, except a few row paddings that repeat down a list, where rounding would change the list’s height. The 1–3px paddings inside small tags and pills stay as set by eye.</p></div>
   </section>
 
