@@ -312,7 +312,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .cms { min-height: 440px; }
   .ir, .cp { min-height: 256px; }
   .ri { min-height: 292px; }   /* room for the sheet's four rows above the file */
-  .hi, .now { min-height: 272px; }
+  .hi { min-height: 292px; }   /* the draft clear of the words under it */
+  .now { min-height: 272px; }
   .cp { grid-column: 1 / 4; grid-row: auto; }
   .hi { grid-column: 4 / 7; grid-row: auto; }
   .sheet { left: 26px; }   /* the column's edge: in line with the words instead of poking into the gutter */
@@ -337,7 +338,10 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .cms .txt { max-width: 220px; }
   .pcs { right: 290px; top: 36px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
   .cp, .hi { min-height: 304px; }
-  .sheet { top: 140px; transform-origin: top left; --rest: scale(0.86); --hover: scale(0.86) translateY(-6px); }   /* the words take a second line here, so the sheet starts lower, and the tile is narrower than the sheet */
+  .sheet { top: 140px; transform-origin: top left; --rest: scale(0.86); --hover: scale(0.86) translateY(-6px); }
+  .ri .txt { max-width: 236px; }   /* the name on one line, clear of the sheet */
+  .tile.ri { min-height: 224px; }   /* the smaller sheet needs less */
+  .ri .rs { left: auto; right: 26px; width: 300px; transform-origin: top right; --rest: scale(0.8); --hover: scale(0.8) translateY(-6px); }   /* the whole sheet, smaller, rather than its cells cut short */   /* the words take a second line here, so the sheet starts lower, and the tile is narrower than the sheet */
 }
 /* Too narrow for the output list beside the editor, the file beside the sheet, or the updates beside the words: the
    list and the file go and the editor and sheet grow into their room, and the updates run across the tile under the words */
@@ -346,6 +350,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .ed { left: 290px; right: 26px; width: auto; min-width: 250px; }
   .ed-photo { height: 160px; }
   .rf { display: none; }
+  .ri { min-height: 256px; }   /* no file under the sheet here */
   .rs { right: 26px; width: auto; }
 }
 /* Clean Paste's line takes two lines here too */
@@ -387,8 +392,14 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
    (Email is in Say hi) */
 /* The narrowest phones: a smaller brick, so it fits across the tile and the page never scrolls sideways */
 @media (max-width: 374px) {
-  .pcs { left: calc(50% - 130px); top: 170px; --rest: rotate(-10deg) scale(0.54); }   /* under the line's two lines */
-  .tile.cms { padding-bottom: 262px; }   /* centred: the tilted brick is 275px across here, its box starting 8px left of its corner */
+  .pcs { left: calc(50% - 130px); top: 170px; --rest: rotate(-10deg) scale(0.54); }   /* centred (275px across, its box starting 8px left of its corner) and under the line's two lines */
+  .tile.cms { padding-bottom: 262px; }
+}
+/* The narrowest phones: the sheet takes the tile's padding too, its addresses smaller, so every one shows whole */
+@media (max-width: 389px) {
+  .rs { width: calc(100% + 20px); margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px; }
+  .rs-row { grid-template-columns: 12px 18px 1fr 1fr; gap: 6px; }
+  .rs-row .mono { font-size: 10px; }   /* style: allow (miniature) */
 }
 @media (max-width: 520px) {
   .jsal-top nav a:not([href="#updates"]) { display: none; }
