@@ -135,6 +135,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .file-missing { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 10px 14px 0; font-size: 13px; line-height: 1.45; color: var(--jsal-bad); }
 .file-missing .count { padding: 1px 7px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
 .file-missing .jsal-btn.link { min-height: 24px; font-size: 13px; }
+/* Nothing left out: said in green, so the end of the job is as plain as what's missing */
+.file-done { display: flex; align-items: center; gap: 6px; margin: 10px 14px 0; font-size: 13px; line-height: 1.45; color: var(--jsal-ok); }
+.file-done[hidden] { display: none; }
 
 .file-body { padding: 10px 14px 14px; }
 /* The header row reads as part of the file until it's pointed at */

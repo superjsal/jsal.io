@@ -33,6 +33,14 @@ paths:
   (`jsal-redirects-sheet`) after each change and on `pagehide`, and comes back on load; Clear forgets it. The other
   columns of a loaded file aren't kept, so the column pickers hide after a restore. `/privacy/` says so; update it if
   what's kept changes. `jsal-redirects-folded` remembers Hide file (desktop only; phones already show one pane).
+- **Row numbers are the spreadsheet's** (`r.n`): the headings are row 1, blank rows keep their place (`at` from
+  `parseDelimited` and the .xlsx reader), a delete leaves a gap, and added rows number on from the last. Notes that name a
+  row ("Duplicate of row 8") use the same numbers, so the visitor can find it in Excel.
+- **Every red row has a way forward:** an edit, a fix button, or, where editing can't help (the platform refuses the
+  address, a duplicate, no new address), "Leave it out" (`leave` on the note). A left-out row stays in the sheet, grey,
+  "Left out by you · Put it back" (`r.skip`, kept with the sheet); Copy sheet drops it, like a deleted row.
+- **The end is said:** with nothing missing the file pane reads "All N redirects are in the file." in green, and an
+  empty Needs you reads "Nothing needs you now. Show all rows".
 - **Hide file** is a word ("Hide ›") after Format, never an icon alone; hidden, the file is a 104px tab with level text
   (Show file, "4 of 10 rows in it", "6 to fix"), the whole tab one button. Sideways text was tried and read badly.
 - **Copy sheet** copies the two columns as edited (deleted and empty rows dropped, the file's own headings first if it
