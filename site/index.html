@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>John Salvador: Technical SEO and Free Web Tools | jsal.io</title>
 <meta name="description" content="John Salvador, a web developer who works in technical SEO. Free browser tools: CMS Picker to choose a website platform, Clean Paste and an Image Resizer.">
 <link rel="canonical" href="https://jsal.io/">
@@ -84,7 +84,8 @@ body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webk
 a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles keep their own rounded corners, and the outline follows them */
-.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)) 56px; }
+/* The column: a 20px gutter each side, wider where a notch or rounded corner cuts in (phones on their side) */
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-right, 0px)) 56px max(20px, env(safe-area-inset-left, 0px)); }
 
 /* Top bar: the shared one (/shell.css), with section links */
 .jsal-top nav { display: flex; gap: 2px; font-size: 14px; }
@@ -121,7 +122,8 @@ p { text-wrap: pretty; }
 @media (pointer: coarse) { .cta a { min-height: 44px; } }
 
 /* Tiles: soft colour, a deep-shade serif name, and real-looking pieces of the tool laid on top. Each tile
-   clips most of its pieces (.clip); one piece per row pokes a little past the edge, never near another tile. */
+   clips most of its pieces (.clip); one piece per row pokes a little past the edge, never near another tile and never
+   into the page's side gutter, so nothing reaches past the column at any width. */
 .tile { position: relative; display: flex; flex-direction: column; border-radius: var(--jsal-radius-tile); padding: 26px; background: var(--bg); color: var(--ink); text-decoration: none; transition: transform var(--jsal-settle) var(--jsal-ease-out); }
 a.tile:hover, .hi:has(.hi-mail:hover) { transform: translateY(-4px) rotate(-0.4deg); }
 .tile .txt { position: relative; z-index: 2; }
@@ -139,12 +141,12 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .wm .g { fill: var(--jsal-fill); }
 
 /* CMS Picker: one card per platform it compares, its logo in that platform's own colours, in a tilted brick whose
-   corner cards (Shopify, Duda) poke a little past the tile, the row's breakout; it keeps its distance from the tile's
-   right edge, so they poke out however wide the tile is */
+   top corner card (Shopify) pokes a little past the tile's top, the row's breakout; it keeps its distance from the
+   tile's right edge, which is the column's, so the tilted brick never reaches the gutter however wide the tile is */
 .cms { --bg: var(--t-cms); --ink: var(--t-cms-ink); justify-content: flex-end; }
 .cms .txt { max-width: 290px; }
-.cms .wm { width: 420px; height: 420px; left: calc(100% - 747px); top: -80px; rotate: -10deg; }   /* a podium tilted like the cards, beside and under them, its gem to their left */
-.pcs { left: calc(100% - 456px); top: 62px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
+.cms .wm { width: 420px; height: 420px; left: calc(100% - 772px); top: -80px; rotate: -10deg; }   /* a podium tilted like the cards, beside and under them, its gem to their left */
+.pcs { left: calc(100% - 481px); top: 62px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
 .pcs > span { display: flex; gap: 12px; }
 .pcs > span:nth-child(even) { margin-left: 56px; }
 .pc { display: grid; place-items: center; width: 100px; height: 66px; border-radius: var(--jsal-radius-xl); background: var(--b); color: var(--c); box-shadow: var(--pc-shadow); }
@@ -222,20 +224,18 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .draft .body { padding-top: 8px; }
 .draft .body i { overflow: hidden; font-style: normal; color: var(--jsal-ink-2); white-space: nowrap; text-overflow: ellipsis; }
 
-/* Updates: the newest change in each of the three most recently changed parts, as a stack of notes, newest on top,
-   each one whole, and a faint stack of notes as its watermark */
+/* Updates: the newest change in each of the three most recently changed parts, as a plain list, newest first (the
+   rows aren't links, so they don't look like cards), and a faint stack of notes as its watermark */
 .now { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
 .now .txt { max-width: 260px; }
 .now .txt a { color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
 .now .wm { width: 260px; height: 260px; left: -18px; top: -71px; }   /* a stack of notes, the gem on the newest, over the words */
-.upd { position: absolute; right: 26px; top: 22px; width: min(404px, calc(100% - 340px)); display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.upd li { position: relative; padding: 10px 14px 11px 54px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); }
-.upd li:nth-child(1) { z-index: 3; rotate: -1.5deg; }
-.upd li:nth-child(2) { z-index: 2; rotate: 1deg; margin: 0 -14px 0 14px; }
-.upd li:nth-child(3) { z-index: 1; rotate: -0.5deg; margin: 0 6px 0 -6px; }
+.upd { position: absolute; right: 26px; top: 16px; width: min(404px, calc(100% - 340px)); display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.upd li { position: relative; padding: 10px 0 11px 42px; border-top: 1px solid var(--jsal-line); }
+.upd li:first-child { border-top: 0; }
 .upd-name { display: block; padding-right: 48px; font-size: 13px; font-weight: 700; }
-.upd-ico { position: absolute; left: 14px; top: 50%; translate: 0 -50%; border-radius: var(--jsal-radius); }
-.upd time { position: absolute; right: 14px; top: 11px; color: var(--jsal-muted); font-size: 12px; }
+.upd-ico { position: absolute; left: 0; top: 50%; translate: 0 -50%; border-radius: var(--jsal-radius); }
+.upd time { position: absolute; right: 0; top: 11px; color: var(--jsal-muted); font-size: 12px; }
 .upd-line { display: block; margin-top: 1px; font: 600 17px/1.3 "Lora", Georgia, serif; }
 
 footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
@@ -263,6 +263,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .ir, .cp, .hi, .now { min-height: 272px; }
   .cp { grid-column: 1 / 4; grid-row: auto; }
   .hi { grid-column: 4 / 7; grid-row: auto; }
+  .sheet { left: 26px; }   /* the column's edge: in line with the words instead of poking into the gutter */
+  .draft { right: 0; }
 }
 /* Narrower desktops: the CMS Picker's tile is wider than its cards need, so its podium moves out from under them into
    the open space, centred above the words */
@@ -274,19 +276,19 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @media (min-width: 600px) and (max-width: 860px) {
   .cms { min-height: 300px; }
   .cms .txt { max-width: 250px; }
-  .pcs { left: auto; right: 344px; top: 42px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
+  .pcs { left: auto; right: 357px; top: 42px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
   .cms .wm { width: 260px; height: 260px; left: -20px; top: -50px; rotate: none; }   /* upright, over the name */
 }
 /* The narrowest of those: a smaller brick inside the tile, narrower words, and room for Say hi's three lines */
 @media (min-width: 600px) and (max-width: 699px) {
   .cms .txt { max-width: 230px; }
-  .pcs { right: 282px; top: 32px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
+  .pcs { right: 290px; top: 32px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
   .cp, .hi { min-height: 304px; }
   .cp .wm { top: 90px; }   /* the words take a third line here, so the sheet and watermark start lower */
   .sheet { top: 160px; }
 }
-/* Too narrow for the output list beside the editor, or for the notes beside the words: the list goes and the editor
-   grows into its room, and the notes stack across the tile above the words */
+/* Too narrow for the output list beside the editor, or for the updates beside the words: the list goes and the editor
+   grows into its room, and the updates run across the tile under the words */
 @media (min-width: 600px) and (max-width: 759px) {
   .ed { left: 290px; right: 26px; width: auto; min-width: 250px; }
   .ed-photo { height: 160px; }
@@ -297,11 +299,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .now .wm { display: none; }   /* the notes fill the top of the tile here */
   .now { height: auto; }
   .now .clip { position: static; overflow: visible; }
-  .upd { position: static; width: auto; margin: 0 0 22px; }
-  .upd li:nth-child(n) { margin: 0; }
-  .upd li:nth-child(1) { rotate: -1deg; }
-  .upd li:nth-child(2) { rotate: 0.6deg; }
-  .upd li:nth-child(3) { rotate: -0.4deg; }
+  .upd { position: static; width: auto; margin: 10px 0 -10px; }   /* under the words; the last row's padding is the tile's */
 }
 /* One column (phones upright): each tile only as tall as its piece and words, each piece poking a little out of its
    tile as on desktop; no watermarks */
@@ -311,24 +309,24 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .cms, .ir, .cp, .hi { min-height: 0; }
   .cms .txt { margin-top: 186px; }   /* room for the brick above the words */
   .pcs { left: 14px; top: 31px; --rest: rotate(-10deg) scale(0.6); --hover: var(--rest); }   /* its top cards poke out, as on desktop */
-  /* the editor and the sheet follow their words; the editor at the tile's full width pokes out of its bottom (the
-     row's breakout), and a negative margin takes back the room the sheet's scaling frees */
+  /* the editor and the sheet follow their words: the editor at the tile's full width, inside it, and the sheet
+     centred, a negative margin taking back the room its scaling frees */
   .ir .clip { position: static; order: 1; overflow: visible; }
-  .ed { position: relative; display: block; left: auto; top: auto; width: auto; margin: 18px 0 -32px; --rest: none; --hover: translateY(-6px); }
+  .ed { position: relative; display: block; left: auto; top: auto; width: auto; margin: 18px 0 0; --rest: none; --hover: translateY(-6px); }
   .ed-photo { height: 170px; }
   .crop { height: 144px; }
-  .sheet { position: relative; left: auto; top: auto; margin: 26px auto -12px -32px; width: min(258px, 100%); transform-origin: top left; --rest: rotate(-2deg) scale(0.9); --hover: rotate(-2deg) scale(0.9) translateY(-6px); }
+  .sheet { position: relative; left: auto; top: auto; margin: 26px auto -12px; width: min(258px, 100%); transform-origin: top center; --rest: rotate(-2deg) scale(0.9); --hover: rotate(-2deg) scale(0.9) translateY(-6px); }
   .copied { left: auto; right: -12px; top: -14px; }
   .hi .txt { margin-top: 136px; }
-  .draft { left: auto; width: min(340px, calc(100% - 52px)); --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
+  .draft { left: 20px; right: 20px; width: auto; max-width: 340px; margin: 0 auto; transform-origin: top center; --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
   .intro p { font-size: 17px; }
 }
 #updates, #hi-h { scroll-margin-top: 16px; }
 /* Phones: a smaller title and tiles, one spacing step for the grid, and only the Updates link kept in the top bar
    (Email is in Say hi) */
 /* The narrowest phones: a smaller brick, so it fits across the tile and the page never scrolls sideways */
-@media (max-width: 339px) {
-  .pcs { --rest: rotate(-10deg) scale(0.54); }
+@media (max-width: 374px) {
+  .pcs { left: calc(50% - 130px); --rest: rotate(-10deg) scale(0.54); }   /* centred: the tilted brick is 275px across here, its box starting 8px left of its corner */
 }
 @media (max-width: 520px) {
   .jsal-top nav a:not([href="#updates"]) { display: none; }
@@ -336,7 +334,6 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .roles span + span::before { margin: 0 8px; }
   .intro h1 { font-size: 40px; }
   .tile { padding: 20px; }
-  .draft { width: calc(100% - 40px); }
   footer { margin-top: 32px; }
 }
 /* Pointing at a tile (or focusing it) plays what its tool does three times; on touch screens once, the
@@ -467,6 +464,10 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 
     <!-- Site updates: the newest change in each of the three most recently changed parts of the site -->
     <section id="updates" class="tile now" aria-labelledby="updates-h">
+      <div class="txt">
+        <h2 id="updates-h">Updates</h2>
+        <p>What changed on the site, newest first. <a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>
+      </div>
       <div class="clip">
       <svg class="wm" viewBox="0 0 32 32" width="260" height="260" aria-hidden="true"><path class="s" d="M10.5 11V9.5a2.5 2.5 0 0 1 2.5-2.5h11.5a2.5 2.5 0 0 1 2.5 2.5V21a2.5 2.5 0 0 1-2.5 2.5h-1.5M8 11h12.5a2.5 2.5 0 0 1 2.5 2.5v10.5a2.5 2.5 0 0 1-2.5 2.5H8a2.5 2.5 0 0 1-2.5-2.5V13.5A2.5 2.5 0 0 1 8 11zM9.5 18h10M9.5 22h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M10.6 12.7l1.8 1.8-1.8 1.8-1.8-1.8z"/></svg>
       <!-- updates:start (the latest changes, written from the changelog; never edited by hand) -->
@@ -476,10 +477,6 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
         <li data-sec="off-the-clock"><span class="upd-name"><img class="upd-ico" src="/img/icons/off-the-clock.svg" alt="" width="28" height="28">Off the clock</span><time class="mono" datetime="2026-11-01">Nov 1</time><span class="upd-line">A WoW bag, real icons and trophies</span></li>
       </ul>
       <!-- updates:end -->
-      </div>
-      <div class="txt">
-        <h2 id="updates-h">Updates</h2>
-        <p>What changed on the site, newest first. <a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>
       </div>
     </section>
   </main>

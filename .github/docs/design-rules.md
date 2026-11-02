@@ -150,14 +150,18 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
     Picker a tilted brick of one card per platform, each in that platform's own colours, logos only; the Image
     Resizer its crop editor (the box spans the photo at the output's shape and slides one way, as the tool's
     does) and output list; Clean Paste its clean HTML with a "Copied" status; Say hi an email draft; Updates the
-    newest change in each of the three most recently changed parts as a stack of notes, written from the changelog
-    by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
+    newest change in each of the three most recently changed parts as a plain list under its heading (rows with a
+    rule between them, never cards, as they aren't links; nothing tilted, as people read them), written from the
+    changelog by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
   - **Each tool tile has its app icon as a watermark**, drawn large in the tile's ink at 14% with the gem in solid
     gold, behind the tile's picture and never under its words (the CMS Picker's podium tilted like its cards, beside
     and under them, and upright over its name on phones on their side); set per breakpoint, and hidden on upright phones. Updates has one too, a faint stack of notes with the gem on the
     newest, over its words; Say hi stays plain.
   - **Breakouts:** a piece may poke a little past its tile (about 14px at most), never within 16px of another
-    tile, and two breakouts never crowd each other. Mix straight and tilted pieces.
+    tile, never into the page's side gutter (nothing reaches past the column at any width, and the column's gutter
+    widens for a notch: `viewport-fit=cover` with the safe-area insets), and two breakouts never crowd each other.
+    So a tile on the column's edge pokes up, down or towards its neighbour, and a piece is either inside its tile or
+    clearly out of it, never sitting across its edge. Mix straight and tilted pieces.
   - **The pictures are decoration** (`aria-hidden`): each tile's link reads as its name and line, and Say hi's
     as "Say hi by email". Tiles have a least height, not a fixed one, and the words keep room clear of the
     pictures, so enlarged or spaced-out text grows the tile instead of sliding under a picture (WCAG 1.4.12).
