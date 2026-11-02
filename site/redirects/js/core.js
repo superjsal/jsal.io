@@ -169,7 +169,7 @@ export function analyse(rows, fmt, opts) {
     const inFile = (cell, value, why) => {
       for (const w of why.filter((w) => w.key)) it.routine.push(cell + ":" + w.key);
       const said = why.filter((w) => !w.key).map((w) => w.text);
-      if (said.length) fix(cell, `In the file: <code>${esc(value)}</code> (${said.join("; ")})`);
+      if (said.length) fix(cell, `In the download: <code>${esc(value)}</code> (${said.join("; ")})`);
       else if (why.length && it.state === "ok") it.state = "fixed";
     };
 
@@ -209,7 +209,7 @@ export function analyse(rows, fmt, opts) {
       if (domainOnly) return out("n", "Only the domain changes: left out", "domain-only");
       return out("n", oc.path === nc.path ? "Points to itself: left out" : "Same page, only a / or capital differs: left out");
     }
-    live.push({ id: r.id, it, from: oc.path, to, own: !external, internal: !external && !(domainOnly && opts.newAddr === "url"), fix, bad, out });
+    live.push({ id: r.id, raw: r.new, it, from: oc.path, to, own: !external, internal: !external && !(domainOnly && opts.newAddr === "url"), fix, bad, out });
   });
 
   // The same old address on more than one row: to the same page, the repeats are dropped; to different pages, each
@@ -235,24 +235,38 @@ export function analyse(rows, fmt, opts) {
     for (const l of g) l.bad("o", `Duplicate of ${rowList(g.filter((x) => x !== l))}${same}. Leave ${g.length > 2 ? "all but one" : "one"} out.`, [], "clash", "Duplicates", "Leave this one out");
   }
 
-  // Chains (A → B, then B → C) are written as A → C; a chain that comes back round is a loop
+  // Chains (A → B, then B → C) go in the file as typed, so the visitor stays in charge of their redirects; both rows
+  // are marked to check, and a button sends A straight to C. A chain that comes back round is a loop.
   const map = new Map(kept.map((l) => [key(l.from), l]));
+  const ends = new Map(), into = new Map();   // a new address as typed → the end of its chain; a row → rows leading in
+  const straight = [["Skip the extra step", (v) => ends.get(v) ?? v]];   // the note names where it ends, so the button stays short
   const ready = [];
   for (const l of kept) {
-    let to = l.to, internal = l.internal, own = l.own, hops = [];
+    let to = l.to, internal = l.internal, hops = [];
     const seen = new Set([key(l.from)]);
     let loop = false;
     while (internal) {
       const next = map.get(key(to.split("#")[0]));
       if (!next) break;
       if (seen.has(key(next.from))) { loop = true; break; }
-      seen.add(key(next.from)); hops.push(next); to = next.to; internal = next.internal; own = next.own;
+      seen.add(key(next.from)); hops.push(next); to = next.to; internal = next.internal;
       if (hops.length > 50) { loop = true; break; }
     }
     if (loop) { l.bad("n", `Loop: rows ${[l, ...hops].map((h) => h.it.n).join(" → ")} → back here`, [], "loop", "A loop"); continue; }
-    if (hops.length) l.fix("n", `In the file: <code>${esc(to)}</code> (skips the chain through ${hops.map((h) => `row ${h.it.n}`).join(" and ")})`);
-    if (!own || opts.newAddr !== "url") ready.push({ id: l.id, from: l.from, to, code: opts.code || "301" });
-    else ready.push({ id: l.id, from: l.from, to: site ? site.replace(/\/$/, "") + to : to, code: opts.code || "301" });
+    if (hops.length) {
+      ends.set(l.raw, to);
+      (into.get(hops[0]) || into.set(hops[0], []).get(hops[0])).push(l);
+      const by = hops.length > 1 ? `Rows ${hops.slice(0, -1).map((h) => h.it.n).join(", ")} and ${hops[hops.length - 1].it.n} redirect` : `Row ${hops[0].it.n} redirects`;
+      l.it.notes.push({ cell: "n", kind: "warn", fixes: straight, group: "n:chain", title: "point at an address that’s redirected again",
+        text: `${by} <code>${esc(l.to)}</code> on to <code>${esc(to)}</code>, so visitors are redirected ${hops.length > 1 ? hops.length + 1 + " times" : "twice"}` });
+    }
+    if (!l.own || opts.newAddr !== "url") ready.push({ id: l.id, from: l.from, to: l.to, code: opts.code || "301" });
+    else ready.push({ id: l.id, from: l.from, to: site ? site.replace(/\/$/, "") + l.to : l.to, code: opts.code || "301" });
+  }
+  // The row a chain runs through says who leads into it
+  for (const [h, ls] of into) {
+    const n = ls.map((x) => x.it.n);
+    h.it.notes.push({ cell: "o", kind: "warn", text: n.length > 1 ? `Rows ${n.slice(0, -1).join(", ")} and ${n[n.length - 1]} point here` : `Row ${n[0]} points here` });
   }
 
   // The platform's own limits

@@ -39,6 +39,11 @@ paths:
 - **Every red row has a way forward:** an edit, a fix button, or, where editing can't help (the platform refuses the
   address, a duplicate, no new address), "Leave it out" (`leave` on the note). A left-out row stays in the sheet, grey,
   "Left out by you · Put it back" (`r.skip`, kept with the sheet); Copy sheet drops it, like a deleted row.
+- **Chains are the visitor's call** (John, 2 Nov): A → B plus B → C go in the file as typed, never shortened silently.
+  Both rows are terracotta ("Row 9 redirects /x again, so visitors are redirected twice"; "Row 8 points here"), with a
+  "Skip the extra step" button on the first and a fix-all line above the sheet for two or more. The point is that the
+  team feels in control of their redirects.
+- **Blue notes say "In the download:"**, never "In the file", which read as ambiguous.
 - **The end is said:** with nothing missing the file pane reads "All N redirects are in the file." in green, and an
   empty Needs you reads "Nothing needs you now. Show all rows".
 - **Hide file** is a word ("Hide ›") after Format, never an icon alone; hidden, the file is a 104px tab with level text
