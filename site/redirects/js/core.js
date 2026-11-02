@@ -84,6 +84,29 @@ function stripTracking(path) {
   return { path: path.slice(0, q) + (kept.length ? "?" + kept.join("&") : ""), removed };
 }
 
+// Preview and staging addresses: a new site's mapping is often made on its preview before launch, and a redirect to
+// the preview sends visitors there once the site is live. "preview" is a platform's preview or a local computer (red);
+// "maybe" could be a live site but rarely is (terracotta); "staging" is a staging-style subdomain (terracotta).
+const PREVIEW_HOSTS = /(^|\.)(myshopify\.com|webflow\.io|wixsite\.com|squarespace\.com|wpengine\.com|wpenginepowered\.com|kinsta\.cloud|hs-sites\.com|hubspotpagebuilder\.com|multiscreensite\.com|dudaone\.com|ngrok\.io|ngrok-free\.app)$|^(localhost|127\.0\.0\.1)$|\.(local|test|localhost)$/i;
+const HOSTING_HOSTS = /(^|\.)(netlify\.app|vercel\.app|pages\.dev|github\.io)$/i;
+const STAGING_LABEL = /^(staging|stage|stg|dev|test|preview|new|beta|uat|qa)[-\d]*$|^staging-/i;
+const PREVIEW_QUERY = /[?&](preview_theme_id|preview_id|preview|preview_nonce)=/i;
+export function previewKind(host) {
+  const h = bare(host).replace(/:\d+$/, "");
+  if (PREVIEW_HOSTS.test(h)) return "preview";
+  if (HOSTING_HOSTS.test(h)) return /--|-git-|^deploy-preview/i.test(h) ? "preview" : "maybe";
+  return STAGING_LABEL.test(h.split(".")[0]) && h.split(".").length > 2 ? "staging" : "";
+}
+// The address without its preview domain; a Wix preview also carries the site's name as the first folder
+function previewPath(host, path) {
+  return /(^|\.)wixsite\.com$/i.test(host) ? path.replace(/^\/[^/?#]+/, "") || "/" : path;
+}
+const usePath = (s) => {
+  const a = readAddress(s);
+  return a.kind === "ok" && a.host ? previewPath(a.host, a.path) + a.fragment : s;
+};
+const dropPreview = (s) => s.replace(new RegExp(PREVIEW_QUERY.source + "[^&#]*", "gi"), (m) => m[0] === "?" ? "?" : "").replace(/\?&/, "?").replace(/\?(?=#|$)/, "");
+
 // The site's own domains: every domain in the old column, and the new column's main domain when at least two rows
 // and at least half of its full URLs use it (one link to another site never counts as yours)
 export function siteHosts(rows) {
@@ -96,7 +119,8 @@ export function siteHosts(rows) {
   }
   const top = [...counts].sort((a, b) => b[1] - a[1])[0];
   if (top && top[1] >= 2 && top[1] * 2 >= full) hosts.add(top[0]);
-  const main = top && hosts.has(top[0]) ? top[0] : [...hosts][0];
+  const live = (h) => h && !previewKind(h);   // full URLs are never written on a preview domain
+  const main = top && hosts.has(top[0]) && live(top[0]) ? top[0] : [...hosts].find(live);
   return { hosts, newHost: main ? spelled.get(main) : "" };
 }
 
@@ -156,10 +180,20 @@ export function analyse(rows, fmt, opts) {
     const nc = characters(n.path, "new address", fmt.keepLetters);
     for (const p of nc.problems) bad("n", p.text, p.fixes, p.group, p.title);
     const external = n.host && !hosts.has(bare(n.host));
-    const newPath = nc.path + n.fragment;
+    const pv = n.host ? previewKind(n.host) : "";
+    const newPath = (pv && !external ? previewPath(n.host, nc.path) : nc.path) + n.fragment;
     const to = external ? `https://${n.host}${newPath}` : newPath;
-    inFile("n", to, [n.host && !external && opts.newAddr === "path" && { key: "domain" }, n.added && { key: "slash" },
+    inFile("n", to, [n.host && !external && opts.newAddr === "path" && { key: pv ? "preview" : "domain" }, n.added && { key: "slash" },
       nc.encodedNote && { text: nc.encodedNote }].filter(Boolean));
+    const host = esc(n.host.replace(/^www\./i, ""));
+    if (pv && external) {
+      const fixes = [["Use the path", usePath]];
+      if (pv === "preview") bad("n", `This points at <code>${host}</code>, a preview address, not the live site.`, fixes, "preview", "New addresses pointing at a preview site");
+      else notes.push({ cell: "n", kind: "warn", fixes, text: pv === "maybe"
+        ? `<code>${host}</code> is usually a preview or hosting address. Check it’s the live site.`
+        : `<code>${host}</code> looks like a staging site. Check it’s the live address.` });
+    }
+    if (PREVIEW_QUERY.test(n.path)) bad("n", "This is a preview link: the live page doesn’t have the ?preview part.", [["Remove the preview part", dropPreview]], "preview-link", "Preview links");
     if (it.state === "bad") return;
 
     // With full URLs, old.com/page to new.com/page is a real redirect; as paths it would point to itself

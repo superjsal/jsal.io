@@ -1,5 +1,5 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=ec439c34";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=3973fd80";
 import { FORMATS, byId } from "./formats.js?v=1a0bf951";
 
 const $ = (id) => document.getElementById(id);
@@ -340,6 +340,7 @@ function overview(live) {
   const d = result.done, said = [];
   if (d["o:domain"]) said.push(`the domain from ${plural(d["o:domain"], "old address", "old addresses")} (${esc(fmt.name)} takes paths)`);
   if (d["n:domain"]) said.push(`your own domain from ${plural(d["n:domain"], "new address", "new addresses")}`);
+  if (d["n:preview"]) said.push(`the preview domain from ${plural(d["n:preview"], "new address", "new addresses")}`);
   if (d["o:tracking"]) said.push(`tracking tags from ${d["o:tracking"]}`);
   if (d["o:hash"]) said.push(`the # part from ${d["o:hash"]}`);
   const slash = (d["o:slash"] || 0) + (d["n:slash"] || 0);
