@@ -17,7 +17,8 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
 const CHECKS = [
   // Reports shorten long addresses for display (…/how-to-choose-a…), and copying the text copies the shortened one
   { re: /\u2026|\.{3,}/g, say: (w) => `The ${w} was cut short, with … where a report left part of it out. Copy the whole address from its source`, fixes: [] },
-  { re: /[  ]/g, say: (w) => `A space in the ${w}`, fixes: [["Encode it", (s) => s.replace(/[  ]/g, "%20")], ["Use a hyphen", (s) => s.replace(/[  ]+/g, "-")]] },
+  // No fix offered: only the original says whether the space was real (sent as %20) or crept in when copying
+  { re: /[  ]/g, say: (w) => `A space in the ${w}`, fixes: [] },
   { re: /[–—]/g, say: () => "A long dash, often from Word", fixes: [["Use - instead", (s) => s.replace(/[–—]/g, "-")]] },
   { re: /[‘’“”]/g, say: () => "Curly quotes, often from Word", fixes: [["Remove them", (s) => s.replace(/[‘’“”]/g, "")]] },
   { re: /[<>"{}|\\^`]/g, say: () => "Not allowed in an address", fixes: [] },
