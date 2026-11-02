@@ -9,7 +9,7 @@ const store = { get: (k) => { try { return localStorage.getItem(k); } catch (e) 
 
 let table = null;        // what was loaded: { raw, name, pick }
 let rows = [];           // { id, old, new, old0, new0, added, deleted }
-let nextId = 1, filter = "all", part = 0, result = null, cleared = null, used = false;
+let nextId = 1, filter = "all", part = 0, result = null, cleared = null, used = false, missing = 0;
 // Rows worked on since a filter was picked stay on screen, as in a spreadsheet, so a row being fixed under
 // "Needs you" doesn't vanish mid-word; picking a filter again applies it afresh
 const stay = new Set();
@@ -68,7 +68,7 @@ function show() {
   app.classList.add("has-content");
   tbody.innerHTML = "";
   const all = document.createDocumentFragment();
-  rows.forEach((r) => all.append(rowEl(r)));
+  rows.forEach((r) => { if (!r.deleted) all.append(rowEl(r)); });
   tbody.append(all);
   if (!used) { used = true; window.jsalUsed?.(); }
   place();
@@ -251,8 +251,53 @@ $("undoAll").addEventListener("click", () => {
   for (const r of rows) { r.old = r.old0; r.new = r.new0; r.deleted = false; }
   show();
 });
+// Copy sheet: the two columns as they are now, tab-separated, to paste back over the source spreadsheet, so its
+// fixes aren't lost the next time the sheet is exported
+$("copySheet").addEventListener("click", async (e) => {
+  const q = (s) => (/[\t\n"]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
+  const { pick } = table, names = pick.header && [pick.names[pick.o] || "", pick.names[pick.n] || ""];
+  const lines = rows.filter((r) => !r.deleted && (tidy(r.old) || tidy(r.new))).map((r) => [r.old, r.new]);
+  const text = (names ? [names, ...lines] : lines).map((l) => l.map(q).join("\t")).join("\n") + "\n";
+  const err = $("sheetError"), btn = e.currentTarget;   // read before the await, after which it's gone
+  err.hidden = true;
+  try { await navigator.clipboard.writeText(text); window.jsalDone?.(btn, "Copied"); }
+  catch (x) { err.textContent = "This browser didn’t allow copying. Try again, or allow clipboard access for this site."; err.hidden = false; }
+});
+
+// The sheet is kept in this browser as it's worked on, and comes back after a reload; Clear forgets it
+const KEEP = "jsal-redirects-sheet";
+let keepTimer = 0;
+function save() {
+  clearTimeout(keepTimer); keepTimer = 0;
+  if (!table) return;
+  let ok = false;
+  try {
+    localStorage.setItem(KEEP, JSON.stringify({ name: table.name, pick: table.pick, platform: fmt.id, opts,
+      // A row's address as loaded is kept only where it was edited, which halves a big sheet
+      rows: rows.map((r) => [r.old, r.new, r.old0 === r.old ? null : r.old0, r.new0 === r.new ? null : r.new0, r.added ? 1 : 0, r.deleted ? 1 : 0]) }));
+    ok = true;
+  } catch (e) {}   // storage off or full: the sheet still works, it just isn't kept
+  $("kept").hidden = !ok;
+}
+function keep() { clearTimeout(keepTimer); keepTimer = setTimeout(save, 300); }
+addEventListener("pagehide", () => { if (keepTimer) save(); });
+function forget() { clearTimeout(keepTimer); keepTimer = 0; try { localStorage.removeItem(KEEP); } catch (e) {} $("kept").hidden = true; }
+function restore() {
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem(KEEP)); } catch (e) {}
+  if (!d?.rows?.length || !d.pick) return;
+  table = { raw: [], name: d.name || "", pick: d.pick };
+  rows = d.rows.map(([o, n, o0, n0, a, del]) => ({ id: nextId++, old: o, new: n, old0: o0 ?? o, new0: n0 ?? n, added: !!a, deleted: !!del }));
+  if (d.platform === fmt.id && d.opts) opts = { ...opts, ...d.opts };
+  $("cols").hidden = true;   // the other columns weren't kept, so there's nothing to switch to
+  used = true;               // coming back to a sheet isn't a new use of the tool
+  show();
+  $("kept").hidden = false;
+}
+
 $("clearBtn").addEventListener("click", () => {
   cleared = { table, rows };
+  forget();
   table = null; rows = []; tbody.innerHTML = "";
   app.classList.remove("has-content");
   $("undoClear").hidden = $("undoSep").hidden = false;
@@ -320,12 +365,14 @@ function update() {
     }
   });
   for (const b of $("filter").children) b.querySelector("span").textContent = count[b.dataset.filter];
+  missing = count.bad;
   $("filterEmpty").hidden = live.some((r) => !r.el.hidden);
   overview(live);
   $("summary").innerHTML = `<b>${count.ready} ready</b>` + (count.check ? ` · ${count.check} to check` : "") + (count.bad ? ` · ${count.bad} need you` : "") + (count.out ? ` · ${count.out} left out` : "");
   $("sheetMeta").textContent = [table.name, `${count.all} row${count.all === 1 ? "" : "s"}`, table.pick.header && "headings skipped"].filter(Boolean).join(" · ");
   $("undoAll").hidden = !rows.some((r) => r.added || r.deleted || r.old !== r.old0 || r.new !== r.new0);
   renderFile();
+  keep();
 }
 
 // Above the sheet: the routine changes said once rather than on every row, and any problem on two or more rows
@@ -450,14 +497,27 @@ function renderFile() {
   // Squarespace's lines are pasted, so Copy is the main action there
   $("copyBtn").classList.toggle("primary", !!fmt.paste);
   $("downloadBtn").classList.toggle("primary", !fmt.paste);
-  // Both buttons name what they take: the file on the right, or the part of it on show
-  $("downloadBtn").textContent = p.length > 1 ? `Download part ${part + 1}` : "Download file";
-  $("copyBtn").textContent = p.length > 1 ? `Copy part ${part + 1}` : "Copy file";
-  $("copyBtn").disabled = $("downloadBtn").disabled = !result.ready.length;
+  // Both buttons name what they take: the file on the right, the part of it on show, or how many of the rows it holds
+  // while some still need fixing, so a partial file is never mistaken for the whole sheet
+  const inFile = result.ready.length, of = missing && inFile ? ` ${inFile} of ${inFile + missing}` : "";
+  $("downloadBtn").textContent = p.length > 1 ? `Download part ${part + 1}` : of ? "Download" + of : "Download file";
+  $("copyBtn").textContent = p.length > 1 ? `Copy part ${part + 1}` : of ? "Copy" + of : "Copy file";
+  $("copyBtn").disabled = $("downloadBtn").disabled = !inFile;
+  const gone = missing ? `<span class="count">${plural(missing, "row", "rows")}</span> ${missing === 1 ? "isn’t" : "aren’t"} in this file until ${missing === 1 ? "it’s" : "they’re"} fixed. <button type="button" class="jsal-btn link" data-needs-you>Show ${missing === 1 ? "it" : "them"}</button>` : "";
+  if ($("fileMissing").dataset.h !== gone) { $("fileMissing").innerHTML = gone; $("fileMissing").dataset.h = gone; }
+  $("fileMissing").hidden = !missing;
 }
 
 // ── The file pane's controls ───────────────────────────────────────────────
 
+// "Show them": the sheet filtered to the rows that need you, with the first of them ready to edit
+$("fileMissing").addEventListener("click", (e) => {
+  if (!e.target.closest("[data-needs-you]")) return;
+  $("filter").querySelector('[data-filter="bad"]').click();
+  if (work.dataset.view === "file") $("viewSheet").click();
+  const tr = [...tbody.rows].find((x) => !x.hidden);
+  (tr?.querySelector('.cell[aria-invalid="true"]') || tr?.querySelector(".cell"))?.focus();
+});
 $("parts").addEventListener("click", (e) => { const b = e.target.closest("[data-part]"); if (b) { part = +b.dataset.part; renderFile(); } });
 $("fmtBtn").addEventListener("click", () => {
   const open = $("fmt").hidden;
@@ -497,7 +557,8 @@ function output(action) {
   return { text, name: fileName(part, p.length) };
 }
 $("copyBtn").addEventListener("click", async (e) => {
-  try { await navigator.clipboard.writeText(output("copy").text); window.jsalDone?.(e.currentTarget, "Copied"); }
+  const btn = e.currentTarget;   // read before the await, after which it's gone
+  try { await navigator.clipboard.writeText(output("copy").text); window.jsalDone?.(btn, "Copied"); }
   catch (err) { $("fileText").focus(); }
 });
 $("downloadBtn").addEventListener("click", (e) => {
@@ -521,6 +582,7 @@ function place() { work.style.setProperty("--work-top", `${Math.round(work.getBo
 addEventListener("resize", () => { if (table) place(); });
 
 showWhere();
+restore();
 
 const EXAMPLE = `Old URL\tNew URL
 https://www.oldsite.com/about-us/\thttps://www.newsite.com/pages/about

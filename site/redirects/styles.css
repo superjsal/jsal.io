@@ -56,6 +56,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .pane-body { flex: 1; min-height: 0; overflow: auto; }
 .pane-foot { display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 8px 14px; border-top: 1px solid var(--jsal-line); font-size: 14px; }
 .pane-foot #clearBtn { margin-left: auto; }
+.pane-foot .kept { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; font-size: 13px; color: var(--jsal-muted); }
+.pane-foot .kept:not([hidden]) + #clearBtn { margin-left: 0; }
+.sheet-pane > .jsal-error { margin: 0 14px 10px; }
 .views { display: none; }
 .filter > button span { font-weight: 500; font-variant-numeric: tabular-nums; }
 
@@ -128,6 +131,10 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .file-box { margin: 10px 14px 0; padding: 8px 12px; border-radius: var(--jsal-radius); font-size: 14px; line-height: 1.45; color: var(--jsal-ink); }
 .file-box.warn { background: var(--jsal-warn-soft); }
 .file-box.info { background: var(--jsal-info-soft); }
+/* The rows the file leaves out until they're fixed, in the red of the rows themselves */
+.file-missing { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 10px 14px 0; font-size: 13px; line-height: 1.45; color: var(--jsal-bad); }
+.file-missing .count { padding: 1px 7px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
+.file-missing .jsal-btn.link { min-height: 24px; font-size: 13px; }
 
 .file-body { padding: 10px 14px 14px; }
 /* The header row reads as part of the file until it's pointed at */
