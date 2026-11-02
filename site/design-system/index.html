@@ -177,7 +177,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
 .chip-link { padding: 3px 6px; border: 0; background: none; color: var(--jsal-info); font: 13px var(--jsal-font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
-/* A tick that goes with a choice: a checkbox row, selected like a pressed chip (cms-picker .qz-tick) */
+/* A checkbox row, selected like a pressed chip (cms-picker .qz-tick); plain, with no box, when it goes with a choice */
 .tick { display: flex; align-items: center; gap: 12px; width: max-content; max-width: 100%; padding: 8px 14px 8px 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick); }
 .tick:hover { border-color: var(--jsal-hover-line); }
 .tick:has(:checked) { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
@@ -189,6 +189,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .checks .tick { width: auto; }
 .tick b { display: block; font-size: 15px; font-weight: 600; }
 .tick small { display: block; color: var(--jsal-muted); font-size: 13px; }
+.tick.plain, .tick.plain:hover, .tick.plain:has(:checked) { align-items: flex-start; padding: 2px 0; border: 0; background: none; color: var(--jsal-ink); box-shadow: none; }
+.tick.plain input { margin-top: 2px; }
+.tick.plain:has(:focus-visible) { border-radius: var(--jsal-radius-sm); box-shadow: var(--jsal-focus-ring); }
 /* An index of links: plain links in a row, never pills (the home page footer's .fg) */
 .fgdemo { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 14px; font-size: 13px; }
 .fgdemo span { margin-right: 4px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-muted); }
@@ -582,11 +585,11 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </article>
 
       <article class="ref" id="c-tick">
-        <div class="ref-h"><h3>Tick, and a question with several answers</h3><code>.qz-tick</code><code>.qz-checks</code><span class="file">cms-picker/styles.css</span></div>
-        <div class="ref-row"><span>Tick</span><div><label class="tick"><input type="checkbox" checked><span><b>We already use HubSpot</b><small>For our CRM, email or marketing</small></span></label><label class="tick"><input type="checkbox"><span><b>We already use HubSpot</b><small>For our CRM, email or marketing</small></span></label></div></div>
+        <div class="ref-h"><h3>Tick, and a question with several answers</h3><code>.qz-tick</code><code>.qz-plain</code><code>.qz-checks</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-row"><span>Tick</span><div><label class="tick plain"><input type="checkbox" checked><span><b>We already pay for HubSpot</b><small>Marketing Hub, Sales Hub or another paid plan</small></span></label><label class="tick plain"><input type="checkbox"><span><b>We already pay for HubSpot</b><small>Marketing Hub, Sales Hub or another paid plan</small></span></label></div></div>
         <div class="ref-row"><span>Several</span><div class="checks"><label class="tick"><input type="checkbox" checked><span><b>Bookings or appointments</b><small>Clients book a time online</small></span></label><label class="tick"><input type="checkbox"><span><b>A blog or news section</b><small>Posts alongside the main pages</small></span></label><label class="tick"><input type="checkbox" checked><span><b>Selling online too</b><small>A few products or services to sell</small></span></label><label class="tick"><input type="checkbox"><span><b>Two or more languages</b><small>The same pages in each language</small></span></label></div></div>
         <dl class="ref-rules">
-          <div><dt>Use it for</dt><dd>A yes or no that goes with the choice beside it, or a question with several answers (then Back and a gold Next). Ticked is the chip's gold edge and tint; the box itself is in the accent.</dd></div>
+          <div><dt>Use it for</dt><dd>A yes or no that goes with the choices below it: a plain line with no box, above the answers, so it never reads as one more answer; ticked, only the box fills, in the accent. A question with several answers: bordered rows, ticked in the chip's gold edge and tint, then Back and a gold Next.</dd></div>
           <div class="no"><dt>Not for</dt><dd>One answer from a few: those are answer tiles or a switch.</dd></div>
         </dl>
       </article>
@@ -651,7 +654,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <div class="ref-h"><h3>Your answers</h3><code>.qz-ans-tiles</code><span class="file">cms-picker/styles.css</span></div>
         <div class="ref-row"><span>Example</span><div class="stack"><div class="ans"><button type="button"><small>Making</small>A business or work site</button><button type="button" aria-expanded="true"><small>Built by</small>Me, and I’m not technical</button><button type="button"><small>From day one</small>Bookings or appointments</button><button type="button"><small>Each month</small>Nothing for now</button></div><div class="ans-also"><i aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></i>Two or more languages</div></div></div>
         <dl class="ref-rules">
-          <div><dt>Use it for</dt><dd>The answers behind a result, as equal tiles with a short name over each; the one being changed is gold. A ticked extra sits on a line beneath.</dd></div>
+          <div><dt>Use it for</dt><dd>The answers behind a result, as equal tiles with a short name over each; the one being changed is gold. A ticked extra sits on a line beneath. Changing one opens its choices as equal rows (two columns for a long list on a phone), never boxes sized by their words.</dd></div>
           <div class="no"><dt>Not for</dt><dd>Tiles of uneven size, or a tick inside a tile, which would make it taller than its neighbours.</dd></div>
         </dl>
       </article>

@@ -171,8 +171,11 @@ Shared by the page and the tests, so they always run the same code.
   `app.js` and translating older answers in `readLink`, so shared links keep working (v3 translates the old
   members and moving-later answers, v4 the languages choice into the tick, v5 added the HubSpot tick; see the comment
   there). A question can carry a tick (`also`: id, title, hint, and `own`, the answer on its own) that goes with
-  whichever choice is picked: the page draws it as a checkbox above the choices and again in the answers editor, and
-  the test walks it both ways. Two do: languages on the needs question, "We already use HubSpot" on the kind question.
+  whichever choice is picked: the page draws it as a plain checkbox line above the choices (`qz-plain`, no box, so it
+  never reads as one more answer) or as the last row of a checklist, and again in the answers editor, and the test
+  walks it both ways. Two do: languages on the needs question, "We already pay for HubSpot" on the kind question
+  (worded "We already use HubSpot", "For our CRM, email or marketing" until 2026-11-01, when that caught people using
+  only the free CRM and gave HubSpot first place for about 40% of local, creative and startup sites with the tick).
   A tick counts only while its question is asked (`ticked()` in score.js), and in a quiz.json `when` one that isn't
   given reads as "no".
 - **Needs** ("Anything you'll need from day one?", a checklist since v6: any of these, plus languages as its last
