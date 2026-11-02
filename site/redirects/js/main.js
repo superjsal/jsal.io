@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=b535f4af";
-import { FORMATS, byId } from "./formats.js?v=9bb56d5b";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=41f80495";
+import { FORMATS, byId } from "./formats.js?v=b61c22ae";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -383,8 +383,10 @@ function parts() {
 function fileName(i, total) {
   return total > 1 ? fmt.file.replace(/(\.[^.]*)?$/, (ext) => `-part-${i + 1}${ext}`) : fmt.file;
 }
+// The site's domain without https://, for a platform that wants it on every row
+const domain = () => (opts.newSite || result.site || "").trim().replace(/^https?:\/\//i, "").replace(/\/.*$/, "");
 function fileText() {
-  const p = parts(), w = writeFile(p[Math.min(part, p.length - 1)], fmt, opts);
+  const p = parts(), w = writeFile(p[Math.min(part, p.length - 1)], fmt, { ...opts, domain: domain() });
   const head = fmt.kind === "csv" && opts.headerOn ? (opts.header ?? w.header) : null;
   return { w, p, head, text: (head !== null ? head + "\n" : "") + w.body + (w.body ? "\n" : "") };
 }
@@ -416,7 +418,9 @@ function renderFile() {
   // Anything to know before importing it
   showWhere();
   const notes = [];
-  if (fmt.unverified && opts.header === null && opts.headerOn) notes.push(`This header row comes from guides, not ${fmt.name}’s own template. Check it against theirs before a large import.`);
+  if (fmt.unverified) notes.push(fmt.unverified);
+  if (fmt.needsDomain && !domain()) notes.push(`${fmt.name} needs the store’s domain on every row: add it under Format.`);
+  if (fmt.max && result.ready.length > fmt.max) notes.push(`${fmt.name} takes up to ${fmt.max.toLocaleString("en-GB")} redirects; this has ${result.ready.length.toLocaleString("en-GB")}. Vercel bulk redirects take more.`);
   if (opts.newAddr === "url" && !result.site) notes.push("Add the new site’s address in Format to write full URLs.");
   if (p.length > 1) notes.push(`${fmt.name} takes ${fmt.limit} redirects per import, so the file is in ${p.length} parts.`);
   $("fileNote").hidden = !notes.length;
@@ -429,7 +433,9 @@ function renderFile() {
   const code = fmt.codes === "optional" && !opts.statusCol ? "" : opts.code;
   for (const b of $("codeSeg").children) b.setAttribute("aria-pressed", b.dataset.code === code);
   for (const b of $("optNew").querySelectorAll("button")) b.setAttribute("aria-pressed", b.dataset.new === opts.newAddr);
-  $("optSite").hidden = opts.newAddr !== "url";
+  // The site field asks for the new site's address for full URLs, or the store's domain where a platform needs it
+  $("optSite").hidden = opts.newAddr !== "url" && !fmt.needsDomain;
+  $("optSite").firstElementChild.textContent = opts.newAddr === "url" ? "New site" : fmt.needsDomain || "New site";
   if (document.activeElement !== $("newSite")) { $("newSite").value = opts.newSite; $("newSite").placeholder = result.site || "https://www.example.com"; }
   $("optHead").hidden = $("optSep").hidden = !csv;
   for (const b of $("optHead").querySelectorAll("button")) b.setAttribute("aria-pressed", (b.dataset.head === "on") === opts.headerOn);
@@ -520,7 +526,7 @@ http://oldsite.com/blog/spring-sale?utm_source=mail\thttps://www.newsite.com/blo
 /products/blue–mug\t/products/blue-mug-12oz
 /sale\t/collections/sale<2024>
 /café-menu\t/pages/menu
-/shop/mugs\t/collections/mugs
+/store/mugs\t/collections/mugs
 /collections/mugs\t/collections/all-mugs
 /about-us\t/pages/our-story
 /blog\t

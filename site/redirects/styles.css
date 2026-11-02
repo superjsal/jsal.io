@@ -95,6 +95,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .note.fix { color: var(--jsal-info); }
 .note.bad { color: var(--jsal-bad); }
 .note.out { color: var(--jsal-muted); }
+.note.warn { color: var(--jsal-warn); }   /* worth knowing, but the row still goes into the file */
 .note.edited { color: var(--jsal-muted); }
 .note code { font-size: 12px; }
 .note mark { padding: 0 1px; background: var(--jsal-bad-soft); color: var(--jsal-bad); border-bottom: 2px solid var(--jsal-bad); font-weight: 700; }

@@ -55,14 +55,16 @@ export function readAddress(raw) {
   return { kind: "ok", host: host.toLowerCase(), path, fragment: hash < 0 ? "" : rest.slice(hash), added };
 }
 
-// Problems with the characters of one address; accented letters are encoded the way browsers send them
-function characters(path, which) {
+// Problems with the characters of one address; accented letters are encoded the way browsers send them, unless the
+// platform rejects any % (keepLetters)
+function characters(path, which, keepLetters) {
   const problems = [];
   CHECKS.forEach((c, i) => {
     c.re.lastIndex = 0;
     if (c.re.test(path)) problems.push({ text: `${c.say(which)}: <code>${marked(path, c.re)}</code>`, title: c.say(which), group: "char" + i, fixes: c.fixes });
   });
   let encodedNote = "";
+  if (keepLetters) return { problems, path, encodedNote };
   const enc = path.replace(/[^\x00-\x7F]/gu, (ch) => {
     if (/[ –—‘’“”]/.test(ch)) return ch;
     const e = encodeURIComponent(ch);
@@ -142,13 +144,13 @@ export function analyse(rows, fmt, opts) {
 
     // Old address: always a path
     const t = stripTracking(o.path);
-    const oc = characters(t.path, "old address");
+    const oc = characters(t.path, "old address", fmt.keepLetters);
     for (const p of oc.problems) bad("o", p.text, p.fixes, p.group, p.title);
     inFile("o", oc.path, [o.host && { key: "domain" }, t.removed && { key: "tracking" }, o.fragment && { key: "hash" },
       o.added && { key: "slash" }, oc.encodedNote && { text: oc.encodedNote }].filter(Boolean));
 
     // New address: a path on this site, or the full URL when it's another site (or the visitor asked for full URLs)
-    const nc = characters(n.path, "new address");
+    const nc = characters(n.path, "new address", fmt.keepLetters);
     for (const p of nc.problems) bad("n", p.text, p.fixes, p.group, p.title);
     const external = n.host && !hosts.has(bare(n.host));
     const newPath = nc.path + n.fragment;
@@ -218,7 +220,11 @@ export function analyse(rows, fmt, opts) {
     const problems = (fmt.rules?.(r) || []).filter(Boolean);
     // A website platform always has a home page, and its redirects only run for addresses that don't exist
     if (r.from === "/" && fmt.group !== "Hosting and servers" && !problems.length) problems.push({ cell: "o", id: "home", text: `${fmt.name} won’t redirect the home page while the site has one.` });
-    for (const p of problems) live.find((l) => l.id === r.id).bad(p.cell, p.text, p.fixes || [], "rule-" + p.id, p.text);
+    const l = live.find((x) => x.id === r.id);
+    for (const p of problems) {
+      if (p.warn) l.it.notes.push({ cell: p.cell, kind: "warn", text: p.text });   // said, but the row still goes in
+      else l.bad(p.cell, p.text, p.fixes || [], "rule-" + p.id, p.text);
+    }
   }
 
   // A row that needs the visitor shows only what's wrong: what the file would say comes once it's fixed
@@ -239,7 +245,7 @@ export function csvField(v, sep) {
 /** The file's body (without the header row) and the default header line, for one part of the redirects. */
 export function writeFile(rows, fmt, opts) {
   if (fmt.kind === "csv") {
-    const cols = fmt.cols(opts.statusCol ? opts.code : "");
+    const cols = fmt.cols(opts.statusCol ? opts.code : "", opts);
     return { header: cols.map((c) => csvField(c.name, opts.sep)).join(opts.sep), cols: cols.length,
       body: rows.map((r) => cols.map((c) => csvField(c.val(r), opts.sep)).join(opts.sep)).join("\n") };
   }
