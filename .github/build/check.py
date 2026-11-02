@@ -190,6 +190,7 @@ for f in files(['*/js/*.js']):
 #  - transition and animation timings from --jsal-quick / --jsal-settle
 #  - font weights 400, 500, 600, 700 or 800
 #  - font sizes in px from the type scale (TEXT_SIZES)
+#  - margins, paddings and gaps from the --jsal-space-* tokens (a 1px or 3px nudge inside a tag is fine)
 #  - a stylesheet with animation has a prefers-reduced-motion fallback
 def stylesheets():
     """(name, css text, line number of its first line) for shell.css, each app's CSS and each page's own <style>."""
@@ -250,6 +251,9 @@ for name, css, first in stylesheets():
                 for s in re.findall(r'(?<![\d.])(\d+)px', size):
                     if int(s) not in TEXT_SIZES:
                         fail(f'{where}: font size {s}px is off the scale ({", ".join(map(str, sorted(TEXT_SIZES)))})')
+            if re.fullmatch(r'(margin|padding)(-[a-z]+)*|(row-|column-)?gap', prop):
+                odd = [s for s in re.findall(r'(?<![\w.-])-?(\d+(?:\.\d+)?)px', re.sub(r'var\([^)]*\)', '', val)) if s not in ('0', '1', '3')]
+                if odd: fail(f'{where}: spacing {" ".join(o + "px" for o in odd)} on "{sel[:50]}" (use a --jsal-space-* token)')
 
 # CMS Picker data fits cms-picker.schema.json (the same check runs before every publish, and on GitHub)
 sys.path.insert(0, str(ROOT / '.github' / 'scripts'))

@@ -51,11 +51,14 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   below), the visitor's own headings in Clean Paste's preview, and the home tiles' miniature pictures.
   **Check:** `check.py` fails on any other px font size, and on half pixels. Relative sizes (inline code at
   `0.86em`) are fine.
-- **Spacing values are even** (2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28…). Two kinds of odd value stay on
-  purpose: the 1–3px padding inside small tags and pills, and row paddings that repeat down a list (the
-  Playbook's sidebar, the achievement list, Clean Paste's checks), where rounding would change the list's
-  height. Not checked; keep new spacing even.
-- No named size or spacing tokens: the common values above are the scale.
+- **Spacing comes from twelve tokens**, `--jsal-space-*` in `shell.css`, named by their size in pixels: 2, 4, 6
+  and 8 for fine steps, then 12, 16, 20, 24, then 32, 40, 48 and 64. Every margin, padding and gap reads one
+  (`var(--jsal-space-12)`; a negative one is `calc(var(--jsal-space-8) * -1)`). Tight inside a component (a
+  button's or a row's padding, the gap between controls) and roomier between sections. A 1px or 3px nudge inside a
+  small tag or pill stays as written. A value that has to match something else (room kept clear for a home tile's
+  picture, a number level with the text in a cell) carries a `style: allow (reason)` note, and the home tiles'
+  pictures keep their own measures. **Check:** `check.py` fails any other px margin, padding or gap.
+- No named text-size tokens: the type scale above is the set.
 
 ## Colour
 
@@ -84,7 +87,7 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 ## Building blocks
 
 Corners `--jsal-radius-sm` / `-` / `-lg` / `-xl` / `-pill` / `-tile`; selected `--jsal-selected-*`; hover `--jsal-hover-line`;
-focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead of new values.
+focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-space-*`. Use these instead of new values.
 
 - **Focus is one gold line on everything:** the shared ring, a gap of background colour and then gold, around the
   control. The gap keeps it visible on gold buttons. A text field keeps its own border when focused, so focus is never
@@ -138,13 +141,13 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   title is 17px and the gaps tighten), so the work area starts at the same height on each.
 - **One distance under the top bar:** pages that open with a heading (home, Off the clock, the CMS Picker and
   its platform pages, Privacy, Changelog, 404) start their first thing at `--jsal-page-top` from `shell.css`
-  (30px, 22px at 720px and under), flush with the logo's left edge: no optical indent on the mono line, the
+  (32px, 24px at 720px and under), flush with the logo's left edge: no optical indent on the mono line, the
   heading or the text under it; a new page of that kind uses it too. The tools' "for" line sits 16px under the bar, so the work area
   fills the first screen.
 - **Tools fill the first screen;** the About section sits below the fold, reached by the top bar's About link.
   On phones the empty work box stretches to the bottom of the screen until there's content.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
-- **Home page:** tools only, as a bento grid (six columns, 28px gaps, the wide tile swapping sides each row): the
+- **Home page:** tools only, as a bento grid (six columns, 32px gaps, the wide tile swapping sides each row): the
   intro (two columns, at the shared distance under the bar) beside the CMS Picker (four); the Image Resizer (four)
   and Clean Paste (two); Say hi (two) and Redirect Import (four); Updates across the bottom (six). From 1279px down the
   intro, the CMS Picker, the Image Resizer, Redirect Import and Updates take the full width and Clean Paste sits beside
@@ -178,8 +181,8 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
     pictures, so enlarged or spaced-out text grows the tile instead of sliding under a picture (WCAG 1.4.12).
   - **The Platform guides** are a quiet row of links in the footer, with Off the clock beside Privacy. Gaming parts
     live on `/play/`.
-- **Every new home page tool or section is a bento box:** a `.tile` (22px corners, 26px padding; 18px and 20px
-  on phones), in its own tint if it's a tool, plain like Updates and "Say hi" if it isn't. The home page is
+- **Every new home page tool or section is a bento box:** a `.tile` (22px corners, 24px padding; 18px and 20px
+  on phones; anything lined up with the padding reads the tile's `--pad`), in its own tint if it's a tool, plain like Updates and "Say hi" if it isn't. The home page is
   always bento boxes. Other pages keep an open layout, but may use a card in the same style (the tile's corners,
   padding and a tint, such as the app's own home tile colour) where it helps, for example around a hero; they don't
   become bento grids. The intro stays unboxed, so the byline keeps the shared distance and left edge.

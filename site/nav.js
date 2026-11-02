@@ -337,12 +337,12 @@
       background: var(--jsal-surface); color: var(--jsal-ink); border: 1px solid var(--jsal-line); box-shadow: 0 16px 40px rgb(0 0 0 / .28), 0 2px 6px rgb(0 0 0 / .12);
       font: 14px/1.35 var(--jsal-font); overflow-y: auto; overscroll-behavior: contain; }
     .jsal-menu[hidden] { display: none; }
-    .jsal-menu a { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: var(--jsal-space-10); align-items: center; padding: 7px var(--jsal-space-8); border-radius: 8px; color: inherit; text-decoration: none; outline: none; }
+    .jsal-menu a { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: var(--jsal-space-8); align-items: center; padding: var(--jsal-space-8); border-radius: 8px; color: inherit; text-decoration: none; outline: none; }
     .jsal-menu a:hover, .jsal-menu a:focus-visible { background: var(--jsal-sunk); }
     .jsal-menu a[aria-current="page"] { background: var(--jsal-accent-soft); }
     .jsal-menu .ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--jsal-sunk); color: var(--jsal-ink-2); }
     .jsal-menu b { display: block; font-weight: 600; }
-    .jsal-menu .tag { font-size: 12px; font-weight: 700; color: var(--jsal-muted); border: 1px solid currentColor; border-radius: 99px; padding: 0 7px; }
+    .jsal-menu .tag { font-size: 12px; font-weight: 700; color: var(--jsal-muted); border: 1px solid currentColor; border-radius: 99px; padding: 0 var(--jsal-space-6); }
     .jsal-menu hr { border: 0; border-top: 1px solid var(--jsal-line); margin: var(--jsal-space-6) var(--jsal-space-4); }
     .jsal-menu .home { grid-template-columns: 32px minmax(0, 1fr); }
     .jsal-menu .home .ico { background: none; color: var(--jsal-muted); }

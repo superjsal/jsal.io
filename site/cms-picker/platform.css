@@ -3,20 +3,20 @@
 .pp-crumbs { margin: var(--jsal-page-top) 0 0; color: var(--jsal-muted); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
 .pp-crumbs a { color: var(--jsal-accent); text-underline-offset: 3px; }
 /* Headings in the home page's serif, like the page titles and the CMS Picker's own headings; the gold word italic */
-.pp-title { margin: var(--jsal-space-14) 0 var(--jsal-space-10); font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the CMS Picker's heading size */
+.pp-title { margin: var(--jsal-space-12) 0 var(--jsal-space-8); font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the CMS Picker's heading size */
 .pp-title-sub { display: block; margin-top: var(--jsal-space-8); color: var(--jsal-ink-2); font: 500 clamp(20px, 2.6vw, 24px)/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }   /* the heading's second line */
 .pp-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
 .pp-lede { max-width: 680px; margin: 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.55; }
-.pp-meta { margin: var(--jsal-space-10) 0 0; color: var(--jsal-muted); font-size: 13px; }
-.pp-h { margin: 44px 0 var(--jsal-space-6); font-family: "Lora", Georgia, serif; font-size: 24px; letter-spacing: -0.01em; }
-.pp-h3 { margin: var(--jsal-space-26) 0 var(--jsal-space-10); font-size: 17px; }
+.pp-meta { margin: var(--jsal-space-8) 0 0; color: var(--jsal-muted); font-size: 13px; }
+.pp-h { margin: var(--jsal-space-48) 0 var(--jsal-space-6); font-family: "Lora", Georgia, serif; font-size: 24px; letter-spacing: -0.01em; }
+.pp-h3 { margin: var(--jsal-space-24) 0 var(--jsal-space-8); font-size: 17px; }
 .pp-sub { margin: 0 0 var(--jsal-space-16); color: var(--jsal-muted); font-size: 14px; }
 
 /* One card per SEO question: heading, answer, menu path, docs link */
 .pp-qs { display: grid; gap: var(--jsal-space-12); }
-.pp-q { padding: var(--jsal-space-16) var(--jsal-space-18); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
+.pp-q { padding: var(--jsal-space-16) var(--jsal-space-20); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
 .pp-q h3 { margin: 0 0 var(--jsal-space-8); font-size: 17px; }
-.pp-ans { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--jsal-space-6) var(--jsal-space-10); }
+.pp-ans { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--jsal-space-6) var(--jsal-space-8); }
 .pp-note { color: var(--jsal-ink-2); font-size: 15px; }
 .pp-where { display: grid; grid-template-columns: auto 1fr; gap: var(--jsal-space-8) var(--jsal-space-12); align-items: start; margin-top: var(--jsal-space-12); padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line); }
 .pp-where-l { padding-top: 3px; color: var(--jsal-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -25,16 +25,16 @@
 .pp-path-l { margin-right: var(--jsal-space-2); color: var(--jsal-muted); font-size: 13px; }
 .pp-step { padding: var(--jsal-space-2) var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); font-size: 13px; line-height: 1.45; }
 .pp-sep { color: var(--jsal-muted); font-size: 13px; }   /* the arrow; screen readers hear ", then" */
-.pp-src { display: inline-block; margin-top: var(--jsal-space-10); color: var(--jsal-info); font-size: 13px; text-underline-offset: 2px; }   /* a source link inside the content, blue like the Playbook's */
+.pp-src { display: inline-block; margin-top: var(--jsal-space-8); color: var(--jsal-info); font-size: 13px; text-underline-offset: 2px; }   /* a source link inside the content, blue like the Playbook's */
 @media (pointer: coarse) { .pp-src { position: relative; } .pp-src::after { content: ""; position: absolute; inset: -13px -4px; } }   /* 44px to tap */
 
 /* The short profile */
 .pp-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--jsal-space-12); margin: 0; }
-.pp-facts div { padding: var(--jsal-space-12) var(--jsal-space-14); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); }
+.pp-facts div { padding: var(--jsal-space-12) var(--jsal-space-12); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); }
 .pp-facts dt { color: var(--jsal-muted); font-size: 12px; }
 .pp-facts dd { margin: var(--jsal-space-4) 0 0; font-size: 15px; }
 .pp-fit { display: grid; grid-template-columns: 1fr 1fr; gap: var(--jsal-space-12); margin-top: var(--jsal-space-12); }
-.pp-fit > div { padding: var(--jsal-space-14) var(--jsal-space-16); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
+.pp-fit > div { padding: var(--jsal-space-12) var(--jsal-space-16); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
 .pp-fit h3 { margin: 0 0 var(--jsal-space-6); font-size: 15px; }
 .pp-fit ul { margin: 0; padding-left: 1.2em; color: var(--jsal-ink-2); font-size: 15px; }
 .pp-built { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; font-size: 15px; }
@@ -42,12 +42,12 @@
 .pp-built .pp-note { font-size: 14px; }
 .pp-built .tag + .sc { margin-left: var(--jsal-space-8); }   /* "varies" a step clear of its tag, as elsewhere */
 
-.pp-next { display: flex; flex-wrap: wrap; gap: var(--jsal-space-10); margin: var(--jsal-space-36) 0 var(--jsal-space-8); }
-.pp-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--jsal-space-18); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); color: var(--jsal-ink); font-weight: var(--jsal-btn-weight); text-decoration: none; }
+.pp-next { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin: var(--jsal-space-40) 0 var(--jsal-space-8); }
+.pp-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--jsal-space-20); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); color: var(--jsal-ink); font-weight: var(--jsal-btn-weight); text-decoration: none; }
 .pp-btn:hover { border-color: var(--jsal-hover-line); }
 .pp-btn.main { border-color: var(--jsal-fill-edge); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .pp-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-.pp-others { margin: var(--jsal-space-18) 0 var(--jsal-space-40); color: var(--jsal-muted); font-size: 14px; }
+.pp-others { margin: var(--jsal-space-20) 0 var(--jsal-space-40); color: var(--jsal-muted); font-size: 14px; }
 .pp-others a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 @media (max-width: 720px) {

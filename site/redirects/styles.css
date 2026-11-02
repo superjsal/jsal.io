@@ -16,13 +16,13 @@ code, .mono, .file, .cell, .txt, .head-in { font-family: "JetBrains Mono", ui-mo
 
 /* ── The bar: platform, where to import, and the file's actions ─────────── */
 
-.bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--jsal-space-10) var(--jsal-space-16); margin-bottom: var(--jsal-space-16); }
+.bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--jsal-space-8) var(--jsal-space-16); margin-bottom: var(--jsal-space-16); }
 .plat { flex: 0 0 260px; }
-.field { width: 100%; min-height: 40px; padding: var(--jsal-space-6) var(--jsal-space-10); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: 14px var(--jsal-font); }
+.field { width: 100%; min-height: 40px; padding: var(--jsal-space-6) var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: 14px var(--jsal-font); }
 .field:focus-visible, .txt:focus-visible, .cell:focus-visible, .head-in:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-.where { flex: 1 1 160px; margin: 0 0 var(--jsal-space-10); font-size: 13px; line-height: 1.45; color: var(--jsal-muted); }
+.where { flex: 1 1 160px; margin: 0 0 var(--jsal-space-8); font-size: 13px; line-height: 1.45; color: var(--jsal-muted); }
 .where a { color: var(--jsal-info); text-underline-offset: 2px; white-space: nowrap; }
-.summary { margin: 0 0 var(--jsal-space-10); font-size: 13px; color: var(--jsal-muted); white-space: nowrap; }
+.summary { margin: 0 0 var(--jsal-space-8); font-size: 13px; color: var(--jsal-muted); white-space: nowrap; }
 .summary b { color: var(--jsal-ink); font-weight: 600; }
 .bar-actions { display: flex; gap: var(--jsal-space-8); }
 
@@ -36,11 +36,11 @@ code, .mono, .file, .cell, .txt, .head-in { font-family: "JetBrains Mono", ui-mo
 }
 .drop:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .drop.over { border-color: var(--jsal-accent); background: var(--jsal-selected-bg); }
-.drop-ico { padding: 9px; width: 40px; height: 40px; border-radius: var(--jsal-radius-lg); background: var(--jsal-sunk); color: var(--jsal-ink-2); }
+.drop-ico { padding: var(--jsal-space-8); width: 40px; height: 40px; border-radius: var(--jsal-radius-lg); background: var(--jsal-sunk); color: var(--jsal-ink-2); }
 .drop-title { margin: var(--jsal-space-6) 0 0; font-size: 17px; font-weight: 600; }
 .drop-sub { max-width: 480px; margin: 0; font-size: 14px; color: var(--jsal-ink-2); }
-.drop-links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--jsal-space-4) var(--jsal-space-10); margin: var(--jsal-space-6) 0 0; font-size: 14px; color: var(--jsal-muted); }
-.drop-privacy { margin: var(--jsal-space-10) 0 0; font-size: 13px; color: var(--jsal-muted); }
+.drop-links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--jsal-space-4) var(--jsal-space-8); margin: var(--jsal-space-6) 0 0; font-size: 14px; color: var(--jsal-muted); }
+.drop-privacy { margin: var(--jsal-space-8) 0 0; font-size: 13px; color: var(--jsal-muted); }
 .drop .jsal-error { max-width: 480px; }
 kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 
@@ -49,32 +49,32 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-
 /* Each pane scrolls on its own, so the file stays beside the rows being edited */
 .app.has-content .work { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--jsal-space-20); align-items: start; }
 .pane { display: flex; flex-direction: column; height: max(460px, calc(100dvh - var(--work-top, 220px) - 20px)); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); overflow: hidden; }
-.pane-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-6) var(--jsal-space-12); padding: var(--jsal-space-10) var(--jsal-space-14); border-bottom: 1px solid var(--jsal-line); }
+.pane-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-6) var(--jsal-space-12); padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); }
 .pane-title { margin: 0; font-size: 14px; font-weight: 700; }
 .pane-title.mono { font-size: 13px; font-weight: 600; }
 .pane-meta { flex: 1; min-width: 0; font-size: 13px; color: var(--jsal-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pane-body { flex: 1; min-height: 0; overflow: auto; }
-.pane-foot { display: flex; flex-wrap: wrap; gap: var(--jsal-space-4) var(--jsal-space-18); padding: var(--jsal-space-8) var(--jsal-space-14); border-top: 1px solid var(--jsal-line); font-size: 14px; }
+.pane-foot { display: flex; flex-wrap: wrap; gap: var(--jsal-space-4) var(--jsal-space-20); padding: var(--jsal-space-8) var(--jsal-space-12); border-top: 1px solid var(--jsal-line); font-size: 14px; }
 .pane-foot #clearBtn { margin-left: auto; }
 .pane-foot .kept { display: inline-flex; align-items: center; gap: var(--jsal-space-6); margin-left: auto; font-size: 13px; color: var(--jsal-muted); }
 .pane-foot .kept:not([hidden]) + #clearBtn { margin-left: 0; }
-.sheet-pane > .jsal-error { margin: 0 var(--jsal-space-14) var(--jsal-space-10); }
+.sheet-pane > .jsal-error { margin: 0 var(--jsal-space-12) var(--jsal-space-8); }
 .views { display: none; }
 .filter > button span { font-weight: 500; font-variant-numeric: tabular-nums; }
 
-.cols { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8) var(--jsal-space-16); padding: var(--jsal-space-8) var(--jsal-space-14); border-bottom: 1px solid var(--jsal-line); font-size: 13px; color: var(--jsal-muted); }
+.cols { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8) var(--jsal-space-16); padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); font-size: 13px; color: var(--jsal-muted); }
 .cols label { display: flex; align-items: center; gap: var(--jsal-space-8); }
 .cols .field { width: auto; min-height: 32px; font-size: 13px; }
 
-.overview { display: grid; gap: var(--jsal-space-6); max-height: 40%; overflow: auto; padding: var(--jsal-space-10) var(--jsal-space-14); border-bottom: 1px solid var(--jsal-line); background: var(--jsal-bg); font-size: 13px; line-height: 1.45; }
+.overview { display: grid; gap: var(--jsal-space-6); max-height: 40%; overflow: auto; padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); background: var(--jsal-bg); font-size: 13px; line-height: 1.45; }
 .overview p { margin: 0; }
 .overview .done { color: var(--jsal-ink-2); }
 .overview .done b, .overview .count { color: var(--jsal-ink); font-weight: 600; }
 .overview .repeat { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-8); color: var(--jsal-bad); }
-.overview .count { padding: 1px 7px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); }
+.overview .count { padding: 1px var(--jsal-space-6); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); }
 .overview .repeat.warn { color: var(--jsal-warn); }
 .overview .repeat.warn .count { background: var(--jsal-warn-soft); }
-.overview .jsal-btn.small { min-height: 28px; padding: 3px var(--jsal-space-10); font-size: 13px; }
+.overview .jsal-btn.small { min-height: 28px; padding: 3px var(--jsal-space-8); font-size: 13px; }
 
 /* ── The sheet ──────────────────────────────────────────────────────────── */
 
@@ -84,8 +84,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-
 .c-n { width: 40px; }
 .c-st { width: 34px; }
 .c-x { width: 44px; }
-.sheet .n { padding-top: 13px; color: var(--jsal-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
-.sheet .st { padding-top: 11px; }
+.sheet .n { padding-top: 13px; color: var(--jsal-muted); font-size: 13px; font-variant-numeric: tabular-nums; }   /* style: allow (level with the text in the cells) */
+.sheet .st { padding-top: 11px; }   /* style: allow (the dot level with the cells' first line) */
 .sheet tr.out .cell { color: var(--jsal-muted); }
 /* Cells are text boxes that wrap anywhere, so a whole address shows however long it is */
 .cell { display: block; width: 100%; min-height: 34px; padding: var(--jsal-space-6) var(--jsal-space-8); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); color: var(--jsal-ink); font-size: 13px; line-height: 1.5; resize: none; overflow: hidden; overflow-wrap: anywhere; word-break: break-all; field-sizing: content; }
@@ -106,11 +106,11 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-
 .note code { font-size: 12px; }
 .note mark { padding: 0 1px; background: var(--jsal-bad-soft); color: var(--jsal-bad); border-bottom: 2px solid var(--jsal-bad); font-weight: 700; }
 .fixes { display: flex; flex-wrap: wrap; gap: var(--jsal-space-6); margin-top: var(--jsal-space-6); }
-.fixes .jsal-btn.small { min-height: 28px; padding: 3px var(--jsal-space-10); font-size: 13px; text-align: left; overflow-wrap: anywhere; }.note .jsal-btn.link { min-height: 0; padding: 0; font-size: 13px; }
+.fixes .jsal-btn.small { min-height: 28px; padding: 3px var(--jsal-space-8); font-size: 13px; text-align: left; overflow-wrap: anywhere; }.note .jsal-btn.link { min-height: 0; padding: 0; font-size: 13px; }
 .del { display: grid; place-items: center; width: 28px; height: 28px; margin-top: 3px; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font-size: 20px; line-height: 1; cursor: pointer; }
 .del:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
 .del:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-.filter-empty, .file-empty { margin: 0; padding: var(--jsal-space-24) var(--jsal-space-14); font-size: 14px; color: var(--jsal-muted); }
+.filter-empty, .file-empty { margin: 0; padding: var(--jsal-space-24) var(--jsal-space-12); font-size: 14px; color: var(--jsal-muted); }
 
 /* ── The file ───────────────────────────────────────────────────────────── */
 
@@ -121,27 +121,27 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-
 .fmt-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
 .fmt-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .parts > button { min-width: 32px; }
-.fmt { display: grid; gap: var(--jsal-space-8); padding: var(--jsal-space-10) var(--jsal-space-14); border-bottom: 1px solid var(--jsal-line); background: var(--jsal-sunk); }
+.fmt { display: grid; gap: var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); background: var(--jsal-sunk); }
 .fmt .jsal-seg { background: var(--jsal-bg); }
-.opt { display: flex; align-items: center; justify-content: space-between; gap: var(--jsal-space-10); font-size: 13px; }
+.opt { display: flex; align-items: center; justify-content: space-between; gap: var(--jsal-space-8); font-size: 13px; }
 .txt { width: 220px; min-height: 30px; padding: 3px var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 13px; }
 .txt.short { width: 72px; }
 .opt-foot { margin: 0; font-size: 13px; }
 .opt-foot .jsal-btn.link { min-height: 0; font-size: 13px; }
-.file-box { margin: var(--jsal-space-10) var(--jsal-space-14) 0; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); font-size: 14px; line-height: 1.45; color: var(--jsal-ink); }
+.file-box { margin: var(--jsal-space-8) var(--jsal-space-12) 0; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); font-size: 14px; line-height: 1.45; color: var(--jsal-ink); }
 .file-box.warn { background: var(--jsal-warn-soft); }
 .file-box.info { background: var(--jsal-info-soft); }
 /* The rows the file leaves out until they're fixed, in the red of the rows themselves */
-.file-missing { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-8); margin: var(--jsal-space-10) var(--jsal-space-14) 0; font-size: 13px; line-height: 1.45; color: var(--jsal-bad); }
-.file-missing .count { padding: 1px 7px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
+.file-missing { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-8); margin: var(--jsal-space-8) var(--jsal-space-12) 0; font-size: 13px; line-height: 1.45; color: var(--jsal-bad); }
+.file-missing .count { padding: 1px var(--jsal-space-6); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
 .file-missing .jsal-btn.link { min-height: 24px; font-size: 13px; }
 /* Nothing left out: said in green, so the end of the job is as plain as what's missing */
-.file-done { display: flex; align-items: center; gap: var(--jsal-space-6); margin: var(--jsal-space-10) var(--jsal-space-14) 0; font-size: 13px; line-height: 1.45; color: var(--jsal-ok); }
+.file-done { display: flex; align-items: center; gap: var(--jsal-space-6); margin: var(--jsal-space-8) var(--jsal-space-12) 0; font-size: 13px; line-height: 1.45; color: var(--jsal-ok); }
 .file-done[hidden] { display: none; }
 
-.file-body { padding: var(--jsal-space-10) var(--jsal-space-14) var(--jsal-space-14); }
+.file-body { padding: var(--jsal-space-8) var(--jsal-space-12) var(--jsal-space-12); }
 /* The header row reads as part of the file until it's pointed at */
-.head-in { display: block; width: calc(100% + 12px); margin: 0 calc(var(--jsal-space-6) * -1); padding: 1px 5px; border: 1px solid transparent; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-accent); font-size: 13px; font-weight: 600; line-height: 1.7; }
+.head-in { display: block; width: calc(100% + 12px); margin: 0 calc(var(--jsal-space-6) * -1); padding: 1px 5px; border: 1px solid transparent; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-accent); font-size: 13px; font-weight: 600; line-height: 1.7; }   /* style: allow (its text stays level with the column it names) */
 .head-in:hover { border-color: var(--jsal-line-hi); }
 .head-warn { margin: var(--jsal-space-2) 0 var(--jsal-space-4); font-size: 12px; color: var(--jsal-warn); }
 .file { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre; tab-size: 4; }
@@ -157,7 +157,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-
 .fold-tab .fold-ico { margin-top: var(--jsal-space-4); color: var(--jsal-ink-2); }
 .fold-lbl { color: var(--jsal-ink); font-size: 14px; font-weight: 600; }
 .fold-num { margin-top: var(--jsal-space-6); color: var(--jsal-ink); font-size: 17px; font-weight: 600; }
-.fold-bad { margin-top: var(--jsal-space-6); padding: 1px 7px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
+.fold-bad { margin-top: var(--jsal-space-6); padding: 1px var(--jsal-space-6); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
 .fold-bad[hidden] { display: none; }
 @media (min-width: 1100px) {
   /* The file's name gives way, so Format and Hide stay on one line */
