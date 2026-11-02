@@ -733,17 +733,17 @@ async function copyRich() {
   }
 }
 
-const onCopy = (id, copy, msg) => {
+const onCopy = (id, copy, msg, ach) => {
   const btn = $(id);
   btn.addEventListener("click", async () => {
     flush();   // include the latest edits
-    if (result && result.html && await copy()) done(btn, msg); else failed();
+    if (result && result.html && await copy()) { done(btn, msg); if (ach) window.jsalAchieve?.(ach); } else failed();
   });
 };
 onCopy("copyRich", copyRich, "Copied. Paste into the CMS editor.");
 onCopy("copyHtml", () => copyPlain(result.html), "HTML copied.");
 onCopy("copyText", () => copyPlain(result.text), "Plain text copied.");
-onCopy("copyWp", () => copyPlain(wpBlocks(result.root)), "Copied. Paste into the WordPress block editor.");
+onCopy("copyWp", () => copyPlain(wpBlocks(result.root)), "Copied. Paste into the WordPress block editor.", "blocks");   // "Ready to publish" (/nav.js)
 
 // Handy for testing: window.formatter.load({ html })
 window.formatter = { load, flush, get result() { return result; } };

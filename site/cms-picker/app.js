@@ -1055,7 +1055,7 @@
           res.replaceChildren(rankText, cols, cta);
           res.className = 'res';
         };
-        check.append(picker('Platform to check', rest.map((r) => [r.p.id, r.p.name]), checking, showCheck), res);
+        check.append(picker('Platform to check', rest.map((r) => [r.p.id, r.p.name]), checking, (id) => { showCheck(id); window.jsalAchieve?.('opinion'); }), res);   // "Second opinion" (/nav.js)
         if (checking && rest.some((r) => r.p.id === checking)) showCheck(checking);
         box.append(check);
       }
@@ -1079,6 +1079,7 @@
           b.type = 'button';
           b.addEventListener('click', () => {
             checking = r.p.id;
+            window.jsalAchieve?.('opinion');
             results();
             const c = box.querySelector('.qz-check');
             c?.scrollIntoView();
@@ -1097,7 +1098,7 @@
       copy.addEventListener('click', async () => {
         const nav = copy.parentElement, said = nav.nextElementSibling;
         if (said && said.classList.contains('jsal-error')) said.remove();
-        try { await navigator.clipboard.writeText(location.href); window.jsalDone?.(copy, 'Link copied'); } catch (e) {
+        try { await navigator.clipboard.writeText(location.href); window.jsalDone?.(copy, 'Link copied'); window.jsalAchieve?.('share'); } catch (e) {
           const err = el('p', 'jsal-error', 'Couldn’t copy the link. Copy the address from the address bar instead: it opens this result.');
           err.setAttribute('role', 'alert');
           nav.after(err);

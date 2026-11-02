@@ -313,6 +313,7 @@ async function downloadAll() {
   }
 
   if (files.length) window.jsalAchieve?.("pixel");   // achievement (/nav.js)
+  if (files.length >= 10) window.jsalAchieve?.("batch");   // "Batch job" (/nav.js)
   const where = dest === "zip" ? " as a ZIP"
     : dest === "folder" ? ` to "${dir.name}"${renamed ? ` (${plural(renamed, "name")} already there got a number added)` : ""}`
     : "";
