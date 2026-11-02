@@ -33,7 +33,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours and top bar: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=aef150a9">
+<link rel="stylesheet" href="/shell.css?v=df5ef931">
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
@@ -43,6 +43,13 @@ body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webk
 h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; text-wrap: balance; }   /* every page title's size, as on the home page */
 @media (max-width: 520px) { h1 { font-size: 40px; } }
 h1 em { font-weight: 600; color: var(--jsal-accent); }
+/* The title's i has lost its dot: the logo's gem, lying tipped over as the full stop (the script below drops it there
+   from the i; until it starts, the gem waits unseen) */
+.lost-gem { display: inline-block; width: 0.24em; height: 0.24em; margin-left: 0.08em; background: var(--jsal-accent);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); transform: rotate(24deg); transform-origin: 50% 100%; }
+h1[data-drop] .lost-gem { opacity: 0; }
+/* The last e rocks a little when the gem lands on it, about its foot */
+.lost-e { display: inline-block; transform-origin: 50% 90%; }
 .lost .lead { margin: 28px 0 0; padding-bottom: 40px; border-bottom: 1px solid var(--jsal-line); font-size: 17px; color: var(--jsal-muted); text-wrap: pretty; }   /* the intro ends in a thin line */
 .links { margin: 40px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 420px; }
 .links a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--jsal-radius-xl); border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink); text-decoration: none; font-weight: 600; }
@@ -69,7 +76,7 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
   </header>
   <main class="lost">
     <p class="code">404 · page not found</p>
-    <h1>Nothing <em>here</em></h1>
+    <h1><span aria-hidden="true">Noth<span class="lost-i">ı</span>ng <em>her<span class="lost-e">e</span></em><span class="lost-gem"></span></span><span class="sr-only">Nothing here</span></h1>
     <p class="lead">This page doesn’t exist, or it moved. One of these is probably what you’re after:</p>
     <ul class="links">
       <li><a href="/cms-picker/">CMS Picker <span>Which CMS fits you</span></a></li>
@@ -79,6 +86,91 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     </ul>
   </main>
 </div>
-<script src="/nav.js?v=829de57a" defer></script>
+<script src="/nav.js?v=4ae8b3c7" defer></script>
+<!-- The dropped dot: the gem sits on the title's i, falls onto the i's stem and hops along the tops of the n, the g,
+     the h's tall stroke and both e's (the last one rocking as it lands), before dropping to the line and tipping over
+     as the full stop. Once, when the page is shown; with reduced motion it simply lies there -->
+<script>
+(() => {
+  const h = document.querySelector('h1'), gem = h && h.querySelector('.lost-gem');
+  if (!gem || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  h.dataset.drop = '';
+  // Where a letter's ink is highest, found by drawing it on a scratch canvas in its own font: the middle of its top
+  // row, across the page and above the baseline, so each bounce lands on the letter itself, italics included
+  const peak = (node, i) => {
+    const r = document.createRange(); r.setStart(node, i); r.setEnd(node, i + 1);
+    const box = r.getBoundingClientRect(), cs = getComputedStyle(node.parentElement), em = parseFloat(cs.fontSize);
+    const w = Math.ceil(em * 1.4), base = Math.ceil(em * 1.2), pad = em * 0.2, c = document.createElement('canvas');
+    c.width = w; c.height = base;
+    const x = c.getContext('2d', { willReadFrequently: true });
+    x.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    x.fillText(node.data[i], pad, base);
+    const d = x.getImageData(0, 0, w, base).data;
+    for (let y = 0; y < base; y++) {
+      let sum = 0, n = 0;
+      for (let k = 0; k < w; k++) if (d[(y * w + k) * 4 + 3] > 128) { sum += k; n++; }
+      if (n) return { x: box.left + sum / n - pad, y: base - y };
+    }
+    return { x: box.left + box.width / 2, y: 0 };
+  };
+  const play = () => document.fonts.ready.then(() => {
+    const em = parseFloat(getComputedStyle(h).fontSize), here = h.querySelector('em').firstChild;
+    // Positions are the gem's lowest point, from where it lies on the line. In the air it turns about its middle, a
+    // quarter turn a hop so it always comes down on its point, and that point stays put as it grows or squashes; only
+    // the last tip-over pivots on the point itself
+    gem.style.transform = 'none';
+    const g = gem.getBoundingClientRect(), ox = g.left + g.width / 2, half = g.height / 2, at = (p) => ({ x: p.x - ox, y: -p.y });
+    const stem = peak(h.querySelector('.lost-i').firstChild, 0);
+    const dot = at({ x: stem.x, y: stem.y + 0.1 * em });
+    const ng = h.querySelector('.lost-i').nextSibling;
+    const lastE = h.querySelector('.lost-e');
+    const stops = [stem, peak(ng, 0), peak(ng, 1), peak(here, 0), peak(here, 1), peak(lastE.firstChild, 0)].map(at).concat({ x: 0, y: 0 });
+    // Each hop: how high above the higher end (em) and how long in the air (ms), a quarter turn each, so it lands on its
+    // point. First it falls straight down onto the i's stem (no height, no turn); then hops to the n's arch, the g, over
+    // the gap to the h, over its arch and the r to each e, and the drop to the line. Between hops it sits on the letter
+    // for a beat, squashing a little before it springs off again
+    const hops = [[0, 240], [0.16, 320], [0.14, 300], [0.16, 380], [0.14, 330], [0.16, 340], [0.14, 380]];
+    const HOLD = 600, CROUCH = 160, BEAT = 70, TIP = 420;
+    const total = HOLD + hops.reduce((s, [, ms]) => s + ms + BEAT, 0) + TIP;
+    const squash = (u) => [1 + 0.14 * Math.sin(Math.PI * u), 1 - 0.18 * Math.sin(Math.PI * u)];
+    const draw = (t) => {
+      let x = dot.x, y = dot.y, turn = 0, size = 0.75, sq = [1, 1], from = dot, clock = t - HOLD, onE = -1;
+      if (clock < 0 && clock > -CROUCH) sq = squash(1 + clock / CROUCH);   // it crouches on the i before it pops off
+      for (let k = 0; k < hops.length && clock > 0; k++) {
+        const [up, ms] = hops[k], to = stops[k], s = Math.min(1, clock / ms), lift = up * em + Math.abs(from.y - to.y) / 2;
+        x = from.x + (to.x - from.x) * s;
+        y = up ? from.y + (to.y - from.y) * s - 4 * lift * s * (1 - s) : from.y + (to.y - from.y) * s * s;
+        turn = k ? 90 * (k - 1 + s) : 0; size = k ? 1 : 0.75 + 0.25 * s;
+        clock -= ms;
+        if (clock > 0 && clock < BEAT) sq = squash(clock / BEAT);
+        if (clock > 0 && k === hops.length - 2) onE = clock;
+        from = to; clock -= BEAT;
+      }
+      // the last e rocks a few degrees the way the gem is going as it lands, and springs back
+      lastE.style.transform = onE < 0 ? '' : `rotate(${9 * Math.exp(-onE / 110) * Math.sin((Math.PI * onE) / 160)}deg)`;
+      // on its point at the end, it leans and tips over to lie
+      if (clock > 0) {
+        gem.style.transformOrigin = '';
+        gem.style.transform = `rotate(${24 * Math.min(1, clock / TIP) ** 2}deg)`;
+        return;
+      }
+      const tall = size * sq[1];
+      gem.style.transformOrigin = '50% 50%';
+      gem.style.transform = `translate(${x}px, ${y + half * (1 - tall)}px) rotate(${turn}deg) scale(${size * sq[0]}, ${tall})`;
+    };
+    draw(0);
+    gem.style.opacity = 1;
+    const start = performance.now();
+    const step = (now) => {
+      const t = now - start;
+      if (t < total) { draw(t); return requestAnimationFrame(step); }
+      gem.style.transform = gem.style.transformOrigin = gem.style.opacity = lastE.style.transform = '';
+      delete h.dataset.drop;
+    };
+    requestAnimationFrame(step);
+  });
+  if (document.prerendering) document.addEventListener('prerenderingchange', play, { once: true }); else play();
+})();
+</script>
 </body>
 </html>

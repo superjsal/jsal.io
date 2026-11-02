@@ -154,13 +154,19 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
     tools' own colours (`--jsal-surface`, ink and lines, so it changes with the theme as the tool does): the CMS
     Picker a tilted brick of one card per platform, each in that platform's own colours, logos only; the Image
     Resizer its crop editor (the box spans the photo at the output's shape and slides one way, as the tool's
-    does) and output list; Clean Paste its clean HTML with a "Copied" status; Say hi an email draft; Updates the
-    newest change in each of the three most recently changed parts as a stack of notes, written from the changelog
-    by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
+    does) and output list; Clean Paste its Text | HTML switch over a short post, resting on the HTML; Say hi an email draft; Updates the
+    newest change in each of the three most recently changed parts as a plain list under its heading (rows with a
+    rule between them, never cards, as they aren't links; nothing tilted, as people read them), written from the
+    changelog by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
   - **Each tool tile has its app icon as a watermark**, drawn large in the tile's ink at 14% with the gem in solid
-    gold, lined up with its words; hidden on upright phones.
+    gold, behind the tile's picture and never under its words (the CMS Picker's podium tilted like its cards, beside
+    and under them, and upright over its name on phones on their side); set per breakpoint, and hidden on upright phones. Updates has one too, a faint stack of notes with the gem on the
+    newest, over its words; Say hi stays plain.
   - **Breakouts:** a piece may poke a little past its tile (about 14px at most), never within 16px of another
-    tile, and two breakouts never crowd each other. Mix straight and tilted pieces.
+    tile, never into the page's side gutter (nothing reaches past the column at any width, and the column's gutter
+    widens for a notch: `viewport-fit=cover` with the safe-area insets), and two breakouts never crowd each other.
+    So a tile on the column's edge pokes up, down or towards its neighbour, and a piece is either inside its tile or
+    clearly out of it, never sitting across its edge. Mix straight and tilted pieces.
   - **The pictures are decoration** (`aria-hidden`): each tile's link reads as its name and line, and Say hi's
     as "Say hi by email". Tiles have a least height, not a fixed one, and the words keep room clear of the
     pictures, so enlarged or spaced-out text grows the tile instead of sliding under a picture (WCAG 1.4.12).
@@ -201,14 +207,14 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
 - **Two timings and one curve.** A state change (a hover, a colour, a chevron turning, a short fade such as a quiz
   step) takes `--jsal-quick` (0.15s); something that moves or arrives (a tile lifting, a bar filling, a pop-up sliding
   in) takes `--jsal-settle` (0.3s). Plain `ease`, or `--jsal-ease-out` when something comes in, so it lands softly. Choreographed pieces keep their
-  own timing and carry `style: allow`: the page change, the logo unfold, the home pictures, /play/'s effects and
-  Clean Paste's Show. **Check:** `check.py` fails any other timing, and any `--jsal-*` used without being defined.
+  own timing and carry `style: allow`: the page change, the logo unfold, the 404's dropped dot, the home pictures,
+  /play/'s effects and Clean Paste's Show. **Check:** `check.py` fails any other timing, and any `--jsal-*` used without being defined.
 - **Page transitions are one slide everywhere** (`shell.css`): the old page drifts up and fades, the new one
   rises in, Back runs it downwards, and the top bar cross-fades in place. Only `shell.css` names
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.
 - **The home page's pictures move only when asked:** pointing at a tile or focusing it plays what its tool does
   three times, then it rests as the still picture (the cards wave with none singled out, the crop box slides the
-  one way the tool lets it, the clean HTML and the email type themselves). Touch screens play each one once, when
+  one way the tool lets it, the formatted text wipes into its HTML and the email types itself). Touch screens play each one once, when
   its tile reaches the middle of the screen. Updates stays still.
 - Nothing moves on its own for more than 5 seconds (WCAG 2.2.2): the home pictures' one play on touch screens takes
   under 3 seconds.

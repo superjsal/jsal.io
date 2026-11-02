@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>John Salvador: Technical SEO and Free Web Tools | jsal.io</title>
 <meta name="description" content="John Salvador, a web developer who works in technical SEO. Free browser tools: CMS Picker to choose a website platform, Clean Paste and an Image Resizer.">
 <link rel="canonical" href="https://jsal.io/">
@@ -52,7 +52,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=aef150a9">
+<link rel="stylesheet" href="/shell.css?v=df5ef931">
 <style>
 /* Tile colours: each tool keeps its own tint with a deep shade of it for the words; Updates and Say hi are plain.
    The pieces of each tool laid on the tiles wear the tools' own colours, so they change with the theme as the tools do;
@@ -84,7 +84,8 @@ body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webk
 a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles keep their own rounded corners, and the outline follows them */
-.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)) 56px; }
+/* The column: a 20px gutter each side, wider where a notch or rounded corner cuts in (phones on their side) */
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-right, 0px)) 56px max(20px, env(safe-area-inset-left, 0px)); }
 
 /* Top bar: the shared one (/shell.css), with section links */
 .jsal-top nav { display: flex; gap: 2px; font-size: 14px; }
@@ -121,7 +122,8 @@ p { text-wrap: pretty; }
 @media (pointer: coarse) { .cta a { min-height: 44px; } }
 
 /* Tiles: soft colour, a deep-shade serif name, and real-looking pieces of the tool laid on top. Each tile
-   clips most of its pieces (.clip); one piece per row pokes a little past the edge, never near another tile. */
+   clips most of its pieces (.clip); one piece per row pokes a little past the edge, never near another tile and never
+   into the page's side gutter, so nothing reaches past the column at any width. */
 .tile { position: relative; display: flex; flex-direction: column; border-radius: var(--jsal-radius-tile); padding: 26px; background: var(--bg); color: var(--ink); text-decoration: none; transition: transform var(--jsal-settle) var(--jsal-ease-out); }
 a.tile:hover, .hi:has(.hi-mail:hover) { transform: translateY(-4px) rotate(-0.4deg); }
 .tile .txt { position: relative; z-index: 2; }
@@ -132,17 +134,19 @@ a.tile:hover, .hi:has(.hi-mail:hover) { transform: translateY(-4px) rotate(-0.4d
 a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--rest, none)); }
 .paper { background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); }
 .mono { font: 600 11px/1.4 "JetBrains Mono", Consolas, monospace; }   /* style: allow (the pictures are miniatures of the tools) */
-/* Each tool's app icon drawn large and faint in the tile's ink, its gem in solid gold */
+/* Each tool's app icon drawn large and faint in the tile's ink, its gem in solid gold, behind the pictures and always
+   clear of the words */
 .wm { position: absolute; color: var(--ink); }
 .wm .s { opacity: 0.14; }
 .wm .g { fill: var(--jsal-fill); }
 
 /* CMS Picker: one card per platform it compares, its logo in that platform's own colours, in a tilted brick whose
-   corner cards (Shopify, Duda) poke a little past the tile, the row's breakout */
+   top corner card (Shopify) pokes a little past the tile's top, the row's breakout; it keeps its distance from the
+   tile's right edge, which is the column's, so the tilted brick never reaches the gutter however wide the tile is */
 .cms { --bg: var(--t-cms); --ink: var(--t-cms-ink); justify-content: flex-end; }
 .cms .txt { max-width: 290px; }
-.cms .wm { left: -19px; top: 24px; }   /* the bars centred over the name */
-.pcs { left: 281px; top: 68px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
+.cms .wm { width: 420px; height: 420px; left: calc(100% - 772px); top: -80px; rotate: -10deg; }   /* a podium tilted like the cards, beside and under them, its gem to their left */
+.pcs { left: calc(100% - 481px); top: 62px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
 .pcs > span { display: flex; gap: 12px; }
 .pcs > span:nth-child(even) { margin-left: 56px; }
 .pc { display: grid; place-items: center; width: 100px; height: 66px; border-radius: var(--jsal-radius-xl); background: var(--b); color: var(--c); box-shadow: var(--pc-shadow); }
@@ -169,7 +173,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
    down, as the tool's does) and a tilted list of the files it made, the row's breakout */
 .ir { --bg: var(--t-ir); --ink: var(--t-ir-ink); }
 .ir .txt { max-width: 258px; }
-.ir .wm { left: 100px; top: 110px; }
+.ir .wm { width: 394px; height: 394px; left: -80px; top: 36px; }   /* the photo's frame lined up with the words, starting under them */
 .ed { left: 290px; top: 22px; width: 250px; padding: 12px; border-radius: 16px; --hover: translateY(-8px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .ed-head { display: flex; justify-content: space-between; color: var(--jsal-muted); }
 .ed-photo { position: relative; display: block; margin-top: 8px; height: 140px; border-radius: var(--jsal-radius-lg); overflow: hidden; }
@@ -192,18 +196,28 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .outs .row span { display: flex; flex-direction: column; font-size: 11px; line-height: 1.4; color: var(--jsal-muted); }   /* style: allow (miniature) */
 .outs .row b { color: var(--jsal-ink); }
 
-/* Clean Paste: the clean HTML it gives back, straight and poking past the tile's left edge so the watermark shows,
-   and the status it shows once copied */
+/* Clean Paste: its Text | HTML switch over a short post, straight and poking past the tile's left edge so the watermark
+   shows. At rest it shows the HTML; playing, the formatted text comes first and a gold line wipes it into its HTML. */
 .cp { --bg: var(--t-cp); --ink: var(--t-cp-ink); }
-.cp .wm { right: -30px; bottom: 0; }
+.cp .wm { width: 354px; height: 354px; right: -134px; top: 64px; }   /* under the words, off the right edge */
 .sheet { left: -12px; top: 138px; z-index: 1; width: 258px; padding: 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
-.sheet span { color: var(--jsal-muted); }
-.sheet code { font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
+/* the tool's switch in miniature: a sunk track and a gold thumb that slides under the picked view */
+.sw { position: relative; display: flex; align-self: flex-start; padding: 2px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
+.sw::before { content: ""; position: absolute; left: 2px; top: 2px; bottom: 2px; width: 44px; border-radius: var(--jsal-radius-sm); background: var(--jsal-selected-bg); box-shadow: var(--jsal-selected-ring); translate: 44px 0; }
+.sw span { position: relative; width: 44px; padding: 2px 0; text-align: center; font: 600 11px/1.4 var(--jsal-font); color: var(--jsal-muted); }   /* style: allow (miniature) */
+.sw .h { color: var(--jsal-selected-ink); }
+/* the formatted text lies over its HTML, the same three lines, and is wiped away at rest */
+.views { position: relative; display: grid; }
+.views > * { grid-area: 1 / 1; }
+.views::after { content: ""; position: absolute; top: -4px; bottom: -4px; left: 0; width: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); opacity: 0; }
+.tx { display: flex; flex-direction: column; background: var(--jsal-surface); color: var(--jsal-ink-2); font-size: 12px; line-height: 1.6; clip-path: inset(0 0 0 100%); }
+.tx b { color: var(--jsal-ink); font: 700 14px/1.37 "Lora", Georgia, serif; }   /* one line of the code's height */
+.tx .li::before { content: "\2022"; margin-right: 7px; color: var(--jsal-muted); }
+.sheet code { color: var(--jsal-muted); font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
 .sheet code i { font-style: normal; color: var(--jsal-info); }
 .sheet .ln { display: block; }
-.copied { left: 174px; top: -10px; z-index: 2; display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 600; box-shadow: 0 6px 16px rgb(0 0 0 / 0.16); --rest: rotate(4deg); --hover: rotate(4deg) scale(1.08); }
 
-/* Say hi: a draft to the site's address, poking out over the tile's top edge (the row's breakout). The heading's
+/* Say hi: a draft to the site's address, tilted and poking out at the tile's top-right corner (the row's breakout). The heading's
    link covers the whole tile, so the GitHub link sits above it. */
 .hi { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
 .hi-mail { text-decoration: none; }
@@ -212,7 +226,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .hi-mail:focus-visible { outline: none; }
 .hi:has(.hi-mail:focus-visible) { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 .hi .txt a:not(.hi-mail) { position: relative; z-index: 2; color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
-.draft { left: 26px; right: 26px; top: -4px; z-index: 3; padding: 12px 14px; border-radius: 16px; font-size: 12px; pointer-events: none; --hover: translateY(-6px); }   /* a click on the draft reaches the email link under it; style: allow (a miniature) */
+.draft { left: 40px; right: -12px; top: 2px; z-index: 3; padding: 12px 14px; border-radius: 16px; font-size: 12px; pointer-events: none; transform-origin: top right; --rest: rotate(2deg); --hover: rotate(2deg) translateY(-6px); }   /* a click on the draft reaches the email link under it; style: allow (a miniature) */
 .draft > span { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }
 .draft > span:first-child { justify-content: space-between; align-items: center; padding: 0 0 6px; border: 0; font-size: 13px; font-weight: 700; }
 .draft > span:first-child i { font-style: normal; font-weight: 400; color: var(--jsal-muted); }
@@ -220,19 +234,18 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .draft .body { padding-top: 8px; }
 .draft .body i { overflow: hidden; font-style: normal; color: var(--jsal-ink-2); white-space: nowrap; text-overflow: ellipsis; }
 
-/* Updates: the newest change in each of the three most recently changed parts, as a stack of notes, newest on top,
-   each one whole */
+/* Updates: the newest change in each of the three most recently changed parts, as a plain list, newest first (the
+   rows aren't links, so they don't look like cards), and a faint stack of notes as its watermark */
 .now { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
 .now .txt { max-width: 260px; }
 .now .txt a { color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
-.upd { position: absolute; right: 26px; top: 22px; width: min(404px, calc(100% - 340px)); display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.upd li { position: relative; padding: 10px 14px 11px 54px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); }
-.upd li:nth-child(1) { z-index: 3; rotate: -1.5deg; }
-.upd li:nth-child(2) { z-index: 2; rotate: 1deg; margin: 0 -14px 0 14px; }
-.upd li:nth-child(3) { z-index: 1; rotate: -0.5deg; margin: 0 6px 0 -6px; }
+.now .wm { width: 260px; height: 260px; left: -18px; top: -71px; }   /* a stack of notes, the gem on the newest, over the words */
+.upd { position: absolute; right: 26px; top: 16px; width: min(404px, calc(100% - 340px)); display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.upd li { position: relative; padding: 10px 0 11px 42px; border-top: 1px solid var(--jsal-line); }
+.upd li:first-child { border-top: 0; }
 .upd-name { display: block; padding-right: 48px; font-size: 13px; font-weight: 700; }
-.upd-ico { position: absolute; left: 14px; top: 50%; translate: 0 -50%; border-radius: var(--jsal-radius); }
-.upd time { position: absolute; right: 14px; top: 11px; color: var(--jsal-muted); font-size: 12px; }
+.upd-ico { position: absolute; left: 0; top: 50%; translate: 0 -50%; border-radius: var(--jsal-radius); }
+.upd time { position: absolute; right: 0; top: 11px; color: var(--jsal-muted); font-size: 12px; }
 .upd-line { display: block; margin-top: 1px; font: 600 17px/1.3 "Lora", Georgia, serif; }
 
 footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
@@ -260,65 +273,81 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .ir, .cp, .hi, .now { min-height: 272px; }
   .cp { grid-column: 1 / 4; grid-row: auto; }
   .hi { grid-column: 4 / 7; grid-row: auto; }
+  .sheet { left: 26px; }   /* the column's edge: in line with the words instead of poking into the gutter */
+  .draft { right: 0; }
 }
-/* Phones on their side: a shorter CMS Picker, its brick smaller and anchored to the right, its watermark smaller */
+/* Narrower desktops: the CMS Picker's tile is wider than its cards need, so its podium moves out from under them into
+   the open space, centred above the words */
+@media (min-width: 861px) and (max-width: 1279px) {
+  .cms .wm { width: 460px; height: 460px; left: -40px; top: -86px; }
+}
+/* Phones on their side: a shorter CMS Picker, its brick smaller, anchored to the right and filling the tile (its top
+   cards still poking out), its watermark over the name */
 @media (min-width: 600px) and (max-width: 860px) {
   .cms { min-height: 300px; }
   .cms .txt { max-width: 250px; }
-  .pcs { left: auto; right: 310px; top: 46px; translate: 100% 0; --rest: rotate(-10deg) scale(0.66); --hover: rotate(-10deg) scale(0.66) translate(-6px, -6px); }
-  .cms .wm { width: 180px; height: 180px; left: 31px; top: -8px; }
+  .pcs { left: auto; right: 357px; top: 42px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
+  .cms .wm { width: 260px; height: 260px; left: -20px; top: -50px; rotate: none; }   /* upright, over the name */
 }
 /* The narrowest of those: a smaller brick inside the tile, narrower words, and room for Say hi's three lines */
 @media (min-width: 600px) and (max-width: 699px) {
   .cms .txt { max-width: 230px; }
-  .pcs { right: 296px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
+  .pcs { right: 290px; top: 32px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
   .cp, .hi { min-height: 304px; }
+  .cp .wm { top: 90px; }   /* the words take a third line here, so the sheet and watermark start lower */
+  .sheet { top: 160px; }
 }
-/* Too narrow for the output list beside the editor, or for the notes beside the words: the list goes, and the
-   notes stack above the words */
+/* Too narrow for the output list beside the editor, or for the updates beside the words: the list goes and the editor
+   grows into its room, and the updates run across the tile under the words */
+@media (min-width: 600px) and (max-width: 759px) {
+  .ed { left: 290px; right: 26px; width: auto; min-width: 250px; }
+  .ed-photo { height: 160px; }
+  .crop { height: 136px; }
+}
 @media (max-width: 759px) {
   .outs { display: none; }
+  .now .wm { display: none; }   /* the notes fill the top of the tile here */
   .now { height: auto; }
   .now .clip { position: static; overflow: visible; }
-  .upd { position: static; width: auto; max-width: 460px; margin: 0 0 22px; }
-  .upd li:nth-child(n) { margin: 0; }
-  .upd li:nth-child(1) { rotate: -1deg; }
-  .upd li:nth-child(2) { rotate: 0.6deg; }
-  .upd li:nth-child(3) { rotate: -0.4deg; }
+  .upd { position: static; width: auto; margin: 10px 0 -10px; }   /* under the words; the last row's padding is the tile's */
 }
-/* One column (phones upright): each tile only as tall as its piece and words, the pieces a little smaller and
-   centred; no watermarks */
+/* One column (phones upright): each tile only as tall as its piece and words, each piece poking a little out of its
+   tile as on desktop; no watermarks */
 @media (max-width: 599px) {
   .grid > * { grid-column: 1 / -1 !important; }
   .wm { display: none; }
   .cms, .ir, .cp, .hi { min-height: 0; }
-  .cms { overflow: hidden; }   /* the smaller brick stays inside the tile */
   .cms .txt { margin-top: 186px; }   /* room for the brick above the words */
-  .pcs { left: 14px; top: 30px; --rest: rotate(-10deg) scale(0.6); --hover: var(--rest); }
-  /* the editor and the sheet follow their words; a negative margin takes back the room their scaling frees */
+  .pcs { left: 14px; top: 31px; --rest: rotate(-10deg) scale(0.6); --hover: var(--rest); }   /* its top cards poke out, as on desktop */
+  /* the editor and the sheet follow their words: the editor at the tile's full width, inside it, and the sheet
+     centred, a negative margin taking back the room its scaling frees */
   .ir .clip { position: static; order: 1; overflow: visible; }
-  .ed { position: relative; display: block; left: auto; top: auto; margin: 16px auto -40px; transform-origin: top center; --rest: scale(0.82); --hover: scale(0.82) translateY(-6px); }
+  .ed { position: relative; display: block; left: auto; top: auto; width: auto; margin: 18px 0 0; --rest: none; --hover: translateY(-6px); }
+  .ed-photo { height: 170px; }
+  .crop { height: 144px; }
   .sheet { position: relative; left: auto; top: auto; margin: 26px auto -12px; width: min(258px, 100%); transform-origin: top center; --rest: rotate(-2deg) scale(0.9); --hover: rotate(-2deg) scale(0.9) translateY(-6px); }
-  .copied { left: auto; right: -12px; top: -14px; }
   .hi .txt { margin-top: 136px; }
-  .draft { right: auto; width: min(340px, calc(100% - 52px)); transform-origin: top left; --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
+  .draft { left: 20px; right: 20px; width: auto; max-width: 340px; margin: 0 auto; transform-origin: top center; --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
   .intro p { font-size: 17px; }
 }
 #updates, #hi-h { scroll-margin-top: 16px; }
 /* Phones: a smaller title and tiles, one spacing step for the grid, and only the Updates link kept in the top bar
    (Email is in Say hi) */
+/* The narrowest phones: a smaller brick, so it fits across the tile and the page never scrolls sideways */
+@media (max-width: 374px) {
+  .pcs { left: calc(50% - 130px); --rest: rotate(-10deg) scale(0.54); }   /* centred: the tilted brick is 275px across here, its box starting 8px left of its corner */
+}
 @media (max-width: 520px) {
   .jsal-top nav a:not([href="#updates"]) { display: none; }
   .grid { gap: 28px; }
   .roles span + span::before { margin: 0 8px; }
   .intro h1 { font-size: 40px; }
   .tile { padding: 20px; }
-  .draft { left: 20px; width: calc(100% - 40px); }
   footer { margin-top: 32px; }
 }
 /* Pointing at a tile (or focusing it) plays what its tool does three times; on touch screens once, the
    first time the tile comes into view (the script below sets .play). The cards wave with none singled out, the crop
-   box slides the one way the tool lets it, the clean HTML and the email type themselves. */
+   box slides the one way the tool lets it, the formatted text wipes into its HTML and the email types itself. */
 @media (prefers-reduced-motion: no-preference) {
   .pc { --i: 0; --d: calc((var(--i) * 2 + var(--r, 0)) * 70ms); }
   .pc:nth-child(2) { --i: 1; }
@@ -335,10 +364,12 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .outs .row:nth-child(4) { --k: ir-r3; }
   .outs .row:nth-child(5) { --k: ir-r4; }
   .outs-head span { --k: ir-r5; }
-  .cp:is(:hover, :focus-visible, .play) .sheet .ln { animation: var(--k, cp-l1) 3.4s steps(22, end) 2.88 both; }   /* style: allow (the home pictures play) */
-  .sheet .ln:nth-child(2) { --k: cp-l2; }
-  .sheet .ln:nth-child(3) { --k: cp-l3; }
-  .cp:is(:hover, :focus-visible, .play) .copied { animation: cp-copied 3.4s ease-out 2.88 both; }   /* style: allow (the home pictures play) */
+  .cp:is(:hover, :focus-visible, .play) :is(.tx, .sw span), .cp:is(:hover, :focus-visible, .play) .views::after, .cp:is(:hover, :focus-visible, .play) .sw::before { animation: var(--k) 3.4s ease-in-out 2.88 both; }   /* style: allow (the home pictures play) */
+  .tx { --k: cp-tx; }
+  .views::after { --k: cp-line; }
+  .sw::before { --k: cp-thumb; }
+  .sw .t { --k: cp-t; }
+  .sw .h { --k: cp-h; }
   .hi:is(.play, :has(.hi-mail:is(:hover, :focus-visible))) .draft .body i { animation: hi-type 3.6s steps(41, end) 2.9 both; }   /* style: allow (the home pictures play) */
 }
 @keyframes pc-wave { 0%, 36%, 100% { translate: 0 0; } 16% { translate: 0 -9px; } }
@@ -348,10 +379,13 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes ir-r3 { 0%, 25% { opacity: 0; translate: -8px 0; } 35%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
 @keyframes ir-r4 { 0%, 33% { opacity: 0; translate: -8px 0; } 43%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
 @keyframes ir-r5 { 0%, 42% { opacity: 0; translate: -8px 0; } 52%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
-@keyframes cp-l1 { 0% { clip-path: inset(0 100% 0 0); } 16%, 88% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
-@keyframes cp-l2 { 0%, 13% { clip-path: inset(0 100% 0 0); } 29%, 88% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
-@keyframes cp-l3 { 0%, 26% { clip-path: inset(0 100% 0 0); } 42%, 88% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
-@keyframes cp-copied { 0%, 46% { opacity: 0; scale: 0.6; } 54% { opacity: 1; scale: 1.12; } 60%, 88% { opacity: 1; scale: 1; } 100% { opacity: 0; scale: 1; } }
+/* Clean Paste: Text, the wipe into HTML (the switch moving with it), a hold, then the text fades back for the next loop;
+   the third loop stops at 88%, on the HTML */
+@keyframes cp-tx { 0%, 30% { clip-path: inset(0); opacity: 1; } 58%, 88% { clip-path: inset(0 0 0 100%); opacity: 1; } 88.1% { clip-path: inset(0); opacity: 0; } 100% { clip-path: inset(0); opacity: 1; } }
+@keyframes cp-line { 0%, 29% { left: 0; opacity: 0; } 31% { left: 0; opacity: 1; } 58% { left: 100%; opacity: 1; } 62%, 100% { left: 100%; opacity: 0; } }
+@keyframes cp-thumb { 0%, 38% { translate: 0 0; } 46%, 88% { translate: 44px 0; } 96%, 100% { translate: 0 0; } }
+@keyframes cp-t { 0%, 38% { color: var(--jsal-selected-ink); } 46%, 88% { color: var(--jsal-muted); } 96%, 100% { color: var(--jsal-selected-ink); } }
+@keyframes cp-h { 0%, 38% { color: var(--jsal-muted); } 46%, 88% { color: var(--jsal-selected-ink); } 96%, 100% { color: var(--jsal-muted); } }
 @keyframes hi-type { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .tile, .obj, .cta a { transition: none; }
@@ -381,7 +415,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
     <!-- App tiles (data-app marks the ones that open a tool): the pictures are decoration, hidden from screen readers -->
     <a class="tile cms" href="/cms-picker/" data-app>
       <div class="clip" aria-hidden="true">
-        <svg class="wm" viewBox="0 0 32 32" width="280" height="280"><path class="s" d="M9 19v5M16 14v10M23 21v3" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path class="g" d="M16 4.5l3 3-3 3-3-3z"/></svg>
+        <svg class="wm" viewBox="0 0 32 32" width="280" height="280"><path class="s" d="M9.21 23.35Q7.95 23.35 7.95 22.09L7.95 17.96Q7.95 16.7 9.21 16.7L11.59 16.7Q12.85 16.7 12.85 15.44L12.85 14.46Q12.85 13.2 14.11 13.2L17.89 13.2Q19.15 13.2 19.15 14.46L19.15 17.89Q19.15 19.15 20.41 19.15L22.79 19.15Q24.05 19.15 24.05 20.41L24.05 22.09Q24.05 23.35 22.79 23.35zM12.85 16.7v6.65M19.15 19.15v4.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M16 6.9l2.1 2.1-2.1 2.1-2.1-2.1z"/></svg>
       </div>
       <span class="obj pcs" aria-hidden="true">
         <span><span class="pc pc-light p-wordpress"><i style="--logo: url(/cms-picker/logos/wordpress.svg)"></i></span><span class="pc p-wix"><i class="wide wix" style="--logo: url(/cms-picker/logos/wix.svg)"></i></span><span class="pc p-substack"><i style="--logo: url(/cms-picker/logos/substack.svg)"></i></span><span class="pc p-shopify"><i style="--logo: url(/cms-picker/logos/shopify.svg)"></i></span></span>
@@ -397,7 +431,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 
     <a class="tile ir" href="/image-resizer/" data-app>
       <div class="clip" aria-hidden="true">
-        <svg class="wm" viewBox="0 0 32 32" width="180" height="180"><mask id="wm-ir-cut"><rect width="32" height="32" fill="#fff"/><path d="M22.5 16.6l5.9 5.9-5.9 5.9-5.9-5.9z"/></mask><path class="s" d="M6 6h14v14H6z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" mask="url(#wm-ir-cut)"/><path class="g" d="M22.5 18l4.5 4.5-4.5 4.5-4.5-4.5z"/></svg>
+        <svg class="wm" viewBox="0 0 32 32" width="180" height="180"><path class="s" d="M8.65 10.4h14.7v11.9h-14.7zM8.65 19.5l4.55-4.55 3.5 3.5 2.1-2.1 4.55 4.55" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M20.2 11.73l1.61 1.61-1.61 1.61-1.61-1.61z"/></svg>
         <span class="obj paper ed">
           <span class="ed-head mono">mugs.jpg<span>6720 × 4480</span></span>
           <span class="ed-photo"><img src="/img/home/mugs.webp" alt="" width="392" height="268"><span class="crop"><i></i><i></i><i></i><i></i></span></span>
@@ -423,9 +457,9 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
         <p>Paste from Word or Google Docs, get clean HTML.</p>
       </div>
       <div class="clip" aria-hidden="true">
-        <svg class="wm" viewBox="0 0 32 32" width="170" height="170"><path class="s" d="M8 10h16M8 16h13M8 22h9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path class="g" d="M22.5 18.5l2.5 2.5-2.5 2.5-2.5-2.5z"/></svg>
+        <svg class="wm" viewBox="0 0 32 32" width="170" height="170"><path class="s" d="M12.85 9.7H10.4v13.3h11.2V9.7h-2.45M13.2 15.3h5.6M13.2 19.15h3.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M16 7.25l2.1 2.1-2.1 2.1-2.1-2.1z"/></svg>
       </div>
-      <span class="obj paper sheet" aria-hidden="true"><span class="mono">CLEAN HTML</span><code><span class="ln"><i>&lt;h2&gt;</i>Spring menu<i>&lt;/h2&gt;</i></span><span class="ln"><i>&lt;p&gt;</i>Our new dishes are here.<i>&lt;/p&gt;</i></span><span class="ln"><i>&lt;ul&gt;&lt;li&gt;</i>Spring pea risotto<i>&lt;/li&gt;</i></span></code><span class="obj copied"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>Copied</span></span>
+      <span class="obj paper sheet" aria-hidden="true"><span class="sw"><span class="t">Text</span><span class="h">HTML</span></span><span class="views"><span class="tx"><b>Spring menu</b><span>Our new dishes are here.</span><span class="li">Spring pea risotto</span></span><code><span class="ln"><i>&lt;h2&gt;</i>Spring menu<i>&lt;/h2&gt;</i></span><span class="ln"><i>&lt;p&gt;</i>Our new dishes are here.<i>&lt;/p&gt;</i></span><span class="ln"><i>&lt;ul&gt;&lt;li&gt;</i>Spring pea risotto<i>&lt;/li&gt;</i></span></code></span></span>
     </a>
 
     <!-- Say hi: the heading's link (email) covers the tile; the draft above it is decoration -->
@@ -444,18 +478,19 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 
     <!-- Site updates: the newest change in each of the three most recently changed parts of the site -->
     <section id="updates" class="tile now" aria-labelledby="updates-h">
-      <div class="clip">
-      <!-- updates:start (the latest changes, written from the changelog; never edited by hand) -->
-      <ul class="upd">
-        <li data-sec="cms-picker"><span class="upd-name"><img class="upd-ico" src="/img/icons/cms-picker.svg" alt="" width="28" height="28">CMS Picker</span><time class="mono" datetime="2026-11-01">Nov 1</time><span class="upd-line">Tick every need you have</span></li>
-        <li data-sec="redirect-import"><span class="upd-name"><img class="upd-ico" src="/img/icons/redirect-import.svg" alt="" width="28" height="28">Redirect Import</span><time class="mono" datetime="2026-11-01">Nov 1</time><span class="upd-line">New: a sheet to a redirect file</span></li>
-        <li data-sec="off-the-clock"><span class="upd-name"><img class="upd-ico" src="/img/icons/off-the-clock.svg" alt="" width="28" height="28">Off the clock</span><time class="mono" datetime="2026-11-01">Nov 1</time><span class="upd-line">A WoW bag, real icons and trophies</span></li>
-      </ul>
-      <!-- updates:end -->
-      </div>
       <div class="txt">
         <h2 id="updates-h">Updates</h2>
         <p>What changed on the site, newest first. <a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>
+      </div>
+      <div class="clip">
+      <svg class="wm" viewBox="0 0 32 32" width="260" height="260" aria-hidden="true"><path class="s" d="M10.5 11V9.5a2.5 2.5 0 0 1 2.5-2.5h11.5a2.5 2.5 0 0 1 2.5 2.5V21a2.5 2.5 0 0 1-2.5 2.5h-1.5M8 11h12.5a2.5 2.5 0 0 1 2.5 2.5v10.5a2.5 2.5 0 0 1-2.5 2.5H8a2.5 2.5 0 0 1-2.5-2.5V13.5A2.5 2.5 0 0 1 8 11zM9.5 18h10M9.5 22h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M10.6 12.7l1.8 1.8-1.8 1.8-1.8-1.8z"/></svg>
+      <!-- updates:start (the latest changes, written from the changelog; never edited by hand) -->
+      <ul class="upd">
+        <li data-sec="site"><span class="upd-name"><img class="upd-ico" src="/img/icons/jsal-io.svg" alt="" width="28" height="28">Site</span><time class="mono" datetime="2026-11-02">Nov 2</time><span class="upd-line">New tool icons and bigger pictures</span></li>
+        <li data-sec="cms-picker"><span class="upd-name"><img class="upd-ico" src="/img/icons/cms-picker.svg" alt="" width="28" height="28">CMS Picker</span><time class="mono" datetime="2026-11-01">Nov 1</time><span class="upd-line">Tick every need you have</span></li>
+        <li data-sec="redirect-import"><span class="upd-name"><img class="upd-ico" src="/img/icons/redirect-import.svg" alt="" width="28" height="28">Redirect Import</span><time class="mono" datetime="2026-11-01">Nov 1</time><span class="upd-line">New: a sheet to a redirect file</span></li>
+      </ul>
+      <!-- updates:end -->
       </div>
     </section>
   </main>
@@ -481,6 +516,6 @@ if (matchMedia('(hover: none)').matches && matchMedia('(prefers-reduced-motion: 
   document.querySelectorAll('.cms, .ir, .cp, .hi').forEach((tile) => seen.observe(tile));
 }
 </script>
-<script src="/nav.js?v=829de57a" defer></script>
+<script src="/nav.js?v=4ae8b3c7" defer></script>
 </body>
 </html>

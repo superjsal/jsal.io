@@ -106,25 +106,25 @@
       else el.remove();
     }
   }
-  // Each app's icon is drawn like the logo, on its 32-unit grid: round-ended strokes (.l) and the gold gem (.g) used once
-  // for what the tool does, on a tile in the tool's colour (--jsal-tool-*). Home is the logo's own tile, and Off the
-  // clock a loot bag holding the gem, on /play/'s green.
+  // Each app's icon is a small line drawing of what it does on its 32-unit grid: round-ended lines (.l), a solid shape
+  // where one is needed (.f) and the gold gem (.g) used once, on a tile in the tool's colour (--jsal-tool-*). Home is
+  // the logo's own tile, and Off the clock a loot bag holding the gem, on /play/'s green.
   const APPS = [   // the homepage's order: CMS Picker first, the team's Playbook last
     { href: '/cms-picker/', name: 'CMS Picker', tile: 'var(--jsal-tool-cms)',
-      icon: '<path class="l" d="M9 19v5M16 14v10M23 21v3" stroke-width="4"/><path class="g" d="M16 4.5l3 3-3 3-3-3z"/>' },
+      icon: '<path class="l" d="M9.21 23.35Q7.95 23.35 7.95 22.09L7.95 17.96Q7.95 16.7 9.21 16.7L11.59 16.7Q12.85 16.7 12.85 15.44L12.85 14.46Q12.85 13.2 14.11 13.2L17.89 13.2Q19.15 13.2 19.15 14.46L19.15 17.89Q19.15 19.15 20.41 19.15L22.79 19.15Q24.05 19.15 24.05 20.41L24.05 22.09Q24.05 23.35 22.79 23.35zM12.85 16.7v6.65M19.15 19.15v4.2" stroke-width="2.2"/><path class="g" d="M16 6.9l2.1 2.1-2.1 2.1-2.1-2.1z"/>' },
     { href: '/formatter/', name: 'Clean Paste', tile: 'var(--jsal-tool-paste)',
-      icon: '<path class="l" d="M8 10h16M8 16h13M8 22h9" stroke-width="3"/><path class="g" d="M22.5 18.5l2.5 2.5-2.5 2.5-2.5-2.5z"/>' },
+      icon: '<path class="l" d="M12.85 9.7H10.4v13.3h11.2V9.7h-2.45M13.2 15.3h5.6M13.2 19.15h3.5" stroke-width="2.2"/><path class="g" d="M16 7.25l2.1 2.1-2.1 2.1-2.1-2.1z"/>' },
     { href: '/image-resizer/', name: 'Image Resizer', tile: 'var(--jsal-tool-resize)',
-      icon: '<path class="l" d="M6 6h14v14H6z" stroke-width="3"/><path class="g cut" d="M22.5 18l4.5 4.5-4.5 4.5-4.5-4.5z"/>' },
+      icon: '<path class="l" d="M8.65 10.4h14.7v11.9h-14.7zM8.65 19.5l4.55-4.55 3.5 3.5 2.1-2.1 4.55 4.55" stroke-width="2.2"/><path class="g" d="M20.2 11.73l1.61 1.61-1.61 1.61-1.61-1.61z"/>' },
     { href: '/redirects/', name: 'Redirect Import', tile: 'var(--jsal-tool-redirect)',
-      icon: '<path class="l" d="M6 16h13M14 11l5 5-5 5" stroke-width="3"/><path class="g" d="M25 13l3 3-3 3-3-3z"/>' },
+      icon: '<path class="l" d="M9.35 8.65H22.65a2.45 2.45 0 0 1 2.45 2.45V20.9a2.45 2.45 0 0 1-2.45 2.45H9.35a2.45 2.45 0 0 1-2.45-2.45V11.1a2.45 2.45 0 0 1 2.45-2.45zM10.75 20.55V18.94C10.75 16.28 12.15 14.95 14.6 14.95H15.3" stroke-width="2.2"/><path class="f" d="M19.36 14.95L15.16 11.87V18.03z"/><path class="g" d="M21.67 13.27l1.68 1.68-1.68 1.68-1.68-1.68z"/>' },
     { href: '/ic/', name: 'Platform Playbook', tag: 'Team', tile: 'var(--jsal-tool-playbook)',
-      icon: '<path class="l" d="M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11" stroke-width="3"/><path class="g" d="M8.5 19.5l3 3-3 3-3-3z"/>' },
+      icon: '<path class="l" d="M16 12.15C13.9 10.75 11.1 10.4 8.65 11.1v10.5c2.45-0.7 5.25-0.35 7.35 1.05 2.1-1.4 4.9-1.75 7.35-1.05V11.1C20.9 10.4 18.1 10.75 16 12.15zM16 12.15v10.5" stroke-width="2.2"/><path class="g" d="M16 6.48l1.82 1.82-1.82 1.82-1.82-1.82z"/>' },
   ];
   const HOME = { href: '/', name: 'jsal.io home', tile: 'var(--jsal-tool-home)', edge: true,
     icon: '<path class="l" d="M20 15V20a4.5 4.5 0 0 1-9 0" stroke-width="4"/><path class="g" d="M20 5l3 3-3 3-3-3z"/>' };
   const PLAY = { href: '/play/', name: 'Off the clock', tile: 'var(--jsal-tool-play)',
-    icon: '<path class="l" d="M13.6 10.6 12.4 7h7.2l-1.2 3.6M13.6 10.6C8.8 12.5 6.5 16 6.5 19.6c0 3.6 3 5.6 9.5 5.6s9.5-2 9.5-5.6c0-3.6-2.3-7.1-7.1-9zM13.4 10.6h5.2" stroke-width="2.8"/><path class="g" d="M16 15.2l3.4 3.4-3.4 3.4-3.4-3.4z"/>' };
+    icon: '<path class="l" d="M14.18 12.08 13.34 9.35h5.32l-0.84 2.73M14.18 12.08C10.82 13.48 9 16 9 18.66c0 2.66 2.24 4.13 7 4.13s7-1.47 7-4.13c0-2.66-1.82-5.18-5.18-6.58zM14.04 12.08h3.92" stroke-width="2.2"/><path class="g" d="M16 15.44l2.38 2.38-2.38 2.38-2.38-2.38z"/>' };
   // An app's icon on its tile, or a plain one (home, Off the clock) in the row's ink
   const appIcon = (a) => `<svg viewBox="0 0 32 32" width="${a.tile ? 32 : 22}" height="${a.tile ? 32 : 22}" aria-hidden="true"${a.tile ? ` style="--tile: ${a.tile}${a.edge ? '; --tile-edge: var(--jsal-tool-edge)' : ''}"` : ''}>${a.tile ? '<rect class="t" x=".5" y=".5" width="31" height="31" rx="6.5"/>' : ''}${a.icon}</svg>`;
   // Page transitions (/shell.css): while one plays the page is a picture, so a click straight after arriving did
@@ -281,6 +281,11 @@
     if (step === CODE.length) { step = 0; unlock('secret'); }
   });
 
+  // The page's address for the top bar on paper (/shell.css), as jsal.io gives it, so a printout says where it's from;
+  // none on the home page, where it would only repeat the name
+  const topBar = document.querySelector('.jsal-top'), canon = document.querySelector('link[rel="canonical"]');
+  if (topBar && canon && new URL(canon.href).pathname !== '/') topBar.dataset.jsalAddress = canon.href.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
   // Theme button: flips light/dark and remembers it for every app (each page applies it in its <head>, so no flash);
   // apps that draw with theme colours can listen for the "jsal-theme" event
   const themeBtn = document.querySelector('[data-jsal-theme]');
@@ -334,11 +339,11 @@
     .jsal-menu .home .ico { background: none; color: var(--jsal-muted); }
     .jsal-menu .ico .l { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
     .jsal-menu .ico .g { fill: currentColor; }
+    .jsal-menu .ico .f { fill: currentColor; stroke: currentColor; stroke-width: 1.45; stroke-linejoin: round; }   /* an arrowhead, its points rounded */
     /* jsal-ico-tile, not "tile": the menu sits on every page, and the home page's bento boxes are .tile */
     .jsal-menu .ico.jsal-ico-tile { background: none; color: var(--jsal-tool-ink); }   /* outranks the home rows' muted ink */
     .jsal-menu .jsal-ico-tile .t { fill: var(--tile); stroke: var(--tile-edge, none); }
     .jsal-menu .jsal-ico-tile .g { fill: var(--jsal-tool-gem); }
-    .jsal-menu .jsal-ico-tile .cut { stroke: var(--tile); stroke-width: 2.4; paint-order: stroke; }   /* the gem cuts its gap where it overlaps the frame */
   </style>`);
 
   const isHere = (href) => href !== '/' && here.startsWith(href);
@@ -482,10 +487,11 @@
   if (document.prerendering) document.addEventListener('prerenderingchange', replayEarly, { once: true }); else replayEarly();
 
   // The logo on the first page of a visit: it opens as the tab icon's mark, the short j with the deep hook wearing the
-  // gem as its dot (folded by the head script before the first paint). The gem lifts off and arcs over the name to land
-  // as the full stop, with "sal" showing in its wake, while the j's curve shortens into the name's j and its own dot
-  // fills in; then "io" fades in and a light runs across the gem and on over "io". Once per visit; a page loaded ahead
-  // shows the name as it is.
+  // gem as its dot (folded by the head script before the first paint). The j's curve shortens into the name's j as its
+  // stem rises into the gem; the stem's top pinches off as the j's own dot and knocks the gem over the name to land as
+  // the full stop, with "sal" showing in its wake, while the dot overshoots its place and settles. "io" slides out of
+  // the landed gem, then a light runs across the gem and on over "io". Once per visit; a page loaded ahead shows the
+  // name as it is.
   (() => {
     const root = document.documentElement;
     const unfold = () => root.classList.remove('jsal-intro');
@@ -515,36 +521,64 @@
       // from the icon's j (a half-circle hook) to the name's j (taller, its hook turning a third past the quarter), round
       // ends throughout. Its last frame is the name's path exactly, which then shows in its place.
       const n = (v) => Math.round(v * 100) / 100;
+      const quad = (a, c, b, f) => (1 - f) ** 2 * a + 2 * (1 - f) * f * c + f * f * b;
       const foldD = fold.getAttribute('d'), foldW = fold.getAttribute('stroke-width');
-      const shape = (m) => {
+      const dotY = dot.getAttribute('cy'), dotR = dot.getAttribute('r');
+      const shape = (m, top) => {
         const x = 585.5, r = lerp(167.6, 100, m), y = lerp(638, 780, m), th = lerp(Math.PI, (2 * Math.PI) / 3, m);
-        const top = lerp(452, 277.5, m), w = lerp(149, 147, m);
-        const ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th);
+        const w = lerp(149, 147, m), ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th);
         fold.setAttribute('d', `M${x} ${n(top)}V${n(y)}A${n(r)} ${n(r)} 0 0 1 ${n(ex)} ${n(ey)}`);
         fold.setAttribute('stroke-width', n(w));
       };
+      // The stem's top meets the gem's lowest point at 376.5 (its round end reaching 303). Once it pinches off, the dot
+      // shoots up past its place (57.5) to -62.5, drops a little below it to 87.5, close enough to the stem to stay
+      // clear of it at 150% scaling, and rises back; a neck joins it to the stem for a moment as it pinches
+      const HIT = 520;
+      const shot = (tau) => {
+        if (tau < 280) return lerp(376.5, -62.5, 1 - (1 - tau / 280) ** 2);
+        if (tau < 460) return lerp(-62.5, 87.5, ease((tau - 280) / 180));
+        return lerp(87.5, 57.5, out(clamp((tau - 460) / 200)));
+      };
+      const neck = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      neck.style.display = 'none';
+      fold.after(neck);
+      // "io" slides out from behind the gem's right point, measured from where it sits
+      const ioLeft = io.getBoundingClientRect().left;
       logo.classList.add('jsal-unfolding');
-      // t in ms: 300 still, the gem lifts (300-500), arcs over the name (480-1100) and lands with a small swell
-      // (1100-1260); the j reshapes (560-1040) and its dot fills in over the second half of that; the arrow slides
-      // out (480-1000) and "io" fades in behind it (1000-1320)
+      // t in ms: 300 still; the j's curve reshapes (300-900) while its stem rises, speeding up (360-520), until its top
+      // touches the gem. The top pinches off as the dot (520), which flies up and back down into place (by 1180) and
+      // throws the gem over the name on a spinning arc (520-1120) to land with a small swell (1120-1280); "io" slides
+      // out of it (1110-1320). The arrow slides out meanwhile (480-1000).
       const draw = (t) => {
-        const m = ease(clamp((t - 560) / 480));
-        shape(m);
-        dot.style.opacity = clamp((m - 0.55) / 0.45);
-        const lift = out(clamp((t - 300) / 200)), f = ease(clamp((t - 480) / 620));
-        const ax = x0, ay = y0 - 0.09 * em * lift, cx = x0 / 2, cy = -1.08 * em;   // the arc: from above the j, high over "sal"
-        const gx = (1 - f) ** 2 * ax + 2 * (1 - f) * f * cx;
-        const gy = (1 - f) ** 2 * ay + 2 * (1 - f) * f * cy;
-        const scale = lerp(0.657, 1, f) * (1 + 0.1 * Math.sin(Math.PI * clamp((t - 1100) / 160)));
+        const tau = t - HIT;
+        let top = 452 - 75.5 * clamp((t - (HIT - 160)) / 160) ** 2;
+        if (tau < 0) dot.style.opacity = 0;
+        else {
+          const y = shot(tau), w = 147 * (1 - clamp(tau / 110)) ** 1.5;
+          top = lerp(376.5, 277.5, out(clamp(tau / 300)));
+          dot.style.opacity = 1;
+          dot.setAttribute('cy', n(y));
+          dot.setAttribute('r', n(lerp(73.5, 77, out(clamp(tau / 200)))));
+          neck.style.display = w > 1 ? '' : 'none';
+          neck.setAttribute('d', `M585.5 ${n(y)}V${n(top)}`);
+          neck.setAttribute('stroke-width', n(w));
+        }
+        shape(ease(clamp((t - 300) / 600)), top);
+        // the gem's arc: from its place on the j, steeply up and high over "sal"
+        const f = clamp(tau / 600);
+        const gx = quad(x0, 0.7 * x0, 0, f), gy = quad(y0, -1.5 * em, 0, f);
+        const scale = lerp(0.657, 1, f) * (1 + 0.12 * Math.sin(Math.PI * clamp(tau / 90)))
+          * (1 + 0.1 * Math.sin(Math.PI * clamp((tau - 600) / 160)));
         stop.style.transform = `translate(${gx}px, ${gy}px) rotate(${180 * f}deg) scale(${scale})`;
         // "sal" shows just behind the gem through a soft edge (none once it lands), so no letter slips out ahead of it
         const edge = home + gx - 0.6 * 0.17 * em * scale - salBox.left, soft = 0.35 * em * (1 - f);
         sal.style.webkitMaskImage = sal.style.maskImage = `linear-gradient(90deg, black ${edge - soft}px, transparent ${edge}px)`;
-        const o = ease(clamp((t - 1000) / 320));
-        io.style.opacity = o;
-        io.style.transform = `translateX(${-(1 - o) * 0.12 * em}px)`;
-        // the arrow slides out ahead of the name, reaching its place as "io" fades in behind it, still turned over if
-        // the menu was opened meanwhile
+        const o = out(clamp((t - 1110) / 210)), dx = -(1 - o) * 0.55 * em, cut = home + gx + 0.17 * em * scale - (ioLeft + dx);
+        io.style.opacity = t < 1110 ? 0 : 1;
+        io.style.transform = `translateX(${dx}px)`;
+        io.style.webkitMaskImage = io.style.maskImage = `linear-gradient(90deg, transparent ${cut}px, black ${cut + 0.04 * em}px)`;
+        // the arrow slides out ahead of the name, reaching its place before "io" comes out behind it, still turned over
+        // if the menu was opened meanwhile
         const c = ease(clamp((t - 480) / 520));
         if (caret) caret.style.transform = `translateX(${-(1 - c) * caretFrom}px)` + (logo.getAttribute('aria-expanded') === 'true' ? ' rotate(180deg)' : '');
       };
@@ -558,9 +592,12 @@
         // Settle: the name's own path takes over from the reshaped one (the same shape), the short path goes back to
         // the fold, and the inline styles go; "sal"'s mask is left fully open as drawn, so no pixel changes. Then the glint
         stop.style.transform = io.style.transform = io.style.opacity = dot.style.opacity = '';
+        io.style.webkitMaskImage = io.style.maskImage = '';
         if (caret) caret.style.transform = '';
         logo.classList.remove('jsal-unfolding');
         fold.setAttribute('d', foldD); fold.setAttribute('stroke-width', foldW);
+        dot.setAttribute('cy', dotY); dot.setAttribute('r', dotR);
+        neck.remove();
         setTimeout(() => logo.classList.add('jsal-glint'), 130);
         setTimeout(() => logo.classList.remove('jsal-glint'), 980);
       };
