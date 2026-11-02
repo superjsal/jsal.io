@@ -81,11 +81,13 @@
     // Achievement pop-ups (bottom centre) sit above the card while it's open
     document.documentElement.style.setProperty('--jsal-consent-lift', `${card.offsetHeight + 12}px`);
   };
-  // Google's script: with a saved "granted", or outside Europe unless declined; in Europe after Allow. Fetched once idle
+  // Google's script: with a saved "granted", or outside Europe unless declined; in Europe after Allow. Fetched once idle.
+  // Only on the live site: a copy served anywhere else (a local preview, the checks) never counts as a visit
+  const live = /(^|\.)jsal\.io$/.test(location.hostname);
   let gaLoaded = false;
   function loadGA() {
     const c = saved();
-    if (gaLoaded || typeof window.gtag !== 'function' || !(c === 'granted' || (!europe && c !== 'denied'))) return;
+    if (gaLoaded || !live || typeof window.gtag !== 'function' || !(c === 'granted' || (!europe && c !== 'denied'))) return;
     gaLoaded = true;
     const fetchIt = () => (window.requestIdleCallback || setTimeout)(() => {
       const s = document.createElement('script');
