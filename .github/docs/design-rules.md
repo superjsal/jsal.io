@@ -149,7 +149,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
     tools' own colours (`--jsal-surface`, ink and lines, so it changes with the theme as the tool does): the CMS
     Picker a tilted brick of one card per platform, each in that platform's own colours, logos only; the Image
     Resizer its crop editor (the box spans the photo at the output's shape and slides one way, as the tool's
-    does) and output list; Clean Paste its clean HTML with a "Copied" status; Say hi an email draft; Updates the
+    does) and output list; Clean Paste its Text | HTML switch over a short post, resting on the HTML; Say hi an email draft; Updates the
     newest change in each of the three most recently changed parts as a plain list under its heading (rows with a
     rule between them, never cards, as they aren't links; nothing tilted, as people read them), written from the
     changelog by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
@@ -209,7 +209,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.
 - **The home page's pictures move only when asked:** pointing at a tile or focusing it plays what its tool does
   three times, then it rests as the still picture (the cards wave with none singled out, the crop box slides the
-  one way the tool lets it, the clean HTML and the email type themselves). Touch screens play each one once, when
+  one way the tool lets it, the formatted text wipes into its HTML and the email types itself). Touch screens play each one once, when
   its tile reaches the middle of the screen. Updates stays still.
 - Nothing moves on its own for more than 5 seconds (WCAG 2.2.2): the home pictures' one play on touch screens takes
   under 3 seconds.

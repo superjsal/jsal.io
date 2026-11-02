@@ -196,16 +196,26 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .outs .row span { display: flex; flex-direction: column; font-size: 11px; line-height: 1.4; color: var(--jsal-muted); }   /* style: allow (miniature) */
 .outs .row b { color: var(--jsal-ink); }
 
-/* Clean Paste: the clean HTML it gives back, straight and poking past the tile's left edge so the watermark shows,
-   and the status it shows once copied */
+/* Clean Paste: its Text | HTML switch over a short post, straight and poking past the tile's left edge so the watermark
+   shows. At rest it shows the HTML; playing, the formatted text comes first and a gold line wipes it into its HTML. */
 .cp { --bg: var(--t-cp); --ink: var(--t-cp-ink); }
 .cp .wm { width: 354px; height: 354px; right: -134px; top: 64px; }   /* under the words, off the right edge */
 .sheet { left: -12px; top: 138px; z-index: 1; width: 258px; padding: 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
-.sheet span { color: var(--jsal-muted); }
-.sheet code { font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
+/* the tool's switch in miniature: a sunk track and a gold thumb that slides under the picked view */
+.sw { position: relative; display: flex; align-self: flex-start; padding: 2px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
+.sw::before { content: ""; position: absolute; left: 2px; top: 2px; bottom: 2px; width: 44px; border-radius: var(--jsal-radius-sm); background: var(--jsal-selected-bg); box-shadow: var(--jsal-selected-ring); translate: 44px 0; }
+.sw span { position: relative; width: 44px; padding: 2px 0; text-align: center; font: 600 11px/1.4 var(--jsal-font); color: var(--jsal-muted); }   /* style: allow (miniature) */
+.sw .h { color: var(--jsal-selected-ink); }
+/* the formatted text lies over its HTML, the same three lines, and is wiped away at rest */
+.views { position: relative; display: grid; }
+.views > * { grid-area: 1 / 1; }
+.views::after { content: ""; position: absolute; top: -4px; bottom: -4px; left: 0; width: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); opacity: 0; }
+.tx { display: flex; flex-direction: column; background: var(--jsal-surface); color: var(--jsal-ink-2); font-size: 12px; line-height: 1.6; clip-path: inset(0 0 0 100%); }
+.tx b { color: var(--jsal-ink); font: 700 14px/1.37 "Lora", Georgia, serif; }   /* one line of the code's height */
+.tx .li::before { content: "\2022"; margin-right: 7px; color: var(--jsal-muted); }
+.sheet code { color: var(--jsal-muted); font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
 .sheet code i { font-style: normal; color: var(--jsal-info); }
 .sheet .ln { display: block; }
-.copied { left: 174px; top: -10px; z-index: 2; display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 600; box-shadow: 0 6px 16px rgb(0 0 0 / 0.16); --rest: rotate(4deg); --hover: rotate(4deg) scale(1.08); }
 
 /* Say hi: a draft to the site's address, tilted and poking out at the tile's top-right corner (the row's breakout). The heading's
    link covers the whole tile, so the GitHub link sits above it. */
@@ -316,7 +326,6 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .ed-photo { height: 170px; }
   .crop { height: 144px; }
   .sheet { position: relative; left: auto; top: auto; margin: 26px auto -12px; width: min(258px, 100%); transform-origin: top center; --rest: rotate(-2deg) scale(0.9); --hover: rotate(-2deg) scale(0.9) translateY(-6px); }
-  .copied { left: auto; right: -12px; top: -14px; }
   .hi .txt { margin-top: 136px; }
   .draft { left: 20px; right: 20px; width: auto; max-width: 340px; margin: 0 auto; transform-origin: top center; --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
   .intro p { font-size: 17px; }
@@ -338,7 +347,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 }
 /* Pointing at a tile (or focusing it) plays what its tool does three times; on touch screens once, the
    first time the tile comes into view (the script below sets .play). The cards wave with none singled out, the crop
-   box slides the one way the tool lets it, the clean HTML and the email type themselves. */
+   box slides the one way the tool lets it, the formatted text wipes into its HTML and the email types itself. */
 @media (prefers-reduced-motion: no-preference) {
   .pc { --i: 0; --d: calc((var(--i) * 2 + var(--r, 0)) * 70ms); }
   .pc:nth-child(2) { --i: 1; }
@@ -355,10 +364,12 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .outs .row:nth-child(4) { --k: ir-r3; }
   .outs .row:nth-child(5) { --k: ir-r4; }
   .outs-head span { --k: ir-r5; }
-  .cp:is(:hover, :focus-visible, .play) .sheet .ln { animation: var(--k, cp-l1) 3.4s steps(22, end) 2.88 both; }   /* style: allow (the home pictures play) */
-  .sheet .ln:nth-child(2) { --k: cp-l2; }
-  .sheet .ln:nth-child(3) { --k: cp-l3; }
-  .cp:is(:hover, :focus-visible, .play) .copied { animation: cp-copied 3.4s ease-out 2.88 both; }   /* style: allow (the home pictures play) */
+  .cp:is(:hover, :focus-visible, .play) :is(.tx, .sw span), .cp:is(:hover, :focus-visible, .play) .views::after, .cp:is(:hover, :focus-visible, .play) .sw::before { animation: var(--k) 3.4s ease-in-out 2.88 both; }   /* style: allow (the home pictures play) */
+  .tx { --k: cp-tx; }
+  .views::after { --k: cp-line; }
+  .sw::before { --k: cp-thumb; }
+  .sw .t { --k: cp-t; }
+  .sw .h { --k: cp-h; }
   .hi:is(.play, :has(.hi-mail:is(:hover, :focus-visible))) .draft .body i { animation: hi-type 3.6s steps(41, end) 2.9 both; }   /* style: allow (the home pictures play) */
 }
 @keyframes pc-wave { 0%, 36%, 100% { translate: 0 0; } 16% { translate: 0 -9px; } }
@@ -368,10 +379,13 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes ir-r3 { 0%, 25% { opacity: 0; translate: -8px 0; } 35%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
 @keyframes ir-r4 { 0%, 33% { opacity: 0; translate: -8px 0; } 43%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
 @keyframes ir-r5 { 0%, 42% { opacity: 0; translate: -8px 0; } 52%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
-@keyframes cp-l1 { 0% { clip-path: inset(0 100% 0 0); } 16%, 88% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
-@keyframes cp-l2 { 0%, 13% { clip-path: inset(0 100% 0 0); } 29%, 88% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
-@keyframes cp-l3 { 0%, 26% { clip-path: inset(0 100% 0 0); } 42%, 88% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
-@keyframes cp-copied { 0%, 46% { opacity: 0; scale: 0.6; } 54% { opacity: 1; scale: 1.12; } 60%, 88% { opacity: 1; scale: 1; } 100% { opacity: 0; scale: 1; } }
+/* Clean Paste: Text, the wipe into HTML (the switch moving with it), a hold, then the text fades back for the next loop;
+   the third loop stops at 88%, on the HTML */
+@keyframes cp-tx { 0%, 30% { clip-path: inset(0); opacity: 1; } 58%, 88% { clip-path: inset(0 0 0 100%); opacity: 1; } 88.1% { clip-path: inset(0); opacity: 0; } 100% { clip-path: inset(0); opacity: 1; } }
+@keyframes cp-line { 0%, 29% { left: 0; opacity: 0; } 31% { left: 0; opacity: 1; } 58% { left: 100%; opacity: 1; } 62%, 100% { left: 100%; opacity: 0; } }
+@keyframes cp-thumb { 0%, 38% { translate: 0 0; } 46%, 88% { translate: 44px 0; } 96%, 100% { translate: 0 0; } }
+@keyframes cp-t { 0%, 38% { color: var(--jsal-selected-ink); } 46%, 88% { color: var(--jsal-muted); } 96%, 100% { color: var(--jsal-selected-ink); } }
+@keyframes cp-h { 0%, 38% { color: var(--jsal-muted); } 46%, 88% { color: var(--jsal-selected-ink); } 96%, 100% { color: var(--jsal-muted); } }
 @keyframes hi-type { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .tile, .obj, .cta a { transition: none; }
@@ -445,7 +459,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
       <div class="clip" aria-hidden="true">
         <svg class="wm" viewBox="0 0 32 32" width="170" height="170"><path class="s" d="M12.85 9.7H10.4v13.3h11.2V9.7h-2.45M13.2 15.3h5.6M13.2 19.15h3.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M16 7.25l2.1 2.1-2.1 2.1-2.1-2.1z"/></svg>
       </div>
-      <span class="obj paper sheet" aria-hidden="true"><span class="mono">CLEAN HTML</span><code><span class="ln"><i>&lt;h2&gt;</i>Spring menu<i>&lt;/h2&gt;</i></span><span class="ln"><i>&lt;p&gt;</i>Our new dishes are here.<i>&lt;/p&gt;</i></span><span class="ln"><i>&lt;ul&gt;&lt;li&gt;</i>Spring pea risotto<i>&lt;/li&gt;</i></span></code><span class="obj copied"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>Copied</span></span>
+      <span class="obj paper sheet" aria-hidden="true"><span class="sw"><span class="t">Text</span><span class="h">HTML</span></span><span class="views"><span class="tx"><b>Spring menu</b><span>Our new dishes are here.</span><span class="li">Spring pea risotto</span></span><code><span class="ln"><i>&lt;h2&gt;</i>Spring menu<i>&lt;/h2&gt;</i></span><span class="ln"><i>&lt;p&gt;</i>Our new dishes are here.<i>&lt;/p&gt;</i></span><span class="ln"><i>&lt;ul&gt;&lt;li&gt;</i>Spring pea risotto<i>&lt;/li&gt;</i></span></code></span></span>
     </a>
 
     <!-- Say hi: the heading's link (email) covers the tile; the draft above it is decoration -->
