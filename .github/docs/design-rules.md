@@ -149,7 +149,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
     tools' own colours (`--jsal-surface`, ink and lines, so it changes with the theme as the tool does): the CMS
     Picker a tilted brick of one card per platform, each in that platform's own colours, logos only; the Image
     Resizer its crop editor (the box spans the photo at the output's shape and slides one way, as the tool's
-    does) and output list; Clean Paste its Text | HTML switch over a short post, resting on the HTML; Say hi an email draft; Updates the
+    does) and output list; Clean Paste its Text | HTML switch over a short raid note, resting halfway through its wipe (the formatted text left of a gold line, its HTML right of it, as the switch reads); Say hi an email draft; Updates the
     newest change in each of the three most recently changed parts as a plain list under its heading (rows with a
     rule between them, never cards, as they aren't links; nothing tilted, as people read them), written from the
     changelog by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.

@@ -197,7 +197,9 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .outs .row b { color: var(--jsal-ink); }
 
 /* Clean Paste: its Text | HTML switch over a short post, straight and poking past the tile's left edge so the watermark
-   shows. At rest it shows the HTML; playing, the formatted text comes first and a gold line wipes it into its HTML. */
+   shows. At rest a gold line stands just past halfway, where the text's lines end, the formatted text on its left and the HTML on its right (the switch's
+   order), so the still picture shows the same words both ways; playing, the line shows all the text, wipes it all into
+   HTML and comes back. */
 .cp { --bg: var(--t-cp); --ink: var(--t-cp-ink); }
 .cp .wm { width: 354px; height: 354px; right: -134px; top: 64px; }   /* under the words, off the right edge */
 .sheet { left: -12px; top: 138px; z-index: 1; width: 258px; padding: 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
@@ -206,11 +208,11 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .sw::before { content: ""; position: absolute; left: 2px; top: 2px; bottom: 2px; width: 44px; border-radius: var(--jsal-radius-sm); background: var(--jsal-selected-bg); box-shadow: var(--jsal-selected-ring); translate: 44px 0; }
 .sw span { position: relative; width: 44px; padding: 2px 0; text-align: center; font: 600 11px/1.4 var(--jsal-font); color: var(--jsal-muted); }   /* style: allow (miniature) */
 .sw .h { color: var(--jsal-selected-ink); }
-/* the formatted text lies over its HTML, the same three lines, and is wiped away at rest */
+/* the formatted text lies over its HTML, the same three lines, wiped away up to the line */
 .views { position: relative; display: grid; }
 .views > * { grid-area: 1 / 1; }
-.views::after { content: ""; position: absolute; top: -4px; bottom: -4px; left: 0; width: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); opacity: 0; }
-.tx { display: flex; flex-direction: column; background: var(--jsal-surface); color: var(--jsal-ink-2); font-size: 12px; line-height: 1.6; clip-path: inset(0 0 0 100%); }
+.views::after { content: ""; position: absolute; top: -4px; bottom: -4px; left: 54%; width: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); }
+.tx { display: flex; flex-direction: column; background: var(--jsal-surface); color: var(--jsal-ink-2); font-size: 12px; line-height: 1.6; clip-path: inset(0 46% 0 0); }
 .tx b { color: var(--jsal-ink); font: 700 14px/1.37 "Lora", Georgia, serif; }   /* one line of the code's height */
 .tx .li::before { content: "\2022"; margin-right: 7px; color: var(--jsal-muted); }
 .sheet code { color: var(--jsal-muted); font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
@@ -364,7 +366,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .outs .row:nth-child(4) { --k: ir-r3; }
   .outs .row:nth-child(5) { --k: ir-r4; }
   .outs-head span { --k: ir-r5; }
-  .cp:is(:hover, :focus-visible, .play) :is(.tx, .sw span), .cp:is(:hover, :focus-visible, .play) .views::after, .cp:is(:hover, :focus-visible, .play) .sw::before { animation: var(--k) 3.4s ease-in-out 2.88 both; }   /* style: allow (the home pictures play) */
+  .cp:is(:hover, :focus-visible, .play) :is(.tx, .sw span), .cp:is(:hover, :focus-visible, .play) .views::after, .cp:is(:hover, :focus-visible, .play) .sw::before { animation: var(--k) 3.4s ease-in-out 3 both; }   /* style: allow (the home pictures play) */
   .tx { --k: cp-tx; }
   .views::after { --k: cp-line; }
   .sw::before { --k: cp-thumb; }
@@ -379,13 +381,14 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes ir-r3 { 0%, 25% { opacity: 0; translate: -8px 0; } 35%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
 @keyframes ir-r4 { 0%, 33% { opacity: 0; translate: -8px 0; } 43%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
 @keyframes ir-r5 { 0%, 42% { opacity: 0; translate: -8px 0; } 52%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
-/* Clean Paste: Text, the wipe into HTML (the switch moving with it), a hold, then the text fades back for the next loop;
-   the third loop stops at 88%, on the HTML */
-@keyframes cp-tx { 0%, 30% { clip-path: inset(0); opacity: 1; } 58%, 88% { clip-path: inset(0 0 0 100%); opacity: 1; } 88.1% { clip-path: inset(0); opacity: 0; } 100% { clip-path: inset(0); opacity: 1; } }
-@keyframes cp-line { 0%, 29% { left: 0; opacity: 0; } 31% { left: 0; opacity: 1; } 58% { left: 100%; opacity: 1; } 62%, 100% { left: 100%; opacity: 0; } }
-@keyframes cp-thumb { 0%, 38% { translate: 0 0; } 46%, 88% { translate: 44px 0; } 96%, 100% { translate: 0 0; } }
-@keyframes cp-t { 0%, 38% { color: var(--jsal-selected-ink); } 46%, 88% { color: var(--jsal-muted); } 96%, 100% { color: var(--jsal-selected-ink); } }
-@keyframes cp-h { 0%, 38% { color: var(--jsal-muted); } 46%, 88% { color: var(--jsal-selected-ink); } 96%, 100% { color: var(--jsal-muted); } }
+/* Clean Paste, from the rest and back to it by 84% (where the one play on touch screens stops): the line moves
+   right to show all the text (Text picked), sweeps left wiping it all into HTML (HTML picked), then returns to rest; it
+   hides at the edges */
+@keyframes cp-tx { 0% { clip-path: inset(0 46% 0 0); } 14%, 30% { clip-path: inset(0); } 56%, 70% { clip-path: inset(0 100% 0 0); } 84%, 100% { clip-path: inset(0 46% 0 0); } }
+@keyframes cp-line { 0% { left: 54%; opacity: 1; } 13% { left: 100%; opacity: 1; } 15%, 29% { left: 100%; opacity: 0; } 31% { left: 100%; opacity: 1; } 56% { left: 0; opacity: 1; } 58%, 69% { left: 0; opacity: 0; } 71% { left: 0; opacity: 1; } 84%, 100% { left: 54%; opacity: 1; } }
+@keyframes cp-thumb { 0% { translate: 44px 0; } 10%, 38% { translate: 0 0; } 46%, 100% { translate: 44px 0; } }
+@keyframes cp-t { 0% { color: var(--jsal-muted); } 10%, 38% { color: var(--jsal-selected-ink); } 46%, 100% { color: var(--jsal-muted); } }
+@keyframes cp-h { 0% { color: var(--jsal-selected-ink); } 10%, 38% { color: var(--jsal-muted); } 46%, 100% { color: var(--jsal-selected-ink); } }
 @keyframes hi-type { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .tile, .obj, .cta a { transition: none; }
@@ -459,7 +462,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
       <div class="clip" aria-hidden="true">
         <svg class="wm" viewBox="0 0 32 32" width="170" height="170"><path class="s" d="M12.85 9.7H10.4v13.3h11.2V9.7h-2.45M13.2 15.3h5.6M13.2 19.15h3.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M16 7.25l2.1 2.1-2.1 2.1-2.1-2.1z"/></svg>
       </div>
-      <span class="obj paper sheet" aria-hidden="true"><span class="sw"><span class="t">Text</span><span class="h">HTML</span></span><span class="views"><span class="tx"><b>Spring menu</b><span>Our new dishes are here.</span><span class="li">Spring pea risotto</span></span><code><span class="ln"><i>&lt;h2&gt;</i>Spring menu<i>&lt;/h2&gt;</i></span><span class="ln"><i>&lt;p&gt;</i>Our new dishes are here.<i>&lt;/p&gt;</i></span><span class="ln"><i>&lt;ul&gt;&lt;li&gt;</i>Spring pea risotto<i>&lt;/li&gt;</i></span></code></span></span>
+      <span class="obj paper sheet" aria-hidden="true"><span class="sw"><span class="t">Text</span><span class="h">HTML</span></span><span class="views"><span class="tx"><b>Raid night</b><span>Bring flasks and food.</span><span class="li">Leeroy stays put</span></span><code><span class="ln"><i>&lt;h2&gt;</i>Raid night<i>&lt;/h2&gt;</i></span><span class="ln"><i>&lt;p&gt;</i>Bring flasks and food.<i>&lt;/p&gt;</i></span><span class="ln"><i>&lt;ul&gt;&lt;li&gt;</i>Leeroy stays put<i>&lt;/li&gt;</i></span></code></span></span>
     </a>
 
     <!-- Say hi: the heading's link (email) covers the tile; the draft above it is decoration -->
