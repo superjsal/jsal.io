@@ -63,6 +63,14 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .cols label { display: flex; align-items: center; gap: 8px; }
 .cols .field { width: auto; min-height: 32px; font-size: 13px; }
 
+.overview { display: grid; gap: 6px; max-height: 40%; overflow: auto; padding: 10px 14px; border-bottom: 1px solid var(--jsal-line); background: var(--jsal-bg); font-size: 13px; line-height: 1.45; }
+.overview p { margin: 0; }
+.overview .done { color: var(--jsal-ink-2); }
+.overview .done b, .overview .count { color: var(--jsal-ink); font-weight: 600; }
+.overview .repeat { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; color: var(--jsal-bad); }
+.overview .count { padding: 1px 7px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); }
+.overview .jsal-btn.small { min-height: 28px; padding: 3px 10px; font-size: 13px; }
+
 /* ── The sheet ──────────────────────────────────────────────────────────── */
 
 .sheet { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
@@ -74,24 +82,25 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .sheet .n { padding-top: 13px; color: var(--jsal-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .sheet .st { padding-top: 11px; }
 .sheet tr.out .cell { color: var(--jsal-muted); }
-.cell { width: 100%; min-height: 34px; padding: 5px 8px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); color: var(--jsal-ink); font-size: 13px; }
+/* Cells are text boxes that wrap anywhere, so a whole address shows however long it is */
+.cell { display: block; width: 100%; min-height: 34px; padding: 6px 8px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); color: var(--jsal-ink); font-size: 13px; line-height: 1.5; resize: none; overflow: hidden; overflow-wrap: anywhere; word-break: break-all; field-sizing: content; }
 .cell[aria-invalid="true"] { border-color: var(--jsal-bad); }
 
 .dot { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 12px; font-weight: 700; line-height: 1; }
 .dot.ok { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
-.dot.fixed { background: var(--jsal-info-soft); color: var(--jsal-info); }
 .dot.bad { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
-.dot.out { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
+.dot.out { background: var(--jsal-sunk); color: var(--jsal-muted); }   /* left out on purpose: neutral, not a warning */
 
 .note { margin: 4px 0 0; font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
 .note.fix { color: var(--jsal-info); }
 .note.bad { color: var(--jsal-bad); }
-.note.out { color: var(--jsal-bad); }
+.note.out { color: var(--jsal-muted); }
 .note.edited { color: var(--jsal-muted); }
 .note code { font-size: 12px; }
 .note mark { padding: 0 1px; background: var(--jsal-bad-soft); color: var(--jsal-bad); border-bottom: 2px solid var(--jsal-bad); font-weight: 700; }
 .fixes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-.fixes .jsal-btn.small { min-height: 28px; padding: 3px 10px; font-size: 13px; }
+.fixes .jsal-btn.small { min-height: 28px; padding: 3px 10px; font-size: 13px; text-align: left; overflow-wrap: anywhere; }
+.from-row { font-weight: 500; color: var(--jsal-muted); }
 .note .jsal-btn.link { min-height: 0; padding: 0; font-size: 13px; }
 .del { display: grid; place-items: center; width: 28px; height: 28px; margin-top: 3px; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font-size: 20px; line-height: 1; cursor: pointer; }
 .del:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
@@ -154,7 +163,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 @media (pointer: coarse) {
   .cell, .txt, .head-in, .field { font-size: 16px; }   /* style: allow (iPhones zoom into smaller text boxes) */
   .del { width: 44px; height: 44px; margin-top: 0; }
-  .cell, .field, .fixes .jsal-btn.small, .pane-foot .jsal-btn.link { min-height: 44px; }
+  .cell, .field, .fixes .jsal-btn.small, .overview .jsal-btn.small, .pane-foot .jsal-btn.link { min-height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .drop, .fmt-btn svg { transition: none; }

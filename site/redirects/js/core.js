@@ -58,10 +58,10 @@ export function readAddress(raw) {
 // Problems with the characters of one address; accented letters are encoded the way browsers send them
 function characters(path, which) {
   const problems = [];
-  for (const c of CHECKS) {
+  CHECKS.forEach((c, i) => {
     c.re.lastIndex = 0;
-    if (c.re.test(path)) problems.push({ text: `${c.say(which)}: <code>${marked(path, c.re)}</code>`, fixes: c.fixes });
-  }
+    if (c.re.test(path)) problems.push({ text: `${c.say(which)}: <code>${marked(path, c.re)}</code>`, title: c.say(which), group: "char" + i, fixes: c.fixes });
+  });
   let encodedNote = "";
   const enc = path.replace(/[^\x00-\x7F]/gu, (ch) => {
     if (/[ –—‘’“”]/.test(ch)) return ch;
@@ -99,8 +99,11 @@ export function siteHosts(rows) {
 /**
  * rows: [{ id, old, new }]; fmt: a platform from formats.js; opts: { code, newAddr: "path" | "url", newSite, keep }
  * keep maps a clash's old address to the row id the visitor kept.
- * Returns { items: Map(id -> { state, notes, clash }), ready: [{ id, from, to, code }] }
- * state: "ok", "fixed", "bad" (needs the visitor), "out" (left out on purpose) or "blank".
+ * Returns { items: Map(id -> { state, notes, clash, routine }), ready: [{ id, from, to, code }], done, site }
+ * state: "ok", "fixed", "bad" (needs the visitor), "out" (left out on purpose) or "blank". A bad note carries a group
+ * (the same problem on another row has the same one) and a generic title, so repeats can be fixed all at once.
+ * done counts the routine changes made on the way into the file (a domain removed, tracking tags…), which are said
+ * once above the sheet rather than on every row.
  */
 export function analyse(rows, fmt, opts) {
   const items = new Map();
@@ -110,10 +113,10 @@ export function analyse(rows, fmt, opts) {
   const live = [];
 
   rows.forEach((r, i) => {
-    const notes = [], it = { state: "ok", notes, n: i + 1 };
+    const notes = [], it = { state: "ok", notes, n: i + 1, routine: [] };
     items.set(r.id, it);
     const o = readAddress(r.old), n = readAddress(r.new);
-    const bad = (cell, text, fixes = []) => { notes.push({ cell, kind: "bad", text, fixes }); it.state = "bad"; };
+    const bad = (cell, text, fixes = [], group = text, title = text) => { notes.push({ cell, kind: "bad", text, fixes, group: cell + ":" + group, title }); it.state = "bad"; };
     const fix = (cell, text) => { notes.push({ cell, kind: "fix", text }); if (it.state === "ok") it.state = "fixed"; };
     // A row left out keeps only the reason; what the file would have said no longer matters
     const out = (cell, text) => { notes.splice(0, notes.length, ...notes.filter((x) => x.kind !== "fix")); notes.push({ cell, kind: "out", text }); it.state = "out"; };
@@ -121,30 +124,37 @@ export function analyse(rows, fmt, opts) {
     if (o.kind === "empty" && n.kind === "empty") { it.state = "blank"; return; }
     if (o.kind === "junk") return out("o", "Not an address: left out");
     if (o.kind === "empty") return bad("o", "No old address. Add one, or this row stays out");
-    if (o.kind === "scheme") return bad("o", `A ${esc(o.scheme)}: link, not a page address`);
-    if (o.kind === "badhost") return bad("o", `Not a valid domain: <code>${esc(o.host)}</code>`);
+    if (o.kind === "scheme") return bad("o", `A ${esc(o.scheme)}: link, not a page address`, [], "scheme", "A link that isn’t a page address");
+    if (o.kind === "badhost") return bad("o", `Not a valid domain: <code>${esc(o.host)}</code>`, [], "host", "Not a valid domain");
     if (n.kind === "empty") return bad("n", "No new address. Add one, or this row stays out");
     if (n.kind === "junk") return bad("n", "Not an address. Add the new address, or delete the row");
-    if (n.kind === "scheme") return bad("n", `A ${esc(n.scheme)}: link, not a page address`);
-    if (n.kind === "badhost") return bad("n", `Not a valid domain: <code>${esc(n.host)}</code>`);
+    if (n.kind === "scheme") return bad("n", `A ${esc(n.scheme)}: link, not a page address`, [], "scheme", "A link that isn’t a page address");
+    if (n.kind === "badhost") return bad("n", `Not a valid domain: <code>${esc(n.host)}</code>`, [], "host", "Not a valid domain");
 
-    // Each cell that changes on its way into the file gets one note: what the file says, and why
-    const inFile = (cell, value, why) => why.length && fix(cell, `In the file: <code>${esc(value)}</code> (${why.join("; ")})`);
+    // A cell that changes on its way into the file: routine changes are counted for the line above the sheet, and
+    // anything else gets a note saying what the file says and why
+    const inFile = (cell, value, why) => {
+      for (const w of why.filter((w) => w.key)) it.routine.push(cell + ":" + w.key);
+      const said = why.filter((w) => !w.key).map((w) => w.text);
+      if (said.length) fix(cell, `In the file: <code>${esc(value)}</code> (${said.join("; ")})`);
+      else if (why.length && it.state === "ok") it.state = "fixed";
+    };
 
     // Old address: always a path
     const t = stripTracking(o.path);
     const oc = characters(t.path, "old address");
-    for (const p of oc.problems) bad("o", p.text, p.fixes);
-    inFile("o", oc.path, [o.host && `domain removed: ${fmt.name} takes paths`, t.removed && "tracking tags removed",
-      o.fragment && "the # part removed, as browsers never send it", o.added && "a / added at the start", oc.encodedNote].filter(Boolean));
+    for (const p of oc.problems) bad("o", p.text, p.fixes, p.group, p.title);
+    inFile("o", oc.path, [o.host && { key: "domain" }, t.removed && { key: "tracking" }, o.fragment && { key: "hash" },
+      o.added && { key: "slash" }, oc.encodedNote && { text: oc.encodedNote }].filter(Boolean));
 
     // New address: a path on this site, or the full URL when it's another site (or the visitor asked for full URLs)
     const nc = characters(n.path, "new address");
-    for (const p of nc.problems) bad("n", p.text, p.fixes);
+    for (const p of nc.problems) bad("n", p.text, p.fixes, p.group, p.title);
     const external = n.host && !hosts.has(bare(n.host));
     const newPath = nc.path + n.fragment;
     const to = external ? `https://${n.host}${newPath}` : newPath;
-    inFile("n", to, [n.host && !external && opts.newAddr === "path" && "your own domain removed", n.added && "a / added at the start", nc.encodedNote].filter(Boolean));
+    inFile("n", to, [n.host && !external && opts.newAddr === "path" && { key: "domain" }, n.added && { key: "slash" },
+      nc.encodedNote && { text: nc.encodedNote }].filter(Boolean));
     if (it.state === "bad") return;
 
     // With full URLs, old.com/page to new.com/page is a real redirect; as paths it would point to itself
@@ -156,7 +166,7 @@ export function analyse(rows, fmt, opts) {
     live.push({ id: r.id, it, from: oc.path, to, own: !external, internal: !external && !(domainOnly && opts.newAddr === "url"), fix, bad, out });
   });
 
-  // The same old address on more than one row
+  // The same old address on more than one row: every row of a clash offers all of its choices side by side
   const groups = new Map();
   for (const l of live) {
     const k = key(l.from);
@@ -172,11 +182,13 @@ export function analyse(rows, fmt, opts) {
       continue;
     }
     const chosen = g.find((l) => l.id === opts.keep?.[k]);
+    const options = g.map((l) => ({ id: l.id, n: l.it.n, to: l.to }));
+    const others = (l) => g.filter((x) => x !== l).map((x) => `row ${x.it.n}`).join(" and ");
     for (const l of g) {
-      l.it.clash = { key: k, kept: chosen?.id, to: l.to, rows: g.filter((x) => x !== l).map((x) => ({ n: x.it.n, to: x.to })) };
-      if (!chosen) l.bad("o", `${g.filter((x) => x !== l).map((x) => `Row ${x.it.n}`).join(", ")} also moves this address. Keep which?`);
-      else if (l === chosen) l.fix("o", `Kept over ${g.filter((x) => x !== l).map((x) => `row ${x.it.n}`).join(", ")}`);
-      else l.out("o", `You kept row ${chosen.it.n} instead: left out`);
+      l.it.clash = { key: k, kept: chosen?.id, options };
+      if (!chosen) l.bad("o", `<code>${esc(l.from)}</code> is also in ${others(l)}. Send it to:`, [], "clash", "The same old address in two rows");
+      else if (l === chosen) l.fix("o", `You chose this row over ${others(l)}`);
+      else l.out("o", `You chose row ${chosen.it.n} instead: left out`);
     }
     if (chosen) kept.push(chosen);
   }
@@ -195,7 +207,7 @@ export function analyse(rows, fmt, opts) {
       seen.add(key(next.from)); hops.push(next); to = next.to; internal = next.internal; own = next.own;
       if (hops.length > 50) { loop = true; break; }
     }
-    if (loop) { l.bad("n", `A loop: ${[l, ...hops].map((h) => `row ${h.it.n}`).join(" → ")} comes back here. Change one of them`); continue; }
+    if (loop) { l.bad("n", `A loop: ${[l, ...hops].map((h) => `row ${h.it.n}`).join(" → ")} comes back here. Change one of them`, [], "loop", "A loop"); continue; }
     if (hops.length) l.fix("n", `In the file: <code>${esc(to)}</code> (${hops.map((h) => `row ${h.it.n}`).join(" and ")} ${hops.length > 1 ? "move" : "moves"} ${esc(l.to)} on, so this goes straight to the end)`);
     if (!own || opts.newAddr !== "url") ready.push({ id: l.id, from: l.from, to, code: opts.code || "301" });
     else ready.push({ id: l.id, from: l.from, to: site ? site.replace(/\/$/, "") + to : to, code: opts.code || "301" });
@@ -205,10 +217,17 @@ export function analyse(rows, fmt, opts) {
   for (const r of ready) {
     const problems = (fmt.rules?.(r) || []).filter(Boolean);
     // A website platform always has a home page, and its redirects only run for addresses that don't exist
-    if (r.from === "/" && fmt.group !== "Hosting and servers" && !problems.length) problems.push({ cell: "o", text: `${fmt.name} won’t redirect the home page while the site has one.` });
-    for (const p of problems) live.find((l) => l.id === r.id).bad(p.cell, p.text);
+    if (r.from === "/" && fmt.group !== "Hosting and servers" && !problems.length) problems.push({ cell: "o", id: "home", text: `${fmt.name} won’t redirect the home page while the site has one.` });
+    for (const p of problems) live.find((l) => l.id === r.id).bad(p.cell, p.text, p.fixes || [], "rule-" + p.id, p.text);
   }
-  return { items, ready: ready.filter((r) => items.get(r.id).state !== "bad"), site };
+
+  // A row that needs the visitor shows only what's wrong: what the file would say comes once it's fixed
+  const done = {};
+  for (const it of items.values()) {
+    if (it.state === "bad") it.notes = it.notes.filter((x) => x.kind !== "fix");
+    else if (it.state === "ok" || it.state === "fixed") for (const k of it.routine) done[k] = (done[k] || 0) + 1;
+  }
+  return { items, ready: ready.filter((r) => items.get(r.id).state !== "bad"), done, site };
 }
 
 // CSV fields are quoted when they hold the separator, a quote, a line break or an outer space

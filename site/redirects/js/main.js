@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=b22dd6f4";
-import { FORMATS, byId } from "./formats.js?v=4f0b460b";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=b535f4af";
+import { FORMATS, byId } from "./formats.js?v=9bb56d5b";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -73,6 +73,7 @@ function show() {
   if (!used) { used = true; window.jsalUsed?.(); }
   place();
   update();
+  growAll();
 }
 function showError(text) { const e = $("dropError"); e.textContent = text; e.hidden = false; }
 
@@ -148,9 +149,8 @@ function spread(cell, raw) {
     if (startCol === "old") { r.old = tidy(vals[0]); if (vals.length > 1) r.new = tidy(vals[1]); }
     else r.new = tidy(vals[0]);
     stay.add(r.id);
-    const tr = rowOf(r);
-    tr.querySelector('[data-cell="old"]').value = r.old;
-    tr.querySelector('[data-cell="new"]').value = r.new;
+    setCell(r, "old", r.old);
+    setCell(r, "new", r.new);
     at++;
   }
   update();
@@ -160,17 +160,33 @@ function spread(cell, raw) {
 
 const rowOf = (r) => r.el;
 const byRowId = (tr) => rows.find((r) => r.id === +tr.dataset.id);
+// Cells wrap so a long address shows in full; browsers without field-sizing grow them by script instead
+const autoSize = !CSS.supports("field-sizing", "content");
+const grow = (cell) => { if (autoSize) { cell.style.height = "auto"; cell.style.height = cell.scrollHeight + 2 + "px"; } };
+function growAll() {
+  if (!autoSize) return;
+  const cells = [...tbody.querySelectorAll(".cell")];
+  cells.forEach((c) => (c.style.height = "auto"));
+  const heights = cells.map((c) => c.scrollHeight);   // every height read in one go, then written
+  cells.forEach((c, i) => (c.style.height = heights[i] + 2 + "px"));
+}
 function rowEl(r) {
   const tr = document.createElement("tr");
   tr.dataset.id = r.id;
   tr.innerHTML = `<td class="n"></td><td class="st"><span class="dot"></span></td>
-    <td class="o" data-label="Old address"><input class="cell" data-cell="old" spellcheck="false" autocomplete="off" aria-describedby="ro${r.id}"><div class="notes" id="ro${r.id}"></div></td>
-    <td class="nw" data-label="New address"><input class="cell" data-cell="new" spellcheck="false" autocomplete="off" aria-describedby="rn${r.id}"><div class="notes" id="rn${r.id}"></div></td>
+    <td class="o" data-label="Old address"><textarea class="cell" data-cell="old" rows="1" spellcheck="false" autocomplete="off" aria-describedby="ro${r.id}"></textarea><div class="notes" id="ro${r.id}"></div></td>
+    <td class="nw" data-label="New address"><textarea class="cell" data-cell="new" rows="1" spellcheck="false" autocomplete="off" aria-describedby="rn${r.id}"></textarea><div class="notes" id="rn${r.id}"></div></td>
     <td class="x"><button type="button" class="del" data-del><span aria-hidden="true">×</span></button></td>`;
   tr.querySelector('[data-cell="old"]').value = r.old;
   tr.querySelector('[data-cell="new"]').value = r.new;
   r.el = tr;
   return tr;
+}
+function setCell(r, field, value) {
+  r[field] = value;
+  const cell = r.el.querySelector(`[data-cell="${field}"]`);
+  cell.value = value;
+  grow(cell);
 }
 
 let timer = 0;
@@ -180,6 +196,7 @@ tbody.addEventListener("input", (e) => {
   const r = byRowId(cell.closest("tr"));
   r[cell.dataset.cell] = cell.value;
   stay.add(r.id);
+  grow(cell);
   clearTimeout(timer);
   timer = setTimeout(update, 150);
 });
@@ -208,16 +225,14 @@ tbody.addEventListener("click", (e) => {
   }
   if (b.dataset.fix) {
     const [cell, ni, fi] = b.dataset.fix.split(":");
-    const note = it.notes.filter((x) => x.cell === cell[0])[+ni];
+    const note = it.notes.filter((x) => x.cell === cell)[+ni];
     const field = cell === "o" ? "old" : "new";
-    r[field] = note.fixes[+fi][1](r[field]);
-    tr.querySelector(`[data-cell="${field}"]`).value = r[field];
-  } else if (b.dataset.undo) {
-    const field = b.dataset.undo;
-    r[field] = r[field + "0"];
-    tr.querySelector(`[data-cell="${field}"]`).value = r[field];
-  } else if (b.hasAttribute("data-keep")) keep[it.clash.key] = r.id;
-  else if (b.hasAttribute("data-unkeep")) delete keep[it.clash.key];
+    setCell(r, field, note.fixes[+fi][1](r[field]));
+  } else if (b.dataset.undo) setCell(r, b.dataset.undo, r[b.dataset.undo + "0"]);
+  else if (b.dataset.keep) {
+    keep[it.clash.key] = +b.dataset.keep;
+    for (const o of it.clash.options) stay.add(o.id);
+  } else if (b.hasAttribute("data-unkeep")) delete keep[it.clash.key];
   else return;
   update();
   tr.querySelector(".cell").focus();
@@ -262,17 +277,18 @@ for (const b of $("filter").children) b.addEventListener("click", () => {
 function notesHtml(r, it, cell) {
   const field = cell === "o" ? "old" : "new";
   let h = it.notes.filter((x) => x.cell === cell).map((x, i) => `<p class="note ${x.kind}">${x.text}</p>` + (x.fixes?.length
-    ? `<div class="fixes">${x.fixes.map(([label, f], j) => `<button type="button" class="jsal-btn small" data-fix="${cell}:${i}:${j}">${esc(label)}: ${esc(f(r[field]))}</button>`).join("")}</div>` : "")).join("");
+    ? `<div class="fixes">${x.fixes.map(([label, f], j) => `<button type="button" class="jsal-btn small" data-fix="${cell}:${i}:${j}">${esc(label)}${f(r[field]).length <= 48 ? ": " + esc(f(r[field])) : ""}</button>`).join("")}</div>` : "")).join("");
   if (cell === "o" && it.clash) {
-    if (!it.clash.kept) h += `<div class="fixes"><button type="button" class="jsal-btn small" data-keep>Keep this row (to ${esc(it.clash.to)})</button></div>`;
-    else if (it.clash.kept === r.id) h += `<p class="note edited"><button type="button" class="jsal-btn link" data-unkeep>Choose again</button></p>`;
-    else h += `<div class="fixes"><button type="button" class="jsal-btn small" data-keep>Keep this one instead</button></div>`;
+    if (!it.clash.kept) h += `<div class="fixes">${it.clash.options.map((o) => `<button type="button" class="jsal-btn small" data-keep="${o.id}">${esc(o.to)} <span class="from-row">(row ${o.n})</span></button>`).join("")}</div>`;
+    else h += `<p class="note edited"><button type="button" class="jsal-btn link" data-unkeep>Choose again</button></p>`;
   }
   if (!r.added && r[field] !== r[field + "0"]) h += `<p class="note edited">Edited · <button type="button" class="jsal-btn link" data-undo="${field}">Undo</button></p>`;
   return h;
 }
 
-const SAY = { ok: ["✓", "Ready"], fixed: ["↻", "Fixed for the file"], bad: ["!", "Needs you"], out: ["–", "Left out"], blank: ["", "Empty"] };
+// Every row that goes into the file is Ready, whether or not something changed on the way in
+const SAY = { ok: ["✓", "Ready"], fixed: ["✓", "Ready"], bad: ["!", "Needs you"], out: ["–", "Left out"], blank: ["", "Empty"] };
+const GROUP = { ok: "ready", fixed: "ready", bad: "bad", out: "out", blank: "" };
 
 // ── Everything that follows a change ───────────────────────────────────────
 
@@ -280,15 +296,15 @@ function update() {
   if (!table) return;
   const live = rows.filter((r) => !r.deleted);
   result = analyse(live, fmt, { ...opts, keep });
-  const count = { all: 0, bad: 0, fixed: 0, out: 0 };
+  const count = { all: 0, ready: 0, bad: 0, out: 0 };
   live.forEach((r, i) => {
     const it = result.items.get(r.id), tr = rowOf(r);
     if (!tr) return;
     const st = it.state;
-    if (st !== "blank") { count.all++; if (count[st] !== undefined) count[st]++; }
+    if (st !== "blank") { count.all++; count[GROUP[st]]++; }
     // A long sheet redraws only the rows whose state, number, notes or visibility changed
     const html = { o: notesHtml(r, it, "o"), n: notesHtml(r, it, "n") };
-    const shown = filter === "all" || st === filter || stay.has(r.id);
+    const shown = filter === "all" || GROUP[st] === filter || stay.has(r.id);
     const sig = `${st}|${i}|${shown}|${html.o}|${html.n}`;
     if (tr.dataset.sig === sig) return;
     tr.dataset.sig = sig;
@@ -296,7 +312,7 @@ function update() {
     tr.hidden = !shown;
     tr.querySelector(".n").textContent = i + 1;
     const dot = tr.querySelector(".dot");
-    dot.className = "dot " + st;
+    dot.className = "dot " + (GROUP[st] === "ready" ? "ok" : st);
     dot.innerHTML = `<span aria-hidden="true">${SAY[st][0]}</span><span class="sr-only">${SAY[st][1]}</span>`;
     tr.querySelector(".del").setAttribute("aria-label", `Delete row ${i + 1}`);
     for (const [cell, field, label] of [["o", "old", "Old address"], ["n", "new", "New address"]]) {
@@ -310,11 +326,54 @@ function update() {
   const ready = result.ready.length;
   for (const b of $("filter").children) b.querySelector("span").textContent = count[b.dataset.filter];
   $("filterEmpty").hidden = live.some((r) => !r.el.hidden);
+  overview(live);
   $("summary").innerHTML = `<b>${ready} ready</b>` + (count.bad ? ` · ${count.bad} need you` : "") + (count.out ? ` · ${count.out} left out` : "");
   $("sheetMeta").textContent = [table.name, `${count.all} row${count.all === 1 ? "" : "s"}`, table.pick.header && "headings skipped"].filter(Boolean).join(" · ");
   $("undoAll").hidden = !rows.some((r) => r.added || r.deleted || r.old !== r.old0 || r.new !== r.new0);
   renderFile();
 }
+
+// Above the sheet: the routine changes said once rather than on every row, and any problem on two or more rows
+// with a button that fixes it on all of them
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+function overview(live) {
+  const d = result.done, said = [];
+  if (d["o:domain"]) said.push(`the domain from ${plural(d["o:domain"], "old address", "old addresses")} (${esc(fmt.name)} takes paths)`);
+  if (d["n:domain"]) said.push(`your own domain from ${plural(d["n:domain"], "new address", "new addresses")}`);
+  if (d["o:tracking"]) said.push(`tracking tags from ${d["o:tracking"]}`);
+  if (d["o:hash"]) said.push(`the # part from ${d["o:hash"]}`);
+  const slash = (d["o:slash"] || 0) + (d["n:slash"] || 0);
+  const list = (a) => a.length > 1 ? a.slice(0, -1).join(", ") + " and " + a[a.length - 1] : a[0];
+  const done = [said.length && `removed ${list(said)}`, slash && `added the / at the start of ${plural(slash, "address", "addresses")}`].filter(Boolean);
+
+  const groups = new Map();
+  for (const r of live) {
+    const it = result.items.get(r.id);
+    if (it.state !== "bad") continue;
+    for (const x of it.notes) if (x.kind === "bad" && x.group) {
+      const g = groups.get(x.group) || groups.set(x.group, { title: x.title, fixes: x.fixes || [], ids: [] }).get(x.group);
+      if (!g.ids.includes(r.id)) g.ids.push(r.id);
+    }
+  }
+  // A clash always spans rows, and each one is a choice, so clashes aren't listed as repeats
+  const repeats = [...groups].filter(([k, g]) => g.ids.length > 1 && !k.endsWith(":clash")).sort((a, b) => b[1].ids.length - a[1].ids.length);
+  const html = (done.length ? `<p class="done"><b>Done for you:</b> ${done.join("; ")}.</p>` : "") + repeats.map(([key, g]) =>
+    `<p class="repeat"><span class="count">${g.ids.length} rows</span> ${g.title}${g.fixes.map(([label], i) =>
+      ` <button type="button" class="jsal-btn small" data-fixall="${esc(key)}|${i}">${esc(label)} in all ${g.ids.length}</button>`).join("")}</p>`).join("");
+  const box = $("overview");
+  if (box.dataset.h !== html) { box.innerHTML = html; box.dataset.h = html; }
+  box.hidden = !html;
+  overviewGroups = groups;
+}
+let overviewGroups = new Map();
+$("overview").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-fixall]");
+  if (!b) return;
+  const [key, i] = b.dataset.fixall.split("|");
+  const g = overviewGroups.get(key), field = key[0] === "o" ? "old" : "new", f = g.fixes[+i][1];
+  for (const id of g.ids) { const r = rows.find((x) => x.id === id); setCell(r, field, f(r[field])); stay.add(id); }
+  update();
+});
 
 function parts() {
   const all = result.ready;

@@ -14,6 +14,8 @@ const reEscape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const quoteIfSpace = (s) => (/\s/.test(s) ? `"${s.replace(/"/g, '\\"')}"` : s);
 const yamlQuote = (s) => `'${s.replace(/'/g, "''")}'`;
 const noSlash = (p) => (p.length > 1 ? p.replace(/\/$/, "") : p);
+// The one-click fix for a platform that can't match what comes after ?: drop that part from the cell
+const DROP_QUERY = [["Remove the ? part", (s) => s.replace(/\?[^#]*/, "")]];
 
 export const FORMATS = [
   { id: "shopify", name: "Shopify", group: "Website platforms", kind: "csv", file: "shopify-redirects.csv",
@@ -29,9 +31,9 @@ export const FORMATS = [
     doc: "https://support.squarespace.com/hc/en-us/articles/205815308-URL-mappings",
     line: (r) => `${r.from} -> ${r.to} ${r.code}`, codes: "required", slashSame: true,
     rules: (r) => [
-      r.from.includes("?") && { cell: "o", text: "Squarespace can’t redirect an address with ? in it. Remove the ? and what follows." },
-      r.from === "/" && { cell: "o", text: "Squarespace can’t redirect the home page." },
-      /\?(?!format=rss$)/.test(r.to) && { cell: "n", text: "Squarespace takes a ? in the new address only for ?format=rss." },
+      r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Squarespace can’t redirect an address with ? in it." },
+      r.from === "/" && { cell: "o", id: "home", text: "Squarespace can’t redirect the home page." },
+      /\?(?!format=rss$)/.test(r.to) && { cell: "n", id: "query", fixes: DROP_QUERY, text: "Squarespace takes a ? in the new address only for ?format=rss." },
     ] },
   { id: "webflow", name: "Webflow", group: "Website platforms", kind: "csv", file: "webflow-redirects.csv", unverified: true,
     where: "Site settings → Publishing → 301 redirects → Import. An import replaces every redirect already there.",
@@ -46,8 +48,8 @@ export const FORMATS = [
     doc: "https://knowledge.hubspot.com/domains-and-urls/bulk-upload-url-redirects",
     cols: () => [FROM("Original URL"), TO("Redirect to")], codes: false, slashSame: true,
     rules: (r) => [
-      r.from.length > 140 && { cell: "o", text: `HubSpot takes addresses up to 140 characters; this one has ${r.from.length}.` },
-      r.to.length > 140 && { cell: "n", text: `HubSpot takes addresses up to 140 characters; this one has ${r.to.length}.` },
+      r.from.length > 140 && { cell: "o", id: "long", text: `HubSpot takes addresses up to 140 characters; this one has ${r.from.length}.` },
+      r.to.length > 140 && { cell: "n", id: "long", text: `HubSpot takes addresses up to 140 characters; this one has ${r.to.length}.` },
     ] },
   { id: "bigcommerce", name: "BigCommerce", group: "Website platforms", kind: "csv", file: "bigcommerce-redirects.csv", unverified: true,
     where: "Settings → 301 redirects → Import",
@@ -92,19 +94,19 @@ export const FORMATS = [
     where: "The redirects list in vercel.json at the root of the project",
     doc: "https://vercel.com/docs/project-configuration#redirects",
     codes: "required",
-    rules: (r) => [r.from.includes("?") && { cell: "o", text: "vercel.json matches ? with a has rule, which this file doesn’t write." }],
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "vercel.json matches ? with a has rule, which this file doesn’t write." }],
     write: (rows) => JSON.stringify({ redirects: rows.map((r) => ({
       source: r.from.replace(/[:()*+?{}]/g, "\\$&"), destination: r.to, permanent: r.code !== "302" })) }, null, 2) },
   { id: "apache", name: "Apache (.htaccess)", group: "Hosting and servers", kind: "lines", file: "htaccess-redirects.txt",
     where: "Add the lines to .htaccess, above any other rewrite rules",
     doc: "https://httpd.apache.org/docs/current/mod/mod_alias.html#redirectmatch",
     line: (r) => `RedirectMatch ${r.code} ${quoteIfSpace("^" + reEscape(noSlash(decoded(r.from))) + "/?$")} ${r.to}`, codes: "required", slashSame: true,
-    rules: (r) => [r.from.includes("?") && { cell: "o", text: "RedirectMatch can’t see what comes after ?; that needs a rewrite rule." }] },
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "RedirectMatch can’t see what comes after ?; that needs a rewrite rule." }] },
   { id: "nginx", name: "Nginx", group: "Hosting and servers", kind: "lines", file: "nginx-redirects.conf",
     where: "Add the lines inside the site’s server block",
     doc: "https://nginx.org/en/docs/http/ngx_http_core_module.html#location",
     line: (r) => `location = ${quoteIfSpace(decoded(r.from))} { return ${r.code} ${r.to}; }`, codes: "required",
-    rules: (r) => [r.from.includes("?") && { cell: "o", text: "An nginx location can’t match what comes after ?." }] },
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "An nginx location can’t match what comes after ?." }] },
   { id: "plain", name: "Plain CSV", group: "Hosting and servers", kind: "csv", file: "redirects.csv",
     where: "Change the header row and separator to fit any importer",
     cols: (code) => code ? [FROM("old"), TO("new"), CODE("status")] : [FROM("old"), TO("new")], codes: "optional" },
