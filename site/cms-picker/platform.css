@@ -57,3 +57,7 @@
   .pp-built li { grid-template-columns: auto 1fr; }
   .pp-built li > :first-child { grid-column: 1 / -1; font-weight: 600; }
 }
+/* On a phone the facts take a row each: two to a row left each box about 120px, and the longer ones ran to 6–8 lines */
+@media (max-width: 480px) {
+  .pp-facts { grid-template-columns: 1fr; gap: 8px; }
+}
