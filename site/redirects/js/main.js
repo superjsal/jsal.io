@@ -10,6 +10,9 @@ const store = { get: (k) => { try { return localStorage.getItem(k); } catch (e) 
 let table = null;        // what was loaded: { raw, name, pick }
 let rows = [];           // { id, old, new, old0, new0, added, deleted }
 let nextId = 1, keep = {}, filter = "all", part = 0, result = null, cleared = null, used = false;
+// Rows worked on since a filter was picked stay on screen, as in a spreadsheet, so a row being fixed under
+// "Needs you" doesn't vanish mid-word; picking a filter again applies it afresh
+const stay = new Set();
 let fmt = byId(store.get("jsal-redirects-platform") || "shopify"), opts = defaults(fmt);
 
 function defaults(f) {
@@ -52,7 +55,9 @@ function build() {
 }
 function row(o = "", n = "", added = false) {
   o = tidy(o); n = tidy(n);
-  return { id: nextId++, old: o, new: n, old0: o, new0: n, added };
+  const r = { id: nextId++, old: o, new: n, old0: o, new0: n, added };
+  if (added) stay.add(r.id);
+  return r;
 }
 for (const [sel, k] of [[$("colOld"), "o"], [$("colNew"), "n"]]) {
   sel.addEventListener("change", () => { table.pick[k] = +sel.value; build(); });
@@ -142,6 +147,7 @@ function spread(cell, raw) {
     if (!r) { r = row("", "", true); rows.push(r); live.push(r); tbody.append(rowEl(r)); }
     if (startCol === "old") { r.old = tidy(vals[0]); if (vals.length > 1) r.new = tidy(vals[1]); }
     else r.new = tidy(vals[0]);
+    stay.add(r.id);
     const tr = rowOf(r);
     tr.querySelector('[data-cell="old"]').value = r.old;
     tr.querySelector('[data-cell="new"]').value = r.new;
@@ -171,7 +177,9 @@ let timer = 0;
 tbody.addEventListener("input", (e) => {
   const cell = e.target.closest(".cell");
   if (!cell) return;
-  byRowId(cell.closest("tr"))[cell.dataset.cell] = cell.value;
+  const r = byRowId(cell.closest("tr"));
+  r[cell.dataset.cell] = cell.value;
+  stay.add(r.id);
   clearTimeout(timer);
   timer = setTimeout(update, 150);
 });
@@ -189,6 +197,7 @@ tbody.addEventListener("click", (e) => {
   const b = e.target.closest("button");
   if (!b) return;
   const tr = b.closest("tr"), r = byRowId(tr), it = result.items.get(r.id);
+  stay.add(r.id);
   if (b.hasAttribute("data-del")) {
     r.deleted = true;
     const next = tr.nextElementSibling || tr.previousElementSibling;
@@ -244,6 +253,7 @@ function undoClear() {
 
 for (const b of $("filter").children) b.addEventListener("click", () => {
   filter = b.dataset.filter;
+  stay.clear();
   for (const x of $("filter").children) x.setAttribute("aria-pressed", x === b);
   update();
 });
@@ -278,11 +288,12 @@ function update() {
     if (st !== "blank") { count.all++; if (count[st] !== undefined) count[st]++; }
     // A long sheet redraws only the rows whose state, number, notes or visibility changed
     const html = { o: notesHtml(r, it, "o"), n: notesHtml(r, it, "n") };
-    const sig = `${st}|${i}|${filter}|${html.o}|${html.n}`;
+    const shown = filter === "all" || st === filter || stay.has(r.id);
+    const sig = `${st}|${i}|${shown}|${html.o}|${html.n}`;
     if (tr.dataset.sig === sig) return;
     tr.dataset.sig = sig;
     tr.className = st;
-    tr.hidden = filter !== "all" && st !== filter;
+    tr.hidden = !shown;
     tr.querySelector(".n").textContent = i + 1;
     const dot = tr.querySelector(".dot");
     dot.className = "dot " + st;
@@ -298,7 +309,7 @@ function update() {
   });
   const ready = result.ready.length;
   for (const b of $("filter").children) b.querySelector("span").textContent = count[b.dataset.filter];
-  $("filterEmpty").hidden = filter === "all" || count[filter] > 0;
+  $("filterEmpty").hidden = live.some((r) => !r.el.hidden);
   $("summary").innerHTML = `<b>${ready} ready</b>` + (count.bad ? ` · ${count.bad} need you` : "") + (count.out ? ` · ${count.out} left out` : "");
   $("sheetMeta").textContent = [table.name, `${count.all} row${count.all === 1 ? "" : "s"}`, table.pick.header && "headings skipped"].filter(Boolean).join(" · ");
   $("undoAll").hidden = !rows.some((r) => r.added || r.deleted || r.old !== r.old0 || r.new !== r.new0);
