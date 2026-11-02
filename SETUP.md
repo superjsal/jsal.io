@@ -7,6 +7,7 @@ John Salvador's site: a home page, browser tools and a few plain pages, hosted f
 | jsal.io | Home page | `site\index.html` |
 | jsal.io/image-resizer/ | Image Resizer | `site\image-resizer\` |
 | jsal.io/formatter/ | Clean Paste | `site\formatter\` |
+| jsal.io/redirects/ | Redirect Import | `site\redirects\` |
 | jsal.io/cms-picker/ | CMS Picker (public, published from the Playbook) | `site\cms-picker\` |
 | jsal.io/ic/ | Platform Playbook (team only, Discord sign-in) | `site\ic\` |
 | jsal.io/play/ | Mostly Warcraft ("Off the clock": the WoW tile, the backpack, achievements) | `site\play\` |

@@ -1,0 +1,161 @@
+/* Redirect Import. Colours, corners and the font are the shared --jsal-* tokens in /shell.css (light and dark). */
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; color: var(--jsal-ink); font: 15px/1.5 var(--jsal-font); -webkit-font-smoothing: antialiased; }
+code, .mono, .file, .cell, .txt, .head-in { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; }
+
+/* Elements marked data-needs-content appear once there's a sheet; the drop zone only before */
+.app:not(.has-content) [data-needs-content] { display: none !important; }
+.app.has-content .drop { display: none; }
+
+.app { width: 100%; max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)) 20px; }
+.app-header { margin-bottom: 24px; }
+.jsal-for { margin: -8px 0 16px; }
+.label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--jsal-muted); }
+
+/* ── The bar: platform, where to import, and the file's actions ─────────── */
+
+.bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 16px; margin-bottom: 16px; }
+.plat { flex: 0 0 260px; }
+.field { width: 100%; min-height: 40px; padding: 6px 10px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: 14px var(--jsal-font); }
+.field:focus-visible, .txt:focus-visible, .cell:focus-visible, .head-in:focus-visible { outline: none; border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
+.where { flex: 1 1 280px; margin: 0 0 10px; font-size: 13px; line-height: 1.45; color: var(--jsal-muted); }
+.where a { color: var(--jsal-info); text-underline-offset: 2px; white-space: nowrap; }
+.summary { margin: 0 0 10px; font-size: 13px; color: var(--jsal-muted); white-space: nowrap; }
+.summary b { color: var(--jsal-ink); font-weight: 600; }
+.bar-actions { display: flex; gap: 8px; }
+
+/* ── Empty state ────────────────────────────────────────────────────────── */
+
+.drop {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  min-height: max(360px, calc(100dvh - 260px)); padding: 32px 20px; text-align: center;
+  border: 1px dashed var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface);
+  transition: border-color var(--jsal-quick), background var(--jsal-quick);
+}
+.drop:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.drop.over { border-color: var(--jsal-accent); background: var(--jsal-selected-bg); }
+.drop-ico { padding: 9px; width: 40px; height: 40px; border-radius: var(--jsal-radius-lg); background: var(--jsal-sunk); color: var(--jsal-ink-2); }
+.drop-title { margin: 6px 0 0; font-size: 17px; font-weight: 600; }
+.drop-sub { max-width: 480px; margin: 0; font-size: 14px; color: var(--jsal-ink-2); }
+.drop-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; margin: 6px 0 0; font-size: 14px; color: var(--jsal-muted); }
+.drop-privacy { margin: 10px 0 0; font-size: 13px; color: var(--jsal-muted); }
+.drop .jsal-error { max-width: 480px; }
+kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
+
+/* ── The two panes ──────────────────────────────────────────────────────── */
+
+/* Each pane scrolls on its own, so the file stays beside the rows being edited */
+.app.has-content .work { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 20px; align-items: start; }
+.pane { display: flex; flex-direction: column; height: max(460px, calc(100dvh - var(--work-top, 220px) - 20px)); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); overflow: hidden; }
+.pane-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 10px 14px; border-bottom: 1px solid var(--jsal-line); }
+.pane-title { margin: 0; font-size: 14px; font-weight: 700; }
+.pane-title.mono { font-size: 13px; font-weight: 600; }
+.pane-meta { flex: 1; min-width: 0; font-size: 13px; color: var(--jsal-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pane-body { flex: 1; min-height: 0; overflow: auto; }
+.pane-foot { display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 8px 14px; border-top: 1px solid var(--jsal-line); font-size: 14px; }
+.pane-foot #clearBtn { margin-left: auto; }
+.views { display: none; }
+.filter > button span { font-weight: 500; font-variant-numeric: tabular-nums; }
+
+.cols { display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 8px 14px; border-bottom: 1px solid var(--jsal-line); font-size: 13px; color: var(--jsal-muted); }
+.cols label { display: flex; align-items: center; gap: 8px; }
+.cols .field { width: auto; min-height: 32px; font-size: 13px; }
+
+/* ── The sheet ──────────────────────────────────────────────────────────── */
+
+.sheet { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
+.sheet th { position: sticky; top: 0; z-index: 1; padding: 8px; background: var(--jsal-surface); border-bottom: 1px solid var(--jsal-line); text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--jsal-muted); }
+.sheet td { padding: 6px 8px; border-bottom: 1px solid var(--jsal-line); vertical-align: top; }
+.c-n { width: 40px; }
+.c-st { width: 34px; }
+.c-x { width: 44px; }
+.sheet .n { padding-top: 13px; color: var(--jsal-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.sheet .st { padding-top: 11px; }
+.sheet tr.out .cell { color: var(--jsal-muted); }
+.cell { width: 100%; min-height: 34px; padding: 5px 8px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); color: var(--jsal-ink); font-size: 13px; }
+.cell[aria-invalid="true"] { border-color: var(--jsal-bad); }
+
+.dot { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 12px; font-weight: 700; line-height: 1; }
+.dot.ok { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
+.dot.fixed { background: var(--jsal-info-soft); color: var(--jsal-info); }
+.dot.bad { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
+.dot.out { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
+
+.note { margin: 4px 0 0; font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+.note.fix { color: var(--jsal-info); }
+.note.bad { color: var(--jsal-bad); }
+.note.out { color: var(--jsal-bad); }
+.note.edited { color: var(--jsal-muted); }
+.note code { font-size: 12px; }
+.note mark { padding: 0 1px; background: var(--jsal-bad-soft); color: var(--jsal-bad); border-bottom: 2px solid var(--jsal-bad); font-weight: 700; }
+.fixes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.fixes .jsal-btn.small { min-height: 28px; padding: 3px 10px; font-size: 13px; }
+.note .jsal-btn.link { min-height: 0; padding: 0; font-size: 13px; }
+.del { display: grid; place-items: center; width: 28px; height: 28px; margin-top: 3px; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font-size: 20px; line-height: 1; cursor: pointer; }
+.del:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
+.del:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.filter-empty, .file-empty { margin: 0; padding: 24px 14px; font-size: 14px; color: var(--jsal-muted); }
+
+/* ── The file ───────────────────────────────────────────────────────────── */
+
+.fmt-btn { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; padding: 4px 8px; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font: 500 13px var(--jsal-font); cursor: pointer; }
+.fmt-btn b { color: var(--jsal-ink); font-weight: 600; }
+.fmt-btn svg { transition: transform var(--jsal-quick); }
+.fmt-btn:hover, .fmt-btn[aria-expanded="true"] { background: var(--jsal-sunk); }
+.fmt-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.fmt-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.parts > button { min-width: 32px; }
+.fmt { display: grid; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--jsal-line); background: var(--jsal-sunk); }
+.fmt .jsal-seg { background: var(--jsal-bg); }
+.opt { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; }
+.txt { width: 220px; min-height: 30px; padding: 3px 8px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 13px; }
+.txt.short { width: 72px; }
+.opt-foot { margin: 0; font-size: 13px; }
+.opt-foot .jsal-btn.link { min-height: 0; font-size: 13px; }
+.file-note { margin: 0; padding: 8px 14px; border-bottom: 1px solid var(--jsal-line); font-size: 13px; color: var(--jsal-muted); }
+
+.file-body { padding: 10px 14px 14px; }
+/* The header row reads as part of the file until it's pointed at */
+.head-in { display: block; width: calc(100% + 12px); margin: 0 -6px; padding: 1px 5px; border: 1px solid transparent; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-accent); font-size: 13px; font-weight: 600; line-height: 1.7; }
+.head-in:hover { border-color: var(--jsal-line-hi); }
+.head-warn { margin: 2px 0 4px; font-size: 12px; color: var(--jsal-warn); }
+.file { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre; tab-size: 4; }
+.file:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius-sm); }
+
+/* ── Narrow screens: one pane at a time ─────────────────────────────────── */
+
+@media (max-width: 1099px) {
+  .app.has-content .work { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .app.has-content .views { display: flex; }
+  .views > button { flex: 1; }
+  .work[data-view="sheet"] .file-pane, .work[data-view="file"] .sheet-pane { display: none; }
+  .plat { flex: 1 1 100%; }
+  .filter { flex: 1 1 100%; }
+  .filter > button { flex: 1; padding: 4px 6px; }
+  .where { margin: 0; }
+  .bar-actions { margin-left: auto; }
+}
+@media (max-width: 640px) {
+  .pane { height: auto; max-height: none; }
+  .pane-body { overflow: visible; }
+  .sheet thead { display: none; }
+  .sheet, .sheet tbody { display: block; }
+  .sheet tr { display: grid; grid-template-columns: 34px 30px 1fr 40px; padding: 6px 4px; border-bottom: 1px solid var(--jsal-line); }
+  .sheet td { border: 0; padding: 4px; }
+  .sheet .n { grid-column: 1; }
+  .sheet .st { grid-column: 2; }
+  .sheet .x { grid-column: 4; grid-row: 1; }
+  .sheet .o, .sheet .nw { grid-column: 1 / -1; }
+  .sheet .o::before, .sheet .nw::before { display: block; margin-bottom: 2px; font-size: 12px; font-weight: 700; color: var(--jsal-muted); content: attr(data-label); }
+  .file { white-space: pre-wrap; overflow-wrap: anywhere; }
+}
+@media (pointer: coarse) {
+  .cell, .txt, .head-in, .field { font-size: 16px; }   /* style: allow (iPhones zoom into smaller text boxes) */
+  .del { width: 44px; height: 44px; margin-top: 0; }
+  .cell, .field, .fixes .jsal-btn.small, .pane-foot .jsal-btn.link { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drop, .fmt-btn svg { transition: none; }
+}

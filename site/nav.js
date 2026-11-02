@@ -116,6 +116,8 @@
       icon: '<path class="l" d="M8 10h16M8 16h13M8 22h9" stroke-width="3"/><path class="g" d="M22.5 18.5l2.5 2.5-2.5 2.5-2.5-2.5z"/>' },
     { href: '/image-resizer/', name: 'Image Resizer', tile: 'var(--jsal-tool-resize)',
       icon: '<path class="l" d="M6 6h14v14H6z" stroke-width="3"/><path class="g cut" d="M22.5 18l4.5 4.5-4.5 4.5-4.5-4.5z"/>' },
+    { href: '/redirects/', name: 'Redirect Import', tile: 'var(--jsal-tool-redirect)',
+      icon: '<path class="l" d="M6 16h13M14 11l5 5-5 5" stroke-width="3"/><path class="g" d="M25 13l3 3-3 3-3-3z"/>' },
     { href: '/ic/', name: 'Platform Playbook', tag: 'Team', tile: 'var(--jsal-tool-playbook)',
       icon: '<path class="l" d="M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11" stroke-width="3"/><path class="g" d="M8.5 19.5l3 3-3 3-3-3z"/>' },
   ];
@@ -181,7 +183,7 @@
     { id: 'persistent', name: 'Persistent', done: 'Clicked the logo 10 times', todo: 'Secret', secret: true, icon: '<path d="M6 3l13 7-5.5 1.5L11 17z"/><path d="M14 14l5 5"/>' },
     { id: 'secret', name: 'Up, up, down, down', done: 'Found the secret', todo: 'Secret', secret: true, icon: '<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4M15.5 12h.01M18 14h.01"/>' },
   ];
-  const TOOLS = ['/image-resizer/', '/formatter/', '/cms-picker/'];   // "Explorer": the public tools
+  const TOOLS = ['/image-resizer/', '/formatter/', '/redirects/', '/cms-picker/'];   // "Explorer": the public tools
   const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } };
   const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
   const team = location.pathname.startsWith('/ic/');

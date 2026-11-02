@@ -17,10 +17,10 @@ END = '<!-- updates:end -->'
 MAX_CHARS = 40
 SHOWN = 3
 # Home page sections in order: the changelog tag (the log-name text)
-SECTIONS = ['CMS Picker', 'Clean Paste', 'Image Resizer', 'Off the clock', 'Site']
+SECTIONS = ['CMS Picker', 'Clean Paste', 'Image Resizer', 'Redirect Import', 'Off the clock', 'Site']
 # Each section's icon in site/img/icons/ (written by .github/brand/make-brand.py); a new section needs one there too
 ICONS = {'CMS Picker': 'cms-picker', 'Clean Paste': 'clean-paste', 'Image Resizer': 'image-resizer',
-         'Off the clock': 'off-the-clock', 'Site': 'jsal-io'}
+         'Redirect Import': 'redirect-import', 'Off the clock': 'off-the-clock', 'Site': 'jsal-io'}
 MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 

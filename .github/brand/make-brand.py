@@ -136,6 +136,8 @@ TOOLS = {   # file name: (tile colour, glyph drawn in ink with the gem's colour,
     'image-resizer': ('#2a6a61', lambda ink, g, bg: (
         f'<mask id="cut"><rect width="32" height="32" fill="#fff"/><path d="M22.5 16.6l5.9 5.9-5.9 5.9-5.9-5.9z"/></mask>'
         f'<g mask="url(#cut)">{stroke(FRAME, ink)}</g>' + gem_at(22.5, 22.5, 4.5, g))),
+    # An arrow sending an old address on to the gem, its new home, on Redirect Import's berry
+    'redirect-import': ('#8a3a4f', lambda ink, g, bg: stroke('M6 16h13M14 11l5 5-5 5', ink) + gem_at(25, 16, 3, g)),
     # A checklist of steps: two done, and the gem marking the one you're on
     'platform-playbook': ('#3b5a9a', lambda ink, g, bg: stroke(
         'M6 9.5l2.2 2.2L12 7.6M6 16l2.2 2.2L12 14.1M15 9.5h11M15 16h11M15 22.5h11', ink) + gem_at(8.5, 22.5, 3, g)),
@@ -159,7 +161,7 @@ for name, svg in files.items():
 # Site, which keeps the dark tile's edge everywhere so it holds on the dark Updates box
 icons = ROOT / 'site' / 'img' / 'icons'
 icons.mkdir(parents=True, exist_ok=True)
-for name in ('cms-picker', 'clean-paste', 'image-resizer', 'platform-playbook', 'off-the-clock'):
+for name in ('cms-picker', 'clean-paste', 'image-resizer', 'redirect-import', 'platform-playbook', 'off-the-clock'):
     (icons / f'{name}.svg').write_text(files[f'tools/{name}.svg'] + '\n', encoding='utf-8', newline='\n')
 (icons / 'jsal-io.svg').write_text(f'<svg {XMLNS} viewBox="0 0 32 32">{tile(edge=True)}{glyph(PARCH, GOLD)}</svg>\n', encoding='utf-8', newline='\n')
 print('\n'.join(files))

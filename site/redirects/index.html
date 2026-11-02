@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redirect Import: Spreadsheet to Redirect File for Shopify, WordPress and More | jsal.io</title>
+  <meta name="description" content="Turn a spreadsheet of old and new addresses into the redirect file Shopify, WordPress, Wix, Webflow and others import, with every address checked first. Free, in your browser, nothing uploaded." />
+  <link rel="canonical" href="https://jsal.io/redirects/" />
+  <link rel="icon" href="/img/icons/redirect-import.svg?v=0d698d28" type="image/svg+xml">
+  <!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet; the first page of a visit folds the logo into its mark before the first paint, for /nav.js to unfold -->
+  <script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});try{if(!sessionStorage.getItem("jsal-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){var h=document.documentElement;h.classList.add("jsal-intro");setTimeout(function(){h.classList.remove("jsal-intro")},4e3);}}catch(e){}</script>
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jsal.io/redirects/" />
+  <meta property="og:site_name" content="jsal.io" />
+  <meta property="og:title" content="Redirect Import: Spreadsheet to Redirect File | jsal.io" />
+  <meta property="og:description" content="Turn a spreadsheet of old and new addresses into the redirect file your platform imports, with every address checked first. Free and entirely in your browser." />
+  <meta property="og:image" content="https://jsal.io/og/redirects.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="628">
+  <meta property="og:image:alt" content="Redirect Import: a sheet of old and new addresses, checked and ready to import">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Redirect Import",
+    "url": "https://jsal.io/redirects/",
+    "description": "Paste or drop a spreadsheet of old and new addresses and get the redirect import file for Shopify, WordPress (Redirection, Rank Math, Yoast), Wix, Squarespace, Webflow, Framer, HubSpot, BigCommerce, Duda, Ghost, Netlify, Vercel, Apache or Nginx. Checks every address first. Runs entirely in the browser.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any (web browser)",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "@id": "https://jsal.io/#john", "name": "John Salvador", "url": "https://jsal.io/" },
+    "isPartOf": { "@id": "https://jsal.io/#website" }
+  }
+  </script>
+
+  <!-- Apply the saved light/dark choice (shared by all jsal.io apps) before first paint -->
+  <script>
+    try {
+      var t = localStorage.getItem("jsal-theme");
+      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+
+  <!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
+       only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    // Consent Mode v2: analytics stays off in the EU, EEA, UK and Switzerland until the visitor allows it
+    // (the card from /nav.js); ads storage is never used. A choice saved earlier applies straight away.
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'] });
+    gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+    try { var jc = localStorage.getItem('jsal-analytics'); if (jc === 'granted' || jc === 'denied') gtag('consent', 'update', { analytics_storage: jc }); } catch (e) {}
+    gtag('js', new Date());
+    gtag('config', 'G-ND4L6CSD8S');
+  </script>
+
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update -->
+  <link rel="stylesheet" href="/shell.css?v=5ef2a1b6">
+  <link rel="stylesheet" href="styles.css?v=d112a92a" />
+  <script type="importmap">
+    {
+      "imports": {
+        "./js/main.js":    "./js/main.js?v=fc76b511",
+        "./js/core.js":    "./js/core.js?v=b22dd6f4",
+        "./js/formats.js": "./js/formats.js?v=4f0b460b",
+        "./js/xlsx.js":    "./js/xlsx.js?v=8b577352"
+      }
+    }
+  </script>
+  <!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app's modules have loaded -->
+  <script src="/nav.js?v=829de57a" defer></script>
+  <script type="module" src="js/main.js?v=fc76b511"></script>
+</head>
+<body>
+  <main class="app" id="app">
+
+    <!-- Top bar shared by every jsal.io app (styles in /shell.css; the logo menu and theme button come from /nav.js) -->
+    <header class="app-header jsal-top">
+      <a class="jsal-brand" href="/" data-jsal-nav><span class="jsal-name"><span class="jsal-j">j<svg class="jsal-j-draw" viewBox="0 -30 900 1080" aria-hidden="true"><path class="jsal-j-line" d="M585.5 277.5V780A100 100 0 0 1 435.5 866.6" stroke-width="147"/><path class="jsal-j-fold" d="M585.5 452V638A167.6 167.6 0 0 1 250.3 638" stroke-width="149"/><circle class="jsal-j-dot" cx="586" cy="57.5" r="77"/></svg></span><span class="jsal-sal">sal</span><span class="jsal-stop">.</span><span class="jsal-io">io</span></span><span class="jsal-caret"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></a>
+      <h1 class="jsal-title"><img class="jsal-title-ico" src="/img/icons/redirect-import.svg?v=0d698d28" alt="" width="22" height="22">Redirect <span class="hl">Import</span><span class="sr-only">: spreadsheet to redirect file</span></h1>
+      <div class="jsal-actions">
+        <a class="jsal-link" href="#about">About</a>
+        <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"><svg class="i-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg><svg class="i-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      </div>
+    </header>
+    <p class="jsal-for">For web teams moving a site: turn a sheet of old and new addresses into the file Shopify, WordPress, Wix and others import.</p>
+
+    <!-- Where the file goes, and what to do with it -->
+    <div class="bar">
+      <label class="plat"><span class="label">Import into</span><select class="field" id="platform"></select></label>
+      <p class="where"><span id="where"></span> <a id="whereDoc" href="https://jsal.io/" target="_blank" rel="noopener">Help page</a></p>
+      <p class="summary" id="summary" aria-live="polite" data-needs-content></p>
+      <div class="bar-actions" data-needs-content>
+        <button type="button" class="jsal-btn" id="copyBtn">Copy</button>
+        <button type="button" class="jsal-btn primary" id="downloadBtn">Download</button>
+      </div>
+    </div>
+
+    <section class="work" id="work" data-view="sheet">
+
+      <!-- Empty state: paste anywhere on the page, drop a file, or start a sheet by hand -->
+      <div class="drop" id="drop" tabindex="0" role="region" aria-label="Add your redirects">
+        <svg class="drop-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h11M11 3l4 4-4 4M20 17H9M13 13l-4 4 4 4"/></svg>
+        <p class="drop-title">Paste or drop your redirects</p>
+        <p class="drop-sub" data-touch="Choose a CSV or Excel file with the old addresses in one column and the new ones in another.">Copy the old and new address columns from Excel or Google Sheets and press <kbd class="mod-key">Ctrl</kbd> + <kbd>V</kbd> anywhere on this page, or drop a CSV or Excel file here.</p>
+        <p class="drop-links"><button type="button" class="jsal-btn link" id="pickFile">Choose a file</button><span aria-hidden="true">·</span><button type="button" class="jsal-btn link" id="blankSheet">Start with an empty sheet</button><span aria-hidden="true">·</span><button type="button" class="jsal-btn link" id="exampleBtn">Try an example</button><span aria-hidden="true" id="undoSep" hidden>·</span><button type="button" class="jsal-btn link" id="undoClear" hidden>Undo clear</button></p>
+        <p class="jsal-error" id="dropError" role="alert" hidden></p>
+        <p class="drop-privacy">Everything stays in your browser. Nothing is uploaded.</p>
+        <input type="file" id="fileInput" accept=".csv,.tsv,.txt,.xlsx,text/csv,text/tab-separated-values,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+      </div>
+
+      <!-- Phones show one pane at a time -->
+      <div class="jsal-seg views" role="tablist" aria-label="Show" data-needs-content>
+        <button type="button" role="tab" id="viewSheet" aria-selected="true" aria-controls="sheetPane">Your sheet</button>
+        <button type="button" role="tab" id="viewFile" aria-selected="false" aria-controls="filePane" tabindex="-1">File</button>
+      </div>
+
+      <!-- The visitor's own rows, editable; the notes under each cell say what the file does with it -->
+      <section class="pane sheet-pane" id="sheetPane" aria-labelledby="sheetH" data-needs-content>
+        <div class="pane-head">
+          <h2 class="pane-title" id="sheetH">Your sheet</h2>
+          <span class="pane-meta" id="sheetMeta"></span>
+          <div class="jsal-seg filter" id="filter" aria-label="Show rows">
+            <button type="button" data-filter="all" aria-pressed="true">All <span></span></button>
+            <button type="button" data-filter="bad" aria-pressed="false">Needs you <span></span></button>
+            <button type="button" data-filter="fixed" aria-pressed="false">Fixed <span></span></button>
+            <button type="button" data-filter="out" aria-pressed="false">Left out <span></span></button>
+          </div>
+        </div>
+        <div class="cols" id="cols" hidden>
+          <label>Old addresses <select class="field" id="colOld"></select></label>
+          <label>New addresses <select class="field" id="colNew"></select></label>
+        </div>
+        <div class="pane-body">
+          <table class="sheet">
+            <colgroup><col class="c-n"><col class="c-st"><col><col><col class="c-x"></colgroup>
+            <thead><tr><th scope="col">#</th><th scope="col"><span class="sr-only">State</span></th><th scope="col">Old address</th><th scope="col">New address</th><th scope="col"><span class="sr-only">Delete</span></th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+          <p class="filter-empty" id="filterEmpty" hidden>No rows here.</p>
+        </div>
+        <div class="pane-foot">
+          <button type="button" class="jsal-btn link" id="addRow">Add a row</button>
+          <button type="button" class="jsal-btn link" id="undoAll" hidden>Undo all my edits</button>
+          <button type="button" class="jsal-btn link" id="otherFile">Use another file</button>
+          <button type="button" class="jsal-btn link danger" id="clearBtn">Clear</button>
+        </div>
+      </section>
+
+      <!-- The file as it will be downloaded; the header row is editable, and Format holds the rest -->
+      <section class="pane file-pane" id="filePane" aria-labelledby="fileName" data-needs-content>
+        <div class="pane-head">
+          <h2 class="pane-title mono" id="fileName"></h2>
+          <div class="jsal-seg parts" id="parts" aria-label="Part" hidden></div>
+          <button type="button" class="fmt-btn" id="fmtBtn" aria-expanded="false" aria-controls="fmt"><span id="fmtSummary"></span> <b>Format</b><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        </div>
+        <div class="fmt" id="fmt" hidden>
+          <div class="opt" id="optNew"><span>New addresses</span><span class="jsal-seg"><button type="button" data-new="path" aria-pressed="true">Paths</button><button type="button" data-new="url" aria-pressed="false">Full URLs</button></span></div>
+          <label class="opt" id="optSite" hidden><span>New site</span><input class="txt" id="newSite" spellcheck="false" autocomplete="off" placeholder="https://www.example.com"></label>
+          <div class="opt" id="optCode"><span>Status</span><span class="jsal-seg" id="codeSeg"><button type="button" data-code="" aria-pressed="false">None</button><button type="button" data-code="301" aria-pressed="true">301</button><button type="button" data-code="302" aria-pressed="false">302</button></span></div>
+          <div class="opt" id="optHead"><span>Header row</span><span class="jsal-seg"><button type="button" data-head="on" aria-pressed="true">On</button><button type="button" data-head="off" aria-pressed="false">Off</button></span></div>
+          <label class="opt" id="optSep"><span>Separator</span><input class="txt short" id="sep" spellcheck="false" autocomplete="off" title="Type \t for a tab"></label>
+          <p class="opt-foot"><button type="button" class="jsal-btn link" id="resetFmt" hidden>Back to the platform’s format</button></p>
+        </div>
+        <p class="file-note" id="fileNote" hidden></p>
+        <div class="pane-body file-body">
+          <input class="head-in" id="headIn" spellcheck="false" autocomplete="off" aria-label="Header row" title="Edit the header row">
+          <p class="head-warn" id="headWarn" hidden></p>
+          <pre class="file" id="fileText" tabindex="0" aria-label="File contents"></pre>
+          <p class="file-empty" id="fileEmpty" hidden>No redirects ready yet.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- About: below the app (which fills the first screen); styles in /shell.css -->
+  <section class="jsal-about" id="about" aria-labelledby="about-h">
+    <h2 id="about-h">About Redirect Import</h2>
+    <p class="jsal-lead">Turns a sheet of old and new addresses into the exact file your platform imports, and catches what would break the import before you upload it.</p>
+
+    <h3>How to use it</h3>
+    <ol>
+      <li>Copy the two columns from Excel or Google Sheets<span data-touch=", or choose a CSV or Excel file.">, and press <kbd class="mod-key">Ctrl</kbd> + <kbd>V</kbd> anywhere on the page, or drop a CSV or Excel file on it.</span></li>
+      <li>Pick where you’re importing them.</li>
+      <li>Fix anything marked red in your sheet. The file beside it changes as you type.</li>
+      <li>Download the file, or copy it, and import it on the platform.</li>
+    </ol>
+
+    <details>
+      <summary><h3>What it fixes for you</h3></summary>
+      <ul>
+        <li>Removes the domain from old addresses, and from new ones on your own site (addresses on other sites keep theirs).</li>
+        <li>Removes tracking tags (utm_ and similar) and the # part from old addresses.</li>
+        <li>Writes accented letters the way browsers send them (é becomes %C3%A9).</li>
+        <li>Shortens chains: if one row moves A to B and another moves B to C, the file moves A straight to C.</li>
+        <li>Leaves out rows that point to themselves, repeat another row, or aren’t addresses at all.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary><h3>What it asks you to fix</h3></summary>
+      <ul>
+        <li>Spaces, Word’s long dashes and curly quotes, hidden tabs and line breaks, a stray %, and characters an address can’t hold (&lt; &gt; " { } | \ ^ `).</li>
+        <li>A missing old or new address.</li>
+        <li>The same old address sent to two different places (you pick which row to keep), and loops.</li>
+        <li>Each platform’s own limits: Squarespace takes no ? in old addresses, HubSpot takes up to 140 characters, and files are split into parts where an import has a cap (500 for Wix and HubSpot, 200 for Duda).</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary><h3>Where it can import</h3></summary>
+      <ul>
+        <li>Shopify, Wix, Webflow, Framer (with its Redirect Sync plugin), HubSpot, BigCommerce and Duda: a CSV file.</li>
+        <li>Squarespace: lines to paste into URL mappings. Ghost: a redirects.yaml file.</li>
+        <li>WordPress: a CSV for the Redirection plugin, Rank Math (Pro) or Yoast SEO Premium.</li>
+        <li>Netlify (_redirects), Vercel (vercel.json), Apache (.htaccess) and Nginx.</li>
+        <li>Plain CSV, with any header row and separator, for anything else.</li>
+      </ul>
+    </details>
+
+    <h3>Common questions</h3>
+    <dl>
+      <dt>Can I change the header row or separator?</dt>
+      <dd><span data-touch="Tap">Click</span> the header line in the file and type. The separator follows what you type, and Format has the status column, full URLs and the rest.</dd>
+      <dt>Why is my file in parts?</dt>
+      <dd>Some platforms take a set number of redirects per import. Import each part in turn.</dd>
+      <dt>Is my sheet uploaded anywhere?</dt>
+      <dd>No. It’s read and checked in your browser, and your edits stay in this tab.</dd>
+    </dl>
+
+    <p class="jsal-feedback">Useful? Ideas or problems? <a href="mailto:dev@jsal.io?subject=Redirect%20Import">Email me</a>.</p>
+    <p><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. Also try the <a href="/cms-picker/">CMS Picker</a> to compare what each CMS can do, or <a href="/formatter/">Clean Paste</a> for clean HTML from Word and Google Docs. <a href="/privacy/">Privacy</a>.</p>
+  </section>
+</body>
+</html>

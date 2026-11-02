@@ -12,7 +12,7 @@ function Shot($url, $out, $w, $h) {
   Write-Output "$out  $((Get-Item $out).Length) bytes"
 }
 
-foreach ($p in "home", "image-resizer", "formatter", "cms-picker", "play") {
+foreach ($p in "home", "image-resizer", "formatter", "redirects", "cms-picker", "play") {
   Shot "$($tpl)?p=$p" (Join-Path $site "og\$p.png") 1200 628
 }
 $icon = "file:///" + ((Join-Path $here "icon.html") -replace '\\', '/')

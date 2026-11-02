@@ -117,6 +117,7 @@ for what the tool does, on a tile in the tool's accent from its home page tile. 
 | CMS Picker (`cms-picker`) | plum #674690 | Three platforms side by side; the one that fits stands tallest, wearing the gem like the mark's j |
 | Clean Paste (`clean-paste`) | deep gold #5e430b (darker than the home tile's gold, so the gold gem keeps its contrast) | Tidy lines of text ending in the gem as their full stop |
 | Image Resizer (`image-resizer`) | teal #2a6a61, from the home page tile's teal | A picture's frame with the gem as the corner handle |
+| Redirect Import (`redirect-import`) | berry #8a3a4f | An arrow sending an old address on to the gem, its new home |
 | Platform Playbook (`platform-playbook`) | blue #3b5a9a | A checklist: two steps done, the gem marking the current one |
 | Off the clock (`off-the-clock`) | green #3f6b3a, as `/play/` uses it | A loot bag holding the gem, a nod to the Backpack. Not a tool, so it's not in the kit's tool row |
 
