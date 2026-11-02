@@ -143,20 +143,23 @@ export function analyse(rows, fmt, opts) {
   const live = [];
 
   rows.forEach((r, i) => {
-    const notes = [], it = { state: "ok", notes, n: i + 1, routine: [] };
+    const notes = [], it = { state: "ok", notes, n: r.n ?? i + 1, routine: [] };
     items.set(r.id, it);
     const o = readAddress(r.old), n = readAddress(r.new);
-    const bad = (cell, text, fixes = [], group = text, title = text) => { notes.push({ cell, kind: "bad", text, fixes, group: cell + ":" + group, title }); it.state = "bad"; };
+    // leave: a problem that can't be fixed by editing (the platform refuses the address, or there's nowhere to send
+    // it) offers to leave the row out, named by the button's label
+    const bad = (cell, text, fixes = [], group = text, title = text, leave = "") => { notes.push({ cell, kind: "bad", text, fixes, group: cell + ":" + group, title, leave }); it.state = "bad"; };
     const fix = (cell, text) => { notes.push({ cell, kind: "fix", text }); if (it.state === "ok") it.state = "fixed"; };
     // A row left out keeps only the reason; what the file would have said no longer matters
     const out = (cell, text, group) => { notes.splice(0, notes.length, ...notes.filter((x) => x.kind !== "fix")); notes.push({ cell, kind: "out", text, group }); it.state = "out"; };
 
     if (o.kind === "empty" && n.kind === "empty") { it.state = "blank"; return; }
+    if (r.skip) return out("o", "Left out by you", "skip");
     if (o.kind === "junk") return out("o", o.word ? `Marked “${esc(o.word)}”: left out` : "Not an address: left out");
     if (o.kind === "empty") return bad("o", "No old address");
     if (o.kind === "scheme") return bad("o", `A ${esc(o.scheme)}: link, not a page address`, [], "scheme", "A link that isn’t a page address");
     if (o.kind === "badhost") return bad("o", `Not a valid domain: <code>${esc(o.host)}</code>`, [], "host", "Not a valid domain");
-    if (n.kind === "empty") return bad("n", "No new address");
+    if (n.kind === "empty") return bad("n", "No new address. Type one, or leave it out.", [], "No new address", "No new address", "Leave it out");
     if (n.kind === "junk") return n.word ? out("n", `Marked “${esc(n.word)}”: left out`) : bad("n", "Not an address");
     if (n.kind === "scheme") return bad("n", `A ${esc(n.scheme)}: link, not a page address`, [], "scheme", "A link that isn’t a page address");
     if (n.kind === "badhost") return bad("n", `Not a valid domain: <code>${esc(n.host)}</code>`, [], "host", "Not a valid domain");
@@ -229,7 +232,7 @@ export function analyse(rows, fmt, opts) {
     // The rows may write the address differently (/about-us/ and /about-us), so say they count as one
     const spellings = [...new Set(g.map((l) => l.from))];
     const same = spellings.length > 1 ? ` (${spellings.map((s) => `<code>${esc(s)}</code>`).join(" and ")} count as one)` : "";
-    for (const l of g) l.bad("o", `Duplicate of ${rowList(g.filter((x) => x !== l))}${same}. Delete ${g.length > 2 ? "all but one" : "one"}.`, [], "clash", "Duplicates");
+    for (const l of g) l.bad("o", `Duplicate of ${rowList(g.filter((x) => x !== l))}${same}. Leave ${g.length > 2 ? "all but one" : "one"} out.`, [], "clash", "Duplicates", "Leave this one out");
   }
 
   // Chains (A → B, then B → C) are written as A → C; a chain that comes back round is a loop
@@ -264,7 +267,7 @@ export function analyse(rows, fmt, opts) {
     const l = live.find((x) => x.id === r.id);
     for (const p of problems) {
       if (p.warn) l.it.notes.push({ cell: p.cell, kind: "warn", text: p.text });   // said, but the row still goes in
-      else l.bad(p.cell, p.text, p.fixes || [], "rule-" + p.id, p.title || p.text);
+      else l.bad(p.cell, p.text, p.fixes || [], "rule-" + p.id, p.title || p.text, "Leave it out");
     }
   }
 
@@ -333,6 +336,8 @@ export function parseDelimited(text) {
     } else field += c;
   }
   if (field || row.length) { row.push(field); rows.push(row); }
+  // Each row keeps its place in the sheet, so the numbers shown match the spreadsheet's even past a blank row
+  rows.forEach((r, i) => (r.at = i));
   return rows.filter((r) => r.some((c) => tidy(c)));
 }
 
