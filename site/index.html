@@ -169,30 +169,33 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .p-sanity { --b: #f03e2f; --c: #ffffff; }
 .p-ghost { --b: #15171a; --c: #ffffff; }
 
-/* Image Resizer: the crop editor (the box spans the photo's full width at the output's shape and slides up or
-   down, as the tool's does) and a tilted list of the files it made, the row's breakout */
+/* Image Resizer: the crop editor with its size buttons and a tilted list of the files it made from that one photo, the
+   row's breakout. The crop box is the picked size's shape, as large as the photo allows, so playing it takes each size
+   in turn (--ar, the width over the height, is registered so it can move smoothly) and each lands in the list. */
+@property --ar { syntax: "<number>"; inherits: true; initial-value: 1.91; }
 .ir { --bg: var(--t-ir); --ink: var(--t-ir-ink); }
 .ir .txt { max-width: 258px; }
 .ir .wm { width: 394px; height: 394px; left: -80px; top: 36px; }   /* the photo's frame lined up with the words, starting under them */
 .ed { left: 290px; top: 22px; width: 250px; padding: 12px; border-radius: 16px; --hover: translateY(-8px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .ed-head { display: flex; justify-content: space-between; color: var(--jsal-muted); }
-.ed-photo { position: relative; display: block; margin-top: 8px; height: 140px; border-radius: var(--jsal-radius-lg); overflow: hidden; }
-.ed-photo img, .outs img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.crop { position: absolute; left: 0; right: 0; top: 10px; height: 118px; outline: 2px solid var(--jsal-fill); outline-offset: -2px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.42); }   /* gold, as the tool draws it */
+.ed-photo { position: relative; display: block; margin-top: 8px; height: 140px; border-radius: var(--jsal-radius-lg); overflow: hidden; container-type: size; }
+.ed-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.crop { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: min(100cqw, 100cqh * var(--ar)); height: min(100cqh, 100cqw / var(--ar)); outline: 2px solid var(--jsal-fill); outline-offset: -2px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.42); }   /* gold, as the tool draws it */
 .crop i { position: absolute; width: 12px; height: 12px; border: 0 solid var(--jsal-fill); }
 .crop i:nth-child(1) { left: 0; top: 0; border-width: 4px 0 0 4px; }
 .crop i:nth-child(2) { right: 0; top: 0; border-width: 4px 4px 0 0; }
 .crop i:nth-child(3) { left: 0; bottom: 0; border-width: 0 0 4px 4px; }
 .crop i:nth-child(4) { right: 0; bottom: 0; border-width: 0 4px 4px 0; }
 .sizes { display: flex; gap: 4px; margin-top: 10px; }
-.sizes span { flex: 1; padding: 5px 0; border-radius: var(--jsal-radius); border: 1px solid var(--jsal-line); text-align: center; white-space: nowrap; }
+.sizes span { flex: 1; padding: 5px 0; border-radius: var(--jsal-radius); border: 1px solid var(--jsal-line); font-size: 10px; text-align: center; white-space: nowrap; }   /* style: allow (miniature: three sizes across the editor) */
 .sizes .on { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); }
-.sizes .plain { font: 600 11px/1.4 var(--jsal-font); }   /* style: allow (miniature) */
 .outs { right: 20px; top: -2px; z-index: 3; width: 214px; padding: 12px 14px; border-radius: 16px; --rest: rotate(4deg); --hover: rotate(6deg) translate(4px, -4px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .outs-head { display: flex; justify-content: space-between; padding-bottom: 6px; color: var(--jsal-muted); }
 .outs-head span { color: var(--jsal-ok); }
 .outs .row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }
-.outs .row img { flex: none; width: 44px; height: 30px; border-radius: var(--jsal-radius-sm); }
+/* each file's thumbnail at its own shape, in the same 44 × 30 slot */
+.th { flex: none; display: grid; place-items: center; width: 44px; height: 30px; }
+.th img { display: block; width: min(44px, 30px * var(--ar)); height: min(30px, 44px / var(--ar)); border-radius: var(--jsal-radius-sm); object-fit: cover; }
 .outs .row span { display: flex; flex-direction: column; font-size: 11px; line-height: 1.4; color: var(--jsal-muted); }   /* style: allow (miniature) */
 .outs .row b { color: var(--jsal-ink); }
 
@@ -305,7 +308,6 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @media (min-width: 600px) and (max-width: 759px) {
   .ed { left: 290px; right: 26px; width: auto; min-width: 250px; }
   .ed-photo { height: 160px; }
-  .crop { height: 136px; }
 }
 @media (max-width: 759px) {
   .outs { display: none; }
@@ -327,7 +329,6 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .ir .clip { position: static; order: 1; overflow: visible; }
   .ed { position: relative; display: block; left: auto; top: auto; width: auto; margin: 18px 0 0; --rest: none; --hover: translateY(-6px); }
   .ed-photo { height: 170px; }
-  .crop { height: 144px; }
   .sheet { position: relative; left: auto; top: auto; margin: 26px auto -12px; width: min(258px, 100%); transform-origin: top center; --rest: rotate(-2deg) scale(0.9); --hover: rotate(-2deg) scale(0.9) translateY(-6px); }
   .hi .txt { margin-top: 136px; }
   .draft { left: 20px; right: 20px; width: auto; max-width: 340px; margin: 0 auto; transform-origin: top center; --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
@@ -350,7 +351,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 }
 /* Pointing at a tile (or focusing it) plays what its tool does three times; on touch screens once, the
    first time the tile comes into view (the script below sets .play). The cards wave with none singled out, the crop
-   box slides the one way the tool lets it, the formatted text wipes into its HTML and the email types itself. */
+   box takes each size's shape in turn, the formatted text wipes into its HTML and the email types itself. */
 @media (prefers-reduced-motion: no-preference) {
   .pc { --i: 0; --d: calc((var(--i) * 2 + var(--r, 0)) * 70ms); }
   .pc:nth-child(2) { --i: 1; }
@@ -358,15 +359,17 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .pc:nth-child(4) { --i: 3; }
   .pcs > span:nth-child(even) { --r: 1; }
   .cms:is(:hover, :focus-visible, .play) .pc { animation: pc-wave 2.4s ease-in-out var(--d) 3; }   /* style: allow (the home pictures play) */
-  .ir:is(:hover, :focus-visible, .play) .crop { animation: ir-crop 3.2s ease-in-out 3; }   /* style: allow (the home pictures play) */
-  /* each row and line has its own keyframes rather than a delay, so every loop starts them all together; the
-     fading ones stop on their third loop just before they fade (2.86 = the 86% keyframe), so they rest as shown */
-  .ir:is(:hover, :focus-visible, .play) :is(.outs .row, .outs-head span) { animation: var(--k) 3.2s ease-out 2.86 both; }   /* style: allow (the home pictures play) */
+  /* each piece has its own keyframes rather than a delay, so every loop starts them all together; they stop on their
+     third loop just before the rows fade (2.88 = the 88% keyframe), so they rest as shown */
+  .ir:is(:hover, :focus-visible, .play) :is(.crop, .sizes span, .outs .row, .outs-head span) { animation: var(--k) 3.6s ease-in-out 2.88 both; }   /* style: allow (the home pictures play) */
+  .crop { --k: ir-ar; }
+  .sizes span:nth-child(1) { --k: ir-s1; }
+  .sizes span:nth-child(2) { --k: ir-s2; }
+  .sizes span:nth-child(3) { --k: ir-s3; }
   .outs .row:nth-child(2) { --k: ir-r1; }
   .outs .row:nth-child(3) { --k: ir-r2; }
   .outs .row:nth-child(4) { --k: ir-r3; }
-  .outs .row:nth-child(5) { --k: ir-r4; }
-  .outs-head span { --k: ir-r5; }
+  .outs-head span { --k: ir-pill; }
   .cp:is(:hover, :focus-visible, .play) :is(.tx, .sw span), .cp:is(:hover, :focus-visible, .play) .views::after, .cp:is(:hover, :focus-visible, .play) .sw::before { animation: var(--k) 3.4s ease-in-out 3 both; }   /* style: allow (the home pictures play) */
   .tx { --k: cp-tx; }
   .views::after { --k: cp-line; }
@@ -376,12 +379,16 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .hi:is(.play, :has(.hi-mail:is(:hover, :focus-visible))) .draft .body i { animation: hi-type 3.6s steps(41, end) 2.9 both; }   /* style: allow (the home pictures play) */
 }
 @keyframes pc-wave { 0%, 36%, 100% { translate: 0 0; } 16% { translate: 0 -9px; } }
-@keyframes ir-crop { 0%, 100% { translate: 0 0; } 28% { translate: 0 12px; } 60% { translate: 0 -10px; } 82% { translate: 0 0; } }
-@keyframes ir-r1 { 0%, 9% { opacity: 0; translate: -8px 0; } 19%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
-@keyframes ir-r2 { 0%, 17% { opacity: 0; translate: -8px 0; } 27%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
-@keyframes ir-r3 { 0%, 25% { opacity: 0; translate: -8px 0; } 35%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
-@keyframes ir-r4 { 0%, 33% { opacity: 0; translate: -8px 0; } 43%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
-@keyframes ir-r5 { 0%, 42% { opacity: 0; translate: -8px 0; } 52%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
+/* Image Resizer: wide, square, then 640 × 420, each size's button picked as the box takes its shape and its file landing
+   in the list; back to wide by 78%, before the one play on touch screens stops */
+@keyframes ir-ar { 0%, 18% { --ar: 1.91; } 28%, 44% { --ar: 1; } 54%, 68% { --ar: 1.524; } 78%, 100% { --ar: 1.91; } }
+@keyframes ir-s1 { 0%, 20%, 76%, 100% { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); } 26%, 70% { border-color: var(--jsal-line); background: transparent; color: var(--jsal-ink); } }
+@keyframes ir-s2 { 0%, 20%, 50%, 100% { border-color: var(--jsal-line); background: transparent; color: var(--jsal-ink); } 26%, 44% { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); } }
+@keyframes ir-s3 { 0%, 46%, 76%, 100% { border-color: var(--jsal-line); background: transparent; color: var(--jsal-ink); } 52%, 70% { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); } }
+@keyframes ir-r1 { 0%, 3% { opacity: 0; translate: -8px 0; } 12%, 88% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
+@keyframes ir-r2 { 0%, 30% { opacity: 0; translate: -8px 0; } 39%, 88% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
+@keyframes ir-r3 { 0%, 56% { opacity: 0; translate: -8px 0; } 65%, 88% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
+@keyframes ir-pill { 0%, 68% { opacity: 0; } 74%, 88% { opacity: 1; } 100% { opacity: 0; } }
 /* Clean Paste, from the rest and back to it by 84% (where the one play on touch screens stops): the line moves
    right to show all the text (Text picked), sweeps left wiping it all into HTML (HTML picked), then returns to rest; it
    hides at the edges, and the switch's gold follows it */
@@ -439,15 +446,14 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
         <span class="obj paper ed">
           <span class="ed-head mono">mugs.jpg<span>6720 × 4480</span></span>
           <span class="ed-photo"><img src="/img/home/mugs.webp" alt="" width="392" height="268"><span class="crop"><i></i><i></i><i></i><i></i></span></span>
-          <span class="sizes mono"><span class="on">1200 × 628</span><span>640 × 420</span><span class="plain">Original</span></span>
+          <span class="sizes mono"><span class="on">1200 × 628</span><span>1080 × 1080</span><span>640 × 420</span></span>
         </span>
       </div>
       <span class="obj paper outs mono" aria-hidden="true">
-        <span class="outs-head">Output<span>95% smaller</span></span>
-        <span class="row"><img src="/img/home/mugs.webp" alt="" width="392" height="268"><span><b>1200 × 628</b>WebP · 182 KB</span></span>
-        <span class="row"><img src="/img/home/hills.webp" alt="" width="392" height="268"><span><b>1200 × 628</b>WebP · 203 KB</span></span>
-        <span class="row"><img src="/img/home/florist.webp" alt="" width="392" height="268"><span><b>1200 × 628</b>WebP · 171 KB</span></span>
-        <span class="row"><img src="/img/home/coffee.webp" alt="" width="392" height="268"><span><b>1200 × 628</b>WebP · 158 KB</span></span>
+        <span class="outs-head">Output<span>96% smaller</span></span>
+        <span class="row"><span class="th" style="--ar: 1.91"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>1200 × 628</b>WebP · 182 KB</span></span>
+        <span class="row"><span class="th" style="--ar: 1"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>1080 × 1080</b>WebP · 236 KB</span></span>
+        <span class="row"><span class="th" style="--ar: 1.524"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>640 × 420</b>WebP · 58 KB</span></span>
       </span>
       <div class="txt">
         <h2>Image Resizer</h2>
