@@ -136,11 +136,39 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .bento .sm { grid-column: span 2; }
 .bento .open { background: none; border-style: dashed; }   /* the intro, unboxed */
 
-/* Components (06): the real rules, copied from the apps' stylesheets, named by their source */
-.demo { display: grid; gap: 14px; padding: 20px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
-.demo .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.demo .src { font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
-.demos { display: grid; gap: 18px; }
+/* Components (06): one card per piece, its kinds and states drawn with the real rules, then the right way beside a
+   wrong one (the wrong ones are drawn on purpose, with the .x- classes) */
+.refs { display: grid; gap: 18px; }
+.ref { display: grid; gap: 14px; padding: 20px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); scroll-margin-top: 16px; }
+.ref-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; }
+.sec .ref-h h3 { margin: 0 6px 0 0; }
+.ref-h .file { font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
+.ref-row { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 8px 16px; align-items: center; }
+.ref-row > span { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-muted); }
+.ref-row > div { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
+.ref-row > div.checks { display: grid; margin: 0; }
+.ref .stack, .ref-row > div.stack { display: grid; gap: 10px; justify-items: start; }
+.ref .stack .ans, .ref .stack .chk { justify-self: stretch; }
+.aside { font-size: 13px; color: var(--jsal-muted); }
+.as-hover { border-color: var(--jsal-hover-line); }
+.ref-rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px 20px; margin: 0; padding-top: 14px; border-top: 1px solid var(--jsal-line); }
+.ref-rules dt { margin-bottom: 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-muted); }
+.ref-rules .no dt { color: var(--jsal-bad); }
+.ref-rules dd { margin: 0; font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
+.dd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.do, .dont { display: grid; gap: 10px; align-content: start; padding: 14px 16px; border-top: 3px solid var(--jsal-ok); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
+.dont { border-top-color: var(--jsal-bad); }
+.do > b, .dont > b { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--jsal-ok); }
+.dont > b { color: var(--jsal-bad); }
+.do > b::before, .dont > b::before { content: ""; width: 14px; height: 14px; background: currentColor; -webkit-mask: var(--jsal-tick) center / contain no-repeat; mask: var(--jsal-tick) center / contain no-repeat; }
+.dont > b::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E"); }
+.do .row, .dont .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sec .do > p, .sec .dont > p { margin: 0; font-size: 14px; line-height: 1.45; }
+.ref .jsal-error { margin: 0; max-width: 36em; }
+.x-fill { border-color: var(--jsal-bad) !important; background: var(--jsal-bad) !important; color: var(--jsal-surface) !important; }
+.x-solid { border-color: var(--jsal-fill) !important; background: var(--jsal-fill) !important; color: var(--jsal-on-fill) !important; }
+.x-pill { padding: 4px 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); font-size: 13px; color: var(--jsal-ink); }
+.x-toast { padding: 8px 12px; border-radius: var(--jsal-radius-lg); background: var(--jsal-ink); color: var(--jsal-bg); font-size: 14px; font-weight: 600; box-shadow: 0 6px 16px rgb(0 0 0 / .2); }
 .cta { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: var(--jsal-radius-pill); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform 0.2s ease; cursor: pointer; border: 0; font-family: inherit; }
 .cta.main { background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); }
 .cta:hover { transform: translateY(-2px); }
@@ -239,20 +267,19 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .a11y b { display: block; margin-bottom: 4px; color: var(--jsal-ink); font-size: 15px; }
 .a11y small { display: block; margin-top: 8px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 
-/* In practice (09) */
-.shots { display: grid; gap: 28px; }
-.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; }
-.pair figure, .shot figure { margin: 0; min-width: 0; }
-.pair img, .shot img { display: block; width: 100%; height: auto; border-radius: var(--jsal-radius-lg); border: 1px solid var(--jsal-line-hi); }
-figcaption { margin-top: 8px; font-size: 13px; line-height: 1.45; color: var(--jsal-muted); }
-figcaption b { color: var(--jsal-ink); font-weight: 600; }
-.shot.phone { max-width: 320px; }
+/* In practice (09): the live pages, as a grid of equal link tiles */
+.live { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.sec .live li + li { margin-top: 0; }
+.live a { display: grid; gap: 4px; height: 100%; box-sizing: border-box; padding: 14px 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); font-weight: 500; text-decoration: none; }
+.live a:hover { border-color: var(--jsal-hover-line); }
+.live b { font-weight: 600; }
+.live span { font-size: 13px; color: var(--jsal-muted); }
 
 footer.end { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--jsal-line); display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; font-size: 13px; color: var(--jsal-muted); }
 footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 @media (max-width: 720px) { .hero { padding-top: 32px; } .sec { padding-top: 40px; } .roles td:first-child { white-space: normal; } .jsal-top nav { display: none; } .ans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }   /* the contents list below does the nav's job on a phone */
-@media (max-width: 560px) { .verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: 16px; } .verdict .jump { margin-top: 8px; } }
+@media (max-width: 560px) { .ref-row, .dd { grid-template-columns: minmax(0, 1fr); } .ref { padding: 16px; } .verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: 16px; } .verdict .jump { margin-top: 8px; } }
 @media (pointer: coarse) { .cta, .chip, .chk, .chip-link, .tick, .fgdemo a, .ans button { min-height: 44px; } .chip, .chip-link, .fgdemo a { display: inline-flex; align-items: center; } }
 @media (prefers-reduced-motion: reduce) { .cta, .chip, .ans button { transition: none; } .cta:hover { transform: none; } }
 </style>
@@ -276,7 +303,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><b>3</b><span>typefaces, self-hosted</span></li>
       <li><b>24</b><span>colour tokens × 2 themes</span></li>
       <li><b>6</b><span>tool icons, one family</span></li>
-      <li><b>4</b><span>corner radii</span></li>
+      <li><b>6</b><span>corner radii</span></li>
       <li><b>1</b><span>column, three widths</span></li>
       <li><b>0</b><span>build steps</span></li>
     </ul>
@@ -518,75 +545,165 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
   <section class="sec" id="components">
     <p class="eyebrow">06 · Component library</p>
     <h2>The pieces every tool shares.</h2>
-    <p class="intro">These are live, built from the same rules the apps use (each demo names its source). Hover is neutral everywhere: a firmer border or a slight tint. Gold means selected, focused, a file being dragged over, or the main action. Every control has one focus ring, and on touch screens every control is at least 44px tall.</p>
-    <div class="demos">
-      <div class="demo">
-        <span class="src">Buttons · shell.css .jsal-btn, the one button every page uses: plain, .primary (the gold main action), .small for dense screens, .danger to remove or clear, .link for a quiet action that reads as a link</span>
-        <div class="row"><button type="button" class="jsal-btn primary">Find my fit</button><button type="button" class="jsal-btn">Compare all 14</button><button type="button" class="jsal-btn" disabled>Download All</button><button type="button" class="jsal-btn danger">Clear</button><button type="button" class="jsal-btn small">Cancel</button><button type="button" class="jsal-btn link">Start with a blank page</button><button type="button" class="jsal-btn link small danger">Delete</button></div>
-        <span class="src">Home page call to action · index.html .cta (the one filled pill, the page's main action, lifts 2px on hover)</span>
-        <div class="row"><button type="button" class="cta main">Find your CMS</button></div>
-      </div>
-      <div class="demo">
-        <span class="src">Chips and link-styled controls · cms-picker/styles.css .chip, .chip-link</span>
-        <div class="row"><button type="button" class="chip" aria-pressed="true">WordPress</button><button type="button" class="chip" aria-pressed="true">Shopify</button><button type="button" class="chip" aria-pressed="false">Webflow</button><button type="button" class="chip" aria-pressed="false">Ghost</button><button type="button" class="chip-link">All</button><button type="button" class="chip-link">Deselect all</button></div>
-        <span class="src">Switch · shell.css .jsal-seg, the one switch for picking one of a few options</span>
-        <div class="row"><div class="jsal-seg" role="group" aria-label="Example switch"><button type="button" aria-pressed="false">Low</button><button type="button" aria-pressed="false">Med</button><button type="button" aria-pressed="true">High</button></div><div class="jsal-seg" role="group" aria-label="Example switch"><button type="button" aria-pressed="true">JPG</button><button type="button" aria-pressed="false">PNG</button><button type="button" aria-pressed="false">WebP</button></div></div>
-      </div>
-      <div class="demo">
-        <span class="src">A tick that goes with a choice · cms-picker/styles.css .qz-tick (selected like a pressed chip; the box in the accent)</span>
-        <div class="row"><label class="tick"><input type="checkbox" checked><span><b>We already use HubSpot</b><small>For our CRM, email or marketing</small></span></label><label class="tick"><input type="checkbox"><span><b>We already use HubSpot</b><small>For our CRM, email or marketing</small></span></label></div>
-        <span class="src">A question that takes several answers · cms-picker/styles.css .qz-checks (the same ticks as a list, two columns where they fit, then Back and a gold Next)</span>
-        <div class="checks"><label class="tick"><input type="checkbox" checked><span><b>Bookings or appointments</b><small>Clients book a time online</small></span></label><label class="tick"><input type="checkbox"><span><b>A blog or news section</b><small>Posts alongside the main pages</small></span></label><label class="tick"><input type="checkbox" checked><span><b>Selling online too</b><small>A few products or services to sell</small></span></label><label class="tick"><input type="checkbox"><span><b>Two or more languages</b><small>The same pages in each language</small></span></label></div>
-        <span class="src">An index of links · index.html footer .fg (a bordered pill means a choice, so links are plain text in muted ink, never pills)</span>
-        <nav class="fgdemo" aria-label="Platform guides example"><span aria-hidden="true">Platform guides</span><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/substack/">Substack</a></nav>
-      </div>
-      <div class="demo">
-        <span class="src">Tags · cms-picker/styles.css .tag (the answer ramp), with the words that follow a tag</span>
-        <div class="row"><span class="tag yes">Built in</span><span class="tag yes">Automatic</span><span class="tag plugin">Plugin/app</span><span class="tag plugin">Indirectly</span><span class="tag code">Needs code</span><span class="tag no">Not possible</span><span class="tag check">Unclear</span><span class="tag cost">Under $25/mo</span><span class="sc">* varies</span><span class="sc">not verified</span></div>
-      </div>
-      <div class="demo">
-        <span class="src">Field, at rest and focused · the one focus ring, --jsal-focus-ring</span>
-        <div class="row" style="align-items:end"><label class="field">Width<input id="demo-w" type="text" value="1200" inputmode="numeric"></label><label class="field">Height<input id="demo-h" class="focused" type="text" value="628" inputmode="numeric"></label></div>
-      </div>
-      <div class="demo">
-        <span class="src">Check rows · formatter/styles.css .check (a row about a line is a button: it shows the line)</span>
-        <button type="button" class="chk warn"><span class="ico">!</span><span>1 H1 heading in the body. Most CMSs already use the post title as the H1, so change it to H2.</span><span class="show">Show</span></button>
-        <button type="button" class="chk ok"><span class="ico">✓</span><span>Removed 2 Word comments.</span></button>
-      </div>
-      <div class="demo">
-        <span class="src">Platform card · cms-picker/styles.css .card, with the card's one gold action</span>
-        <div class="card"><h3>Squarespace</h3><p>For small businesses and creatives who want a designed site without a developer.</p><div class="foot"><button type="button" class="chip" aria-pressed="false">+ Add to compare</button><a class="cseo" href="/cms-picker/squarespace/">SEO settings →</a></div></div>
-      </div>
-      <div class="demo">
-        <span class="src">The quiz result's verdict · cms-picker/styles.css .qz-verdict (the first thing read: how sure in a small label, how far ahead in Lora; green for a lead, neutral for a close call)</span>
-        <div class="verdict"><p class="eye">A clear lead</p><p class="line">Wix is ahead of Squarespace for what you need.</p><a class="jump" href="/cms-picker/">Compare these side by side ↓</a></div>
-        <div class="verdict close"><p class="eye">A close call</p><p class="line">Squarespace is slightly ahead of Wix for your answers, and either would work.</p></div>
-      </div>
-      <div class="demo">
-        <span class="src">Your answers · cms-picker/styles.css .qz-ans-tiles (equal tiles, a short name over each answer, gold while one is being changed; a ticked extra sits on a line beneath, so a tick never makes a tile taller)</span>
-        <div class="ans"><button type="button"><small>Making</small>A business or work site</button><button type="button" aria-expanded="true"><small>Built by</small>Me, and I’m not technical</button><button type="button"><small>From day one</small>Bookings or appointments</button><button type="button"><small>Each month</small>Nothing for now</button></div>
-        <div class="ans-also"><i aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></i>Two or more languages</div>
-      </div>
-      <div class="demo">
-        <span class="src">A match that lacks a must-have · cms-picker/styles.css .qz-div, .fitp (a label with a rule above, one plain sentence per match from the table's verdicts; under it the pill is neutral)</span>
-        <div class="match">Shopify <span class="fitp">Best match</span></div>
-        <div class="div"><b>Also possible, with an add-on</b>Framer needs an add-on for selling online.</div>
-        <div class="match">Framer <span class="fitp low">Worth a look</span></div>
-      </div>
-      <div class="demo">
-        <span class="src">The insight line and a caveat · cms-picker quiz result (.qz-vs, .qz-lim)</span>
-        <div class="insight"><b>Ahead of Wix</b>What tipped it: you're making an online store, and Shopify is made for selling first.</div>
-        <div class="worth"><span aria-hidden="true">ⓘ</span><span>Worth knowing: moving to another platform later is harder (products, customers and orders as CSV).</span></div>
-      </div>
-      <div class="demo">
-        <span class="src">Achievement pop-up · shell.css .jsal-ach (bottom-right on desktop, top of the screen on phones)</span>
-        <div class="ach" role="status"><span class="medal"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h5v16h-5"/><path d="M3 12h11M10 8l4 4-4 4"/></svg></span><span><small>Achievement unlocked</small><b>First steps</b><span class="d">Used a tool</span></span></div>
-      </div>
-      <div class="demo">
-        <span class="src">Top bar · shell.css .jsal-top (identical markup on every page; the theme button is 32px drawn, 44px to tap)</span>
-        <div class="topbar-demo"><div class="jsal-top"><span class="jsal-brand"><span class="jsal-name"><span class="jsal-j">j<svg class="jsal-j-draw" viewBox="0 -30 900 1080" aria-hidden="true"><path class="jsal-j-line" d="M585.5 277.5V780A100 100 0 0 1 435.5 866.6" stroke-width="147"/><path class="jsal-j-fold" d="M585.5 452V638A167.6 167.6 0 0 1 250.3 638" stroke-width="149"/><circle class="jsal-j-dot" cx="586" cy="57.5" r="77"/></svg></span><span class="jsal-sal">sal</span><span class="jsal-stop">.</span><span class="jsal-io">io</span></span></span><span class="jsal-title"><img class="jsal-title-ico" src="/img/icons/clean-paste.svg?v=7eb743e5" alt="" width="22" height="22">Clean <span class="hl">Paste</span></span><div class="jsal-actions"><span class="jsal-link">About</span><span class="jsal-theme" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span></div></div></div>
-        <span class="src">Keys · kbd, as in the About sections: <kbd>Ctrl</kbd> + <kbd>V</kbd></span>
-      </div>
+    <p class="intro">Each piece with its classes and file, every kind and state drawn live, what it's for, and where it's easy to go wrong, the right way beside the wrong one. Hover is neutral everywhere: a firmer border or a slight tint. Gold means selected, focused, a file being dragged over, or the main action. One focus ring for every control, and on touch screens every control is at least 44px tall.</p>
+    <div class="refs">
+      <article class="ref" id="c-button">
+        <div class="ref-h"><h3>Button</h3><code>.jsal-btn</code><code>.primary</code><code>.small</code><code>.danger</code><code>.link</code><span class="file">shell.css</span></div>
+        <div class="ref-row"><span>Kinds</span><div><button type="button" class="jsal-btn primary">Find my fit</button><button type="button" class="jsal-btn">Compare all 14</button><button type="button" class="jsal-btn danger">Clear</button><button type="button" class="jsal-btn link">Start with a blank page</button><button type="button" class="jsal-btn link small danger">Delete</button></div></div>
+        <div class="ref-row"><span>Sizes</span><div><button type="button" class="jsal-btn">40px, 14px</button><button type="button" class="jsal-btn small">.small 32px, 13px</button><span class="aside">44px on touch screens</span></div></div>
+        <div class="ref-row"><span>States</span><div><button type="button" class="jsal-btn">At rest</button><button type="button" class="jsal-btn as-hover">Hover</button><button type="button" class="jsal-btn ring">Focused</button><button type="button" class="jsal-btn" disabled>Zipping…</button><button type="button" class="jsal-btn primary jsal-done">Copied</button></div></div>
+        <div class="ref-row"><span>Home only</span><div><button type="button" class="cta main">Find your CMS</button><span class="aside">.cta in index.html: the one filled pill, the home page's main action</span></div></div>
+        <div class="dd">
+          <div class="do"><b>Do</b><div class="row"><button type="button" class="jsal-btn primary">Copy formatted</button><button type="button" class="jsal-btn">Copy HTML</button></div><p>One gold button: the main thing to do next.</p></div>
+          <div class="dont"><b>Don’t</b><div class="row"><button type="button" class="jsal-btn primary">Copy formatted</button><button type="button" class="jsal-btn primary">Copy HTML</button></div><p>Two gold buttons side by side: neither reads as the main one.</p></div>
+          <div class="do"><b>Do</b><div class="row"><button type="button" class="jsal-btn danger">Clear</button></div><p>Clear and delete in red text; the red edge and tint come on hover.</p></div>
+          <div class="dont"><b>Don’t</b><div class="row"><button type="button" class="jsal-btn x-fill">Clear</button></div><p>A filled red button: it shouts louder than the main action.</p></div>
+        </div>
+      </article>
+
+      <article class="ref" id="c-chip">
+        <div class="ref-h"><h3>Chip</h3><code>.chip</code><code>.chip-link</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-row"><span>States</span><div><button type="button" class="chip" aria-pressed="true">WordPress</button><button type="button" class="chip" aria-pressed="true">Shopify</button><button type="button" class="chip" aria-pressed="false">Webflow</button><button type="button" class="chip ring" aria-pressed="false">Ghost</button><button type="button" class="chip-link">All</button><button type="button" class="chip-link">Deselect all</button></div></div>
+        <div class="dd">
+          <div class="do"><b>Do</b><div class="row"><button type="button" class="chip" aria-pressed="true">Shopify</button><button type="button" class="chip" aria-pressed="false">Wix</button></div><p>A bordered pill is a choice that toggles; chosen is the gold edge and tint.</p></div>
+          <div class="dont"><b>Don’t</b><div class="row"><button type="button" class="chip x-solid" aria-pressed="true">Shopify</button><button type="button" class="chip" aria-pressed="false">Wix</button></div><p>A solid gold chip: it reads as the main action, not as something chosen.</p></div>
+          <div class="do"><b>Do</b><div class="row"><button type="button" class="chip" aria-pressed="false">+ Add to compare</button></div><p>Something you turn on and off, and can see is on.</p></div>
+          <div class="dont"><b>Don’t</b><div class="row"><button type="button" class="chip" aria-pressed="false">Copy link</button></div><p>A one-off action dressed as a chip: that's a button.</p></div>
+        </div>
+      </article>
+
+      <article class="ref" id="c-switch">
+        <div class="ref-h"><h3>Switch</h3><code>.jsal-seg</code><span class="file">shell.css</span></div>
+        <div class="ref-row"><span>Examples</span><div><div class="jsal-seg" role="group" aria-label="Example switch"><button type="button" aria-pressed="false">Low</button><button type="button" aria-pressed="false">Med</button><button type="button" aria-pressed="true">High</button></div><div class="jsal-seg" role="group" aria-label="Example switch"><button type="button" aria-pressed="true">JPG</button><button type="button" aria-pressed="false">PNG</button><button type="button" aria-pressed="false">WebP</button></div></div></div>
+        <div class="dd">
+          <div class="do"><b>Do</b><div class="row"><div class="jsal-seg" role="group" aria-label="Example switch"><button type="button" aria-pressed="true">Text</button><button type="button" aria-pressed="false">HTML</button></div></div><p>Two to four short options, one always chosen: a setting or a view.</p></div>
+          <div class="dont"><b>Don’t</b><div class="row"><div class="jsal-seg" role="group" aria-label="Example switch"><button type="button" aria-pressed="false">Copy</button><button type="button" aria-pressed="false">Clear</button></div></div><p>Actions in a switch: it picks a setting, it never runs something.</p></div>
+        </div>
+      </article>
+
+      <article class="ref" id="c-tick">
+        <div class="ref-h"><h3>Tick, and a question with several answers</h3><code>.qz-tick</code><code>.qz-checks</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-row"><span>Tick</span><div><label class="tick"><input type="checkbox" checked><span><b>We already use HubSpot</b><small>For our CRM, email or marketing</small></span></label><label class="tick"><input type="checkbox"><span><b>We already use HubSpot</b><small>For our CRM, email or marketing</small></span></label></div></div>
+        <div class="ref-row"><span>Several</span><div class="checks"><label class="tick"><input type="checkbox" checked><span><b>Bookings or appointments</b><small>Clients book a time online</small></span></label><label class="tick"><input type="checkbox"><span><b>A blog or news section</b><small>Posts alongside the main pages</small></span></label><label class="tick"><input type="checkbox" checked><span><b>Selling online too</b><small>A few products or services to sell</small></span></label><label class="tick"><input type="checkbox"><span><b>Two or more languages</b><small>The same pages in each language</small></span></label></div></div>
+        <dl class="ref-rules">
+          <div><dt>Use it for</dt><dd>A yes or no that goes with the choice beside it, or a question with several answers (then Back and a gold Next). Ticked is the chip's gold edge and tint; the box itself is in the accent.</dd></div>
+          <div class="no"><dt>Not for</dt><dd>One answer from a few: those are answer tiles or a switch.</dd></div>
+        </dl>
+      </article>
+
+      <article class="ref" id="c-links">
+        <div class="ref-h"><h3>An index of links</h3><code>footer .fg</code><span class="file">index.html</span></div>
+        <div class="ref-row"><span>Example</span><div><nav class="fgdemo" aria-label="Platform guides example"><span aria-hidden="true">Platform guides</span><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/substack/">Substack</a></nav></div></div>
+        <div class="dd">
+          <div class="do"><b>Do</b><div class="row"><span class="aside">WordPress · Shopify · Wix · Squarespace</span></div><p>A set of links is plain text in muted ink, or a grid of equal tiles.</p></div>
+          <div class="dont"><b>Don’t</b><div class="row"><span class="x-pill">WordPress</span><span class="x-pill">Shopify</span><span class="x-pill">Wix</span></div><p>Links as bordered pills: a pill means a choice that toggles, and uneven pills stagger.</p></div>
+        </div>
+      </article>
+
+      <article class="ref" id="c-tag">
+        <div class="ref-h"><h3>Tag</h3><code>.tag</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-row"><span>The ramp</span><div><span class="tag yes">Built in</span><span class="tag yes">Automatic</span><span class="tag plugin">Plugin/app</span><span class="tag plugin">Indirectly</span><span class="tag code">Needs code</span><span class="tag no">Not possible</span></div></div>
+        <div class="ref-row"><span>Neutral</span><div><span class="tag check">Unclear</span><span class="tag cost">Under $25/mo</span><span class="sc">* varies</span><span class="sc">not verified</span></div></div>
+        <div class="dd">
+          <div class="do"><b>Do</b><div class="row"><span class="tag yes">Built in</span><span class="tag plugin">Plugin/app</span><span class="tag no">Not possible</span></div><p>A tag answers "can it?"; its colour is where that answer sits on the one ramp.</p></div>
+          <div class="dont"><b>Don’t</b><div class="row"><span class="tag no">Expires soon</span></div><p>A ramp colour on something that isn't an answer: red means not possible, not "watch out".</p></div>
+        </div>
+      </article>
+
+      <article class="ref" id="c-field">
+        <div class="ref-h"><h3>Field</h3><code>input</code><code>--jsal-focus-ring</code></div>
+        <div class="ref-row"><span>States</span><div style="align-items:end"><label class="field">Width<input id="demo-w" type="text" value="1200" inputmode="numeric"></label><label class="field">Height, focused<input id="demo-h" class="focused" type="text" value="628" inputmode="numeric"></label></div></div>
+        <dl class="ref-rules">
+          <div><dt>Use it for</dt><dd>Typing a value. Its label sits above it; focused is the gold edge and the one focus ring. 16px text on touch screens, so iPhones don't zoom.</dd></div>
+          <div class="no"><dt>Not for</dt><dd>Picking from a few known values: those are buttons, a switch or tiles. A value that can't be used turns the field's edge red, and the tool says why until it's fixed.</dd></div>
+        </dl>
+      </article>
+
+      <article class="ref" id="c-check">
+        <div class="ref-h"><h3>Check row</h3><code>.check</code><span class="file">formatter/styles.css</span></div>
+        <div class="ref-row"><span>Kinds</span><div class="stack"><button type="button" class="chk warn"><span class="ico">!</span><span>1 H1 heading in the body. Most CMSs already use the post title as the H1, so change it to H2.</span><span class="show">Show</span></button><button type="button" class="chk ok"><span class="ico">✓</span><span>Removed 2 Word comments.</span></button></div></div>
+        <dl class="ref-rules">
+          <div><dt>Use it for</dt><dd>A finding about the visitor's own content. A row about a line is a button: it shows the line.</dd></div>
+          <div class="no"><dt>Not for</dt><dd>General advice, which belongs in the About section, or a failed action, which is an error by the button.</dd></div>
+        </dl>
+      </article>
+
+      <article class="ref" id="c-card">
+        <div class="ref-h"><h3>Platform card</h3><code>.card</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-row"><span>Example</span><div><div class="card"><h3>Squarespace</h3><p>For small businesses and creatives who want a designed site without a developer.</p><div class="foot"><button type="button" class="chip" aria-pressed="false">+ Add to compare</button><a class="cseo" href="/cms-picker/squarespace/">SEO settings →</a></div></div></div></div>
+        <dl class="ref-rules">
+          <div><dt>Use it for</dt><dd>One platform at a glance: who it suits, then its one gold link onward; adding it to the comparison is a chip, as it toggles.</dd></div>
+          <div class="no"><dt>Not for</dt><dd>Ranking or recommending: that's the quiz result's match cards, which say why.</dd></div>
+        </dl>
+      </article>
+
+      <article class="ref" id="c-verdict">
+        <div class="ref-h"><h3>The result's verdict</h3><code>.qz-verdict</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-row"><span>A lead</span><div><div class="verdict"><p class="eye">A clear lead</p><p class="line">Wix is ahead of Squarespace for what you need.</p><a class="jump" href="/cms-picker/">Compare these side by side ↓</a></div></div></div>
+        <div class="ref-row"><span>A close call</span><div><div class="verdict close"><p class="eye">A close call</p><p class="line">Squarespace is slightly ahead of Wix for your answers, and either would work.</p></div></div></div>
+        <dl class="ref-rules">
+          <div><dt>Use it for</dt><dd>The first thing read in a result: how sure in the small label, how far ahead in Lora. Green for a lead or a winner.</dd></div>
+          <div class="no"><dt>Not for</dt><dd>Green on a close call: it stays neutral, so green always means one is ahead.</dd></div>
+        </dl>
+      </article>
+
+      <article class="ref" id="c-answers">
+        <div class="ref-h"><h3>Your answers</h3><code>.qz-ans-tiles</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-row"><span>Example</span><div class="stack"><div class="ans"><button type="button"><small>Making</small>A business or work site</button><button type="button" aria-expanded="true"><small>Built by</small>Me, and I’m not technical</button><button type="button"><small>From day one</small>Bookings or appointments</button><button type="button"><small>Each month</small>Nothing for now</button></div><div class="ans-also"><i aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></i>Two or more languages</div></div></div>
+        <dl class="ref-rules">
+          <div><dt>Use it for</dt><dd>The answers behind a result, as equal tiles with a short name over each; the one being changed is gold. A ticked extra sits on a line beneath.</dd></div>
+          <div class="no"><dt>Not for</dt><dd>Tiles of uneven size, or a tick inside a tile, which would make it taller than its neighbours.</dd></div>
+        </dl>
+      </article>
+
+      <article class="ref" id="c-divider">
+        <div class="ref-h"><h3>A match that lacks a must-have</h3><code>.qz-div</code><code>.fitp</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-row"><span>Example</span><div class="stack"><div class="match">Shopify <span class="fitp">Best match</span></div><div class="div"><b>Also possible, with an add-on</b>Framer needs an add-on for selling online.</div><div class="match">Framer <span class="fitp low">Worth a look</span></div></div></div>
+        <dl class="ref-rules">
+          <div><dt>Use it for</dt><dd>Matches missing something the first has built in: under a label with a rule above, one plain sentence each, and a neutral pill.</dd></div>
+          <div class="no"><dt>Not for</dt><dd>A green pill under the divider: there it isn't a fit. Above it no card reads "Worth a look".</dd></div>
+        </dl>
+      </article>
+
+      <article class="ref" id="c-insight">
+        <div class="ref-h"><h3>The insight line and a caveat</h3><code>.qz-vs</code><code>.qz-lim</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-row"><span>Example</span><div class="stack"><div class="insight"><b>Ahead of Wix</b>What tipped it: you're making an online store, and Shopify is made for selling first.</div><div class="worth"><span aria-hidden="true">ⓘ</span><span>Worth knowing: moving to another platform later is harder (products, customers and orders as CSV).</span></div></div></div>
+        <div class="dd">
+          <div class="do"><b>Do</b><div class="stack"><div class="insight"><b>Ahead of Wix</b>Shopify is made for selling first.</div></div><p>One gold line per card: the one insight.</p></div>
+          <div class="dont"><b>Don’t</b><div class="stack"><div class="insight"><b>Ahead of Wix</b>Made for selling first.</div><div class="insight"><b>Also</b>Easy to run.</div></div><p>Gold on every reason: then nothing stands out.</p></div>
+        </div>
+      </article>
+
+      <article class="ref" id="c-feedback">
+        <div class="ref-h"><h3>Feedback</h3><code>.jsal-done</code><code>window.jsalDone</code><code>.jsal-error</code><span class="file">shell.css, nav.js</span></div>
+        <div class="ref-row"><span>States</span><div><button type="button" class="jsal-btn primary">Copy formatted</button><button type="button" class="jsal-btn" disabled>Zipping…</button><button type="button" class="jsal-btn primary jsal-done">Copied</button><button type="button" class="jsal-btn jsal-done">Link copied</button></div></div>
+        <div class="ref-row"><span>Error</span><div><p class="jsal-error">Couldn’t save: check your connection and try again. Your changes are still here.</p></div></div>
+        <div class="dd">
+          <div class="do"><b>Do</b><div class="row"><button type="button" class="jsal-btn primary jsal-done">Copied</button></div><p>Success on the button that did it: green, a tick, two seconds, then its own label.</p></div>
+          <div class="dont"><b>Don’t</b><div class="row"><button type="button" class="jsal-btn primary">Copy formatted</button><span class="x-toast">Copied</span></div><p>A message at the bottom while the button is still there: the eye is on the button.</p></div>
+          <div class="do"><b>Do</b><div class="stack"><p class="jsal-error">Couldn’t save: try again.</p></div><p>An error next to what failed, saying what to do, until the next try there.</p></div>
+          <div class="dont"><b>Don’t</b><div class="row"><span class="x-toast">Couldn’t save</span><span class="aside">gone in 2s</span></div><p>An error in a message that fades: it can go unread.</p></div>
+        </div>
+      </article>
+
+      <article class="ref" id="c-ach">
+        <div class="ref-h"><h3>Achievement pop-up</h3><code>.jsal-ach</code><span class="file">shell.css</span></div>
+        <div class="ref-row"><span>Example</span><div><div class="ach" role="status"><span class="medal"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h5v16h-5"/><path d="M3 12h11M10 8l4 4-4 4"/></svg></span><span><small>Achievement unlocked</small><b>First steps</b><span class="d">Used a tool</span></span></div></div></div>
+        <dl class="ref-rules">
+          <div><dt>Use it for</dt><dd>An achievement only: bottom-right on desktop, top of the screen on phones, for four seconds, and never over a tool someone has only just opened.</dd></div>
+          <div class="no"><dt>Not for</dt><dd>Telling someone an action worked or failed: that's feedback, on the button or next to what failed.</dd></div>
+        </dl>
+      </article>
+
+      <article class="ref" id="c-topbar">
+        <div class="ref-h"><h3>Top bar, and keys</h3><code>.jsal-top</code><code>kbd</code><span class="file">shell.css</span></div>
+        <div class="ref-row"><span>Top bar</span><div><div class="topbar-demo"><div class="jsal-top"><span class="jsal-brand"><span class="jsal-name"><span class="jsal-j">j<svg class="jsal-j-draw" viewBox="0 -30 900 1080" aria-hidden="true"><path class="jsal-j-line" d="M585.5 277.5V780A100 100 0 0 1 435.5 866.6" stroke-width="147"/><path class="jsal-j-fold" d="M585.5 452V638A167.6 167.6 0 0 1 250.3 638" stroke-width="149"/><circle class="jsal-j-dot" cx="586" cy="57.5" r="77"/></svg></span><span class="jsal-sal">sal</span><span class="jsal-stop">.</span><span class="jsal-io">io</span></span></span><span class="jsal-title"><img class="jsal-title-ico" src="/img/icons/clean-paste.svg?v=7eb743e5" alt="" width="22" height="22">Clean <span class="hl">Paste</span></span><div class="jsal-actions"><span class="jsal-link">About</span><span class="jsal-theme" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span></div></div></div></div></div>
+        <div class="ref-row"><span>Keys</span><div><span class="aside">Press <kbd>Ctrl</kbd> + <kbd>V</kbd> anywhere on the page.</span></div></div>
+        <dl class="ref-rules">
+          <div><dt>Use it for</dt><dd>The same markup on every page, so it never moves: the logo menu, the tool's icon and name, a link or two and the theme button (32px drawn, 44px to tap).</dd></div>
+          <div class="no"><dt>Not for</dt><dd>A tool's own controls. Keys are for shortcuts in running text, with a touch version that drops them.</dd></div>
+        </dl>
+      </article>
     </div>
   </section>
 
@@ -613,12 +730,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <p>One ring for every control, text fields included: <code>0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent)</code>. The gap of background colour keeps the ring legible on gold buttons and on tinted chips alike.</p>
     <div class="focus-demo"><button type="button" class="jsal-btn primary ring">Find my fit</button><button type="button" class="chip ring" aria-pressed="false">Webflow</button></div>
     <h3>Feedback</h3>
-    <p>One rule for every tool. Success is said on the button that did it: green, a tick and the past tense ("Copied", "Link copied", "Saved") for two seconds, then its own label again; only when that button goes away, as a form closes on Save, does a short message appear at the bottom. Work in progress is said on the button too ("Zipping…"), which waits meanwhile. An error is never a message that fades: it sits in red next to what failed and says what to do, until the next try there. A cleared post offers "Undo clear"; the Image Resizer's status line keeps the running state of a batch.</p>
-    <div class="demo">
-      <span class="src">States · shell.css .jsal-done (window.jsalDone in nav.js) and .jsal-error</span>
-      <div class="row"><button type="button" class="jsal-btn primary">Copy formatted</button><button type="button" class="jsal-btn" disabled>Zipping…</button><button type="button" class="jsal-btn primary jsal-done">Copied</button><button type="button" class="jsal-btn jsal-done">Link copied</button></div>
-      <p class="jsal-error">Couldn’t save: check your connection and try again. Your changes are still here.</p>
-    </div>
+    <p>Success is said on the button that did it, and an error stays next to what failed: see <a href="#c-feedback">Feedback</a> in the component library.</p>
   </section>
 
   <section class="sec" id="a11y">
@@ -640,30 +752,16 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
   <section class="sec" id="practice">
     <p class="eyebrow">09 · Design in practice</p>
-    <h2>The system on the pages, in both themes.</h2>
-    <p class="intro">Screenshots of the live site at 1280px, November 2026, with a phone view of the home page. The same tokens, column and components throughout; only the content changes.</p>
-    <div class="shots">
-      <div class="pair">
-        <figure><img src="img/home-dark.jpg" width="1280" height="820" alt="jsal.io home page in dark mode: the headline Small tools that do one job well and a gold Find your CMS button, beside the CMS Picker tile with its tilted brick of platform cards" loading="lazy"><figcaption><b>Home, dark.</b> The thesis, the mono eyebrow, the gold word, and the bento's tiles, each with a piece of its tool.</figcaption></figure>
-        <figure><img src="img/home-light.jpg" width="1280" height="820" alt="jsal.io home page in light mode, the same bento on parchment" loading="lazy"><figcaption><b>Home, light.</b> Parchment and the darker gold; each tile keeps its own tint and watermark.</figcaption></figure>
-      </div>
-      <div class="pair">
-        <figure><img src="img/cms-picker-dark.jpg" width="1280" height="820" alt="CMS Picker in dark mode showing a result: a green verdict panel reading Wix is ahead of Squarespace for what you need, the answers as tiles, and the first match" loading="lazy"><figcaption><b>CMS Picker, dark.</b> A result: the verdict panel first, then your answers as tiles, then the matches.</figcaption></figure>
-        <figure><img src="img/cms-picker-light.jpg" width="1280" height="820" alt="CMS Picker in light mode: the quiz's first question, What are you making?, with its answers as bordered choices" loading="lazy"><figcaption><b>CMS Picker, light.</b> Quiz first: the cards and the table open on request.</figcaption></figure>
-      </div>
-      <div class="pair">
-        <figure><img src="img/clean-paste-dark.jpg" width="1280" height="820" alt="Clean Paste in dark mode with the example post loaded: checks on the left, the cleaned post on the right" loading="lazy"><figcaption><b>Clean Paste, dark.</b> Checks as rows; the editor keeps Inter, with blue for links inside the content.</figcaption></figure>
-        <figure><img src="img/clean-paste-light.jpg" width="1280" height="820" alt="Clean Paste in light mode with the example post loaded" loading="lazy"><figcaption><b>Clean Paste, light.</b> The gold "Copy formatted" is the one main action.</figcaption></figure>
-      </div>
-      <div class="pair">
-        <figure><img src="img/image-resizer-dark.jpg" width="1280" height="820" alt="Image Resizer in dark mode: output size presets, quality and format controls, and a drop area" loading="lazy"><figcaption><b>Image Resizer, dark.</b> Segmented controls with the gold selected state; the drop area waits for files.</figcaption></figure>
-        <figure><img src="img/image-resizer-light.jpg" width="1280" height="820" alt="Image Resizer in light mode" loading="lazy"><figcaption><b>Image Resizer, light.</b></figcaption></figure>
-      </div>
-      <div class="pair">
-        <figure><img src="img/platform-dark.jpg" width="1280" height="820" alt="The Shopify platform page in dark mode: its SEO answers with where to find each setting" loading="lazy"><figcaption><b>A platform page, dark.</b> Written by the publish from the same data as the table; the gold word here is "SEO".</figcaption></figure>
-        <figure class="shot phone"><img src="img/home-phone-dark.jpg" width="780" height="1688" alt="jsal.io home page on a phone in dark mode" loading="lazy"><figcaption><b>Home on a phone.</b> One column, the same type, 44px targets.</figcaption></figure>
-      </div>
-    </div>
+    <h2>The system on the pages, live.</h2>
+    <p class="intro">The pages themselves are the examples, and always current: the same tokens, column and pieces throughout. The top bar's theme button shows each in light and dark.</p>
+    <ul class="live">
+      <li><a href="/"><b>Home</b><span>The bento: each tool's tile with a working piece of it</span></a></li>
+      <li><a href="/cms-picker/"><b>CMS Picker</b><span>Quiz first; then the verdict, your answers and the matches</span></a></li>
+      <li><a href="/formatter/"><b>Clean Paste</b><span>Checks as rows, the editor, one gold Copy</span></a></li>
+      <li><a href="/image-resizer/"><b>Image Resizer</b><span>Switches, the drop area, the status line</span></a></li>
+      <li><a href="/cms-picker/shopify/"><b>A platform page</b><span>Written by the publish; the gold word is "SEO"</span></a></li>
+      <li><a href="/play/"><b>Off the clock</b><span>The editorial side: the art, the backpack, achievements</span></a></li>
+    </ul>
   </section>
   </main>
 
