@@ -149,7 +149,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   and Clean Paste (two); Say hi (two) and Redirect Import (four); Updates across the bottom (six). From 1279px down the
   intro, the CMS Picker, the Image Resizer, Redirect Import and Updates take the full width and Clean Paste sits beside
   Say hi; that bento holds down to 600px, so a
-  phone on its side keeps it, and only upright phones get one column. Tab order follows the screen. Every tool tile
+  phone on its side keeps it, and only upright phones get one column. Tab order follows the screen. Say hi never sits above a tool: beside one is fine,
+  but on upright phones, one tile per row, it moves after every tool, just before Updates (by CSS `order`, so there
+  alone the keyboard still reaches it before Redirect Import, its place on wider screens). Every tool tile
   reads the same way at every width: its name and one line at the top left, then the picture.
   - **Each tile** is its soft tint (CMS Picker lilac, Image Resizer teal, Clean Paste honey, Redirect Import berry; Say hi and
     Updates plain) with its name in Lora in a deep shade of the tint, and a real-looking piece of its tool drawn in the

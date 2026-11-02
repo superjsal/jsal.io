@@ -114,7 +114,7 @@ p, li { text-wrap: pretty; }
    (tile padding 26px + 1px border) */
 .intro { grid-column: 1 / 6; padding: 28px 0 0; }
 .roles { display: flex; flex-wrap: wrap; margin: 0 0 18px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-.roles span + span::before { content: "·"; margin: 0 10px; color: var(--jsal-muted); }
+.roles span + span::before { content: "·"; content: "·" / ""; margin: 0 10px; color: var(--jsal-muted); }
 .intro h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }   /* every page title's size, as on the home page */
 .intro h1 em { font-weight: 600; color: var(--jsal-accent); }
 .intro p { margin: 28px 0 0; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }

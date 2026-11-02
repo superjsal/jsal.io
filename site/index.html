@@ -103,7 +103,7 @@ h1, h2 { text-wrap: balance; }
 p { text-wrap: pretty; }
 
 /* Bento grid: six columns, the wide tile swapping sides each row, and Updates across the bottom */
-.grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: minmax(440px, auto) minmax(256px, auto) minmax(292px, auto) minmax(220px, auto); gap: 28px; margin-top: var(--jsal-page-top); }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: minmax(440px, auto) minmax(256px, auto) minmax(276px, auto) minmax(220px, auto); gap: 28px; margin-top: var(--jsal-page-top); }
 .intro { grid-column: 1 / 3; grid-row: 1; align-self: start; padding-right: 12px; }
 .cms { grid-column: 3 / 7; grid-row: 1; }
 .ir { grid-column: 1 / 5; grid-row: 2; }
@@ -114,7 +114,7 @@ p { text-wrap: pretty; }
 
 /* The intro: at the shared distance under the top bar, flush with the logo */
 .roles { display: flex; flex-wrap: wrap; margin: 0; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-.roles span + span::before { content: "·"; margin: 0 10px; color: var(--jsal-muted); }
+.roles span + span::before { content: "·"; content: "·" / ""; margin: 0 10px; color: var(--jsal-muted); }
 .intro h1 { margin: 12px 0 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
 .intro h1 em { font-weight: 600; color: var(--jsal-accent); }
 .intro p { margin: 16px 0 0; font-size: 17px; color: var(--jsal-ink-2); }
@@ -240,8 +240,8 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .hi:has(.hi-mail:focus-visible) { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 .hi .txt a:not(.hi-mail) { position: relative; z-index: 2; color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
 .draft { left: 40px; right: -12px; top: 2px; z-index: 3; padding: 12px 14px; border-radius: 16px; font-size: 12px; pointer-events: none; transform-origin: top right; --rest: rotate(2deg); --hover: rotate(2deg) translateY(-6px); }   /* a click on the draft reaches the email link under it; style: allow (a miniature) */
-.draft > span { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }
-.draft > span:first-child { justify-content: space-between; align-items: center; padding: 0 0 6px; border: 0; font-size: 13px; font-weight: 700; }
+.draft > span { display: flex; gap: 10px; padding: 4px 0; border-top: 1px solid var(--jsal-sunk); }
+.draft > span:first-child { justify-content: space-between; align-items: center; padding: 0 0 4px; border: 0; font-size: 13px; font-weight: 700; }
 .draft > span:first-child i { font-style: normal; font-weight: 400; color: var(--jsal-muted); }
 .draft em { width: 52px; font-style: normal; color: var(--jsal-muted); }
 .draft .body { padding-top: 8px; }
@@ -253,10 +253,10 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .ri { --bg: var(--t-ri); --ink: var(--t-ri-ink); }
 .ri .txt { max-width: 258px; }
 .ri .wm { width: 360px; height: 360px; left: -60px; top: 64px; }   /* the window under the words, its arrow pointing at the sheet */
-.rs { left: 290px; top: 16px; z-index: 2; width: 300px; padding: 10px 14px 8px; border-radius: 16px; display: flex; flex-direction: column; font-size: 12px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
+.rs { left: 290px; top: 10px; z-index: 2; width: 300px; padding: 10px 14px 8px; border-radius: 16px; display: flex; flex-direction: column; font-size: 12px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .rs-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 6px; font-size: 13px; }
 .rs-head .mono, .rs .n, .rs .out-cell { color: var(--jsal-muted); }
-.rs-row { display: grid; grid-template-columns: 12px 18px 1fr 1.2fr; gap: 8px; align-items: center; padding: 5px 0; border-top: 1px solid var(--jsal-sunk); }
+.rs-row { display: grid; grid-template-columns: 12px 18px 1fr 1.2fr; gap: 8px; align-items: center; padding: 3px 0; border-top: 1px solid var(--jsal-sunk); }
 .rs-row .mono { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 500; }
 .rs .bad-cell { color: var(--jsal-bad); }
 .rs .last { display: none; }
@@ -287,7 +287,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .upd time { position: absolute; right: 0; top: 11px; color: var(--jsal-muted); font-size: 12px; }
 .upd-line { display: block; margin-top: 1px; font: 600 17px/1.3 "Lora", Georgia, serif; }
 
-footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
+footer { margin-top: 32px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
 footer nav { display: flex; gap: 4px; }
 footer a, footer .foot-btn { padding: 8px; color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 2px; }   /* the site's own links: gold, as in every Made by line */
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
@@ -311,7 +311,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .cms, .ir, .ri, .now { grid-column: 1 / -1; grid-row: auto; }
   .cms { min-height: 440px; }
   .ir, .cp { min-height: 256px; }
-  .ri { min-height: 292px; }   /* room for the sheet's four rows above the file */
+  .ri { min-height: 276px; }   /* room for the sheet's four rows above the file */
   .hi { min-height: 292px; }   /* the draft clear of the words under it */
   .now { min-height: 272px; }
   .cp { grid-column: 1 / 4; grid-row: auto; }
@@ -368,6 +368,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
    tile as on desktop; no watermarks */
 @media (max-width: 599px) {
   .grid > * { grid-column: 1 / -1 !important; }
+  .hi { order: 1; }   /* one tile per row: Say hi after every tool, then Updates */
+  .now { order: 2; }
   .wm { display: none; }
   .cms, .ir, .cp, .hi, .ri { min-height: 0; }
   .tile.cms { padding-bottom: 262px; }   /* room for the brick under the words */
