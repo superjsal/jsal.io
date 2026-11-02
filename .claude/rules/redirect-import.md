@@ -26,13 +26,15 @@ paths:
 - **Tests:** none in the repo yet. The scratch tests covered 43 tricky addresses, each platform's documented rules, a hand-built .xlsx, a Windows-1252 semicolon CSV, Wix's 500 per import and 5,000 rows for speed. Re-run something like them after changing `core.js` or `formats.js`.
 - **Analytics:** `redirect_file` (platform, redirects, action) on Copy and Download; never the addresses.
 - **A partial file is always said:** while rows need you, Copy and Download read "Copy 4 of 10" / "Download 4 of 10" and
-  the file pane opens with "6 rows aren't in this file until they're fixed. Show them" (Needs you filter, first row
+  the file pane opens with "6 rows need fixing before they go in the file. Fix them" (Needs you filter, first row
   focused). Don't go back to a plain "Download file" while rows are missing: a silently short file is the problem the
   tool exists to stop.
 - **Kept in this browser:** the sheet (rows, edits, deletes, the platform's Format settings) is saved to localStorage
   (`jsal-redirects-sheet`) after each change and on `pagehide`, and comes back on load; Clear forgets it. The other
   columns of a loaded file aren't kept, so the column pickers hide after a restore. `/privacy/` says so; update it if
   what's kept changes. `jsal-redirects-folded` remembers Hide file (desktop only; phones already show one pane).
+- **Hide file** is a word ("Hide ›") after Format, never an icon alone; hidden, the file is a 104px tab with level text
+  (Show file, "4 of 10 rows in it", "6 to fix"), the whole tab one button. Sideways text was tried and read badly.
 - **Copy sheet** copies the two columns as edited (deleted and empty rows dropped, the file's own headings first if it
   had them), tab-separated, to paste back over the source spreadsheet.
 - **Clipboard buttons:** read `e.currentTarget` before `await navigator.clipboard…`; after the await it's null, and

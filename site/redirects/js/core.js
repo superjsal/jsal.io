@@ -264,7 +264,7 @@ export function analyse(rows, fmt, opts) {
     const l = live.find((x) => x.id === r.id);
     for (const p of problems) {
       if (p.warn) l.it.notes.push({ cell: p.cell, kind: "warn", text: p.text });   // said, but the row still goes in
-      else l.bad(p.cell, p.text, p.fixes || [], "rule-" + p.id, p.text);
+      else l.bad(p.cell, p.text, p.fixes || [], "rule-" + p.id, p.title || p.text);
     }
   }
 
