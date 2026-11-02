@@ -184,6 +184,7 @@ for f in files(['*/js/*.js']):
 #  - hover uses no gold (--jsal-accent / --jsal-fill): it's a neutral border or tint (--jsal-hover-line, --jsal-sunk)
 #  - button and chip corners from the scale: 4px, 6px, 8px, 999px (or a variable)
 #  - every corner from a --jsal-radius-* token (or 0, 50%, inherit)
+#  - transition and animation timings from --jsal-quick / --jsal-settle
 #  - font weights 400, 500, 600, 700 or 800
 #  - font sizes in px from the type scale (TEXT_SIZES)
 #  - a stylesheet with animation has a prefers-reduced-motion fallback
@@ -199,6 +200,12 @@ NEUTRAL = re.compile(r'rgba?\(\s*(0[ ,]+0[ ,]+0|255[ ,]+255[ ,]+255)\s*(/|,)\s*[
 COLOUR = re.compile(r'#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?)\(')
 RADII = {'0', '50%', '999px', '4px', '6px', '8px', 'inherit'}
 TEXT_SIZES = {12, 13, 14, 15, 17, 20, 24, 30, 40, 46}   # the type scale in design-rules.md
+# Every --jsal-* a stylesheet reads is defined somewhere (a mistyped token silently drops the whole declaration)
+JSAL_VARS = {m for _, css, _ in stylesheets() for m in re.findall(r'(--jsal-[\w-]+)\s*:', css)}
+for name, css, first in stylesheets():
+    for m in re.finditer(r'var\((--jsal-[\w-]+)\s*\)', css):   # one with a fallback may be set from a script
+        if m.group(1) not in JSAL_VARS: fail(f'{name}:{first + css.count(chr(10), 0, m.start())}: {m.group(1)} isn\'t defined')
+    for m in re.finditer(r'var\(--jsal-var\(', css): fail(f'{name}:{first + css.count(chr(10), 0, m.start())}: a token inside a token\'s name')
 for name, css, first in stylesheets():
     lines = css.splitlines()
     plain_css = re.sub(r'/\*.*?\*/', lambda m: re.sub(r'[^\n]', ' ', m.group(0)), css, flags=re.S)   # comments out, line numbers kept
@@ -223,6 +230,9 @@ for name, css, first in stylesheets():
             if prop == 'border-radius' and re.search(r'\bbtn\b|button|\.chip\b', sel):
                 odd = [v for v in val.split() if v not in RADII and not v.startswith('var(')]
                 if odd: fail(f'{where}: button corner {" ".join(odd)} on "{sel[:50]}" (use 4px, 6px, 8px or 999px)')
+            if prop in ('transition', 'animation') or re.fullmatch(r'(transition|animation)-(duration|delay)', prop):
+                times = [t for t in re.findall(r'(?<![\w.-])(\d*\.?\d+m?s)\b', re.sub(r'var\([^)]*\)', '', val)) if float(re.sub(r'm?s$', '', t)) != 0]
+                if times: fail(f'{where}: timing {" ".join(times)} on "{sel[:50]}" (use --jsal-quick or --jsal-settle; a choreographed piece carries style: allow)')
             if re.fullmatch(r'border(-[a-z]+)*-radius', prop):
                 odd = [v for v in re.sub(r'var\([^)]*\)', '', val).split() if v not in ('0', '50%', 'inherit')]
                 if odd: fail(f'{where}: corner {" ".join(odd)} on "{sel[:50]}" (use a --jsal-radius-* token)')

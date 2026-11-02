@@ -89,7 +89,7 @@ body {
 }
 .check > span:nth-child(2) { flex: 1; min-width: 0; overflow-wrap: anywhere; }   /* long URLs wrap instead of running off */
 /* Checks about particular lines are buttons: click to show the line in the text */
-button.check { width: 100%; font: inherit; text-align: left; transition: border-color 0.12s, background 0.12s; }
+button.check { width: 100%; font: inherit; text-align: left; transition: border-color var(--jsal-quick), background var(--jsal-quick); }
 button.check:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
 button.check:focus-visible { outline-offset: -2px; }
 .check-show { flex-shrink: 0; align-self: center; font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
@@ -127,7 +127,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
   border-radius: var(--jsal-radius-xl);
   background: var(--jsal-surface);
   cursor: text;
-  transition: border-color 0.12s, background 0.12s;
+  transition: border-color var(--jsal-quick), background var(--jsal-quick);
 }
 .paste-zone:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
 .paste-zone:focus-visible { border-color: var(--jsal-accent); background: var(--jsal-accent-soft); outline: none; box-shadow: var(--jsal-focus-ring); }   /* focused: ready to paste */
@@ -196,7 +196,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
   color: var(--jsal-ink-2);
   font-weight: 600;
   font-size: 12px;
-  transition: background 0.12s, color 0.12s;
+  transition: background var(--jsal-quick), color var(--jsal-quick);
 }
 .toolbar button:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
 .toolbar button.on { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
@@ -262,12 +262,12 @@ textarea.code {
 /* The bright gold (--jsal-fill), so it reads as gold in light mode too (the darker text gold turned beige); text
    on it stays above 4.5:1 in both themes. The wash reaches into the gutter (the text doesn't move), so a bold
    line's bar sits inside it, brightened, and settles back to its usual look as the wash fades. */
-.preview .locate { --wash: color-mix(in srgb, var(--jsal-fill) 30%, transparent); margin-inline: -22px; padding-inline: 22px; border-radius: var(--jsal-radius); background: var(--wash); animation: locate 2.6s ease-out forwards; }
+.preview .locate { --wash: color-mix(in srgb, var(--jsal-fill) 30%, transparent); margin-inline: -22px; padding-inline: 22px; border-radius: var(--jsal-radius); background: var(--wash); animation: locate 2.6s ease-out forwards; }   /* style: allow (held so the line can be found, then fades) */
 /* A link or other inline bit gets a snug wash instead, so it doesn't spill over the words beside it */
 .preview :is(a, span, strong, b, em, i, img).locate { margin-inline: 0; padding-inline: 0; border-radius: var(--jsal-radius-sm); box-shadow: 0 0 0 2px var(--wash); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 /* An [Image] note is already its own box: keep its size and padding so its text doesn't shift */
 .preview [data-image].locate { margin-inline: 0; padding-inline: 10px; }
-.preview > p[data-bold].locate::before { left: 8px; opacity: 1; background: var(--jsal-fill); animation: locate-bar 2.6s ease-out forwards; }
+.preview > p[data-bold].locate::before { left: 8px; opacity: 1; background: var(--jsal-fill); animation: locate-bar 2.6s ease-out forwards; }   /* style: allow (held so the line can be found, then fades) */
 @keyframes locate { 0%, 60% { background: var(--wash); } 100% { background: transparent; } }
 @keyframes locate-bar { 0%, 60% { opacity: 1; background: var(--jsal-fill); } 100% { opacity: 0.8; background: var(--jsal-warn); } }
 @media (prefers-reduced-motion: reduce) { .preview .locate, .preview > p[data-bold].locate::before { animation: none; } }
@@ -315,7 +315,7 @@ textarea.code {
   color: var(--jsal-ink-2);
   font-weight: 600;
   font-size: 13px;
-  transition: background 0.12s, color 0.12s;
+  transition: background var(--jsal-quick), color var(--jsal-quick);
 }
 .link-box button:hover, .link-box a:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
 .link-box #linkSave { color: var(--jsal-accent); }

@@ -72,6 +72,9 @@ body { background: var(--jsal-bg); }
 :root {
   --jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-xl: 12px; --jsal-radius-pill: 999px;
   --jsal-radius-tile: 22px;
+  /* Motion: a state change (hover, a colour, a chevron) takes --jsal-quick; something that moves or arrives takes
+     --jsal-settle, easing out so it lands softly. Longer, choreographed pieces are marked where they're set */
+  --jsal-quick: 0.15s; --jsal-settle: 0.3s; --jsal-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --jsal-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
   --jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
   --jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
@@ -91,7 +94,7 @@ body { background: var(--jsal-bg); }
 
 /* The one button every page uses: outlined on a light fill; .primary is the gold main action, .small suits dense
    screens, .danger removes or clears. An app adds only layout (width, order), never its own look */
-.jsal-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 6px 18px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px/1.2 var(--jsal-font); text-align: center; text-decoration: none; cursor: pointer; transition: border-color 0.15s, background 0.15s, filter 0.15s; }
+.jsal-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 6px 18px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px/1.2 var(--jsal-font); text-align: center; text-decoration: none; cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick), filter var(--jsal-quick); }
 .jsal-btn:hover { border-color: var(--jsal-hover-line); }
 .jsal-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .jsal-btn:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -114,7 +117,7 @@ body { background: var(--jsal-bg); }
 .jsal-error::before { content: "!"; flex: none; display: grid; place-items: center; width: 17px; height: 17px; margin-top: 1px; border-radius: 50%; background: var(--jsal-bad); color: var(--jsal-surface); font-size: 12px; font-weight: 800; }
 /* The one switch for picking one of a few options: a sunk track, the chosen option selected in gold */
 .jsal-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
-.jsal-seg > button { padding: 4px 12px; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font: 600 13px/1.25 var(--jsal-font); white-space: nowrap; cursor: pointer; transition: color 0.12s; }
+.jsal-seg > button { padding: 4px 12px; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font: 600 13px/1.25 var(--jsal-font); white-space: nowrap; cursor: pointer; transition: color var(--jsal-quick); }
 .jsal-seg > button:hover { color: var(--jsal-ink); }
 .jsal-seg > button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .jsal-seg > button:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -157,17 +160,17 @@ html { scrollbar-gutter: stable; }
 /* Page transitions (Firefox just navigates): the old page fades as it drifts up, the new one rises into place; going
    back (nav.js sets data-jsal-back on <html>) runs it the other way. Done by 0.3s, so a click feels instant. */
 @view-transition { navigation: auto; }
-::view-transition-group(*) { animation-duration: 0.3s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
-::view-transition-old(root) { animation: jsal-out-up 0.16s ease both; }
-::view-transition-new(root) { animation: jsal-in-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both; }
+::view-transition-group(*) { animation-duration: 0.3s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }   /* style: allow (the page change, choreographed) */
+::view-transition-old(root) { animation: jsal-out-up 0.16s ease both; }   /* style: allow (the page change, choreographed) */
+::view-transition-new(root) { animation: jsal-in-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both; }   /* style: allow (the page change, choreographed) */
 html[data-jsal-back]::view-transition-old(root) { animation-name: jsal-out-down; }
 html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; }
 /* The top bar sits in the same spot on every page: lifted out of the sliding page, it cross-fades in place, and the
    logo and theme button, identical everywhere, don't even fade. */
 .jsal-top { view-transition-name: jsal-top; }
 ::view-transition-group(jsal-top) { animation: none; }
-::view-transition-old(jsal-top) { animation: jsal-fade-out 0.12s ease both; }
-::view-transition-new(jsal-top) { animation: jsal-fade-in 0.18s ease 0.06s both; }
+::view-transition-old(jsal-top) { animation: jsal-fade-out 0.12s ease both; }   /* style: allow (the page change, choreographed) */
+::view-transition-new(jsal-top) { animation: jsal-fade-in 0.18s ease 0.06s both; }   /* style: allow (the page change, choreographed) */
 .jsal-brand { view-transition-name: jsal-brand; }
 .jsal-theme { view-transition-name: jsal-theme; }
 ::view-transition-group(jsal-brand), ::view-transition-group(jsal-theme) { animation: none; }
@@ -179,9 +182,9 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 .jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px) + var(--jsal-consent-lift, 0px)); width: min(340px, calc(100vw - 32px));
   display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); color: var(--jsal-ink);
   border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font);
-  transform: translate(-50%, 0); transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
+  transform: translate(-50%, 0); transition: transform var(--jsal-settle) var(--jsal-ease-out); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
 /* It slides in at full opacity (only the way out fades), so it never sits half-transparent where a contrast check could catch it */
-.jsal-ach[data-hide] { opacity: 0; transform: translate(-50%, 16px); visibility: hidden; transition: opacity .3s ease, transform .3s ease, visibility 0s .3s; }
+.jsal-ach[data-hide] { opacity: 0; transform: translate(-50%, 16px); visibility: hidden; transition: opacity var(--jsal-settle) ease, transform var(--jsal-settle) ease, visibility 0s var(--jsal-settle); }
 /* Wider screens: the bottom-right corner, off the middle of the tools' work areas (a paste area or preview there) */
 @media (min-width: 900px) {
   .jsal-ach { left: auto; right: max(20px, env(safe-area-inset-right, 0px)); transform: none; }
@@ -276,13 +279,13 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 [data-jsal-nav].jsal-glint .jsal-stop::after {
   content: ""; position: absolute; inset: 0; transform: translateX(-120%);
   background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 0.85) 50%, transparent 70%);
-  animation: jsal-glint .3s ease-in;
+  animation: jsal-glint .3s ease-in;   /* style: allow (the logo unfold) */
 }
 [data-jsal-nav].jsal-glint .jsal-io::after {
   content: "io"; content: "io" / ""; position: absolute; inset: 0; color: transparent;
   background: linear-gradient(115deg, transparent 40%, rgb(255 255 255 / 0.85) 50%, transparent 60%) 100% 0 / 300% 100% no-repeat;
   -webkit-background-clip: text; background-clip: text;
-  animation: jsal-glint-text .5s ease-out .18s both;
+  animation: jsal-glint-text .5s ease-out .18s both;   /* style: allow (the logo unfold) */
 }
 @keyframes jsal-glint { to { transform: translateX(120%); } }
 @keyframes jsal-glint-text { from { background-position: 100% 0; } to { background-position: 0 0; } }
@@ -300,14 +303,14 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
   width: 32px; height: 32px; flex-shrink: 0; display: grid; place-items: center; padding: 0;
   border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius);
   background: transparent; color: var(--jsal-muted); cursor: pointer;
-  transition: background 0.12s, color 0.12s;
+  transition: background var(--jsal-quick), color var(--jsal-quick);
 }
 .jsal-theme:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
 .jsal-theme:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 /* The caret and both theme icons are in each page's HTML (not added by nav.js), so the top bar
    is complete on the first frame and doesn't change during page transitions. CSS shows the
    moon in light mode and the sun in dark mode. */
-.jsal-caret { display: inline-block; margin-left: 6px; opacity: .55; transition: transform .15s; vertical-align: middle; }
+.jsal-caret { display: inline-block; margin-left: 6px; opacity: .55; transition: transform var(--jsal-quick); vertical-align: middle; }
 [data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
 [data-jsal-nav]:hover .jsal-caret { opacity: .9; }
 .jsal-theme .i-sun { display: none; }
@@ -360,7 +363,7 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 .jsal-about details + details { margin-top: 0; }
 .jsal-about summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; border-radius: var(--jsal-radius-sm); }
 .jsal-about summary::-webkit-details-marker { display: none; }
-.jsal-about summary::before { content: ""; width: 7px; height: 7px; margin: 0 4px 0 2px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate 0.15s; }
+.jsal-about summary::before { content: ""; width: 7px; height: 7px; margin: 0 4px 0 2px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate var(--jsal-quick); }
 .jsal-about details[open] > summary::before { rotate: 45deg; }
 .jsal-about summary h3 { margin: 0; }
 .jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }

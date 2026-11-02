@@ -30,12 +30,12 @@ body {
 /* Under the quiz: the cards and the table, each behind a button (app.js opens them) */
 .more { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: -8px 0 48px; }
 .more-btn { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; text-align: left;
-  border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); cursor: pointer; transition: border-color 0.15s; }
+  border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); cursor: pointer; transition: border-color var(--jsal-quick); }
 .more-btn:hover { border-color: var(--jsal-hover-line); }
 .more-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .more-btn b { display: block; font-size: 17px; font-weight: 600; }
 .more-btn small { display: block; margin-top: 4px; color: var(--jsal-muted); font-size: 14px; line-height: 1.45; }
-.more-btn .chev { flex: none; width: 9px; height: 9px; margin: -4px 4px 0 0; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: 45deg; transition: rotate 0.15s, margin 0.15s; }
+.more-btn .chev { flex: none; width: 9px; height: 9px; margin: -4px 4px 0 0; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: 45deg; transition: rotate var(--jsal-quick), margin var(--jsal-quick); }
 .more-btn[aria-expanded="true"] .chev { rotate: -135deg; margin-top: 4px; }
 @media (prefers-reduced-motion: reduce) { .more-btn, .more-btn .chev { transition: none; } }
 
@@ -47,13 +47,13 @@ body {
   background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 700;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
   opacity: 0; visibility: hidden; transform: translateY(8px);
-  transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s, border-color 0.15s, bottom 0.2s;
+  transition: opacity var(--jsal-quick), transform var(--jsal-quick), visibility 0s var(--jsal-quick), border-color var(--jsal-quick), bottom var(--jsal-quick);
 }
-.totop.show { opacity: 1; visibility: visible; transform: none; transition: opacity 0.2s, transform 0.2s, visibility 0s, border-color 0.15s, bottom 0.2s; }
+.totop.show { opacity: 1; visibility: visible; transform: none; transition: opacity var(--jsal-quick), transform var(--jsal-quick), visibility 0s, border-color var(--jsal-quick), bottom var(--jsal-quick); }
 .totop:hover { border-color: var(--jsal-hover-line); }
 /* Touch screens: only while scrolling back up, the moment it's wanted, so it doesn't sit on the answers below it */
 @media (pointer: coarse) {
-  .totop.show:not(.up) { opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s, bottom 0.2s; }
+  .totop.show:not(.up) { opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity var(--jsal-quick), transform var(--jsal-quick), visibility 0s var(--jsal-quick), bottom var(--jsal-quick); }
 }
 
 /* Compare bar: slides up while the cards are on screen and something is picked; hides at the table */
@@ -63,15 +63,15 @@ body {
   border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
   opacity: 0; visibility: hidden; transform: translate(-50%, 14px);
-  transition: opacity 0.2s, transform 0.2s, visibility 0s 0.2s;
+  transition: opacity var(--jsal-quick), transform var(--jsal-quick), visibility 0s var(--jsal-quick);
 }
 .cbar-on { --jsal-ach-lift: 62px; }   /* achievement pop-ups (/shell.css) sit above the bar */
-.cbar.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity 0.2s, transform 0.2s, visibility 0s; }
+.cbar.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity var(--jsal-quick), transform var(--jsal-quick), visibility 0s; }
 .cbar-count { color: var(--jsal-ink); font-size: 14px; font-weight: 700; white-space: nowrap; }
 .cbar-logos { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .cbar-logos .logo { width: 20px; height: 20px; }
 .cbar-logos .logo.badge { width: 22px; height: 22px; border-radius: var(--jsal-radius); font-size: 12px; }
-.cbar-logos .pop { animation: cbar-pop 0.3s ease-out; }
+.cbar-logos .pop { animation: cbar-pop var(--jsal-settle) var(--jsal-ease-out); }
 .cbar-more { color: var(--jsal-muted); font-size: 13px; font-weight: 700; }
 .cbar .jsal-btn { flex: none; min-height: 38px; padding: 0 18px; white-space: nowrap; border-radius: var(--jsal-radius-pill); }   /* round ends, like the bar */
 @media (pointer: coarse) { .cbar .jsal-btn { min-height: 44px; } }
@@ -84,7 +84,7 @@ body {
 .chip {
   padding: 3px 10px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill);
   background: transparent; color: var(--jsal-muted); font-size: 13px; font-weight: 600;
-  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  transition: background var(--jsal-quick), color var(--jsal-quick), border-color var(--jsal-quick);
 }
 .chip:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .chip[aria-pressed="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
@@ -105,7 +105,7 @@ body {
 .legend > span { display: inline-flex; align-items: center; gap: 6px; }
 .trks { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
 .trk { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
-.trk button { padding: 4px 10px; border-radius: var(--jsal-radius-sm); color: var(--jsal-muted); font-size: 13px; font-weight: 600; transition: color 0.12s; }
+.trk button { padding: 4px 10px; border-radius: var(--jsal-radius-sm); color: var(--jsal-muted); font-size: 13px; font-weight: 600; transition: color var(--jsal-quick); }
 .trk button:hover { color: var(--jsal-ink); }
 .trk button[aria-pressed="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .trk button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
@@ -130,7 +130,7 @@ body {
   position: sticky; top: 0; z-index: 3; overflow: hidden;
   border: 1px solid var(--jsal-line); border-bottom: 0; border-radius: var(--jsal-radius) var(--jsal-radius) 0 0;
   background: var(--jsal-sunk); box-shadow: 0 1px 0 var(--jsal-line);
-  transition: box-shadow 0.15s;
+  transition: box-shadow var(--jsal-quick);
 }
 /* Pinned to the top of the window: a firmer line and a soft shadow, so it clearly sits over the rows */
 .thead.stuck { box-shadow: 0 1px 0 var(--jsal-line-hi), 0 8px 14px -10px rgba(0, 0, 0, 0.45); }
@@ -158,9 +158,9 @@ body {
 .cell:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: -2px; }
 /* The column under the pointer or focus, and the quiz's best match: a faint neutral wash and a short gold line under
    the name; gold stays off the answers so the tags remain the loudest thing in a cell */
-.cell, .hcell { transition: background-color 0.18s ease; }
+.cell, .hcell { transition: background-color var(--jsal-quick) ease; }
 .cell.col-on, .cell.col-pick { background: color-mix(in srgb, var(--jsal-ink) 3%, transparent); }
-.hcell .pname { display: inline-block; padding-bottom: 2px; background: linear-gradient(var(--jsal-gold-line), var(--jsal-gold-line)) left bottom / 0 2px no-repeat; transition: background-size 0.18s ease, color 0.18s ease; }
+.hcell .pname { display: inline-block; padding-bottom: 2px; background: linear-gradient(var(--jsal-gold-line), var(--jsal-gold-line)) left bottom / 0 2px no-repeat; transition: background-size var(--jsal-quick) ease, color var(--jsal-quick) ease; }
 .hcell.col-on .pname, .hcell.col-pick .pname { color: var(--jsal-accent); background-size: 100% 2px; }
 /* After the quiz's "Compare these": a fit label beside each name, one gold insight line, and ruled-out rows dimmed */
 .hcell .fitp { display: inline-block; margin-left: 8px; vertical-align: 2px; }
@@ -273,7 +273,7 @@ body {
   /* Tags: an answer with a note is a button the width of its row, a chevron at its end; tapped, the note opens under it */
   .grid.compact .cell.noted { padding-right: 40px; }
   .grid.compact .nbtn { display: block; position: absolute; inset: 0; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
-  .nbtn::after { content: ""; position: absolute; right: 18px; top: 18px; width: 7px; height: 7px; border-right: 1.8px solid var(--jsal-muted); border-bottom: 1.8px solid var(--jsal-muted); transform: rotate(45deg); transition: transform 0.15s; }
+  .nbtn::after { content: ""; position: absolute; right: 18px; top: 18px; width: 7px; height: 7px; border-right: 1.8px solid var(--jsal-muted); border-bottom: 1.8px solid var(--jsal-muted); transform: rotate(45deg); transition: transform var(--jsal-quick); }
   .nbtn[aria-expanded="true"]::after { transform: translateY(3px) rotate(225deg); }
   .nbtn:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: -2px; }   /* as a focused cell on desktop */
   .grid.compact .cell.open { background: color-mix(in srgb, var(--jsal-ink) 4%, transparent); }
@@ -330,7 +330,7 @@ body {
 .mini-t { display: grid; flex: 1; gap: 2px; min-width: 0; }
 .mini-name { color: var(--jsal-ink); font-size: 17px; font-weight: 700; }
 .mini-sum { color: var(--jsal-muted); font-size: 15px; font-weight: 400; line-height: 1.4; }
-.mini-btn svg { flex: none; width: 20px; height: 20px; color: var(--jsal-muted); transition: transform 0.15s; }
+.mini-btn svg { flex: none; width: 20px; height: 20px; color: var(--jsal-muted); transition: transform var(--jsal-quick); }
 .card.open .mini-btn svg { transform: rotate(180deg); }
 .cbody { display: flex; flex-direction: column; padding: 4px 16px 16px; }
 .card { display: flex; flex-direction: column; padding: 20px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink-2); }
@@ -384,12 +384,12 @@ body {
 @media (max-width: 520px) { .qz { min-height: 445px; } }   /* phones: the first question is taller than this, so it only binds on small tablets */
 .qz-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; color: var(--jsal-muted); font-size: 13px; }
 .qz-bar { flex: 1; height: 6px; overflow: hidden; border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); }
-.qz-bar i { display: block; height: 100%; background: var(--jsal-fill); transition: width 0.25s ease; }
+.qz-bar i { display: block; height: 100%; background: var(--jsal-fill); transition: width var(--jsal-settle) ease; }
 .qz h3 { color: var(--jsal-ink); font-size: 20px; outline: none; }
 .qz-hint { margin: 4px 0 14px; color: var(--jsal-muted); font-size: 14px; }
 .qz-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
 /* A question's tick ("In two or more languages"): a checkbox row above the choices, selected like one of them */
-.qz-tick { display: flex; align-items: center; gap: 12px; width: max-content; max-width: 100%; margin: 0 0 12px; padding: 8px 14px 8px 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); cursor: pointer; transition: border-color 0.12s, background 0.12s; }
+.qz-tick { display: flex; align-items: center; gap: 12px; width: max-content; max-width: 100%; margin: 0 0 12px; padding: 8px 14px 8px 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick); }
 .qz-tick:hover { border-color: var(--jsal-hover-line); }
 .qz-tick:has(:checked) { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .qz-tick:has(:focus-visible) { box-shadow: var(--jsal-focus-ring); }
@@ -421,9 +421,9 @@ body {
 .qz-opt[aria-expanded="true"] { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 /* Selected: a small tick, the same mark wherever a choice is made */
 .qz-opt[aria-pressed="true"]::after { content: ""; position: absolute; top: 13px; right: 12px; width: 14px; height: 14px; background: var(--jsal-accent); -webkit-mask: var(--tick) center / contain no-repeat; mask: var(--tick) center / contain no-repeat; }
-.qz-opt, .qz-ans-tile { transition: border-color 0.12s, background 0.12s, color 0.12s; }
+.qz-opt, .qz-ans-tile { transition: border-color var(--jsal-quick), background var(--jsal-quick), color var(--jsal-quick); }
 /* Each question, and the results, fade in from just below (off with reduced motion, below) */
-.qz.qz-in > * { animation: qz-in 0.18s ease-out; }
+.qz.qz-in > * { animation: qz-in var(--jsal-quick) var(--jsal-ease-out); }
 @keyframes qz-in { from { opacity: 0; transform: translateY(6px); } }
 .qz-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 /* An old shared link: the questions added since, offered above its result */
@@ -453,7 +453,7 @@ body {
 .qz-ans-fold > summary::-webkit-details-marker { display: none; }
 .qz-ans-fold > summary b { flex: none; font-weight: 600; }
 .qz-ans-fold > summary span { color: var(--jsal-muted); }
-.qz-ans-fold > summary::after { content: ""; flex: none; margin-left: auto; width: 7px; height: 7px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: 45deg; transition: rotate 0.15s; }
+.qz-ans-fold > summary::after { content: ""; flex: none; margin-left: auto; width: 7px; height: 7px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: 45deg; transition: rotate var(--jsal-quick); }
 .qz-ans-fold[open] > summary::after { rotate: -135deg; }
 .qz-ans-fold > summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .qz-ans-fold .qz-ans { margin: 0; padding: 0 12px 12px; }

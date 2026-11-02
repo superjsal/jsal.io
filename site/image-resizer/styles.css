@@ -70,7 +70,7 @@ body {
   color: var(--jsal-ink-2);
   text-align: center;
   position: relative;
-  transition: background 0.12s, color 0.12s;
+  transition: background var(--jsal-quick), color var(--jsal-quick);
 }
 .seg-btn:hover { background: var(--jsal-sunk); color: var(--jsal-ink); }
 .seg-btn:focus-visible { outline-offset: -2px; }
@@ -89,13 +89,13 @@ body {
   border-radius: var(--jsal-radius);
   border: 1px solid var(--jsal-line);
   background: var(--jsal-surface);
-  transition: border-color 0.12s, box-shadow 0.12s;
+  transition: border-color var(--jsal-quick), box-shadow var(--jsal-quick);
 }
 .input-group:focus-within { border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
 .input-group.error {
   border-color: var(--jsal-bad);
   box-shadow: 0 0 0 2px var(--jsal-bad-soft);
-  animation: shake 0.3s ease;
+  animation: shake var(--jsal-settle) ease;
 }
 
 @keyframes shake {
@@ -137,7 +137,7 @@ body {
   font-size: 12px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  transition: background 0.12s, border-color 0.12s;
+  transition: background var(--jsal-quick), border-color var(--jsal-quick);
 }
 .recent-pill:hover { background: var(--jsal-sunk); border-color: var(--jsal-hover-line); }
 .recent-pill-apply { padding: 4px 4px 4px 10px; border-radius: var(--jsal-radius-pill) 0 0 var(--jsal-radius-pill); }
@@ -208,7 +208,7 @@ body {
   border: 1.5px dashed var(--jsal-line-hi);
   background: var(--jsal-surface);
   text-align: left;
-  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  transition: border-color var(--jsal-quick), background var(--jsal-quick), box-shadow var(--jsal-quick);
 }
 .drop-zone:hover { background: var(--jsal-sunk); border-color: var(--jsal-hover-line); }   /* gold only while a file is dragged over (.drag) */
 .drop-zone.drag {
@@ -229,7 +229,7 @@ body {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  transition: transform 0.15s;
+  transition: transform var(--jsal-quick);
 }
 .drop-zone:hover .drop-icon, .drop-zone.drag .drop-icon { transform: translateY(-1px); }
 
@@ -246,7 +246,7 @@ body {
   border-radius: var(--jsal-radius);
   background: var(--jsal-surface);   /* neutral, so the gold Add button reads as the suggested choice */
   border: 1px solid var(--jsal-line-hi);
-  animation: fadeIn 0.15s ease;
+  animation: fadeIn var(--jsal-quick) ease;
 }
 
 @keyframes fadeIn {
@@ -263,7 +263,7 @@ body {
   border-radius: var(--jsal-radius-sm);
   font-weight: 600;
   border: 1px solid transparent;
-  transition: filter 0.12s, background 0.12s;
+  transition: filter var(--jsal-quick), background var(--jsal-quick);
 }
 .btn-choice:hover { filter: brightness(1.12); }
 .btn-choice-replace { background: var(--jsal-bad-soft); border-color: var(--jsal-bad); color: var(--jsal-bad); }
@@ -303,7 +303,7 @@ body {
   border-radius: 50%;
   background: var(--jsal-muted);
   flex-shrink: 0;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: background var(--jsal-quick), box-shadow var(--jsal-quick);
 }
 .status-dot.active { background: var(--jsal-ok); box-shadow: 0 0 6px var(--jsal-ok); }
 .status-dot.busy { background: var(--jsal-info); box-shadow: 0 0 6px var(--jsal-info); }
@@ -313,7 +313,7 @@ body {
   from { opacity: 0.3; transform: translateY(1px); }
   to { opacity: 1; transform: none; }
 }
-.status-bar.flash { animation: statusIn 0.25s ease; }
+.status-bar.flash { animation: statusIn var(--jsal-settle) ease; }
 
 /* ── Crop editor ───────────────────────────────────────────────────────── */
 
@@ -353,7 +353,7 @@ body {
   border-radius: var(--jsal-radius);
   color: var(--jsal-muted);
   text-align: center;
-  transition: opacity 0.2s, visibility 0.2s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  transition: opacity var(--jsal-quick), visibility var(--jsal-quick), border-color var(--jsal-quick), background var(--jsal-quick), box-shadow var(--jsal-quick);
 }
 .canvas-empty:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }   /* gold only while dragging (.drag) */
 .canvas-empty:focus-visible { outline-offset: -2px; }
@@ -393,7 +393,7 @@ body {
   color: rgba(255, 255, 255, 0.88);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity var(--jsal-quick);
 }
 .canvas-badge.visible { opacity: 1; }
 
@@ -412,7 +412,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity var(--jsal-quick);
 }
 .crop-hint.visible { opacity: 1; }
 
@@ -450,7 +450,7 @@ body {
   box-shadow: var(--jsal-shadow);
   flex: 0 0 148px;
   min-width: 0;   /* a fixed width: never stretched by its text (it used to widen as each file size came in) */
-  transition: border-color 0.12s, box-shadow 0.12s;
+  transition: border-color var(--jsal-quick), box-shadow var(--jsal-quick);
 }
 .preview-item:hover { border-color: var(--jsal-line-hi); }
 .preview-item.selected { border-color: var(--jsal-accent-ring); box-shadow: 0 0 0 2px var(--jsal-accent-ring), var(--jsal-shadow); }
@@ -475,7 +475,7 @@ body {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.15s;
+  transition: opacity var(--jsal-quick);
   font-weight: 600;
   color: #fff;   /* style: allow (white text over the image) */
   pointer-events: none;
@@ -520,7 +520,7 @@ body {
   place-items: center;
   opacity: 0;
   z-index: 3;
-  transition: opacity 0.12s, background 0.12s, color 0.12s;
+  transition: opacity var(--jsal-quick), background var(--jsal-quick), color var(--jsal-quick);
 }
 .preview-item:hover .card-remove,
 .preview-item:focus-within .card-remove { opacity: 1; }
@@ -538,7 +538,7 @@ body {
   text-overflow: ellipsis;
   cursor: text;
   outline: none;
-  transition: border-color 0.12s, background 0.12s, color 0.12s;
+  transition: border-color var(--jsal-quick), background var(--jsal-quick), color var(--jsal-quick);
 }
 .filename-edit:hover { border-color: var(--jsal-line); background: var(--jsal-sunk); }
 .filename-edit:focus { border-color: var(--jsal-accent); background: var(--jsal-sunk); color: var(--jsal-ink); box-shadow: var(--jsal-focus-ring); }
@@ -572,7 +572,7 @@ body {
   border: 1px solid var(--jsal-line);
   color: var(--jsal-ink-2);
   font-weight: 500;
-  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  transition: background var(--jsal-quick), border-color var(--jsal-quick), color var(--jsal-quick);
 }
 .card-dl-btn:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
 .card-dl-btn.saved { background: var(--jsal-ok-soft); border-color: var(--jsal-ok); color: var(--jsal-ok); }
