@@ -72,6 +72,12 @@ body { background: var(--jsal-bg); }
 :root {
   --jsal-radius-sm: 4px; --jsal-radius-lg: 8px; --jsal-radius-xl: 12px; --jsal-radius-pill: 999px;
   --jsal-radius-tile: 22px;
+  /* Spacing: every margin, padding and gap comes from this scale, named by its size in pixels (1px and 3px hairline
+     nudges inside tags stay as written; a value off the scale carries a style: allow note) */
+  --jsal-space-2: 2px; --jsal-space-4: 4px; --jsal-space-6: 6px; --jsal-space-8: 8px; --jsal-space-10: 10px;
+  --jsal-space-12: 12px; --jsal-space-14: 14px; --jsal-space-16: 16px; --jsal-space-18: 18px; --jsal-space-20: 20px;
+  --jsal-space-22: 22px; --jsal-space-24: 24px; --jsal-space-26: 26px; --jsal-space-28: 28px; --jsal-space-32: 32px;
+  --jsal-space-36: 36px; --jsal-space-40: 40px; --jsal-space-48: 48px; --jsal-space-56: 56px; --jsal-space-64: 64px;
   /* Motion: a state change (hover, a colour, a chevron) takes --jsal-quick; something that moves or arrives takes
      --jsal-settle, easing out so it lands softly. Longer, choreographed pieces are marked where they're set */
   --jsal-quick: 0.15s; --jsal-settle: 0.3s; --jsal-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -95,17 +101,17 @@ body { background: var(--jsal-bg); }
 
 /* The one button every page uses: outlined on a light fill; .primary is the gold main action, .small suits dense
    screens, .danger removes or clears. An app adds only layout (width, order), never its own look */
-.jsal-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 6px 18px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px/1.2 var(--jsal-font); text-align: center; text-decoration: none; cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick), filter var(--jsal-quick); }
+.jsal-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--jsal-space-8); min-height: 40px; padding: var(--jsal-space-6) var(--jsal-space-18); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: var(--jsal-btn-weight) 14px/1.2 var(--jsal-font); text-align: center; text-decoration: none; cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick), filter var(--jsal-quick); }
 .jsal-btn:hover { border-color: var(--jsal-hover-line); }
 .jsal-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .jsal-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .jsal-btn.primary { border-color: var(--jsal-fill-edge); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .jsal-btn.primary:not(:disabled):hover { filter: brightness(1.06); }
-.jsal-btn.small { min-height: 32px; padding: 4px 12px; font-size: 13px; }
+.jsal-btn.small { min-height: 32px; padding: var(--jsal-space-4) var(--jsal-space-12); font-size: 13px; }
 .jsal-btn.danger { border-color: transparent; background: none; color: var(--jsal-bad); }
 .jsal-btn.danger:hover { border-color: var(--jsal-bad); background: var(--jsal-bad-soft); }
 /* A quiet action that reads as a link: no box, underlined, blue like the links inside a tool (red when it deletes) */
-.jsal-btn.link { min-height: 24px; padding: 2px 0; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-info); text-decoration: underline; text-underline-offset: 3px; }
+.jsal-btn.link { min-height: 24px; padding: var(--jsal-space-2) 0; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-info); text-decoration: underline; text-underline-offset: 3px; }
 .jsal-btn.link:hover { background: none; text-decoration-thickness: 2px; }
 .jsal-btn.link.danger { color: var(--jsal-bad); }
 /* Feedback. "It worked" is said on the button that did it (window.jsalDone in /nav.js): green, a tick, two seconds */
@@ -114,11 +120,11 @@ body { background: var(--jsal-bg); }
 .jsal-done > svg, .jsal-done > .ico { display: none; }
 .jsal-done::before { content: ""; flex: none; width: 14px; height: 14px; background: currentColor; -webkit-mask: var(--jsal-tick) center / contain no-repeat; mask: var(--jsal-tick) center / contain no-repeat; }
 /* Something failed: said next to it in red, and it stays until the next try there (never in a message that fades) */
-.jsal-error { display: flex; gap: 8px; margin: 10px 0 0; padding: 8px 12px; border-radius: var(--jsal-radius); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-size: 14px; line-height: 1.45; text-align: left; }
+.jsal-error { display: flex; gap: var(--jsal-space-8); margin: var(--jsal-space-10) 0 0; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-size: 14px; line-height: 1.45; text-align: left; }
 .jsal-error::before { content: "!"; flex: none; display: grid; place-items: center; width: 17px; height: 17px; margin-top: 1px; border-radius: 50%; background: var(--jsal-bad); color: var(--jsal-surface); font-size: 12px; font-weight: 800; }
 /* The one switch for picking one of a few options: a sunk track, the chosen option selected in gold */
-.jsal-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
-.jsal-seg > button { padding: 4px 12px; border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font: 600 13px/1.25 var(--jsal-font); white-space: nowrap; cursor: pointer; transition: color var(--jsal-quick); }
+.jsal-seg { display: inline-flex; gap: var(--jsal-space-2); padding: 3px; border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
+.jsal-seg > button { padding: var(--jsal-space-4) var(--jsal-space-12); border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font: 600 13px/1.25 var(--jsal-font); white-space: nowrap; cursor: pointer; transition: color var(--jsal-quick); }
 .jsal-seg > button:hover { color: var(--jsal-ink); }
 .jsal-seg > button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .jsal-seg > button:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -181,7 +187,7 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
    its own bar along the bottom sets --jsal-ach-lift so the pop-up sits above it, and the analytics card below
    sets --jsal-consent-lift while it's open. */
 .jsal-ach { position: fixed; z-index: 2147483001; left: 50%; bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px) + var(--jsal-consent-lift, 0px)); width: min(340px, calc(100vw - 32px));
-  display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); color: var(--jsal-ink);
+  display: flex; align-items: center; gap: var(--jsal-space-12); padding: var(--jsal-space-10) var(--jsal-space-16) var(--jsal-space-10) var(--jsal-space-10); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); color: var(--jsal-ink);
   border: 1px solid var(--jsal-accent); box-shadow: 0 10px 28px rgb(0 0 0 / .22); font: 14px/1.35 var(--jsal-font);
   transform: translate(-50%, 0); transition: transform var(--jsal-settle) var(--jsal-ease-out); will-change: transform, opacity; contain: layout paint; pointer-events: none; }
 /* It slides in at full opacity (only the way out fades), so it never sits half-transparent where a contrast check could catch it */
@@ -202,12 +208,12 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 .jsal-ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
 /* Analytics choice card (/nav.js): bottom left, above a page's own bottom bar; full width on phones */
 .jsal-consent { position: fixed; z-index: 2147483000; left: 16px; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(380px, calc(100vw - 32px));
-  padding: 14px 16px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink-2);
+  padding: var(--jsal-space-14) var(--jsal-space-16); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink-2);
   box-shadow: 0 10px 28px rgb(0 0 0 / .18); font: 14px/1.45 var(--jsal-font); }
 .jsal-consent p { margin: 0; }
 .jsal-consent b { color: var(--jsal-ink); }
 .jsal-consent a { color: var(--jsal-accent); text-underline-offset: 2px; }
-.jsal-consent div { display: flex; gap: 8px; margin-top: 12px; }
+.jsal-consent div { display: flex; gap: var(--jsal-space-8); margin-top: var(--jsal-space-12); }
 @media print { .jsal-consent { display: none; } }
 @keyframes jsal-fade-out { to { opacity: 0; } }
 @keyframes jsal-fade-in { from { opacity: 0; } }
@@ -224,16 +230,16 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
    home page's does; every row is 36px tall, padded to centre on the home page logo's centre. */
 .jsal-top {
   width: min(100%, var(--jsal-col)); margin-inline: auto;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
-  padding-top: calc(40px - (36px - 18px * 1.65) / 2);
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-18);
+  padding-top: calc(var(--jsal-space-40) - (var(--jsal-space-36) - var(--jsal-space-18) * 1.65) / 2);
   font-family: var(--jsal-font);
 }
 /* Phones: less empty space above the top bar (same on every page, so the logo still doesn't move) */
-@media (max-width: 520px) { .jsal-top { padding-top: 14px; } }
+@media (max-width: 520px) { .jsal-top { padding-top: var(--jsal-space-14); } }
 /* On paper the top bar says where the page came from: the name, the app's name and the page's address (written in
    by /nav.js from its canonical link), without the controls */
 @media print {
-  .jsal-top { padding: 0 0 8px; border-bottom: 1px solid var(--jsal-line); }
+  .jsal-top { padding: 0 0 var(--jsal-space-8); border-bottom: 1px solid var(--jsal-line); }
   .jsal-top .jsal-actions, .jsal-top .jsal-caret { display: none; }
   .jsal-top[data-jsal-address]::after { content: attr(data-jsal-address); margin-left: auto; font-size: 13px; color: var(--jsal-muted); }
 }
@@ -304,9 +310,9 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 .jsal-title { margin: 0; font: 700 20px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
 .jsal-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
 /* The tool's own icon before its name, as in the logo menu */
-.jsal-title-ico { display: inline-block; width: 22px; height: 22px; margin-right: 10px; vertical-align: -4px; }
+.jsal-title-ico { display: inline-block; width: 22px; height: 22px; margin-right: var(--jsal-space-10); vertical-align: -4px; }
 @media (max-width: 429px) { .jsal-title-ico { display: none; } }
-.jsal-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.jsal-actions { margin-left: auto; display: flex; align-items: center; gap: var(--jsal-space-10); }
 .jsal-theme {
   width: 32px; height: 32px; flex-shrink: 0; display: grid; place-items: center; padding: 0;
   border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius);
@@ -318,7 +324,7 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 /* The caret and both theme icons are in each page's HTML (not added by nav.js), so the top bar
    is complete on the first frame and doesn't change during page transitions. CSS shows the
    moon in light mode and the sun in dark mode. */
-.jsal-caret { display: inline-block; margin-left: 6px; opacity: .55; transition: transform var(--jsal-quick); vertical-align: middle; }
+.jsal-caret { display: inline-block; margin-left: var(--jsal-space-6); opacity: .55; transition: transform var(--jsal-quick); vertical-align: middle; }
 [data-jsal-nav][aria-expanded="true"] .jsal-caret { transform: rotate(180deg); }
 [data-jsal-nav]:hover .jsal-caret { opacity: .9; }
 .jsal-theme .i-sun { display: none; }
@@ -330,13 +336,13 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 }
 @media (prefers-reduced-motion: reduce) { .jsal-caret { transition: none; } }
 /* Text link in the top bar (e.g. "About", which jumps to the app's About section) */
-.jsal-link { padding: 8px 10px; line-height: 20px; font-size: 14px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }
+.jsal-link { padding: var(--jsal-space-8) var(--jsal-space-10); line-height: 20px; font-size: 14px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }
 .jsal-link:hover { color: var(--jsal-ink); }
 /* Phones: the bar keeps one row on every tool, so the work area starts at the same height on each */
 @media (max-width: 420px) {
-  .jsal-top { column-gap: 12px; }
+  .jsal-top { column-gap: var(--jsal-space-12); }
   .jsal-title { font-size: 17px; }
-  .jsal-link { padding-inline: 6px; }
+  .jsal-link { padding-inline: var(--jsal-space-6); }
 }
 .jsal-link:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 2px; }
 
@@ -344,38 +350,38 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
    engines and AI answers. Sits below the app, which still fills the first screen. */
 .jsal-about {
   /* The same edges as the page content above it (the column, with a 20px gutter on narrow screens) */
-  width: min(100% - 40px, var(--jsal-col)); margin: 0 auto; padding: 40px 0 64px;
+  width: min(100% - 40px, var(--jsal-col)); margin: 0 auto; padding: var(--jsal-space-40) 0 var(--jsal-space-64);
   border-top: 1px solid var(--jsal-line);
   font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 }
 .jsal-about > * { max-width: 680px; }
-.jsal-about h2 { margin: 0 0 10px; font: 700 24px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
-.jsal-about h3 { margin: 28px 0 8px; font-size: 17px; color: var(--jsal-ink); }
-.jsal-about p { margin: 0 0 12px; }
-.jsal-about ul, .jsal-about ol { margin: 0 0 12px; padding-left: 1.3em; }
-.jsal-about li + li { margin-top: 4px; }
+.jsal-about h2 { margin: 0 0 var(--jsal-space-10); font: 700 24px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-about h3 { margin: var(--jsal-space-28) 0 var(--jsal-space-8); font-size: 17px; color: var(--jsal-ink); }
+.jsal-about p { margin: 0 0 var(--jsal-space-12); }
+.jsal-about ul, .jsal-about ol { margin: 0 0 var(--jsal-space-12); padding-left: 1.3em; }
+.jsal-about li + li { margin-top: var(--jsal-space-4); }
 .jsal-about a { color: var(--jsal-accent); text-underline-offset: 2px; }
 /* A tool's one line under the top bar saying who it's for */
-.jsal-for { grid-column: 1 / -1; margin: -8px 0 14px; color: var(--jsal-muted); font-size: 14px; line-height: 1.45; }
+.jsal-for { grid-column: 1 / -1; margin: calc(var(--jsal-space-8) * -1) 0 var(--jsal-space-14); color: var(--jsal-muted); font-size: 14px; line-height: 1.45; }
 /* The About section's first line: what the tool does that others don't */
 .jsal-about .jsal-lead { font-size: 17px; line-height: 1.5; color: var(--jsal-ink); }
 /* The About section's common questions */
-.jsal-about dl { margin: 0 0 12px; }
-.jsal-about dt { margin-top: 14px; font-weight: 600; color: var(--jsal-ink); }
+.jsal-about dl { margin: 0 0 var(--jsal-space-12); }
+.jsal-about dt { margin-top: var(--jsal-space-14); font-weight: 600; color: var(--jsal-ink); }
 .jsal-about dd { margin: 3px 0 0; }
-.jsal-about .jsal-feedback { margin-top: 24px; }
+.jsal-about .jsal-feedback { margin-top: var(--jsal-space-24); }
 /* Reference lists fold away (closed by default; the text stays in the page for search). The heading sits in
    the summary so it stays a heading, with a chevron that turns when open */
-.jsal-about details { margin-top: 18px; border-top: 1px solid var(--jsal-line); }
+.jsal-about details { margin-top: var(--jsal-space-18); border-top: 1px solid var(--jsal-line); }
 .jsal-about details:last-of-type { border-bottom: 1px solid var(--jsal-line); }
 .jsal-about details + details { margin-top: 0; }
-.jsal-about summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; border-radius: var(--jsal-radius-sm); }
+.jsal-about summary { display: flex; align-items: center; gap: var(--jsal-space-8); min-height: 44px; cursor: pointer; list-style: none; border-radius: var(--jsal-radius-sm); }
 .jsal-about summary::-webkit-details-marker { display: none; }
-.jsal-about summary::before { content: ""; width: 7px; height: 7px; margin: 0 4px 0 2px; border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate var(--jsal-quick); }
+.jsal-about summary::before { content: ""; width: 7px; height: 7px; margin: 0 var(--jsal-space-4) 0 var(--jsal-space-2); border: solid var(--jsal-muted); border-width: 0 2px 2px 0; rotate: -45deg; transition: rotate var(--jsal-quick); }
 .jsal-about details[open] > summary::before { rotate: 45deg; }
 .jsal-about summary h3 { margin: 0; }
 .jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
 .jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-.jsal-about details > ul { margin-bottom: 14px; }
-.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
+.jsal-about details > ul { margin-bottom: var(--jsal-space-14); }
+.jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 @media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }

@@ -37,14 +37,14 @@ body {
   max-width: calc(var(--jsal-col) + 40px);   /* the shared jsal.io column (/shell.css) */
   display: flex;
   flex-direction: column;
-  padding: 0 max(20px, env(safe-area-inset-left, 0px)) 18px;   /* same sides as the home page */
+  padding: 0 max(var(--jsal-space-20), env(safe-area-inset-left, 0px)) var(--jsal-space-18);   /* same sides as the home page */
 }
 
 /* The top bar itself (.jsal-top) is styled by /shell.css */
-.app-header { margin-bottom: 24px; }
+.app-header { margin-bottom: var(--jsal-space-24); }
 
 .section-label {
-  margin-bottom: 8px;
+  margin-bottom: var(--jsal-space-8);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -54,7 +54,7 @@ body {
 
 /* ── Sidebar ───────────────────────────────────────────────────────────── */
 
-.side { display: flex; flex-direction: column; gap: 6px; }
+.side { display: flex; flex-direction: column; gap: var(--jsal-space-6); }
 .side-empty { color: var(--jsal-muted); line-height: 1.5; }
 
 .pane-head .jsal-seg > button { flex: 1; }   /* Text and HTML, the same width */
@@ -62,9 +62,9 @@ body {
 /* ── Checks ────────────────────────────────────────────────────────────── */
 
 .results { min-height: 0; }
-.stats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.stats { display: flex; flex-wrap: wrap; gap: var(--jsal-space-6); margin-bottom: var(--jsal-space-8); }
 .stat {
-  padding: 3px 10px;
+  padding: 3px var(--jsal-space-10);
   border-radius: var(--jsal-radius-pill);
   border: 1px solid var(--jsal-line);
   background: var(--jsal-surface);
@@ -78,9 +78,9 @@ body {
 .checks { list-style: none; display: grid; gap: 5px; }
 .check {
   display: flex;
-  gap: 10px;
+  gap: var(--jsal-space-10);
   align-items: flex-start;
-  padding: 8px 10px;
+  padding: var(--jsal-space-8) var(--jsal-space-10);
   border-radius: var(--jsal-radius);
   border: 1px solid var(--jsal-line);
   background: var(--jsal-surface);
@@ -102,9 +102,9 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 
 /* ── Actions ───────────────────────────────────────────────────────────── */
 
-.actions { display: grid; gap: 6px; margin-top: 12px; }
-.actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.actions-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 28px; }
+.actions { display: grid; gap: var(--jsal-space-6); margin-top: var(--jsal-space-12); }
+.actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--jsal-space-6); }
+.actions-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--jsal-space-10); min-height: 28px; }
 
 .actions .jsal-btn { white-space: nowrap; }
 
@@ -112,7 +112,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 
 /* ── Workspace ─────────────────────────────────────────────────────────── */
 
-.work { display: grid; gap: 12px; margin-top: 12px; min-height: 0; }
+.work { display: grid; gap: var(--jsal-space-12); margin-top: var(--jsal-space-12); min-height: 0; }
 
 .paste-zone {
   min-height: 320px;
@@ -120,8 +120,8 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 32px 20px;
+  gap: var(--jsal-space-8);
+  padding: var(--jsal-space-32) var(--jsal-space-20);
   text-align: center;
   border: 1.5px dashed var(--jsal-line-hi);
   border-radius: var(--jsal-radius-xl);
@@ -131,14 +131,14 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 }
 .paste-zone:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
 .paste-zone:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }   /* focused: ready to paste */
-.paste-icon { width: 44px; height: 44px; border-radius: var(--jsal-radius-xl); display: grid; place-items: center; background: var(--jsal-accent-soft); color: var(--jsal-accent); border: 1px solid var(--jsal-accent-ring); margin-bottom: 4px; }
+.paste-icon { width: 44px; height: 44px; border-radius: var(--jsal-radius-xl); display: grid; place-items: center; background: var(--jsal-accent-soft); color: var(--jsal-accent); border: 1px solid var(--jsal-accent-ring); margin-bottom: var(--jsal-space-4); }
 .paste-title { font-size: 15px; font-weight: 600; }
 .paste-sub { max-width: 34em; color: var(--jsal-ink-2); line-height: 1.5; }
-.paste-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; align-items: center; color: var(--jsal-muted); }   /* wraps whole links on phones, never a link's words */
-.paste-privacy { margin-top: 10px; font-size: 12px; color: var(--jsal-muted); }
-.paste-note { margin-top: 8px; color: var(--jsal-warn); font-size: 13px; }
+.paste-links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--jsal-space-4) var(--jsal-space-10); align-items: center; color: var(--jsal-muted); }   /* wraps whole links on phones, never a link's words */
+.paste-privacy { margin-top: var(--jsal-space-10); font-size: 12px; color: var(--jsal-muted); }
+.paste-note { margin-top: var(--jsal-space-8); color: var(--jsal-warn); font-size: 13px; }
 .paste-note:empty { display: none; }
-kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-bg); }
+kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-6); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-bg); }
 
 .pane {
   display: flex;
@@ -155,12 +155,12 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  padding: 8px 8px 8px 12px;
+  gap: var(--jsal-space-10);
+  padding: var(--jsal-space-8) var(--jsal-space-8) var(--jsal-space-8) var(--jsal-space-12);
   border-bottom: 1px solid var(--jsal-line);
 }
 .pane-title { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }   /* wraps rather than hiding "· from Word · 1.6 KB" behind "…" when text is spaced out (WCAG 1.4.12) */
-.pane-meta { font-weight: 400; color: var(--jsal-muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.pane-meta { font-weight: 400; color: var(--jsal-muted); margin-left: var(--jsal-space-4); font-variant-numeric: tabular-nums; }
 .pane-body { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; background: var(--jsal-surface); }
 /* The editor and the HTML box have no outline of their own (a ring round a long scrolling text reads badly), so
    the area they sit in shows the focus ring while you're typing in either */
@@ -168,7 +168,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 
 .code {
   margin: 0;
-  padding: 14px 16px;
+  padding: var(--jsal-space-14) var(--jsal-space-16);
   font: 13px/1.65 var(--mono);
   white-space: pre-wrap;
   word-break: break-word;
@@ -181,15 +181,15 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2px;
-  padding: 6px 8px;
+  gap: var(--jsal-space-2);
+  padding: var(--jsal-space-6) var(--jsal-space-8);
   border-bottom: 1px solid var(--jsal-line);
   background: var(--jsal-surface);
 }
 .toolbar button {
   min-width: 30px;
   height: 28px;
-  padding: 0 8px;
+  padding: 0 var(--jsal-space-8);
   display: inline-grid;
   place-items: center;
   border-radius: var(--jsal-radius-sm);
@@ -202,9 +202,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .toolbar button.on { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
 .toolbar button b { font-weight: 800; }
 .toolbar button i { font-family: Georgia, serif; font-size: 14px; }
-.toolbar .tb-wide { padding: 0 10px; font-weight: 500; border: 1px solid var(--jsal-line); display: inline-flex; gap: 2px; }
-.toolbar .toolbar-hint { margin-left: 8px; }
-.tb-sep { width: 1px; height: 18px; margin: 0 4px; background: var(--jsal-line); }
+.toolbar .tb-wide { padding: 0 var(--jsal-space-10); font-weight: 500; border: 1px solid var(--jsal-line); display: inline-flex; gap: var(--jsal-space-2); }
+.toolbar .toolbar-hint { margin-left: var(--jsal-space-8); }
+.tb-sep { width: 1px; height: 18px; margin: 0 var(--jsal-space-4); background: var(--jsal-line); }
 .tb-grow { flex: 1; }
 
 textarea.code {
@@ -218,7 +218,7 @@ textarea.code {
 }
 
 /* Clean preview: plain reading typography for the editor */
-.preview { padding: 20px 26px 40px; font-size: 15px; line-height: 1.7; color: var(--jsal-ink); max-width: 760px; }
+.preview { padding: var(--jsal-space-20) var(--jsal-space-26) var(--jsal-space-40); font-size: 15px; line-height: 1.7; color: var(--jsal-ink); max-width: 760px; }
 .preview[contenteditable] { outline: none; min-height: 100%; cursor: text; caret-color: var(--jsal-accent); }
 .preview:empty::before { content: "Start typing or paste here…"; color: var(--jsal-muted); }
 .preview > * + * { margin-top: 0.9em; }
@@ -233,8 +233,8 @@ textarea.code {
   content: "H1";
   content: "H1" / "";
   display: inline-block;
-  margin-right: 8px;
-  padding: 1px 6px;
+  margin-right: var(--jsal-space-8);
+  padding: 1px var(--jsal-space-6);
   border-radius: var(--jsal-radius-sm);
   vertical-align: 3px;
   font: 700 12px/1.4 var(--jsal-font);
@@ -245,14 +245,14 @@ textarea.code {
 .preview h5::before { content: "H5"; content: "H5" / ""; } .preview h6::before { content: "H6"; content: "H6" / ""; }
 /* An H1 in the body is one of the checks, so its tag gets the dashed warning outline the [Image] note has,
    which tells it apart from the other heading tags at a glance */
-.preview h1::before { padding: 0 4px; border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); }
+.preview h1::before { padding: 0 var(--jsal-space-4); border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); }
 .preview a { color: var(--jsal-info); text-underline-offset: 2px; }
 .preview ul, .preview ol { padding-left: 1.5em; }
 .preview li + li, .preview li > ul, .preview li > ol { margin-top: 0.3em; }
 .preview table { border-collapse: collapse; width: 100%; font-size: 14px; }
-.preview td, .preview th { border: 1px solid var(--jsal-line-hi); padding: 6px 10px; text-align: left; vertical-align: top; }
-.preview blockquote { border-left: 3px solid var(--jsal-line-hi); padding-left: 14px; color: var(--jsal-ink-2); }
-.preview [data-image] { display: inline-block; padding: 4px 10px; border-radius: var(--jsal-radius); border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); font-size: 13px; font-weight: 600; }
+.preview td, .preview th { border: 1px solid var(--jsal-line-hi); padding: var(--jsal-space-6) var(--jsal-space-10); text-align: left; vertical-align: top; }
+.preview blockquote { border-left: 3px solid var(--jsal-line-hi); padding-left: var(--jsal-space-14); color: var(--jsal-ink-2); }
+.preview [data-image] { display: inline-block; padding: var(--jsal-space-4) var(--jsal-space-10); border-radius: var(--jsal-radius); border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); background: var(--jsal-warn-soft); font-size: 13px; font-weight: 600; }
 .preview .flag { text-decoration-color: var(--jsal-warn); text-decoration-style: wavy; text-decoration-line: underline; }   /* a word a check points at */
 /* Bold-only lines: an orange bar in the margin (see the "only bold text" check) */
 .preview > p[data-bold] { position: relative; }
@@ -266,13 +266,13 @@ textarea.code {
 /* A link or other inline bit gets a snug wash instead, so it doesn't spill over the words beside it */
 .preview :is(a, span, strong, b, em, i, img).locate { margin-inline: 0; padding-inline: 0; border-radius: var(--jsal-radius-sm); box-shadow: 0 0 0 2px var(--wash); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 /* An [Image] note is already its own box: keep its size and padding so its text doesn't shift */
-.preview [data-image].locate { margin-inline: 0; padding-inline: 10px; }
+.preview [data-image].locate { margin-inline: 0; padding-inline: var(--jsal-space-10); }
 .preview > p[data-bold].locate::before { left: 8px; opacity: 1; background: var(--jsal-fill); animation: locate-bar 2.6s ease-out forwards; }   /* style: allow (held so the line can be found, then fades) */
 @keyframes locate { 0%, 60% { background: var(--wash); } 100% { background: transparent; } }
 @keyframes locate-bar { 0%, 60% { opacity: 1; background: var(--jsal-fill); } 100% { opacity: 0.8; background: var(--jsal-warn); } }
 @media (prefers-reduced-motion: reduce) { .preview .locate, .preview > p[data-bold].locate::before { animation: none; } }
 /* Single column: after Show takes you down to the line, a way back up to the checks */
-.back-to-checks { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 20; translate: -50% 0; padding: 0 16px; min-height: 44px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 600; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.back-to-checks { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 20; translate: -50% 0; padding: 0 var(--jsal-space-16); min-height: 44px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); font-size: 14px; font-weight: 600; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
 .back-to-checks:hover { border-color: var(--jsal-hover-line); }
 @media (min-width: 900px) { .back-to-checks { display: none; } }
 
@@ -282,9 +282,9 @@ textarea.code {
   z-index: 5;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--jsal-space-2);
   width: min(400px, calc(100% - 16px));
-  padding: 4px;
+  padding: var(--jsal-space-4);
   border: 1px solid var(--jsal-line-hi);
   border-radius: var(--jsal-radius);
   background: var(--jsal-surface);
@@ -294,7 +294,7 @@ textarea.code {
   flex: 1;
   min-width: 0;
   height: 28px;
-  padding: 0 8px;
+  padding: 0 var(--jsal-space-8);
   border: 1px solid var(--jsal-line);
   border-radius: var(--jsal-radius-sm);
   background: var(--jsal-bg);
@@ -308,7 +308,7 @@ textarea.code {
 .link-box button, .link-box a {
   height: 28px;
   min-width: 28px;
-  padding: 0 8px;
+  padding: 0 var(--jsal-space-8);
   display: inline-grid;
   place-items: center;
   border-radius: var(--jsal-radius-sm);
@@ -331,13 +331,13 @@ textarea.code {
     display: grid;
     grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
     grid-template-rows: auto auto minmax(0, 1fr);   /* top bar, who it's for, then the checks and the editor */
-    column-gap: 28px;
+    column-gap: var(--jsal-space-28);
   }
   .app-header { grid-column: 1 / -1; }
   /* Copy buttons pinned at the bottom, checks scroll above them */
   .side { min-height: 0; }
-  .results { flex: 1 1 auto; min-height: 60px; overflow-y: auto; padding-right: 4px; scrollbar-width: thin; }
-  .actions { padding-top: 10px; border-top: 1px solid var(--jsal-line); }
+  .results { flex: 1 1 auto; min-height: 60px; overflow-y: auto; padding-right: var(--jsal-space-4); scrollbar-width: thin; }
+  .actions { padding-top: var(--jsal-space-10); border-top: 1px solid var(--jsal-line); }
   .work { margin-top: 0; grid-template-rows: minmax(0, 1fr); }
   .pane { height: auto; }
 }
@@ -346,7 +346,7 @@ textarea.code {
   /* Before anything is pasted the paste box stretches to the bottom of the first screen, so the space reads as
      room for your content rather than the page running out */
   .app:not(.has-content) .work { flex: 1 1 auto; }
-  .pane-head .jsal-seg > button { padding: 6px 8px; }
+  .pane-head .jsal-seg > button { padding: var(--jsal-space-6) var(--jsal-space-8); }
   .pane { height: 75vh; }
 }
 /* Touch screens: every button at least 44px tall, so it's easy to hit with a finger (desktop keeps the compact controls) */
@@ -360,15 +360,15 @@ textarea.code {
   .paste-sub, .paste-links { font-size: 13px; }
 }
 /* Phones: the link row wraps, so the dots between links go (one would start the second line) and spacing does the job */
-@media (max-width: 599px) { .paste-links [aria-hidden] { display: none; } .paste-links { gap: 4px 18px; } }
+@media (max-width: 599px) { .paste-links [aria-hidden] { display: none; } .paste-links { gap: var(--jsal-space-4) var(--jsal-space-18); } }
 /* Phones: the toolbar in two even rows (formatting, then links, fixes and undo) instead of wrapping onto three */
 .tb-break { display: none; }
 @media (max-width: 599px) {
-  .toolbar { gap: 1px; padding: 4px 6px; }
+  .toolbar { gap: 1px; padding: var(--jsal-space-4) var(--jsal-space-6); }
   #toolbar .tb-sep, #toolbar .tb-grow { display: none; }
   #toolbar .tb-break { display: block; flex-basis: 100%; }
   #toolbar button { flex: 1 1 0; min-width: 0; padding: 0; }
-  #toolbar .tb-wide { flex: none; padding: 0 12px; }
+  #toolbar .tb-wide { flex: none; padding: 0 var(--jsal-space-12); }
 }
 
 @media (prefers-reduced-motion: reduce) {

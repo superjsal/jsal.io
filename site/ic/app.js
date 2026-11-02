@@ -351,7 +351,7 @@ function renderPanel() {
   } else body = `<p class="empty">Nothing to check here: every ${SEC_LABEL[state.sec]} item on ${p.name} is the same on every site.</p>`;
   $('#panel').innerHTML = `
     <div class="panel-head">
-      <div style="display:grid;gap:2px;min-width:0">
+      <div style="display:grid;gap:var(--jsal-space-2);min-width:0">
         <h2>${p.name} · ${searching ? 'Search' : SEC_LABEL[state.sec] + sub}</h2>
         <p class="about">${p.about}</p>
         ${platformNoteHtml(p)}

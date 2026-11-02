@@ -16,9 +16,9 @@
 <link rel="preconnect" href="https://kvdzluvhwxkrbatgskio.supabase.co" crossorigin>
 <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous">
 <!-- Colours and top bar: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=df5ef931">
+<link rel="stylesheet" href="/shell.css?v=676840fd">
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
-<link rel="stylesheet" href="styles.css?v=055db415">
+<link rel="stylesheet" href="styles.css?v=9334dc45">
 </head>
 <body>
 
@@ -42,7 +42,7 @@
     <div class="side-title">Platforms</div>
     <nav class="plist" id="picker" aria-label="Platform"></nav>
     <p class="side-note">Numbers: items to check for this view.</p>
-    <div class="side-title" style="margin-top:14px">Guides</div>
+    <div class="side-title" style="margin-top:var(--jsal-space-14)">Guides</div>
     <nav class="guide-nav" id="guide-nav" aria-label="Guides"></nav>
   </aside>
 
@@ -68,7 +68,7 @@
 
     <section class="team-view" id="pk-view" hidden>
       <div class="panel-head">
-        <div style="display:grid;gap:2px;min-width:0"><h2>CMS Picker</h2><p class="about">The answers, cards and logos on the public <a href="/cms-picker/" target="_blank" rel="noopener">CMS Picker</a>. They’re kept separately from the Playbook’s answers, so a topic both cover is labelled. Changes go live with the next publish. Only admins see this page.</p></div>
+        <div style="display:grid;gap:var(--jsal-space-2);min-width:0"><h2>CMS Picker</h2><p class="about">The answers, cards and logos on the public <a href="/cms-picker/" target="_blank" rel="noopener">CMS Picker</a>. They’re kept separately from the Playbook’s answers, so a topic both cover is labelled. Changes go live with the next publish. Only admins see this page.</p></div>
         <div class="panel-meta"><button type="button" class="jsal-btn small" id="pk-refresh">Refresh</button></div>
       </div>
       <p class="pk-status" id="pk-status" aria-live="polite">Loading…</p>
@@ -76,7 +76,7 @@
     </section>
     <section class="team-view" id="team-view" hidden>
       <div class="panel-head">
-        <div style="display:grid;gap:2px;min-width:0"><h2>Team</h2><p class="about">Anyone can sign in with Discord, but only people approved here can see Platform Playbook. Only admins see this page.</p></div>
+        <div style="display:grid;gap:var(--jsal-space-2);min-width:0"><h2>Team</h2><p class="about">Anyone can sign in with Discord, but only people approved here can see Platform Playbook. Only admins see this page.</p></div>
         <div class="panel-meta"><span class="tally" id="team-tally"></span><button type="button" class="jsal-btn small" id="team-refresh">Refresh</button></div>
       </div>
       <h3 class="team-h">Waiting for approval</h3>
@@ -99,7 +99,7 @@
 
     <section class="team-view" id="req-view" hidden>
       <div class="panel-head">
-        <div style="display:grid;gap:2px;min-width:0"><h2>Requests</h2><p class="about">Spotted a wrong answer, want a platform added, or have an idea? Post it, upvote the ones you want most, and comment to discuss. Admins update the status.</p></div>
+        <div style="display:grid;gap:var(--jsal-space-2);min-width:0"><h2>Requests</h2><p class="about">Spotted a wrong answer, want a platform added, or have an idea? Post it, upvote the ones you want most, and comment to discuss. Admins update the status.</p></div>
         <div class="panel-meta">
           <div class="jsal-seg" id="req-filter" role="group" aria-label="Show"><button type="button" data-filter="open">Open</button><button type="button" data-filter="done">Closed</button><button type="button" data-filter="all">All</button></div>
           <span class="req-tools">
@@ -148,8 +148,8 @@
 </div>
 <div id="toast" role="status"></div>
 
-<script src="/nav.js?v=719ffd1d" defer></script>
+<script src="/nav.js?v=dfe4c87a" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
-<script src="app.js?v=29bb5050"></script>
+<script src="app.js?v=93238318"></script>
 </body>
 </html>

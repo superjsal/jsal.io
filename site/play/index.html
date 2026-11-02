@@ -53,7 +53,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours, top bar, column width and page transitions: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=df5ef931">
+<link rel="stylesheet" href="/shell.css?v=676840fd">
 <style>
 /* Tile colours: moss for the WoW UI, toned close to the page; the other tiles are plain, a neutral fill with no border */
 :root {
@@ -76,12 +76,12 @@ body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webk
 a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles keep their own rounded corners, and the outline follows them */
-.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)) 56px; }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-space-20), env(safe-area-inset-left, 0px)) var(--jsal-space-56); }
 .label { margin: 0; font: 12px/1.5 "JetBrains Mono", Consolas, monospace; }
 
 /* Top bar: the shared one (/shell.css), with section links */
-.jsal-top nav { display: flex; gap: 2px; font-size: 14px; }
-.jsal-top nav a { padding: 8px 10px; line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }   /* 36px tall, like the apps' controls */
+.jsal-top nav { display: flex; gap: var(--jsal-space-2); font-size: 14px; }
+.jsal-top nav a { padding: var(--jsal-space-8) var(--jsal-space-10); line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }   /* 36px tall, like the apps' controls */
 .jsal-top nav a:hover { color: var(--jsal-ink); }
 @media (pointer: coarse) {
   .jsal-top nav a { position: relative; }
@@ -89,8 +89,8 @@ a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles kee
 }
 
 /* Bento grid: 12 columns, one per tile row; stacks on narrow screens */
-.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: var(--jsal-page-top); }
-.tile { border-radius: var(--jsal-radius-tile); padding: 26px; text-decoration: none; transition: transform var(--jsal-settle) var(--jsal-ease-out); }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--jsal-space-16); margin-top: var(--jsal-page-top); }
+.tile { border-radius: var(--jsal-radius-tile); padding: var(--jsal-space-26); text-decoration: none; transition: transform var(--jsal-settle) var(--jsal-ease-out); }
 a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 /* With a mouse: the tile tilts toward the pointer and a soft light follows it (the script below sets
    --rx/--ry and --mx/--my). Not on touch screens, and not with reduced motion (the plain lift above). */
@@ -103,7 +103,7 @@ a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) a.tile::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 65%); }
 }
-.tile h2 { margin: 2px 0 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
+.tile h2 { margin: var(--jsal-space-2) 0 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
 .tile p { margin: 0; }
 
 /* Even line breaks: headings split into balanced lines, paragraphs avoid a lone last word */
@@ -112,12 +112,12 @@ p, li { text-wrap: pretty; }
 
 /* Top padding lines the small line up with the picture's top edge in the CMS Picker tile beside it
    (tile padding 26px + 1px border) */
-.intro { grid-column: 1 / 6; padding: 28px 0 0; }
-.roles { display: flex; flex-wrap: wrap; margin: 0 0 18px; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-.roles span + span::before { content: "·"; content: "·" / ""; margin: 0 10px; color: var(--jsal-muted); }
+.intro { grid-column: 1 / 6; padding: var(--jsal-space-28) 0 0; }
+.roles { display: flex; flex-wrap: wrap; margin: 0 0 var(--jsal-space-18); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+.roles span + span::before { content: "·"; content: "·" / ""; margin: 0 var(--jsal-space-10); color: var(--jsal-muted); }
 .intro h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }   /* every page title's size, as on the home page */
 .intro h1 em { font-weight: 600; color: var(--jsal-accent); }
-.intro p { margin: 28px 0 0; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
+.intro p { margin: var(--jsal-space-28) 0 0; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
 
 /* Currently: WoW Forever art behind the text, scaled down but otherwise unaltered as Blizzard's fan-site policy
    requires (the darkening is a separate layer on top, and the copyright notice stays on the
@@ -129,49 +129,49 @@ p, li { text-wrap: pretty; }
    of the credit row at the bottom. The file itself is untouched. */
 .now-playing .art { position: absolute; top: -18%; left: 0; z-index: -2; width: 100%; height: 118%; object-fit: cover; object-position: 12% 50%; }
 .now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }   /* style: allow (WoW tile: shade over the art for the text) */
-.now-playing .label { margin-bottom: 10px; }
+.now-playing .label { margin-bottom: var(--jsal-space-10); }
 .now-playing .label, .now-playing .pill { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
 .now-playing .big { font: 700 30px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
-.now-playing .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; }
+.now-playing .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-12); }
 .now-playing .credit { font-size: 12px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
-.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: var(--jsal-radius-pill); border: 1px solid currentColor; white-space: nowrap; }
-.desc { margin-top: 4px !important; font-size: 15px; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: var(--jsal-space-2) var(--jsal-space-10); border-radius: var(--jsal-radius-pill); border: 1px solid currentColor; white-space: nowrap; }
+.desc { margin-top: var(--jsal-space-4) !important; font-size: 15px; }
 
 /* The UI tile is text only and a step smaller than the live tools */
-.ui { padding: 22px 26px; }
+.ui { padding: var(--jsal-space-22) var(--jsal-space-26); }
 .ui h2 { font-size: 24px; }
 .ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); }
 .ui .label { color: var(--green-acc); }
-.ui .desc { color: var(--green-muted); margin-top: 8px !important; }
-.ui .pill { margin-top: 14px; color: var(--green-acc); }
+.ui .desc { color: var(--green-muted); margin-top: var(--jsal-space-8) !important; }
+.ui .pill { margin-top: var(--jsal-space-14); color: var(--green-acc); }
 /* Live projects are the default and carry no badge; what isn't ready yet is an outline with no fill */
 .tile.soon { background: none; border: 2px dashed var(--jsal-line-hi); }
 
 .now { grid-column: 1 / 13; background: var(--plain); }
-.now h2 { margin: 0 0 10px; font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
-.now h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; font-size: 17px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
+.now h2 { margin: 0 0 var(--jsal-space-10); font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
+.now h3 { display: flex; align-items: baseline; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-6); font-size: 17px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
 .now h3 time { font-size: 14px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now ul { margin: 0; padding: 0; list-style: none; }
-.now li { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--plain-line); }
+.now li { display: flex; gap: var(--jsal-space-12); padding: var(--jsal-space-10) 0; border-top: 1px solid var(--plain-line); }
 .now li time { flex: none; min-width: 4em; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
 /* Achievements (/nav.js unlocks them and keeps them in this browser; the script below lists them, grouped by
    where each is earned, in columns as wide as fit) */
 .ach { grid-column: 1 / 13; background: var(--plain); }
-.ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--jsal-space-12); }
 .ach h2 { margin: 0; font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
 .ach-count { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
-.ach-bar { height: 6px; margin: 12px 0 20px; border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
+.ach-bar { height: 6px; margin: var(--jsal-space-12) 0 var(--jsal-space-20); border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
 .ach-bar i { display: block; height: 100%; background: var(--jsal-fill); border-radius: inherit; transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }   /* a transform, so filling it doesn't re-lay-out the page; style: allow (the achievements bar filling) */
-.ach-groups { columns: 3 280px; column-gap: 24px; }
-.ach-grp { break-inside: avoid; padding-bottom: 20px; }
-.ach-grp h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-size: 14px; font-weight: 600; }
+.ach-groups { columns: 3 280px; column-gap: var(--jsal-space-24); }
+.ach-grp { break-inside: avoid; padding-bottom: var(--jsal-space-20); }
+.ach-grp h3 { display: flex; align-items: center; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-8); font-size: 14px; font-weight: 600; }
 .ach-grp h3 img, .ach-grp h3 .lk { flex: none; width: 20px; height: 20px; border-radius: var(--jsal-radius-sm); }
 .ach-grp h3 .lk { display: grid; place-items: center; background: var(--jsal-tool-home); color: var(--jsal-fill); }
 .ach-grp h3 .n { margin-left: auto; font-size: 13px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
-.ach-grp ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.ach-grp li { display: flex; align-items: center; gap: 10px; padding: 6px 10px 6px 6px; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
+.ach-grp ul { display: grid; gap: var(--jsal-space-6); margin: 0; padding: 0; list-style: none; }
+.ach-grp li { display: flex; align-items: center; gap: var(--jsal-space-10); padding: var(--jsal-space-6) var(--jsal-space-10) var(--jsal-space-6) var(--jsal-space-6); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
 .ach-grp .medal { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
 .ach-grp b { display: block; font-weight: 600; }
 .ach-grp small { display: block; font-size: 13px; color: var(--jsal-muted); }
@@ -183,7 +183,7 @@ p, li { text-wrap: pretty; }
 /* Say hi (the backpack): the socials as gear in a bag window drawn after the original game's, with a stone frame,
    a round portrait and a leather title bar. It keeps its look in both themes, like the WoW Forever tile. The items
    are Blizzard's own icons, shown as Blizzard serves them; hover, focus or tap one for its tooltip. */
-.mail { grid-column: 9 / 13; display: flex; flex-direction: column; gap: 4px; }
+.mail { grid-column: 9 / 13; display: flex; flex-direction: column; gap: var(--jsal-space-4); }
 .mail.pack {
   --q-legendary: #ff8000; --q-epic: #a335ee; --q-rare: #0070dd; --q-uncommon: #1eff00; --q-common: #ffffff;
   --cast-hi: #ffd84a; --cast-lo: #b8820f;
@@ -200,15 +200,15 @@ p, li { text-wrap: pretty; }
   box-shadow: inset 0 0 0 1px var(--pk-black), inset 0 0 0 4px var(--st-bevel), inset 0 0 0 5px var(--st-dark), inset 0 0 0 7px var(--st-inner), 0 12px 28px -14px rgb(0 0 0 / 0.7);
 }
 .mail.pack .label { color: var(--pk-label); }
-.mail.pack .desc { color: var(--pk-text); margin-top: 12px !important; }
+.mail.pack .desc { color: var(--pk-text); margin-top: var(--jsal-space-12) !important; }
 .pack-h { display: flex; align-items: center; gap: 14px; padding: 6px 12px 6px 0; border-radius: 30px 8px 8px 30px; background: linear-gradient(var(--lt-hi), var(--lt-low)); box-shadow: inset 0 0 0 1px var(--lt-edge), inset 0 1px 0 var(--lt-shine), 0 2px 4px rgb(0 0 0 / 0.5); }   /* style: allow (part of the backpack drawing) */
 .pack-h h2 { margin: 0; font: 700 24px/1.1 "Lora", Georgia, serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black), 0 0 10px rgb(0 0 0 / 0.6); }
-.portrait { flex: none; width: 64px; height: 64px; margin: -10px 0 -10px -6px; border-radius: 50%; overflow: hidden; border: 4px solid var(--st-rim); box-shadow: 0 0 0 2px var(--st-dark), 0 4px 10px rgb(0 0 0 / 0.7); }
+.portrait { flex: none; width: 64px; height: 64px; margin: calc(var(--jsal-space-10) * -1) 0 calc(var(--jsal-space-10) * -1) calc(var(--jsal-space-6) * -1); border-radius: 50%; overflow: hidden; border: 4px solid var(--st-rim); box-shadow: 0 0 0 2px var(--st-dark), 0 4px 10px rgb(0 0 0 / 0.7); }
 .portrait img, .slot img, .bagtab img { display: block; width: 100%; height: 100%; }
 .bag { position: relative; display: grid; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-well); box-shadow: inset 0 0 0 2px var(--st-dark), inset 0 0 0 3px var(--pk-well-rim), inset 0 2px 12px rgb(0 0 0 / 0.9); }   /* style: allow (part of the backpack drawing) */
 /* Both bags share one cell, so switching between them never changes the tile's height */
-.slots { grid-area: 1 / 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: center; gap: 8px; }
-.slots.pouch { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.slots { grid-area: 1 / 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: center; gap: var(--jsal-space-8); }
+.slots.pouch { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--jsal-space-6); }
 .slots[inert] { visibility: hidden; }
 .slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: var(--jsal-radius); border: 2px solid var(--q); background: var(--pk-black); box-shadow: 0 0 0 1px var(--pk-black), 0 0 12px -3px var(--q); cursor: pointer; font: inherit; transition: transform var(--jsal-quick) ease, box-shadow var(--jsal-quick) ease, filter var(--jsal-quick) ease; }
 /* A soft bevel over the icon, as the game draws its slots */
@@ -234,7 +234,7 @@ p, li { text-wrap: pretty; }
 .float.err { color: var(--tip-error); }
 @keyframes float-up { 0% { opacity: 0; transform: translateY(4px); } 15%, 70% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
 /* The tooltip floats over the bag next to the item, like in game */
-.tip { position: absolute; z-index: 5; width: 250px; padding: 10px 12px; border-radius: var(--jsal-radius); background: var(--tip-bg); border: 1px solid var(--tip-line); box-shadow: 0 8px 24px rgb(0 0 0 / 0.5); font-size: 13px; line-height: 1.5; color: var(--tip-ink); }   /* takes the pointer, so it can be hovered (WCAG 1.4.13) */
+.tip { position: absolute; z-index: 5; width: 250px; padding: var(--jsal-space-10) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--tip-bg); border: 1px solid var(--tip-line); box-shadow: 0 8px 24px rgb(0 0 0 / 0.5); font-size: 13px; line-height: 1.5; color: var(--tip-ink); }   /* takes the pointer, so it can be hovered (WCAG 1.4.13) */
 .tip .t { font-size: 15px; font-weight: 700; }
 .tip .w { color: var(--tip-name); }
 .tip .s { color: var(--tip-muted); }
@@ -247,20 +247,20 @@ p, li { text-wrap: pretty; }
 .cast-name { position: relative; display: block; font: 600 12px/20px var(--jsal-font); text-align: center; color: var(--tip-name); text-shadow: 0 1px 2px var(--pk-black); }
 @keyframes cast { to { width: 100%; } }
 /* The bag bar switches between the backpack and the trophies, as the game's bag buttons do */
-.bagbar { display: flex; gap: 8px; margin-top: 10px; }
-.bagtab { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 40px; padding: 4px 10px 4px 4px; border-radius: var(--jsal-radius); border: 1px solid var(--pk-well-rim); background: var(--st-dark); color: var(--pk-text); font: 600 13px/1.2 var(--jsal-font); cursor: pointer; }
+.bagbar { display: flex; gap: var(--jsal-space-8); margin-top: var(--jsal-space-10); }
+.bagtab { flex: 1; display: flex; align-items: center; gap: var(--jsal-space-8); min-width: 0; min-height: 40px; padding: var(--jsal-space-4) var(--jsal-space-10) var(--jsal-space-4) var(--jsal-space-4); border-radius: var(--jsal-radius); border: 1px solid var(--pk-well-rim); background: var(--st-dark); color: var(--pk-text); font: 600 13px/1.2 var(--jsal-font); cursor: pointer; }
 .bagtab .bi { flex: none; width: 28px; height: 28px; overflow: hidden; border-radius: var(--jsal-radius); box-shadow: 0 0 0 1px var(--pk-black); }
 .bagtab em { margin-left: auto; font: 600 12px "JetBrains Mono", Consolas, monospace; font-style: normal; color: var(--pk-label); }
 .bagtab[aria-selected="true"] { border-color: var(--pk-title); box-shadow: 0 0 0 1px var(--pk-title-edge), 0 0 10px -2px var(--pk-title); color: var(--tip-name); }   /* style: allow (the bag's own game look, the same in both themes) */
 .bagtab:focus-visible { outline: 2px solid var(--pk-title); outline-offset: 2px; }
-.pack-credit { margin: 8px 2px 0; font-size: 12px; color: var(--pk-muted); }
+.pack-credit { margin: var(--jsal-space-8) var(--jsal-space-2) 0; font-size: 12px; color: var(--pk-muted); }
 @media (pointer: coarse) { .bagtab { min-height: 44px; } .slots.pouch { grid-template-columns: repeat(5, minmax(0, 1fr)); } }   /* trophies at finger size */
-@media (max-width: 420px) { .bagtab { gap: 6px; padding-right: 8px; } .bagtab .bi { width: 24px; height: 24px; } }
+@media (max-width: 420px) { .bagtab { gap: var(--jsal-space-6); padding-right: var(--jsal-space-8); } .bagtab .bi { width: 24px; height: 24px; } }
 @media (prefers-reduced-motion: reduce) { .cast.go .cast-fill { animation-duration: var(--jsal-settle); } .slot { transition: none; } .slot:hover, .slot:focus-visible, .slot.on { transform: none; } .slot.new::before, .float { animation: none; } .slot.shine::before { display: none; } }
 
-footer { margin-top: 48px; padding-top: 10px; border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--jsal-muted); }
-footer nav { display: flex; gap: 4px; }
-footer a, footer .foot-btn { padding: 8px; color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 2px; }   /* the site's own links: gold, as in every Made by line */
+footer { margin-top: var(--jsal-space-48); padding-top: var(--jsal-space-10); border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--jsal-space-12); font-size: 13px; color: var(--jsal-muted); }
+footer nav { display: flex; gap: var(--jsal-space-4); }
+footer a, footer .foot-btn { padding: var(--jsal-space-8); color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 2px; }   /* the site's own links: gold, as in every Made by line */
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
 /* Touch screens: the footer links and button at finger size (they're 37px tall with the 8px padding alone) */
 @media (pointer: coarse) { footer a, footer .foot-btn { min-height: 44px; display: inline-flex; align-items: center; } }
@@ -275,17 +275,17 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
    and only the page's own Achievements link kept in the top bar (the logo menu goes to the tools). */
 @media (max-width: 520px) {
   .jsal-top nav a:not([href="#ach-h"]) { display: none; }
-  .grid { gap: 14px; }
-  .roles { margin: 0 0 12px; }
-  .roles span + span::before { margin: 0 8px; }
+  .grid { gap: var(--jsal-space-14); }
+  .roles { margin: 0 0 var(--jsal-space-12); }
+  .roles span + span::before { margin: 0 var(--jsal-space-8); }
   .intro h1 { font-size: 40px; line-height: 1.05; }
-  .intro p { margin: 16px 0 6px; font-size: 17px; line-height: 1.55; }
-  .tile { padding: 20px; }
+  .intro p { margin: var(--jsal-space-16) 0 var(--jsal-space-6); font-size: 17px; line-height: 1.55; }
+  .tile { padding: var(--jsal-space-20); }
   .tile h2 { font-size: 24px; }
-  .ui { padding: 20px; }
-  .now-playing { gap: 14px; min-height: 300px; }
+  .ui { padding: var(--jsal-space-20); }
+  .now-playing { gap: var(--jsal-space-14); min-height: 300px; }
   .now-playing .big { font-size: 24px; }
-  footer { margin-top: 32px; }
+  footer { margin-top: var(--jsal-space-32); }
 }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } a.tile:hover { transform: none; } }
 /* This page's intro runs across the grid */
@@ -573,6 +573,6 @@ addEventListener('DOMContentLoaded', drawAchievements);
 addEventListener('jsal-achievement', drawAchievements);
 addEventListener('pageshow', drawAchievements);   // back from a tool: show what was unlocked there
 </script>
-<script src="/nav.js?v=719ffd1d" defer></script>
+<script src="/nav.js?v=dfe4c87a" defer></script>
 </body>
 </html>
