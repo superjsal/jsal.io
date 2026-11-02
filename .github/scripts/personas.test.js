@@ -62,8 +62,9 @@ const PERSONAS = [
     { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
   ['Clothing brand, about 50 products, wants design control', { what: 'store', who: 'learn', care: 'no', size: 'small', needs: 'none', look: 'visual', moving: 'no' },
     { first: ['shopify', 'wix', 'squarespace'], top3: ['shopify'] }],   // a three-way tie: the store questions don't ask about design
+  // Shopify since its B2B tools came to every plan (agreed 2026-11-01): it's the easier of the two for someone not technical
   ['Coffee roaster selling to cafés (B2B), not technical', { what: 'store', who: 'easy', care: 'no', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
-    { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
+    { first: ['shopify'], top3: ['shopify', 'bigcommerce'] }],
   ['Wholesaler with trade accounts (B2B), happy to learn', { what: 'store', who: 'learn', care: 'no', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
     { first: ['bigcommerce'], top3: ['bigcommerce', 'shopify'] }],
   ['Parts supplier selling to businesses (B2B), with a developer', { what: 'store', who: 'dev', care: 'yes', size: 'b2b', needs: 'none', look: 'template', moving: 'no' },
@@ -410,6 +411,8 @@ Object.entries(data.quiz.notIdeal || {}).filter(onPicker).forEach(([id, rules]) 
   const lines = ((data.platforms.find((p) => p.id === id) || {}).profile || {}).lessSuited || [];
   rules.forEach((n) => { if (!lines.some((l) => l.startsWith(n.if))) cardErrs.push(`notIdeal for ${id}: "${n.if}" isn't a "Not ideal if" line on its card any more`); });
 });
+// Every store on the B2B list has its own page saying which plans have its B2B tools (quiz.b2bDocs), so the list can be rechecked
+(data.quiz.b2b || []).forEach((id) => { if (!/^https:\/\//.test((data.quiz.b2bDocs || {})[id] || '')) cardErrs.push(`b2b for ${id}: no page in b2bDocs saying which plans have its B2B tools`); });
 // Every tagged "Good fit" line (quiz.fitFor, the tie-break) must still be on its card, and its "when" must name real
 // questions and answers
 Object.entries(data.quiz.fitFor || {}).filter(onPicker).forEach(([id, tags]) => {
