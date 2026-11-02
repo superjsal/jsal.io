@@ -1,13 +1,14 @@
 # Runs the site's checks after every push to main: check.py (the same pre-push checks as .github\build\check.ps1),
 # the CMS Picker data against cms-picker.schema.json with a list of what isn't sourced yet, the persona tests, and
 # the browser checks (axe on every page, the phone widths, each tool's main flow) on Playwright's own Chromium,
-# WebKit and Firefox. A failure shows as a red X on the commit; GitHub Pages still deploys (main is the live site),
+# WebKit and Firefox. A failure shows as a red X on the commit; Cloudflare still deploys (main is the live site),
 # so .github\build\check.ps1 before pushing stays the first gate and this is the one that holds from any machine.
+# It runs on staging too, so a problem shows before staging is merged into main.
 name: Site checks
 
 on:
   push:
-    branches: [main]
+    branches: [main, staging]
   workflow_dispatch:
 
 permissions:

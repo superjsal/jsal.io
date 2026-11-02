@@ -1,6 +1,6 @@
 # jsal.io
 
-John Salvador's site: a home page, browser tools and a few plain pages, hosted free on GitHub Pages.
+John Salvador's site: a home page, browser tools and a few plain pages, hosted free on Cloudflare.
 
 | Address | What it is | Files |
 |---|---|---|
@@ -19,13 +19,13 @@ The old resizer address, superjsal.github.io/image-resizer, only redirects to js
 
 ## This folder
 
-This whole folder is the GitHub repo `superjsal/jsal.io`; only `site\` is published. Pushing to `main` runs the "Deploy Pages" Action, which puts `site\` on jsal.io within a minute or two.
+This whole folder is the GitHub repo `superjsal/jsal.io`; only `site\` is published. Cloudflare deploys every push on its own: `main` goes to jsal.io within a minute, and `staging` to its preview, https://staging-jsal-io.still-cell-826b.workers.dev, where changes wait until you ship them. `wrangler.jsonc` at the root tells Cloudflare what to serve.
 
 - `site\` — **everything that's published.**
   - `shell.css` (shared colours, building blocks, top bar, page transitions; every page links it with `?v=` its content hash) and `nav.js` (app menu, theme button, achievements).
-  - `404.html`, `robots.txt`, `sitemap.xml`, `llms.txt`, `favicon.svg`, `apple-touch-icon.png`, `og\` (link-preview images), `img\`, `fonts\`.
+  - `_headers` (response headers Cloudflare adds), `404.html`, `robots.txt`, `sitemap.xml`, `llms.txt`, `favicon.svg`, `apple-touch-icon.png`, `og\` (link-preview images), `img\`, `fonts\`.
   - `ic\supabase\schema.sql` — sets up the Playbook's database from scratch (tables, access rules, admin functions). Safe to re-run.
-- `.github\` — not served. `workflows\` are the GitHub Actions: the Pages deploy and the site checks on every push, IndexNow for changed pages after a push, the nightly CMS Picker publish, the keep-awake ping (Mondays and Thursdays), the encrypted Playbook backup (Sundays) and the quarterly recheck reminder. `scripts\` holds `playbook.py` with `cms-picker.json`, `check_data.py`, the persona tests, `indexnow.py` and `updates.py`. `docs\` holds the design rules, a map of the backend (`how-it-works.md`), the CMS Picker's maintenance note (`cms-picker-maintenance.md`: how its data, scoring and tests fit together), a twenty-minute real-device checklist to run before releases (`manual-checks.md`) and the user-test script.
+- `.github\` — not served. `workflows\` are the GitHub Actions: the site checks on every push to `main` and `staging`, the old GitHub Pages deploy (a fallback until it's retired), IndexNow for changed pages after a push, the nightly CMS Picker publish, the keep-awake ping (Mondays and Thursdays), the encrypted Playbook backup (Sundays) and the quarterly recheck reminder. `scripts\` holds `playbook.py` with `cms-picker.json`, `check_data.py`, the persona tests, `indexnow.py` and `updates.py`. `docs\` holds the design rules, a map of the backend (`how-it-works.md`), the CMS Picker's maintenance note (`cms-picker-maintenance.md`: how its data, scoring and tests fit together), a twenty-minute real-device checklist to run before releases (`manual-checks.md`) and the user-test script.
 - `.github\build\` — the scripts, in the repo so they work on any machine:
   - `check.ps1` — pre-push checks (top bar, cache numbers, broken links, unused CSS, branding, consistent styling), via `check.py`, which the "Site checks" Action also runs on every push.
   - `browser-check.mjs` — axe and phone-width runs in real browsers. Needs Node: run `npm ci` in that folder once per machine (`node_modules` isn't committed).
@@ -45,7 +45,8 @@ This whole folder is the GitHub repo `superjsal/jsal.io`; only `site\` is publis
    ```
    powershell -ExecutionPolicy Bypass -File C:\Users\JSAL\Desktop\jsal.io\.github\build\check.ps1
    ```
-4. `git pull`, then commit and push (as superjsal, dev@jsal.io).
+4. On the `staging` branch: `git pull`, then commit and push (as superjsal, dev@jsal.io). Check the preview address.
+5. To ship: `git fetch`, `git merge origin/main` (the nightly publish commits to `main`), `git push`, then `git push origin staging:main`. That's the only push that changes jsal.io.
 
 When you ship something worth mentioning, add it at the top of `site\changelog\index.html` under today's date, tagged with its app; give it `data-short="…"` (about 40 characters) if it should lead its section in **Updates** on the home page, then run `python .github\scripts\updates.py`, which rewrites that block (never edit it by hand; the checks fail when it's out of date). When a public page changes a lot, update its date in `site\sitemap.xml`.
 
@@ -86,8 +87,12 @@ It writes `site\og\*.png` and `site\apple-touch-icon.png`.
 
 Only needed if something has to be set up again.
 
-- **Domain (Porkbun DNS):** four `A` records for `jsal.io` → 185.199.108.153, .109.153, .110.153, .111.153, and `CNAME www` → superjsal.github.io. Keep the `MX` and `TXT v=spf1…` records: they run dev@jsal.io email forwarding. Also a `TXT` record for Google Search Console.
-- **GitHub Pages:** repo `superjsal/jsal.io`, source "GitHub Actions" (`.github\workflows\deploy-pages.yml` publishes `site\`), custom domain `jsal.io` (`site\CNAME`), Enforce HTTPS on.
+- **Domain:** registered at Porkbun, nameservers `james.ns.cloudflare.com` and `peaches.ns.cloudflare.com` (DNSSEC off). Email forwarding (dev@jsal.io) is still Porkbun's: keep the `MX` records `fwd1.porkbun.com` (10) and `fwd2.porkbun.com` (20) and the `TXT v=spf1 include:_spf.porkbun.com ~all` record in Cloudflare's DNS. Also a `TXT` record for Google Search Console.
+- **Cloudflare** (account dev@jsal.io, free plan):
+  - A Worker `jsal-io`, connected to the GitHub repo `superjsal/jsal.io` (the Cloudflare app has access to that repo only). Build command empty, deploy `npx wrangler deploy`, preview builds on with `npx wrangler preview`. Custom domain `jsal.io` for production.
+  - DNS: `AAAA www 100::`, proxied, plus the Redirect Rule "www to jsal.io" (`https://www.*` → `https://${1}`, 301, query string kept).
+  - Settings changed from the defaults: Email Address Obfuscation off (it rewrote the email links), Always Use HTTPS on, Web Analytics for jsal.io disabled (it added its own script to every page), Bot Preference Sync off (it prepends to `robots.txt`). After any Cloudflare change, check a page still matches its file exactly.
+- **GitHub Pages** (the old host, a fallback until it's retired): source "GitHub Actions" (`.github\workflows\deploy-pages.yml`), custom domain `jsal.io` (`site\CNAME`).
 - **Supabase:** project for Platform Playbook.
   1. Run `site\ic\supabase\schema.sql` in the SQL Editor (safe to re-run).
   2. Set the new project's URL and anon key at the top of `site\ic\app.js`.

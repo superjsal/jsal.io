@@ -3,6 +3,9 @@
 {
   "name": "jsal-io",
   "compatibility_date": "2026-11-01",
+  // The workers.dev address (kept out of search by site/_headers) and the branch previews, such as staging
+  "workers_dev": true,
+  "preview_urls": true,
   "assets": {
     "directory": "./site",
     // Unknown addresses get site/404.html with a real 404 status

@@ -1,7 +1,7 @@
 # Publishes the CMS Picker from Supabase every night: Playbook answers (with admin edits) plus the
 # admin-only picker table, written to cms-picker/data.json, the plain-HTML copy in the page and one
 # page per platform (cms-picker/<platform>/index.html, listed in sitemap.xml).
-# Commits only when something changed, then asks GitHub Pages to rebuild and, once it's live, tells
+# Commits only when something changed; Cloudflare deploys the push on its own, and once it's live this tells
 # IndexNow (Bing and others) which pages changed.
 #
 # Needs one repository secret: Settings → Secrets and variables → Actions → New repository secret,
@@ -15,7 +15,8 @@ on:
 
 permissions:
   contents: write             # commit the published files
-  actions: write              # start the Pages deploy for that commit and watch it
+  actions: write              # start the GitHub Pages deploy, kept as a fallback for now
+  checks: read                # watch Cloudflare's build of that commit
 
 concurrency:
   group: publish-cms-picker
@@ -43,13 +44,16 @@ jobs:
           git commit -m "CMS Picker: nightly publish from Playbook"
           git push
           echo "pushed=true" >> "$GITHUB_OUTPUT"
-      # A push made with the workflow's own token starts no other workflow, so the Pages deploy is started here
-      - name: Deploy Pages
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      # The GitHub Pages copy stays current while it's the fallback. A push made with the workflow's own token
+      # starts no other workflow, so its deploy is started here.
+      - name: Deploy Pages (fallback)
         if: steps.commit.outputs.pushed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run deploy-pages.yml --ref main
-      # Tell Bing and the other IndexNow engines which pages changed, once the new build is live (up to ~5 minutes)
+      # Tell Bing and the other IndexNow engines which pages changed, once Cloudflare's build of the commit is
+      # live (up to ~5 minutes; Cloudflare reports it as a check on the commit)
       - name: Announce changed pages (IndexNow)
         if: steps.commit.outputs.pushed == 'true'
         continue-on-error: true
@@ -58,7 +62,7 @@ jobs:
         run: |
           sleep 20
           for i in $(seq 1 40); do
-            s=$(gh run list --workflow=deploy-pages.yml --limit 1 --json status,conclusion --jq '.[0] | "\(.status) \(.conclusion)"' 2>/dev/null)
+            s=$(gh api "repos/${{ github.repository }}/commits/${{ steps.commit.outputs.sha }}/check-runs" --jq '[.check_runs[] | select(.app.slug | test("cloudflare"))][0] | "\(.status) \(.conclusion)"' 2>/dev/null)
             [ "$s" = "completed success" ] && break
             sleep 10
           done

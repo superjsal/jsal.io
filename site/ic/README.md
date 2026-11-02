@@ -6,7 +6,7 @@ Team reference for the Implement Check Form: what each CMS lets us change (Conte
 
 ## How it works
 
-- `index.html` (markup), `styles.css` and `app.js` are the whole app: plain HTML, CSS and JavaScript, no build step. GitHub Pages serves it.
+- `index.html` (markup), `styles.css` and `app.js` are the whole app: plain HTML, CSS and JavaScript, no build step. Cloudflare serves it with the rest of the site.
 - Sign-in is **Discord** through **Supabase Auth**. Anyone with a Discord account can sign in, but only people an admin approves on the **Team** page can see anything.
 - The content is **not in this repo**: the Supabase database is its source of truth, and it loads only for approved members. The tables, access rules and admin functions are all in [`supabase/schema.sql`](supabase/schema.sql):
   - **Members** read everything, and post requests, upvotes and comments.

@@ -1,4 +1,4 @@
-# After a push to main by hand, tells Bing and the other IndexNow engines which pages changed, once the new Pages
+# After a push to main by hand, tells Bing and the other IndexNow engines which pages changed, once Cloudflare's
 # build is live, so nobody has to remember to run indexnow.py. A page counts when its index.html changed (the home
 # page's, or a folder's); only addresses in sitemap.xml are sent (indexnow.py keeps to those). The nightly publish
 # announces its own pages, so its commits are skipped here. Text or metadata changes are what search engines care
@@ -11,7 +11,7 @@ on:
 
 permissions:
   contents: read
-  actions: read               # watch the Pages deploy for this push
+  checks: read                # watch Cloudflare's build of this push
 
 concurrency:
   group: indexnow
@@ -36,13 +36,13 @@ jobs:
           urls=$(git diff --name-only "$before" "${{ github.sha }}" | grep -E '^site/(index\.html|[^/]+/index\.html|cms-picker/[^/]+/index\.html)$' | sed -E 's#^site/index\.html$#https://jsal.io/#; s#^site/(.*)/index\.html$#https://jsal.io/\1/#' | sort -u | tr '\n' ' ')
           echo "urls=$urls" >> "$GITHUB_OUTPUT"
           echo "Changed pages: ${urls:-none}"
-      - name: Wait for the Pages build to be live (up to ~5 minutes)
+      - name: Wait for Cloudflare's build to be live (up to ~5 minutes; it reports as a check on the commit)
         if: steps.pages.outputs.urls != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           for i in $(seq 1 40); do
-            s=$(gh run list --workflow=deploy-pages.yml --commit "${{ github.sha }}" --json status,conclusion --jq '.[0] | "\(.status) \(.conclusion)"' 2>/dev/null)
+            s=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/check-runs" --jq '[.check_runs[] | select(.app.slug | test("cloudflare"))][0] | "\(.status) \(.conclusion)"' 2>/dev/null)
             [ "$s" = "completed success" ] && break
             sleep 10
           done

@@ -1,7 +1,7 @@
 # jsal.io design rules
 
 How every page looks and behaves, in one place: the only copy of these rules (the project's `CLAUDE.md`
-imports this file). `.github/` isn't served by GitHub Pages, so this is for people working on the site, not
+imports this file). `.github/` isn't served, so this is for people working on the site, not
 visitors; `/design-system/` shows the same rules visually. Most are checked before each push by `check.py` and
 `browser-check.mjs` (both in `.github/build/`); where a check exists it's named.
 

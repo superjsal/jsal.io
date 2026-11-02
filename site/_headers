@@ -1,0 +1,3 @@
+# Response headers for the host. The workers.dev address serves the same files as jsal.io, so it stays out of search.
+https://jsal-io.still-cell-826b.workers.dev/*
+  X-Robots-Tag: noindex
