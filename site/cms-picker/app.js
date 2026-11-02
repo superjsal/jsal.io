@@ -602,10 +602,11 @@
     const steps = (o = a) => QUESTIONS.filter((q) => !q.when || q.when(o));   // the questions these answers call for
     const valid = (o) => steps(o).every((q) => isAnswer(q, o, data));
 
-    // A question's tick (q.also): a checkbox that goes with whichever choice is picked, kept under its own id
-    function alsoBox(q, onChange) {
+    // A question's tick (q.also): a checkbox that goes with whichever choice is picked, kept under its own id. Above
+    // answer tiles it's a plain line (qz-plain), so it never reads as one more answer; in a checklist it's one of its rows
+    function alsoBox(q, onChange, inList) {
       if (!q.also) return null;
-      const lab = el('label', 'qz-tick'), input = el('input');
+      const lab = el('label', inList ? 'qz-tick' : 'qz-tick qz-plain'), input = el('input');
       input.type = 'checkbox';
       input.checked = a[q.also.id] === 'yes';
       input.addEventListener('change', () => { a[q.also.id] = input.checked ? 'yes' : 'no'; onChange(); });
@@ -686,7 +687,7 @@
           list.append(lab);
           return input;
         });
-        const also = alsoBox(q, () => {});
+        const also = alsoBox(q, () => {}, true);
         if (also) list.append(also);
         box.append(top, h, el('p', 'qz-hint', q.hint), list);
         const nav = el('div', 'qz-nav'), back = el('button', 'jsal-btn', 'Back'), next = el('button', 'jsal-btn primary', 'Next');
@@ -777,7 +778,8 @@
       if (ticks.childElementCount) bar.append(ticks);
       const q = steps().find((x) => x.id === editing);
       if (q) {
-        const ed = el('div', 'qz-ans-ed');
+        // A long list (the platforms under "Moving from somewhere?") takes two columns on a phone
+        const ed = el('div', options(q, a, data).length > 8 ? 'qz-ans-ed many' : 'qz-ans-ed');
         ed.setAttribute('role', 'group');
         ed.setAttribute('aria-label', q.q);
         ed.append(el('p', null, q.q));

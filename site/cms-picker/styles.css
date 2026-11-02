@@ -388,7 +388,7 @@ body {
 .qz h3 { color: var(--jsal-ink); font-size: 20px; outline: none; }
 .qz-hint { margin: 4px 0 14px; color: var(--jsal-muted); font-size: 14px; }
 .qz-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
-/* A question's tick ("In two or more languages"): a checkbox row above the choices, selected like one of them */
+/* A checkbox row, selected like a choice: a row of a checklist (.qz-checks), or plain (.qz-plain, below) */
 .qz-tick { display: flex; align-items: center; gap: 12px; width: max-content; max-width: 100%; margin: 0 0 12px; padding: 8px 14px 8px 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick); }
 .qz-tick:hover { border-color: var(--jsal-hover-line); }
 .qz-tick:has(:checked) { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
@@ -405,6 +405,13 @@ body {
 /* A question that takes several answers: its choices as a list of these ticks, in two columns where they fit */
 .qz-checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 8px; }
 .qz-checks .qz-tick { width: auto; margin: 0; }
+/* A tick that goes with whichever choice is picked ("We already pay for HubSpot"): a plain line above the answer
+   tiles, with no box, so it never reads as one more answer; ticked, only the checkbox fills */
+.qz-plain, .qz-plain:hover, .qz-plain:has(:checked) { align-items: flex-start; margin: 0 0 14px; padding: 2px 0; border: 0; background: none; color: var(--jsal-ink); box-shadow: none; }
+.qz-plain input { margin-top: 2px; }
+.qz-plain:has(:focus-visible) { border-radius: var(--jsal-radius-sm); box-shadow: var(--jsal-focus-ring); }
+.qz-ans-ed .qz-plain { align-items: center; margin: 0; padding: 6px 0; }
+.qz-ans-ed .qz-plain input { margin-top: 0; }
 .qz-opt { position: relative; display: grid; gap: 2px; padding: 12px 34px 12px 14px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: inherit; text-align: left; cursor: pointer; }
 .qz-opt b { font-size: 15px; font-weight: 600; }
 .qz-opt small { color: var(--jsal-muted); font-size: 13px; }
@@ -458,8 +465,14 @@ body {
 .qz-ans-fold > summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .qz-ans-fold .qz-ans { margin: 0; padding: 0 12px 12px; }
 .qz-ans-fold .qz-ans-l { display: none; }
-.qz-ans-ed { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; padding: 12px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
-.qz-ans-ed p { flex-basis: 100%; margin-bottom: 2px; color: var(--jsal-ink); font-size: 15px; font-weight: 600; }
+/* Changing an answer: its choices as equal rows (one column on a phone, an even row of boxes on desktop), so none
+   is sized by its words; a long list (.many, "Moving from somewhere?") takes two columns on a phone */
+.qz-ans-ed { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 6px; margin-top: 10px; padding: 12px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
+.qz-ans-ed.many { grid-template-columns: repeat(auto-fill, minmax(min(100%, 100px), 1fr)); }
+@media (min-width: 721px) { .qz-ans-ed.many { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } }
+.qz-ans-ed p, .qz-ans-ed .qz-ans-tick { grid-column: 1 / -1; }
+.qz-ans-ed p { margin-bottom: 2px; color: var(--jsal-ink); font-size: 15px; font-weight: 600; }
+.qz-ans-ed .chip { display: flex; align-items: center; width: 100%; padding: 8px 12px; text-align: left; }
 .qz-res { display: grid; gap: 12px; }
 .qz-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; padding: 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); color: var(--jsal-ink-2); }
 .qz-card.top { border-color: var(--jsal-line-hi); }   /* the green badge says which wins; gold stays for interaction */

@@ -113,12 +113,17 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   weight. Uneven pills stagger; equal tiles don't. **The one filled pill** is the home page's gold "Find your CMS":
   the page's main action, filled rather than bordered, so it never reads as a choice. It stays a pill to sit with the
   bento's round tiles; nothing else on the site uses that shape for an action.
-- **A tick that goes with a choice** (the quiz's "We already use HubSpot") is a checkbox in a bordered row above
-  the choices, selected with the same `--jsal-selected-*` tokens and gold edge as a pressed chip, the box itself in
-  `accent-color: var(--jsal-accent)`; one focus ring on the row.
-- **A question that takes several answers** ("Anything you'll need from day one?") is a list of those same checkbox
-  rows (two columns where they fit, one on phones) with Back and a gold Next, never answer tiles, which move on at one
-  tap; nothing ticked is an answer too, and the hint says so.
+- **A tick that goes with a choice** (the quiz's "We already pay for HubSpot") is a plain checkbox line above the
+  choices, with no box, so it never reads as one more answer: ticked, only the checkbox fills, in
+  `accent-color: var(--jsal-accent)`; one focus ring on the line. It sits above, not below, because a tap on an answer
+  moves straight on.
+- **A question that takes several answers** ("Anything you'll need from day one?") is a list of bordered checkbox
+  rows (two columns where they fit, one on phones), each selected with the same `--jsal-selected-*` tokens and gold
+  edge as a pressed chip, with Back and a gold Next; never answer tiles, which move on at one tap. Nothing ticked is
+  an answer too, and the hint says so.
+- **Changing an answer on the results** opens its choices as equal rows, never boxes sized by their words: one column
+  on a phone and an even row of boxes on desktop, left-aligned, the picked one in the selected gold. A long list (the
+  platforms under "Moving from somewhere?") takes two columns on a phone.
 
 ## Layout
 
