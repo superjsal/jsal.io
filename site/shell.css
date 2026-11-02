@@ -82,11 +82,12 @@ body { background: var(--jsal-bg); }
   /* Hover is neutral everywhere: a firmer border or a slight tint. Gold means selected, focused, a file being
      dragged over, or the main action (the checks fail a gold hover). */
   --jsal-hover-line: var(--jsal-muted);
-  /* One focus ring for every control, text fields included */
+  /* One focus ring for every control: a gold line with a gap. Text fields keep their own border, so focus is never
+     two gold lines */
   --jsal-focus-ring: 0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent);
   /* The tool icons' tiles (the logo menu), the same in light and dark as the logo's tile is: each tool's accent from
      its home page tile, parchment strokes and the gold gem; the ink tile keeps a thin edge so it holds on a dark page */
-  --jsal-tool-cms: #674690; --jsal-tool-paste: #5e430b; --jsal-tool-resize: #2a6a61; --jsal-tool-playbook: #3b5a9a;
+  --jsal-tool-cms: #674690; --jsal-tool-paste: #5e430b; --jsal-tool-resize: #2a6a61; --jsal-tool-redirect: #8a3a4f; --jsal-tool-playbook: #3b5a9a;
   --jsal-tool-edge: #3d424e; --jsal-tool-ink: #ece6d6; --jsal-tool-gem: #e3b04b;
   --jsal-tool-home: #111318; --jsal-tool-play: #3f6b3a;   /* the logo's slate; Off the clock's green, as /play/ uses it */
 }

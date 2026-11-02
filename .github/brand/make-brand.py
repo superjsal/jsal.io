@@ -145,6 +145,11 @@ TOOLS = {   # file name: (tile colour, glyph drawn in ink with the gem's colour)
     # A photo: its frame and hills, the gem the sun in its corner, on the Image Resizer's teal
     'image-resizer': ('#2a6a61', lambda ink, g: stroke('M8.65 10.4h14.7v11.9h-14.7zM8.65 19.5l4.55-4.55 3.5 3.5 2.1-2.1 4.55 4.55', ink)
                       + gem('M20.2 11.73l1.61 1.61-1.61 1.61-1.61-1.61z', g)),
+    # A browser window, a hooked arrow inside taking the visitor on to the gem, their new page, on Redirect Import's berry
+    'redirect-import': ('#8a3a4f', lambda ink, g: stroke(
+        'M9.35 8.65H22.65a2.45 2.45 0 0 1 2.45 2.45V20.9a2.45 2.45 0 0 1-2.45 2.45H9.35a2.45 2.45 0 0 1-2.45-2.45V11.1'
+        'a2.45 2.45 0 0 1 2.45-2.45zM10.75 20.55V18.94C10.75 16.28 12.15 14.95 14.6 14.95H15.3', ink)
+        + solid('M19.36 14.95L15.16 11.87V18.03z', ink) + gem('M21.67 13.27l1.68 1.68-1.68 1.68-1.68-1.68z', g)),
     # An open book, the gem its bookmark
     'platform-playbook': ('#3b5a9a', lambda ink, g: stroke(
         'M16 12.15C13.9 10.75 11.1 10.4 8.65 11.1v10.5c2.45-.7 5.25-.35 7.35 1.05 2.1-1.4 4.9-1.75 7.35-1.05V11.1'
@@ -169,7 +174,7 @@ for name, svg in files.items():
 # Site, which keeps the dark tile's edge everywhere so it holds on the dark Updates box
 icons = ROOT / 'site' / 'img' / 'icons'
 icons.mkdir(parents=True, exist_ok=True)
-for name in ('cms-picker', 'clean-paste', 'image-resizer', 'platform-playbook', 'off-the-clock'):
+for name in ('cms-picker', 'clean-paste', 'image-resizer', 'redirect-import', 'platform-playbook', 'off-the-clock'):
     (icons / f'{name}.svg').write_text(files[f'tools/{name}.svg'] + '\n', encoding='utf-8', newline='\n')
 (icons / 'jsal-io.svg').write_text(f'<svg {XMLNS} viewBox="0 0 32 32">{tile(edge=True)}{glyph(PARCH, GOLD)}</svg>\n', encoding='utf-8', newline='\n')
 print('\n'.join(files))

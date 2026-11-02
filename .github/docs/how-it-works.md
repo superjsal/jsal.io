@@ -73,7 +73,7 @@ flowchart TB
     shell["shell.css (one link on every page)<br>tokens, top bar, transitions, pop-ups"]
     nav["nav.js<br>app menu, theme, achievements (localStorage),<br>prerender on hover, click replay, consent card"]
     ga["GA4 via gtag.js<br>only where Consent Mode allows<br>(EU/EEA/UK/CH: off until Allow)"]
-    tools["Clean Paste · Image Resizer<br>everything runs in the browser; nothing uploaded"]
+    tools["Clean Paste · Image Resizer · Redirect Import<br>everything runs in the browser; nothing uploaded"]
   end
   pages --> shell & nav & tools
   nav -->|"jsalTrack / data-track"| ga

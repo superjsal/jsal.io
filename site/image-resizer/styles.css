@@ -91,7 +91,7 @@ body {
   background: var(--jsal-surface);
   transition: border-color var(--jsal-quick), box-shadow var(--jsal-quick);
 }
-.input-group:focus-within { border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
+.input-group:focus-within { box-shadow: var(--jsal-focus-ring); }
 .input-group.error {
   border-color: var(--jsal-bad);
   box-shadow: 0 0 0 2px var(--jsal-bad-soft);
@@ -541,7 +541,7 @@ body {
   transition: border-color var(--jsal-quick), background var(--jsal-quick), color var(--jsal-quick);
 }
 .filename-edit:hover { border-color: var(--jsal-line); background: var(--jsal-sunk); }
-.filename-edit:focus { border-color: var(--jsal-accent); background: var(--jsal-sunk); color: var(--jsal-ink); box-shadow: var(--jsal-focus-ring); }
+.filename-edit:focus { background: var(--jsal-sunk); color: var(--jsal-ink); box-shadow: var(--jsal-focus-ring); }
 
 .src-dims {
   display: flex;

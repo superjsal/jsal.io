@@ -116,6 +116,8 @@
       icon: '<path class="l" d="M12.85 9.7H10.4v13.3h11.2V9.7h-2.45M13.2 15.3h5.6M13.2 19.15h3.5" stroke-width="2.2"/><path class="g" d="M16 7.25l2.1 2.1-2.1 2.1-2.1-2.1z"/>' },
     { href: '/image-resizer/', name: 'Image Resizer', tile: 'var(--jsal-tool-resize)',
       icon: '<path class="l" d="M8.65 10.4h14.7v11.9h-14.7zM8.65 19.5l4.55-4.55 3.5 3.5 2.1-2.1 4.55 4.55" stroke-width="2.2"/><path class="g" d="M20.2 11.73l1.61 1.61-1.61 1.61-1.61-1.61z"/>' },
+    { href: '/redirects/', name: 'Redirect Import', tile: 'var(--jsal-tool-redirect)',
+      icon: '<path class="l" d="M9.35 8.65H22.65a2.45 2.45 0 0 1 2.45 2.45V20.9a2.45 2.45 0 0 1-2.45 2.45H9.35a2.45 2.45 0 0 1-2.45-2.45V11.1a2.45 2.45 0 0 1 2.45-2.45zM10.75 20.55V18.94C10.75 16.28 12.15 14.95 14.6 14.95H15.3" stroke-width="2.2"/><path class="f" d="M19.36 14.95L15.16 11.87V18.03z"/><path class="g" d="M21.67 13.27l1.68 1.68-1.68 1.68-1.68-1.68z"/>' },
     { href: '/ic/', name: 'Platform Playbook', tag: 'Team', tile: 'var(--jsal-tool-playbook)',
       icon: '<path class="l" d="M16 12.15C13.9 10.75 11.1 10.4 8.65 11.1v10.5c2.45-0.7 5.25-0.35 7.35 1.05 2.1-1.4 4.9-1.75 7.35-1.05V11.1C20.9 10.4 18.1 10.75 16 12.15zM16 12.15v10.5" stroke-width="2.2"/><path class="g" d="M16 6.48l1.82 1.82-1.82 1.82-1.82-1.82z"/>' },
   ];
@@ -181,7 +183,7 @@
     { id: 'persistent', name: 'Persistent', done: 'Clicked the logo 10 times', todo: 'Secret', secret: true, icon: '<path d="M6 3l13 7-5.5 1.5L11 17z"/><path d="M14 14l5 5"/>' },
     { id: 'secret', name: 'Up, up, down, down', done: 'Found the secret', todo: 'Secret', secret: true, icon: '<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4M15.5 12h.01M18 14h.01"/>' },
   ];
-  const TOOLS = ['/image-resizer/', '/formatter/', '/cms-picker/'];   // "Explorer": the public tools
+  const TOOLS = ['/image-resizer/', '/formatter/', '/redirects/', '/cms-picker/'];   // "Explorer": the public tools
   const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } };
   const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
   const team = location.pathname.startsWith('/ic/');

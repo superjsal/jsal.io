@@ -18,7 +18,7 @@
 <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->
-<link rel="stylesheet" href="/shell.css?v=35608266">
+<link rel="stylesheet" href="/shell.css?v=df5ef931">
 <style>
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -208,8 +208,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .sc { color: var(--jsal-muted); font-size: 13px; font-weight: 600; }
 .field { display: grid; gap: 6px; font-size: 13px; color: var(--jsal-muted); max-width: 320px; }
 .field input { height: 40px; padding: 0 12px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: 15px var(--jsal-font); }
-.field input:focus-visible { outline: none; border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
-.field .focused { border-color: var(--jsal-accent); box-shadow: var(--jsal-focus-ring); }
+.field input:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.field .focused { box-shadow: var(--jsal-focus-ring); }
 .chk { display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 8px 10px; border-radius: var(--jsal-radius); border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink-2); font: inherit; line-height: 1.45; text-align: left; cursor: pointer; }
 .chk:hover { border-color: var(--jsal-hover-line); background: var(--jsal-sunk); }
 .chk .ico { flex: none; margin-top: 1px; width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
@@ -623,7 +623,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <div class="ref-h"><h3>Field</h3><code>input</code><code>--jsal-focus-ring</code></div>
         <div class="ref-row"><span>States</span><div style="align-items:end"><label class="field">Width<input id="demo-w" type="text" value="1200" inputmode="numeric"></label><label class="field">Height, focused<input id="demo-h" class="focused" type="text" value="628" inputmode="numeric"></label></div></div>
         <dl class="ref-rules">
-          <div><dt>Use it for</dt><dd>Typing a value. Its label sits above it; focused is the gold edge and the one focus ring. 16px text on touch screens, so iPhones don't zoom.</dd></div>
+          <div><dt>Use it for</dt><dd>Typing a value. Its label sits above it; focused is the one focus ring; its own border stays. 16px text on touch screens, so iPhones don't zoom.</dd></div>
           <div class="no"><dt>Not for</dt><dd>Picking from a few known values: those are buttons, a switch or tiles. A value that can't be used turns the field's edge red, and the tool says why until it's fixed.</dd></div>
         </dl>
       </article>
@@ -737,7 +737,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </tbody>
     </table></div>
     <h3>Focus</h3>
-    <p>One ring for every control, text fields included: <code>0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent)</code>. The gap of background colour keeps the ring legible on gold buttons and on tinted chips alike.</p>
+    <p>One gold line for every control, text fields included: <code>0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent)</code>. The gap of background colour keeps it legible on gold buttons and on tinted chips alike. A focused field keeps its own border, so there's never a second gold line; where an outside line would be cut off, as in a table's cells, the same line sits just inside.</p>
     <div class="focus-demo"><button type="button" class="jsal-btn primary ring">Find my fit</button><button type="button" class="chip ring" aria-pressed="false">Webflow</button></div>
     <h3>Feedback</h3>
     <p>Success is said on the button that did it, and an error stays next to what failed: see <a href="#c-feedback">Feedback</a> in the component library.</p>
@@ -780,6 +780,6 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <span>Decisions about suggested changes are marked in blue.</span>
   </footer>
 </div>
-<script src="/nav.js?v=532276a8" defer></script>
+<script src="/nav.js?v=4ae8b3c7" defer></script>
 </body>
 </html>

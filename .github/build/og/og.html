@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- Link-preview image template (1200 × 628). Rendered to PNG by make-og.ps1:
-     og.html?p=home | image-resizer | formatter | cms-picker | play  → site/og/<p>.png
+     og.html?p=home | image-resizer | formatter | redirects | cms-picker | play  → site/og/<p>.png
      icon.html → site/apple-touch-icon.png -->
 <html lang="en">
 <head>
@@ -83,6 +83,21 @@ const paste = `<div class="card" style="background:none;border:3px solid #e3b04b
     <i class="bar" style="width:90%"></i><i class="bar" style="width:64%"></i>
   </div>
 </div></div>`;
+// Redirect Import: the sheet's rows with their states, beside the file it writes
+const redirects = `<div class="card" style="background:none;border:3px solid #e3b04b"><div class="mock paste" style="grid-template-columns:1fr 1fr">
+  <div class="col">
+    <div class="box check" style="--c:#7fbf7a"><b></b><i class="bar" style="flex:1"></i></div>
+    <div class="box check" style="--c:#8fb1ff"><b></b><i class="bar" style="flex:1"></i></div>
+    <div class="box check" style="--c:#ff8c96"><b></b><i class="bar" style="flex:1;box-shadow:inset 0 0 0 1.5px #ff8c96"></i></div>
+    <div class="box check" style="--c:#7fbf7a"><b></b><i class="bar" style="flex:1"></i></div>
+    <div class="box check" style="--c:#8fb1ff"><b></b><i class="bar" style="flex:1"></i></div>
+  </div>
+  <div class="box doc">
+    <i class="bar" style="width:80%;background:#e3b04b"></i>
+    <i class="bar" style="width:92%"></i><i class="bar" style="width:70%"></i><i class="bar" style="width:86%"></i>
+    <i class="bar" style="width:62%"></i><i class="bar" style="width:78%"></i><i class="bar" style="width:54%"></i>
+  </div>
+</div></div>`;
 // The CMS Picker's live answers for WordPress and Shopify (cms-picker/data.json), with the page's own short row
 // labels (PEEK_ROWS in app.js); recheck them when you remake the image
 const table = `<div class="tbl">
@@ -97,6 +112,7 @@ const pages = {
   home: { label: 'Technical SEO · Web tools', title: 'John<br><em>Salvador</em>', sub: 'CMS Picker and free browser tools for website content.', visual: table },
   'image-resizer': { label: 'Free · Runs in your browser', title: 'Image<br>Resizer', sub: 'Resize one image or a whole batch: JPG, PNG, WebP and HEIC.', visual: resizer },
   formatter: { label: 'Free · Runs in your browser', title: 'Clean<br>Paste', sub: 'Word and Google Docs to clean HTML, with SEO checks.', visual: paste },
+  redirects: { label: 'Free · Runs in your browser', title: 'Redirect<br>Import', sub: 'A sheet of old and new addresses, checked and ready to import.', visual: redirects },
   'cms-picker': { label: 'Free · 14 platforms compared', title: 'CMS<br>Picker', sub: 'Which CMS fits your business, and what each one can do.', visual: table },
   // Blizzard's WoW Forever art: scaled down whole (never cropped or altered), framed with CSS, credited
   play: { label: 'Off the clock', title: 'Mostly<br><em>Warcraft</em>', sub: 'My game UI, ways to say hi, and hidden achievements.',

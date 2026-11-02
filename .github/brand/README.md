@@ -125,6 +125,7 @@ tile. Each picture was drawn to fill a 32 grid and sits on the tile at 70%, so e
 | CMS Picker (`cms-picker`) | plum #674690 | A podium with three places; the platform that fits stands on the top step, wearing the gem like the mark's j |
 | Clean Paste (`clean-paste`) | deep gold #5e430b (darker than the home tile's gold, so the gold gem keeps its contrast) | A clipboard holding clean lines, the gem its clip |
 | Image Resizer (`image-resizer`) | teal #2a6a61, from the home page tile's teal | A photo, its frame and hills, with the gem as the sun in its corner |
+| Redirect Import (`redirect-import`) | berry #8a3a4f | A browser window, a hooked arrow inside taking the visitor on to the gem, their new page |
 | Platform Playbook (`platform-playbook`) | blue #3b5a9a | An open book, the gem its bookmark |
 | Off the clock (`off-the-clock`) | green #3f6b3a, as `/play/` uses it | A loot bag holding the gem, a nod to the Backpack. Not a tool, so it's not in the kit's tool row |
 
