@@ -92,7 +92,7 @@
     const fetchIt = () => (window.requestIdleCallback || setTimeout)(() => {
       const s = document.createElement('script');
       s.async = true;
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-ND4L6CSD8S';
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-Z0BSTC9TT9';
       document.head.append(s);
     }, { timeout: 2000 });
     if (document.readyState === 'complete') fetchIt(); else addEventListener('load', fetchIt, { once: true });
