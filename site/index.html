@@ -150,7 +150,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .cms { --bg: var(--t-cms); --ink: var(--t-cms-ink); }
 .cms .txt { max-width: 290px; }
 .cms .wm { width: 420px; height: 420px; left: calc(100% - 816px); top: 80px; rotate: -10deg; }   /* a podium tilted like the keys, whole, under the words and left of the keys */
-.pcs { left: calc(100% - 481px); top: 116px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
+.pcs { left: calc(100% - 482px); top: 116px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
 .pcs > span { display: flex; gap: 12px; }
 .pcs > span:nth-child(even) { margin-left: 56px; }
 .pc { --edge: color-mix(in srgb, var(--b) 66%, black); display: grid; place-items: center; width: 100px; height: 66px; border-radius: var(--jsal-radius-xl); background: linear-gradient(180deg, color-mix(in srgb, var(--b) 80%, white), var(--b) 60%); color: var(--c); box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); }
@@ -160,7 +160,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .pc-light { --edge: color-mix(in srgb, var(--b) 80%, black); background: linear-gradient(180deg, var(--b), color-mix(in srgb, var(--b) 94%, black) 60%); }
 /* the need being played, in a pill under the tile's line */
 .fit-for { position: absolute; left: 26px; top: 106px; z-index: 4; display: grid; pointer-events: none; }
-.fit-for span { grid-area: 1 / 1; justify-self: start; padding: 5px 11px; border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); font-size: 12px; white-space: nowrap; opacity: 0; }
+.fit-for span { grid-area: 1 / 1; justify-self: start; padding: 6px 12px; border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); font-size: 12px; white-space: nowrap; opacity: 0; }
 .p-wordpress { --b: #ffffff; --c: #21759b; }
 .p-shopify { --b: #5e8e3e; --c: #ffffff; }
 .p-substack { --b: #ff6719; --c: #ffffff; }
@@ -225,7 +225,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .views::after { content: ""; position: absolute; top: -36px; bottom: -4px; left: 54%; width: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); }
 .tx { display: flex; flex-direction: column; background: var(--jsal-surface); color: var(--jsal-ink-2); font-size: 12px; line-height: 1.6; clip-path: inset(0 46% 0 0); }
 .tx b { color: var(--jsal-ink); font: 700 14px/1.37 "Lora", Georgia, serif; }   /* one line of the code's height */
-.tx .li::before { content: "\2022"; margin-right: 7px; color: var(--jsal-muted); }
+.tx .li::before { content: "\2022"; margin-right: 8px; color: var(--jsal-muted); }
 .sheet code { color: var(--jsal-muted); font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
 .sheet code i { font-style: normal; color: var(--jsal-info); }
 .sheet .ln { display: block; }
@@ -329,7 +329,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @media (min-width: 600px) and (max-width: 860px) {
   .cms { min-height: 300px; }
   .cms .txt { max-width: 250px; }
-  .pcs { left: auto; right: 357px; top: 46px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
+  .pcs { left: auto; right: 358px; top: 46px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
   .cms .wm { width: 240px; height: 240px; left: -20px; top: 112px; rotate: none; }   /* upright and whole, under the words */
   .fit-for { top: 130px; }   /* under the line's two lines */
 }
