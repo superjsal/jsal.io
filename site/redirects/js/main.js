@@ -1,5 +1,5 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=ae13d661";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=430ce5a7";
 import { FORMATS, byId } from "./formats.js?v=5a99f0ac";
 
 const $ = (id) => document.getElementById(id);
@@ -343,9 +343,8 @@ function overview(live) {
   if (d["n:preview"]) said.push(`the preview domain from ${plural(d["n:preview"], "new address", "new addresses")}`);
   if (d["o:tracking"]) said.push(`tracking tags from ${d["o:tracking"]}`);
   if (d["o:hash"]) said.push(`the # part from ${d["o:hash"]}`);
-  const slash = (d["o:slash"] || 0) + (d["n:slash"] || 0);
   const list = (a) => a.length > 1 ? a.slice(0, -1).join(", ") + " and " + a[a.length - 1] : a[0];
-  const done = [said.length && `removed ${list(said)}`, slash && `added the / at the start of ${plural(slash, "address", "addresses")}`].filter(Boolean);
+  const done = [said.length && `removed ${list(said)}`].filter(Boolean);
 
   // Repeats are counted by colour, so a line's number always matches the rows of its colour: problems on rows that
   // need you (red), and warnings on rows to check (terracotta)

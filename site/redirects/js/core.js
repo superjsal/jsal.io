@@ -5,7 +5,8 @@
 
 const INVISIBLE = /[​-‍⁠﻿­]/g;
 const TRACKING = /^(utm_[a-z]+|gclid|gbraid|wbraid|fbclid|msclkid|mc_cid|mc_eid|_hsenc|_hsmi|_ga|_gl)$/i;
-const JUNK = /^(n\/?a|none|null|tbd|tbc|todo|delete|remove|same|-+|\?+|x)$/i;
+// Words people write in a redirect sheet instead of an address, meaning "don't redirect this one"
+const JUNK = /^(n\/?a|na|none|null|tbd|tbc|todo|delete|remove|drop|kill|retire|same|disregard|ignore|skip|keep|leave|gone|404|410|no|x|dnr|not needed|no change|keep as is|no redirect|do not redirect|don[’']?t redirect|-+|\?+)[.!]*$/i;
 const HOSTLIKE = /^(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,24}(?::\d+)?(?:[/?#]|$)/i;
 const FILE_NAME = /^[^/]*\.(html?|php|aspx?|jsp|cfm|pdf|jpe?g|png|gif|webp|svg|xml|txt)(?:[?#]|$)/i;   // page.html is a path, not a domain
 
@@ -41,7 +42,7 @@ function marked(s, re) {
 export function readAddress(raw) {
   const v = tidy(raw);
   if (!v) return { kind: "empty" };
-  if (JUNK.test(v)) return { kind: "junk" };
+  if (JUNK.test(v)) return { kind: "junk", word: v };
   let host = "", rest = v, added = false;
   const full = v.match(/^(?:https?:)?\/\/([^/?#]*)(.*)$/i);
   if (full) [, host, rest] = full;
@@ -152,12 +153,12 @@ export function analyse(rows, fmt, opts) {
     const out = (cell, text, group) => { notes.splice(0, notes.length, ...notes.filter((x) => x.kind !== "fix")); notes.push({ cell, kind: "out", text, group }); it.state = "out"; };
 
     if (o.kind === "empty" && n.kind === "empty") { it.state = "blank"; return; }
-    if (o.kind === "junk") return out("o", "Not an address: left out");
+    if (o.kind === "junk") return out("o", o.word ? `Marked “${esc(o.word)}”: left out` : "Not an address: left out");
     if (o.kind === "empty") return bad("o", "No old address");
     if (o.kind === "scheme") return bad("o", `A ${esc(o.scheme)}: link, not a page address`, [], "scheme", "A link that isn’t a page address");
     if (o.kind === "badhost") return bad("o", `Not a valid domain: <code>${esc(o.host)}</code>`, [], "host", "Not a valid domain");
     if (n.kind === "empty") return bad("n", "No new address");
-    if (n.kind === "junk") return bad("n", "Not an address");
+    if (n.kind === "junk") return n.word ? out("n", `Marked “${esc(n.word)}”: left out`) : bad("n", "Not an address");
     if (n.kind === "scheme") return bad("n", `A ${esc(n.scheme)}: link, not a page address`, [], "scheme", "A link that isn’t a page address");
     if (n.kind === "badhost") return bad("n", `Not a valid domain: <code>${esc(n.host)}</code>`, [], "host", "Not a valid domain");
 
@@ -175,7 +176,9 @@ export function analyse(rows, fmt, opts) {
     const oc = characters(t.path, "old address", fmt.keepLetters);
     for (const p of oc.problems) bad("o", p.text, p.fixes, p.group, p.title);
     inFile("o", oc.path, [o.host && { key: "domain" }, t.removed && { key: "tracking" }, o.fragment && { key: "hash" },
-      o.added && { key: "slash" }, oc.encodedNote && { text: oc.encodedNote }].filter(Boolean));
+      oc.encodedNote && { text: oc.encodedNote }].filter(Boolean));
+    const noSlash = (cell) => notes.push({ cell, kind: "warn", group: cell + ":noslash", title: "have no / at the start", text: "No / at the start: is this an address?" });
+    if (o.added) noSlash("o");
 
     // New address: a path on this site, or the full URL when it's another site (or the visitor asked for full URLs)
     const nc = characters(n.path, "new address", fmt.keepLetters);
@@ -184,7 +187,7 @@ export function analyse(rows, fmt, opts) {
     const pv = n.host ? previewKind(n.host) : "";
     const newPath = (pv && !external ? previewPath(n.host, nc.path) : nc.path) + n.fragment;
     const to = external ? `https://${n.host}${newPath}` : newPath;
-    inFile("n", to, [n.host && !external && opts.newAddr === "path" && { key: pv ? "preview" : "domain" }, n.added && { key: "slash" },
+    inFile("n", to, [n.host && !external && opts.newAddr === "path" && { key: pv ? "preview" : "domain" },
       nc.encodedNote && { text: nc.encodedNote }].filter(Boolean));
     const host = esc(n.host.replace(/^www\./i, ""));
     if (pv && external) {
@@ -195,6 +198,7 @@ export function analyse(rows, fmt, opts) {
         : `Staging site? <code>${host}</code>` });
     }
     if (PREVIEW_QUERY.test(n.path)) bad("n", "Preview link", [["Remove the preview part", dropPreview, true]], "preview-link", "Preview links");
+    if (n.added) noSlash("n");
     if (it.state === "bad") return;
 
     // With full URLs, old.com/page to new.com/page is a real redirect; as paths it would point to itself
@@ -310,6 +314,13 @@ export function parseDelimited(text) {
   const sample = text.split(/\r?\n/).slice(0, 20).join("\n").replace(/"[^"]*"/g, "");
   const count = (c) => sample.split(c).length - 1;
   const sep = count("\t") ? "\t" : count(";") > count(",") ? ";" : ",";
+  // No tabs, commas or semicolons: columns copied from an email or PDF are separated by spaces instead
+  if (!count("\t") && !count(",") && !count(";")) {
+    const lines = text.split(/\r?\n/).filter((l) => tidy(l));
+    const pairs = lines.every((l) => /^\S+\s+\S+$/.test(tidy(l)) && looksLikeAddress(tidy(l).split(/\s+/)[0]));
+    if (pairs) return lines.map((l) => tidy(l).split(/\s+/));
+    if (lines.some((l) => /\S {2,}\S/.test(l))) return lines.map((l) => tidy(l).split(/ {2,}/));
+  }
   const rows = [];
   let row = [], field = "", quoted = false;
   for (let i = 0; i < text.length; i++) {
