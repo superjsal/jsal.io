@@ -480,10 +480,11 @@
   if (document.prerendering) document.addEventListener('prerenderingchange', replayEarly, { once: true }); else replayEarly();
 
   // The logo on the first page of a visit: it opens as the tab icon's mark, the short j with the deep hook wearing the
-  // gem as its dot (folded by the head script before the first paint). The gem lifts off and arcs over the name to land
-  // as the full stop, with "sal" showing in its wake, while the j's curve shortens into the name's j and its own dot
-  // fills in; then "io" fades in and a light runs across the gem and on over "io". Once per visit; a page loaded ahead
-  // shows the name as it is.
+  // gem as its dot (folded by the head script before the first paint). The j's curve shortens into the name's j as its
+  // stem rises into the gem; the stem's top pinches off as the j's own dot and knocks the gem over the name to land as
+  // the full stop, with "sal" showing in its wake, while the dot overshoots its place and settles. "io" slides out of
+  // the landed gem, then a light runs across the gem and on over "io". Once per visit; a page loaded ahead shows the
+  // name as it is.
   (() => {
     const root = document.documentElement;
     const unfold = () => root.classList.remove('jsal-intro');
@@ -513,36 +514,64 @@
       // from the icon's j (a half-circle hook) to the name's j (taller, its hook turning a third past the quarter), round
       // ends throughout. Its last frame is the name's path exactly, which then shows in its place.
       const n = (v) => Math.round(v * 100) / 100;
+      const quad = (a, c, b, f) => (1 - f) ** 2 * a + 2 * (1 - f) * f * c + f * f * b;
       const foldD = fold.getAttribute('d'), foldW = fold.getAttribute('stroke-width');
-      const shape = (m) => {
+      const dotY = dot.getAttribute('cy'), dotR = dot.getAttribute('r');
+      const shape = (m, top) => {
         const x = 585.5, r = lerp(167.6, 100, m), y = lerp(638, 780, m), th = lerp(Math.PI, (2 * Math.PI) / 3, m);
-        const top = lerp(452, 277.5, m), w = lerp(149, 147, m);
-        const ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th);
+        const w = lerp(149, 147, m), ex = x - r + r * Math.cos(th), ey = y + r * Math.sin(th);
         fold.setAttribute('d', `M${x} ${n(top)}V${n(y)}A${n(r)} ${n(r)} 0 0 1 ${n(ex)} ${n(ey)}`);
         fold.setAttribute('stroke-width', n(w));
       };
+      // The stem's top meets the gem's lowest point at 376.5 (its round end reaching 303). Once it pinches off, the dot
+      // shoots up past its place (57.5) to -62.5, drops a little below it to 87.5, close enough to the stem to stay
+      // clear of it at 150% scaling, and rises back; a neck joins it to the stem for a moment as it pinches
+      const HIT = 520;
+      const shot = (tau) => {
+        if (tau < 280) return lerp(376.5, -62.5, 1 - (1 - tau / 280) ** 2);
+        if (tau < 460) return lerp(-62.5, 87.5, ease((tau - 280) / 180));
+        return lerp(87.5, 57.5, out(clamp((tau - 460) / 200)));
+      };
+      const neck = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      neck.style.display = 'none';
+      fold.after(neck);
+      // "io" slides out from behind the gem's right point, measured from where it sits
+      const ioLeft = io.getBoundingClientRect().left;
       logo.classList.add('jsal-unfolding');
-      // t in ms: 300 still, the gem lifts (300-500), arcs over the name (480-1100) and lands with a small swell
-      // (1100-1260); the j reshapes (560-1040) and its dot fills in over the second half of that; the arrow slides
-      // out (480-1000) and "io" fades in behind it (1000-1320)
+      // t in ms: 300 still; the j's curve reshapes (300-900) while its stem rises, speeding up (360-520), until its top
+      // touches the gem. The top pinches off as the dot (520), which flies up and back down into place (by 1180) and
+      // throws the gem over the name on a spinning arc (520-1120) to land with a small swell (1120-1280); "io" slides
+      // out of it (1110-1320). The arrow slides out meanwhile (480-1000).
       const draw = (t) => {
-        const m = ease(clamp((t - 560) / 480));
-        shape(m);
-        dot.style.opacity = clamp((m - 0.55) / 0.45);
-        const lift = out(clamp((t - 300) / 200)), f = ease(clamp((t - 480) / 620));
-        const ax = x0, ay = y0 - 0.09 * em * lift, cx = x0 / 2, cy = -1.08 * em;   // the arc: from above the j, high over "sal"
-        const gx = (1 - f) ** 2 * ax + 2 * (1 - f) * f * cx;
-        const gy = (1 - f) ** 2 * ay + 2 * (1 - f) * f * cy;
-        const scale = lerp(0.657, 1, f) * (1 + 0.1 * Math.sin(Math.PI * clamp((t - 1100) / 160)));
+        const tau = t - HIT;
+        let top = 452 - 75.5 * clamp((t - (HIT - 160)) / 160) ** 2;
+        if (tau < 0) dot.style.opacity = 0;
+        else {
+          const y = shot(tau), w = 147 * (1 - clamp(tau / 110)) ** 1.5;
+          top = lerp(376.5, 277.5, out(clamp(tau / 300)));
+          dot.style.opacity = 1;
+          dot.setAttribute('cy', n(y));
+          dot.setAttribute('r', n(lerp(73.5, 77, out(clamp(tau / 200)))));
+          neck.style.display = w > 1 ? '' : 'none';
+          neck.setAttribute('d', `M585.5 ${n(y)}V${n(top)}`);
+          neck.setAttribute('stroke-width', n(w));
+        }
+        shape(ease(clamp((t - 300) / 600)), top);
+        // the gem's arc: from its place on the j, steeply up and high over "sal"
+        const f = clamp(tau / 600);
+        const gx = quad(x0, 0.7 * x0, 0, f), gy = quad(y0, -1.5 * em, 0, f);
+        const scale = lerp(0.657, 1, f) * (1 + 0.12 * Math.sin(Math.PI * clamp(tau / 90)))
+          * (1 + 0.1 * Math.sin(Math.PI * clamp((tau - 600) / 160)));
         stop.style.transform = `translate(${gx}px, ${gy}px) rotate(${180 * f}deg) scale(${scale})`;
         // "sal" shows just behind the gem through a soft edge (none once it lands), so no letter slips out ahead of it
         const edge = home + gx - 0.6 * 0.17 * em * scale - salBox.left, soft = 0.35 * em * (1 - f);
         sal.style.webkitMaskImage = sal.style.maskImage = `linear-gradient(90deg, black ${edge - soft}px, transparent ${edge}px)`;
-        const o = ease(clamp((t - 1000) / 320));
-        io.style.opacity = o;
-        io.style.transform = `translateX(${-(1 - o) * 0.12 * em}px)`;
-        // the arrow slides out ahead of the name, reaching its place as "io" fades in behind it, still turned over if
-        // the menu was opened meanwhile
+        const o = out(clamp((t - 1110) / 210)), dx = -(1 - o) * 0.55 * em, cut = home + gx + 0.17 * em * scale - (ioLeft + dx);
+        io.style.opacity = t < 1110 ? 0 : 1;
+        io.style.transform = `translateX(${dx}px)`;
+        io.style.webkitMaskImage = io.style.maskImage = `linear-gradient(90deg, transparent ${cut}px, black ${cut + 0.04 * em}px)`;
+        // the arrow slides out ahead of the name, reaching its place before "io" comes out behind it, still turned over
+        // if the menu was opened meanwhile
         const c = ease(clamp((t - 480) / 520));
         if (caret) caret.style.transform = `translateX(${-(1 - c) * caretFrom}px)` + (logo.getAttribute('aria-expanded') === 'true' ? ' rotate(180deg)' : '');
       };
@@ -556,9 +585,12 @@
         // Settle: the name's own path takes over from the reshaped one (the same shape), the short path goes back to
         // the fold, and the inline styles go; "sal"'s mask is left fully open as drawn, so no pixel changes. Then the glint
         stop.style.transform = io.style.transform = io.style.opacity = dot.style.opacity = '';
+        io.style.webkitMaskImage = io.style.maskImage = '';
         if (caret) caret.style.transform = '';
         logo.classList.remove('jsal-unfolding');
         fold.setAttribute('d', foldD); fold.setAttribute('stroke-width', foldW);
+        dot.setAttribute('cy', dotY); dot.setAttribute('r', dotR);
+        neck.remove();
         setTimeout(() => logo.classList.add('jsal-glint'), 130);
         setTimeout(() => logo.classList.remove('jsal-glint'), 980);
       };

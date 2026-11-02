@@ -93,12 +93,18 @@ Two drawings of one letter, both with round ends:
 ## The unfold
 
 On the first page of a visit the top bar's name opens folded into the tab icon's mark: the icon's short j with its
-deep hook, the gem as its dot, the menu arrow tucked just after it, and the rest of the name hidden. The gem lifts
-off and arcs over the name, turning half a turn and growing to full size, with "sal" showing in its wake, while the
-j's curve shortens into the name's taller j (round ends throughout), its own dot fills in, and the arrow slides out
-ahead of the name. The gem lands on the baseline as the full stop with a small swell, "io" fades in behind the
-arrow, and a light runs across the gem and on over "io". About 1.4 seconds, then the glint. The letters keep their
-places throughout, so nothing beside the logo moves.
+deep hook, the gem as its dot, the menu arrow tucked just after it, and the rest of the name hidden. The j's curve
+shortens into the name's taller j (round ends throughout) while its stem rises, speeding up, until its top touches
+the gem. The top pinches off as the j's own dot and shoots up, throwing the gem over the name on a high arc, turning
+half a turn and growing to full size, with "sal" showing in its wake; the dot flies a little past its place, dips
+just below it and settles, and the arrow slides out ahead of the name. The gem lands on the baseline as the full
+stop with a small swell, "io" slides out from behind it, and a light runs across the gem and on over "io". About
+1.3 seconds, then the glint. The letters keep their places throughout, so nothing beside the logo moves.
+Each part is set off by the one before: the hook feeds the stem, the stem makes the dot, the dot sends the gem, and
+the gem lets out "io".
+
+- The dot's dip is kept small on purpose: at 18px only one row of pixels separates it from the stem, and a deeper
+  dip fills that row at 100% and 150% scaling, so the j blinks into one bar.
 
 - The j's inline SVG holds both shapes: the name's path (`.jsal-j-line`) and the icon's short j (`.jsal-j-fold`).
   Each page's head script folds the name before the first paint (`html.jsal-intro` in `site/shell.css` shows the

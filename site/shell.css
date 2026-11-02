@@ -260,9 +260,9 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 }
 .jsal-brand .jsal-j-draw path { fill: none; }
 /* First page of a visit: the name opens folded into the tab icon's mark, its short j with the deep hook (the drawing's
-   second path) wearing the gem as its dot, and /nav.js unfolds it: the short j's curve shortens into the name's j while
-   the gem hops over the name to its place as the full stop. The letters keep their places, so nothing beside the logo
-   moves. */
+   second path) wearing the gem as its dot, and /nav.js unfolds it: the short j's curve shortens into the name's j and
+   its stem's top pinches off as the j's own dot, knocking the gem over the name to its place as the full stop. The
+   letters keep their places, so nothing beside the logo moves. */
 .jsal-brand .jsal-j-fold,
 html.jsal-intro [data-jsal-nav] .jsal-j-line, [data-jsal-nav].jsal-unfolding .jsal-j-line { display: none; }
 html.jsal-intro [data-jsal-nav] .jsal-j-fold, [data-jsal-nav].jsal-unfolding .jsal-j-fold { display: inline; }
