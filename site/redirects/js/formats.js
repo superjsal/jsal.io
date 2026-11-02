@@ -33,7 +33,7 @@ export const FORMATS = [
     doc: "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect",
     cols: () => [FROM("Redirect from"), TO("Redirect to")], codes: false, slashSame: true,
     rules: (r) => [
-      SHOPIFY_PREFIX.test(r.from) && { cell: "o", id: "reserved", text: `Shopify reserves <code>${r.from.match(SHOPIFY_PREFIX)[0].replace(/[/?]$/, "")}</code>` },
+      SHOPIFY_PREFIX.test(r.from) && { cell: "o", id: "reserved", text: `Shopify reserves <code>${r.from.match(SHOPIFY_PREFIX)[0].replace(/[/?]$/, "")}</code>`, title: "start with an address Shopify reserves" },
       SHOPIFY_FIXED.test(r.from) && { cell: "o", id: "fixed", text: "Shopify’s own list page: can’t redirect" },
       /\.html$/i.test(r.from) && r.to.toLowerCase() === r.from.toLowerCase().replace(/\.html$/, "") && { cell: "n", id: "html", text: "Same page to Shopify (.html): can’t redirect" },
       r.from.includes("?") && { cell: "o", id: "query", warn: true, text: "? may not work on Shopify. Test after import" },

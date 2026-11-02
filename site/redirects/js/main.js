@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=da3b22b3";
-import { FORMATS, byId } from "./formats.js?v=5a99f0ac";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=f4dbd3d6";
+import { FORMATS, byId } from "./formats.js?v=d544013e";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -449,7 +449,7 @@ function showWhere() {
 function renderFile() {
   const { w, p, head } = fileText();
   part = Math.min(part, p.length - 1);
-  $("fileName").textContent = fileName(part, p.length);
+  $("fileName").textContent = $("fileName").title = fileName(part, p.length);   // the title shows it in full when it's cut short
   $("parts").hidden = p.length < 2;
   if (p.length > 1) {
     $("parts").innerHTML = p.map((_, i) => `<button type="button" data-part="${i}" aria-pressed="${i === part}" aria-label="Part ${i + 1} of ${p.length}">${i + 1}</button>`).join("");
@@ -503,16 +503,19 @@ function renderFile() {
   $("downloadBtn").textContent = p.length > 1 ? `Download part ${part + 1}` : of ? "Download" + of : "Download file";
   $("copyBtn").textContent = p.length > 1 ? `Copy part ${part + 1}` : of ? "Copy" + of : "Copy file";
   $("copyBtn").disabled = $("downloadBtn").disabled = !inFile;
-  const gone = missing ? `<span class="count">${plural(missing, "row", "rows")}</span> ${missing === 1 ? "isn’t" : "aren’t"} in this file until ${missing === 1 ? "it’s" : "they’re"} fixed. <button type="button" class="jsal-btn link" data-needs-you>Show ${missing === 1 ? "it" : "them"}</button>` : "";
+  const one = missing === 1;
+  const gone = missing ? `<span class="count">${plural(missing, "row", "rows")}</span> ${one ? "needs" : "need"} fixing before ${one ? "it goes" : "they go"} in the file. <button type="button" class="jsal-btn link" data-needs-you>Fix ${one ? "it" : "them"}</button>` : "";
   if ($("fileMissing").dataset.h !== gone) { $("fileMissing").innerHTML = gone; $("fileMissing").dataset.h = gone; }
   $("fileMissing").hidden = !missing;
-  $("foldCount").textContent = plural(inFile, "redirect", "redirects");
-  $("foldFmt").textContent = $("fmtSummary").textContent + (p.length > 1 ? ` · ${p.length} parts` : "");
+  $("foldCount").textContent = of ? `${inFile} of ${inFile + missing}` : inFile;
+  $("foldRows").textContent = `${(of ? inFile + missing : inFile) === 1 ? "row" : "rows"} in it`;
+  $("foldBad").textContent = `${missing} to fix`;
+  $("foldBad").hidden = !missing;
 }
 
 // ── The file pane's controls ───────────────────────────────────────────────
 
-// "Show them": the sheet filtered to the rows that need you, with the first of them ready to edit
+// "Fix them": the sheet filtered to the rows that need you, with the first of them ready to edit
 $("fileMissing").addEventListener("click", (e) => {
   if (!e.target.closest("[data-needs-you]")) return;
   $("filter").querySelector('[data-filter="bad"]').click();
@@ -578,8 +581,10 @@ function fold(on) {
   work.classList.toggle("folded", on);
   store.set("jsal-redirects-folded", on ? "1" : "");
 }
-$("foldBtn").addEventListener("click", () => { fold(true); $("unfoldBtn").focus(); });
-$("unfoldBtn").addEventListener("click", () => { fold(false); $("foldBtn").focus(); });
+// Focus follows to the other button, which takes the place of the one pressed; its ring shows only for the keyboard
+// (a click's detail counts the presses, and is 0 from Enter or Space)
+$("foldBtn").addEventListener("click", (e) => { fold(true); $("unfoldBtn").focus({ focusVisible: !e.detail }); });
+$("unfoldBtn").addEventListener("click", (e) => { fold(false); $("foldBtn").focus({ focusVisible: !e.detail }); });
 if (store.get("jsal-redirects-folded") === "1") fold(true);
 
 // Phones show one pane at a time
