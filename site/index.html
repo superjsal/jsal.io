@@ -149,7 +149,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
    column's, so the tilted brick never reaches the gutter however wide the tile is. Playing, three needs take turns, each pressing the keys the quiz puts first for it (.fit-for names it). */
 .cms { --bg: var(--t-cms); --ink: var(--t-cms-ink); }
 .cms .txt { max-width: 290px; }
-.cms .wm { width: 420px; height: 420px; left: calc(100% - 790px); top: 170px; rotate: -10deg; }   /* a podium tilted like the keys, at the bottom left under the words, cut by the tile's edge */
+.cms .wm { width: 420px; height: 420px; left: calc(100% - 816px); top: 80px; rotate: -10deg; }   /* a podium tilted like the keys, whole, under the words and left of the keys */
 .pcs { left: calc(100% - 481px); top: 116px; z-index: 3; display: flex; flex-direction: column; gap: 12px; transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
 .pcs > span { display: flex; gap: 12px; }
 .pcs > span:nth-child(even) { margin-left: 56px; }
@@ -278,7 +278,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .now { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
 .now .txt { max-width: 260px; }
 .now .txt a { color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
-.now .wm { width: 260px; height: 260px; left: -18px; top: -71px; }   /* a stack of notes, the gem on the newest, over the words */
+.now .wm { width: 300px; height: 300px; left: calc(50% - 202px); top: -48px; }   /* a stack of notes, the gem on the newest, whole, in the open middle between the words and the list */
 .upd { position: absolute; right: 26px; top: 16px; width: min(404px, calc(100% - 340px)); display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
 .upd li { position: relative; padding: 10px 0 11px 42px; border-top: 1px solid var(--jsal-line); }
 .upd li:first-child { border-top: 0; }
@@ -304,6 +304,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 /* Narrower desktops and phones on their side: the intro on its own row, the CMS Picker, the Image Resizer, Redirect
    Import and Updates full width, and Clean Paste beside Say hi */
 @media (max-width: 1279px) {
+  .now .wm { width: 200px; height: 200px; left: -8px; top: -24px; }   /* no open middle here: above the words, in line with them */
   .grid { grid-template-rows: none; }
   .intro { grid-column: 1 / -1; grid-row: auto; padding-right: 0; }
   .intro p { max-width: 34em; }
@@ -320,7 +321,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 /* Narrower desktops: the CMS Picker's tile is wider than its keys need, so its podium moves out from under them into
    the open space under the words */
 @media (min-width: 861px) and (max-width: 1279px) {
-  .cms .wm { width: 460px; height: 460px; left: -40px; top: 150px; }
+  .cms .wm { width: 460px; height: 460px; left: -40px; top: 60px; }
 }
 /* Phones on their side: a shorter CMS Picker, its brick smaller, anchored to the right and filling the tile (its top
    keys poking out, beside the words), its watermark under the words */
@@ -328,7 +329,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .cms { min-height: 300px; }
   .cms .txt { max-width: 250px; }
   .pcs { left: auto; right: 357px; top: 42px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
-  .cms .wm { width: 260px; height: 260px; left: -20px; top: 130px; rotate: none; }   /* upright, under the words */
+  .cms .wm { width: 240px; height: 240px; left: -20px; top: 112px; rotate: none; }   /* upright and whole, under the words */
   .fit-for { top: 130px; }   /* under the line's two lines */
 }
 /* The narrowest of those: a smaller brick inside the tile, narrower words, and room for Say hi's three lines */
