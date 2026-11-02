@@ -1,5 +1,5 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=92b5f7d5";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=da3b22b3";
 import { FORMATS, byId } from "./formats.js?v=5a99f0ac";
 
 const $ = (id) => document.getElementById(id);
@@ -124,9 +124,12 @@ document.addEventListener("paste", (e) => {
   const text = e.clipboardData?.getData("text/plain") || "";
   const cell = e.target.closest?.(".cell");
   if (cell) {
-    if (!/[\t\n]/.test(text.trim())) return;
+    // Several rows or columns spread down and across; so does an old and new address copied together with a space
+    // between them (from an email, a doc or a phone), which would otherwise land in one cell
+    const raw = parseDelimited(text);
+    if (!/[\t\n]/.test(text.trim()) && !(/\s/.test(text.trim()) && raw.length === 1 && raw[0].length === 2)) return;
     e.preventDefault();
-    return spread(cell, parseDelimited(text));
+    return spread(cell, raw);
   }
   if (e.target.closest?.("input, textarea, select")) return;
   if (!text.trim()) return;
@@ -146,7 +149,8 @@ function spread(cell, raw) {
   for (const vals of raw) {
     let r = live[at];
     if (!r) { r = row("", "", true); rows.push(r); live.push(r); tbody.append(rowEl(r)); }
-    if (startCol === "old") { r.old = tidy(vals[0]); if (vals.length > 1) r.new = tidy(vals[1]); }
+    // A pair pasted into the new-address cell of a row with no old address fills the whole row
+    if (startCol === "old" || (vals.length > 1 && !tidy(r.old))) { r.old = tidy(vals[0]); if (vals.length > 1) r.new = tidy(vals[1]); }
     else r.new = tidy(vals[0]);
     stay.add(r.id);
     setCell(r, "old", r.old);

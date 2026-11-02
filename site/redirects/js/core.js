@@ -308,7 +308,12 @@ export function parseDelimited(text) {
   // No tabs, commas or semicolons: columns copied from an email or PDF are separated by spaces instead
   if (!count("\t") && !count(",") && !count(";")) {
     const lines = text.split(/\r?\n/).filter((l) => tidy(l));
-    const pairs = lines.every((l) => /^\S+\s+\S+$/.test(tidy(l)) && looksLikeAddress(tidy(l).split(/\s+/)[0]));
+    // Two values with one space between them: an address, then an address or an instruction ("disregard"); a single
+    // address with a space in it (/our team) isn't split
+    const pairs = lines.every((l) => {
+      const [a, b, more] = tidy(l).split(/\s+/);
+      return b && !more && looksLikeAddress(a) && (looksLikeAddress(b) || /^https?:|^www\./i.test(b) || JUNK.test(b));
+    });
     if (pairs) return lines.map((l) => tidy(l).split(/\s+/));
     if (lines.some((l) => /\S {2,}\S/.test(l))) return lines.map((l) => tidy(l).split(/ {2,}/));
   }
