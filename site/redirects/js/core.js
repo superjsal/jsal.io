@@ -102,7 +102,8 @@ export function siteHosts(rows) {
  * rows: [{ id, old, new }]; fmt: a platform from formats.js; opts: { code, newAddr: "path" | "url", newSite, keep }
  * keep maps a clash's old address to the row id the visitor kept.
  * Returns { items: Map(id -> { state, notes, clash, routine }), ready: [{ id, from, to, code }], done, site }
- * state: "ok", "fixed", "bad" (needs the visitor), "out" (left out on purpose) or "blank". A bad note carries a group
+ * state: "ok", "fixed", "warn" (goes in the file, but check it after importing), "bad" (needs the visitor), "out"
+ * (left out on purpose) or "blank". A bad note carries a group
  * (the same problem on another row has the same one) and a generic title, so repeats can be fixed all at once.
  * done counts the routine changes made on the way into the file (a domain removed, tracking tags…), which are said
  * once above the sheet rather than on every row.
@@ -121,7 +122,7 @@ export function analyse(rows, fmt, opts) {
     const bad = (cell, text, fixes = [], group = text, title = text) => { notes.push({ cell, kind: "bad", text, fixes, group: cell + ":" + group, title }); it.state = "bad"; };
     const fix = (cell, text) => { notes.push({ cell, kind: "fix", text }); if (it.state === "ok") it.state = "fixed"; };
     // A row left out keeps only the reason; what the file would have said no longer matters
-    const out = (cell, text) => { notes.splice(0, notes.length, ...notes.filter((x) => x.kind !== "fix")); notes.push({ cell, kind: "out", text }); it.state = "out"; };
+    const out = (cell, text, group) => { notes.splice(0, notes.length, ...notes.filter((x) => x.kind !== "fix")); notes.push({ cell, kind: "out", text, group }); it.state = "out"; };
 
     if (o.kind === "empty" && n.kind === "empty") { it.state = "blank"; return; }
     if (o.kind === "junk") return out("o", "Not an address: left out");
@@ -162,7 +163,7 @@ export function analyse(rows, fmt, opts) {
     // With full URLs, old.com/page to new.com/page is a real redirect; as paths it would point to itself
     const domainOnly = o.host && n.host && bare(o.host) !== bare(n.host);
     if (!external && key(oc.path) === key(nc.path) && !(domainOnly && opts.newAddr === "url")) {
-      if (domainOnly) return out("n", "Only the domain changes: left out. If the old domain still points at this platform, choose Full URLs in Format");
+      if (domainOnly) return out("n", "Only the domain changes, so a domain redirect covers this: left out", "domain-only");
       return out("n", oc.path === nc.path ? "Points to itself: left out" : "Only a / or capital differs, which this platform treats as the same address: left out");
     }
     live.push({ id: r.id, it, from: oc.path, to, own: !external, internal: !external && !(domainOnly && opts.newAddr === "url"), fix, bad, out });
@@ -231,7 +232,10 @@ export function analyse(rows, fmt, opts) {
   const done = {};
   for (const it of items.values()) {
     if (it.state === "bad") it.notes = it.notes.filter((x) => x.kind !== "fix");
-    else if (it.state === "ok" || it.state === "fixed") for (const k of it.routine) done[k] = (done[k] || 0) + 1;
+    else if (it.state === "ok" || it.state === "fixed") {
+      if (it.notes.some((x) => x.kind === "warn")) it.state = "warn";
+      for (const k of it.routine) done[k] = (done[k] || 0) + 1;
+    }
   }
   return { items, ready: ready.filter((r) => items.get(r.id).state !== "bad"), done, site };
 }

@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=41f80495";
-import { FORMATS, byId } from "./formats.js?v=b61c22ae";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=8037bb91";
+import { FORMATS, byId } from "./formats.js?v=69a79c59";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -286,9 +286,10 @@ function notesHtml(r, it, cell) {
   return h;
 }
 
-// Every row that goes into the file is Ready, whether or not something changed on the way in
-const SAY = { ok: ["✓", "Ready"], fixed: ["✓", "Ready"], bad: ["!", "Needs you"], out: ["–", "Left out"], blank: ["", "Empty"] };
-const GROUP = { ok: "ready", fixed: "ready", bad: "bad", out: "out", blank: "" };
+// One dot per outcome: it will redirect (green), it goes in but check it after importing (terracotta), it won't until
+// fixed (red), or it's left out on purpose (grey). Whether something changed on the way in is the row's note, not its dot.
+const SAY = { ok: ["✓", "Ready"], fixed: ["✓", "Ready"], warn: ["?", "Goes in the file, check it after importing"], bad: ["!", "Needs you"], out: ["–", "Left out"], blank: ["", "Empty"] };
+const GROUP = { ok: "ready", fixed: "ready", warn: "check", bad: "bad", out: "out", blank: "" };
 
 // ── Everything that follows a change ───────────────────────────────────────
 
@@ -296,7 +297,7 @@ function update() {
   if (!table) return;
   const live = rows.filter((r) => !r.deleted);
   result = analyse(live, fmt, { ...opts, keep });
-  const count = { all: 0, ready: 0, bad: 0, out: 0 };
+  const count = { all: 0, ready: 0, check: 0, bad: 0, out: 0 };
   live.forEach((r, i) => {
     const it = result.items.get(r.id), tr = rowOf(r);
     if (!tr) return;
@@ -312,7 +313,7 @@ function update() {
     tr.hidden = !shown;
     tr.querySelector(".n").textContent = i + 1;
     const dot = tr.querySelector(".dot");
-    dot.className = "dot " + (GROUP[st] === "ready" ? "ok" : st);
+    dot.className = "dot " + (GROUP[st] === "ready" ? "ok" : st);   // ok, warn, bad or out
     dot.innerHTML = `<span aria-hidden="true">${SAY[st][0]}</span><span class="sr-only">${SAY[st][1]}</span>`;
     tr.querySelector(".del").setAttribute("aria-label", `Delete row ${i + 1}`);
     for (const [cell, field, label] of [["o", "old", "Old address"], ["n", "new", "New address"]]) {
@@ -323,11 +324,10 @@ function update() {
       if (box.dataset.h !== html[cell]) { box.innerHTML = html[cell]; box.dataset.h = html[cell]; }
     }
   });
-  const ready = result.ready.length;
   for (const b of $("filter").children) b.querySelector("span").textContent = count[b.dataset.filter];
   $("filterEmpty").hidden = live.some((r) => !r.el.hidden);
   overview(live);
-  $("summary").innerHTML = `<b>${ready} ready</b>` + (count.bad ? ` · ${count.bad} need you` : "") + (count.out ? ` · ${count.out} left out` : "");
+  $("summary").innerHTML = `<b>${count.ready} ready</b>` + (count.check ? ` · ${count.check} to check` : "") + (count.bad ? ` · ${count.bad} need you` : "") + (count.out ? ` · ${count.out} left out` : "");
   $("sheetMeta").textContent = [table.name, `${count.all} row${count.all === 1 ? "" : "s"}`, table.pick.header && "headings skipped"].filter(Boolean).join(" · ");
   $("undoAll").hidden = !rows.some((r) => r.added || r.deleted || r.old !== r.old0 || r.new !== r.new0);
   renderFile();
@@ -357,7 +357,10 @@ function overview(live) {
   }
   // A clash always spans rows, and each one is a choice, so clashes aren't listed as repeats
   const repeats = [...groups].filter(([k, g]) => g.ids.length > 1 && !k.endsWith(":clash")).sort((a, b) => b[1].ids.length - a[1].ids.length);
-  const html = (done.length ? `<p class="done"><b>Done for you:</b> ${done.join("; ")}.</p>` : "") + repeats.map(([key, g]) =>
+  const domainOnly = live.filter((r) => result.items.get(r.id).notes.some((x) => x.group === "domain-only")).length;
+  const html = (done.length ? `<p class="done"><b>Done for you:</b> ${done.join("; ")}.</p>` : "") +
+    (domainOnly ? `<p class="done">${plural(domainOnly, "row only changes", "rows only change")} the domain, so ${domainOnly === 1 ? "it’s" : "they’re"} left out: connecting the old domain to the new site redirects ${domainOnly === 1 ? "it" : "them"}. <button type="button" class="jsal-btn link" data-full>Put ${domainOnly === 1 ? "it" : "them"} in with full URLs</button></p>` : "") +
+    repeats.map(([key, g]) =>
     `<p class="repeat"><span class="count">${g.ids.length} rows</span> ${g.title}${g.fixes.map(([label], i) =>
       ` <button type="button" class="jsal-btn small" data-fixall="${esc(key)}|${i}">${esc(label)} in all ${g.ids.length}</button>`).join("")}</p>`).join("");
   const box = $("overview");
@@ -367,6 +370,7 @@ function overview(live) {
 }
 let overviewGroups = new Map();
 $("overview").addEventListener("click", (e) => {
+  if (e.target.closest("[data-full]")) { opts.newAddr = "url"; update(); return; }
   const b = e.target.closest("[data-fixall]");
   if (!b) return;
   const [key, i] = b.dataset.fixall.split("|");
@@ -417,14 +421,15 @@ function renderFile() {
 
   // Anything to know before importing it
   showWhere();
-  const notes = [];
-  if (fmt.unverified) notes.push(fmt.unverified);
-  if (fmt.needsDomain && !domain()) notes.push(`${fmt.name} needs the store’s domain on every row: add it under Format.`);
-  if (fmt.max && result.ready.length > fmt.max) notes.push(`${fmt.name} takes up to ${fmt.max.toLocaleString("en-GB")} redirects; this has ${result.ready.length.toLocaleString("en-GB")}. Vercel bulk redirects take more.`);
-  if (opts.newAddr === "url" && !result.site) notes.push("Add the new site’s address in Format to write full URLs.");
-  if (p.length > 1) notes.push(`${fmt.name} takes ${fmt.limit} redirects per import, so the file is in ${p.length} parts.`);
-  $("fileNote").hidden = !notes.length;
-  $("fileNote").textContent = notes.join(" ");
+  const warn = [fmt.caution,
+    fmt.needsDomain && !domain() && `${fmt.name} needs the store’s domain on every row: add it under Format.`,
+    fmt.max && result.ready.length > fmt.max && `${fmt.name} takes up to ${fmt.max.toLocaleString("en-GB")} redirects; this has ${result.ready.length.toLocaleString("en-GB")}. Vercel bulk redirects take more.`,
+    opts.newAddr === "url" && !result.site && "Add the new site’s address under Format to write full URLs."].filter(Boolean);
+  const info = [fmt.note, p.length > 1 && `${fmt.name} takes ${fmt.limit} redirects per import, so the file is in ${p.length} parts: import each in turn.`].filter(Boolean);
+  $("fileWarn").hidden = !warn.length;
+  $("fileWarn").textContent = warn.join(" ");
+  $("fileInfo").hidden = !info.length;
+  $("fileInfo").textContent = info.join(" ");
 
   // Format: only the settings this platform has
   const csv = fmt.kind === "csv";

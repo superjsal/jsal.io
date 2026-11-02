@@ -65,20 +65,20 @@
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update -->
   <link rel="stylesheet" href="/shell.css?v=5ef2a1b6">
-  <link rel="stylesheet" href="styles.css?v=81e17099" />
+  <link rel="stylesheet" href="styles.css?v=43d8575a" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":    "./js/main.js?v=d19fa157",
-        "./js/core.js":    "./js/core.js?v=41f80495",
-        "./js/formats.js": "./js/formats.js?v=b61c22ae",
+        "./js/main.js":    "./js/main.js?v=be528d7e",
+        "./js/core.js":    "./js/core.js?v=8037bb91",
+        "./js/formats.js": "./js/formats.js?v=69a79c59",
         "./js/xlsx.js":    "./js/xlsx.js?v=8b577352"
       }
     }
   </script>
   <!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app's modules have loaded -->
   <script src="/nav.js?v=829de57a" defer></script>
-  <script type="module" src="js/main.js?v=d19fa157"></script>
+  <script type="module" src="js/main.js?v=be528d7e"></script>
 </head>
 <body>
   <main class="app" id="app">
@@ -132,6 +132,7 @@
           <div class="jsal-seg filter" id="filter" aria-label="Show rows">
             <button type="button" data-filter="all" aria-pressed="true">All <span></span></button>
             <button type="button" data-filter="ready" aria-pressed="false">Ready <span></span></button>
+            <button type="button" data-filter="check" aria-pressed="false">Check <span></span></button>
             <button type="button" data-filter="bad" aria-pressed="false">Needs you <span></span></button>
             <button type="button" data-filter="out" aria-pressed="false">Left out <span></span></button>
           </div>
@@ -173,7 +174,9 @@
           <label class="opt" id="optSep"><span>Separator</span><input class="txt short" id="sep" spellcheck="false" autocomplete="off" title="Type \t for a tab"></label>
           <p class="opt-foot"><button type="button" class="jsal-btn link" id="resetFmt" hidden>Back to the platform’s format</button></p>
         </div>
-        <p class="file-note" id="fileNote" hidden></p>
+        <!-- What could go wrong on this platform's import (a warning), then what's worth knowing -->
+        <p class="file-box warn" id="fileWarn" hidden></p>
+        <p class="file-box info" id="fileInfo" hidden></p>
         <div class="pane-body file-body">
           <input class="head-in" id="headIn" spellcheck="false" autocomplete="off" aria-label="Header row" title="Edit the header row">
           <p class="head-warn" id="headWarn" hidden></p>

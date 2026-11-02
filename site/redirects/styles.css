@@ -88,6 +88,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 
 .dot { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 12px; font-weight: 700; line-height: 1; }
 .dot.ok { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
+.dot.warn { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
 .dot.bad { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
 .dot.out { background: var(--jsal-sunk); color: var(--jsal-muted); }   /* left out on purpose: neutral, not a warning */
 
@@ -124,7 +125,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .txt.short { width: 72px; }
 .opt-foot { margin: 0; font-size: 13px; }
 .opt-foot .jsal-btn.link { min-height: 0; font-size: 13px; }
-.file-note { margin: 0; padding: 8px 14px; border-bottom: 1px solid var(--jsal-line); font-size: 13px; color: var(--jsal-muted); }
+.file-box { margin: 10px 14px 0; padding: 8px 12px; border-radius: var(--jsal-radius); font-size: 14px; line-height: 1.45; color: var(--jsal-ink); }
+.file-box.warn { background: var(--jsal-warn-soft); }
+.file-box.info { background: var(--jsal-info-soft); }
 
 .file-body { padding: 10px 14px 14px; }
 /* The header row reads as part of the file until it's pointed at */
@@ -143,7 +146,10 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
   .work[data-view="sheet"] .file-pane, .work[data-view="file"] .sheet-pane { display: none; }
   .plat { flex: 1 1 100%; }
   .filter { flex: 1 1 100%; }
-  .filter > button { flex: 1; padding: 4px 6px; }
+  /* Five filters as two even rows: three on top, two below */
+  .filter { display: grid; grid-template-columns: repeat(6, 1fr); }
+  .filter > button { grid-column: span 2; padding: 4px 6px; }
+  .filter > button:nth-child(n + 4) { grid-column: span 3; }
   .where { margin: 0; }
   .bar-actions { margin-left: auto; }
 }

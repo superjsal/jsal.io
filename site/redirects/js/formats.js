@@ -2,8 +2,9 @@
 // (doc). kind: "csv" (columns, a header row and a separator the visitor can change), "lines" (one line of text per
 // redirect), or a whole file written by write(). codes: false when the platform has no status setting, "optional"
 // or "required". slashSame: the platform treats /page and /page/ as one address. keepLetters: accented letters stay
-// as typed, for a platform that rejects any %. unverified: something the platform's docs leave unsaid (note says
-// what). A rule with warn: true is said under the cell without keeping the row out of the file.
+// as typed, for a platform that rejects any %. caution: what could go wrong on import, and note: worth knowing,
+// both said above the file. A rule with warn: true is said under the cell
+// without keeping the row out of the file.
 
 const col = (name, val) => ({ name, val });
 const FROM = (n) => col(n, (r) => r.from);
@@ -27,7 +28,8 @@ const SHOPIFY_FIXED = /^\/(products|collections|collections\/all|collections\/ve
 
 export const FORMATS = [
   { id: "shopify", name: "Shopify", group: "Website platforms", kind: "csv", file: "shopify-redirects.csv",
-    where: "Content → Menus → URL redirects → Import. A redirect only works once the old page is gone (it shows Page not found)",
+    where: "Content → Menus → URL redirects → Import",
+    caution: "A redirect only works once the old page is gone and shows Page not found.",
     doc: "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect",
     cols: () => [FROM("Redirect from"), TO("Redirect to")], codes: false, slashSame: true,
     rules: (r) => [
@@ -41,7 +43,8 @@ export const FORMATS = [
     doc: "https://support.wix.com/en/article/importing-or-exporting-url-redirects-with-a-csv-file",
     cols: () => [FROM("Old URL"), TO("New URL")], codes: false, slashSame: true },
   { id: "squarespace", name: "Squarespace", group: "Website platforms", kind: "lines", file: "squarespace-url-mappings.txt",
-    where: "Settings → Developer tools → URL mappings: paste the lines. The old page must be deleted or disabled first", paste: true,
+    where: "Settings → Developer tools → URL mappings: paste the lines", paste: true,
+    caution: "A redirect only works once the old page is deleted or disabled.",
     doc: "https://support.squarespace.com/hc/en-us/articles/205815308-URL-mappings",
     line: (r) => `${r.from} -> ${r.to} ${r.code}`, codes: "required", slashSame: true,
     rules: (r) => [
@@ -51,8 +54,9 @@ export const FORMATS = [
       /\?(?!format=rss$)/.test(r.to) && { cell: "n", id: "query", fixes: DROP_QUERY, text: "Squarespace takes a ? in the new address only for ?format=rss." },
     ] },
   { id: "webflow", name: "Webflow", group: "Website platforms", kind: "csv", file: "webflow-redirects.csv", headerOff: true,
-    unverified: "Webflow’s help pages describe two columns and don’t mention a header row, so the file has none. Old paths have - _ ? = & and the like escaped with %, as Webflow asks.",
-    where: "Site settings → Publishing → 301 redirects → Import. An import replaces every redirect already there, so export them first",
+    caution: "An import replaces every redirect already there: export yours first and add them to this file. Webflow’s help doesn’t mention a header row, so the file has none.",
+    note: "Old paths have - _ ? = & and the like escaped with %, as Webflow asks.",
+    where: "Site settings → Publishing → 301 redirects → Import",
     doc: "https://help.webflow.com/hc/en-us/articles/33961294898835",
     cols: () => [col("old path", (r) => webflowPath(r.from)), TO("redirect to path")], codes: false, slashSame: true },
   { id: "framer", name: "Framer", group: "Website platforms", kind: "csv", file: "framer-redirects.csv",
@@ -60,7 +64,8 @@ export const FORMATS = [
     doc: "https://www.framer.com/help/articles/bulk-importing-exporting-redirects/",
     cols: () => [FROM("from"), TO("to")], codes: false, slashSame: true },
   { id: "hubspot", name: "HubSpot", group: "Website platforms", kind: "csv", file: "hubspot-redirects.csv", limit: 500,
-    where: "Settings → Content → Domains & URLs → URL redirects → Import. One bad row stops the whole import",
+    where: "Settings → Content → Domains & URLs → URL redirects → Import",
+    caution: "One bad row stops the whole import, so fix everything marked first.",
     doc: "https://knowledge.hubspot.com/domains-and-urls/bulk-upload-url-redirects",
     cols: () => [FROM("original url"), TO("redirect to"), col("redirect type", () => "STANDARD"), CODE("redirect style")],
     codes: "required", slashSame: true,
@@ -74,7 +79,8 @@ export const FORMATS = [
     cols: (code, opts) => [col("Domain", () => opts.domain || ""), FROM("Old Path"), TO("Manual URL/Path"), col("Dynamic Target Type", () => ""), col("Dynamic Target ID", () => "")],
     codes: false, slashSame: true },
   { id: "duda", name: "Duda", group: "Website platforms", kind: "csv", file: "duda-redirects.csv", limit: 200, keepLetters: true,
-    where: "More → Settings → URL Redirect → Import Multiple Redirects (it shows once the site has one redirect). The old page must be deleted",
+    where: "More → Settings → URL Redirect → Import Multiple Redirects (it appears once the site has one redirect)",
+    caution: "A redirect only works once the old page is deleted.",
     doc: "https://support.duda.co/hc/en-us/articles/26519925447703-URL-Redirects",
     cols: () => [FROM("Old Page URL"), TO("Destination Page URL"), CODE("Redirect Type")], codes: "required", slashSame: true,
     rules: (r) => [
@@ -84,7 +90,8 @@ export const FORMATS = [
       /\.php/i.test(r.from) && { cell: "o", id: "php", text: "Duda can’t redirect an address with .php in it." },
     ] },
   { id: "ghost", name: "Ghost", group: "Website platforms", kind: "file", file: "redirects.yaml",
-    where: "Settings → Advanced → Labs → Beta features → Redirects: download yours, add these lines, upload it. The upload replaces the old file",
+    where: "Settings → Advanced → Labs → Beta features → Redirects",
+    caution: "An upload replaces your whole redirects file: download yours first and add these lines to it.",
     doc: "https://ghost.org/help/redirects/",
     codes: "required", slashSame: true,
     // Ghost reads each old address as a pattern, so it's escaped and pinned to the whole path
@@ -107,12 +114,14 @@ export const FORMATS = [
     cols: (code) => code ? [FROM("source"), TO("destination"), CODE("type")] : [FROM("source"), TO("destination")],
     codes: "optional", slashSame: true },
   { id: "yoast", name: "Yoast SEO Premium", group: "WordPress plugins", kind: "csv", file: "yoast-redirects.csv",
-    where: "Yoast SEO → Tools → Import and Export → Import redirects. Redirects already there are skipped",
+    where: "Yoast SEO → Tools → Import and Export → Import redirects",
+    note: "Redirects already in Yoast are skipped, not updated.",
     doc: "https://yoast.com/help/import-redirects/",
     cols: () => [FROM("Origin"), TO("Target"), CODE("Type"), col("Format", () => "plain")], codes: "required", slashSame: true },
 
   { id: "netlify", name: "Netlify (_redirects)", group: "Hosting and servers", kind: "lines", file: "_redirects",
-    where: "A _redirects file in the folder the site publishes. Paths are case-sensitive",
+    where: "A _redirects file in the folder the site publishes",
+    note: "Netlify matches capitals exactly: /About and /about are different addresses.",
     doc: "https://docs.netlify.com/routing/redirects/",
     line: (r) => `${r.from}  ${r.to}  ${r.code}`, codes: "required",
     rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "A _redirects line can’t match ? in the old path; Netlify matches query strings another way." }] },
