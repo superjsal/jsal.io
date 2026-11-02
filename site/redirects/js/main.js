@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
 import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=320e0bf5";
-import { FORMATS, byId } from "./formats.js?v=532d3ed5";
+import { FORMATS, byId } from "./formats.js?v=88592d41";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -478,8 +478,11 @@ function renderFile() {
     $("parts").innerHTML = p.map((_, i) => `<button type="button" data-part="${i}" aria-pressed="${i === part}" aria-label="Part ${i + 1} of ${p.length}">${i + 1}</button>`).join("");
   }
   const headIn = $("headIn");
-  headIn.hidden = head === null;
+  $("headRow").hidden = head === null;
   if (head !== null && document.activeElement !== headIn) headIn.value = head;
+  // Without one, the line to add it shows what it would say
+  $("headAdd").hidden = fmt.kind !== "csv" || opts.headerOn;
+  $("headAddText").textContent = opts.header ?? w.header ?? "";
   const names = head === null ? 0 : head.split(opts.sep).length;
   $("headWarn").hidden = head === null || opts.header === null || names === w.cols;
   $("headWarn").textContent = `The header has ${names} name${names === 1 ? "" : "s"}; each row has ${w.cols} columns.`;
@@ -510,10 +513,9 @@ function renderFile() {
   $("optSite").hidden = opts.newAddr !== "url" && !fmt.needsDomain;
   $("optSite").firstElementChild.textContent = opts.newAddr === "url" ? "New site" : fmt.needsDomain || "New site";
   if (document.activeElement !== $("newSite")) { $("newSite").value = opts.newSite; $("newSite").placeholder = result.site || "https://www.example.com"; }
-  $("optHead").hidden = $("optSep").hidden = !csv;
-  for (const b of $("optHead").querySelectorAll("button")) b.setAttribute("aria-pressed", (b.dataset.head === "on") === opts.headerOn);
+  $("optSep").hidden = !csv;
   if (document.activeElement !== $("sep")) $("sep").value = sepShown(opts.sep);
-  $("fmtSummary").textContent = [csv && sepName(opts.sep), opts.newAddr === "url" ? "full URLs" : "paths", (fmt.codes === "required" || (fmt.codes && opts.statusCol)) && opts.code, csv && !opts.headerOn && "no header"].filter(Boolean).join(" · ");
+  $("fmtSummary").textContent = [csv && sepName(opts.sep), opts.newAddr === "url" ? "full URLs" : "paths", (fmt.codes === "required" || (fmt.codes && opts.statusCol)) && opts.code].filter(Boolean).join(" · ");
   const d = defaults(fmt);
   $("resetFmt").hidden = Object.keys(d).every((k) => d[k] === opts[k]);
 
@@ -563,7 +565,9 @@ $("codeSeg").addEventListener("click", (e) => {
   update();
 });
 $("optNew").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { opts.newAddr = b.dataset.new; update(); } });
-$("optHead").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { opts.headerOn = b.dataset.head === "on"; renderFile(); } });
+// Removing the header row hands focus to the line that adds it back, and the other way round
+$("headDel").addEventListener("click", () => { opts.headerOn = false; renderFile(); $("headAddBtn").focus(); });
+$("headAddBtn").addEventListener("click", () => { opts.headerOn = true; renderFile(); $("headDel").focus(); });
 $("newSite").addEventListener("input", (e) => { opts.newSite = e.target.value; clearTimeout(timer); timer = setTimeout(update, 200); });
 $("sep").addEventListener("input", (e) => {
   const v = e.target.value.replace(/\\t/g, "\t");

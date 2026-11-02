@@ -104,12 +104,17 @@ export const FORMATS = [
       return Object.keys(by).sort().map((c) => `${c}:\n${by[c].join("\n")}`).join("\n");
     } },
 
-  // Redirection reads an old address with ( ) [ ] $ ^ or * as a pattern unless the regex column says 0, so it's always written
-  { id: "redirection", name: "Redirection", label: "WordPress: Redirection", group: "WordPress plugins", kind: "csv", file: "redirection.csv", headerOff: true,
+  // Redirection reads an old address with ( ) [ ] $ ^ or * as a pattern unless the regex column says 0, so it's always
+  // written; the header row is the one its own export starts with, which its import skips
+  { id: "redirection", name: "Redirection", label: "WordPress: Redirection", group: "WordPress plugins", kind: "csv", file: "redirection.csv",
     where: "Tools → Redirection → Import/Export → Import",
     doc: "https://redirection.me/support/import-export-redirects/",
     cols: () => [FROM("source"), TO("target"), col("regex", () => "0"), CODE("code")],
-    codes: "required", slashSame: true },
+    codes: "required", slashSame: true,
+    rules: (r) => {
+      const letter = decoded(r.from).match(/[^\x00-\x7F]/u);
+      return [letter && { cell: "o", id: "letters", warn: true, text: `<code>${letter[0]}</code> may not match on Redirection. Test after import` }];
+    } },
   { id: "rankmath", name: "Rank Math (Pro)", label: "WordPress: Rank Math (Pro)", group: "WordPress plugins", kind: "csv", file: "rank-math-redirects.csv",
     where: "Rank Math SEO → Redirections → Import & Export (Rank Math PRO)",
     doc: "https://rankmath.com/kb/how-to-manage-redirects-via-csv/",

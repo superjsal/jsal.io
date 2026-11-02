@@ -65,20 +65,20 @@
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update -->
   <link rel="stylesheet" href="/shell.css?v=dee1ef84">
-  <link rel="stylesheet" href="styles.css?v=c4b1a3ac" />
+  <link rel="stylesheet" href="styles.css?v=72b4b6fe" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":    "./js/main.js?v=5350a6e8",
+        "./js/main.js":    "./js/main.js?v=1caed4b2",
         "./js/core.js":    "./js/core.js?v=320e0bf5",
-        "./js/formats.js": "./js/formats.js?v=532d3ed5",
+        "./js/formats.js": "./js/formats.js?v=88592d41",
         "./js/xlsx.js":    "./js/xlsx.js?v=8b577352"
       }
     }
   </script>
   <!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app's modules have loaded -->
   <script src="/nav.js?v=8e6a6b80" defer></script>
-  <script type="module" src="js/main.js?v=5350a6e8"></script>
+  <script type="module" src="js/main.js?v=1caed4b2"></script>
 </head>
 <body>
   <main class="app" id="app">
@@ -184,7 +184,6 @@
           <div class="opt" id="optNew"><span>New addresses</span><span class="jsal-seg"><button type="button" data-new="path" aria-pressed="true">Paths</button><button type="button" data-new="url" aria-pressed="false">Full URLs</button></span></div>
           <label class="opt" id="optSite" hidden><span>New site</span><input class="txt" id="newSite" spellcheck="false" autocomplete="off" placeholder="https://www.example.com"></label>
           <div class="opt" id="optCode"><span>Status</span><span class="jsal-seg" id="codeSeg"><button type="button" data-code="" aria-pressed="false">None</button><button type="button" data-code="301" aria-pressed="true">301</button><button type="button" data-code="302" aria-pressed="false">302</button></span></div>
-          <div class="opt" id="optHead"><span>Header row</span><span class="jsal-seg"><button type="button" data-head="on" aria-pressed="true">On</button><button type="button" data-head="off" aria-pressed="false">Off</button></span></div>
           <label class="opt" id="optSep"><span>Separator</span><input class="txt short" id="sep" spellcheck="false" autocomplete="off" title="Type \t for a tab"></label>
           <p class="opt-foot"><button type="button" class="jsal-btn link" id="resetFmt" hidden>Back to the platform’s format</button></p>
         </div>
@@ -195,7 +194,13 @@
         <p class="file-box warn" id="fileWarn" hidden></p>
         <p class="file-box info" id="fileInfo" hidden></p>
         <div class="pane-body file-body">
-          <input class="head-in" id="headIn" spellcheck="false" autocomplete="off" aria-label="Header row" title="Edit the header row">
+          <!-- The header row is labelled where it sits, so whether the file has one is seen in the file itself -->
+          <div class="head-row" id="headRow">
+            <input class="head-in" id="headIn" spellcheck="false" autocomplete="off" aria-label="Header row" title="Edit the header row">
+            <span class="head-tag" aria-hidden="true">Header row</span>
+            <button type="button" class="del head-del" id="headDel" aria-label="Remove the header row"><span aria-hidden="true">×</span></button>
+          </div>
+          <p class="head-add" id="headAdd" hidden><button type="button" class="jsal-btn link" id="headAddBtn"><span aria-hidden="true">+</span> Add a header row</button><code id="headAddText"></code></p>
           <p class="head-warn" id="headWarn" hidden></p>
           <pre class="file" id="fileText" tabindex="0" aria-label="File contents"></pre>
           <p class="file-empty" id="fileEmpty" hidden>No redirects ready yet.</p>
