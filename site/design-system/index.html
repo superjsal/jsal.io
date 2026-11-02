@@ -67,11 +67,11 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .suggest p { margin: 0; max-width: none; color: inherit; }
 
 /* Principle cards (02) */
-.principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
-.principles li { padding: 18px 18px 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
+.principles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.principles li { display: flex; flex-direction: column; padding: 18px 18px 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
 .principles b { display: block; margin-bottom: 6px; font: 700 17px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
 .principles span { display: block; font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
-.principles small { display: block; margin-top: 10px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
+.principles small { display: block; margin-top: auto; padding-top: 10px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 
 /* Colour (03): the swatch board shows both themes at once, so it carries literal values on purpose */
 .themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
@@ -80,11 +80,13 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .theme h3 small { display: block; margin-top: 3px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
 .theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #e8e0d1; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #d8cfc0; --t-linehi: #bdb3a3; --t-accent: #7e5a00; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
 .theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #f0956a; --t-warnsoft: #34231b; --t-bad: #ff8c96; --t-badsoft: #3a1b22; --t-info: #8fb1ff; --t-infosoft: #1d2540; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
-.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
-.sw { display: grid; gap: 6px; }
-.sw i { display: block; height: 56px; border-radius: var(--jsal-radius); border: 1px solid var(--t-line); }
+.swatches { display: grid; gap: 8px; }
+.sw { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 0 12px; }
+.sw i { display: block; grid-row: span 2; height: 40px; border-radius: var(--jsal-radius); border: 1px solid var(--t-line); }
 .sw b { font-size: 13px; font-weight: 600; }
 .sw code { display: block; padding: 0; background: none; color: var(--t-muted); font-size: 12px; }
+.sw code:nth-of-type(2) { grid-column: 3; grid-row: 1; }
+.sw small { grid-column: 2 / -1; }
 .sw small { display: block; font-size: 12px; line-height: 1.35; color: var(--t-muted); }
 .theme .group { margin: 18px 0 8px; font: 600 12px/1.4 var(--jsal-font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--t-muted); }
 .theme .group:first-of-type { margin-top: 0; }
@@ -146,7 +148,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .ref-row { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 8px 16px; align-items: center; }
 .ref-row > span { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-muted); }
 .ref-row > div { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
-.ref-row > div.checks { display: grid; margin: 0; }
+.ref-row > div.checks { display: grid; align-items: stretch; margin: 0; }
 .ref .stack, .ref-row > div.stack { display: grid; gap: 10px; justify-items: start; }
 .ref .stack .ans, .ref .stack .chk { justify-self: stretch; }
 .aside { font-size: 13px; color: var(--jsal-muted); }
@@ -156,7 +158,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .ref-rules .no dt { color: var(--jsal-bad); }
 .ref-rules dd { margin: 0; font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
 .dd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.do, .dont { display: grid; gap: 10px; align-content: start; padding: 14px 16px; border-top: 3px solid var(--jsal-ok); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
+.do, .dont { display: grid; grid-template-rows: auto 1fr auto; gap: 10px; align-items: start; padding: 14px 16px; border-top: 3px solid var(--jsal-ok); border-radius: var(--jsal-radius); background: var(--jsal-bg); }
 .dont { border-top-color: var(--jsal-bad); }
 .do > b, .dont > b { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--jsal-ok); }
 .dont > b { color: var(--jsal-bad); }
@@ -185,7 +187,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .tick input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: var(--jsal-accent); cursor: pointer; }
 .tick input:focus-visible { outline: none; }
 /* A question that takes several answers: the same ticks as a list (cms-picker .qz-checks) */
-.checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 8px; margin-bottom: 14px; }
+.checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
 .checks .tick { width: auto; }
 .tick b { display: block; font-size: 15px; font-weight: 600; }
 .tick small { display: block; color: var(--jsal-muted); font-size: 13px; }
@@ -252,8 +254,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .div { max-width: 36em; padding-top: 14px; border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
 .div b { display: block; margin-bottom: 2px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 /* The tool icons, one family with the logo */
-.icons { display: flex; flex-wrap: wrap; gap: 14px 22px; margin: 4px 0 16px; padding: 0; list-style: none; }
-.icons li { display: grid; justify-items: center; gap: 6px; width: 84px; font-size: 12px; line-height: 1.35; text-align: center; color: var(--jsal-muted); }
+.icons { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px 12px; margin: 4px 0 16px; padding: 0; list-style: none; }
+.icons li { display: grid; justify-items: center; align-content: start; gap: 6px; font-size: 12px; line-height: 1.35; text-align: center; color: var(--jsal-muted); }
 .icons img { display: block; width: 48px; height: 48px; }
 
 /* Motion (07) */
@@ -265,13 +267,13 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .ring { box-shadow: var(--jsal-focus-ring); }
 
 /* Accessibility (08) */
-.a11y { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
-.a11y li { padding: 16px 18px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
+.a11y { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.a11y li { display: flex; flex-direction: column; padding: 16px 18px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
 .a11y b { display: block; margin-bottom: 4px; color: var(--jsal-ink); font-size: 15px; }
-.a11y small { display: block; margin-top: 8px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
+.a11y small { display: block; margin-top: auto; padding-top: 8px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 
 /* In practice (09): the live pages, as a grid of equal link tiles */
-.live { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.live { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
 .sec .live li + li { margin-top: 0; }
 .live a { display: grid; gap: 4px; height: 100%; box-sizing: border-box; padding: 14px 16px; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); font-weight: 500; text-decoration: none; }
 .live a:hover { border-color: var(--jsal-hover-line); }
@@ -281,6 +283,10 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 footer.end { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--jsal-line); display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; font-size: 13px; color: var(--jsal-muted); }
 footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
+@media (max-width: 999px) { .a11y { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 719px) { .principles, .a11y { grid-template-columns: minmax(0, 1fr); } .live { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 599px) { .icons { grid-template-columns: repeat(3, minmax(0, 1fr)); } .checks { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 479px) { .live { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 720px) { .hero { padding-top: 32px; } .sec { padding-top: 40px; } .roles td:first-child { white-space: normal; } .jsal-top nav { display: none; } .ans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }   /* the contents list below does the nav's job on a phone */
 @media (max-width: 560px) { .ref-row, .dd { grid-template-columns: minmax(0, 1fr); } .ref { padding: 16px; } .verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: 16px; } .verdict .jump { margin-top: 8px; } }
 @media (pointer: coarse) { .cta, .chip, .chk, .chip-link, .tick, .fgdemo a, .ans button { min-height: 44px; } .chip, .chip-link, .fgdemo a { display: inline-flex; align-items: center; } }
@@ -350,9 +356,9 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><b>The top bar never moves</b><span>Every page carries the same top-bar markup, so the logo and theme button stay put during page transitions while the rest of the page changes around them.</span><small>check.py compares the markup</small></li>
       <li><b>Gold where it matters</b><span>One accent, kept loud by spending it only on selected states, the main action, the one insight line, brand touches and the site's own links. Never on hover.</span><small>check.py fails gold on hover</small></li>
       <li><b>Words over widgets</b><span>Plain tags ("Built in", "Needs code") and plain states ("not verified", and "*" for varies, spelled out in the key and for screen readers) carry the meaning; colour reinforces, it never explains alone. Instructions swap "click" for "tap" on touch screens.</span><small>nav.js · data-touch</small></li>
-      <li><b>Motion that steps aside</b><span>Short, physical transitions (0.12 to 0.3s), every one with a reduced-motion fallback, and nothing moving on its own for more than five seconds.</span><small>check.py · WCAG 2.2.2</small></li>
+      <li><b>Motion that steps aside</b><span>Two timings, 0.15s for a change and 0.3s for a move, every one with a reduced-motion fallback, and nothing moving on its own for more than five seconds.</span><small>check.py · WCAG 2.2.2</small></li>
       <li><b>Everything stays in the browser</b><span>Files, pasted documents and settings never leave the device; the only thing sent anywhere is basic analytics, and in Europe only with consent. The design makes the promise visible ("Nothing is uploaded") on every tool.</span><small>/privacy/</small></li>
-      <li><b>Checked, not assumed</b><span>Contrast, fonts, button corners, touch sizes and page markup are verified by scripts before each push; axe runs on every page in both themes. Design rules live in the repo next to the code they govern.</span><small>build\check.ps1</small></li>
+      <li><b>Checked, not assumed</b><span>Contrast, fonts, text sizes, corners, timings, touch sizes and page markup are verified by scripts before each push; axe runs on every page in both themes. Design rules live in the repo next to the code they govern.</span><small>build\check.ps1</small></li>
     </ul>
   </section>
 
@@ -741,14 +747,14 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h2>Built in, and checked before every push.</h2>
     <p class="intro">Accessibility here is a set of rules in the code and scripts that enforce them, not a review done once. The latest independent audit (axe-core 4.10 against WCAG 2.2 AA, both themes, 320 to 1440px) found no failures; John's own keyboard and NVDA testing covers what automated checks can't.</p>
     <ul class="a11y">
-      <li><b>Contrast</b>Every text/background pair at least 4.5:1, graphics people need to see at 3:1. Light-mode gold text is <code>#7e5a00</code> for that reason; the brighter <code>#e3b04b</code> is only a fill or text over images.<small>tokens · axe</small></li>
-      <li><b>Touch targets</b>On touch screens every control is at least 44px tall; the top bar's 32px theme button carries a 44px tap area. Desktop targets are at least 24px.<small>pointer: coarse</small></li>
-      <li><b>No zoom surprises</b>Text fields are 16px on touch screens, so iPhones don't zoom into them and leave the page zoomed.<small>shell.css</small></li>
-      <li><b>Keyboard</b>Every control reachable, one visible focus ring, Esc closes menus and tooltips, Ctrl+Enter saves, Tab order follows the screen on the home page's bento.<small>NVDA-tested 30 Oct 2026</small></li>
-      <li><b>Wording for the device</b>Instructions that say click, drop or name a shortcut carry a touch version, swapped in on touch screens ("tap one to change it").<small>data-touch</small></li>
-      <li><b>Motion</b>Every animation has a reduced-motion fallback; nothing moves on its own beyond five seconds (WCAG 2.2.2).<small>check.py</small></li>
-      <li><b>Screen readers</b>Live regions for check summaries and copy results; headings that read as sentences; hidden text where a tag alone would be ambiguous ("(not verified)").<small>aria-live · .sr-only</small></li>
-      <li><b>Responsive</b>Reflows at 320px with no horizontal scroll; the comparison table becomes cards; tooltips stay inside the window.<small>browser-check.mjs at 375 and 390px</small></li>
+      <li><b>Contrast</b><span>Every text/background pair at least 4.5:1, graphics people need to see at 3:1. Light-mode gold text is <code>#7e5a00</code> for that reason; the brighter <code>#e3b04b</code> is only a fill or text over images.</span><small>tokens · axe</small></li>
+      <li><b>Touch targets</b><span>On touch screens every control is at least 44px tall; the top bar's 32px theme button carries a 44px tap area. Desktop targets are at least 24px.</span><small>pointer: coarse</small></li>
+      <li><b>No zoom surprises</b><span>Text fields are 16px on touch screens, so iPhones don't zoom into them and leave the page zoomed.</span><small>shell.css</small></li>
+      <li><b>Keyboard</b><span>Every control reachable, one visible focus ring, Esc closes menus and tooltips, Ctrl+Enter saves, Tab order follows the screen on the home page's bento.</span><small>NVDA-tested 30 Oct 2026</small></li>
+      <li><b>Wording for the device</b><span>Instructions that say click, drop or name a shortcut carry a touch version, swapped in on touch screens ("tap one to change it").</span><small>data-touch</small></li>
+      <li><b>Motion</b><span>Every animation has a reduced-motion fallback; nothing moves on its own beyond five seconds (WCAG 2.2.2).</span><small>check.py</small></li>
+      <li><b>Screen readers</b><span>Live regions for check summaries and copy results; headings that read as sentences; hidden text where a tag alone would be ambiguous ("(not verified)").</span><small>aria-live · .sr-only</small></li>
+      <li><b>Responsive</b><span>Reflows at 320px with no horizontal scroll; the comparison table becomes cards; tooltips stay inside the window. Checked at 375 and 390px.</span><small>browser-check.mjs</small></li>
     </ul>
     <p class="note" style="margin-top:20px">Declined on purpose: a skip link. The pages have about five Tab stops before the content and the top bar must stay identical everywhere, so the cost outweighed the gain.</p>
   </section>
