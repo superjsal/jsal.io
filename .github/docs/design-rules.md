@@ -73,7 +73,7 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   blue = with an add-on or indirectly, terracotta = needs code, red = not possible. It reads as one scale
   wherever it appears, so a single tag's colour isn't a warning or information on its own.
 - **Other roles:** green = fit or success; terracotta = a genuine warning (a missing or stale source, "may look
-  blurry"); red (`--jsal-bad`) = not possible, and destructive actions (Clear, Remove); blue = information (a
+  blurry"); red (`--jsal-bad`) = not possible, destructive actions (Clear, Remove), and an action that failed (`.jsal-error`); blue = information (a
   note, something in flight such as "waiting for publish") and links inside a tool's content (Clean Paste's
   editor, the Playbook's "How to" and sources); neutral for everything else (labels, type badges, icons, cost
   bands, states such as "not verified" or "unclear"). The team Playbook follows the same roles.
