@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=da3b22b3";
-import { FORMATS, byId } from "./formats.js?v=5a99f0ac";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=b9ac0a2d";
+import { FORMATS, byId } from "./formats.js?v=532d3ed5";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -8,8 +8,10 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 const store = { get: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} } };
 
 let table = null;        // what was loaded: { raw, name, pick }
-let rows = [];           // { id, old, new, old0, new0, added, deleted }
-let nextId = 1, filter = "all", part = 0, result = null, cleared = null, used = false;
+let rows = [];           // { id, n, old, new, old0, new0, added, deleted, skip }
+// n is the row's number in the visitor's spreadsheet (headings are row 1), kept when rows are deleted; rows added
+// here number on from the last
+let nextId = 1, lastN = 0, filter = "all", part = 0, result = null, cleared = null, used = false, missing = 0;
 // Rows worked on since a filter was picked stay on screen, as in a spreadsheet, so a row being fixed under
 // "Needs you" doesn't vanish mid-word; picking a filter again applies it afresh
 const stay = new Set();
@@ -25,7 +27,7 @@ const sepShown = (s) => s.replace(/\t/g, "\\t");
 
 const groups = [...new Set(FORMATS.map((f) => f.group))];
 $("platform").innerHTML = groups.map((g) => `<optgroup label="${esc(g)}">${FORMATS.filter((f) => f.group === g)
-  .map((f) => `<option value="${f.id}">${esc(f.name)}</option>`).join("")}</optgroup>`).join("");
+  .map((f) => `<option value="${f.id}">${esc(f.label || f.name)}</option>`).join("")}</optgroup>`).join("");
 $("platform").value = fmt.id;
 $("platform").addEventListener("change", (e) => {
   fmt = byId(e.target.value); opts = defaults(fmt); part = 0;
@@ -43,7 +45,8 @@ function load(raw, name) {
 }
 function build() {
   const { raw, pick } = table;
-  rows = raw.slice(pick.header ? 1 : 0).map((r) => row(r[pick.o], r[pick.n]));
+  lastN = 0;
+  rows = raw.slice(pick.header ? 1 : 0).map((r, i) => row(r[pick.o], r[pick.n], false, (r.at ?? i + (pick.header ? 1 : 0)) + 1));
   part = 0;
   const label = (i) => `${colLetter(i)}${pick.names[i] ? ": " + pick.names[i] : ""}`;
   $("cols").hidden = pick.width < 3;
@@ -53,9 +56,10 @@ function build() {
   }
   show();
 }
-function row(o = "", n = "", added = false) {
+function row(o = "", n = "", added = false, num = lastN + 1) {
   o = tidy(o); n = tidy(n);
-  const r = { id: nextId++, old: o, new: n, old0: o, new0: n, added };
+  lastN = Math.max(lastN, num);
+  const r = { id: nextId++, n: num, old: o, new: n, old0: o, new0: n, added };
   if (added) stay.add(r.id);
   return r;
 }
@@ -68,7 +72,7 @@ function show() {
   app.classList.add("has-content");
   tbody.innerHTML = "";
   const all = document.createDocumentFragment();
-  rows.forEach((r) => all.append(rowEl(r)));
+  rows.forEach((r) => { if (!r.deleted) all.append(rowEl(r)); });
   tbody.append(all);
   if (!used) { used = true; window.jsalUsed?.(); }
   place();
@@ -84,6 +88,7 @@ async function readFile(file) {
     if (/\.xlsx$/i.test(name)) {
       const { readXlsx } = await import("./xlsx.js?v=8b577352");
       const book = await readXlsx(await file.arrayBuffer());
+      book.rows.forEach((r, i) => (r.at = i));   // each row's place in the sheet, for its number
       return load(book.rows.filter((r) => r.some((c) => tidy(c))), name + (book.name ? ` · sheet ${book.name}` : ""));
     }
     const bytes = new Uint8Array(await file.arrayBuffer());
@@ -101,6 +106,7 @@ $("otherFile").addEventListener("click", () => $("fileInput").click());
 $("fileInput").addEventListener("change", (e) => { const f = e.target.files[0]; e.target.value = ""; if (f) readFile(f); });
 $("blankSheet").addEventListener("click", () => {
   table = { raw: [], name: "", pick: { o: 0, n: 1, header: false, width: 2, names: [] } };
+  lastN = 0;
   rows = [row(), row(), row()];
   $("cols").hidden = true;
   show();
@@ -227,6 +233,13 @@ tbody.addEventListener("click", (e) => {
     (next?.querySelector(".del") || $("addRow")).focus();
     return;
   }
+  // Leaving a row out keeps it in the sheet, grey, with a way to put it back
+  if (b.hasAttribute("data-skip") || b.hasAttribute("data-unskip")) {
+    r.skip = b.hasAttribute("data-skip");
+    update();
+    (tr.querySelector("[data-unskip]") || tr.querySelector(".cell")).focus({ focusVisible: !e.detail });   // a ring for the keyboard only
+    return;
+  }
   if (b.dataset.fix) {
     const [cell, ni, fi] = b.dataset.fix.split(":");
     const note = it.notes.filter((x) => x.cell === cell)[+ni];
@@ -248,11 +261,57 @@ function addRow() {
 $("addRow").addEventListener("click", () => { const r = addRow(); rowOf(r).querySelector(".cell").focus(); });
 $("undoAll").addEventListener("click", () => {
   rows = rows.filter((r) => !r.added);
-  for (const r of rows) { r.old = r.old0; r.new = r.new0; r.deleted = false; }
+  for (const r of rows) { r.old = r.old0; r.new = r.new0; r.deleted = r.skip = false; }
   show();
 });
+// Copy sheet: the two columns as they are now, tab-separated, to paste back over the source spreadsheet, so its
+// fixes aren't lost the next time the sheet is exported
+$("copySheet").addEventListener("click", async (e) => {
+  const q = (s) => (/[\t\n"]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
+  const { pick } = table, names = pick.header && [pick.names[pick.o] || "", pick.names[pick.n] || ""];
+  const lines = rows.filter((r) => !r.deleted && !r.skip && (tidy(r.old) || tidy(r.new))).map((r) => [r.old, r.new]);
+  const text = (names ? [names, ...lines] : lines).map((l) => l.map(q).join("\t")).join("\n") + "\n";
+  const err = $("sheetError"), btn = e.currentTarget;   // read before the await, after which it's gone
+  err.hidden = true;
+  try { await navigator.clipboard.writeText(text); window.jsalDone?.(btn, "Copied"); }
+  catch (x) { err.textContent = "This browser didn’t allow copying. Try again, or allow clipboard access for this site."; err.hidden = false; }
+});
+
+// The sheet is kept in this browser as it's worked on, and comes back after a reload; Clear forgets it
+const KEEP = "jsal-redirects-sheet";
+let keepTimer = 0;
+function save() {
+  clearTimeout(keepTimer); keepTimer = 0;
+  if (!table) return;
+  let ok = false;
+  try {
+    localStorage.setItem(KEEP, JSON.stringify({ name: table.name, pick: table.pick, platform: fmt.id, opts,
+      // A row's address as loaded is kept only where it was edited, which halves a big sheet
+      rows: rows.map((r) => [r.old, r.new, r.old0 === r.old ? null : r.old0, r.new0 === r.new ? null : r.new0, r.added ? 1 : 0, r.deleted ? 1 : 0, r.skip ? 1 : 0, r.n]) }));
+    ok = true;
+  } catch (e) {}   // storage off or full: the sheet still works, it just isn't kept
+  $("kept").hidden = !ok;
+}
+function keep() { clearTimeout(keepTimer); keepTimer = setTimeout(save, 300); }
+addEventListener("pagehide", () => { if (keepTimer) save(); });
+function forget() { clearTimeout(keepTimer); keepTimer = 0; try { localStorage.removeItem(KEEP); } catch (e) {} $("kept").hidden = true; }
+function restore() {
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem(KEEP)); } catch (e) {}
+  if (!d?.rows?.length || !d.pick) return;
+  table = { raw: [], name: d.name || "", pick: d.pick };
+  rows = d.rows.map(([o, n, o0, n0, a, del, skip, num], i) => ({ id: nextId++, n: num ?? i + 1, old: o, new: n, old0: o0 ?? o, new0: n0 ?? n, added: !!a, deleted: !!del, skip: !!skip }));
+  lastN = Math.max(0, ...rows.map((r) => r.n));
+  if (d.platform === fmt.id && d.opts) opts = { ...opts, ...d.opts };
+  $("cols").hidden = true;   // the other columns weren't kept, so there's nothing to switch to
+  used = true;               // coming back to a sheet isn't a new use of the tool
+  show();
+  $("kept").hidden = false;
+}
+
 $("clearBtn").addEventListener("click", () => {
   cleared = { table, rows };
+  forget();
   table = null; rows = []; tbody.innerHTML = "";
   app.classList.remove("has-content");
   $("undoClear").hidden = $("undoSep").hidden = false;
@@ -261,10 +320,12 @@ $("clearBtn").addEventListener("click", () => {
 function undoClear() {
   ({ table, rows } = cleared);
   cleared = null;
+  lastN = Math.max(0, ...rows.map((r) => r.n));
   $("undoClear").hidden = $("undoSep").hidden = true;
   show();
 }
 
+$("filterEmpty").addEventListener("click", (e) => { if (e.target.closest("[data-show-all]")) $("filter").querySelector('[data-filter="all"]').click(); });
 for (const b of $("filter").children) b.addEventListener("click", () => {
   filter = b.dataset.filter;
   stay.clear();
@@ -275,8 +336,12 @@ for (const b of $("filter").children) b.addEventListener("click", () => {
 // The notes under one cell: what's wrong and its fixes, what the file does with it, and Undo
 function notesHtml(r, it, cell) {
   const field = cell === "o" ? "old" : "new";
-  let h = it.notes.filter((x) => x.cell === cell).map((x, i) => `<p class="note ${x.kind}">${x.text}</p>` + (x.fixes?.length
-    ? `<div class="fixes">${x.fixes.map(([label, f, preview], j) => `<button type="button" class="jsal-btn small" data-fix="${cell}:${i}:${j}">${esc(label)}${preview && f(r[field]).length <= 48 ? ": " + esc(f(r[field])) : ""}</button>`).join("")}</div>` : "")).join("");
+  let h = it.notes.filter((x) => x.cell === cell).map((x, i) => {
+    const btns = (x.fixes || []).map(([label, f, preview], j) => `<button type="button" class="jsal-btn small" data-fix="${cell}:${i}:${j}">${esc(label)}${preview && f(r[field]).length <= 48 ? ": " + esc(f(r[field])) : ""}</button>`)
+      .concat(x.leave ? `<button type="button" class="jsal-btn small" data-skip>${esc(x.leave)}</button>` : []);
+    const back = x.group === "skip" ? ` · <button type="button" class="jsal-btn link" data-unskip>Put it back</button>` : "";
+    return `<p class="note ${x.kind}">${x.text}${back}</p>` + (btns.length ? `<div class="fixes">${btns.join("")}</div>` : "");
+  }).join("");
   if (!r.added && r[field] !== r[field + "0"]) h += `<p class="note edited">Edited · <button type="button" class="jsal-btn link" data-undo="${field}">Undo</button></p>`;
   return h;
 }
@@ -293,7 +358,7 @@ function update() {
   const live = rows.filter((r) => !r.deleted);
   result = analyse(live, fmt, opts);
   const count = { all: 0, ready: 0, check: 0, bad: 0, out: 0 };
-  live.forEach((r, i) => {
+  live.forEach((r) => {
     const it = result.items.get(r.id), tr = rowOf(r);
     if (!tr) return;
     const st = it.state;
@@ -301,31 +366,36 @@ function update() {
     // A long sheet redraws only the rows whose state, number, notes or visibility changed
     const html = { o: notesHtml(r, it, "o"), n: notesHtml(r, it, "n") };
     const shown = filter === "all" || GROUP[st] === filter || stay.has(r.id);
-    const sig = `${st}|${i}|${shown}|${html.o}|${html.n}`;
+    const sig = `${st}|${r.n}|${shown}|${html.o}|${html.n}`;
     if (tr.dataset.sig === sig) return;
     tr.dataset.sig = sig;
     tr.className = st;
     tr.hidden = !shown;
-    tr.querySelector(".n").textContent = i + 1;
+    tr.querySelector(".n").textContent = r.n;
     const dot = tr.querySelector(".dot");
     dot.className = "dot " + (GROUP[st] === "ready" ? "ok" : st);   // ok, warn, bad or out
     dot.innerHTML = `<span aria-hidden="true">${SAY[st][0]}</span><span class="sr-only">${SAY[st][1]}</span>`;
-    tr.querySelector(".del").setAttribute("aria-label", `Delete row ${i + 1}`);
+    tr.querySelector(".del").setAttribute("aria-label", `Delete row ${r.n}`);
     for (const [cell, field, label] of [["o", "old", "Old address"], ["n", "new", "New address"]]) {
       const input = tr.querySelector(`[data-cell="${field}"]`);
-      input.setAttribute("aria-label", `${label}, row ${i + 1}`);
+      input.setAttribute("aria-label", `${label}, row ${r.n}`);
       input.setAttribute("aria-invalid", it.notes.some((x) => x.cell === cell && x.kind === "bad"));
       const box = tr.querySelector(`#r${cell}${r.id}`);
       if (box.dataset.h !== html[cell]) { box.innerHTML = html[cell]; box.dataset.h = html[cell]; }
     }
   });
   for (const b of $("filter").children) b.querySelector("span").textContent = count[b.dataset.filter];
+  missing = count.bad;
   $("filterEmpty").hidden = live.some((r) => !r.el.hidden);
+  // An empty Needs you is the job done, so it says so, with the way back to the whole sheet
+  const empty = filter === "bad" ? `Nothing needs you now. <button type="button" class="jsal-btn link" data-show-all>Show all rows</button>` : "No rows here.";
+  if ($("filterEmpty").dataset.h !== empty) { $("filterEmpty").innerHTML = empty; $("filterEmpty").dataset.h = empty; }
   overview(live);
   $("summary").innerHTML = `<b>${count.ready} ready</b>` + (count.check ? ` · ${count.check} to check` : "") + (count.bad ? ` · ${count.bad} need you` : "") + (count.out ? ` · ${count.out} left out` : "");
   $("sheetMeta").textContent = [table.name, `${count.all} row${count.all === 1 ? "" : "s"}`, table.pick.header && "headings skipped"].filter(Boolean).join(" · ");
   $("undoAll").hidden = !rows.some((r) => r.added || r.deleted || r.old !== r.old0 || r.new !== r.new0);
   renderFile();
+  keep();
 }
 
 // Above the sheet: the routine changes said once rather than on every row, and any problem on two or more rows
@@ -402,7 +472,7 @@ function showWhere() {
 function renderFile() {
   const { w, p, head } = fileText();
   part = Math.min(part, p.length - 1);
-  $("fileName").textContent = fileName(part, p.length);
+  $("fileName").textContent = $("fileName").title = fileName(part, p.length);   // the title shows it in full when it's cut short
   $("parts").hidden = p.length < 2;
   if (p.length > 1) {
     $("parts").innerHTML = p.map((_, i) => `<button type="button" data-part="${i}" aria-pressed="${i === part}" aria-label="Part ${i + 1} of ${p.length}">${i + 1}</button>`).join("");
@@ -450,14 +520,34 @@ function renderFile() {
   // Squarespace's lines are pasted, so Copy is the main action there
   $("copyBtn").classList.toggle("primary", !!fmt.paste);
   $("downloadBtn").classList.toggle("primary", !fmt.paste);
-  // Both buttons name what they take: the file on the right, or the part of it on show
-  $("downloadBtn").textContent = p.length > 1 ? `Download part ${part + 1}` : "Download file";
-  $("copyBtn").textContent = p.length > 1 ? `Copy part ${part + 1}` : "Copy file";
-  $("copyBtn").disabled = $("downloadBtn").disabled = !result.ready.length;
+  // Both buttons name what they take: the file on the right, the part of it on show, or how many of the rows it holds
+  // while some still need fixing, so a partial file is never mistaken for the whole sheet
+  const inFile = result.ready.length, of = missing && inFile ? ` ${inFile} of ${inFile + missing}` : "";
+  $("downloadBtn").textContent = p.length > 1 ? `Download part ${part + 1}` : of ? "Download" + of : "Download file";
+  $("copyBtn").textContent = p.length > 1 ? `Copy part ${part + 1}` : of ? "Copy" + of : "Copy file";
+  $("copyBtn").disabled = $("downloadBtn").disabled = !inFile;
+  const one = missing === 1;
+  const gone = missing ? `<span class="count">${plural(missing, "row", "rows")}</span> ${one ? "needs" : "need"} fixing before ${one ? "it goes" : "they go"} in the file. <button type="button" class="jsal-btn link" data-needs-you>Fix ${one ? "it" : "them"}</button>` : "";
+  if ($("fileMissing").dataset.h !== gone) { $("fileMissing").innerHTML = gone; $("fileMissing").dataset.h = gone; }
+  $("fileMissing").hidden = !missing;
+  $("fileDoneText").textContent = `All ${plural(inFile, "redirect is", "redirects are")} in the file.`;
+  $("fileDone").hidden = !!missing || !inFile;
+  $("foldCount").textContent = of ? `${inFile} of ${inFile + missing}` : inFile;
+  $("foldRows").textContent = `${(of ? inFile + missing : inFile) === 1 ? "row" : "rows"} in it`;
+  $("foldBad").textContent = `${missing} to fix`;
+  $("foldBad").hidden = !missing;
 }
 
 // ── The file pane's controls ───────────────────────────────────────────────
 
+// "Fix them": the sheet filtered to the rows that need you, with the first of them ready to edit
+$("fileMissing").addEventListener("click", (e) => {
+  if (!e.target.closest("[data-needs-you]")) return;
+  $("filter").querySelector('[data-filter="bad"]').click();
+  if (work.dataset.view === "file") $("viewSheet").click();
+  const tr = [...tbody.rows].find((x) => !x.hidden);
+  (tr?.querySelector('.cell[aria-invalid="true"]') || tr?.querySelector(".cell"))?.focus();
+});
 $("parts").addEventListener("click", (e) => { const b = e.target.closest("[data-part]"); if (b) { part = +b.dataset.part; renderFile(); } });
 $("fmtBtn").addEventListener("click", () => {
   const open = $("fmt").hidden;
@@ -497,7 +587,8 @@ function output(action) {
   return { text, name: fileName(part, p.length) };
 }
 $("copyBtn").addEventListener("click", async (e) => {
-  try { await navigator.clipboard.writeText(output("copy").text); window.jsalDone?.(e.currentTarget, "Copied"); }
+  const btn = e.currentTarget;   // read before the await, after which it's gone
+  try { await navigator.clipboard.writeText(output("copy").text); window.jsalDone?.(btn, "Copied"); }
   catch (err) { $("fileText").focus(); }
 });
 $("downloadBtn").addEventListener("click", (e) => {
@@ -510,6 +601,17 @@ $("downloadBtn").addEventListener("click", (e) => {
   window.jsalDone?.(e.currentTarget, "Downloaded");
 });
 
+// Hiding the file gives the sheet the width on a laptop screen; the choice is remembered for next time
+function fold(on) {
+  work.classList.toggle("folded", on);
+  store.set("jsal-redirects-folded", on ? "1" : "");
+}
+// Focus follows to the other button, which takes the place of the one pressed; its ring shows only for the keyboard
+// (a click's detail counts the presses, and is 0 from Enter or Space)
+$("foldBtn").addEventListener("click", (e) => { fold(true); $("unfoldBtn").focus({ focusVisible: !e.detail }); });
+$("unfoldBtn").addEventListener("click", (e) => { fold(false); $("foldBtn").focus({ focusVisible: !e.detail }); });
+if (store.get("jsal-redirects-folded") === "1") fold(true);
+
 // Phones show one pane at a time
 for (const b of [$("viewSheet"), $("viewFile")]) b.addEventListener("click", () => {
   work.dataset.view = b === $("viewFile") ? "file" : "sheet";
@@ -521,6 +623,7 @@ function place() { work.style.setProperty("--work-top", `${Math.round(work.getBo
 addEventListener("resize", () => { if (table) place(); });
 
 showWhere();
+restore();
 
 const EXAMPLE = `Old URL\tNew URL
 https://www.oldsite.com/about-us/\thttps://www.newsite.com/pages/about

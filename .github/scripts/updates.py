@@ -50,7 +50,7 @@ def latest():
 
 
 def render(nl, indent):
-    # The cards overlap, so they carry no links (each tool has its own tile); sorted() is stable, so a tie keeps SECTIONS order
+    # Plain rows without links (each tool has its own tile, and the heading's line links the changelog); sorted() is stable, so a tie keeps SECTIONS order
     shown = sorted((x for x in latest() if x[1]), key=lambda x: x[1][1], reverse=True)[:SHOWN]
     lines = [indent + '<ul class="upd">']
     for name, e in shown:

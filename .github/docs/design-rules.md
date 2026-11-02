@@ -148,21 +148,27 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   intro (two columns, at the shared distance under the bar) beside the CMS Picker (four); the Image Resizer (four)
   and Clean Paste (two); Say hi (two) and Updates (four). From 1279px down the intro, the CMS Picker, the Image
   Resizer and Updates take the full width and Clean Paste sits beside Say hi; that bento holds down to 600px, so a
-  phone on its side keeps it, and only upright phones get one column. Tab order follows the screen.
+  phone on its side keeps it, and only upright phones get one column. Tab order follows the screen. Every tool tile
+  reads the same way at every width: its name and one line at the top left, then the picture.
   - **Each tile** is its soft tint (CMS Picker lilac, Image Resizer teal, Clean Paste honey; Say hi and Updates
     plain) with its name in Lora in a deep shade of the tint, and a real-looking piece of its tool drawn in the
     tools' own colours (`--jsal-surface`, ink and lines, so it changes with the theme as the tool does): the CMS
-    Picker a tilted brick of one card per platform, each in that platform's own colours, logos only; the Image
-    Resizer its crop editor (the box spans the photo at the output's shape and slides one way, as the tool's
-    does) and output list; Clean Paste its clean HTML with a "Copied" status; Say hi an email draft; Updates the
-    newest change in each of the three most recently changed parts as a stack of notes, written from the changelog
-    by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
-  - **Each tool tile has its app icon as a watermark**, drawn large in the tile's ink at 14% with the gem in solid
-    gold, behind the tile's picture and never under its words (the CMS Picker's podium tilted like its cards, beside
+    Picker a tilted brick of one key per platform, each in that platform's own colours with a darker edge under it, logos
+    only; the Image
+    Resizer its crop editor and the files it made from that one photo (the box takes each size's shape in
+    turn and each size lands in the output list); Clean Paste its Text | HTML switch over a short raid note, resting halfway through its wipe (the formatted text left of a gold line, its HTML right of it, as the switch reads); Say hi an email draft; Updates the
+    newest change in each of the three most recently changed parts as a plain list under its heading (rows with a
+    rule between them, never cards, as they aren't links; nothing tilted, as people read them), written from the
+    changelog by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
+  - **Each tool tile has its app icon as a watermark**, drawn large in the tile's ink at 7% with the gem in gold at
+    35%, a texture that never draws the eye before the picture, behind the tile's picture and never under its words (the CMS Picker's podium tilted like its cards, beside
     and under them, and upright over its name on phones on their side); set per breakpoint, and hidden on upright phones. Updates has one too, a faint stack of notes with the gem on the
     newest, over its words; Say hi stays plain.
   - **Breakouts:** a piece may poke a little past its tile (about 14px at most), never within 16px of another
-    tile, and two breakouts never crowd each other. Mix straight and tilted pieces.
+    tile, never into the page's side gutter (nothing reaches past the column at any width, and the column's gutter
+    widens for a notch: `viewport-fit=cover` with the safe-area insets), and two breakouts never crowd each other.
+    So a tile on the column's edge pokes up, down or towards its neighbour, and a piece is either inside its tile or
+    clearly out of it, never sitting across its edge. Mix straight and tilted pieces.
   - **The pictures are decoration** (`aria-hidden`): each tile's link reads as its name and line, and Say hi's
     as "Say hi by email". Tiles have a least height, not a fixed one, and the words keep room clear of the
     pictures, so enlarged or spaced-out text grows the tile instead of sliding under a picture (WCAG 1.4.12).
@@ -209,9 +215,11 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`. Use these instead 
   rises in, Back runs it downwards, and the top bar cross-fades in place. Only `shell.css` names
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.
 - **The home page's pictures move only when asked:** pointing at a tile or focusing it plays what its tool does
-  three times, then it rests as the still picture (the cards wave with none singled out, the crop box slides the
-  one way the tool lets it, the clean HTML and the email type themselves). Touch screens play each one once, when
-  its tile reaches the middle of the screen. Updates stays still.
+  three times, then it rests as the still picture (the CMS Picker plays three needs in turn instead, each named in a
+  pill and pressing the three keys the real quiz ranks first for it, so no platform is favoured; the crop box takes
+  each size's shape in turn, the formatted text wipes into its HTML and the email types itself). Touch screens play each one once, when
+  its tile reaches the middle of the screen (the CMS Picker one need, picked at random). Updates stays still. When the
+  quiz's scoring changes, check the three needs still light its top three.
 - Nothing moves on its own for more than 5 seconds (WCAG 2.2.2): the home pictures' one play on touch screens takes
   under 3 seconds.
 

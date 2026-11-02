@@ -65,20 +65,20 @@
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update -->
   <link rel="stylesheet" href="/shell.css?v=df5ef931">
-  <link rel="stylesheet" href="styles.css?v=12a3ad89" />
+  <link rel="stylesheet" href="styles.css?v=ef6bc056" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":    "./js/main.js?v=b3e9ab95",
-        "./js/core.js":    "./js/core.js?v=da3b22b3",
-        "./js/formats.js": "./js/formats.js?v=5a99f0ac",
+        "./js/main.js":    "./js/main.js?v=e9070cfb",
+        "./js/core.js":    "./js/core.js?v=b9ac0a2d",
+        "./js/formats.js": "./js/formats.js?v=532d3ed5",
         "./js/xlsx.js":    "./js/xlsx.js?v=8b577352"
       }
     }
   </script>
   <!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app's modules have loaded -->
   <script src="/nav.js?v=4ae8b3c7" defer></script>
-  <script type="module" src="js/main.js?v=b3e9ab95"></script>
+  <script type="module" src="js/main.js?v=e9070cfb"></script>
 </head>
 <body>
   <main class="app" id="app">
@@ -153,10 +153,14 @@
         </div>
         <div class="pane-foot">
           <button type="button" class="jsal-btn link" id="addRow">Add a row</button>
-          <button type="button" class="jsal-btn link" id="undoAll" hidden>Undo all my edits</button>
+          <button type="button" class="jsal-btn link" id="copySheet">Copy sheet</button>
+          <button type="button" class="jsal-btn link" id="undoAll" hidden>Undo my edits</button>
           <button type="button" class="jsal-btn link" id="otherFile">Use another file</button>
+          <!-- The sheet is kept in this browser until Clear, so a reload or a slip of Back loses nothing -->
+          <span class="kept" id="kept" hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Kept in this browser</span>
           <button type="button" class="jsal-btn link danger" id="clearBtn">Clear</button>
         </div>
+        <p class="jsal-error" id="sheetError" role="alert" hidden></p>
       </section>
 
       <!-- The file as it will be downloaded; the header row is editable, and Format holds the rest -->
@@ -165,7 +169,17 @@
           <h2 class="pane-title mono" id="fileName"></h2>
           <div class="jsal-seg parts" id="parts" aria-label="Part" hidden></div>
           <button type="button" class="fmt-btn" id="fmtBtn" aria-expanded="false" aria-controls="fmt"><span id="fmtSummary"></span> <b>Format</b><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <button type="button" class="fmt-btn fold-btn" id="foldBtn" aria-label="Hide file">Hide<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
         </div>
+        <!-- With the file hidden, the pane folds to a tab that says what's in the file, and the sheet takes the width -->
+        <button type="button" class="fold-tab" id="unfoldBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+          <svg class="fold-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+          <span class="fold-lbl">Show file</span>
+          <span class="fold-num" id="foldCount"></span>
+          <span id="foldRows"></span>
+          <span class="fold-bad" id="foldBad" hidden></span>
+        </button>
         <div class="fmt" id="fmt" hidden>
           <div class="opt" id="optNew"><span>New addresses</span><span class="jsal-seg"><button type="button" data-new="path" aria-pressed="true">Paths</button><button type="button" data-new="url" aria-pressed="false">Full URLs</button></span></div>
           <label class="opt" id="optSite" hidden><span>New site</span><input class="txt" id="newSite" spellcheck="false" autocomplete="off" placeholder="https://www.example.com"></label>
@@ -174,6 +188,9 @@
           <label class="opt" id="optSep"><span>Separator</span><input class="txt short" id="sep" spellcheck="false" autocomplete="off" title="Type \t for a tab"></label>
           <p class="opt-foot"><button type="button" class="jsal-btn link" id="resetFmt" hidden>Back to the platform’s format</button></p>
         </div>
+        <!-- Rows that need fixing aren't in the file, said first so a partial file is never a surprise -->
+        <p class="file-missing" id="fileMissing" hidden></p>
+        <p class="file-done" id="fileDone" hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span id="fileDoneText"></span></p>
         <!-- What could go wrong on this platform's import (a warning), then what's worth knowing -->
         <p class="file-box warn" id="fileWarn" hidden></p>
         <p class="file-box info" id="fileInfo" hidden></p>
@@ -242,7 +259,7 @@
       <dt>Why is my file in parts?</dt>
       <dd>Some platforms take a set number of redirects per import. Import each part in turn.</dd>
       <dt>Is my sheet uploaded anywhere?</dt>
-      <dd>No. It’s read and checked in your browser, and your edits stay in this tab.</dd>
+      <dd>No. It’s read and checked in your browser, and kept there until you press Clear, so a reload doesn’t lose your edits.</dd>
     </dl>
 
     <p class="jsal-feedback">Useful? Ideas or problems? <a href="mailto:dev@jsal.io?subject=Redirect%20Import">Email me</a>.</p>

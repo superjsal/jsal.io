@@ -56,6 +56,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .pane-body { flex: 1; min-height: 0; overflow: auto; }
 .pane-foot { display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 8px 14px; border-top: 1px solid var(--jsal-line); font-size: 14px; }
 .pane-foot #clearBtn { margin-left: auto; }
+.pane-foot .kept { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; font-size: 13px; color: var(--jsal-muted); }
+.pane-foot .kept:not([hidden]) + #clearBtn { margin-left: 0; }
+.sheet-pane > .jsal-error { margin: 0 14px 10px; }
 .views { display: none; }
 .filter > button span { font-weight: 500; font-variant-numeric: tabular-nums; }
 
@@ -128,6 +131,13 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .file-box { margin: 10px 14px 0; padding: 8px 12px; border-radius: var(--jsal-radius); font-size: 14px; line-height: 1.45; color: var(--jsal-ink); }
 .file-box.warn { background: var(--jsal-warn-soft); }
 .file-box.info { background: var(--jsal-info-soft); }
+/* The rows the file leaves out until they're fixed, in the red of the rows themselves */
+.file-missing { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 10px 14px 0; font-size: 13px; line-height: 1.45; color: var(--jsal-bad); }
+.file-missing .count { padding: 1px 7px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
+.file-missing .jsal-btn.link { min-height: 24px; font-size: 13px; }
+/* Nothing left out: said in green, so the end of the job is as plain as what's missing */
+.file-done { display: flex; align-items: center; gap: 6px; margin: 10px 14px 0; font-size: 13px; line-height: 1.45; color: var(--jsal-ok); }
+.file-done[hidden] { display: none; }
 
 .file-body { padding: 10px 14px 14px; }
 /* The header row reads as part of the file until it's pointed at */
@@ -137,6 +147,30 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
 .file { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre; tab-size: 4; }
 .file:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius-sm); }
 
+/* ── Hiding the file: a tab down the side that says what's in it, so the sheet gets the width ── */
+
+.fold-btn { margin-left: 0; }
+.fold-tab { display: none; flex-direction: column; align-items: center; gap: 6px; width: 100%; height: 100%; padding: 16px 6px;
+  border: 0; border-radius: inherit; background: none; color: var(--jsal-muted); font: 500 13px/1.3 var(--jsal-font); text-align: center; cursor: pointer; }
+.fold-tab:hover { background: var(--jsal-sunk); }
+.fold-tab:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.fold-tab .fold-ico { margin-top: 4px; color: var(--jsal-ink-2); }
+.fold-lbl { color: var(--jsal-ink); font-size: 14px; font-weight: 600; }
+.fold-num { margin-top: 6px; color: var(--jsal-ink); font-size: 17px; font-weight: 600; }
+.fold-bad { margin-top: 6px; padding: 1px 7px; border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
+.fold-bad[hidden] { display: none; }
+@media (min-width: 1100px) {
+  /* The file's name gives way, so Format and Hide stay on one line */
+  .file-pane .pane-head { flex-wrap: nowrap; column-gap: 6px; }
+  .file-pane .pane-title { min-width: 0; margin-right: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-pane .pane-head > :not(.pane-title) { flex: none; }
+  .file-pane .fmt-btn { padding: 4px 6px; }
+  .file-pane .pane-head:has(#parts:not([hidden])) #fmtSummary { display: none; }   /* a split file's Part buttons need the room */
+  .app.has-content .work.folded { grid-template-columns: minmax(0, 1fr) 104px; }
+  .work.folded .file-pane > :not(.fold-tab) { display: none; }
+  .work.folded .fold-tab { display: flex; }
+}
+
 /* ── Narrow screens: one pane at a time ─────────────────────────────────── */
 
 @media (max-width: 1099px) {
@@ -144,6 +178,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px 6px; border-radius: var(--js
   .app.has-content .views { display: flex; }
   .views > button { flex: 1; }
   .work[data-view="sheet"] .file-pane, .work[data-view="file"] .sheet-pane { display: none; }
+  .fold-btn, .fold-tab { display: none !important; }   /* the panes already take turns */
   .plat { flex: 1 1 100%; }
   .filter { flex: 1 1 100%; }
   /* Five filters as two even rows: three on top, two below */
