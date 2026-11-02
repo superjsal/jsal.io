@@ -443,7 +443,7 @@ showWhere();
 
 const EXAMPLE = `Old URL\tNew URL
 https://www.oldsite.com/about-us/\thttps://www.newsite.com/pages/about
-http://oldsite.com/blog/spring-sale?utm_source=mail\t/blogs/news/spring-sale
+http://oldsite.com/blog/spring-sale?utm_source=mail\thttps://www.newsite.com/blogs/news/spring-sale
 /our team\t/pages/team
 /products/blue–mug\t/products/blue-mug-12oz
 /sale\t/collections/sale<2024>
