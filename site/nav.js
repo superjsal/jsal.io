@@ -495,6 +495,16 @@
   window.jsalNavReady = true;
   if (document.prerendering) document.addEventListener('prerenderingchange', replayEarly, { once: true }); else replayEarly();
 
+  // The name's width rounded up to a whole pixel, so the caret after it sits on one: a page change draws the logo as a
+  // still with its parts on whole pixels, and a caret on a fraction of one nudged sideways while it showed
+  (() => {
+    const name = document.querySelector('[data-jsal-nav] .jsal-name');
+    if (!name) return;
+    const fit = () => { name.style.width = ''; name.style.width = Math.ceil(name.getBoundingClientRect().width) + 'px'; };
+    fit();
+    if (document.fonts) document.fonts.ready.then(fit);
+  })();
+
   // The logo on the first page of a visit: it opens as the tab icon's mark, the short j with the deep hook wearing the
   // gem as its dot (folded by the head script before the first paint). The j's curve shortens into the name's j as its
   // stem rises into the gem; the stem's top pinches off as the j's own dot and knocks the gem over the name to land as

@@ -281,6 +281,7 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 .jsal-brand .jsal-j-draw {
   position: absolute; left: -0.45em; top: 0.19em; width: 0.9em; height: 1.08em;
   top: calc(round(0.96875em, 1px) - 0.78em);   /* the baseline sits a whole number of pixels below the top */
+  left: round(-0.45em, 1px);   /* on a whole pixel, so it doesn't nudge when the page change draws the logo as a still */
   overflow: visible; pointer-events: none; fill: var(--jsal-ink); stroke: var(--jsal-ink); stroke-linecap: round;
 }
 .jsal-brand .jsal-j-draw path { fill: none; }
