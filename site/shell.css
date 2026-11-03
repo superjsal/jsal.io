@@ -225,6 +225,8 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 .jsal-consent b { color: var(--jsal-ink); }
 .jsal-consent a { color: var(--jsal-accent); text-underline-offset: 2px; }
 .jsal-consent div { display: flex; gap: var(--jsal-space-8); margin-top: var(--jsal-space-12); }
+/* Opened from a button (a footer's Analytics, Privacy's Change analytics choice): placed by /nav.js just above it */
+.jsal-consent.jsal-consent-near { position: absolute; bottom: auto; }
 @media print { .jsal-consent { display: none; } }
 @keyframes jsal-fade-out { to { opacity: 0; } }
 @keyframes jsal-fade-in { from { opacity: 0; } }

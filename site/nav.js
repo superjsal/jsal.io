@@ -52,9 +52,34 @@
       return tz.startsWith('Europe/') || ['Atlantic/Reykjavik', 'Atlantic/Canary', 'Atlantic/Madeira', 'Atlantic/Azores', 'Atlantic/Faroe', 'Arctic/Longyearbyen'].includes(tz);
     } catch (e) { return false; }
   })();
-  let card = null;
-  const consentCard = () => {
-    if (card || typeof window.gtag !== 'function') return;
+  let card = null, opener = null;
+  // Opened from a button, the card sits just above it (below, if there's no room), on the button's side of the
+  // screen, and scrolls with the page; on its own (the first visit) it's fixed in the bottom-left corner
+  const placeCard = () => {
+    if (!card || !opener) return;
+    const r = opener.getBoundingClientRect(), w = card.offsetWidth, h = card.offsetHeight, vw = document.documentElement.clientWidth;
+    let x = r.left + r.width / 2 > vw / 2 ? r.right - w : r.left;
+    x = Math.max(16, Math.min(x, vw - 16 - w));
+    const y = r.top - h - 8 >= 8 ? r.top - h - 8 : r.bottom + 8;
+    card.style.left = `${Math.round(x + scrollX)}px`;
+    card.style.top = `${Math.round(y + scrollY)}px`;
+  };
+  const closeCard = () => {
+    card.remove();
+    card = null;
+    document.documentElement.style.removeProperty('--jsal-consent-lift');
+    removeEventListener('resize', placeCard);
+    if (opener && opener.isConnected) opener.focus();
+    opener = null;
+  };
+  const consentCard = (from) => {
+    if (typeof window.gtag !== 'function') return;
+    if (card) {
+      if (from && from !== opener) { opener = from; card.classList.add('jsal-consent-near'); document.documentElement.style.removeProperty('--jsal-consent-lift'); placeCard(); addEventListener('resize', placeCard); }
+      if (from) card.querySelector('button').focus();
+      return;
+    }
+    opener = from || null;
     card = document.createElement('section');
     card.className = 'jsal-consent';
     card.setAttribute('aria-label', 'Analytics choice');
@@ -73,13 +98,20 @@
           document.cookie = `${n}=; Max-Age=0; path=/`;
         });
       }
-      card.remove();
-      card = null;
-      document.documentElement.style.removeProperty('--jsal-consent-lift');
+      closeCard();
     }));
+    // Escape puts it away without choosing, back to the button that opened it
+    card.addEventListener('keydown', (e) => { if (e.key === 'Escape' && opener) { e.preventDefault(); closeCard(); } });
     document.body.append(card);
-    // Achievement pop-ups (bottom centre) sit above the card while it's open
-    document.documentElement.style.setProperty('--jsal-consent-lift', `${card.offsetHeight + 12}px`);
+    if (opener) {
+      card.classList.add('jsal-consent-near');
+      placeCard();
+      addEventListener('resize', placeCard);
+      card.querySelector('button').focus();
+    } else {
+      // Achievement pop-ups (bottom centre) sit above the card while it's open
+      document.documentElement.style.setProperty('--jsal-consent-lift', `${card.offsetHeight + 12}px`);
+    }
   };
   // Google's script: with a saved "granted", or outside Europe unless declined; in Europe after Allow. Fetched once idle.
   // Only on the live site: a copy served anywhere else (a local preview, the checks) never counts as a visit
@@ -101,7 +133,7 @@
   const whenReady = (fn) => (document.body ? fn() : addEventListener('DOMContentLoaded', fn, { once: true }));
   if (document.prerendering) document.addEventListener('prerenderingchange', () => whenReady(askConsent), { once: true });
   else whenReady(askConsent);
-  addEventListener('click', (e) => { if (e.target.closest && e.target.closest('[data-jsal-consent]')) consentCard(); });
+  addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('[data-jsal-consent]'); if (b) consentCard(b); });
   if (matchMedia('(pointer: coarse)').matches) {
     for (const el of document.querySelectorAll('[data-touch]')) {
       if (el.dataset.touch) el.textContent = el.dataset.touch;
