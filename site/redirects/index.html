@@ -67,7 +67,7 @@
   <link rel="preload" href="/fonts/lora-italic.woff2" as="font" type="font/woff2" crossorigin />
   <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update -->
   <link rel="stylesheet" href="/shell.css?v=dee1ef84">
-  <link rel="stylesheet" href="styles.css?v=4b2ea64e" />
+  <link rel="stylesheet" href="styles.css?v=595f3e53" />
   <script type="importmap">
     {
       "imports": {
@@ -170,8 +170,10 @@
         <div class="pane-head">
           <h2 class="pane-title mono file-name" id="fileName"><input class="name-in" id="nameIn" spellcheck="false" autocomplete="off" aria-label="File name" title="Rename the file"><span class="name-end" id="nameEnd"></span></h2>
           <div class="jsal-seg parts" id="parts" aria-label="Part" hidden></div>
-          <button type="button" class="fmt-btn" id="fmtBtn" aria-expanded="false" aria-controls="fmt"><span id="fmtSummary"></span> <b>Format</b><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-          <button type="button" class="fmt-btn fold-btn" id="foldBtn" aria-label="Hide file">Hide<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+          <div class="file-acts">
+            <button type="button" class="fmt-btn" id="fmtBtn" aria-expanded="false" aria-controls="fmt"><span id="fmtSummary"></span> <b>Format</b><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+            <button type="button" class="fmt-btn fold-btn" id="foldBtn" aria-label="Hide file">Hide<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+          </div>
         </div>
         <!-- With the file hidden, the pane folds to a tab that says what's in the file, and the sheet takes the width -->
         <button type="button" class="fold-tab" id="unfoldBtn">
