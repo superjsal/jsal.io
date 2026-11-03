@@ -12,7 +12,8 @@ HEADERS = SITE / '_headers'
 TEMPLATE = ROOT / '.github' / 'scripts' / 'platform-page.html'
 
 SUPABASE = 'kvdzluvhwxkrbatgskio.supabase.co'   # the team Playbook's database (/ic/)
-GA = 'https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com'
+# Google Analytics: gtag.js, and where it sends hits (it tries www.google.com/g/collect before google-analytics.com)
+GA = 'https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://www.google.com'
 
 
 def sha(text):
