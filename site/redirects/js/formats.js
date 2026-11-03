@@ -42,12 +42,12 @@ export const FORMATS = [
     doc: "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect",
     cols: () => [FROM("Redirect from"), TO("Redirect to")], codes: false, slashSame: true,
     rules: (r) => [
-      SHOPIFY_PREFIX.test(r.from) && { cell: "o", id: "reserved", text: `Shopify keeps <code>${r.from.match(SHOPIFY_PREFIX)[0].replace(/[/?]$/, "")}</code> for itself, so this can’t redirect`, title: "start with an address Shopify reserves" },
+      SHOPIFY_PREFIX.test(r.from) && { cell: "o", id: "reserved", text: `Shopify reserves <code>${r.from.match(SHOPIFY_PREFIX)[0].replace(/[/?]$/, "")}</code>: can’t redirect`, title: "start with an address Shopify reserves" },
       SHOPIFY_FIXED.test(r.from) && { cell: "o", id: "fixed", text: "Shopify’s own list page: can’t redirect" },
-      /\.html$/i.test(r.from) && r.to.toLowerCase() === r.from.toLowerCase().replace(/\.html$/, "") && { cell: "n", id: "html", text: "Same page to Shopify (.html): can’t redirect" },
-      r.from.includes("?") && { cell: "o", id: "query", warn: true, text: "? may not work on Shopify. Test after import" },
+      /\.html$/i.test(r.from) && r.to.toLowerCase() === r.from.toLowerCase().replace(/\.html$/, "") && { cell: "n", id: "html", text: "Shopify drops .html, so this points to itself" },
+      r.from.includes("?") && { cell: "o", id: "query", warn: true, text: "? may not work on Shopify" },
       // From a third-party test of 100 address formats: the only one Shopify's import refused had a semicolon
-      (r.from.includes(";") || r.to.includes(";")) && { cell: r.from.includes(";") ? "o" : "n", id: "semicolon", warn: true, text: "; may not import on Shopify. Test after import" },
+      (r.from.includes(";") || r.to.includes(";")) && { cell: r.from.includes(";") ? "o" : "n", id: "semicolon", warn: true, text: "; may not import on Shopify" },
     ] },
   { id: "wix", name: "Wix", group: "Website platforms", kind: "csv", file: "wix-redirects.csv", limit: 500,
     doc: "https://support.wix.com/en/article/importing-or-exporting-url-redirects-with-a-csv-file",
@@ -117,7 +117,7 @@ export const FORMATS = [
     codes: "required", slashSame: true, seps: [",", ";", "|"], heads: [["source", "source url"], ["target", "target url"]],
     rules: (r) => {
       const letter = decoded(r.from).match(/[^\x00-\x7F]/u);
-      return [letter && { cell: "o", id: "letters", warn: true, text: `<code>${letter[0]}</code> may not match on Redirection. Test after import` }];
+      return [letter && { cell: "o", id: "letters", warn: true, text: `<code>${letter[0]}</code> may not match on Redirection` }];
     } },
   { id: "rankmath", name: "Rank Math (Pro)", label: "WordPress: Rank Math (Pro)", group: "WordPress plugins", kind: "csv", file: "rank-math-redirects.csv",
     doc: "https://rankmath.com/kb/how-to-manage-redirects-via-csv/",
@@ -132,7 +132,7 @@ export const FORMATS = [
     note: "Netlify matches capitals exactly: /About and /about are different addresses.",
     doc: "https://docs.netlify.com/routing/redirects/",
     line: (r) => `${r.from}  ${r.to}  ${r.code}`, codes: "required",
-    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "_redirects can’t match the ? part" }] },
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Netlify can’t match the ? part" }] },
   { id: "vercel", name: "Vercel (vercel.json)", group: "Hosting and servers", kind: "file", file: "vercel.json", fixedName: true, max: 2048,
     doc: "https://vercel.com/docs/routing/redirects/configuration-redirects",
     codes: "required",
@@ -148,11 +148,11 @@ export const FORMATS = [
     note: "Put the lines above any other rewrite rules in .htaccess.",
     doc: "https://httpd.apache.org/docs/current/mod/mod_alias.html#redirectmatch",
     line: (r) => `RedirectMatch ${r.code} ${quoteIfSpace("^" + reEscape(noSlash(decoded(r.from))) + "/?$")} ${r.to}`, codes: "required", slashSame: true, slashLoop: true,
-    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "RedirectMatch can’t match the ? part" }] },
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Apache can’t match the ? part" }] },
   { id: "nginx", name: "Nginx", group: "Hosting and servers", kind: "lines", file: "nginx-redirects.conf",
     doc: "https://nginx.org/en/docs/http/ngx_http_core_module.html#location",
     line: (r) => `location = ${quoteIfSpace(decoded(r.from))} { return ${r.code} ${r.to}; }`, codes: "required", exact: true,
-    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "nginx can’t match the ? part" }] },
+    rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Nginx can’t match the ? part" }] },
   { id: "plain", name: "Plain CSV", group: "Hosting and servers", kind: "csv", file: "redirects.csv",
     note: "Change the header row and separator to fit any importer.",
     cols: (code) => code ? [FROM("old"), TO("new"), CODE("status")] : [FROM("old"), TO("new")], codes: "optional" },

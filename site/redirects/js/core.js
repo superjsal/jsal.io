@@ -17,10 +17,10 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
 // Characters that stop an address working, each with how it's shown and the one-click fix if there's an obvious one
 const CHECKS = [
   // Reports shorten long addresses for display (…/how-to-choose-a…), and copying the text copies the shortened one
-  { re: /\u2026|\.{3,}/g, say: () => "Cut short (…). Copy the full address", fixes: [] },
+  { re: /\u2026|\.{3,}/g, say: () => "Cut short. Copy the full address", fixes: [] },
   // No fix offered: only the original says whether the space was real (sent as %20) or crept in when copying
   { re: /[  ]/g, say: () => "Has a space", fixes: [] },
-  { re: /[–—]/g, say: () => "Long dash (–), not a hyphen", fixes: [["Use a hyphen", (s) => s.replace(/[–—]/g, "-")]] },
+  { re: /[–—]/g, say: () => "Long dash", fixes: [["Use a hyphen", (s) => s.replace(/[–—]/g, "-")]] },
   { re: /[‘’“”]/g, say: () => "Curly quotes", fixes: [["Remove them", (s) => s.replace(/[‘’“”]/g, "")]] },
   { re: /[<>"{}|\\^`]/g, say: () => "Not allowed in an address", fixes: [] },
   { re: /[\x00-\x1F\x7F]/g, say: () => "Hidden tab or line break", fixes: [["Remove it", (s) => s.replace(/[\x00-\x1F\x7F]/g, "")]] },
@@ -148,6 +148,7 @@ export function analyse(rows, fmt, opts) {
   const trim = (p) => (p.length > 1 ? p.replace(/\/$/, "") : p);
   const looseDiff = (a, b) => ({ slash: trim(a) !== a ? (trim(b) !== b ? "" : "without") : (trim(b) !== b ? "with" : ""), caps: trim(a) !== trim(b) });
   const on = fmt.doc ? "on " + esc(fmt.name.replace(/ \(.*/, "")) : "on some platforms";
+  const matches = fmt.doc ? esc(fmt.name.replace(/ \(.*/, "")) + " matches" : "some platforms match";
   const live = [];
 
   rows.forEach((r, i) => {
@@ -163,12 +164,12 @@ export function analyse(rows, fmt, opts) {
 
     if (o.kind === "empty" && n.kind === "empty") { it.state = "blank"; return; }
     if (r.skip) return out("o", "Left out by you", "skip");
-    if (o.kind === "junk") return out("o", o.word ? `Marked “${esc(o.word)}”: left out` : "Not an address: left out");
+    if (o.kind === "junk") return out("o", o.word ? `Marked “${esc(o.word)}”` : "Not an address");
     if (o.kind === "empty") return bad("o", "No old address");
     if (o.kind === "scheme") return bad("o", `A ${esc(o.scheme)}: link, not a page address`, [], "scheme", "A link that isn’t a page address");
     if (o.kind === "badhost") return bad("o", `Not a valid domain: <code>${esc(o.host)}</code>`, [], "host", "Not a valid domain");
-    if (n.kind === "empty") return bad("n", "No new address. Type one, or leave it out.", [], "No new address", "No new address", "Leave it out");
-    if (n.kind === "junk") return n.word ? out("n", `Marked “${esc(n.word)}”: left out`) : bad("n", "Not an address");
+    if (n.kind === "empty") return bad("n", "No new address", [], "No new address", "No new address", "Leave it out");
+    if (n.kind === "junk") return n.word ? out("n", `Marked “${esc(n.word)}”`) : bad("n", "Not an address");
     if (n.kind === "scheme") return bad("n", `A ${esc(n.scheme)}: link, not a page address`, [], "scheme", "A link that isn’t a page address");
     if (n.kind === "badhost") return bad("n", `Not a valid domain: <code>${esc(n.host)}</code>`, [], "host", "Not a valid domain");
 
@@ -214,17 +215,17 @@ export function analyse(rows, fmt, opts) {
     // With full URLs, old.com/page to new.com/page is a real redirect; as paths it would point to itself
     const domainOnly = o.host && n.host && bare(o.host) !== bare(n.host);
     if (!external && !(domainOnly && opts.newAddr === "url")) {
-      if (domainOnly && key(oc.path) === key(nc.path)) return out("n", "Only the domain changes: left out", "domain-only");
-      if (oc.path === nc.path) return out("n", "Points to itself: left out");
+      if (domainOnly && key(oc.path) === key(nc.path)) return out("n", "Only the domain changes", "domain-only");
+      if (oc.path === nc.path) return out("n", "Points to itself");
       // Where a path with and without its last / is known to match as one, a row that only adds or drops it loops
       if (fmt.slashLoop && oc.path.replace(/\/$/, "") === nc.path.replace(/\/$/, "")) {
-        return bad("n", `Only the last / differs, and ${on} both are one address, so this would loop`, [], "slashloop", "would loop: only the last / differs", "Leave it out");
+        return bad("n", `Would loop: ${matches} it with or without the last /`, [], "slashloop", "would loop: only the last / differs", "Leave it out");
       }
       if (!fmt.exact && loose(oc.path) === loose(nc.path)) {
         const d = looseDiff(oc.path, nc.path);
         notes.push({ cell: "n", kind: "warn", group: "n:slashcase", leave: "Leave it out",
           title: "differ from their old address only by a / or capital",
-          text: `Only ${d.caps && d.slash ? "capitals and the last / differ" : d.caps ? "capitals differ" : "the last / differs"} from the old address, which may be the same page ${on}. Test after import` });
+          text: `Only ${d.caps && d.slash ? "capitals and the last / differ" : d.caps ? "capitals differ" : "the last / differs"} from the old address. May be one page ${on}` });
       }
     }
     live.push({ id: r.id, raw: r.new, it, from: oc.path, to, own: !external, internal: !external && !(domainOnly && opts.newAddr === "url"), fix, bad, out });
@@ -241,10 +242,10 @@ export function analyse(rows, fmt, opts) {
     const distinct = new Set(g.map((l) => l.to));
     if (distinct.size === 1) {
       kept.push(g[0]);
-      g.slice(1).forEach((l) => l.out("o", `Same as row ${g[0].it.n}: left out`));
+      g.slice(1).forEach((l) => l.out("o", `Same as row ${g[0].it.n}`));
       continue;
     }
-    for (const l of g) l.bad("o", `Duplicate of ${rowList(g.filter((x) => x !== l))}. Leave ${g.length > 2 ? "all but one" : "one"} out.`, [], "clash", "Duplicates", "Leave this one out");
+    for (const l of g) l.bad("o", `Duplicate of ${rowList(g.filter((x) => x !== l))}`, [], "clash", "Duplicates", "Leave this one out");
   }
   // Old addresses that differ only by the last / or capitals (/about-us/ and /About-us) go in the file, marked to test
   const alike = new Map();
@@ -257,7 +258,7 @@ export function analyse(rows, fmt, opts) {
       const how = d ? [d.caps && "with different capitals", d.slash && `${d.slash} the last /`].filter(Boolean).join(" and ") : "with a different / or capitals";
       const who = rowList(others).replace(/^r/, "R");
       l.it.notes.push({ cell: "o", kind: "warn", group: "o:alike", leave: "Leave this one out", title: "may share an address with another row",
-        text: `${who} ${others.length > 1 ? "have" : "has"} it ${how}. May be the same page ${on}. Test after import` });
+        text: `${who} ${others.length > 1 ? "have" : "has"} it ${how}. May be one page ${on}` });
     }
   }
 

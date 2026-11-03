@@ -1,5 +1,5 @@
 [
-  {"date": "2026-11-03", "tag": "Redirect Import", "text": "Small fixes: Webflow’s own redirect export loads back in, wildcards included, so you can add to it and import it again, and notes about a / or capital say which one differs."},
+  {"date": "2026-11-03", "tag": "Redirect Import", "text": "Small fixes: Webflow’s own redirect export loads back in, wildcards included, and the notes under each row are shorter, saying only what that row needs."},
   {"date": "2026-11-02", "tag": "Site", "text": "jsal.io now runs on Cloudflare instead of GitHub Pages: the same pages at the same addresses, quicker to open, and [Privacy](/privacy/) says so."},
   {"date": "2026-11-02", "tag": "Site", "text": "Spacing follows one scale on every page: a little tighter inside buttons and rows, a little more room between sections."},
   {"date": "2026-11-02", "tag": "Off the clock", "short": "Five new achievements, one secret", "text": "Five new achievements, each with its trophy: checking a second platform, sharing a result, a batch of ten images, WordPress blocks, and a secret one."},
