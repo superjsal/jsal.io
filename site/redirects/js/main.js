@@ -131,13 +131,20 @@ async function readFile(file) {
 
 // Phones have no Ctrl+V, and nothing on the empty page to hold for a Paste menu, so they get a Paste button that
 // reads what was copied (the browser may ask first); where it can't, a cell of an empty sheet takes the paste instead
-if (matchMedia("(pointer: coarse)").matches) $("pasteBtn").hidden = $("pasteSep").hidden = false;
+if (matchMedia("(pointer: coarse)").matches) $("pasteBtn").hidden = $("pasteSep").hidden = $("dropDesk").hidden = false;
 $("pasteBtn").addEventListener("click", async () => {
   let text = "";
   try { text = await navigator.clipboard.readText(); }
   catch (e) { return showError("This browser didn’t let the page read what you copied. Tap Start with an empty sheet, then hold the first box and choose Paste."); }
   if (!text.trim()) return showError("Nothing copied yet. Copy the two columns, then tap Paste.");
   load(parseDelimited(text), "Pasted");
+});
+// The tool is easiest on a computer, so a phone can send the page there: its share sheet, or the link copied
+$("shareBtn").addEventListener("click", async (e) => {
+  const btn = e.currentTarget, url = document.querySelector('link[rel="canonical"]')?.href || location.href.split("#")[0];
+  if (navigator.share) { try { await navigator.share({ title: "Redirect Import", url }); } catch (x) {} return; }   // closing the share sheet isn't an error
+  try { await navigator.clipboard.writeText(url); window.jsalDone?.(btn, "Link copied"); }
+  catch (x) { showError(`This browser didn’t allow copying. The page is ${url}`); }
 });
 $("pickFile").addEventListener("click", () => $("fileInput").click());
 $("otherFile").addEventListener("click", () => $("fileInput").click());

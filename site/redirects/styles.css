@@ -42,6 +42,12 @@ code, .mono, .file, .cell, .txt, .head-in { font-family: "JetBrains Mono", ui-mo
 .drop-sub { max-width: 480px; margin: 0; font-size: 14px; color: var(--jsal-ink-2); }
 .drop-links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--jsal-space-4) var(--jsal-space-8); margin: var(--jsal-space-8) 0 0; font-size: 14px; color: var(--jsal-muted); }
 .drop-privacy { margin: var(--jsal-space-8) 0 0; font-size: 13px; color: var(--jsal-muted); }
+/* Touch screens only: a tip set apart from the ways in, that the tool is easiest on a computer */
+.drop-desk { width: 100%; max-width: 480px; margin: var(--jsal-space-12) 0 0; padding: var(--jsal-space-12) var(--jsal-space-16) 0; border-top: 1px solid var(--jsal-line); font-size: 13px; line-height: 1.45; color: var(--jsal-muted); }
+.drop-desk svg { display: block; margin: 0 auto var(--jsal-space-4); }
+.drop-desk p { margin: 0; }
+.drop-desk b { color: var(--jsal-ink); font-weight: 600; }
+.drop-desk .jsal-btn.link { font-size: 13px; }
 .drop .jsal-error { max-width: 480px; }
 kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 
@@ -238,7 +244,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
   .del { width: 44px; height: 44px; margin-top: 0; }
   .head-row .del { width: 24px; height: 24px; }
   .head-row .del::after { content: ""; position: absolute; inset: -10px; }   /* a 44px tap area that keeps the header line slim */
-  .cell, .field, .fixes .jsal-btn.small, .overview .jsal-btn.small, .pane-foot .jsal-btn.link, .drop-links .jsal-btn.link, .head-add .jsal-btn.link { min-height: 44px; }
+  .cell, .field, .fixes .jsal-btn.small, .overview .jsal-btn.small, .pane-foot .jsal-btn.link, .drop-links .jsal-btn.link, .drop-desk .jsal-btn.link, .head-add .jsal-btn.link { min-height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .drop, .set-btn .chev { transition: none; }
