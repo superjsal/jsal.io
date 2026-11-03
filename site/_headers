@@ -2,6 +2,15 @@
 https://jsal-io.still-cell-826b.workers.dev/*
   X-Robots-Tag: noindex
 
+# Every response: HTTPS only, files read only as their stated type, no framing by other sites, no shared window
+# with pages that open this one, and other sites see only the domain a visitor came from.
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Cross-Origin-Opener-Policy: same-origin
+  Referrer-Policy: strict-origin-when-cross-origin
+
 # Pages keep the default (checked on every visit), so a change shows at once.
 # Stylesheets and scripts are always linked with ?v= and their content hash, so a browser keeps each copy for a year.
 /*.css
