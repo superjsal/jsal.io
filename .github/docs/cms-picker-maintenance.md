@@ -176,7 +176,7 @@ Shared by the page and the tests, so they always run the same code.
   option is `[value, title, hint, the answer on its own, when?]`; the fourth is the answer button on the results,
   the optional fifth a test on the answers that hides the option ("Selling online too" for a store, "A blog" for a
   publication). `options(q, a, data)` gives a question's options for the answers, and for "Moving from somewhere?"
-  adds the 13 platforms from the data (each with its platform object as a sixth item, which the page draws as a
+  adds the 14 platforms from the data (each with its platform object as a sixth item, which the page draws as a
   logo chip). The page and the test both go through it. Changing the questions means raising `LINK_VERSION` in
   `app.js` and translating older answers in `readLink`, so shared links keep working (v3 translates the old
   members and moving-later answers, v4 the languages choice into the tick, v5 added the HubSpot tick; see the comment
@@ -203,7 +203,7 @@ Shared by the page and the tests, so they always run the same code.
   a match: `candidates` (the list the page and the test rank from) leaves it out and also puts platforms whose
   "Not ideal if" line matches behind every other, so the gap it leaves never brings a ruled-out platform into the
   top three. It still ranks in full under "Had a platform in mind?", which opens on it ("You're on Wix now: it
-  ranks 3rd of 13 for your answers").
+  ranks 3rd of 14 for your answers").
 - **Ranking, must-haves first:** `rank` sorts by `gate` (how many of these rule it out: not made for what they're
   making, made only for selling, its card's "Not ideal if", needing a developer when they're building it themselves),
   then `short` (`shortfall`: steps short of "built in" on the need picked, the languages tick, for a store selling

@@ -19,7 +19,7 @@ flowchart TB
   subgraph PUB["Publish: playbook.py (service_role key; nightly Action 07:41 UTC, or by hand)"]
     pub["playbook.py publish<br>reads picker + app_data"]
     data["cms-picker/data.json<br>answers, profiles, sources"]
-    pp["cms-picker/&lt;platform&gt;/index.html ×13<br>from .github/scripts/platform-page.html"]
+    pp["cms-picker/&lt;platform&gt;/index.html ×14<br>from .github/scripts/platform-page.html"]
     logos["cms-picker/logos/uploaded/"]
     pre["plain-HTML copy inside cms-picker/index.html<br>(for crawlers before JS runs)"]
     smap["sitemap.xml"]
@@ -73,8 +73,8 @@ flowchart TB
     bump["bump-version.ps1 → versions.py<br>each file's ?v= is its content hash; rewrites only<br>the references to the files that changed"]
     check["check.ps1 → check.py<br>top bar identical, every ?v= current, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults,<br>Updates matches the changelog"]
     bcheck["browser-check.mjs (Playwright: Edge or Chromium, WebKit; Firefox on GitHub)<br>axe on every page, 375/390px, each tool's main flow"]
-    personas["personas.test.js<br>49 agreed quiz results still hold,<br>9 rules over every answer set;<br>expert-cases.js reports agreement with a consultant"]
-    commit["in a worktree of your own: merge main,<br>stage by name, commit, push to staging"]
+    personas["personas.test.js<br>54 agreed quiz results still hold,<br>9 rules over every answer set;<br>expert-cases.js reports agreement with a consultant"]
+    commit["stage by name, commit, push to staging<br>(a worktree's branch merges into staging)"]
   end
   edit --> upd --> bump --> check --> bcheck --> personas --> commit --> staging
 

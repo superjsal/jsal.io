@@ -10,20 +10,26 @@ Run them on **an iPhone (Safari)**, **an Android phone (Chrome)**, **desktop Fir
 so, **a Mac**. About twenty minutes for everything; for a release that only touches one part, do that part.
 Once in light mode and once in dark (the moon/sun button in the top bar).
 
+Before a ship, run them on the staging preview (https://staging-jsal-io.still-cell-826b.workers.dev) instead of
+jsal.io: it's the same site with the waiting changes, and nothing there counts in analytics.
+
 Anything that fails: note the device, browser, light/dark, and the step, and pass it on.
 
 ## Site (every browser)
 
 ### 1. Moving between pages
-- [ ] Firefox: from the home page open the CMS Picker, a platform guide and Updates, then press Back twice: each page just appears (Firefox has no page transitions) and the top bar stays put; nothing flashes or lands scrolled down.
+- [ ] Firefox: from the home page open the CMS Picker, a platform guide and the changelog, then press Back twice: each page just appears (Firefox has no page transitions) and the top bar stays put; nothing flashes or lands scrolled down.
 - [ ] Firefox: hover a link to another page for a moment, and the developer tools' Network panel shows that page fetched before the click (a prefetch); a quick pass over a link, the logo and the Playbook link fetch nothing.
 - [ ] Phone: the same route: the page slides up on the way in and down on Back, and the logo and theme button don't move.
 - [ ] After Back, the logo menu still opens and its links still work (the page came back from the browser's cache).
 - [ ] The logo menu: open it, pick a tool before the page has finished loading: you land on that tool, not on the home page.
 
 ### 2. Home page
-- [ ] Desktop (1300px or wider): "Platform guides" sits under the intro in three even columns, its bottom level with the CMS Picker tile; nothing staggers.
-- [ ] Phone: the order is intro, CMS Picker tile, Platform guides (two columns, easy to tap), then the other tools.
+- [ ] Desktop (1280px or wider): the tiles sit in rows: the intro beside the CMS Picker, the Image Resizer and Clean Paste, Say hi and Redirect Import, then Updates across the bottom. Nothing pokes into the page's side margin.
+- [ ] Desktop: point at a tool tile: its picture plays what the tool does three times, then rests. Firefox too.
+- [ ] Phone, upright: one tile per row, Say hi after every tool and just before Updates; each tool's picture plays once as its tile reaches the middle of the screen.
+- [ ] Phone on its side: the tiles stay in two columns, a piece poking out of a tile never touches the next tile, and nothing hides under the notch.
+- [ ] The footer: "Platform guides" is a plain row of links, easy to tap on a phone, with Off the clock beside Privacy.
 - [ ] The small line under the top bar ("JOHN SALVADOR · TECHNICAL SEO", a platform page's breadcrumb, "CHANGELOG") doesn't shift sideways or up and down between pages.
 
 ### 3. Theme
@@ -102,3 +108,15 @@ Anything that fails: note the device, browser, light/dark, and the step, and pas
 - [ ] Firefox and Safari: the Folder option isn't offered; Chrome and Edge offer it and save into the chosen folder.
 - [ ] Mac: ⌘ + Shift + D runs Download All (and doesn't open the browser's "bookmark all tabs" instead).
 - [ ] iPhone: Download All and ZIP both save where the person can find them (Files app).
+
+## Redirect Import
+
+### 15. Loading a sheet
+- [ ] Desktop: drop a CSV, then an Excel file (.xlsx), on https://jsal.io/redirects/: each loads, and its rows keep the spreadsheet's row numbers.
+- [ ] Copy two columns of old and new addresses from Excel or Google Sheets and paste them: they load the same way.
+- [ ] Reload the page: the sheet comes back as you left it; Clear forgets it.
+
+### 16. The file
+- [ ] Pick a platform: its file shows beside the sheet; with rows that need you, the buttons read "Copy 4 of 10" and "Download 4 of 10", never a plain Download.
+- [ ] Safari and Firefox: Copy says "Copied", and Download saves a file with the platform's name and the right extension.
+- [ ] Phone: the sheet and the file show one at a time, switching between them works, and editing an address doesn't zoom the page.

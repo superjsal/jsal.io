@@ -11,7 +11,7 @@ client would use.
 
 1. **What it does, for whom, first.** Lead with the job and the person, then the detail.
    "Resize one image or a whole batch to an exact size, fast."
-2. **Exact, not impressive.** Real numbers and real names instead of adjectives: "13 platforms, from WordPress to
+2. **Exact, not impressive.** Real numbers and real names instead of adjectives: "14 platforms, from WordPress to
    Webflow", "JPG, PNG, WebP and HEIC in". No superlatives, no "powerful".
 3. **Honest about limits.** Say what a tool won't do and what stays private: "Nothing is uploaded." A platform that
    needs code gets the "Needs code" tag, not a softer word.
@@ -78,6 +78,6 @@ Each "after" is the site's own copy.
 | Before | After |
 |---|---|
 | Client-side batch image processing with zero server uploads. | Resize one image or a whole batch to an exact size, fast. Nothing is uploaded. |
-| Leverage our powerful CMS comparison engine to find the perfect solution. | Which website builder or CMS fits you? Take a short quiz or compare 13 platforms, from WordPress to Webflow. |
+| Leverage our powerful CMS comparison engine to find the perfect solution. | Which website builder or CMS fits you? Take a short quiz or compare 14 platforms, from WordPress to Webflow. |
 | 301 redirect management | Keep old links working when pages move. |
 | Advanced HTML sanitisation for rich-text content. | Checks your post before it goes live (stray H1s, bold lines that should be headings, draft and “click here” links) and copies it for any editor, as HTML or as WordPress blocks. |
