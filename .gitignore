@@ -1,4 +1,8 @@
 # Only on John's PC: backups, SQL waiting to be run, research notes, session scratch
 private/
 .github/build/node_modules/
+# Astro: its packages, its build output and its cache are made on each machine and on Cloudflare
+/node_modules/
+/dist/
+/.astro/
 __pycache__/

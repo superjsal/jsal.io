@@ -1,16 +1,18 @@
-// Cloudflare Workers config: serves site/ as plain files, no Worker code.
+// Cloudflare Workers config: serves the Astro build (dist/) as plain files, no Worker code.
 // Builds run from the repo on every push: main is jsal.io, other branches get preview addresses.
 {
   "name": "jsal-io",
   "compatibility_date": "2026-11-01",
+  // Astro writes the site into dist/ before each deploy and preview upload
+  "build": { "command": "npm ci && npm run build" },
   // The workers.dev address (kept out of search by site/_headers) and the branch previews, such as staging
   "workers_dev": true,
   "preview_urls": true,
   // Branch previews take the settings above; the block only has to exist
   "previews": {},
   "assets": {
-    "directory": "./site",
-    // Unknown addresses get site/404.html with a real 404 status
+    "directory": "./dist",
+    // Unknown addresses get 404.html with a real 404 status
     "not_found_handling": "404-page",
     // /cms-picker redirects to /cms-picker/, as GitHub Pages does
     "html_handling": "auto-trailing-slash"
