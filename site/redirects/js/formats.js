@@ -8,7 +8,8 @@
 // both said above the file. A file that strays from the help page (another separator, header row or names) gets a
 // caution. seps: the only separators the importer reads, where its code says so. heads: the names it accepts for each
 // of the first columns, where it skips only a header row that uses them. anyHead: the help names no columns. fixedName: the
-// platform reads the file by its name, so it can't be renamed. A rule
+// platform reads the file by its name, so it can't be renamed. unescape: turns an old path in the platform's own
+// escaped form (from its export) back into the plain address. refs: wildcard references allowed in a new address. A rule
 // with warn: true is said under the cell
 // without keeping the row out of the file.
 
@@ -26,8 +27,11 @@ const noSlash = (p) => (p.length > 1 ? p.replace(/\/$/, "") : p);
 // The one-click fix for a platform that can't match what comes after ?: drop that part from the cell
 const DROP_QUERY = [["Remove the ? part", (s) => s.replace(/\?[^#]*/, ""), true]];
 const QUERY = (name) => ({ cell: "o", id: "query", fixes: DROP_QUERY, text: `${name} can’t redirect a ? address` });
-// Webflow's old paths escape these characters with %, and a / just before ? stops the redirect firing
-const webflowPath = (p) => p.replace(/\/(?=\?)/, "").replace(/[%\-&*()=_+?]/g, "%$&");
+// Webflow's old paths escape these characters with %, and a / just before ? stops the redirect firing. (.*) is its
+// wildcard, kept as written; paths from its own export arrive escaped, so they're read back plainly first
+const WEBFLOW_SPECIAL = /[%\-&*()=_+?]/g;
+const webflowPath = (p) => p.replace(/\/(?=\?)/, "").split(/(\(\.\*\))/)
+  .map((s, i) => (i % 2 ? s : s.replace(WEBFLOW_SPECIAL, "%$&"))).join("");
 // Shopify: paths it keeps for itself (whole path segments), and its fixed list pages
 const SHOPIFY_PREFIX = /^\/((apps|application|cart|carts|orders|services|shop)(\/|\?|$)|(a|community|tools)\/)/i;
 const SHOPIFY_FIXED = /^\/(products|collections|collections\/all|collections\/vendors|collections\/types)\/?$/i;
@@ -63,6 +67,7 @@ export const FORMATS = [
     caution: "Importing deletes the redirects already in Webflow. Export them first and add them to your sheet to keep them.",
     note: "Webflow wants symbols in old paths written as % codes, so /spring-sale becomes /spring%-sale. The file does this for you.",
     doc: "https://help.webflow.com/hc/en-us/articles/33961294898835",
+    unescape: (p) => p.replace(/%([%\-&*()=_+?])/g, "$1"), refs: /%[1-9]/g,
     cols: () => [col("old path", (r) => webflowPath(r.from)), TO("redirect to path")], codes: false, slashSame: true },
   { id: "framer", name: "Framer", group: "Website platforms", kind: "csv", file: "framer-redirects.csv",
     note: "Framer imports redirects through its Redirect Sync plugin.",
