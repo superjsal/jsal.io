@@ -130,7 +130,7 @@ h1[data-drop] .lost-gem { opacity: 0; }
     // the gap to the h, over its arch and the r to each e, and the drop to the line. Between hops it sits on the letter
     // for a beat, squashing a little before it springs off again
     const hops = [[0, 240], [0.16, 320], [0.14, 300], [0.16, 380], [0.14, 330], [0.16, 340], [0.14, 380]];
-    const HOLD = 600, CROUCH = 160, BEAT = 70, TIP = 420;
+    const HOLD = 600, CROUCH = 160, BEAT = 70, TIP = 420, ROCK = 360;
     const total = HOLD + hops.reduce((s, [, ms]) => s + ms + BEAT, 0) + TIP;
     const squash = (u) => [1 + 0.14 * Math.sin(Math.PI * u), 1 - 0.18 * Math.sin(Math.PI * u)];
     const draw = (t) => {
@@ -146,8 +146,10 @@ h1[data-drop] .lost-gem { opacity: 0; }
         if (clock > 0 && k === hops.length - 2) onE = clock;
         from = to; clock -= BEAT;
       }
-      // the last e rocks a few degrees the way the gem is going as it lands, and springs back
-      lastE.style.transform = onE < 0 ? '' : `rotate(${9 * Math.exp(-onE / 110) * Math.sin((Math.PI * onE) / 160)}deg)`;
+      // the last e rocks a few degrees the way the gem is going as it lands, swings back a touch and then stands still:
+      // a spring that kept ringing left the letter wobbling by fractions of a degree, which redraws text as a shimmer
+      const rock = onE / ROCK;
+      lastE.style.transform = onE < 0 || rock >= 0.85 ? '' : `rotate(${8 * Math.sin(2 * Math.PI * rock) * (1 - rock) ** 2}deg)`;
       // on its point at the end, it leans and tips over to lie
       if (clock > 0) {
         gem.style.transformOrigin = '';
