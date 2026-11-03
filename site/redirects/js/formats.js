@@ -1,7 +1,9 @@
 // What each platform imports, checked against each platform's own help page and, where it has one, its sample file
 // (doc). kind: "csv" (columns, a header row and a separator the visitor can change), "lines" (one line of text per
 // redirect), or a whole file written by write(). codes: false when the platform has no status setting, "optional"
-// or "required". slashSame: the platform treats /page and /page/ as one address. keepLetters: accented letters stay
+// or "required". slashSame: chains are followed as if /page and /page/ were one address. slashLoop: /page and
+// /page/ are known to match as one, so a row from one to the other loops. exact: the match is documented as exact, so
+// addresses differing by a / or capital are never marked as maybe the same. keepLetters: accented letters stay
 // as typed, for a platform that rejects any %. caution: what could go wrong on import, and note: worth knowing,
 // both said above the file. A file that strays from the help page (another separator, header row or names) gets a
 // caution. seps: the only separators the importer reads, where its code says so. heads: the names it accepts for each
@@ -93,8 +95,8 @@ export const FORMATS = [
   { id: "ghost", name: "Ghost", group: "Website platforms", kind: "file", file: "redirects.yaml",
     caution: "Uploading replaces Ghost’s whole redirects file. Download the current one first and add these lines to it.",
     doc: "https://ghost.org/help/redirects/",
-    codes: "required", slashSame: true,
-    // Ghost reads each old address as a pattern, so it's escaped and pinned to the whole path
+    codes: "required", slashSame: true, slashLoop: true,
+    // Ghost reads each old address as a pattern, so it's escaped and pinned to the whole path, with or without its last /
     write: (rows) => {
       const by = {};
       const pattern = (p) => p.includes("?") ? `^${reEscape(p)}$` : `^${reEscape(noSlash(p))}/?$`;
@@ -121,7 +123,7 @@ export const FORMATS = [
     doc: "https://yoast.com/help/import-redirects/",
     cols: () => [FROM("Origin"), TO("Target"), CODE("Type"), col("Format", () => "plain")], codes: "required", slashSame: true },
 
-  { id: "netlify", name: "Netlify (_redirects)", group: "Hosting and servers", kind: "lines", file: "_redirects", fixedName: true,
+  { id: "netlify", name: "Netlify (_redirects)", group: "Hosting and servers", kind: "lines", file: "_redirects", fixedName: true, slashLoop: true,
     note: "Netlify matches capitals exactly: /About and /about are different addresses.",
     doc: "https://docs.netlify.com/routing/redirects/",
     line: (r) => `${r.from}  ${r.to}  ${r.code}`, codes: "required",
@@ -140,11 +142,11 @@ export const FORMATS = [
   { id: "apache", name: "Apache (.htaccess)", group: "Hosting and servers", kind: "lines", file: "htaccess-redirects.txt",
     note: "Put the lines above any other rewrite rules in .htaccess.",
     doc: "https://httpd.apache.org/docs/current/mod/mod_alias.html#redirectmatch",
-    line: (r) => `RedirectMatch ${r.code} ${quoteIfSpace("^" + reEscape(noSlash(decoded(r.from))) + "/?$")} ${r.to}`, codes: "required", slashSame: true,
+    line: (r) => `RedirectMatch ${r.code} ${quoteIfSpace("^" + reEscape(noSlash(decoded(r.from))) + "/?$")} ${r.to}`, codes: "required", slashSame: true, slashLoop: true,
     rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "RedirectMatch can’t match the ? part" }] },
   { id: "nginx", name: "Nginx", group: "Hosting and servers", kind: "lines", file: "nginx-redirects.conf",
     doc: "https://nginx.org/en/docs/http/ngx_http_core_module.html#location",
-    line: (r) => `location = ${quoteIfSpace(decoded(r.from))} { return ${r.code} ${r.to}; }`, codes: "required",
+    line: (r) => `location = ${quoteIfSpace(decoded(r.from))} { return ${r.code} ${r.to}; }`, codes: "required", exact: true,
     rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "nginx can’t match the ? part" }] },
   { id: "plain", name: "Plain CSV", group: "Hosting and servers", kind: "csv", file: "redirects.csv",
     note: "Change the header row and separator to fit any importer.",

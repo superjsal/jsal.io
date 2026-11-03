@@ -139,7 +139,11 @@ export function analyse(rows, fmt, opts) {
   const items = new Map();
   const { hosts, newHost } = siteHosts(rows);
   const site = tidy(opts.newSite) || (newHost ? "https://" + newHost : "");
-  const key = (p) => fmt.slashSame ? (p.length > 1 ? p.replace(/\/$/, "") : p).toLowerCase() : p;
+  // loose: an address without its last / or capitals. Few platforms document how they match those, so two addresses
+  // that differ only there are marked to test, never merged; key follows the platform's setting for chains
+  const loose = (p) => (p.length > 1 ? p.replace(/\/$/, "") : p).toLowerCase();
+  const key = (p) => fmt.slashSame ? loose(p) : p;
+  const on = fmt.doc ? "on " + esc(fmt.name.replace(/ \(.*/, "")) : "on some platforms";
   const live = [];
 
   rows.forEach((r, i) => {
@@ -205,9 +209,16 @@ export function analyse(rows, fmt, opts) {
 
     // With full URLs, old.com/page to new.com/page is a real redirect; as paths it would point to itself
     const domainOnly = o.host && n.host && bare(o.host) !== bare(n.host);
-    if (!external && key(oc.path) === key(nc.path) && !(domainOnly && opts.newAddr === "url")) {
-      if (domainOnly) return out("n", "Only the domain changes: left out", "domain-only");
-      return out("n", oc.path === nc.path ? "Points to itself: left out" : "Same page, only a / or capital differs: left out");
+    if (!external && !(domainOnly && opts.newAddr === "url")) {
+      if (domainOnly && key(oc.path) === key(nc.path)) return out("n", "Only the domain changes: left out", "domain-only");
+      if (oc.path === nc.path) return out("n", "Points to itself: left out");
+      // Where a path with and without its last / is known to match as one, a row that only adds or drops it loops
+      if (fmt.slashLoop && oc.path.replace(/\/$/, "") === nc.path.replace(/\/$/, "")) {
+        return bad("n", `Only the last / differs, and ${on} both are one address, so this would loop`, [], "slashloop", "would loop: only the last / differs", "Leave it out");
+      }
+      if (!fmt.exact && loose(oc.path) === loose(nc.path)) notes.push({ cell: "n", kind: "warn", group: "n:slashcase", leave: "Leave it out",
+        title: "differ from their old address only by a / or capital",
+        text: `Only a / or capital differs from the old address, which may be the same page ${on}. Test after import` });
     }
     live.push({ id: r.id, raw: r.new, it, from: oc.path, to, own: !external, internal: !external && !(domainOnly && opts.newAddr === "url"), fix, bad, out });
   });
@@ -215,10 +226,8 @@ export function analyse(rows, fmt, opts) {
   // The same old address on more than one row: to the same page, the repeats are dropped; to different pages, each
   // row is a duplicate to delete until one is left
   const groups = new Map();
-  for (const l of live) {
-    const k = key(l.from);
-    (groups.get(k) || groups.set(k, []).get(k)).push(l);
-  }
+  for (const l of live) (groups.get(l.from) || groups.set(l.from, []).get(l.from)).push(l);
+  const rowList = (ls) => { const n = ls.map((x) => x.it.n); return (n.length > 1 ? "rows " : "row ") + (n.length > 1 ? `${n.slice(0, -1).join(", ")} and ${n[n.length - 1]}` : n[0]); };
   const kept = [];
   for (const [k, g] of groups) {
     if (g.length === 1) { kept.push(g[0]); continue; }
@@ -228,11 +237,15 @@ export function analyse(rows, fmt, opts) {
       g.slice(1).forEach((l) => l.out("o", `Same as row ${g[0].it.n}: left out`));
       continue;
     }
-    const rowList = (ls) => { const n = ls.map((x) => x.it.n); return (n.length > 1 ? "rows " : "row ") + (n.length > 1 ? `${n.slice(0, -1).join(", ")} and ${n[n.length - 1]}` : n[0]); };
-    // The rows may write the address differently (/about-us/ and /about-us), so say they count as one
-    const spellings = [...new Set(g.map((l) => l.from))];
-    const same = spellings.length > 1 ? ` (${spellings.map((s) => `<code>${esc(s)}</code>`).join(" and ")} count as one)` : "";
-    for (const l of g) l.bad("o", `Duplicate of ${rowList(g.filter((x) => x !== l))}${same}. Leave ${g.length > 2 ? "all but one" : "one"} out.`, [], "clash", "Duplicates", "Leave this one out");
+    for (const l of g) l.bad("o", `Duplicate of ${rowList(g.filter((x) => x !== l))}. Leave ${g.length > 2 ? "all but one" : "one"} out.`, [], "clash", "Duplicates", "Leave this one out");
+  }
+  // Old addresses that differ only by the last / or capitals (/about-us/ and /About-us) go in the file, marked to test
+  const alike = new Map();
+  for (const l of kept) (alike.get(loose(l.from)) || alike.set(loose(l.from), []).get(loose(l.from))).push(l);
+  for (const g of alike.values()) {
+    if (g.length < 2 || fmt.exact) continue;
+    for (const l of g) l.it.notes.push({ cell: "o", kind: "warn", group: "o:alike", leave: "Leave this one out", title: "may share an address with another row",
+      text: `May be the same address as ${rowList(g.filter((x) => x !== l))} ${on}: only a / or capital differs. Test after import` });
   }
 
   // Chains (A → B, then B → C) go in the file as typed, so the visitor stays in charge of their redirects; both rows
@@ -247,7 +260,7 @@ export function analyse(rows, fmt, opts) {
     let loop = false;
     while (internal) {
       const next = map.get(key(to.split("#")[0]));
-      if (!next) break;
+      if (!next || (next === l && !hops.length)) break;   // a row that only changes its last / or capitals is marked to test, not a loop
       if (seen.has(key(next.from))) { loop = true; break; }
       seen.add(key(next.from)); hops.push(next); to = next.to; internal = next.internal;
       if (hops.length > 50) { loop = true; break; }
