@@ -75,7 +75,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .overview .repeat { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-8); color: var(--jsal-bad); }
 .overview .count { padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad); color: var(--jsal-surface); }
 .overview .repeat.warn { color: var(--jsal-warn); }
-.overview .repeat.warn .count { background: none; color: var(--jsal-ink); outline: 1px dashed var(--jsal-warn); outline-offset: -1px; }
+.overview .repeat.warn .count { background: none; color: var(--jsal-warn); outline: 1px dashed var(--jsal-warn); outline-offset: -1px; }
 .overview .jsal-btn.small { min-height: 28px; padding: 3px var(--jsal-space-8); font-size: 13px; }
 
 /* ── The sheet ──────────────────────────────────────────────────────────── */
