@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
 import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=320e0bf5";
-import { FORMATS, byId } from "./formats.js?v=d8fa96d8";
+import { FORMATS, byId } from "./formats.js?v=cc14f0fc";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -27,7 +27,7 @@ const unquote = (s) => s.replace(/^"(.*)"$/, "$1");
 // Anything in the file that strays from the platform's help page. Where its importer has been read (seps, heads) the
 // caution says what will happen; elsewhere, that it may not import. One about the header row is said under it
 function offDocs(f, head, docHead) {
-  const out = { file: [], head: "" };
+  const out = { file: [], head: "", noHead: "" };
   if (f.kind !== "csv" || !f.doc) return out;
   const sep = opts.sep, names = head === null ? [] : head.split(sep).map(unquote), doc = docHead.split(sep).map(unquote).join(sep);
   if (f.seps) {
@@ -40,7 +40,7 @@ function offDocs(f, head, docHead) {
   } else if (f.headerOff) {
     if (head !== null) out.head = `${f.name}’s help doesn’t mention a header row, so this one may go in as a redirect. Remove it with ×.`;
   } else if (head === null) {
-    out.file.push(`${f.name}’s help shows a header row first, so without one the first redirect may be skipped. Add it back.`);
+    out.noHead = `No header row. ${f.name}’s help shows one first, so the first redirect may be skipped.`;
   } else if (!f.anyHead && names.join(sep) !== doc) {
     out.head = `${f.name}’s help shows the header row as ${doc.split(sep).join(",")}, so this one may not import. Change it back.`;
   }
@@ -522,10 +522,11 @@ function renderFile() {
   const headIn = $("headIn");
   $("headRow").hidden = head === null;
   if (head !== null && document.activeElement !== headIn) headIn.value = head;
-  // Without one, the line to add it shows what it would say
-  $("headAdd").hidden = fmt.kind !== "csv" || opts.headerOn;
-  $("headAddText").textContent = opts.header ?? w.header ?? "";
   const names = head === null ? 0 : head.split(opts.sep).length, off = offDocs(fmt, head, w.header ?? "");
+  // Without one, a line says so where it would be, as a warning where the platform's help shows one
+  $("headAdd").hidden = fmt.kind !== "csv" || opts.headerOn;
+  $("headAdd").classList.toggle("warn", !!off.noHead);
+  $("headAddText").textContent = off.noHead || "No header row.";
   const count = head !== null && opts.header !== null && names !== w.cols && `The header has ${names} name${names === 1 ? "" : "s"}; each row has ${w.cols} columns.`;
   $("headWarn").textContent = [count, off.head].filter(Boolean).join(" ");
   $("headWarn").hidden = !$("headWarn").textContent;
