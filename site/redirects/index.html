@@ -65,20 +65,20 @@
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update -->
   <link rel="stylesheet" href="/shell.css?v=dee1ef84">
-  <link rel="stylesheet" href="styles.css?v=889a770d" />
+  <link rel="stylesheet" href="styles.css?v=25b74c6a" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":    "./js/main.js?v=3facde2e",
+        "./js/main.js":    "./js/main.js?v=caa07b34",
         "./js/core.js":    "./js/core.js?v=320e0bf5",
-        "./js/formats.js": "./js/formats.js?v=3deba5af",
+        "./js/formats.js": "./js/formats.js?v=df5e3ad4",
         "./js/xlsx.js":    "./js/xlsx.js?v=8b577352"
       }
     }
   </script>
   <!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app's modules have loaded -->
   <script src="/nav.js?v=8e6a6b80" defer></script>
-  <script type="module" src="js/main.js?v=3facde2e"></script>
+  <script type="module" src="js/main.js?v=caa07b34"></script>
 </head>
 <body>
   <main class="app" id="app">
@@ -97,7 +97,7 @@
     <!-- Where the file goes, and what to do with it -->
     <div class="bar">
       <label class="plat"><span class="label">Import into</span><select class="field" id="platform"></select></label>
-      <p class="where"><span id="where"></span> <a id="whereDoc" href="https://jsal.io/" target="_blank" rel="noopener">Help page</a></p>
+      <p class="where"><a id="whereDoc" href="https://jsal.io/" target="_blank" rel="noopener">Help page</a></p>
       <p class="summary" id="summary" aria-live="polite" data-needs-content></p>
       <div class="bar-actions" data-needs-content>
         <button type="button" class="jsal-btn" id="copyBtn">Copy file</button>

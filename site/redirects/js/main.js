@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
 import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=320e0bf5";
-import { FORMATS, byId } from "./formats.js?v=3deba5af";
+import { FORMATS, byId } from "./formats.js?v=df5e3ad4";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -416,7 +416,10 @@ function update() {
   if ($("filterEmpty").dataset.h !== empty) { $("filterEmpty").innerHTML = empty; $("filterEmpty").dataset.h = empty; }
   overview(live);
   $("summary").innerHTML = `<b>${count.ready} ready</b>` + (count.check ? ` · ${count.check} to check` : "") + (count.bad ? ` · ${count.bad} need you` : "") + (count.out ? ` · ${count.out} left out` : "");
-  $("sheetMeta").textContent = [table.name, `${count.all} row${count.all === 1 ? "" : "s"}`, table.pick.header && "headings skipped"].filter(Boolean).join(" · ");
+  // The row count is on the All filter, so this says only where the rows came from; a long file name is cut short, never
+  // the note after it
+  const meta = `<span class="meta-name" title="${esc(table.name)}">${esc(table.name)}</span>` + (table.pick.header ? `<span>${table.name ? " · " : ""}headings skipped</span>` : "");
+  if ($("sheetMeta").dataset.h !== meta) { $("sheetMeta").innerHTML = meta; $("sheetMeta").dataset.h = meta; }
   $("undoAll").hidden = !rows.some((r) => r.added || r.deleted || r.old !== r.old0 || r.new !== r.new0);
   renderFile();
   keep();
@@ -488,9 +491,8 @@ function fileText() {
 }
 
 function showWhere() {
-  $("where").textContent = fmt.where + ".";
-  $("whereDoc").hidden = !fmt.doc;
-  if (fmt.doc) $("whereDoc").href = fmt.doc;
+  $("whereDoc").parentElement.hidden = !fmt.doc;
+  if (fmt.doc) { $("whereDoc").href = fmt.doc; $("whereDoc").setAttribute("aria-label", `${fmt.name}’s help page on importing redirects`); }
 }
 
 function renderFile() {

@@ -21,9 +21,10 @@ code, .mono, .file, .cell, .txt, .head-in { font-family: "JetBrains Mono", ui-mo
 .field { width: 100%; min-height: 40px; padding: var(--jsal-space-8) var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: 14px var(--jsal-font); }
 .field:focus-visible, .txt:focus-visible, .cell:focus-visible, .head-in:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .where { flex: 1 1 160px; margin: 0 0 var(--jsal-space-8); font-size: 13px; line-height: 1.45; color: var(--jsal-muted); }
+.where[hidden] { display: none; }
 .where a { color: var(--jsal-info); text-underline-offset: 2px; white-space: nowrap; }
-.summary { margin: 0 0 var(--jsal-space-8); font-size: 13px; color: var(--jsal-muted); white-space: nowrap; }
-.summary b { color: var(--jsal-ink); font-weight: 600; }
+/* The counts are on the sheet's filters; this copy is only read out as they change */
+.summary { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .bar-actions { display: flex; gap: var(--jsal-space-8); }
 
 /* ── Empty state ────────────────────────────────────────────────────────── */
@@ -52,7 +53,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .pane-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-12); padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); }
 .pane-title { margin: 0; font-size: 14px; font-weight: 700; }
 .pane-title.mono { font-size: 13px; font-weight: 600; }
-.pane-meta { flex: 1; min-width: 0; font-size: 13px; color: var(--jsal-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pane-meta { display: flex; flex: 1 1 0; font-size: 13px; color: var(--jsal-muted); white-space: nowrap; }
+.pane-meta .meta-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .pane-body { flex: 1; min-height: 0; overflow: auto; }
 .pane-foot { display: flex; flex-wrap: wrap; gap: var(--jsal-space-4) var(--jsal-space-20); padding: var(--jsal-space-8) var(--jsal-space-12); border-top: 1px solid var(--jsal-line); font-size: 14px; }
 .pane-foot #clearBtn { margin-left: auto; }
