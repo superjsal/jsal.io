@@ -1,4 +1,5 @@
 [
+  {"date": "2026-11-03", "tag": "Redirect Import", "text": "No platform is picked for you: until you choose one, the file is a plain CSV, which also covers platforms not on the list."},
   {"date": "2026-11-03", "tag": "Redirect Import", "text": "Small fixes: Webflow’s own redirect export loads back in, wildcards included, and the notes under each row are shorter, saying only what that row needs."},
   {"date": "2026-11-02", "tag": "Site", "text": "jsal.io now runs on Cloudflare instead of GitHub Pages: the same pages at the same addresses, quicker to open, and [Privacy](/privacy/) says so."},
   {"date": "2026-11-02", "tag": "Site", "text": "Spacing follows one scale on every page: a little tighter inside buttons and rows, a little more room between sections."},

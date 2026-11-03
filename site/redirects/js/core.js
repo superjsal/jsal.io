@@ -300,7 +300,7 @@ export function analyse(rows, fmt, opts) {
   for (const r of ready) {
     const problems = (fmt.rules?.(r) || []).filter(Boolean);
     // A website platform always has a home page, and its redirects only run for addresses that don't exist
-    if (r.from === "/" && fmt.group !== "Hosting and servers" && !problems.length) problems.push({ cell: "o", id: "home", text: "Can’t redirect the home page" });
+    if (r.from === "/" && !["Hosting and servers", "Other"].includes(fmt.group) && !problems.length) problems.push({ cell: "o", id: "home", text: "Can’t redirect the home page" });
     // An address with no letters or numbers (/,,., or a stray /-) is allowed, but almost never a real page
     const noWords = (a) => { const p = a.split(/[?#]/)[0]; return p !== "/" && !/^https?:/i.test(a) && !/[a-z0-9]/i.test(p); };
     if (noWords(r.from)) problems.push({ cell: "o", warn: true, text: "Doesn’t look like a page address" });

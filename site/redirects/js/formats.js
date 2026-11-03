@@ -153,8 +153,8 @@ export const FORMATS = [
     doc: "https://nginx.org/en/docs/http/ngx_http_core_module.html#location",
     line: (r) => `location = ${quoteIfSpace(decoded(r.from))} { return ${r.code} ${r.to}; }`, codes: "required", exact: true,
     rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Nginx can’t match the ? part" }] },
-  { id: "plain", name: "Plain CSV", group: "Hosting and servers", kind: "csv", file: "redirects.csv",
-    note: "Change the header row and separator to fit any importer.",
+  { id: "plain", name: "Plain CSV", label: "Not listed: plain CSV", group: "Other", kind: "csv", file: "redirects.csv",
+    note: "Change the header row and separator to fit your importer.",
     cols: (code) => code ? [FROM("old"), TO("new"), CODE("status")] : [FROM("old"), TO("new")], codes: "optional" },
 ];
 

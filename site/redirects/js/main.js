@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and its Settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=151bae49";
-import { FORMATS, byId } from "./formats.js?v=7a814253";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=aa2c753e";
+import { FORMATS, byId } from "./formats.js?v=87e00a24";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -15,7 +15,11 @@ let nextId = 1, lastN = 0, filter = "all", part = 0, result = null, cleared = nu
 // Rows worked on since a filter was picked stay on screen, as in a spreadsheet, so a row being fixed under
 // "Needs you" doesn't vanish mid-word; picking a filter again applies it afresh
 const stay = new Set();
-let fmt = byId(store.get("jsal-redirects-platform") || "shopify"), opts = defaults(fmt);
+// No platform is chosen for the visitor: until they pick one the file is a plain CSV, said so, with only the checks
+// every platform shares. Once picked, it's remembered
+const saved = store.get("jsal-redirects-platform");
+let picked = FORMATS.some((f) => f.id === saved);
+let fmt = byId(picked ? saved : "plain"), opts = defaults(fmt);
 
 function defaults(f) {
   return { code: "301", newAddr: "path", newSite: "", headerOn: f.kind === "csv" && !f.headerOff, sep: ",", header: null, statusCol: f.codes === "required", name: null };
@@ -50,11 +54,11 @@ function offDocs(f, head, docHead) {
 // ── Platforms ──────────────────────────────────────────────────────────────
 
 const groups = [...new Set(FORMATS.map((f) => f.group))];
-$("platform").innerHTML = groups.map((g) => `<optgroup label="${esc(g)}">${FORMATS.filter((f) => f.group === g)
+$("platform").innerHTML = `<option value="" disabled>Pick a platform</option>` + groups.map((g) => `<optgroup label="${esc(g)}">${FORMATS.filter((f) => f.group === g)
   .map((f) => `<option value="${f.id}">${esc(f.label || f.name)}</option>`).join("")}</optgroup>`).join("");
-$("platform").value = fmt.id;
+$("platform").value = picked ? fmt.id : "";
 $("platform").addEventListener("change", (e) => {
-  fmt = byId(e.target.value); opts = defaults(fmt); part = 0;
+  fmt = byId(e.target.value); opts = defaults(fmt); part = 0; picked = true;
   store.set("jsal-redirects-platform", fmt.id);
   showWhere();
   update();
@@ -430,7 +434,7 @@ function update() {
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 function overview(live) {
   const d = result.done, said = [];
-  if (d["o:domain"]) said.push(`the domain from ${plural(d["o:domain"], "old address", "old addresses")} (${esc(fmt.name)} takes paths)`);
+  if (d["o:domain"]) said.push(`the domain from ${plural(d["o:domain"], "old address", "old addresses")}${fmt.doc ? ` (${esc(fmt.name)} takes paths)` : ""}`);
   if (d["n:domain"]) said.push(`your own domain from ${plural(d["n:domain"], "new address", "new addresses")}`);
   if (d["n:preview"]) said.push(`the preview domain from ${plural(d["n:preview"], "new address", "new addresses")}`);
   if (d["o:tracking"]) said.push(`tracking tags from ${d["o:tracking"]}`);
@@ -551,7 +555,7 @@ function renderFile() {
     fmt.needsDomain && !domain() && `${fmt.name} needs the store’s domain on every row: add it under Settings.`,
     fmt.max && result.ready.length > fmt.max && `${fmt.name} takes up to ${fmt.max.toLocaleString("en-GB")} redirects; this has ${result.ready.length.toLocaleString("en-GB")}. Vercel bulk redirects take more.`,
     opts.newAddr === "url" && !result.site && "Add the new site’s address under Settings to write full URLs."].filter(Boolean);
-  const info = [fmt.note, p.length > 1 && `${fmt.name} takes ${fmt.limit} redirects per import, so the file is in ${p.length} parts: import each in turn.`].filter(Boolean);
+  const info = [picked ? fmt.note : "A plain CSV for now. Pick a platform above for its exact file and its own checks.", p.length > 1 && `${fmt.name} takes ${fmt.limit} redirects per import, so the file is in ${p.length} parts: import each in turn.`].filter(Boolean);
   $("fileWarn").hidden = !warn.length;
   $("fileWarn").textContent = warn.join(" ");
   $("fileInfo").hidden = !info.length;
@@ -573,14 +577,16 @@ function renderFile() {
   const d = defaults(fmt);
   $("resetFmt").hidden = Object.keys(d).every((k) => k === "name" || d[k] === opts[k]);
 
-  // Squarespace's lines are pasted, so Copy is the main action there
-  $("copyBtn").classList.toggle("primary", !!fmt.paste);
-  $("downloadBtn").classList.toggle("primary", !fmt.paste);
+  // Squarespace's lines are pasted, so Copy is the main action there; with no platform picked, neither is gold
+  $("copyBtn").classList.toggle("primary", picked && !!fmt.paste);
+  $("downloadBtn").classList.toggle("primary", picked && !fmt.paste);
   // Both buttons name what they take: the file on the right, the part of it on show, or how many of the rows it holds
-  // while some still need fixing, so a partial file is never mistaken for the whole sheet
-  const inFile = result.ready.length, of = missing && inFile ? ` ${inFile} of ${inFile + missing}` : "";
-  $("downloadBtn").textContent = p.length > 1 ? `Download part ${part + 1}` : of ? "Download" + of : "Download file";
-  $("copyBtn").textContent = p.length > 1 ? `Copy part ${part + 1}` : of ? "Copy" + of : "Copy file";
+  // while some still need fixing, so a partial file is never mistaken for the whole sheet. With no platform picked
+  // they say it's a plain CSV, so it's never taken for a platform's file
+  const inFile = result.ready.length, of = missing && inFile ? `${inFile} of ${inFile + missing}` : "";
+  const label = (verb) => p.length > 1 ? `${verb} part ${part + 1}` : !picked ? `${verb} plain CSV${of ? ` (${of})` : ""}` : of ? `${verb} ${of}` : `${verb} file`;
+  $("downloadBtn").textContent = label("Download");
+  $("copyBtn").textContent = label("Copy");
   $("copyBtn").disabled = $("downloadBtn").disabled = !inFile;
   const one = missing === 1;
   const gone = missing ? `<span class="count">${plural(missing, "row", "rows")}</span> ${one ? "needs" : "need"} fixing before ${one ? "it goes" : "they go"} in the file. <button type="button" class="jsal-btn link" data-needs-you>Fix ${one ? "it" : "them"}</button>` : "";
@@ -650,7 +656,7 @@ $("headIn").addEventListener("input", (e) => {
 
 function output(action) {
   const { text, p } = fileText();
-  window.jsalTrack?.("redirect_file", { platform: fmt.id, redirects: result.ready.length, action });
+  window.jsalTrack?.("redirect_file", { platform: picked ? fmt.id : "none", redirects: result.ready.length, action });
   return { text, name: fileName(part, p.length) };
 }
 $("copyBtn").addEventListener("click", async (e) => {
