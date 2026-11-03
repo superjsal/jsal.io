@@ -42,6 +42,8 @@ body {
 
 /* The top bar itself (.jsal-top) is styled by /shell.css */
 .app-header { margin-bottom: var(--jsal-space-24); }
+/* After a paste, focus moves to the Checks heading so a screen reader reads the results next; it's not a control, so no ring */
+#checksH:focus { outline: none; }
 
 .section-label {
   margin-bottom: var(--jsal-space-8);
