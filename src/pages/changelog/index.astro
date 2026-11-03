@@ -1,0 +1,53 @@
+---
+import Page from "../../layouts/Page.astro";
+import TopBar from "../../components/TopBar.astro";
+import { getCollection } from "astro:content";
+import { inOrder, byDay, longDate, section, sentence } from "../../lib/changelog.mjs";
+// Every entry from the changelog collection (src/content/changelog.json), grouped by day, newest first
+const entries = inOrder(await getCollection("changelog"));
+---
+<Page
+  title="Changelog | jsal.io"
+  description="Everything that has changed on jsal.io, newest first: the CMS Picker, Clean Paste, the Image Resizer and the rest of the site."
+  path="/changelog/"
+  robots="noindex"
+  ogDescription="Everything that has changed on jsal.io, newest first."
+>
+<style is:inline slot="head">
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 var(--jsal-gutter) var(--jsal-page-end); }
+.log { margin-top: var(--jsal-page-top); max-width: 44em; }
+.code { margin: 0 0 var(--jsal-space-12); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }   /* every page title's size, as on the home page */
+@media (max-width: 520px) { h1 { font-size: 40px; } }
+h1 em { font-weight: 600; color: var(--jsal-accent); }
+.log .lead { margin: var(--jsal-space-32) 0 0; padding-bottom: var(--jsal-space-40); border-bottom: 1px solid var(--jsal-line); font-size: 17px; color: var(--jsal-ink-2); text-wrap: pretty; }   /* the intro ends in a thin line */
+.log .lead + h2 { margin-top: var(--jsal-space-40); }
+.log h2 { margin: var(--jsal-space-40) 0 var(--jsal-space-8); font: 700 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.log ul { margin: 0; padding: 0; list-style: none; }
+.log li { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: var(--jsal-space-12); padding: var(--jsal-space-8) 0; border-top: 1px solid var(--jsal-line); color: var(--jsal-ink-2); }
+.log .log-name { color: var(--jsal-ink); font-weight: 600; }
+@media (pointer: coarse) { .log-name a { position: relative; } .log-name a::after { content: ""; position: absolute; inset: -13px -4px; } }   /* 44px to tap */
+.log a { color: var(--jsal-accent); text-underline-offset: 2px; }
+@media (max-width: 520px) { .log li { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-2); } }
+</style>
+<div class="wrap">
+  <TopBar />
+  <main class="log">
+    <p class="code">Changelog</p>
+    <h1>What’s <em>changed</em></h1>
+    <p class="lead">Everything that has changed on jsal.io, newest first. The home page keeps only the latest change for each part of the site.</p>
+    {byDay(entries).map(([date, day]) => (
+      <Fragment>
+    <h2><time datetime={date}>{longDate(date)}</time></h2>
+    <ul>
+      {day.map((e) => (
+      <Fragment><li data-short={e.short}><span class="log-name">{section(e.tag).href ? <a href={section(e.tag).href}>{e.tag}</a> : e.tag}</span><span set:html={sentence(e.text)} /></li>{"\n"}</Fragment>
+      ))}
+    </ul>
+      </Fragment>
+    ))}
+  </main>
+</div>
+</Page>

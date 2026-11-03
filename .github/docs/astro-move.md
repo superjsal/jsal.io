@@ -60,6 +60,12 @@ and the docs describe the new setup.
   use TopBar; it takes the logo and the theme button from `src\lib\topbar.mjs`, the same markup TopBar uses. Its logo
   link lost a `brand` class nothing used. Same as staging in markup, and in Edge signed out and signed in (from the
   latest backup, Supabase blocked) at both widths and themes.
+- **Step 8, done: every page is built by Astro.** The Changelog is a content collection: `src\content\changelog.json`
+  (newest first, one entry per line: date, tag, optional `short`, sentence with Markdown links), checked by the schema
+  in `src\content.config.mjs` (a real date, a tag from `SECTIONS` in `src\lib\changelog.mjs`, no HTML, no unknown
+  field) and for order; a bad entry stops the build, and an entry's id is its line in the file. The Changelog page
+  (`src\pages\changelog\`) and Updates (`src\lib\updates.mjs`, now reading the collection) are the same as staging
+  in markup and in Edge. `site\` now holds only the files the pages use.
 - **Merging staging into `astro`:** a change on staging to a page that has moved comes in as a modify/delete
   conflict. Port the change into the page's `.astro` file by hand, then `git rm` the old file. On staging,
   `updates.py` rewrites `site\index.html` whenever a `data-short` line is added: that one needs no porting (the
@@ -68,6 +74,10 @@ and the docs describe the new setup.
   `site\` side of the CSS or JS and `git rm` the page. **The nightly publish** commits the CMS Picker page and the
   platform pages to `main` until the move ships: take the branch's side (`git rm` them), keep the merged `data.json`,
   then run `python -I .github\scripts\playbook.py dates` so the dates follow the new data, and commit its changes.
+  **The changelog:** staging's new lines arrive as a modify/delete conflict on `site\changelog\index.html`. Run
+  `python -I .github\build\astro-move\changelog_json.py` (it rewrites `changelog.json` from origin/staging's page,
+  the whole list), then `git rm` the page. Until the move ships, add nothing to `changelog.json` on this branch, or
+  the next conversion overwrites it.
 - Still on `site\`: `versions.py` (which only sees `site\`; moved pages use `v()` instead).
 
 ## How each page moves
@@ -121,7 +131,9 @@ and the docs describe the new setup.
   (due on or after 2026-11-09) before shipping, as planned anyway.
 - **IndexNow on push** works out which pages changed from paths under `site\`; it needs to map `src\pages\` too (and
   a layout change to every page).
-- Docs: CLAUDE.md, SETUP.md, `how-it-works.md` (the publish now writes data and dates, not pages),
+- The move's own changelog line goes into `changelog.json` on the day it ships (after the last conversion).
+- Docs: CLAUDE.md (the changelog rule: entries are lines in `src\content\changelog.json`, `short` replaces
+  `data-short`, `updates.py` is gone), SETUP.md, `how-it-works.md` (the publish now writes data and dates, not pages),
   `design-rules.md` (check names), `cms-picker-maintenance.md` and `.claude\rules\cms-picker-playbook.md` (where
   the platform pages and the plain-HTML copy come from), the `add-tool` skill.
 - The nightly Action's "Deploy Pages (fallback)" step goes with the fallback.
