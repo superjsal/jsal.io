@@ -47,13 +47,15 @@ jobs:
           urls=$(python .github/scripts/indexnow.py built "$RUNNER_TEMP/before" "$RUNNER_TEMP/after" --list)
           echo "urls=$urls" >> "$GITHUB_OUTPUT"
           echo "Changed pages: ${urls:-none}"
-      - name: Wait for Cloudflare's build to be live (up to ~5 minutes; it reports as a check on the commit)
+      # A shipped commit was pushed to staging first, so it also carries the preview's build check: wait for the
+      # production one (its link has /production/builds/), which Cloudflare queues after it (up to ~10 minutes)
+      - name: Wait for Cloudflare's production build to be live
         if: steps.pages.outputs.urls != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          for i in $(seq 1 40); do
-            s=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/check-runs" --jq '[.check_runs[] | select(.app.slug | test("cloudflare"))][0] | "\(.status) \(.conclusion)"' 2>/dev/null)
+          for i in $(seq 1 80); do
+            s=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/check-runs" --jq '[.check_runs[] | select((.app.slug | test("cloudflare")) and (.details_url | test("/production/builds/")))][0] | "\(.status) \(.conclusion)"' 2>/dev/null)
             [ "$s" = "completed success" ] && break
             sleep 10
           done

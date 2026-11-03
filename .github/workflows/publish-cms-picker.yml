@@ -62,7 +62,7 @@ jobs:
         run: |
           sleep 20
           for i in $(seq 1 40); do
-            s=$(gh api "repos/${{ github.repository }}/commits/${{ steps.commit.outputs.sha }}/check-runs" --jq '[.check_runs[] | select(.app.slug | test("cloudflare"))][0] | "\(.status) \(.conclusion)"' 2>/dev/null)
+            s=$(gh api "repos/${{ github.repository }}/commits/${{ steps.commit.outputs.sha }}/check-runs" --jq '[.check_runs[] | select((.app.slug | test("cloudflare")) and (.details_url | test("/production/builds/")))][0] | "\(.status) \(.conclusion)"' 2>/dev/null)
             [ "$s" = "completed success" ] && break
             sleep 10
           done
