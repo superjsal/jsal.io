@@ -33,6 +33,8 @@ jobs:
         run: python .github/scripts/check_data.py --list
       - name: Persona tests (the agreed Find my fit results)
         run: node .github/scripts/personas.test.js
+      - name: Redirect Import tests (tricky addresses, each platform's file, the audit-export traps)
+        run: node .github/scripts/redirects.test.mjs
       - name: Expert cases (how often Find my fit agrees with a consultant; a report, never a failure)
         run: node .github/scripts/expert-cases.js
 

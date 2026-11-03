@@ -73,11 +73,15 @@ export const FORMATS = [
     note: "Framer imports redirects through its Redirect Sync plugin.",
     doc: "https://www.framer.com/help/articles/bulk-importing-exporting-redirects/",
     cols: () => [FROM("from"), TO("to")], codes: false, slashSame: true },
+  // HubSpot ignores the ? part unless a row says to match it, so a row with one matches only that address; the last /
+  // is ignored, as HubSpot does by default, so /page and /page/ are one address there
   { id: "hubspot", name: "HubSpot", group: "Website platforms", kind: "csv", file: "hubspot-redirects.csv", limit: 500,
     caution: "One bad row stops the whole import, so fix everything marked first.",
+    note: "To change redirects already in HubSpot, tick Overwrite existing redirects with same original URL when importing.",
     doc: "https://knowledge.hubspot.com/domains-and-urls/bulk-upload-url-redirects",
-    cols: () => [FROM("original url"), TO("redirect to"), col("redirect type", () => "STANDARD"), CODE("redirect style")],
-    codes: "required", slashSame: true,
+    cols: () => [FROM("original url"), TO("redirect to"), col("redirect type", () => "STANDARD"), CODE("redirect style"),
+      col("match query strings", (r) => (r.from.includes("?") ? "TRUE" : "FALSE")), col("ignore trailing slash", () => "TRUE")],
+    codes: "required", slashSame: true, slashLoop: true,
     rules: (r) => [
       r.from.length > 140 && { cell: "o", id: "long", text: `Over HubSpot’s 140 characters (${r.from.length})` },
       r.to.length > 140 && { cell: "n", id: "long", text: `Over HubSpot’s 140 characters (${r.to.length})` },

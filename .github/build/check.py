@@ -285,8 +285,12 @@ if shutil.which('node'):
     run = subprocess.run(['node', str(ROOT / '.github' / 'scripts' / 'expert-cases.js')], capture_output=True, text=True, encoding='utf-8')
     if run.returncode: fail('CMS Picker expert cases didn\'t run: ' + run.stderr.strip())
     else: print('Note: ' + run.stdout.strip().replace('\n', '\n      '))
+    # Redirect Import: tricky addresses, each platform's documented rules and file, and the audit-export traps
+    run = subprocess.run(['node', str(ROOT / '.github' / 'scripts' / 'redirects.test.mjs')], capture_output=True, text=True, encoding='utf-8')
+    if run.returncode:
+        fail('Redirect Import tests:\n      ' + '\n      '.join(l for l in run.stdout.splitlines() if l.startswith('FAIL')) + (run.stderr.strip() and '\n      ' + run.stderr.strip()))
 else:
-    print('Note: Node isn\'t installed, so the CMS Picker persona tests were skipped.')
+    print('Note: Node isn\'t installed, so the CMS Picker persona tests and the Redirect Import tests were skipped.')
 
 # Sitemap
 for loc in re.findall(r'<loc>https://jsal\.io(/[^<]*)</loc>', read('sitemap.xml')):
