@@ -1,0 +1,11 @@
+---
+// The home page's Updates list: the newest change in each of the three most recently changed parts of the site, read
+// from the changelog as the page builds (src/lib/updates.mjs). Plain rows without links: each tool has its own tile,
+// and the heading's line links the changelog. Each short line is the changelog's own HTML, so it goes out as written.
+import { updates } from "../lib/updates.mjs";
+---
+<ul class="upd">
+  {updates().map((u) => (
+    <Fragment><li data-sec={u.section}><span class="upd-name"><img class="upd-ico" src={u.icon} alt="" width="28" height="28">{u.name}</span><time class="mono" datetime={u.date}>{u.label}</time><span class="upd-line" set:html={u.short} /></li>{"\n"}</Fragment>
+  ))}
+</ul>

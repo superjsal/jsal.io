@@ -171,8 +171,8 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     Resizer its crop editor and the files it made from that one photo (the box takes each size's shape in
     turn and each size lands in the output list); Clean Paste its Text | HTML switch over a short raid note, resting halfway through its wipe (the formatted text left of a gold line, its HTML right of it, as the switch reads); Redirect Import its sheet of old and new addresses with each row's check (ready, needs you, left out) and, beside it, the file it writes for the platform, both straight, the file poking out of the tile's bottom; Say hi an email draft; Updates the
     newest change in each of the three most recently changed parts as a plain list under its heading (rows with a
-    rule between them, never cards, as they aren't links; nothing tilted, as people read them), written from the
-    changelog by `updates.py`. No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
+    rule between them, never cards, as they aren't links; nothing tilted, as people read them), read from the
+    changelog as the page builds (`src/lib/updates.mjs`). No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
   - **Each tool tile has its app icon as a watermark**, drawn large in the tile's ink at 7% with the gem in gold at
     35% (45% in dark mode, where fainter gold reads as brown), a texture that never draws the eye before the picture, behind the tile's picture and never under its words, and whole, so its shape reads (the CMS Picker's podium
     tilted like its keys, under the words and left of the keys, upright on phones on their side); set per breakpoint, and

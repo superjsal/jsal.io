@@ -6,6 +6,7 @@
 #  - head order and whitespace; <meta ... /> against <meta ...>; initial-scale=1.0 against 1
 #  - an SVG shape's <path .../> written as <path ...></path> (how Astro writes them)
 #  - /nav.js in the head instead of at the end of the body (deferred, it runs at the same moment)
+#  - the home page's updates:start/updates:end marker comments, gone now the build writes Updates
 #  - a comment above <html> moved into the head; the ?v= numbers themselves (check.py holds each to its file's hash,
 #    and the layout adds one where a page had none)
 #  - tags the layout adds on purpose (ADDED): every share card states its image's size (all are 1200 by 628), every
@@ -42,6 +43,8 @@ def split(t):
 def compare(rel):
     old = subprocess.run(['git', 'show', f'origin/staging:site/{rel}'], cwd=ROOT, capture_output=True, encoding='utf-8', check=True).stdout
     new = (ROOT / 'dist' / rel).read_text(encoding='utf-8')
+    # The markers a script once wrote the home page's Updates between; the build makes the list itself now
+    old = re.sub(r'<!-- updates:(?:start.*?|end) -->', '', old, flags=re.S)
     (oh, ob), (nh, nb) = split(old), split(new)
     out = [f'only in staging\'s head: {t[:200]}' for t in (oh - nh)] + [f'only in the build\'s head: {t[:200]}' for t in (nh - oh) if t not in ADDED]
     if ob != nb:

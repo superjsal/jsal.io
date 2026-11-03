@@ -7,10 +7,10 @@
 #  - no unused CSS classes, keyframes or variables
 #  - branding: no standalone "JSAL"; the WoW art keeps its credit
 #  - every sitemap address exists
-#  - Updates on the home page is what .github/scripts/updates.py would write from the changelog
-# It builds the site first (npm run build, which also writes the content security policy) and checks the build in
-# dist\, so pages made from src\ and files copied from site\ are checked alike; a problem in a built page is reported
-# by its served path (privacy/index.html), whose source is src\pages\ or site\.
+# It builds the site first (npm run build, which also writes the content security policy and the home page's Updates,
+# and stops on a changelog Updates can't use) and checks the build in dist\, so pages made from src\ and files copied
+# from site\ are checked alike; a problem in a built page is reported by its served path (privacy/index.html), whose
+# source is src\pages\ or site\.
 import json, pathlib, re, shutil, subprocess, sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]   # .github\build\check.py -> the project folder
@@ -23,6 +23,9 @@ if not npm or not (ROOT / 'node_modules' / 'astro').is_dir():
 run = subprocess.run([npm, 'run', 'build'], cwd=ROOT, capture_output=True, text=True, encoding='utf-8')
 if run.returncode:
     sys.exit('The build failed:\n' + (run.stdout + run.stderr).strip())
+# Notes the build leaves, such as an Updates line too long for one row
+for line in (run.stdout + run.stderr).splitlines():
+    if '] Note: ' in line: print('Note: ' + line.split('] Note: ', 1)[1])
 
 # Every page in the build: each folder's index.html and the 404 page, found the same way as browser-check.mjs, so a new
 # page is checked without a list to keep
@@ -160,7 +163,7 @@ for p, t in html.items():
 # Served comments explain the page to a reader of its source (CLAUDE.md): never tooling, scripts or folders outside
 # site/, people, dates of decisions or TODOs. The marker comments the scripts look for are exempt by their prefix.
 COMMENT_BAN = re.compile(r'\.ps1\b|\.py\b|\.mjs\b|\.github|build\\|bump-version|playbook\.py|check\.py|updates\.py|\bTODO\b|\bFIXME\b|\bClaude\b|agreed with|\bJohn\b|\b20\d\d-\d\d-\d\d\b')
-COMMENT_OK = ('prerender:', '/prerender:', 'updates:', 'style: allow')
+COMMENT_OK = ('prerender:', '/prerender:', 'style: allow')
 def comments(text, suffix):
     if suffix == '.html':
         yield from ((m.start(), m.group(1)) for m in re.finditer(r'<!--(.*?)-->', text, re.S))
@@ -271,11 +274,6 @@ sys.path.insert(0, str(ROOT / '.github' / 'scripts'))
 import check_data
 picker_data = json.loads(read('cms-picker/data.json'))
 for e in check_data.problems(picker_data): fail(f'cms-picker/data.json: {e}')
-
-# Updates on the home page matches the changelog's data-short lines (updates.py writes it; this only compares)
-import updates
-for e in updates.problems(): fail(e)
-for w in updates.warnings(): print('Note: ' + w)
 
 # CMS Picker persona tests: example people still get the agreed Find my fit results (needs Node)
 import shutil, subprocess

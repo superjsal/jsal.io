@@ -69,14 +69,13 @@ flowchart TB
 
   subgraph DEV["Working on this PC (before a push)"]
     edit["edit the site: shell.css, nav.js, a tool's CSS/JS, pages"]
-    upd["updates.py<br>rewrites Updates on the home page from the<br>changelog's data-short lines"]
     bump["bump-version.ps1 → versions.py<br>each file's ?v= is its content hash; rewrites only<br>the references to the files that changed"]
-    check["check.ps1 → check.py<br>top bar identical, every ?v= current, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults,<br>Updates matches the changelog"]
+    check["check.ps1 → check.py<br>top bar identical, every ?v= current, links exist,<br>JSON-LD, unused CSS, style rules, consent defaults,<br>after building the site"]
     bcheck["browser-check.mjs (Playwright: Edge or Chromium, WebKit; Firefox on GitHub)<br>axe on every page, 375/390px, each tool's main flow"]
     personas["personas.test.js<br>54 agreed quiz results still hold,<br>9 rules over every answer set;<br>expert-cases.js reports agreement with a consultant"]
     commit["stage by name, commit, push to staging<br>(a worktree's branch merges into staging)"]
   end
-  edit --> upd --> bump --> check --> bcheck --> personas --> commit --> staging
+  edit --> bump --> check --> bcheck --> personas --> commit --> staging
 
   subgraph VIS["In the visitor's browser"]
     shell["shell.css (one link on every page)<br>tokens, top bar, transitions, pop-ups"]
@@ -99,7 +98,7 @@ flowchart TB
 - **Content flows one way out of Supabase.** Admins edit on the live Playbook; `playbook.py publish` reads the `picker` table and writes the CMS Picker's files; the Action commits them. Nobody edits `data.json`, the platform pages, the uploaded logos or the plain-HTML copy by hand. Structural changes to the Playbook (a new item, page type or guide) go through `playbook.py pull` → edit `private\playbook\defaults.json` → `push`.
 - **Two keys, two trust levels.** The browser uses the public anon key with row-level security (members read, admins write). The publish and backup scripts use the service_role key, which lives only in John's terminal (`SUPABASE_SERVICE_ROLE_KEY`) and in the Action's secrets.
 - **The quiz is code plus data.** `score.js` (questions, scoring, wording) and `quiz.json` (per-platform values the published answers don't carry) ship with the page; everything else the quiz says comes from `data.json`. The personas test pins the agreed results; the expert cases (`expert-cases.js`) report, without ever failing, how often the quiz agrees with what an experienced consultant would pick.
-- **A change is described once.** The changelog is the record; an entry with a `data-short` leads its section in Updates on the home page, which `updates.py` writes between two marker comments in `index.html`. `check.py` fails when that block is out of date, so nobody edits it by hand.
+- **A change is described once.** The changelog is the record; an entry with a `data-short` leads its section in Updates on the home page, which the home page reads from the changelog as it builds (`src/lib/updates.mjs`), so there's no copy to keep current; a tag that isn't a home page section stops the build.
 - **The project folder is the repository; `site/` is what's served.** `.github/` (workflows, build scripts, publish scripts, docs), the rules and `SETUP.md` sit beside it and never reach the site; `private/` is ignored. `wrangler.jsonc` points Cloudflare at `site/`, so nothing outside it is served; a push to `main` is live once Cloudflare's build check on the commit is green (it reports to GitHub as a check run).
 - **Staging is a branch, not a second site.** Every push to `staging` updates its preview address and runs the Site checks, and touches nothing live: no deploy to jsal.io, no IndexNow, no GA4 (`nav.js` loads gtag.js only on jsal.io). Shipping fast-forwards `main` to `staging` in one push.
 - **Cloudflare changes pages only if told to.** Its zone features that rewrite HTML (Email Address Obfuscation, Web Analytics' injected script) are off; served pages match their files byte for byte, which is the check after any Cloudflare setting change.

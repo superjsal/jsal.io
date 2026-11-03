@@ -6,7 +6,8 @@
 # slot; its top bar becomes <TopBar> with whatever the bar held besides the theme button; body scripts become
 # is:inline; /nav.js is dropped (the layout loads it); comments directly in the body go out as raw HTML (Astro drops
 # a comment that sits directly in a component's slot). It stops on braces in the body text, which need escaping.
-# Head scripts, import maps, JSON-LD and a tool's title in the bar aren't handled yet: add them when a page needs it.
+# JSON-LD goes in the head slot too, and the home page's Updates markers become <Updates />. Other head scripts,
+# import maps and a tool's title in the bar aren't handled yet: add them when a page needs it.
 # Then build, and run compare.py and pagediff.mjs.
 import pathlib, re, subprocess, sys
 
@@ -23,14 +24,21 @@ for c in re.findall(r'<!--.*?-->', before, re.S):
 for m in re.finditer(r'(?:(<!--(?:(?!-->).)*-->)\n)?<link rel="stylesheet" href="/shell\.css[^"]*">\n', head, re.S):
     if m.group(1) and 'Colours and top bar' not in m.group(1):
         slot.append(m.group(1))
+# Structured data, then the page's own styles
+for s in re.findall(r'<script type="application/ld\+json">\n.*?</script>', head, re.S):
+    slot.append(s.replace('<script ', '<script is:inline slot="head" ', 1))
 for s in re.findall(r'<style>\n.*?</style>', head, re.S):
     slot.append(s.replace('<style>', '<style is:inline slot="head">', 1))
-slot = [s if s.startswith('<style') else s for s in slot]
 
 body = t[t.index('<body'):t.rindex('</body>')]
 body = body[body.index('>') + 2:]
 body = re.sub(r'<script src="/nav\.js\?v=\w+" defer></script>\n', '', body)
 body = re.sub(r'<script>', '<script is:inline>', body)
+# The home page's Updates list, which a script used to write between two markers, is built from the changelog
+imports = ['import Page from "{depth}layouts/Page.astro";', 'import TopBar from "{depth}components/TopBar.astro";']
+if '<!-- updates:start' in body:
+    body = re.sub(r'<!-- updates:start.*?<!-- updates:end -->', '<Updates />', body, flags=re.S)
+    imports.append('import Updates from "{depth}components/Updates.astro";')
 
 def bar(m):
     inner = m.group(0)
@@ -67,9 +75,9 @@ depth = '../' * (new_rel.count('/') + 1)
 # Comments in the head slot need a wrapper: a bare comment can't take slot="head"
 head_slot = '\n'.join(
     f'<Fragment slot="head"><Fragment set:html={{`{c}`}} /></Fragment>' if c.startswith('<!--') else c for c in slot)
+nl = '\n'
 page = f'''---
-import Page from "{depth}layouts/Page.astro";
-import TopBar from "{depth}components/TopBar.astro";
+{nl.join(i.format(depth=depth) for i in imports)}
 ---
 <Page
 {props}

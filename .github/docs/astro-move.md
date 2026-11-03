@@ -30,8 +30,19 @@ and the docs describe the new setup.
     and fonts at 1280 and 375px in light and dark (`pagediff.mjs`); logo menu works; axe clean.
 - **Step 3, done:** 404 and the design system moved (`src\pages\404.astro`, `src\pages\design-system\`), each the
   same as staging in markup and in the browser; the 404's dropped-dot animation plays and settles. The Changelog
-  waits for Updates (6 below): `updates.py` and the checks read it from `site\`, and other sessions add
-  to it on staging almost daily, which a renamed file would make a merge chore each time.
+  waits (see step 4): other sessions add to it on staging almost daily, which a renamed file would make a merge
+  chore each time.
+- **Step 4, done:** the home page (`src\pages\index.astro`), with Updates read from the changelog as it builds
+  (`src\components\Updates.astro`, `src\lib\updates.mjs`, a port of `updates.py`'s rules); `updates.py` and its
+  check are gone. A changelog Updates can't use (a stray tag, a section with no `data-short`, an entry above the
+  first date) stops the build; a line past 40 characters is a note that `check.py` passes on. Same as staging in
+  markup and in Edge at both widths and themes; the full browser checks pass in Edge and WebKit.
+  - The Changelog page stays in `site\` until just before shipping: Updates reads it there, and staging keeps
+    adding to it. Move it last, as a straight move like Privacy (the entries can stay HTML).
+- **Merging staging into `astro`:** a change on staging to a page that has moved comes in as a modify/delete
+  conflict. Port the change into the page's `.astro` file by hand, then `git rm` the old file. On staging,
+  `updates.py` rewrites `site\index.html` whenever a `data-short` line is added: that one needs no porting (the
+  build makes Updates itself), so just `git rm site/index.html`.
 - Still on `site\`: `playbook.py`, the nightly Action and `versions.py` (which only sees `site\`; moved pages use
   `v()` instead).
 
@@ -50,13 +61,13 @@ and the docs describe the new setup.
    markup against staging's; it lists the differences it allows) and `node .github\build\astro-move\pagediff.mjs
    /<page>/` (every element's box, colour and font against staging's, both themes, two widths). Anything either
    reports is a bug. Then axe through `browser-check.mjs --axe`.
-4. Order, simplest first: Privacy, 404 and the design system (done); the home page with Updates and the Changelog; the four tools and
-   Off the clock; the Playbook (`/ic/`) last of the pages, as it has its own login flow.
+4. Order, simplest first: Privacy, 404, the design system and the home page (done); the four tools and Off the
+   clock; the Playbook (`/ic/`), as it has its own login flow; the Changelog last, just before shipping.
 5. **Platform pages:** one `src\pages\cms-picker\[platform].astro` reading `site\cms-picker\data.json` at build time
    replaces the 14 files `playbook.py` writes from `.github\scripts\platform-page.html`. Then `playbook.py` only
    writes data, and the nightly publish's commit triggers a rebuild.
-6. **Updates:** the home page reads the changelog's newest entries at build time, which retires `updates.py`. The
-   changelog may become a data file or a content collection for that; the Changelog page moves then, built from it.
+6. **Updates:** done (step 4 above). When the Changelog page moves, point `CHANGELOG` in `src\lib\updates.mjs` at
+   wherever its entries then live.
 
 ## Decisions to keep
 
