@@ -60,12 +60,13 @@ export function readAddress(raw) {
 }
 
 // Problems with the characters of one address; accented letters are encoded the way browsers send them, unless the
-// platform rejects any % (keepLetters)
-function characters(path, which, keepLetters) {
+// platform rejects any % (keepLetters). refs: the platform's own wildcard references (%1), which aren't stray
+function characters(path, which, keepLetters, refs) {
   const problems = [];
+  const plain = refs ? path.replace(refs, "") : path;
   CHECKS.forEach((c, i) => {
     c.re.lastIndex = 0;
-    if (c.re.test(path)) problems.push({ text: `${c.say(which)}: <code>${marked(path, c.re)}</code>`, title: c.say(which), group: "char" + i, fixes: c.fixes });
+    if (c.re.test(plain)) problems.push({ text: `${c.say(which)}: <code>${marked(path, c.re)}</code>`, title: c.say(which), group: "char" + i, fixes: c.fixes });
   });
   let encodedNote = "";
   if (keepLetters) return { problems, path, encodedNote };
@@ -178,7 +179,7 @@ export function analyse(rows, fmt, opts) {
     };
 
     // Old address: always a path
-    const t = stripTracking(o.path);
+    const t = stripTracking(fmt.unescape ? fmt.unescape(o.path) : o.path);
     const oc = characters(t.path, "old address", fmt.keepLetters);
     for (const p of oc.problems) bad("o", p.text, p.fixes, p.group, p.title);
     inFile("o", oc.path, [o.host && { key: "domain" }, t.removed && { key: "tracking" }, o.fragment && { key: "hash" },
@@ -187,7 +188,7 @@ export function analyse(rows, fmt, opts) {
     if (o.added) noSlash("o");
 
     // New address: a path on this site, or the full URL when it's another site (or the visitor asked for full URLs)
-    const nc = characters(n.path, "new address", fmt.keepLetters);
+    const nc = characters(n.path, "new address", fmt.keepLetters, fmt.refs);
     for (const p of nc.problems) bad("n", p.text, p.fixes, p.group, p.title);
     const external = n.host && !hosts.has(bare(n.host));
     const pv = n.host ? previewKind(n.host) : "";
