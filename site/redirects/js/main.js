@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
 import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=320e0bf5";
-import { FORMATS, byId } from "./formats.js?v=44ef1e7c";
+import { FORMATS, byId } from "./formats.js?v=1a2fc850";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -25,6 +25,13 @@ const sepShown = (s) => s.replace(/\t/g, "\\t");
 // A separator the importer doesn't read still passes its upload, then imports nothing
 const csvSep = (f, s) => f.seps && !f.seps.includes(s) &&
   `${f.name} reads only commas, semicolons or pipes between columns, so with ${s === "\t" ? "tabs" : sepName(s)} it imports nothing. Change the separator under Format.`;
+// A header row with names the importer doesn't know is read as one more redirect
+const csvHead = (f, head, sep) => {
+  if (!f.heads || head === null) return false;
+  const names = head.split(sep).map((s) => s.trim().replace(/^"|"$/g, "").toLowerCase());
+  if (f.heads.every((ok, i) => ok.includes(names[i]))) return false;
+  return `${f.name} skips a header row only when it starts ${f.heads.map((ok) => ok[0]).join(sep)} or ${f.heads.map((ok) => ok[1]).join(sep)}, so this one would go in as a redirect. Change it, or remove it.`;
+};
 
 // ── Platforms ──────────────────────────────────────────────────────────────
 
@@ -496,7 +503,7 @@ function renderFile() {
   // Anything to know before importing it
   showWhere();
   const warn = [fmt.caution,
-    csvSep(fmt, opts.sep),
+    csvSep(fmt, opts.sep), csvHead(fmt, head, opts.sep),
     fmt.needsDomain && !domain() && `${fmt.name} needs the store’s domain on every row: add it under Format.`,
     fmt.max && result.ready.length > fmt.max && `${fmt.name} takes up to ${fmt.max.toLocaleString("en-GB")} redirects; this has ${result.ready.length.toLocaleString("en-GB")}. Vercel bulk redirects take more.`,
     opts.newAddr === "url" && !result.site && "Add the new site’s address under Format to write full URLs."].filter(Boolean);

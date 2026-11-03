@@ -3,7 +3,8 @@
 // redirect), or a whole file written by write(). codes: false when the platform has no status setting, "optional"
 // or "required". slashSame: the platform treats /page and /page/ as one address. keepLetters: accented letters stay
 // as typed, for a platform that rejects any %. caution: what could go wrong on import, and note: worth knowing,
-// both said above the file. seps: the only separators the importer reads, when it doesn't read them all. A rule
+// both said above the file. seps: the only separators the importer reads, when it doesn't read them all. heads: the
+// names it accepts for each of the first columns, when it skips only a header row that uses them. A rule
 // with warn: true is said under the cell
 // without keeping the row out of the file.
 
@@ -111,7 +112,7 @@ export const FORMATS = [
     where: "Tools → Redirection → Import/Export → Import",
     doc: "https://redirection.me/support/import-export-redirects/",
     cols: () => [FROM("source"), TO("target"), col("regex", () => "0"), CODE("code")],
-    codes: "required", slashSame: true, seps: [",", ";", "|"],
+    codes: "required", slashSame: true, seps: [",", ";", "|"], heads: [["source", "source url"], ["target", "target url"]],
     rules: (r) => {
       const letter = decoded(r.from).match(/[^\x00-\x7F]/u);
       return [letter && { cell: "o", id: "letters", warn: true, text: `<code>${letter[0]}</code> may not match on Redirection. Test after import` }];
