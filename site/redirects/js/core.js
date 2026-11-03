@@ -239,7 +239,7 @@ export function analyse(rows, fmt, opts) {
   // are marked to check, and a button sends A straight to C. A chain that comes back round is a loop.
   const map = new Map(kept.map((l) => [key(l.from), l]));
   const ends = new Map(), into = new Map();   // a new address as typed → the end of its chain; a row → rows leading in
-  const straight = [["Skip the extra step", (v) => ends.get(v) ?? v]];   // the note names where it ends, so the button stays short
+  const straight = [["Point to the end", (v) => ends.get(v) ?? v]];   // the note names where it ends, so the button stays short
   const ready = [];
   for (const l of kept) {
     let to = l.to, internal = l.internal, hops = [];
@@ -256,9 +256,9 @@ export function analyse(rows, fmt, opts) {
     if (hops.length) {
       ends.set(l.raw, to);
       (into.get(hops[0]) || into.set(hops[0], []).get(hops[0])).push(l);
-      const by = hops.length > 1 ? `Rows ${hops.slice(0, -1).map((h) => h.it.n).join(", ")} and ${hops[hops.length - 1].it.n} redirect` : `Row ${hops[0].it.n} redirects`;
-      l.it.notes.push({ cell: "n", kind: "warn", fixes: straight, group: "n:chain", title: "point at an address that’s redirected again",
-        text: `${by} <code>${esc(l.to)}</code> on to <code>${esc(to)}</code>, so visitors are redirected ${hops.length > 1 ? hops.length + 1 + " times" : "twice"}` });
+      const by = hops.length > 1 ? `rows ${hops.slice(0, -1).map((h) => h.it.n).join(", ")} and ${hops[hops.length - 1].it.n} send` : `row ${hops[0].it.n} sends`;
+      l.it.notes.push({ cell: "n", kind: "warn", fixes: straight, group: "n:chain", title: "start a redirect chain",
+        text: `Redirect chain${hops.length > 1 ? ` (${hops.length + 1} hops)` : ""}: ${by} this on to <code>${esc(to)}</code>` });
     }
     if (!l.own || opts.newAddr !== "url") ready.push({ id: l.id, from: l.from, to: l.to, code: opts.code || "301" });
     else ready.push({ id: l.id, from: l.from, to: site ? site.replace(/\/$/, "") + l.to : l.to, code: opts.code || "301" });
@@ -266,7 +266,7 @@ export function analyse(rows, fmt, opts) {
   // The row a chain runs through says who leads into it
   for (const [h, ls] of into) {
     const n = ls.map((x) => x.it.n);
-    h.it.notes.push({ cell: "o", kind: "warn", text: n.length > 1 ? `Rows ${n.slice(0, -1).join(", ")} and ${n[n.length - 1]} point here` : `Row ${n[0]} points here` });
+    h.it.notes.push({ cell: "o", kind: "warn", text: `Redirect chain: ${n.length > 1 ? `rows ${n.slice(0, -1).join(", ")} and ${n[n.length - 1]} point here` : `row ${n[0]} points here`}` });
   }
 
   // The platform's own limits
