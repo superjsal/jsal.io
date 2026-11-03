@@ -356,7 +356,7 @@ textarea.code {
   button.check { min-height: 44px; }
   /* The paste area is editable on touch screens (to take a tap-and-hold Paste): iPhones zoom into an editable
      element under 16px, so it gets 16px, and its unsized lines keep the size they had */
-  .paste-zone { font-size: 16px; }   /* style: allow (iPhones zoom into a text box under 16px) */
+  .paste-zone { font-size: 16px; caret-color: transparent; }   /* style: allow (iPhones zoom into a text box under 16px); no blinking cursor in the instructions */
   .paste-sub, .paste-links { font-size: 13px; }
 }
 /* Phones: the link row wraps, so the dots between links go (one would start the second line) and spacing does the job */

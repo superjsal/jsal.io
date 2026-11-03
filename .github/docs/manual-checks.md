@@ -20,7 +20,7 @@ Anything that fails: note the device, browser, light/dark, and the step, and pas
 ### 1. Moving between pages
 - [ ] Firefox: from the home page open the CMS Picker, a platform guide and the changelog, then press Back twice: each page just appears (Firefox has no page transitions) and the top bar stays put; nothing flashes or lands scrolled down.
 - [ ] Firefox: hover a link to another page for a moment, and the developer tools' Network panel shows that page fetched before the click (a prefetch); a quick pass over a link, the logo and the Playbook link fetch nothing.
-- [ ] Phone: the same route: the page slides up on the way in and down on Back, and the logo and theme button don't move.
+- [ ] Phone: the same route: the page slides up on the way in and down on Back, and the logo and theme button don't move. (Back by swiping from the screen's edge plays Safari's own slide instead; use the Back button to see the site's.)
 - [ ] After Back, the logo menu still opens and its links still work (the page came back from the browser's cache).
 - [ ] The logo menu: open it, pick a tool before the page has finished loading: you land on that tool, not on the home page.
 
@@ -67,7 +67,7 @@ Anything that fails: note the device, browser, light/dark, and the step, and pas
 
 ### 7. Platform pages
 - [ ] Open a guide (e.g. https://jsal.io/cms-picker/wix/): the breadcrumb lines up with the home page's name line; "Compare Wix with others" opens the table with Wix as the first column.
-- [ ] Phone: the four facts at the top (type, starting cost, hosting, what you can take with you) take a row each and read in one to three lines; nothing scrolls sideways.
+- [ ] Phone: the four facts under "Is Wix right for you?", after the SEO answers (type, starting cost, hosting, what you can take with you), take a row each and read in one to three lines; nothing scrolls sideways.
 - [ ] The notes read in plain words, with the platform's own term in brackets where you'd meet it in its settings (e.g. "the bots file (robots.txt)", "add-on (module)" on Drupal).
 - [ ] A "docs" link beside a reason on the result opens the platform's own help page in a new tab.
 
@@ -84,7 +84,7 @@ Anything that fails: note the device, browser, light/dark, and the step, and pas
 
 ### 10. Pasting
 - [ ] Desktop: copy a Word or Google Docs document and press Ctrl/⌘ + V anywhere on https://jsal.io/formatter/: the clean text appears with its checks.
-- [ ] Phone: copy a paragraph from another app, then tap **Paste from clipboard** (allow it if asked): it loads. If the browser refuses, tap and hold the paste area and choose Paste instead: that loads too, and no keyboard opens.
+- [ ] Phone: copy a paragraph from another app, then tap **Paste from clipboard** (on an iPhone Safari then shows its own small Paste button to tap: that's how iOS asks permission): it loads. Tap and hold the paste area and choose Paste instead: that loads too, no keyboard opens and no text cursor blinks in the instructions.
 - [ ] Google Docs: paste a document with a table and an image: the table stays a table, the image becomes an [Image] placeholder.
 
 ### 11. Checks and Show
