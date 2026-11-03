@@ -43,6 +43,10 @@ jobs:
     container: mcr.microsoft.com/playwright:v1.48.2-jammy
     steps:
       - uses: actions/checkout@v5
+      # The image's own Node is older than Astro supports
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
       - name: Install the checks' packages
         working-directory: .github/build
         run: npm ci
