@@ -7,7 +7,7 @@ paths:
 
 # Home page design
 
-These are part of the site's design rules (`.github/docs/design-rules.md`), kept here so they load only for
+These are part of the site's design rules (`design-rules.md` beside this file), kept here so they load only for
 home page work.
 
 - **Home page:** tools only, as a bento grid (six columns, 32px gaps, the wide tile swapping sides each row): the

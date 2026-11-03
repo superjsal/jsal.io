@@ -1,9 +1,19 @@
+---
+paths:
+  - "site/**/*.css"
+  - "site/**/*.js"
+  - "site/**/*.svg"
+  - "src/**"
+  - ".github/build/og/**"
+  - ".github/brand/**"
+---
+
 # jsal.io design rules
 
-How every page looks and behaves: the only copy of these rules (the project's `CLAUDE.md` imports this file). The
-home page's and the CMS Picker's own rules are in `.claude/rules/home-page.md` and `cms-picker-design.md`, which
-load when those pages' files are worked on. `.github/` isn't served, so this is for people working on the site, not
-visitors; `/design-system/` shows the same rules visually. Most are checked before each push by `check.py` and
+How every page looks and behaves: the only copy of these rules. They load whenever a session works on the site's
+pages, styles, scripts, icons or share images. The home page's and the CMS Picker's own rules are in `home-page.md`
+and `cms-picker-design.md` beside this file, which load with those pages' files. `.claude/` isn't served, so this
+is for people working on the site, not visitors; `/design-system/` shows the same rules visually. Most are checked before each push by `check.py` and
 `browser-check.mjs` (both in `.github/build/`); where a check exists it's named.
 
 ## Type

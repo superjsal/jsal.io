@@ -1,7 +1,7 @@
 # jsal.io voice
 
 How jsal.io writes, everywhere it speaks: the tools, their About sections, the changelog, LinkedIn and email. The
-looks are in `design-rules.md` and the logo in `.github/brand/README.md`; this is the words. `.github/` isn't served,
+looks are in `.claude/rules/design-rules.md` and the logo in `.github/brand/README.md`; this is the words. `.github/` isn't served,
 so this is for people writing for the site, not visitors.
 
 **In one line:** plain-spoken and exact, playful at the edges. Say what a thing does and who it's for, in the words a

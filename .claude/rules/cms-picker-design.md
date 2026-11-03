@@ -8,7 +8,7 @@ paths:
 
 # CMS Picker design
 
-These are part of the site's design rules (`.github/docs/design-rules.md`), kept here so they load only for
+These are part of the site's design rules (`design-rules.md` beside this file), kept here so they load only for
 CMS Picker work.
 
 - **The CMS Picker is quiz first:** the platform cards and the comparison table open on request. The quiz box

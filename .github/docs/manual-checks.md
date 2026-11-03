@@ -6,6 +6,10 @@ phone and measure it; Playwright's Firefox doesn't start on John's PC (only a fi
 installed Firefox, no scripting; the Site checks Action does run the phone-width checks in Firefox), and nothing
 there is a real phone. So these need a person.
 
+For a quick layout check, the installed Firefox can take a headless screenshot (the first screen only, taken before
+animations run, no scripting; from Claude Code with the command sandbox off):
+`"C:\Program Files\Mozilla Firefox\firefox.exe" -headless -no-remote -profile <scratch folder> --window-size=1280,1000 --screenshot <png> <url>`
+
 Run them on **an iPhone (Safari)**, **an Android phone (Chrome)**, **desktop Firefox** and, where it says
 so, **a Mac**. About twenty minutes for everything; for a release that only touches one part, do that part.
 Once in light mode and once in dark (the moon/sun button in the top bar).
