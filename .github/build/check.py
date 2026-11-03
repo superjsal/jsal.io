@@ -8,6 +8,7 @@
 #  - branding: no standalone "JSAL"; the WoW art keeps its credit
 #  - every sitemap address exists
 #  - Updates on the home page is what .github/scripts/updates.py would write from the changelog
+#  - the content security policy in site/_headers lists the hash of every inline script (csp.py)
 import json, pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]   # .github\build\check.py -> the project folder
@@ -54,6 +55,11 @@ sys.dont_write_bytecode = True   # no __pycache__ folder inside the site repo
 import versions
 for f, shown, v, h in versions.stale():
     fail(f'{f.relative_to(ROOT)}: {shown}?v={v} is out of date (the file hashes to {h}); run bump-version.ps1')
+
+# The content security policy in _headers allows each inline script by its hash (csp.py writes it), so an edited
+# inline script would be blocked on the live site until the policy is rewritten
+import csp
+if csp.stale(): fail(csp.stale())
 
 # Every page links the shared stylesheet with one identical line, in <head> before its own styles
 # (so shell.css loses to a page's own rules, as the inline copies used to)

@@ -294,11 +294,10 @@
     document.head.append(link);
   }
   if (SPECULATES) {
+    // Written out as one fixed string: the site's content security policy allows it by its hash
     const rules = document.createElement('script');
     rules.type = 'speculationrules';
-    rules.textContent = JSON.stringify({ prerender: [{ eagerness: 'moderate', where: { and: [
-      { href_matches: '/*' }, { not: { href_matches: '/ic/*' } }, { not: { selector_matches: '[data-jsal-nav]' } },
-    ] } }] });
+    rules.textContent = '{"prerender":[{"eagerness":"moderate","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/ic/*"}},{"not":{"selector_matches":"[data-jsal-nav]"}}]}}]}';
     document.head.append(rules);
   } else if (PREFETCHES) {
     // Another page of this site, the same exclusions as the rules above
@@ -423,11 +422,11 @@
   function warm() {
     if (warmed || !(SPECULATES || PREFETCHES)) return;
     warmed = true;
-    const urls = [...APPS.map((a) => a.href), HOME.href, PLAY.href].filter((h) => h !== '/ic/' && h !== here && !isHere(h));
-    if (!SPECULATES) return urls.forEach(fetchAhead);
+    if (!SPECULATES) return [...APPS.map((a) => a.href), HOME.href, PLAY.href].filter((h) => h !== '/ic/' && h !== here && !isHere(h)).forEach(fetchAhead);
+    // Every link in the menu but this page's and the Playbook's, as one fixed string (allowed by its hash, as above)
     const rules = document.createElement('script');
     rules.type = 'speculationrules';
-    rules.textContent = JSON.stringify({ prerender: [{ urls, eagerness: 'immediate' }] });
+    rules.textContent = '{"prerender":[{"eagerness":"immediate","where":{"and":[{"selector_matches":".jsal-menu a"},{"not":{"selector_matches":"[aria-current]"}},{"not":{"href_matches":"/ic/*"}}]}}]}';
     document.head.append(rules);
   }
   function open(focusFirst) {
