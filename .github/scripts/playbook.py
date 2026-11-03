@@ -11,9 +11,9 @@
 #   publish      → writes site/cms-picker/data.json, the answers-only public export (every answer, profile
 #                  and source from the picker table; platform names from the Playbook; which rows, their
 #                  labels and the platform order from cms-picker.json next to this file), any logos admins
-#                  uploaded, then the plain-HTML copy in the page. Nightly by GitHub Action.
+#                  uploaded, then each page's date (the build makes the pages from data.json). Nightly by GitHub Action.
 #   publish --from-backup <file>   → the same, from a backup file (no key needed)
-#   prerender    → re-writes the plain-HTML copy of data.json into site/cms-picker/index.html (no key needed)
+#   dates        → moves on the date of each CMS Picker page whose data changed, and the sitemap (no key needed)
 #
 # Small fixes don't need this: sign in on jsal.io/ic as an admin and use Edit (the CMS Picker's answers,
 # profiles, logos and "on the CMS Picker" switches are on the admin-only CMS Picker tab;
@@ -249,7 +249,7 @@ def publish(backup_file=None):
         print('  not in the Playbook data (or hidden), left out: ' + ', '.join(skipped))
     if noprofile:
         print('  on the CMS Picker but no profile type yet, left out: ' + ', '.join(noprofile))
-    prerender()
+    page_dates()
 
 
 # ── Logos ──
@@ -327,269 +327,68 @@ def write_logos(public, uploads):
     return paths
 
 
-# ── Pre-render: a plain-HTML copy of the CMS Picker's content, written into its index.html ──
-# app.js draws the cards, table and hero preview from data.json. Crawlers that don't run JavaScript
-# (most AI search bots) would see only "Loading…", so publish also writes the same content as HTML
-# between <!-- prerender:NAME --> markers. app.js replaces it on load; visitors see no difference.
-# Keep the markup in step with renderCards(), render() and the hero code in site/cms-picker/app.js.
-SHORT = {'yes': 'Built in', 'auto': 'Automatic', 'plugin': 'Plugin/app', 'code': 'Needs code', 'hosting': 'Hosting/DNS',
-         'check': 'Unclear', 'indirect': 'Indirectly', 'no': 'Not possible'}
-SCOPE = {'V': 'varies', 'C': 'not verified'}   # only the exceptions are marked
-BADGE = {'magento': 'M', 'duda': 'D', 'headless': '{ }'}
-DEFAULT_COMPARE = ['wordpress', 'shopify', 'wix', 'squarespace']
-GENERIC = re.compile(r'^(yes|no|check|automatic|built in)$|^yes, with (an? )?(seo |redirect )?(plugin|module|extension|app|custom code)$', re.I)
+# ── The CMS Picker's pages: their dates and the sitemap ──
+# The build makes the CMS Picker page's plain-HTML copy and one page per platform from data.json
+# (src/lib/cms-picker.mjs). What it can't know is when each page last changed, so the publish keeps that in
+# src/data/cms-picker-dates.json: a page's date moves on only when the data it shows changed, and the
+# sitemap's lastmod follows. The nightly commit of that file is also what tells IndexNow which pages changed.
+DATES = SITE.parent / 'src' / 'data' / 'cms-picker-dates.json'
 
 
-def prerender():
-    e = lambda t: html.escape(str(t), quote=True)
-    d = json.loads(PUBLIC.read_text(encoding='utf-8'))
-    plats = d['platforms']
-    platform_pages(d)
-
-    def logo(p):
-        if p.get('logo'):
-            return f'<span class="logo" style="--logo: url(&quot;{e(p["logo"])}&quot;)" aria-hidden="true"></span>'
-        return f'<span class="logo badge" aria-hidden="true">{e(BADGE.get(p["id"], p["name"][0]))}</span>'
-
-    cards = []
-    for p in plats:
-        pr = p.get('profile')
-        if not pr:
-            continue
-        c = [f'<article class="card"><div class="ctop">{logo(p)}<h3>{e(p["name"])}</h3></div>',
-             f'<p class="ptype">{e(pr["type"])}</p>']
-        if pr.get('summary'):
-            c.append(f'<p class="summary">{e(pr["summary"])}</p>')
-        if pr.get('tags'):
-            c.append('<div class="ktags" role="group" aria-label="Known for">' + ''.join(f'<span class="ktag">{e(t)}</span>' for t in pr['tags']) + '</div>')
-        if pr.get('aiTags'):
-            c.append('<div class="aitags"><span class="ailabel">AI</span>' + ''.join(f'<span class="aitag">{e(t)}</span>' for t in pr['aiTags']) + '</div>')
-        facts = (('Hosting and updates', pr.get('hosting'), 'r-host'), ('If you leave', pr.get('export'), 'r-exit'), ('Not ideal if', pr.get('lessSuited'), 'r-skip'))
-        run = ''.join(f'<div class="{cls}"><dt>{t}</dt><dd>' + ''.join(f'<span>{e(x)}</span>' for x in ([v] if isinstance(v, str) else v)) + '</dd></div>'
-                      for t, v, cls in facts if v)
-        if run:
-            c.append(f'<dl class="run">{run}</dl>')
-        on = p['id'] in DEFAULT_COMPARE
-        c.append(f'<div class="cfoot"><button class="chip cmp" type="button" aria-pressed="{str(on).lower()}">'
-                 f'{"✓ Comparing" if on else "+ Add to compare"}</button>'
-                 f'<a class="cseo" href="{e(p["id"])}/" data-track="platform_page_open" data-track-platform="{e(p["id"])}" data-track-from="card" aria-label="{e(p["name"])} SEO settings, and where to find each one">SEO settings<span aria-hidden="true"> →</span></a></div></article>')
-        cards.append(''.join(c))
-
-    # The table: every platform (the live page starts with four), with notes, so nothing is left out
-    rows = ['<div class="row head"><div class="item">Can you…</div>' + ''.join(
-        f'<div class="hcell"><span class="pname">{e(p["name"])}</span>'
-        + (f'<span class="htype">{e(p["profile"]["type"])}</span>' if p.get('profile') else '') + '</div>' for p in plats) + '</div>']
-    groups = {g['id']: g for g in d.get('groups', [])}
-    last = None
-    for it in d['items']:
-        if it['group'] != last and it['group'] in groups:
-            g = groups[it['group']]
-            rows.append(f'<div class="row group"><span>{e(g["title"])}</span></div>')
-        last = it['group']
-        cells = []
-        for p in plats:
-            a = d['answers'][p['id']][it['id']]
-            word = SCOPE.get(a['scope'])
-            line = f'<span class="tag {e(a["verdict"])}">{e(SHORT.get(a["verdict"], a["verdict"]))}</span>'
-            # as app.js draws it: "varies" a "*" beside the tag (the word for screen readers), "not verified" in words
-            if a['scope'] == 'V':
-                line += f'<span class="sc sc-mark"><span aria-hidden="true">*</span><span class="sr-only">{word}</span></span>'
-            elif word:
-                line += f'<span class="sc">{word}</span>'
-            mark = f'<span class="mark">{e(a["mark"])}</span>' if a.get('mark') and not GENERIC.match(a['mark'].strip()) else ''
-            where = f'<span class="where">Where: {e(a["where"])}</span>' if a.get('where') else ''
-            words = ' words' if a['scope'] in SCOPE and a['scope'] != 'V' else ''
-            cells.append(f'<div class="cell"><span class="plat">{e(p["name"])}</span><span class="line{words}">{line}</span>{mark}{where}</div>')
-        term = f'<small class="term">{e(it["term"])}</small>' if it.get('term') else ''
-        rows.append(f'<div class="row"><div class="item">{e(it["label"])}{term}</div>{"".join(cells)}</div>')
-
-    page_p = SITE / 'cms-picker' / 'index.html'
-    s = before = page_p.read_text(encoding='utf-8')
-    as_of = d.get('asOf')
-    # Its own .grid sized for every platform (the outer one is sized by app.js for the ones it shows)
-    grid = f'<div class="grid" style="--n: {len(plats)}">' + '\n'.join(rows) + '</div>'
-    parts = {'cards': '\n'.join(cards), 'grid': grid,
-             'count': str(len(plats)), 'asof': e(as_of or ''),
-             'seo-chips': ''.join(f'<a class="seo-chip" href="{e(p["id"])}/" data-track="platform_page_open" data-track-platform="{e(p["id"])}" data-track-from="chips">{logo(p)}{e(p["name"])}<span class="sr-only"> SEO settings</span></a>'
-                                  for p in plats if p.get('profile'))}   # the platform pages, as logo chips under the table
-    for name, body in parts.items():
-        start, end = f'<!-- prerender:{name} -->', f'<!-- /prerender:{name} -->'
-        n = s.count(start)
-        if not n:
-            sys.exit(f'prerender: marker {start} not found in {page_p}')
-        out, i = [], 0
-        while (a := s.find(start, i)) != -1:      # every copy (the platform count appears twice)
-            b = s.index(end, a)
-            out.append(s[i:a + len(start)] + body)
-            i = b
-        s = ''.join(out) + s[i:]
-    if s == before:
-        print('prerendered: no changes')
-        return
-    # The content changed today: say so in the page's structured data and in the sitemap
-    today = datetime.date.today().isoformat()
-    s = re.sub(r'"dateModified": "[\d-]+"', f'"dateModified": "{today}"', s)
-    page_p.write_text(s, encoding='utf-8')
-    sm = SITE / 'sitemap.xml'
-    sm.write_text(re.sub(r'(<loc>https://jsal\.io/cms-picker/</loc><lastmod>)[\d-]+', rf'\g<1>{today}', sm.read_text(encoding='utf-8')), encoding='utf-8')
-    print(f'prerendered: {page_p} ({len(cards)} cards, {len(d["items"])} rows × {len(plats)} platforms)')
-
-
-# ── Platform pages: /cms-picker/<platform>/, one plain-HTML page per public platform ──
-# Each page answers the SEO rows for one platform, with where to find each setting and the docs it
-# was checked against, then a short profile. Written from platform-page.html (next to this script)
-# on every publish; pages for platforms taken off the CMS Picker are removed, and sitemap.xml follows.
-PLATFORM_TEMPLATE = HERE / 'platform-page.html'
-GENERATED = '<meta name="generator" content="jsal.io publish"'   # how the publish knows a page is its own (platform-page.html's head)
-SEO_ROWS = ['meta_title', 'urls', 'gsc404', 'schema', 'noindex', 'ai_crawlers']
-BUILT_ROWS = ['blog', 'members', 'store', 'languages', 'forms', 'design']   # the Everyday rows, in the table's order
-# Each SEO row as a heading, worded the way people search for it (the table's label is a "Can you…" question)
-SEO_HEAD = {'meta_title': 'Change the title and description in Google', 'urls': 'Choose page addresses (URLs)',
-            'gsc404': 'Redirect old links (301s)', 'schema': 'Add structured data (schema)',
-            'noindex': 'Hide a page from search (noindex)', 'ai_crawlers': 'Allow or block AI crawlers'}
-
-
-# Who each platform page is about, for its structured data: the official site and, where Wikidata has a clear
-# item (looked up 2026-10-30; preferring the one English Wikipedia links to), that item, so search engines
-# and AI search know which "Squarespace" is meant. Framer and Duda have no reliable item, so site only.
-# BigCommerce's company item is now "Commerce.com", so it's the platform's own item.
-PLATFORM_ENTITY = {
-    'wordpress': ('https://wordpress.org/', 'Q13166'), 'shopify': ('https://www.shopify.com/', 'Q7501150'),
-    'wix': ('https://www.wix.com/', 'Q420506'), 'squarespace': ('https://www.squarespace.com/', 'Q7582097'),
-    'webflow': ('https://webflow.com/', 'Q20160951'), 'framer': ('https://www.framer.com/', None),
-    'hubspot': ('https://www.hubspot.com/', 'Q5926631'), 'bigcommerce': ('https://www.bigcommerce.com/', 'Q141009518'),
-    'magento': ('https://business.adobe.com/products/magento/magento-commerce.html', 'Q1884012'),
-    'drupal': ('https://www.drupal.org/', 'Q170855'), 'duda': ('https://www.duda.co/', None),
-    'ghost': ('https://ghost.org/', 'Q16251204'), 'sanity': ('https://www.sanity.io/', 'Q56242360'),
-}
-
-
-def platform_pages(d):
-    e = lambda t: html.escape(str(t), quote=True)
-    tpl = PLATFORM_TEMPLATE.read_text(encoding='utf-8')
-    main = (SITE / 'cms-picker' / 'index.html').read_text(encoding='utf-8')
-    # Same top bar as the CMS Picker page (the template carries the cache numbers; bump-version.ps1 keeps them current)
-    top = re.search(r'[ \t]*<header class="app-header jsal-top">.*?</header>', main, re.S).group(0)
-    top = re.sub(r'<h1 class="jsal-title">(.*?)<span class="sr-only">.*?</span></h1>', r'<p class="jsal-title">\1</p>', top, flags=re.S)
-    items = {i['id']: i for i in d['items']}
+def page_inputs(d):
+    """Each page and the data it shows, the CMS Picker page first: a change to any of it is a change to the page."""
     plats = [p for p in d['platforms'] if p.get('profile')]
-    today = datetime.date.today().isoformat()
-    tag = lambda a: (f'<span class="tag {e(a["verdict"])}">{e(SHORT.get(a["verdict"], d["verdicts"].get(a["verdict"], a["verdict"])))}</span>'
-                     + (f'<span class="sc">{SCOPE[a["scope"]]}</span>' if a.get('scope') in SCOPE else ''))
-    note = lambda a, cls='pp-note': f'<span class="{cls}">{e(a["mark"])}</span>' if a.get('mark') and not GENERIC.match(a['mark'].strip()) else ''
-    sep = '<span class="pp-sep"><span aria-hidden="true">→</span><span class="sr-only">, then</span></span>'
+    out = {'cms-picker': d}
+    for p in plats:
+        pid = p['id']
+        if not re.fullmatch(r'[a-z0-9-]+', pid) or pid == 'cms-picker':
+            sys.exit(f'platform pages: "{pid}" is not a safe address')
+        out[pid] = {'platform': p, 'answers': d['answers'][pid], 'items': d['items'], 'verdicts': d['verdicts'],
+                    'asOf': d.get('asOf'), 'others': [[o['id'], o['name']] for o in plats if o['id'] != pid],
+                    'ownShareImage': (SITE / 'og' / f'cms-picker-{pid}.png').exists()}
+    return out
 
-    def paths(where):
-        # "A → B; blog posts: C → D" is one line of steps per part, with its label
-        out = []
-        for part in where.split('; '):
-            m = re.match(r'^([^:→]{2,40}): (.*)$', part)
-            label, part = (m.group(1), m.group(2)) if m else ('', part)
-            steps = sep.join(f'<span class="pp-step">{e(s.strip())}</span>' for s in part.split('→'))
-            label = f'<span class="pp-path-l">{e(label)}:</span>' if label else ''
-            out.append(f'<p class="pp-path">{label}{steps}</p>')
-        return ''.join(out)
 
-    def month(iso):
-        try: return datetime.date.fromisoformat(iso).strftime('%B %Y')
-        except (TypeError, ValueError): return ''
-
-    def build(p, date):
-        pid, name, pr, ans = p['id'], p['name'], p['profile'], d['answers'][p['id']]
-        rows = [r for r in SEO_ROWS if r in ans and r in items]
-        qs = []
-        for r in rows:
-            a = ans[r]
-            where = f'<div class="pp-where"><span class="pp-where-l">Where</span><div>{paths(a["where"])}</div></div>' if a.get('where') else ''
-            src = (f'<a class="pp-src" href="{e(a["sourceUrl"])}" target="_blank" rel="noopener" data-track="docs_click" data-track-platform="{pid}" data-track-question="{r}">{e(name)}’s help page'
-                   f'<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>') if a.get('sourceUrl') else ''
-            qs.append(f'        <article class="pp-q" id="{r}"><h3>{e(SEO_HEAD.get(r, items[r]["label"]))}</h3>'
-                      f'<div class="pp-ans">{tag(a)}{note(a)}</div>{where}{src}</article>')
-        cost = ans.get('cost_site')
-        cost_text = (cost.get('mark') or d['verdicts'].get(cost['verdict'], '')) if cost else ''
-        facts = [('Type', pr.get('type')), ('Starts at', cost_text), ('Hosting and updates', pr.get('hosting')), ('Take with you', pr.get('export'))]
-        fit = ''.join(f'<div><h3>{t}</h3><ul>' + ''.join(f'<li>{e(x)}</li>' for x in pr[k]) + '</ul></div>'
-                      for t, k in (('A good fit for', 'goodFit'), ('Less suited when', 'lessSuited')) if pr.get(k))
-        built = [f'        <li><span>{e(items[r]["label"])}</span><span>{tag(ans[r])}</span>{note(ans[r]) or "<span></span>"}</li>'
-                 for r in BUILT_ROWS if r in ans and r in items]
-        checked = max((ans[r].get('lastVerified', '') for r in rows), default='') or d.get('asOf') or ''
-        has_where = any(ans[r].get('where') for r in rows)
-        desc = (f'{name} SEO answered: titles, URLs, redirects, schema, noindex and AI crawlers, '
-                f'{"each with where to find the setting" if has_where else "and what each takes"}, checked against {name}’s own docs.')   # 134–160 characters
-        url = f'https://jsal.io/cms-picker/{pid}/'
-        # A plain Thing (not SoftwareApplication or Organization), so it can't set off Google's rich-result checks
-        site, qid = PLATFORM_ENTITY.get(pid, (None, None))
-        about = {'@type': 'Thing', 'name': name, **({'url': site} if site else {}),
-                 **({'sameAs': f'https://www.wikidata.org/wiki/{qid}'} if qid else {})}
-        ld = {'@context': 'https://schema.org', '@type': 'WebPage', 'name': f'{name} SEO: What You Can Change, and Where',
-              'url': url, 'description': desc, 'inLanguage': 'en', 'dateModified': date, 'about': about,
-              'author': {'@type': 'Person', '@id': 'https://jsal.io/#john', 'name': 'John Salvador', 'url': 'https://jsal.io/'},
-              'isPartOf': {'@id': 'https://jsal.io/#website'},   # the WebSite node on the home page
-              'breadcrumb': {'@type': 'BreadcrumbList', 'itemListElement': [
-                  {'@type': 'ListItem', 'position': 1, 'name': 'CMS Picker', 'item': 'https://jsal.io/cms-picker/'},
-                  {'@type': 'ListItem', 'position': 2, 'name': name, 'item': url}]}}
-        parts = {
-            # Its own share image (.github/build/og/make-og.ps1) once made; until then the CMS Picker's
-            'OG_IMAGE': f'cms-picker-{pid}.png' if (SITE / 'og' / f'cms-picker-{pid}.png').exists() else 'cms-picker.png',
-            'OG_ALT': e(f'{name} SEO on CMS Picker: its six SEO settings, marked built in, plugin or needs code'
-                        if (SITE / 'og' / f'cms-picker-{pid}.png').exists() else
-                        'CMS Picker: which website platform fits you, what’s built in, and getting found on Google and AI search'),
-            'ID': pid, 'NAME': e(name), 'NAME_URL': urllib.parse.quote(name), 'DESCRIPTION': e(desc),
-            'JSONLD': '\n'.join('  ' + line for line in json.dumps(ld, ensure_ascii=False, indent=2).splitlines()),
-            'TOPBAR': top,
-            # Platforms with no menus to point to (a headless CMS: the developer builds the fields) say what each takes instead
-            'LEDE': e(f'{pr.get("summary", "")} Here’s what you can change for search on {name}, and '
-                      f'{"where each setting is" if has_where else "what each change takes"}. Every answer is checked against {name}’s own help docs.'.strip()),
-            'SUB': 'What people ask most often, with the menu path to each setting.' if has_where else f'What people ask most often, and what each takes on {e(name)}.',
-            'META': e(' · '.join(x for x in (f'Answers checked {month(checked)}' if month(checked) else '', pr.get('type', '')) if x)),
-            'QUESTIONS': '\n'.join(qs),
-            'FACTS': '\n'.join(f'        <div><dt>{t}</dt><dd>{e(x)}</dd></div>' for t, x in facts if x),
-            'FIT': f'      <div class="pp-fit">{fit}</div>' if fit else '',
-            'BUILT': '\n'.join(built),
-            'OTHERS': ' · '.join(f'<a href="../{o["id"]}/">{e(o["name"])}</a>' for o in plats if o['id'] != pid),
-        }
-        return re.sub(r'\{\{([A-Z_]+)\}\}', lambda m: parts[m.group(1)], tpl)
-
+def page_dates():
+    d = json.loads(PUBLIC.read_text(encoding='utf-8'))
+    old = json.loads(DATES.read_text(encoding='utf-8')) if DATES.exists() else {}
     sm_p = SITE / 'sitemap.xml'
     sm = sm_p.read_text(encoding='utf-8')
-    lastmod = dict(re.findall(r'<loc>https://jsal\.io/cms-picker/([a-z0-9-]+)/</loc><lastmod>([\d-]+)</lastmod>', sm))
-    keep, changed = {}, 0
-    for p in plats:
-        if not re.fullmatch(r'[a-z0-9-]+', p['id']):
-            sys.exit(f'platform pages: "{p["id"]}" is not a safe folder name')
-        out = SITE / 'cms-picker' / p['id'] / 'index.html'
-        old = out.read_text(encoding='utf-8') if out.exists() else ''
-        if old and GENERATED not in old and '<!-- generated from a template by the publish' not in old:   # the second: pages written before the meta tag
-            sys.exit(f'platform pages: {out} exists and was not written by playbook.py; nothing was overwritten')
-        was = re.search(r'"dateModified": "([\d-]+)"', old)
-        page = build(p, was.group(1) if was else today)   # unchanged content keeps its date
-        if page != old:
-            page = build(p, today)
-            out.parent.mkdir(exist_ok=True)
-            out.write_text(page, encoding='utf-8')
-            changed += 1
-            lastmod[p['id']] = today
-        keep[p['id']] = lastmod.get(p['id'], today)
-    for f in (SITE / 'cms-picker').glob('*/index.html'):   # platforms taken off the CMS Picker
-        if f.parent.name not in keep and GENERATED in f.read_text(encoding='utf-8'):
-            f.unlink()
-            f.parent.rmdir()
-            changed += 1
-    # sitemap.xml: one line per platform page, straight after the CMS Picker's own
+    lastmod = {(pid or 'cms-picker'): lm for pid, lm in
+               re.findall(r'<loc>https://jsal\.io/cms-picker/(?:([a-z0-9-]+)/)?</loc><lastmod>([\d-]+)</lastmod>', sm)}
+    today = datetime.date.today().isoformat()
+    new, changed = {}, []
+    for page, inputs in page_inputs(d).items():
+        h = hashlib.sha256(json.dumps(inputs, ensure_ascii=False, sort_keys=True).encode('utf-8')).hexdigest()[:16]
+        was = old.get(page)
+        if was and was['hash'] == h:
+            new[page] = was
+            continue
+        # A page this file hasn't seen yet keeps the sitemap's date if it has one (a new platform has none)
+        new[page] = {'date': today if was else lastmod.get(page, today), 'hash': h}
+        changed.append(page)
+    removed = [p for p in old if p not in new]   # platforms taken off the CMS Picker: the build drops their pages
+    if new != old:
+        DATES.parent.mkdir(exist_ok=True)
+        DATES.write_text(json.dumps(new, indent=2) + '\n', encoding='utf-8')
+    # sitemap.xml: the CMS Picker's date, then one line per platform page straight after it
+    sm = re.sub(r'(<loc>https://jsal\.io/cms-picker/</loc><lastmod>)[\d-]+', rf'\g<1>{new["cms-picker"]["date"]}', sm)
     sm = re.sub(r'[ \t]*<url><loc>https://jsal\.io/cms-picker/[a-z0-9-]+/</loc>.*?</url>\n', '', sm)
-    lines = ''.join(f'  <url><loc>https://jsal.io/cms-picker/{pid}/</loc><lastmod>{lm}</lastmod></url>\n' for pid, lm in keep.items())
+    lines = ''.join(f'  <url><loc>https://jsal.io/cms-picker/{pid}/</loc><lastmod>{v["date"]}</lastmod></url>\n'
+                    for pid, v in new.items() if pid != 'cms-picker')
     sm = re.sub(r'([ \t]*<url><loc>https://jsal\.io/cms-picker/</loc>.*?</url>\n)', lambda m: m.group(1) + lines, sm, count=1)
     sm_p.write_text(sm, encoding='utf-8')
-    print(f'platform pages: {len(keep)} ({changed} written or removed)')
+    print(f'page dates: {len(new)} pages, ' + (f'changed: {", ".join(changed)}' if changed else 'none changed')
+          + (f'; removed: {", ".join(removed)}' if removed else ''))
 
 
 if __name__ == '__main__':
     cmd = sys.argv[1] if len(sys.argv) > 1 else ''
-    if cmd in ('prerender', 'check'):
-        prerender() if cmd == 'prerender' else check()
+    if cmd in ('dates', 'check'):
+        page_dates() if cmd == 'dates' else check()
         sys.exit()
     if cmd not in ('backup', 'pull', 'push', 'publish'):
-        sys.exit('Usage: python playbook.py backup | pull | push | publish [--from-backup <file>] | prerender | check')
+        sys.exit('Usage: python playbook.py backup | pull | push | publish [--from-backup <file>] | dates | check')
     flag = lambda name: sys.argv[sys.argv.index(name) + 1] if name in sys.argv[2:-1] else None
     if cmd == 'publish' and flag('--from-backup'):
         publish(flag('--from-backup'))

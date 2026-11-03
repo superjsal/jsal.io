@@ -2,14 +2,13 @@
 # CMS Picker's quiz.json carries ?v=<hash>: the first 8 hex characters of the SHA-256 of that file's contents
 # (line endings as LF, so Windows and GitHub agree). A changed file gets a new hash, and only the references
 # to that file are rewritten, wherever they are: every page, the apps' module imports ("./state.js?v=…"),
-# the importmaps and the publish template for the platform pages.
+# and the importmaps. Pages built by Astro (src/pages) work theirs out as they build, with v() in src/lib/v.mjs.
 #   python -I versions.py           rewrite stale references (bump-version.ps1 runs this)
 #   python -I versions.py --check   list stale references and exit 1 if there are any (check.py imports this)
 import hashlib, os, pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]   # .github\build\versions.py -> the project folder
 SITE = ROOT / 'site'
-TEMPLATE = ROOT / '.github' / 'scripts' / 'platform-page.html'   # served as cms-picker/<platform>/index.html
 SKIP = {'vendor', 'node_modules', '.github', '.git'}
 
 # What counts as a reference: a quoted path ending in .css or .js, favicon.svg or an icon in img/icons/ (the tool
@@ -24,27 +23,22 @@ def hash_of(path):
     return hashlib.sha256(path.read_bytes().replace(b'\r\n', b'\n')).hexdigest()[:8]
 
 
-def served_dir(f):
-    """The folder a file is served from (the template is served from a platform's folder)."""
-    return SITE / 'cms-picker' / 'x' if f == TEMPLATE else f.parent
-
-
 def target(f, ref):
     """The site file a reference in f points at, or None if it isn't one of ours (vendor files, CDN)."""
     if '://' in ref or ref.startswith('//') or '/vendor/' in ref or ref.startswith('vendor/'): return None
-    p = (SITE / ref.lstrip('/')) if ref.startswith('/') else (served_dir(f) / ref)
+    p = (SITE / ref.lstrip('/')) if ref.startswith('/') else (f.parent / ref)
     try: p = p.resolve()
     except OSError: return None
     return p if p.is_file() and SITE in p.parents else None
 
 
 def sources():
-    """Every file that may carry references: the pages, the site's JS and the publish template."""
+    """Every file that may carry references: the pages still in site/ and the site's JS."""
     out = []
     for root, dirs, names in os.walk(SITE):
         dirs[:] = sorted(d for d in dirs if d not in SKIP)
         out += [pathlib.Path(root, n) for n in sorted(names) if n.endswith(('.html', '.js'))]
-    return out + [TEMPLATE]
+    return out
 
 
 def scan(f, text):

@@ -16,10 +16,20 @@ def sitemap():
     return re.findall(r'<loc>(https://jsal\.io/[^<]*)</loc>', (SITE / 'sitemap.xml').read_text(encoding='utf-8'))
 
 
+DATES = 'src/data/cms-picker-dates.json'   # each CMS Picker page's date, moved on by the publish when its data changes
+
+
 def changed():
-    """Pages changed by the last commit, as addresses (site/cms-picker/wix/index.html → https://jsal.io/cms-picker/wix/)."""
-    files = subprocess.run(['git', 'diff', '--name-only', 'HEAD~1', 'HEAD'], cwd=SITE, capture_output=True, text=True, check=True).stdout.split()
-    return [f'https://{HOST}/' + f[len('site/'):-len('index.html')] for f in files if f.startswith('site/') and f.endswith('index.html')]
+    """Pages changed by the last commit, as addresses (site/privacy/index.html → https://jsal.io/privacy/); for the
+    CMS Picker's pages, which the build makes from data, those whose date the commit moved on."""
+    git = lambda *a: subprocess.run(['git', *a], cwd=SITE, capture_output=True, text=True).stdout
+    files = git('diff', '--name-only', 'HEAD~1', 'HEAD').split()
+    urls = [f'https://{HOST}/' + f[len('site/'):-len('index.html')] for f in files if f.startswith('site/') and f.endswith('index.html')]
+    if DATES in files:
+        was, now = (json.loads(git('show', f'{rev}:{DATES}') or '{}') for rev in ('HEAD~1', 'HEAD'))
+        urls += [f'https://{HOST}/cms-picker/' + ('' if page == 'cms-picker' else f'{page}/')
+                 for page, v in now.items() if was.get(page, {}).get('date') != v['date']]
+    return urls
 
 
 def submit(urls):

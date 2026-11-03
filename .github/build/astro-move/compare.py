@@ -6,7 +6,8 @@
 #  - head order and whitespace; <meta ... /> against <meta ...>; initial-scale=1.0 against 1
 #  - an SVG shape's <path .../> written as <path ...></path> (how Astro writes them)
 #  - /nav.js in the head instead of at the end of the body (deferred, it runs at the same moment)
-#  - the home page's updates:start/updates:end marker comments, gone now the build writes Updates
+#  - the home page's updates:start/updates:end and the CMS Picker's prerender: marker comments, gone now the build
+#    writes what sat between them
 #  - a comment above <html> moved into the head; the ?v= numbers themselves (check.py holds each to its file's hash,
 #    and the layout adds one where a page had none)
 #  - tags the layout adds on purpose (ADDED): every share card states its image's size (all are 1200 by 628), every
@@ -16,7 +17,12 @@
 DROPPED = {'<!-- Apply the saved light/dark choice (shared by all jsal.io apps) before first paint -->',
            '<!-- Each ?v= is that file\'s content hash, so browsers fetch fresh files after an update -->',
            '<!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app\'s modules have loaded -->',
-           '<!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app\'s own scripts have run -->'}
+           '<!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app\'s own scripts have run -->',
+           # the platform pages' template: how the publish knew its own pages, and its notes on the layout's lines
+           '<!-- generated from a template by the publish: edits to this page are overwritten -->',
+           '<meta name="generator" content="jsal.io publish">',
+           '<!-- The shared styles (each ?v= is its file\'s content hash) -->',
+           '<!-- jsal.io app switcher (shared by all the apps) -->'}
 import pathlib, re, subprocess, sys
 from collections import Counter
 
@@ -50,8 +56,9 @@ def split(t):
 def compare(rel):
     old = subprocess.run(['git', 'show', f'origin/staging:site/{rel}'], cwd=ROOT, capture_output=True, encoding='utf-8', check=True).stdout
     new = (ROOT / 'dist' / rel).read_text(encoding='utf-8')
-    # The markers a script once wrote the home page's Updates between; the build makes the list itself now
-    old = re.sub(r'<!-- updates:(?:start.*?|end) -->', '', old, flags=re.S)
+    # The markers a script once wrote the home page's Updates and the CMS Picker's plain-HTML copy between; the
+    # build makes both itself now
+    old = re.sub(r'<!-- updates:(?:start.*?|end) -->|<!-- /?prerender:[\w-]+ -->', '', old, flags=re.S)
     (oh, ob), (nh, nb) = split(old), split(new)
     out = [f'only in staging\'s head: {t[:200]}' for t in (oh - nh) if t not in DROPPED] +[f'only in the build\'s head: {t[:200]}' for t in (nh - oh) if t not in ADDED]
     if ob != nb:

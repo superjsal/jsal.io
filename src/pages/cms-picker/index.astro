@@ -1,0 +1,139 @@
+---
+import Page from "../../layouts/Page.astro";
+import TopBar from "../../components/TopBar.astro";
+import { v } from "../../lib/v.mjs";
+import { picker, dates } from "../../lib/cms-picker.mjs";
+// The plain-HTML copy of the cards, the table and the hero numbers, for crawlers that don't run JavaScript
+// (app.js redraws them on load), and the structured data with the date the page's data last changed
+const pre = picker();
+const LD = `
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "CMS Picker",
+    "url": "https://jsal.io/cms-picker/",
+    "description": "A guide to choosing a website builder or CMS: a short quiz that ranks 14 platforms for you, who each one suits, and a side-by-side comparison of everyday features (a blog, an online store, more than one language, forms, design control) and getting found on Google and AI search (titles and descriptions, URLs, redirects, structured data, noindex, AI crawlers), plus who handles hosting and what you can take with you. General guidance, not a guarantee for any one site.",
+    "dateModified": "${dates["cms-picker"].date}",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any (web browser)",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "@id": "https://jsal.io/#john", "name": "John Salvador", "url": "https://jsal.io/" },
+    "isPartOf": { "@id": "https://jsal.io/#website" }
+  }
+  `;
+---
+<Page
+  title="CMS Picker: Which Website Builder or CMS Fits You? | jsal.io"
+  description="Which website builder or CMS fits you? Take a short quiz or compare 14 platforms, from WordPress to Webflow: who each suits, what’s built in, and SEO."
+  path="/cms-picker/"
+  ogDescription="A few quick questions to find the website platform that fits, or compare 14 side by side: who each suits, what’s built in, and getting found on Google and AI search."
+  ogImage="cms-picker"
+  ogImageAlt="CMS Picker: which website platform fits you, what’s built in, and getting found on Google and AI search"
+  icon="/img/icons/cms-picker.svg"
+  mono={false}
+>
+<script is:inline slot="head" type="application/ld+json" set:html={LD}></script>
+<link slot="head" rel="stylesheet" href={v("styles.css", "/cms-picker/")}>
+<script is:inline slot="head" src={v("score.js", "/cms-picker/")} defer></script>
+<script is:inline slot="head" src={v("app.js", "/cms-picker/")} data-quiz-v={v("quiz.json", "/cms-picker/").slice(-8)} defer></script>
+  <main class="app">
+
+    <!-- Top bar shared by every jsal.io app (styles in /shell.css; the logo menu and theme button come from /nav.js) -->
+    <TopBar class="app-header"><h1 slot="title" class="jsal-title"><img class="jsal-title-ico" src={v("/img/icons/cms-picker.svg")} alt="" width="22" height="22">CMS <span class="hl">Picker</span><span class="sr-only">: Which Website Builder or CMS Fits You?</span></h1>
+<a class="jsal-link" href="#about">About</a></TopBar>
+
+    <!-- Hero: the question and one line; the quiz under it is where the page starts -->
+    <section class="hero" id="top" aria-labelledby="hero-h">
+      <p class="byline">Updated <span id="asof"><Fragment set:html={pre.asof} /></span></p>
+      <h2 class="hero-title" id="hero-h">Which website platform fits you?</h2>
+      <p class="lede"><span class="n-plats"><Fragment set:html={pre.count} /></span> website builders and CMSs compared on what matters: how easy they are, who looks after them, selling online, leaving later, and getting found on Google and AI search.</p>
+    </section>
+
+    <section class="block" id="quiz" aria-labelledby="quiz-h">
+      <h2 id="quiz-h"><span class="num"><span class="num-d">01</span> · Find your fit<span class="sr-only">:&nbsp;</span></span>A few questions, then your best matches</h2>
+      <div class="qz" id="qz"></div>
+    </section>
+
+    <!-- The platform cards and the comparison table: closed until asked for (app.js opens them; links to #fit or
+         #seo and find-in-page open them too) -->
+    <div class="more" id="more">
+      <button type="button" class="more-btn" aria-expanded="false" aria-controls="fit" data-panel="fit"><span><b>Browse all <span class="n-plats"><Fragment set:html={pre.count} /></span> platforms</b><small>One card each: who it suits and what it costs to start</small></span><span class="chev" aria-hidden="true"></span></button>
+      <button type="button" class="more-btn" aria-expanded="false" aria-controls="seo" data-panel="seo"><span><b>Compare what each can do</b><small>Every question, side by side, with each platform’s own docs</small></span><span class="chev" aria-hidden="true"></span></button>
+    </div>
+
+    <section class="block panel" id="fit" aria-labelledby="fit-h" hidden="until-found">
+      <h2 id="fit-h"><span class="num">All <span class="n-plats"><Fragment set:html={pre.count} /></span> platforms<span class="sr-only">:&nbsp;</span></span>Or browse by what you’re building</h2>
+      <div class="types" id="types" role="group" aria-labelledby="fit-h"></div>
+      <p class="count" id="count" aria-live="polite"></p>
+      <!-- The cards and the table below are filled by the publish (a plain-HTML copy for crawlers); app.js redraws them on load -->
+      <div class="cards" id="cards"><Fragment set:html={pre.cards} /></div>
+    </section>
+
+    <section class="block panel" id="seo" aria-labelledby="seo-h" hidden="until-found">
+      <h2 id="seo-h"><span class="num"><span class="num-d">02</span> · Compare platforms<span class="sr-only">:&nbsp;</span></span>What can each one do?</h2>
+      <div class="plats-head"><span class="plats-label">Compare</span><span class="plats-count" id="plats-count"></span><span class="plats-acts" id="plats-acts"></span></div>
+      <div class="plats" id="plats" role="group" aria-label="Platforms to compare"></div>
+      <div class="keyrow">
+        <div class="legend" id="legend" role="group" aria-label="Key"></div>
+        <div class="trks">
+          <div class="trk" role="group" aria-label="Which rows to show">
+            <button type="button" id="diffs-off" aria-pressed="true">All rows</button>
+            <button type="button" id="diffs" aria-pressed="false" title="Only the rows where the compared platforms differ">Differences</button>
+          </div>
+          <div class="trk" role="group" aria-label="What each cell shows">
+            <button type="button" id="notes-off" aria-pressed="true">Tags</button>
+            <button type="button" id="notes" aria-pressed="false" title="Each answer's note under its tag">Notes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- After the quiz's "Compare these": what put the best match ahead (app.js fills it) -->
+      <p class="qz-line" id="qz-line" hidden></p>
+      <!-- Platform names, pinned to the top of the window while the table scrolls with the page (kept in line with the table by app.js) -->
+      <div class="thead" id="thead" hidden><div class="grid" id="ghead"></div></div>
+      <div class="scroll" role="region" aria-label="Answers by platform" tabindex="0">
+        <div class="grid" id="grid"><Fragment set:html={pre.grid} /></div>
+      </div>
+      <!-- Each platform's own page, as logo chips (the publish fills them in) -->
+      <div class="seo-pages">
+        <h3 class="seo-pages-h">SEO settings by platform</h3>
+        <div class="seo-chips"><Fragment set:html={pre.seoChips} /><a class="seo-chip all" href="#fit"><span>All <span class="n-plats">13</span> cards <span aria-hidden="true">→</span></span></a></div>
+      </div>
+      <p class="note">A * after an answer means it varies: it depends on the plan, theme or setup; “not verified” means it hasn’t been checked against the platform’s own docs yet. <span data-touch="Tap an answer for its note, or switch to Notes to see them all.">Hover over an answer for its note, or switch to Notes to see them all.</span> Add platforms with the buttons above or from the cards.</p>
+    </section>
+    <!-- With notes off, hovering or tapping an answer shows its note here (app.js) -->
+    <div class="tip" id="tip" aria-hidden="true" hidden></div>
+    <!-- Compare bar: while you browse the cards, what you're comparing and one click to the table (app.js) -->
+    <div class="cbar" id="cbar" role="region" aria-label="Your comparison">
+      <span class="cbar-count" id="cbar-count"></span>
+      <span class="cbar-logos" id="cbar-logos" aria-hidden="true"></span>
+      <a class="jsal-btn primary cbar-go" href="#seo">Compare <span aria-hidden="true">→</span></a>
+    </div>
+    <!-- Shows once the hero is out of view (app.js) -->
+    <button type="button" class="totop" id="totop" aria-label="Back to top"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span>Top</span></button>
+  </main>
+
+  <section class="jsal-about" id="about" aria-labelledby="about-h">
+    <h2 id="about-h">About CMS Picker</h2>
+    <p>CMS Picker helps you choose a website builder or CMS (content management system) by answering two questions that come up on almost every project: <em>which platform fits this business?</em> and <em>can we actually change that on it?</em></p>
+
+    <details>
+      <summary><h3>How to read it</h3></summary>
+      <ul>
+        <li><a href="#quiz">Find your fit</a> asks a few quick questions and ranks the platforms, with the reasons from the answers below. Nothing you choose is stored or sent anywhere; the result is in the page address, so you can share it.</li>
+        <li>Each card says what kind of platform it is, who it’s for, what it’s known for, who looks after hosting and updates, what you can take with you if you leave, and when it’s not the right choice.</li>
+        <li>Each row of the comparison is a plain question, with its SEO name in small text under it.</li>
+        <li>The tags run from <em>Built in</em> and <em>Automatic</em> through <em>Plugin/app</em> and <em>Needs code</em> to <em>Not possible</em>. <em>Unclear</em> means the platform’s docs don’t say.</li>
+      </ul>
+    </details>
+
+    <h3>Good to know</h3>
+    <p>Answers come from each platform’s own documentation and are rechecked every few months. Anything not checked yet is marked <em>not verified</em>.</p>
+    <p>The profiles and answers are general guidance. Plans, themes, apps and permissions change what is possible on a given site, and platforms update often. For SEO, each answer also says where to find the setting.</p>
+    <p>Platform names and logos are trademarks of their owners and are used only to identify each platform. Logos from <a href="https://simpleicons.org/">Simple Icons</a>.</p>
+
+    <p class="jsal-feedback">Useful? Ideas or problems? <a href="mailto:dev@jsal.io?subject=CMS%20Picker">Email me</a>.</p>
+    <p><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. Also try <a href="/formatter/">Clean Paste</a> or the <a href="/image-resizer/">Image Resizer</a>. <a href="/privacy/">Privacy</a>.</p>
+  </section>
+</Page>

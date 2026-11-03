@@ -13,6 +13,7 @@ interface Props {
   path?: string;
   robots?: string;
   // Share card: shown when ogDescription is given; the title defaults to the page's, the image to the home page's
+  ogType?: string;
   ogTitle?: string;
   ogDescription?: string;
   ogImage?: string;
@@ -28,7 +29,7 @@ interface Props {
   bodyAttrs?: Record<string, string | boolean>;
 }
 const {
-  title, description, path, robots, ogTitle = title, ogDescription, ogImage = "home", ogImageAlt,
+  title, description, path, robots, ogType = "website", ogTitle = title, ogDescription, ogImage = "home", ogImageAlt,
   icon = "/favicon.svg", cover = false, mono = true, analytics = true, bodyAttrs = {},
 } = Astro.props;
 const url = path && new URL(path, "https://jsal.io").href;
@@ -47,7 +48,7 @@ const GTAG_NOTE = `<!-- Google tag (gtag.js): the queue and Consent Mode default
 {url && <link rel="canonical" href={url}>}
 {ogDescription && (
   <Fragment>
-    <meta property="og:type" content="website">
+    <meta property="og:type" content={ogType}>
     {url && <meta property="og:url" content={url}>}
     <meta property="og:site_name" content="jsal.io">
     <meta property="og:title" content={ogTitle}>

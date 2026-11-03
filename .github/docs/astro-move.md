@@ -46,17 +46,24 @@ and the docs describe the new setup.
   bar's `app-header` class as a prop. The modules themselves stay in `site\`, where the bump still versions their
   imports of each other. Each page is the same as staging in markup and in Edge at both widths and themes; axe and the
   full browser checks pass in Edge and WebKit, and every inline script (the new import maps too) is in the policy.
-  - **The CMS Picker waits for the platform pages (step 5 below):** the publish writes a plain-HTML copy of the
-    data into `site\cms-picker\index.html` every night, so the page and the platform pages move together, once
-    the build reads `data.json` itself.
+- **Step 6, done:** the CMS Picker and its 14 platform pages are built from `site\cms-picker\data.json`
+  (`src\pages\cms-picker\index.astro`, `[platform].astro`, both from `src\lib\cms-picker.mjs`, a port of the
+  publish's `prerender()` and `platform_pages()` that writes the same markup); `platform-page.html` is gone, and the
+  prerender markers with it. The publish now writes only data: `data.json`, the logos, and
+  `src\data\cms-picker-dates.json`, each page's date with a fingerprint of the data it shows, moved on only when that
+  data changes (`page_dates()`; `playbook.py dates` reruns it without a key), and the sitemap's lastmod from it. The
+  nightly Action commits those; IndexNow's `changed` reads the moved dates. All 15 pages are the same as staging in
+  markup and in Edge (the CMS Picker at 1,305 elements); axe, the browser checks and the quiz to "Compare these side
+  by side" work on the build.
 - **Merging staging into `astro`:** a change on staging to a page that has moved comes in as a modify/delete
   conflict. Port the change into the page's `.astro` file by hand, then `git rm` the old file. On staging,
   `updates.py` rewrites `site\index.html` whenever a `data-short` line is added: that one needs no porting (the
   build makes Updates itself), so just `git rm site/index.html`. The same goes for a change on staging that only
   moves a moved page's `?v=` numbers (a bump after editing a tool's CSS or JS): the build works them out, so take the
-  `site\` side of the CSS or JS and `git rm` the page.
-- Still on `site\`: `playbook.py`, the nightly Action and `versions.py` (which only sees `site\`; moved pages use
-  `v()` instead).
+  `site\` side of the CSS or JS and `git rm` the page. **The nightly publish** commits the CMS Picker page and the
+  platform pages to `main` until the move ships: take the branch's side (`git rm` them), keep the merged `data.json`,
+  then run `python -I .github\scripts\playbook.py dates` so the dates follow the new data, and commit its changes.
+- Still on `site\`: `versions.py` (which only sees `site\`; moved pages use `v()` instead).
 
 ## How each page moves
 
@@ -73,12 +80,10 @@ and the docs describe the new setup.
    markup against staging's; it lists the differences it allows) and `node .github\build\astro-move\pagediff.mjs
    /<page>/` (every element's box, colour and font against staging's, both themes, two widths). Anything either
    reports is a bug. Then axe through `browser-check.mjs --axe`.
-4. Order, simplest first: Privacy, 404, the design system, the home page, three tools and Off the clock (done); the
-   CMS Picker with its platform pages (5); the Playbook (`/ic/`), as it has its own login flow; the Changelog last,
+4. Order, simplest first: Privacy, 404, the design system, the home page, three tools, Off the clock, the CMS
+   Picker and its platform pages (done); the Playbook (`/ic/`), as it has its own login flow; the Changelog last,
    just before shipping.
-5. **Platform pages:** one `src\pages\cms-picker\[platform].astro` reading `site\cms-picker\data.json` at build time
-   replaces the 14 files `playbook.py` writes from `.github\scripts\platform-page.html`. Then `playbook.py` only
-   writes data, and the nightly publish's commit triggers a rebuild.
+5. **Platform pages:** done (step 6 above).
 6. **Updates:** done (step 4 above). When the Changelog page moves, point `CHANGELOG` in `src\lib\updates.mjs` at
    wherever its entries then live.
 
@@ -108,5 +113,8 @@ and the docs describe the new setup.
   (due on or after 2026-11-09) before shipping, as planned anyway.
 - **IndexNow on push** works out which pages changed from paths under `site\`; it needs to map `src\pages\` too (and
   a layout change to every page).
-- Docs: CLAUDE.md, SETUP.md, `how-it-works.md`, `design-rules.md` (check names), the `add-tool` skill.
+- Docs: CLAUDE.md, SETUP.md, `how-it-works.md` (the publish now writes data and dates, not pages),
+  `design-rules.md` (check names), `cms-picker-maintenance.md` and `.claude\rules\cms-picker-playbook.md` (where
+  the platform pages and the plain-HTML copy come from), the `add-tool` skill.
+- The nightly Action's "Deploy Pages (fallback)" step goes with the fallback.
 - Ship the whole move at once, when every page on the branch preview matches staging, with John's "ship it".

@@ -1,0 +1,68 @@
+---
+// One page per platform on the CMS Picker (/cms-picker/<platform>/), from its published data: the SEO answers with
+// where to find each setting, then a short profile. src/lib/cms-picker.mjs writes each part; a platform taken off
+// the CMS Picker simply isn't built.
+import Page from "../../layouts/Page.astro";
+import TopBar from "../../components/TopBar.astro";
+import { v } from "../../lib/v.mjs";
+import { platform, platformIds } from "../../lib/cms-picker.mjs";
+
+export function getStaticPaths() {
+  return platformIds().map((id) => ({ params: { platform: id } }));
+}
+const p = platform(Astro.params.platform);
+const DIR = `/cms-picker/${p.id}/`;
+---
+<Page
+  title={`${p.name} SEO: What You Can Change and Where | jsal.io`}
+  description={p.desc}
+  path={DIR}
+  ogType="article"
+  ogTitle={`${p.name} SEO: What You Can Change, and Where`}
+  ogDescription={p.desc}
+  ogImage={p.ogImage}
+  ogImageAlt={p.ogAlt}
+  icon="/img/icons/cms-picker.svg"
+  mono={false}
+>
+<script is:inline slot="head" type="application/ld+json" set:html={p.jsonld}></script>
+<link slot="head" rel="stylesheet" href={v("../styles.css", DIR)}>
+<link slot="head" rel="stylesheet" href={v("../platform.css", DIR)}>
+  <main class="app">
+
+    <TopBar class="app-header"><p slot="title" class="jsal-title"><img class="jsal-title-ico" src={v("/img/icons/cms-picker.svg")} alt="" width="22" height="22">CMS <span class="hl">Picker</span></p>
+<a class="jsal-link" href="#about">About</a></TopBar>
+
+    <nav class="pp-crumbs" aria-label="Breadcrumb"><a href="../">CMS Picker</a> <span aria-hidden="true">›</span> <span aria-current="page">{p.name}</span></nav>
+    <h1 class="pp-title">{p.name} <span class="hl">SEO</span><span class="sr-only">: </span><span class="pp-title-sub">What you can change, and where</span></h1>
+    <p class="pp-lede" set:html={p.lede}></p>
+    <p class="pp-meta" set:html={p.meta}></p>
+
+    <section aria-labelledby="pp-seo-h">
+      <h2 class="pp-h" id="pp-seo-h">SEO on {p.name}</h2>
+      <p class="pp-sub" set:html={p.sub}></p>
+      <div class="pp-qs" set:html={`\n${p.questions}\n      `}></div>
+    </section>
+
+    <section aria-labelledby="pp-fit-h">
+      <h2 class="pp-h" id="pp-fit-h">Is {p.name} right for you?</h2>
+      <p class="pp-sub">The short version, from the CMS Picker profile.</p>
+      <dl class="pp-facts" set:html={`\n${p.facts}\n      `}></dl>
+<Fragment set:html={p.fit} />
+      <h3 class="pp-h3">What’s built in</h3>
+      <ul class="pp-built" set:html={`\n${p.built}\n      `}></ul>
+    </section>
+
+    <div class="pp-next"><a class="pp-btn main" href="../#quiz">Is {p.name} right for me?</a><a class="pp-btn" href={`../#seo?with=${p.id}`}>Compare {p.name} with others</a></div>
+    <p class="pp-others">Other platforms: <Fragment set:html={p.others} /></p>
+  </main>
+
+  <section class="jsal-about" id="about" aria-labelledby="about-h">
+    <h2 id="about-h">About these answers</h2>
+    <p class="jsal-lead">Part of <a href="../">CMS Picker</a>, a free guide to choosing a website builder or CMS.</p>
+    <p>Each answer comes from {p.name}’s own documentation, linked under it, and is rechecked every few months. They’re general guidance: plans, themes, apps and permissions change what’s possible on a given site, and menus move when platforms update.</p>
+    <p>Platform names are trademarks of their owners and are used only to identify each platform.</p>
+    <p class="jsal-feedback">Spotted a menu that has moved? <a href={`mailto:dev@jsal.io?subject=CMS%20Picker%3A%20${p.nameUrl}`}>Email me</a>.</p>
+    <p><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. <a href="/privacy/">Privacy</a>.</p>
+  </section>
+</Page>

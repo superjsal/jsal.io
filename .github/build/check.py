@@ -161,9 +161,9 @@ for p, t in html.items():
         fail(f'{p}: the WoW Forever art is missing its "Art © Blizzard Entertainment" credit')
 
 # Served comments explain the page to a reader of its source (CLAUDE.md): never tooling, scripts or folders outside
-# site/, people, dates of decisions or TODOs. The marker comments the scripts look for are exempt by their prefix.
+# site/, people, dates of decisions or TODOs. A style exception's note is exempt by its prefix.
 COMMENT_BAN = re.compile(r'\.ps1\b|\.py\b|\.mjs\b|\.github|build\\|bump-version|playbook\.py|check\.py|updates\.py|\bTODO\b|\bFIXME\b|\bClaude\b|agreed with|\bJohn\b|\b20\d\d-\d\d-\d\d\b')
-COMMENT_OK = ('prerender:', '/prerender:', 'style: allow')
+COMMENT_OK = ('style: allow',)
 def comments(text, suffix):
     if suffix == '.html':
         yield from ((m.start(), m.group(1)) for m in re.finditer(r'<!--(.*?)-->', text, re.S))

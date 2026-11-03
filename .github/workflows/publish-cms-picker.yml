@@ -1,6 +1,6 @@
 # Publishes the CMS Picker from Supabase every night: Playbook answers (with admin edits) plus the
-# admin-only picker table, written to cms-picker/data.json, the plain-HTML copy in the page and one
-# page per platform (cms-picker/<platform>/index.html, listed in sitemap.xml).
+# admin-only picker table, written to cms-picker/data.json, with the date of each CMS Picker page whose
+# data changed (src/data/cms-picker-dates.json) and sitemap.xml. Cloudflare's build makes the pages from them.
 # Commits only when something changed; Cloudflare deploys the push on its own, and once it's live this tells
 # IndexNow (Bing and others) which pages changed.
 #
@@ -40,7 +40,7 @@ jobs:
           if [ -z "$(git status --porcelain)" ]; then echo "No changes to publish."; exit 0; fi
           git config user.name "superjsal"
           git config user.email "dev@jsal.io"
-          git add -A site/cms-picker/data.json site/cms-picker/index.html site/cms-picker/logos 'site/cms-picker/*/index.html' site/sitemap.xml
+          git add -A site/cms-picker/data.json site/cms-picker/logos src/data/cms-picker-dates.json site/sitemap.xml
           git commit -m "CMS Picker: nightly publish from Playbook"
           git push
           echo "pushed=true" >> "$GITHUB_OUTPUT"
