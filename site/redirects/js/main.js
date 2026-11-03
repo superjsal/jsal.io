@@ -531,7 +531,16 @@ function renderFile() {
   $("headWarn").textContent = [count, off.head].filter(Boolean).join(" ");
   $("headWarn").hidden = !$("headWarn").textContent;
   headIn.classList.toggle("warn", !$("headWarn").hidden);
-  $("fileText").textContent = w.body;
+  // Each line of a CSV or lines file carries its sheet row's number, drawn beside it but never copied; a whole-file
+  // format (YAML, JSON) has no line per row, so it shows none
+  const rowN = new Map(rows.map((r) => [r.id, r.n]));
+  const nums = fmt.kind !== "file" && w.body ? p[part].map((x) => rowN.get(x.id) ?? "") : null;
+  const shown = nums ? w.body.split("\n").map((l, i) => `<span class="ln" data-n="${nums[i]}">${esc(l)}</span>`).join("") : esc(w.body);
+  if ($("fileText").dataset.h !== shown) { $("fileText").innerHTML = shown; $("fileText").dataset.h = shown; }
+  // The gutter is as wide as the longest number, in px so the header row above (in another font) lines up too
+  const digits = nums ? String(Math.max(...nums.map(Number).filter(Boolean), 1)).length : 0;
+  $("fileText").closest(".file-body").style.setProperty("--gut", `${digits * 0.6 * parseFloat(getComputedStyle($("fileText")).fontSize)}px`);
+  $("fileText").closest(".file-body").classList.toggle("numbered", !!nums);
   $("fileText").hidden = !w.body;
   $("fileEmpty").hidden = !!w.body;
 

@@ -169,6 +169,11 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .head-warn { margin: var(--jsal-space-2) 0 var(--jsal-space-4); font-size: 12px; color: var(--jsal-warn); }
 .file { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre; tab-size: 4; }
 .file:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius-sm); }
+/* Each line's sheet row number sits in a gutter as drawn text, so selecting or copying the file never takes it; the
+   header row lines up with the lines under it */
+.file .ln { display: block; position: relative; padding-left: calc(var(--gut) + var(--jsal-space-12)); }
+.file .ln::before { content: attr(data-n); position: absolute; left: 0; width: var(--gut); text-align: right; color: var(--jsal-muted); user-select: none; }
+.file-body.numbered .head-row, .file-body.numbered .head-add, .file-body.numbered .head-warn { padding-left: calc(var(--gut) + var(--jsal-space-12)); }
 
 /* ── Hiding the file: a tab down the side that says what's in it, so the sheet gets the width ── */
 
