@@ -14,6 +14,9 @@
 #                  uploaded, then each page's date (the build makes the pages from data.json). Nightly by GitHub Action.
 #   publish --from-backup <file>   → the same, from a backup file (no key needed)
 #   dates        → moves on the date of each CMS Picker page whose data changed (no key needed)
+#   export       → reads the Playbook as jsal.io/ic shows it (base content + edits + watch-outs) into
+#                  private/playbook/export/: playbook.json and one <Platform>.md each. Writes nothing to Supabase or site/.
+#   export --from-backup <file>    → the same, from a backup file (no key needed)
 #
 # Small fixes don't need this: sign in on jsal.io/ic as an admin and use Edit (the CMS Picker's answers,
 # profiles, logos and "on the CMS Picker" switches are on the admin-only CMS Picker tab;
@@ -24,7 +27,7 @@
 # "secret" key (sb_secret_…), or the legacy service_role key. Set it in your own terminal only,
 # never in a file or in chat:
 #   PowerShell:  $env:SUPABASE_SERVICE_ROLE_KEY = "<secret key>"
-import base64, datetime, hashlib, html, json, os, pathlib, re, sys, urllib.error, urllib.parse, urllib.request
+import base64, datetime, hashlib, html, json, os, pathlib, re, subprocess, sys, urllib.error, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
 
 HERE = pathlib.Path(__file__).resolve().parent             # .github/scripts
@@ -370,18 +373,238 @@ def page_dates():
           + (f'; removed: {", ".join(removed)}' if removed else ''))
 
 
+# ── Export: the Playbook as jsal.io/ic shows it, to read without the page ──
+# The base content with the admins' edits and each platform's watch-out layered on top, resolved the same way
+# site/ic/app.js does (answer(), howFor(), warnFor(), variantCell()). Reads only: nothing goes to Supabase or site/.
+# Built-in text is HTML and edits are Markdown, so the export turns the HTML into Markdown and everything reads alike.
+EXPORT = PRIV / 'playbook' / 'export'
+STRAY_LT = re.compile(r'<(?!/?(?:b|i|em|strong|code|a|br|p|ul|ol|li|span|kbd|small)(?=[\s/>])[^<>]*>)', re.I)
+ANSWERS = ['Yes', 'Yes, with limitations', 'No', 'Check']
+LIMITED = re.compile(r'^(partly|partial|mostly|some|limited|depends)\b|\b(paid plans?|plan\+|plans? and up|pages only|only on|limited)\b|\d+(\.\d+)*\+|;', re.I)
+
+
+def html_md(h):
+    """Built-in HTML as Markdown, like the page's edit boxes show it; a stray "<" stays as written (proseSafe)."""
+    h = STRAY_LT.sub('&lt;', str(h or ''))
+    h = re.sub(r'<code>(.*?)</code>', r'`\1`', h, flags=re.S)
+    h = re.sub(r'</?(?:b|strong)>', '**', h)
+    h = re.sub(r'</?(?:i|em)>', '*', h)
+    h = re.sub(r'<a\b[^>]*?href="([^"]*)"[^>]*>(.*?)</a>', r'[\2](\1)', h, flags=re.S)
+    h = re.sub(r'<br\s*/?>', '\n', h)
+    h = re.sub(r'<li\b[^>]*>', '\n- ', h)
+    h = re.sub(r'</(?:p|ul|ol)>', '\n', h)
+    return html.unescape(re.sub(r'<[^>]+>', '', h)).strip()
+
+
+def answer_of(mark, verdict):
+    # The answer word the page shows beside the tag (answerOf in app.js)
+    m = plain(mark)
+    low = m.lower()
+    if m in ANSWERS: return m
+    if re.match(r'(check|unknown|unclear|not sure)\b', low) or (not m and verdict == 'check'): return 'Check'
+    if re.match(r'(likely no|unlikely|probably not)\b', low): return 'Check' if verdict == 'check' else 'No'
+    if re.match(r'no\b', low): return 'Yes, with limitations' if verdict in ('code', 'plugin', 'hosting') and re.search(r'[(\w]', low[2:]) else 'No'
+    if LIMITED.search(m): return 'Yes, with limitations'
+    return {'no': 'No', 'check': 'Check'}.get(verdict, 'Yes')
+
+
+def merged_playbook(base, edits, notes, source, data_at):
+    """Every visible platform's answers, how-to, watch-outs and guides, as the page shows them."""
+    V, S, PT, BY = base['VERDICT'], base['SCOPE'], base.get('PTYPES', {}), base.get('BY_TYPE', {})
+    HOW, WARN, GUIDES, HG = base.get('HOW', {}), base.get('WARN', {}), base.get('GUIDES', {}), base.get('HOW_GUIDES', {})
+    H1 = base.get('H1_FIX', '')
+    unchecked = set(base.get('HOW_UNVERIFIED', []))
+    edit = {(e['platform'], e['sec'], e['item']): e for e in edits}
+    note_of = {n['platform']: n for n in notes}
+    bold_fix = lambda h: html_md(h.replace(H1, f'<b>{H1}</b>') if H1 else h)
+    ptype = lambda sec: sec[8:] if sec.startswith('content.') else ''
+
+    def typed(pid, sec, iid):
+        return (BY.get(pid, {}).get(ptype(sec), {}).get(iid) if ptype(sec) else None) or {}
+
+    def answer(p, sec, iid):   # (cell, the edit its text comes from)
+        if ed := edit.get((p['id'], sec, iid)):
+            return [ed['verdict'], ed['mark'], ed['scope'], ed.get('note') or ''], ed
+        if sec == 'tech': return p['cells'].get(iid), None
+        if ptype(sec): return (typed(p['id'], sec, iid)['cell'], None) if typed(p['id'], sec, iid).get('cell') else answer(p, 'content', iid)
+        return base['CONTENT'].get(p['id'], {}).get(iid), None
+
+    def how(p, sec, iid):      # (steps, whether an edit wrote them)
+        ed = edit.get((p['id'], sec, iid))
+        if ed and isinstance(ed.get('how'), str): return [x.strip() for x in ed['how'].split('\n') if x.strip()], True
+        if t := typed(p['id'], sec, iid).get('how'): return [html_md(x) for x in t], False
+        if ptype(sec): return how(p, 'content', iid)
+        return [html_md(x) for x in HOW.get(p['id'], {}).get(iid, [])], False
+
+    def warn(p, sec, iid):
+        ed = edit.get((p['id'], sec, iid))
+        if ed and isinstance(ed.get('warn'), str): return ed['warn'].strip()
+        t = typed(p['id'], sec, iid)
+        if isinstance(t.get('warn'), str): return bold_fix(t['warn'])
+        if ptype(sec): return warn(p, 'content', iid)
+        return bold_fix(WARN.get(p['id'], {}).get(iid, ''))
+
+    def shown(cell, md_text):
+        verdict, mark, scope, note = (list(cell) + ['', '', '', ''])[:4]
+        out = {'answer': answer_of(mark, verdict), 'verdict': verdict, 'tag': V.get(verdict, verdict), 'scope': S.get(scope, scope),
+               'note': (note or '').strip() if md_text else html_md(note)}
+        if plain(mark) not in ANSWERS and plain(mark).lower() != out['answer'].lower():
+            out['mark'] = plain(mark)   # older free-text answers the page still shows beside the word
+        return out
+
+    def entry(p, sec, iid):
+        cell, ed = answer(p, sec, iid)
+        if not cell: return None
+        own = bool(ptype(sec)) and bool(typed(p['id'], sec, iid).get('cell') or edit.get((p['id'], sec, iid)))
+        steps, how_edited = how(p, sec, iid)
+        e = {**shown(cell, bool(ed)), 'watchOut': warn(p, sec, iid), 'how': steps}
+        if steps and not how_edited and p['id'] in unchecked: e['howUnchecked'] = True
+        if steps and (g := [x for x in HG.get(p['id'], {}).get(iid, []) if x in GUIDES]): e['guides'] = g
+        if ed: e['editedAt'] = ed.get('at')
+        # A page-builder choice (WordPress, Magento) replaces the answer, unless this page type has its own
+        v = base.get('VARIANTS', {}).get(p['id'])
+        if v and sec.startswith('content') and not own:
+            b = {name: shown(o[iid], False) for name, o in v['options'].items() if o.get(iid)}
+            if b: e['byBuilder'] = {'label': v['label'], 'options': b}
+        return e
+
+    def section(p, sec, items):
+        return {it['id']: e for it in items if (e := entry(p, sec, it['id']))}
+
+    visible = sorted((p for p in base['P'] if not p.get('hidden')), key=lambda p: (p['id'] == 'headless', p['name'].lower()))
+    platforms = []
+    for p in visible:
+        n = note_of.get(p['id'])
+        times = [data_at, n and n.get('at')] + [e.get('at') for e in edits if e['platform'] == p['id']]
+        out = {'id': p['id'], 'name': plain(p['name']), 'file': re.sub(r'[<>:"/\\|?*]', '', plain(p['name'])) + '.md',
+               'about': html_md(p.get('about')), 'watchOut': {'text': n['warn'].strip(), 'at': n.get('at')} if n and n.get('warn') else None,
+               'updated': max((t for t in times if t), default=None), 'tech': section(p, 'tech', base['ITEMS'])}
+        if p['id'] in BY:   # the page shows these platforms' Content answers one page type at a time
+            out['contentByPageType'] = {t: section(p, f'content.{t}', base['CONTENT_ITEMS']) for t in PT}
+        else:
+            out['content'] = section(p, 'content', base['CONTENT_ITEMS'])
+        platforms.append(out)
+    items = lambda lst: [{'id': i['id'], 'label': html_md(i['label']), **({'hint': html_md(i['hint'])} if i.get('hint') else {})} for i in lst]
+    md_block = lambda b: {k: (v if k in ('code', 'lang', 'label') else [html_md(x) for x in v] if isinstance(v, list) else html_md(v)) for k, v in b.items()}
+    return {
+        'exported': datetime.datetime.now().astimezone().isoformat(timespec='seconds'), 'source': source, 'contentUpdated': data_at,
+        'text': 'Markdown', 'tags': V, 'scopes': S, 'pageTypes': PT,
+        'items': {'tech': items(base['ITEMS']), 'content': items(base['CONTENT_ITEMS'])},
+        'guides': {gid: {'group': g.get('group'), 'title': html_md(g.get('title')), 'intro': html_md(g.get('intro')),
+                         **({'unverified': True} if g.get('unverified') else {}), 'blocks': [md_block(b) for b in g.get('blocks', [])]}
+                   for gid, g in GUIDES.items()},
+        'platforms': platforms,
+    }
+
+
+def platform_md(pb, p):
+    """One platform as a readable Markdown file: Tech, then Content (by page type where it differs), then its guides."""
+    day = lambda t: (t or '')[:10]
+    L = [f'# {p["name"]}: Platform Playbook', '',
+         f'Exported from jsal.io/ic on {pb["exported"][:16].replace("T", " ")} ({pb["source"]}). Answers last changed {day(p["updated"])}.', '']
+    if p['about']: L += [p['about'], '']
+    if p['watchOut']: L += [f'> **Watch out ({p["name"]}, every section):** {p["watchOut"]["text"]}', '']
+    used = []
+
+    def answer_line(e):
+        # "Check" beside a "Check manually" tag says the same thing twice, so the page shows the tag alone
+        word = '' if e['answer'] == 'Check' and e['verdict'] == 'check' else f'**{e["answer"]}** · '
+        return f'{word}{e["tag"]} · {e["scope"]}' + (f' ({e["mark"]})' if e.get('mark') else '')
+
+    def body(e):
+        out = [answer_line(e)]
+        if e['note']: out += ['', e['note']]
+        if e['watchOut']: out += ['', f'**Watch out:** {e["watchOut"]}']
+        if e['how']:
+            out += ['', 'How to:'] + [f'{n}. {s}' for n, s in enumerate(e['how'], 1)]
+            if e.get('howUnchecked'): out += ['', '_These steps haven’t been checked in a live admin yet._']
+        used.extend(g for g in e.get('guides', []) if g not in used)
+        if e.get('guides'): out +=['', 'Guides: ' + '; '.join(pb['guides'][g]['title'] for g in e['guides']) + ' (below)']
+        if e.get('byBuilder'):
+            b = e['byBuilder']
+            out += ['', f'{b["label"]}, when known (replaces the answer above):']
+            out += [f'- {name}: {answer_line(x)}' + (f'. {x["note"]}' if x['note'] else '') for name, x in b['options'].items()]
+        if e.get('editedAt'): out += ['', f'_Team edit, {day(e["editedAt"])}._']
+        return out
+
+    def item_head(it):
+        return [f'### {it["label"]}'] + ([f'_{it["hint"]}_'] if it.get('hint') else []) + ['']
+
+    L += ['## Tech', '']
+    for it in pb['items']['tech']:
+        if e := p['tech'].get(it['id']): L += item_head(it) + body(e) + ['']
+    L += ['## Content', '']
+    if 'contentByPageType' in p:
+        names = pb['pageTypes']
+        L += [f'Answers can differ by page type ({", ".join(names.values())}); where they all agree, they’re shown once.', '']
+        for it in pb['items']['content']:
+            groups = {}   # identical answers across page types are shown once
+            for t, sec in p['contentByPageType'].items():
+                if e := sec.get(it['id']): groups.setdefault(json.dumps(e, sort_keys=True), (e, []))[1].append(names.get(t, t))
+            if not groups: continue
+            L += item_head(it)
+            if len(groups) == 1:
+                L += body(next(iter(groups.values()))[0]) + ['']
+            else:
+                for e, types in groups.values(): L += [f'#### {", ".join(types)}', ''] + body(e) + ['']
+    else:
+        for it in pb['items']['content']:
+            if e := p['content'].get(it['id']): L += item_head(it) + body(e) + ['']
+    if used:
+        L += ['## Guides', '']
+        for gid in used:
+            g = pb['guides'][gid]
+            L += [f'### {g["title"]}', f'_{g["group"]}_', '', g['intro'], '']
+            if g.get('unverified'): L += ['_These steps haven’t been checked in a live admin yet._', '']
+            for b in g['blocks']:
+                if 'h' in b: L += [f'#### {b["h"]}', '']
+                elif 'p' in b: L += [b['p'], '']
+                elif 'note' in b: L += [f'> {b["note"]}', '']
+                elif 'ol' in b: L += [f'{n}. {x}' for n, x in enumerate(b['ol'], 1)] + ['']
+                elif 'ul' in b: L += [f'- {x}' for x in b['ul']] + ['']
+                elif 'code' in b: L += ([f'{b["label"]}:'] if b.get('label') else []) + [f'```{b.get("lang", "")}', b['code'].rstrip(), '```', '']
+    return '\n'.join(L).rstrip() + '\n'
+
+
+def export(backup_file=None):
+    if backup_file:
+        data = json.loads(pathlib.Path(backup_file).read_text(encoding='utf-8'))
+        rows, edits, notes = data['app_data'], data.get('edits') or [], data.get('platform_notes') or []
+        source = f'backup {pathlib.Path(backup_file).name}'
+    else:
+        rows = api('GET', 'app_data?id=eq.defaults&select=id,data,updated_at')
+        edits, notes = table('edits') or [], table('platform_notes') or []
+        source = 'live data'
+    row = next((r for r in rows if r['id'] == 'defaults'), None)
+    if not row:
+        sys.exit('No base content found (app_data id "defaults").')
+    # The export holds team content: only ever into private/, and only while git ignores it
+    if SITE in EXPORT.parents or subprocess.run(['git', 'check-ignore', '-q', str(EXPORT / 'playbook.json')],
+                                                cwd=SITE.parent, capture_output=True).returncode != 0:
+        sys.exit(f'Stopped: {EXPORT} isn’t ignored by git. Nothing was written.')
+    pb = merged_playbook(row['data'], edits, notes, source, row['data'].get('AT') or row.get('updated_at'))
+    EXPORT.mkdir(parents=True, exist_ok=True)
+    for f in EXPORT.glob('*.md'):   # platforms renamed or hidden since the last export
+        f.unlink()
+    (EXPORT / 'playbook.json').write_text(json.dumps(pb, ensure_ascii=False, indent=1), encoding='utf-8')
+    for p in pb['platforms']:
+        (EXPORT / p['file']).write_text(platform_md(pb, p), encoding='utf-8')
+    print(f'exported: {EXPORT} ({len(pb["platforms"])} platforms, {len(edits)} edits, {len(notes)} watch-outs; from {source})')
+    print('  ' + ', '.join(p['file'] for p in pb['platforms']))
+
+
 if __name__ == '__main__':
     cmd = sys.argv[1] if len(sys.argv) > 1 else ''
     if cmd in ('dates', 'check'):
         page_dates() if cmd == 'dates' else check()
         sys.exit()
-    if cmd not in ('backup', 'pull', 'push', 'publish'):
-        sys.exit('Usage: python playbook.py backup | pull | push | publish [--from-backup <file>] | dates | check')
+    if cmd not in ('backup', 'pull', 'push', 'publish', 'export'):
+        sys.exit('Usage: python playbook.py backup | pull | push | publish | export [--from-backup <file>] | dates | check')
     flag = lambda name: sys.argv[sys.argv.index(name) + 1] if name in sys.argv[2:-1] else None
-    if cmd == 'publish' and flag('--from-backup'):
-        publish(flag('--from-backup'))
+    if cmd in ('publish', 'export') and flag('--from-backup'):
+        (publish if cmd == 'publish' else export)(flag('--from-backup'))
         sys.exit()
     if not KEY:
         sys.exit('Set the service_role key first (in this terminal only):\n'
                  '  $env:SUPABASE_SERVICE_ROLE_KEY = "<key from Supabase → Project Settings → API>"')
-    publish() if cmd == 'publish' else {'backup': backup, 'pull': pull, 'push': push}[cmd]()
+    {'backup': backup, 'pull': pull, 'push': push, 'publish': publish, 'export': export}[cmd]()
