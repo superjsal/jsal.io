@@ -61,9 +61,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           sleep 20
-          for i in $(seq 1 40); do
+          for i in $(seq 1 90); do
             s=$(gh api "repos/${{ github.repository }}/commits/${{ steps.commit.outputs.sha }}/check-runs" --jq '[.check_runs[] | select((.app.slug | test("cloudflare")) and (.details_url | test("/production/builds/")))][0] | "\(.status) \(.conclusion)"' 2>/dev/null)
             [ "$s" = "completed success" ] && break
+            case "$s" in completed*) echo "Cloudflare's production build ended as: $s. Nothing announced."; exit 0;; esac
             sleep 10
           done
+          # Announce only once the pages are live, never after a failed or unfinished build
+          if [ "$s" != "completed success" ]; then echo "Cloudflare's production build didn't finish in time. Nothing announced."; exit 0; fi
           python .github/scripts/indexnow.py changed
