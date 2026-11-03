@@ -176,7 +176,7 @@ html { scrollbar-gutter: stable; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
 /* Page transitions (Firefox just navigates): the old page fades as it drifts up, the new one rises into place; going
-   back (nav.js sets data-jsal-back on <html>) runs it the other way. Done by 0.3s, so a click feels instant. */
+   back (the early script in each page's head sets data-jsal-back on <html>) runs it the other way. Done by 0.3s, so a click feels instant. */
 @view-transition { navigation: auto; }
 ::view-transition-group(*) { animation-duration: 0.3s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }   /* style: allow (the page change, choreographed) */
 ::view-transition-old(root) { animation: jsal-out-up 0.16s ease both; }   /* style: allow (the page change, choreographed) */
