@@ -1,6 +1,7 @@
 ---
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
+import { v } from "../../lib/v.mjs";
 ---
 <Page
   title="jsal.io Design System"
@@ -9,7 +10,6 @@ import TopBar from "../../components/TopBar.astro";
   cover
   analytics={false}
 >
-<Fragment slot="head"><Fragment set:html={`<!-- The site's own shell: tokens, fonts, top bar. This page is a presentation of the site, so it wears the site's clothes. -->`} /></Fragment>
 <style is:inline slot="head">
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
    that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
@@ -300,7 +300,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><b>6</b><span>corner radii</span></li>
       <li><b>11</b><span>spacing steps, 10 roles</span></li>
       <li><b>1</b><span>column, three widths</span></li>
-      <li><b>0</b><span>build steps</span></li>
+      <li><b>1</b><span>layout for every page</span></li>
     </ul>
     <ol class="toc">
       <li><a href="#brand"><b>01</b>Brand</a></li><li><a href="#philosophy"><b>02</b>Philosophy</a></li><li><a href="#colour"><b>03</b>Colour</a></li><li><a href="#type"><b>04</b>Typography</a></li><li><a href="#layout"><b>05</b>Spacing &amp; layout</a></li><li><a href="#components"><b>06</b>Components</a></li><li><a href="#motion"><b>07</b>Motion</a></li><li><a href="#a11y"><b>08</b>Accessibility</a></li><li><a href="#practice"><b>09</b>In practice</a></li>
@@ -316,13 +316,13 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h3>Tool icons</h3>
     <p>Each tool has an icon in the logo's family: a rounded tile in the tool's colour (the deep shade of its home tile's tint), a simple drawing of what it does in parchment strokes, and the gold gem. One file does every job: the tab icon, the mark before the tool's name in the top bar and the logo menu, and the faint watermark on its home tile. Like the logo, the tiles keep their colours in both themes, from the <code>--jsal-tool-*</code> tokens in <code>shell.css</code>.</p>
     <ul class="icons">
-      <li><img src="/img/icons/cms-picker.svg?v=ff76afa2" alt="" width="48" height="48">CMS Picker</li>
-      <li><img src="/img/icons/image-resizer.svg?v=467f1019" alt="" width="48" height="48">Image Resizer</li>
-      <li><img src="/img/icons/clean-paste.svg?v=dcd6c8ab" alt="" width="48" height="48">Clean Paste</li>
-      <li><img src="/img/icons/redirect-import.svg?v=cbb0df29" alt="" width="48" height="48">Redirect Import</li>
-      <li><img src="/img/icons/platform-playbook.svg?v=1bb049ca" alt="" width="48" height="48">Platform Playbook</li>
-      <li><img src="/img/icons/off-the-clock.svg?v=b02e67f6" alt="" width="48" height="48">Off the clock</li>
-      <li><img src="/img/icons/jsal-io.svg?v=f9148b71" alt="" width="48" height="48">jsal.io home</li>
+      <li><img src={v("/img/icons/cms-picker.svg")} alt="" width="48" height="48">CMS Picker</li>
+      <li><img src={v("/img/icons/image-resizer.svg")} alt="" width="48" height="48">Image Resizer</li>
+      <li><img src={v("/img/icons/clean-paste.svg")} alt="" width="48" height="48">Clean Paste</li>
+      <li><img src={v("/img/icons/redirect-import.svg")} alt="" width="48" height="48">Redirect Import</li>
+      <li><img src={v("/img/icons/platform-playbook.svg")} alt="" width="48" height="48">Platform Playbook</li>
+      <li><img src={v("/img/icons/off-the-clock.svg")} alt="" width="48" height="48">Off the clock</li>
+      <li><img src={v("/img/icons/jsal-io.svg")} alt="" width="48" height="48">jsal.io home</li>
     </ul>
     <h3>Personality</h3>
     <p>Plain-spoken and exact: the copy says what a thing does and who it's for, in words a client would use ("Keep old links working when pages move", not "301 redirect management"). A little playful at the edges: a gamer's touches that never get in the way of the work, such as achievements for using the tools, a game-inventory "Backpack" for contact details, a Warcraft lore sample post in Clean Paste, the home tiles' pictures (Clean Paste's is a raid night note) and the 404's hopping gem.</p>
@@ -337,10 +337,10 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h2>Principles the code already keeps.</h2>
     <p class="intro">None of these were written as a manifesto first. Each is a rule the site enforces, in a stylesheet comment, a check that runs before every push, or a repeated decision across the pages. Where a check exists, it's named.</p>
     <ul class="principles">
-      <li><b>One job per tool</b><span>Each tool does a single thing and its page says who it's for in one line under the title. The home page's headline is the thesis: "Small tools that do one job well."</span><small>index.html · .jsal-for</small></li>
+      <li><b>One job per tool</b><span>Each tool does a single thing and its page says who it's for in one line under the title. The home page's headline is the thesis: "Small tools that do one job well."</span><small>index.astro · .jsal-for</small></li>
       <li><b>Say each thing once</b><span>About sections follow a fixed order: a bold lead, "How to use it", any intro in one sentence, reference lists folded away, two or three questions the page doesn't already answer, then how to get in touch.</span><small>CLAUDE.md · About sections</small></li>
       <li><b>The tool fills the first screen</b><span>Explanations sit below the fold, reached by an About link in the top bar. On phones the empty work area stretches to the bottom of the screen until there's content.</span><small>design-rules.md · Layout</small></li>
-      <li><b>The top bar never moves</b><span>Every page carries the same top-bar markup, so the logo and theme button stay put during page transitions while the rest of the page changes around them.</span><small>check.py compares the markup</small></li>
+      <li><b>The top bar never moves</b><span>One shared layout writes the same top bar on every page, so the logo and theme button stay put during page transitions while the rest of the page changes around them.</span><small>TopBar.astro · check.py compares it</small></li>
       <li><b>Gold where it matters</b><span>One accent, kept loud by spending it only on selected states, the main action, the one insight line, brand touches and the site's own links. Never on hover.</span><small>check.py fails gold on hover</small></li>
       <li><b>Words over widgets</b><span>Plain tags ("Built in", "Needs code") and plain states ("not verified", and "*" for varies, spelled out in the key and for screen readers) carry the meaning; colour reinforces, it never explains alone. Instructions swap "click" for "tap" on touch screens.</span><small>nav.js · data-touch</small></li>
       <li><b>Motion that steps aside</b><span>Two timings, 0.15s for a change and 0.3s for a move, every one with a reduced-motion fallback, and nothing moving on its own for more than five seconds.</span><small>check.py · WCAG 2.2.2</small></li>
@@ -454,7 +454,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h3>The answer ramp</h3>
     <p>On the CMS Picker a row says how well a platform does something. Its tags are one scale, read left to right, and the scale is the same wherever it appears, on the comparison table, the cards and the platform pages.</p>
     <div class="ramp"><span class="tag yes">Built in</span><span class="arrow">→</span><span class="tag plugin">Plugin/app</span><span class="arrow">→</span><span class="tag code">Needs code</span><span class="arrow">→</span><span class="tag no">Not possible</span><span class="arrow" style="margin-left:var(--jsal-space-8)">·</span><span class="tag check">Unclear</span> <span class="sc">* varies</span></div>
-    <div class="suggest"><b>Decided</b><p>The home page's bento tiles keep their own tint tokens (<code>--t-cms</code> lilac, <code>--t-ir</code> teal, <code>--t-cp</code> honey, <code>--t-ri</code> berry, each with a deep <code>-ink</code> shade for its words, and <code>--t-plain</code> for Say hi and Updates) in <code>index.html</code>. Moving them into <code>shell.css</code> would copy colours only the home page uses into every page, so they stay where they’re used and are listed here instead.</p></div>
+    <div class="suggest"><b>Decided</b><p>The home page's bento tiles keep their own tint tokens (<code>--t-cms</code> lilac, <code>--t-ir</code> teal, <code>--t-cp</code> honey, <code>--t-ri</code> berry, each with a deep <code>-ink</code> shade for its words, and <code>--t-plain</code> for Say hi and Updates) in the home page's own styles. Moving them into <code>shell.css</code> would copy colours only the home page uses into every page, so they stay where they’re used and are listed here instead.</p></div>
   </section>
 
   <section class="sec" id="type">
@@ -574,7 +574,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <div class="ref-row"><span>Kinds</span><div><button type="button" class="jsal-btn primary">Find my fit</button><button type="button" class="jsal-btn">Compare all 14</button><button type="button" class="jsal-btn danger">Clear</button><button type="button" class="jsal-btn link">Start with a blank page</button><button type="button" class="jsal-btn link small danger">Delete</button></div></div>
         <div class="ref-row"><span>Sizes</span><div><button type="button" class="jsal-btn">40px, 14px</button><button type="button" class="jsal-btn small">.small 32px, 13px</button><span class="aside">44px on touch screens</span></div></div>
         <div class="ref-row"><span>States</span><div><button type="button" class="jsal-btn">At rest</button><button type="button" class="jsal-btn as-hover">Hover</button><button type="button" class="jsal-btn ring">Focused</button><button type="button" class="jsal-btn" disabled>Zipping…</button><button type="button" class="jsal-btn primary jsal-done">Copied</button></div></div>
-        <div class="ref-row"><span>Home only</span><div><button type="button" class="cta main">Find your CMS</button><span class="aside">.cta in index.html: the one filled pill, the home page's main action</span></div></div>
+        <div class="ref-row"><span>Home only</span><div><button type="button" class="cta main">Find your CMS</button><span class="aside">.cta on the home page: the one filled pill, its main action</span></div></div>
         <div class="dd">
           <div class="do"><b>Do</b><div class="row"><button type="button" class="jsal-btn primary">Copy formatted</button><button type="button" class="jsal-btn">Copy HTML</button></div><p>One gold button: the main thing to do next.</p></div>
           <div class="dont"><b>Don’t</b><div class="row"><button type="button" class="jsal-btn primary">Copy formatted</button><button type="button" class="jsal-btn primary">Copy HTML</button></div><p>Two gold buttons side by side: neither reads as the main one.</p></div>
@@ -614,7 +614,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </article>
 
       <article class="ref" id="c-links">
-        <div class="ref-h"><h3>An index of links</h3><code>footer .fg</code><span class="file">index.html</span></div>
+        <div class="ref-h"><h3>An index of links</h3><code>footer .fg</code><span class="file">index.astro</span></div>
         <div class="ref-row"><span>Example</span><div><nav class="fgdemo" aria-label="Platform guides example"><span aria-hidden="true">Platform guides</span><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/substack/">Substack</a></nav></div></div>
         <div class="dd">
           <div class="do"><b>Do</b><div class="row"><span class="aside">WordPress · Shopify · Wix · Squarespace</span></div><p>A set of links is plain text in muted ink, or a grid of equal tiles.</p></div>
@@ -719,7 +719,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
       <article class="ref" id="c-topbar">
         <div class="ref-h"><h3>Top bar, and keys</h3><code>.jsal-top</code><code>kbd</code><span class="file">shell.css</span></div>
-        <div class="ref-row"><span>Top bar</span><div><div class="topbar-demo"><div class="jsal-top"><span class="jsal-brand"><span class="jsal-name"><span class="jsal-j">j<svg class="jsal-j-draw" viewBox="0 -30 900 1080" aria-hidden="true"><path class="jsal-j-line" d="M585.5 277.5V780A100 100 0 0 1 435.5 866.6" stroke-width="147"/><path class="jsal-j-fold" d="M585.5 452V638A167.6 167.6 0 0 1 250.3 638" stroke-width="149"/><circle class="jsal-j-dot" cx="586" cy="57.5" r="77"/></svg></span><span class="jsal-sal">sal</span><span class="jsal-stop">.</span><span class="jsal-io">io</span></span></span><span class="jsal-title"><img class="jsal-title-ico" src="/img/icons/clean-paste.svg?v=dcd6c8ab" alt="" width="22" height="22">Clean <span class="hl">Paste</span></span><div class="jsal-actions"><span class="jsal-link">About</span><span class="jsal-theme" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span></div></div></div></div></div>
+        <div class="ref-row"><span>Top bar</span><div><div class="topbar-demo"><div class="jsal-top"><span class="jsal-brand"><span class="jsal-name"><span class="jsal-j">j<svg class="jsal-j-draw" viewBox="0 -30 900 1080" aria-hidden="true"><path class="jsal-j-line" d="M585.5 277.5V780A100 100 0 0 1 435.5 866.6" stroke-width="147"/><path class="jsal-j-fold" d="M585.5 452V638A167.6 167.6 0 0 1 250.3 638" stroke-width="149"/><circle class="jsal-j-dot" cx="586" cy="57.5" r="77"/></svg></span><span class="jsal-sal">sal</span><span class="jsal-stop">.</span><span class="jsal-io">io</span></span></span><span class="jsal-title"><img class="jsal-title-ico" src={v("/img/icons/clean-paste.svg")} alt="" width="22" height="22">Clean <span class="hl">Paste</span></span><div class="jsal-actions"><span class="jsal-link">About</span><span class="jsal-theme" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span></div></div></div></div></div>
         <div class="ref-row"><span>Keys</span><div><span class="aside">Press <kbd>Ctrl</kbd> + <kbd>V</kbd> anywhere on the page.</span></div></div>
         <dl class="ref-rules">
           <div><dt>Use it for</dt><dd>The same markup on every page, so it never moves: the logo menu, the tool's icon and name, a link or two and the theme button (32px drawn, 44px to tap).</dd></div>
@@ -783,14 +783,14 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><a href="/formatter/"><b>Clean Paste</b><span>Checks as rows, the editor, one gold Copy</span></a></li>
       <li><a href="/image-resizer/"><b>Image Resizer</b><span>Switches, the drop area, the status line</span></a></li>
       <li><a href="/redirects/"><b>Redirect Import</b><span>The sheet with each row's check, beside the file it writes</span></a></li>
-      <li><a href="/cms-picker/shopify/"><b>A platform page</b><span>Written by the publish; the gold word is "SEO"</span></a></li>
+      <li><a href="/cms-picker/shopify/"><b>A platform page</b><span>Built from the published data; the gold word is "SEO"</span></a></li>
       <li><a href="/play/"><b>Off the clock</b><span>The editorial side: the art, the backpack, achievements</span></a></li>
     </ul>
   </section>
   </main>
 
   <footer class="end">
-    <span><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. Values taken from the site's code on 2 November 2026; the rules themselves live in <code>design-rules.md</code> in the repository.</span>
+    <span><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. Values taken from the site's code on 3 November 2026; the rules themselves live in <code>design-rules.md</code> in the repository.</span>
     <span>Decisions about suggested changes are marked in blue.</span>
   </footer>
 </div>

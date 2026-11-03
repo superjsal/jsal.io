@@ -2,7 +2,8 @@
 # changed, so they're recrawled within hours rather than weeks. Bing's index also feeds ChatGPT search and
 # Copilot. The key file at the site root proves the site is ours; the key is public by design.
 #   python .github/scripts/indexnow.py all        every address in sitemap.xml
-#   python .github/scripts/indexnow.py changed    pages the last commit changed (the nightly publish runs this)
+#   python .github/scripts/indexnow.py changed    CMS Picker pages whose date the last commit moved on (the nightly
+#                                                 publish runs this)
 #   python .github/scripts/indexnow.py built <old dist> <new dist> [--list]   pages whose built HTML differs (a push
 #                                                 to main); --list only prints them
 #   python .github/scripts/indexnow.py <url> ...  just these
@@ -22,11 +23,11 @@ DATES = 'src/data/cms-picker-dates.json'   # each CMS Picker page's date, moved 
 
 
 def changed():
-    """Pages changed by the last commit, as addresses (site/privacy/index.html → https://jsal.io/privacy/); for the
-    CMS Picker's pages, which the build makes from data, those whose date the commit moved on."""
+    """The CMS Picker pages whose date the last commit moved on, as addresses (the nightly publish's commit). Every
+    other page is built from src/pages, so a push announces those from the build instead (built() below)."""
     git = lambda *a: subprocess.run(['git', *a], cwd=SITE, capture_output=True, text=True).stdout
     files = git('diff', '--name-only', 'HEAD~1', 'HEAD').split()
-    urls = [f'https://{HOST}/' + f[len('site/'):-len('index.html')] for f in files if f.startswith('site/') and f.endswith('index.html')]
+    urls = []
     if DATES in files:
         was, now = (json.loads(git('show', f'{rev}:{DATES}') or '{}') for rev in ('HEAD~1', 'HEAD'))
         urls += [f'https://{HOST}/cms-picker/' + ('' if page == 'cms-picker' else f'{page}/')

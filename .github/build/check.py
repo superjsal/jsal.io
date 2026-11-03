@@ -15,7 +15,7 @@ import json, pathlib, re, shutil, subprocess, sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]   # .github\build\check.py -> the project folder
 SITE = ROOT / 'dist'                                   # what jsal.io serves: the build
-BUILD = ROOT / '.github' / 'build'                      # this folder: scripts, node_modules and the share-image templates, not site content
+BUILD = ROOT / '.github' / 'build'                      # this folder, where versions.py lives
 
 npm = shutil.which('npm')
 if not npm or not (ROOT / 'node_modules' / 'astro').is_dir():
@@ -45,7 +45,7 @@ DYNAMIC_CLASSES = {'plugin', 'hosting', 'auto', 'code', 'check', 'no', 'yes', 'U
 problems = []
 def fail(msg): problems.append(msg)
 def read(rel): return (SITE / rel).read_text(encoding='utf-8')
-def files(patterns): return [p for pat in patterns for p in sorted(SITE.glob(pat)) if BUILD not in p.parents]
+def files(patterns): return [p for pat in patterns for p in sorted(SITE.glob(pat))]
 
 html = {p: read(p) for p in PAGES}
 

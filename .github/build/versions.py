@@ -33,11 +33,11 @@ def target(f, ref):
 
 
 def sources():
-    """Every file that may carry references: the pages still in site/ and the site's JS."""
+    """Every file that may carry references: the site's JS (the pages are built from src/pages, which v() versions)."""
     out = []
     for root, dirs, names in os.walk(SITE):
         dirs[:] = sorted(d for d in dirs if d not in SKIP)
-        out += [pathlib.Path(root, n) for n in sorted(names) if n.endswith(('.html', '.js'))]
+        out += [pathlib.Path(root, n) for n in sorted(names) if n.endswith('.js')]
     return out
 
 

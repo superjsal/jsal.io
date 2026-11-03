@@ -1,0 +1,5 @@
+# Files that sit beside the site's own but aren't part of it: they stay in the repository and are never uploaded
+.assetsignore
+.gitattributes
+ic/README.md
+ic/supabase/

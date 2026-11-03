@@ -1,6 +1,6 @@
 // Cache numbers for the site's own files, worked out as each page builds: v('/shell.css') is
 // '/shell.css?v=' + the first 8 hex characters of the file's SHA-256, line endings as LF. The same number
-// .github/build/versions.py writes into the pages still in site/, so check.py holds both to one rule.
+// .github/build/versions.py writes into the apps' module imports in site/, so check.py holds both to one rule.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
