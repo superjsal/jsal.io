@@ -73,9 +73,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .overview .done { color: var(--jsal-ink-2); }
 .overview .done b, .overview .count { color: var(--jsal-ink); font-weight: 600; }
 .overview .repeat { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-8); color: var(--jsal-bad); }
-.overview .count { padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); }
+.overview .count { padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad); color: var(--jsal-surface); }
 .overview .repeat.warn { color: var(--jsal-warn); }
-.overview .repeat.warn .count { background: var(--jsal-warn-soft); }
+.overview .repeat.warn .count { background: none; color: var(--jsal-ink); outline: 1px dashed var(--jsal-warn); outline-offset: -1px; }
 .overview .jsal-btn.small { min-height: 28px; padding: 3px var(--jsal-space-8); font-size: 13px; }
 
 /* ── The sheet ──────────────────────────────────────────────────────────── */
@@ -95,8 +95,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 
 .dot { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 12px; font-weight: 700; line-height: 1; }
 .dot.ok { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
-.dot.warn { background: var(--jsal-warn-soft); color: var(--jsal-warn); }
-.dot.bad { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
+/* A caution is an outline and an error a solid disc, so the two differ by shape as well as colour */
+.dot.warn { border: 2px dashed var(--jsal-warn); color: var(--jsal-warn); }
+.dot.bad { background: var(--jsal-bad); color: var(--jsal-surface); }
 .dot.out { background: var(--jsal-sunk); color: var(--jsal-muted); }   /* left out on purpose: neutral, not a warning */
 
 .note { margin: var(--jsal-space-4) 0 0; font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
@@ -138,7 +139,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .file-box.info { background: var(--jsal-info-soft); }
 /* The rows the file leaves out until they're fixed, in the red of the rows themselves */
 .file-missing { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-8); margin: var(--jsal-space-8) var(--jsal-space-12) 0; font-size: 13px; line-height: 1.45; color: var(--jsal-bad); }
-.file-missing .count { padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
+.file-missing .count { padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad); color: var(--jsal-surface); font-weight: 600; }
 .file-missing .jsal-btn.link { min-height: 24px; font-size: 13px; }
 /* Nothing left out: said in green, so the end of the job is as plain as what's missing */
 .file-done { display: flex; align-items: center; gap: var(--jsal-space-8); margin: var(--jsal-space-8) var(--jsal-space-12) 0; font-size: 13px; line-height: 1.45; color: var(--jsal-ok); }
@@ -185,7 +186,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .fold-tab .fold-ico { margin-top: var(--jsal-space-4); color: var(--jsal-ink-2); }
 .fold-lbl { color: var(--jsal-ink); font-size: 14px; font-weight: 600; }
 .fold-num { margin-top: var(--jsal-space-8); color: var(--jsal-ink); font-size: 17px; font-weight: 600; }
-.fold-bad { margin-top: var(--jsal-space-8); padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
+.fold-bad { margin-top: var(--jsal-space-8); padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad); color: var(--jsal-surface); font-weight: 600; }
 .fold-bad[hidden] { display: none; }
 @media (min-width: 1100px) {
   /* The file's name stays whole: Settings and Hide move under it when the pane is too narrow for both */

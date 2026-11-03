@@ -99,7 +99,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .check .ico { margin-top: 1px; width: 16px; height: 16px; border-radius: 50%; }
 .check.ok .ico { color: var(--jsal-ok); background: var(--jsal-ok-soft); }
 .check.warn { border-color: var(--jsal-warn-soft); }
-.check.warn .ico { color: var(--jsal-warn); background: var(--jsal-warn-soft); }
+.check.warn .ico { color: var(--jsal-warn); outline: 1.5px dashed var(--jsal-warn); outline-offset: -1.5px; }   /* a caution is an outline, never a solid disc */
 .check.info .ico { color: var(--jsal-muted); background: var(--jsal-sunk); }
 
 /* ── Actions ───────────────────────────────────────────────────────────── */
