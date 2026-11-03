@@ -56,8 +56,8 @@ import { v, importmap } from "../../lib/v.mjs";
       <div class="drop" id="drop" tabindex="0" role="region" aria-label="Add your redirects">
         <svg class="drop-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h11M11 3l4 4-4 4M20 17H9M13 13l-4 4 4 4"/></svg>
         <p class="drop-title">Paste or drop your redirects</p>
-        <p class="drop-sub" data-touch="Choose a CSV or Excel file with the old addresses in one column and the new ones in another.">Copy the old and new address columns from Excel or Google Sheets and press <kbd class="mod-key">Ctrl</kbd> + <kbd>V</kbd> anywhere on this page, or drop a CSV or Excel file here.</p>
-        <p class="drop-links"><button type="button" class="jsal-btn link" id="pickFile">Choose a file</button><span aria-hidden="true">·</span><button type="button" class="jsal-btn link" id="blankSheet">Start with an empty sheet</button><span aria-hidden="true">·</span><button type="button" class="jsal-btn link" id="exampleBtn">Try an example</button><span aria-hidden="true" id="undoSep" hidden>·</span><button type="button" class="jsal-btn link" id="undoClear" hidden>Undo clear</button></p>
+        <p class="drop-sub" data-touch="Copy the old and new address columns from Excel or Google Sheets and tap Paste, or choose a CSV or Excel file.">Copy the old and new address columns from Excel or Google Sheets and press <kbd class="mod-key">Ctrl</kbd> + <kbd>V</kbd> anywhere on this page, or drop a CSV or Excel file here.</p>
+        <p class="drop-links"><button type="button" class="jsal-btn link" id="pasteBtn" hidden>Paste</button><span aria-hidden="true" id="pasteSep" hidden>·</span><button type="button" class="jsal-btn link" id="pickFile">Choose a file</button><span aria-hidden="true">·</span><button type="button" class="jsal-btn link" id="blankSheet">Start with an empty sheet</button><span aria-hidden="true">·</span><button type="button" class="jsal-btn link" id="exampleBtn">Try an example</button><span aria-hidden="true" id="undoSep" hidden>·</span><button type="button" class="jsal-btn link" id="undoClear" hidden>Undo clear</button></p>
         <p class="jsal-error" id="dropError" role="alert" hidden></p>
         <p class="drop-privacy">Everything stays in your browser. Nothing is uploaded.</p>
         <input type="file" id="fileInput" accept=".csv,.tsv,.txt,.xlsx,text/csv,text/tab-separated-values,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
@@ -163,7 +163,7 @@ import { v, importmap } from "../../lib/v.mjs";
 
     <h3>How to use it</h3>
     <ol>
-      <li>Copy the two columns from Excel or Google Sheets<span data-touch=", or choose a CSV or Excel file.">, and press <kbd class="mod-key">Ctrl</kbd> + <kbd>V</kbd> anywhere on the page, or drop a CSV or Excel file on it.</span></li>
+      <li>Copy the two columns from Excel or Google Sheets<span data-touch=" and tap Paste, or choose a CSV or Excel file.">, and press <kbd class="mod-key">Ctrl</kbd> + <kbd>V</kbd> anywhere on the page, or drop a CSV or Excel file on it.</span></li>
       <li>Pick where you’re importing them.</li>
       <li>Fix anything marked red in your sheet. The file beside it changes as you type.</li>
       <li>Download the file, or copy it, and import it on the platform.</li>
