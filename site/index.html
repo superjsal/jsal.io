@@ -72,14 +72,14 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de; --t-plain: #1c1f27;
-    --obj-shadow: 0 0 0 1px var(--jsal-line-hi), 0 18px 40px rgb(0 0 0 / 0.5);
+    --obj-shadow: inset 0 0 0 1px var(--jsal-line-hi), 0 18px 40px rgb(0 0 0 / 0.5);   /* edge drawn inside: an outside ring on a tilted piece draws unevenly in Firefox */
     --key-drop: 0 18px 24px rgb(0 0 0 / 0.45); --key-drop-low: 0 7px 11px rgb(0 0 0 / 0.4);
     --wm-gem: 0.45;   /* a little stronger, so the faint gold doesn't read as brown on the dark tints */
   }
 }
 :root[data-theme="dark"] {
   --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de; --t-plain: #1c1f27;
-  --obj-shadow: 0 0 0 1px var(--jsal-line-hi), 0 18px 40px rgb(0 0 0 / 0.5);
+  --obj-shadow: inset 0 0 0 1px var(--jsal-line-hi), 0 18px 40px rgb(0 0 0 / 0.5);
   --key-drop: 0 18px 24px rgb(0 0 0 / 0.45); --key-drop-low: 0 7px 11px rgb(0 0 0 / 0.4);
   --wm-gem: 0.45;
 }
