@@ -141,8 +141,19 @@ body { background: var(--jsal-bg); }
 .jsal-seg > button:disabled { opacity: 0.45; cursor: not-allowed; }
 .jsal-seg > button:disabled:hover { color: var(--jsal-muted); }
 .jsal-seg > [aria-pressed="true"], .jsal-seg > [aria-selected="true"], .jsal-seg > .active { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
-@media (pointer: coarse) { .jsal-btn, .jsal-btn.small, .jsal-seg > button { min-height: 44px; } }
-@media (prefers-reduced-motion: reduce) { .jsal-btn, .jsal-seg > button { transition: none; } }
+/* A filter, for one of five or more parts of a list: equal-width rectangles in a grid, so every row lines up at any
+   width; each shows its icon, name and how many there are, the chosen one selected in gold */
+.jsal-filter { display: grid; grid-template-columns: repeat(auto-fill, minmax(10.4em, 1fr)); gap: var(--jsal-space-8); }
+.jsal-filter > button { display: flex; align-items: center; gap: var(--jsal-space-8); min-width: 0; padding: var(--jsal-space-8); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink-2); font: 600 13px/1.25 var(--jsal-font); text-align: left; white-space: nowrap; cursor: pointer; transition: border-color var(--jsal-quick), color var(--jsal-quick); }
+.jsal-filter > button:hover { border-color: var(--jsal-hover-line); color: var(--jsal-ink); }
+.jsal-filter > button:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.jsal-filter img { flex: none; width: 18px; height: 18px; border-radius: var(--jsal-radius-sm); }
+.jsal-filter .t { overflow: hidden; text-overflow: ellipsis; }
+.jsal-filter .n { margin-left: auto; color: var(--jsal-muted); font-weight: 500; }
+.jsal-filter > [aria-pressed="true"] { border-color: transparent; background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+.jsal-filter > [aria-pressed="true"] .n { color: inherit; }
+@media (pointer: coarse) { .jsal-btn, .jsal-btn.small, .jsal-seg > button, .jsal-filter > button { min-height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .jsal-btn, .jsal-seg > button, .jsal-filter > button { transition: none; } }
 
 /* Phones (iOS) zoom into any text field under 16px when it's tapped or focused, which throws the page
    sideways and away from what you were doing. Touch screens get 16px fields; desktop keeps each app's size. */

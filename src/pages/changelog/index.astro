@@ -2,9 +2,12 @@
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
 import { getCollection } from "astro:content";
-import { inOrder, byDay, longDate, section, sentence } from "../../lib/changelog.mjs";
+import { SECTIONS, inOrder, byDay, longDate, section, sentence } from "../../lib/changelog.mjs";
 // Every entry from the changelog collection (src/content/changelog.json), grouped by day, newest first
 const entries = inOrder(await getCollection("changelog"));
+// The filter's parts, each with its address (#redirect-import) and how many entries it has
+const slug = (name) => name.toLowerCase().replace(/ /g, "-");
+const parts = SECTIONS.map((s) => ({ ...s, id: slug(s.name), count: entries.filter((e) => e.tag === s.name).length }));
 ---
 <Page
   title="Changelog | jsal.io"
@@ -31,6 +34,11 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
 @media (pointer: coarse) { .log-name a { position: relative; } .log-name a::after { content: ""; position: absolute; inset: -13px -4px; } }   /* 44px to tap */
 .log a { color: var(--jsal-accent); text-underline-offset: 2px; }
 @media (max-width: 520px) { .log li { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-2); } }
+/* With the filter showing, it takes the intro's closing line's place */
+.log:has(.jsal-filter:not([hidden])) .lead { padding-bottom: 0; border-bottom: 0; }
+.log .jsal-filter { margin-top: var(--jsal-space-32); }
+.log .jsal-filter + h2 { margin-top: var(--jsal-space-32); }
+.log [hidden] { display: none; }
 </style>
 <div class="wrap">
   <TopBar />
@@ -38,16 +46,50 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     <p class="code">Changelog</p>
     <h1>What’s <em>changed</em></h1>
     <p class="lead">Everything that has changed on jsal.io, newest first. The home page keeps only the latest change for each part of the site.</p>
+    <p class="sr-only" id="flt-said" aria-live="polite"></p>
+    <div class="jsal-filter" role="group" aria-label="Show changes to" hidden>
+      <button type="button" data-part="" aria-pressed="true"><span class="t">All</span><span class="n">{entries.length}</span></button>
+      {parts.map((p) => (
+      <button type="button" data-part={p.id} aria-pressed="false"><img src={`/img/icons/${p.icon}.svg`} alt="" width="18" height="18"><span class="t">{p.name}</span><span class="n">{p.count}</span></button>
+      ))}
+    </div>
     {byDay(entries).map(([date, day]) => (
       <Fragment>
     <h2><time datetime={date}>{longDate(date)}</time></h2>
     <ul>
       {day.map((e) => (
-      <Fragment><li data-short={e.short}><span class="log-name">{section(e.tag).href ? <a href={section(e.tag).href}>{e.tag}</a> : e.tag}</span><span set:html={sentence(e.text)} /></li>{"\n"}</Fragment>
+      <Fragment><li data-short={e.short} data-part={slug(e.tag)}><span class="log-name">{section(e.tag).href ? <a href={section(e.tag).href}>{e.tag}</a> : e.tag}</span><span set:html={sentence(e.text)} /></li>{"\n"}</Fragment>
       ))}
     </ul>
       </Fragment>
     ))}
   </main>
 </div>
+<script is:inline>
+// The filter: one part of the site at a time, kept in the address (#redirect-import) so a filtered view can be
+// shared. Without this script the filter stays hidden and every change shows
+(() => {
+  const bar = document.querySelector('.jsal-filter'), said = document.getElementById('flt-said');
+  const buttons = [...bar.querySelectorAll('button')];
+  const show = (part, announce) => {
+    if (!buttons.some((b) => b.dataset.part === part)) part = '';
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.part === part)));
+    let n = 0;
+    document.querySelectorAll('.log li[data-part]').forEach((li) => { li.hidden = !!part && li.dataset.part !== part; if (!li.hidden) n++; });
+    // A day with nothing left to show drops its date too
+    document.querySelectorAll('.log h2').forEach((h) => { const ul = h.nextElementSibling; ul.hidden = h.hidden = ![...ul.children].some((li) => !li.hidden); });
+    if (announce) said.textContent = `${n} change${n === 1 ? '' : 's'}`;
+  };
+  bar.hidden = false;
+  bar.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    // The page's history state stays as it is: page transitions read it to tell Back from forward
+    history.replaceState(history.state, '', b.dataset.part ? `#${b.dataset.part}` : location.pathname);
+    show(b.dataset.part, true);
+  });
+  addEventListener('hashchange', () => show(location.hash.slice(1), true));
+  show(location.hash.slice(1), false);
+})();
+</script>
 </Page>

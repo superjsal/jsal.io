@@ -142,6 +142,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .ref-row > span { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-muted); }
 .ref-row > div { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8); min-width: 0; }
 .ref-row > div.checks { display: grid; align-items: stretch; margin: 0; }
+.ref-row > div > .jsal-filter, .do .row > .jsal-filter { flex: 1 1 100%; }
 .ref .stack, .ref-row > div.stack { display: grid; gap: var(--jsal-space-8); justify-items: start; }
 .ref .stack .ans, .ref .stack .chk { justify-self: stretch; }
 .aside { font-size: 13px; color: var(--jsal-muted); }
@@ -600,6 +601,15 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <div class="dd">
           <div class="do"><b>Do</b><div class="row"><div class="jsal-seg" role="group" aria-label="Example switch"><button type="button" aria-pressed="true">Text</button><button type="button" aria-pressed="false">HTML</button></div></div><p>Two to four short options, one always chosen: a setting or a view.</p></div>
           <div class="dont"><b>Don’t</b><div class="row"><div class="jsal-seg" role="group" aria-label="Example switch"><button type="button" aria-pressed="false">Copy</button><button type="button" aria-pressed="false">Clear</button></div></div><p>Actions in a switch: it picks a setting, it never runs something.</p></div>
+        </div>
+      </article>
+
+      <article class="ref" id="c-filter">
+        <div class="ref-h"><h3>Filter</h3><code>.jsal-filter</code><span class="file">shell.css</span></div>
+        <div class="ref-row"><span>Example</span><div><div class="jsal-filter" role="group" aria-label="Example filter"><button type="button" aria-pressed="true"><span class="t">All</span><span class="n">66</span></button><button type="button" aria-pressed="false"><img src="/img/icons/cms-picker.svg" alt="" width="18" height="18"><span class="t">CMS Picker</span><span class="n">27</span></button><button type="button" aria-pressed="false"><img src="/img/icons/clean-paste.svg" alt="" width="18" height="18"><span class="t">Clean Paste</span><span class="n">4</span></button><button type="button" aria-pressed="false"><img src="/img/icons/image-resizer.svg" alt="" width="18" height="18"><span class="t">Image Resizer</span><span class="n">4</span></button><button type="button" aria-pressed="false"><img src="/img/icons/redirect-import.svg" alt="" width="18" height="18"><span class="t">Redirect Import</span><span class="n">5</span></button></div></div></div>
+        <div class="dd">
+          <div class="do"><b>Do</b><div class="row"><div class="jsal-filter" role="group" aria-label="Example filter"><button type="button" aria-pressed="false"><span class="t">All</span><span class="n">66</span></button><button type="button" aria-pressed="true"><span class="t">Site</span><span class="n">22</span></button></div></div><p>Five or more parts of one list, one shown at a time: equal rectangles, so every row lines up.</p></div>
+          <div class="dont"><b>Don’t</b><div class="row"><button type="button" class="chip" aria-pressed="true">All</button><button type="button" class="chip" aria-pressed="false">Redirect Import</button><button type="button" class="chip" aria-pressed="false">Site</button></div><p>Pills of different widths for a long set: their rows stagger as they wrap. Two to four options are a switch.</p></div>
         </div>
       </article>
 

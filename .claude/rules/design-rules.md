@@ -142,7 +142,11 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   edge and tint. Inside the CMS Picker quiz and its result, a choice is a rounded square (`--jsal-radius`) instead,
   like the answers, tiles and cards around it, so the quiz reads as one set of shapes; selected is the same gold. A set of links is not a choice, so it never wears pills: it's a text list (the home page footer's
   Platform guides) or a grid of equal-width tiles with the plain `--jsal-line` border, surface background and 500
-  weight. Uneven pills stagger; equal tiles don't. **The one filled pill** is the home page's gold "Find your CMS":
+  weight. Uneven pills stagger; equal tiles don't.
+  **A filter** (`.jsal-filter` in `shell.css`) shows one of five or more parts of a list at a time (the changelog's
+  parts of the site): equal-width rectangles with 6px corners in a grid, so every row lines up at any width, each
+  with its icon, name and count, the chosen one in the selected gold. Not pills, whose rows stagger as they wrap; two
+  to four options are a switch (`.jsal-seg`). **The one filled pill** is the home page's gold "Find your CMS":
   the page's main action, filled rather than bordered, so it never reads as a choice. It stays a pill to sit with the
   bento's round tiles; nothing else on the site uses that shape for an action.
 
