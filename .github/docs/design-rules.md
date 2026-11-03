@@ -72,7 +72,7 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 - Colours come from the `--jsal-*` tokens in `shell.css`, light and dark. Every text/background pair is at
   least 4.5:1; icons and other graphics people need to see at least 3:1. Light-mode gold text is
   `--jsal-accent` (#7e5a00); `--jsal-fill` (#e3b04b) is for fills and for text on images. The home tiles' own
-  tint tokens stay in `index.html`, where they're used.
+  tint tokens stay in the home page (`src/pages/index.astro`), where they're used.
 - **Gold is the site's accent: loud, and spent only where it matters.** Selected states, the main action, the
   one insight line, brand touches (".io", each title's gold word, the home page name and role line, eyebrow
   labels on the site's own pages, achievements) and the site's own text links (About sections, footers, notes).

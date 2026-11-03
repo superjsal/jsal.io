@@ -7,10 +7,10 @@
 #  - no unused CSS classes, keyframes or variables
 #  - branding: no standalone "JSAL"; the WoW art keeps its credit
 #  - every sitemap address exists
-# It builds the site first (npm run build, which also writes the content security policy and the home page's Updates,
-# and stops on a changelog Updates can't use) and checks the build in dist\, so pages made from src\ and files copied
-# from site\ are checked alike; a problem in a built page is reported by its served path (privacy/index.html), whose
-# source is src\pages\ or site\.
+# It builds the site first (npm run build, which also writes the content security policy and stops on a changelog
+# entry the collection's schema rejects) and checks the build in dist\: the pages from src\pages\ and the files
+# copied from site\. A problem in a built page is reported by its served path (privacy/index.html). The layout writes
+# the top bar and the head, so most of these hold by construction; they stay as a guard on what the build sends.
 import json, pathlib, re, shutil, subprocess, sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]   # .github\build\check.py -> the project folder
@@ -30,7 +30,7 @@ for line in (run.stdout + run.stderr).splitlines():
 # Every page in the build: each folder's index.html and the 404 page, found the same way as browser-check.mjs, so a new
 # page is checked without a list to keep
 PAGES = sorted(str(p.relative_to(SITE)).replace('\\', '/') for p in SITE.rglob('index.html')) + ['404.html']
-# CMS Picker platform pages, written by playbook.py publish (cms-picker/<platform>/index.html)
+# CMS Picker platform pages, built from its data (cms-picker/<platform>/index.html)
 PLATFORM_PAGES = sorted(str(p.relative_to(SITE)).replace('\\', '/') for p in SITE.glob('cms-picker/*/index.html'))
 # App code that goes with each page (for the unused-CSS check)
 APP_FILES = {
@@ -61,8 +61,8 @@ for p, t in html.items():
     if th != ref[1]: fail(f'{p}: theme button markup differs from the home page')
 
 # Cache numbers: every reference to one of the site's CSS or JS files, the favicon or quiz.json carries that
-# file's current content hash, on every page, in the apps' module imports and in the publish template
-# (versions.py next to this script is the one place that knows what counts as a reference)
+# file's current content hash, on every built page (v() in src/lib/v.mjs) and in the apps' module imports (written
+# by versions.py next to this script, the one place that knows what counts as a reference)
 sys.path.insert(0, str(BUILD))
 sys.dont_write_bytecode = True   # no __pycache__ folder inside the site repo
 import versions

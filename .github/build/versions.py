@@ -1,8 +1,8 @@
 # Per-file cache numbers. Every link to one of the site's own CSS or JS files, to /favicon.svg and to the
 # CMS Picker's quiz.json carries ?v=<hash>: the first 8 hex characters of the SHA-256 of that file's contents
-# (line endings as LF, so Windows and GitHub agree). A changed file gets a new hash, and only the references
-# to that file are rewritten, wherever they are: every page, the apps' module imports ("./state.js?v=…"),
-# and the importmaps. Pages built by Astro (src/pages) work theirs out as they build, with v() in src/lib/v.mjs.
+# (line endings as LF, so Windows and GitHub agree). The pages, built from src/pages, work theirs out as they build
+# (v() in src/lib/v.mjs, the same hash); what this rewrites is the apps' module imports in site/ ("./state.js?v=…"),
+# only those to a file that changed. check.py reads the built pages through it too.
 #   python -I versions.py           rewrite stale references (bump-version.ps1 runs this)
 #   python -I versions.py --check   list stale references and exit 1 if there are any (check.py imports this)
 import hashlib, os, pathlib, re, sys

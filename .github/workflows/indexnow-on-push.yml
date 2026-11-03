@@ -1,8 +1,9 @@
 # After a push to main by hand, tells Bing and the other IndexNow engines which pages changed, once Cloudflare's
-# build is live, so nobody has to remember to run indexnow.py. A page counts when its index.html changed (the home
-# page's, or a folder's); only addresses in sitemap.xml are sent (indexnow.py keeps to those). The nightly publish
-# announces its own pages, so its commits are skipped here. Text or metadata changes are what search engines care
-# about, but a push can't tell those from a code change, so any changed page is sent: a wasted ping costs nothing.
+# build is live, so nobody has to remember to run indexnow.py. It builds the site before and after the push and sends
+# every page whose built HTML differs, so a change to a page, the layout, the data or the changelog all count; only
+# addresses in sitemap.xml are sent (indexnow.py keeps to those). The nightly publish announces its own pages, so its
+# commits are skipped here. A push can't tell a text change from a code change, so any changed page is sent: a wasted
+# ping costs nothing.
 name: IndexNow for changed pages
 
 on:
@@ -28,12 +29,22 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - name: Pages whose index.html changed in this push
-        id: pages
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Build the site after and before this push
         run: |
           before="${{ github.event.before }}"
           git cat-file -e "$before" 2>/dev/null || before="${{ github.sha }}~1"
-          urls=$(git diff --name-only "$before" "${{ github.sha }}" | grep -E '^site/(index\.html|[^/]+/index\.html|cms-picker/[^/]+/index\.html)$' | sed -E 's#^site/index\.html$#https://jsal.io/#; s#^site/(.*)/index\.html$#https://jsal.io/\1/#' | sort -u | tr '\n' ' ')
+          npm ci && npm run build && mv dist "$RUNNER_TEMP/after"
+          git worktree add -q "$RUNNER_TEMP/src-before" "$before"
+          cd "$RUNNER_TEMP/src-before"
+          # A commit from before the site had a build served site/ as it was
+          if [ -f package.json ]; then npm ci && npm run build && mv dist "$RUNNER_TEMP/before"; else cp -r site "$RUNNER_TEMP/before"; fi
+      - name: Pages whose built HTML changed
+        id: pages
+        run: |
+          urls=$(python .github/scripts/indexnow.py built "$RUNNER_TEMP/before" "$RUNNER_TEMP/after" --list)
           echo "urls=$urls" >> "$GITHUB_OUTPUT"
           echo "Changed pages: ${urls:-none}"
       - name: Wait for Cloudflare's build to be live (up to ~5 minutes; it reports as a check on the commit)

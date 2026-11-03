@@ -1,7 +1,8 @@
 ---
 paths:
   - "site/image-resizer/**"
-  - "site/index.html"
+  - "src/pages/image-resizer/**"
+  - "src/pages/index.astro"
 ---
 
 # Image Resizer: history worth knowing

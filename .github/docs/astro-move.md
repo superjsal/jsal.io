@@ -120,21 +120,28 @@ and the docs describe the new setup.
 - **Comments in served files:** `check.py`'s rules apply to the built pages. Frontmatter comments in `.astro` files
   aren't served, so they may name tooling.
 
-## What else changes before shipping
+## Before shipping (done on the branch)
 
-- The checks made unnecessary by the layout (top bar identical, early script copy, `?v=` current) are removed once
-  nothing needs them, and `.github\build\astro-move\` with them.
-- `.claude\launch.json`: `jsal-build` (port 8766) serves the build for the checks; `npm run dev` (port 4321) may
-  replace `jsal-site` for working on pages.
-- The nightly publish Action needs no build (Cloudflare builds).
-- **The GitHub Pages fallback** ("Deploy Pages") uploads `site\` as it is, so it would serve no moved page: retire it
-  (due on or after 2026-11-09) before shipping, as planned anyway.
-- **IndexNow on push** works out which pages changed from paths under `site\`; it needs to map `src\pages\` too (and
-  a layout change to every page).
-- The move's own changelog line goes into `changelog.json` on the day it ships (after the last conversion).
-- Docs: CLAUDE.md (the changelog rule: entries are lines in `src\content\changelog.json`, `short` replaces
-  `data-short`, `updates.py` is gone), SETUP.md, `how-it-works.md` (the publish now writes data and dates, not pages),
-  `design-rules.md` (check names), `cms-picker-maintenance.md` and `.claude\rules\cms-picker-playbook.md` (where
-  the platform pages and the plain-HTML copy come from), the `add-tool` skill.
-- The nightly Action's "Deploy Pages (fallback)" step goes with the fallback.
-- Ship the whole move at once, when every page on the branch preview matches staging, with John's "ship it".
+- **The GitHub Pages fallback is retired on the branch:** `deploy-pages.yml`, `site\CNAME` and the nightly Action's
+  "Deploy Pages (fallback)" step are gone, as the fallback serves `site\`, which no longer has pages. It takes effect
+  when the move ships, so ship on or after 2026-11-09 (the date set for retiring it), unless John retires it sooner.
+- **IndexNow on push** builds the site before and after a push (`indexnow-on-push.yml`) and sends every page whose built
+  HTML differs (`indexnow.py built`), so layout, data and changelog changes count without a list of paths.
+- **The checks stay:** they now test the built pages, so the top bar, early script and `?v=` rules hold by
+  construction, but they still guard the Playbook's own bar and any page that skips the layout. `bump-version.ps1`
+  stays for the apps' module imports; the pages need no bump.
+- `.claude\launch.json`: `jsal-dev` (Astro's dev server, port 4321) replaces `jsal-site`; `jsal-build` (8766) serves
+  the build for the checks. `browser-check.mjs` borrows the main checkout's Playwright, so it runs from a worktree.
+- Docs: CLAUDE.md, SETUP.md, `how-it-works.md`, `design-rules.md`, `cms-picker-maintenance.md`, the `.claude\rules\`
+  files' paths and the publishing rule, the `add-tool` skill.
+
+## At ship time
+
+1. Merge staging into `astro` the usual way (the merge notes above), converting the changelog a last time.
+2. Add the move's own changelog line to `changelog.json` (Site: one sentence a visitor would notice, if any; the site
+   should look the same, so perhaps only quicker updates are worth saying, or nothing).
+3. Delete `.github\build\astro-move\` and this file; `.github\docs\how-it-works.md` describes the new setup.
+4. Run every check, merge `astro` into `staging`, push, check the staging preview, then John's "ship it" pushes `main`.
+5. **John:** in GitHub → Settings → Pages, unpublish the site (Source: none), once jsal.io serves the Astro build.
+6. Watch the first nightly publish after shipping: it should commit `data.json` and the dates file only, and its
+   IndexNow step should name the pages whose dates moved.

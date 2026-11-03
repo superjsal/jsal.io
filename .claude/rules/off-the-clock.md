@@ -1,6 +1,7 @@
 ---
 paths:
   - "site/play/**"
+  - "src/pages/play/**"
   - "site/img/wow-forever*"
   - ".github/build/og/**"
 ---

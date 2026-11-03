@@ -8,13 +8,17 @@
 //   node .github\build\browser-check.mjs --axe    only the axe part and Clean Paste's cases (quick; check.ps1 runs it
 //                                         when the server is up)
 // Exits 1 if axe finds a serious or critical problem or a page breaks.
-import { chromium, webkit, firefox } from 'playwright';
 import { createRequire } from 'module';
 import fs from 'fs';
 import { cleanPasteCases } from './clean-paste-cases.mjs';
 
+// Playwright and axe from this folder (npm ci here), or else from the main checkout on John's PC, so the checks run
+// the same from a worktree, which has no node_modules of its own
+let require = createRequire(import.meta.url);
+try { require.resolve('playwright'); } catch { require = createRequire('C:/Users/JSAL/Desktop/jsal.io/.github/build/package.json'); }
+const { chromium, webkit, firefox } = require('playwright');
 const BASE = 'http://127.0.0.1:8766';
-const AXE = fs.readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
+const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 // Every page in the build (each folder's index.html, and the 404 page), found the same way as check.py, so a new page is
 // checked without a list to keep; left out on purpose: the team Playbook (/ic/ shows only its sign-in here) and all but
 // two platform pages, a full one and a sparse one, which stand for the 14 (they share one template)

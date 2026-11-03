@@ -1,6 +1,7 @@
 ---
 paths:
   - "site/redirects/**"
+  - "src/pages/redirects/**"
 ---
 
 # Redirect Import: what to know before changing it
