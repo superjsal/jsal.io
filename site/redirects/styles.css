@@ -117,15 +117,14 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 /* ── The file ───────────────────────────────────────────────────────────── */
 
 .fmt-btn { display: inline-flex; align-items: center; gap: var(--jsal-space-8); margin-left: auto; padding: var(--jsal-space-4) var(--jsal-space-8); border: 0; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-muted); font: 500 13px var(--jsal-font); cursor: pointer; }
-.fmt-btn b { color: var(--jsal-ink); font-weight: 600; }
-.fmt-btn svg { transition: transform var(--jsal-quick); }
-.fmt-btn:hover, .fmt-btn[aria-expanded="true"] { background: var(--jsal-sunk); }
-.fmt-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.fmt-btn:hover { background: var(--jsal-sunk); }
 .fmt-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.set-btn .chev { transition: transform var(--jsal-quick); }
+.set-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
 .parts > button { min-width: 32px; }
-/* Format and Hide move as one, so they never split across two lines. The name's auto margin pushes them right on a
-   shared line; wrapped, they start at the name's left edge, their text level with it */
-.file-acts { display: flex; align-items: center; gap: var(--jsal-space-8); margin-left: calc(var(--jsal-space-8) * -1); }
+/* Settings and Hide move as one, so they never split across two lines. The name's auto margin pushes them right on a
+   shared line; wrapped, they start at the name's left edge */
+.file-acts { display: flex; align-items: center; gap: var(--jsal-space-8); }
 .file-pane .pane-title { max-width: 100%; margin-right: auto; white-space: nowrap; }
 .fmt { display: grid; gap: var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); background: var(--jsal-sunk); }
 .fmt .jsal-seg { background: var(--jsal-bg); }
@@ -184,11 +183,10 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .fold-bad { margin-top: var(--jsal-space-8); padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-bad-soft); color: var(--jsal-ink); font-weight: 600; }
 .fold-bad[hidden] { display: none; }
 @media (min-width: 1100px) {
-  /* The file's name stays whole: Format and Hide move under it when the pane is too narrow for both */
+  /* The file's name stays whole: Settings and Hide move under it when the pane is too narrow for both */
   .file-pane .pane-head { column-gap: var(--jsal-space-8); }
   .file-pane .pane-head > :not(.pane-title) { flex: none; }
   .file-pane .fmt-btn { padding: var(--jsal-space-4) var(--jsal-space-8); }
-  .file-pane .pane-head:has(#parts:not([hidden])) #fmtSummary { display: none; }   /* a split file's Part buttons need the room */
   .app.has-content .work.folded { grid-template-columns: minmax(0, 1fr) 104px; }
   .work.folded .file-pane > :not(.fold-tab) { display: none; }
   .work.folded .fold-tab { display: flex; }
@@ -237,5 +235,5 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
   .cell, .field, .fixes .jsal-btn.small, .overview .jsal-btn.small, .pane-foot .jsal-btn.link, .drop-links .jsal-btn.link, .head-add .jsal-btn.link { min-height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .drop, .fmt-btn svg { transition: none; }
+  .drop, .set-btn .chev { transition: none; }
 }

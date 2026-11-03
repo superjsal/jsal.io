@@ -1,4 +1,4 @@
-// Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
+// Redirect Import: the sheet, the file beside it and its Settings. The checks themselves are in core.js.
 import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=320e0bf5";
 import { FORMATS, byId } from "./formats.js?v=cc14f0fc";
 
@@ -31,8 +31,8 @@ function offDocs(f, head, docHead) {
   if (f.kind !== "csv" || !f.doc) return out;
   const sep = opts.sep, names = head === null ? [] : head.split(sep).map(unquote), doc = docHead.split(sep).map(unquote).join(sep);
   if (f.seps) {
-    if (!f.seps.includes(sep)) out.file.push(`${f.name} reads only commas, semicolons or pipes between columns, so with ${sepWord(sep)} it imports nothing. Change the separator under Format.`);
-  } else if (sep !== ",") out.file.push(`${f.name}’s help asks for commas between columns, so with ${sepWord(sep)} it may not import. Change the separator under Format.`);
+    if (!f.seps.includes(sep)) out.file.push(`${f.name} reads only commas, semicolons or pipes between columns, so with ${sepWord(sep)} it imports nothing. Change the separator under Settings.`);
+  } else if (sep !== ",") out.file.push(`${f.name}’s help asks for commas between columns, so with ${sepWord(sep)} it may not import. Change the separator under Settings.`);
   if (f.heads) {
     if (head !== null && !f.heads.every((ok, i) => ok.includes(names[i]?.trim().toLowerCase()))) {
       out.head = `${f.name} skips a header row only when it starts ${f.heads.map((ok) => ok[0]).join(sep)} or ${f.heads.map((ok) => ok[1]).join(sep)}, so this one would go in as a redirect. Change it, or remove it.`;
@@ -539,16 +539,16 @@ function renderFile() {
   showWhere();
   const warn = [fmt.caution,
     ...off.file,
-    fmt.needsDomain && !domain() && `${fmt.name} needs the store’s domain on every row: add it under Format.`,
+    fmt.needsDomain && !domain() && `${fmt.name} needs the store’s domain on every row: add it under Settings.`,
     fmt.max && result.ready.length > fmt.max && `${fmt.name} takes up to ${fmt.max.toLocaleString("en-GB")} redirects; this has ${result.ready.length.toLocaleString("en-GB")}. Vercel bulk redirects take more.`,
-    opts.newAddr === "url" && !result.site && "Add the new site’s address under Format to write full URLs."].filter(Boolean);
+    opts.newAddr === "url" && !result.site && "Add the new site’s address under Settings to write full URLs."].filter(Boolean);
   const info = [fmt.note, p.length > 1 && `${fmt.name} takes ${fmt.limit} redirects per import, so the file is in ${p.length} parts: import each in turn.`].filter(Boolean);
   $("fileWarn").hidden = !warn.length;
   $("fileWarn").textContent = warn.join(" ");
   $("fileInfo").hidden = !info.length;
   $("fileInfo").textContent = info.join(" ");
 
-  // Format: only the settings this platform has
+  // Settings: only the ones this platform has
   const csv = fmt.kind === "csv";
   $("optCode").hidden = !fmt.codes;
   $("codeSeg").querySelector('[data-code=""]').hidden = fmt.codes !== "optional";
@@ -561,7 +561,6 @@ function renderFile() {
   if (document.activeElement !== $("newSite")) { $("newSite").value = opts.newSite; $("newSite").placeholder = result.site || "https://www.example.com"; }
   $("optSep").hidden = !csv;
   if (document.activeElement !== $("sep")) $("sep").value = sepShown(opts.sep);
-  $("fmtSummary").textContent = [csv && sepName(opts.sep), opts.newAddr === "url" ? "full URLs" : "paths", (fmt.codes === "required" || (fmt.codes && opts.statusCol)) && opts.code].filter(Boolean).join(" · ");
   const d = defaults(fmt);
   $("resetFmt").hidden = Object.keys(d).every((k) => k === "name" || d[k] === opts[k]);
 
