@@ -1,5 +1,5 @@
 // Redirect Import: the sheet, the file beside it and its Settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=aa2c753e";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=b38cacdb";
 import { FORMATS, byId } from "./formats.js?v=87e00a24";
 
 const $ = (id) => document.getElementById(id);
@@ -450,7 +450,7 @@ function overview(live) {
     const kind = it.state === "bad" ? "bad" : it.state === "warn" ? "warn" : "";
     if (!kind) continue;
     for (const x of it.notes) if (x.kind === kind && x.group) {
-      const g = groups.get(x.group) || groups.set(x.group, { title: x.title, kind, fixes: x.fixes || [], ids: [] }).get(x.group);
+      const g = groups.get(x.group) || groups.set(x.group, { title: x.title, kind, fixes: x.fixes || [], leaveAll: x.leaveAll, ids: [] }).get(x.group);
       if (!g.ids.includes(r.id)) g.ids.push(r.id);
     }
   }
@@ -461,7 +461,8 @@ function overview(live) {
     (domainOnly ? `<p class="done">${plural(domainOnly, "row only changes", "rows only change")} the domain, so ${domainOnly === 1 ? "it’s" : "they’re"} left out: connecting the old domain to the new site redirects ${domainOnly === 1 ? "it" : "them"}. <button type="button" class="jsal-btn link" data-full>Put ${domainOnly === 1 ? "it" : "them"} in with full URLs</button></p>` : "") +
     repeats.map(([key, g]) =>
     `<p class="repeat ${g.kind}"><span class="count">${g.ids.length} rows</span> <span>${g.title}</span>${g.fixes.map(([label], i) =>
-      ` <button type="button" class="jsal-btn small" data-fixall="${esc(key)}|${i}">${esc(label)} in ${g.ids.length === 2 ? "both" : "all " + g.ids.length}</button>`).join("")}</p>`).join("");
+      ` <button type="button" class="jsal-btn small" data-fixall="${esc(key)}|${i}">${esc(label)} in ${g.ids.length === 2 ? "both" : "all " + g.ids.length}</button>`).join("")}${g.leaveAll
+      ? ` <button type="button" class="jsal-btn small" data-leaveall="${esc(key)}">Leave ${g.ids.length === 2 ? "both" : "all " + g.ids.length} out</button>` : ""}</p>`).join("");
   const box = $("overview");
   if (box.dataset.h !== html) { box.innerHTML = html; box.dataset.h = html; }
   box.hidden = !html;
@@ -470,6 +471,12 @@ function overview(live) {
 let overviewGroups = new Map();
 $("overview").addEventListener("click", (e) => {
   if (e.target.closest("[data-full]")) { opts.newAddr = "url"; update(); return; }
+  const out = e.target.closest("[data-leaveall]");
+  if (out) {
+    for (const id of overviewGroups.get(out.dataset.leaveall).ids) { rows.find((x) => x.id === id).skip = true; stay.add(id); }
+    update();
+    return;
+  }
   const b = e.target.closest("[data-fixall]");
   if (!b) return;
   const [key, i] = b.dataset.fixall.split("|");

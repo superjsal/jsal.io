@@ -14,8 +14,19 @@ export const tidy = (v) => String(v ?? "").replace(INVISIBLE, "").replace(/^[\s�
 const bare = (h) => h.toLowerCase().replace(/^www\./, "");
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+// A UTF-8 file opened as Windows-1252 (how Excel opens a CSV by default) shows é as Ã©: such a run is read back
+// as the bytes it was and decoded again
+const CP1252 = "€\u0081‚ƒ„…†‡ˆ‰Š‹Œ\u008DŽ\u008F\u0090‘’“”•–—˜™š›œ\u009DžŸ";
+const CONT = "\\u0080-\\u00BF€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ";
+const MOJIBAKE = new RegExp(`[\\u00C2-\\u00DF][${CONT}]|[\\u00E0-\\u00EF][${CONT}]{2}`, "g");
+const byteOf = (ch) => { const c = ch.charCodeAt(0), i = CP1252.indexOf(ch); return c >= 0x80 && c <= 0x9F ? c : i >= 0 ? 0x80 + i : c; };
+const unmangle = (s) => s.replace(MOJIBAKE, (m) => { try { return new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from([...m], byteOf)); } catch (e) { return m; } });
+
 // Characters that stop an address working, each with how it's shown and the one-click fix if there's an obvious one
 const CHECKS = [
+  { re: MOJIBAKE, say: () => "Garbled letters", fixes: [["Fix the letters", unmangle, true]] },
+  // A letter the file couldn't hold when it was saved; only the original says which it was
+  { re: /�/g, say: () => "A letter was lost when the file was saved. Copy the address again", fixes: [] },
   // Reports shorten long addresses for display (…/how-to-choose-a…), and copying the text copies the shortened one
   { re: /\u2026|\.{3,}/g, say: () => "Cut short. Copy the full address", fixes: [] },
   // No fix offered: only the original says whether the space was real (sent as %20) or crept in when copying
@@ -64,9 +75,10 @@ export function readAddress(raw) {
 function characters(path, which, keepLetters, refs) {
   const problems = [];
   const plain = refs ? path.replace(refs, "") : path;
+  const unmangled = plain.replace(MOJIBAKE, (m) => "x".repeat(m.length));
   CHECKS.forEach((c, i) => {
     c.re.lastIndex = 0;
-    if (c.re.test(plain)) problems.push({ text: `${c.say(which)}: <code>${marked(path, c.re)}</code>`, title: c.say(which), group: "char" + i, fixes: c.fixes });
+    if (c.re.test(c.re === MOJIBAKE ? plain : unmangled)) problems.push({ text: `${c.say(which)}: <code>${marked(path, c.re)}</code>`, title: c.say(which), group: "char" + i, fixes: c.fixes });
   });
   let encodedNote = "";
   if (keepLetters) return { problems, path, encodedNote };
@@ -86,6 +98,60 @@ function stripTracking(path) {
   const removed = kept.length !== path.slice(q + 1).split("&").filter(Boolean).length;
   return { path: path.slice(0, q) + (kept.length ? "?" + kept.join("&") : ""), removed };
 }
+
+// Audit exports and documents leave traps an address doesn't show at a glance. Punctuation copied with it from the
+// sentence around it (a bracket only when it has no opening one):
+function trailing(p) {
+  const a = p.split("#")[0];
+  if (/\.\.$/.test(a)) return "";   // cut short, said on its own
+  let end = a.length;
+  const open = (s, o, c) => s.split(o).length < s.split(c).length;
+  while (end > 1) {
+    const ch = a[end - 1], s = a.slice(0, end);
+    if (".,;:".includes(ch) || (ch === ")" && open(s, "(", ")")) || (ch === "]" && open(s, "[", "]"))) end--;
+    else break;
+  }
+  return /[a-z0-9]/i.test(a.slice(0, end).split("?")[0]) ? a.slice(end) : "";
+}
+// The fix works on the cell as typed, where the punctuation may sit before a tracking tag or a # part
+const dropTrailing = (s) => {
+  const v = tidy(s), h = v.indexOf("#"), a = h < 0 ? v : v.slice(0, h), f = h < 0 ? "" : v.slice(h);
+  let t = trailing(a);
+  if (t) return a.slice(0, -t.length) + f;
+  const q = a.indexOf("?");
+  t = q > 0 ? trailing(a.slice(0, q)) : "";
+  return t ? a.slice(0, q - t.length) + a.slice(q) + f : v;
+};
+// An address encoded twice (%2520 for a space), when decoding it once gives a sound address
+const TWICE = /%25(?=[0-9a-f]{2})/gi;
+const decodeOnce = (s) => s.replace(TWICE, "%");
+function encodedTwice(p) {
+  TWICE.lastIndex = 0;
+  if (!TWICE.test(p)) return false;
+  try { decodeURIComponent(decodeOnce(p)); return true; } catch (e) { return false; }
+}
+// A letter Excel can't store in a plain CSV is saved as ?: a ? inside a word, with no = after it
+function lostLetter(p) {
+  const q = p.indexOf("?");
+  if (q < 0) return false;
+  const after = p.slice(q + 1);
+  if (/[=&]/.test(after)) return false;
+  return /^[-_]/.test(after) || /[/?]/.test(after) || (/[a-z]$/i.test(p.slice(0, q)) && /^[a-z0-9]+[-_][a-z0-9]/i.test(after));
+}
+const dropQuery = (s) => s.replace(/\?[^#]*/, "");
+
+// Addresses a crawl or report lists beside the pages: files, feeds, sitemaps and the old site's system addresses.
+// They import, but are rarely meant for the new site's pages
+const NOT_PAGES = [
+  [/^\/(sitemap[\w-]*|[\w-]+-sitemap\d*)\.xml(\.gz)?$|^\/sitemaps?\/.*\.xml$/i, "sitemap", "A sitemap: the new site makes its own", "are sitemaps"],
+  [/^\/robots\.txt$/i, "robots", "robots.txt: the new site has its own", "are robots.txt"],
+  [/(^|\/)(feed|rss|atom)(\/|\.xml|\.rss)?$|\/feed\/(rss2?|atom)\/?$|[?&]feed=/i, "feed", "A feed: point it at the new site’s feed, if it has one", "are feeds"],
+  [/^\/(wp-admin|wp-includes|wp-json|wp-content\/(plugins|themes|cache))(\/|$)|^\/(wp-login|wp-cron|wp-signup|xmlrpc)\.php|\/trackback\/?$|[?&]replytocom=/i, "wordpress", "A WordPress system address, not a page", "are WordPress system addresses"],
+  [/^\/(cdn-cgi|cgi-bin|\.well-known)(\/|$)/i, "server", "A server address, not a page", "are server addresses"],
+];
+const FILE_EXT = /\.(jpe?g|png|gif|webp|avif|svg|ico|bmp|tiff?|heic|pdf|docx?|xlsx?|pptx?|csv|zip|mp3|mp4|m4a|mov|webm|wav|css|js|woff2?|ttf|otf|eot)$/i;
+// Pages whose ? part says which page it is (/index.php?id=5), so their variants are different pages
+const BY_QUERY = /\.(php|aspx?|cfm|jsp|cgi|pl)$/i;
 
 // Preview and staging addresses: a new site's mapping is often made on its preview before launch, and a redirect to
 // the preview sends visitors there once the site is live. "preview" is a platform's preview or a local computer (red);
@@ -149,7 +215,7 @@ export function analyse(rows, fmt, opts) {
   const looseDiff = (a, b) => ({ slash: trim(a) !== a ? (trim(b) !== b ? "" : "without") : (trim(b) !== b ? "with" : ""), caps: trim(a) !== trim(b) });
   const on = fmt.doc ? "on " + esc(fmt.name.replace(/ \(.*/, "")) : "on some platforms";
   const matches = fmt.doc ? esc(fmt.name.replace(/ \(.*/, "")) + " matches" : "some platforms match";
-  const live = [];
+  const live = [], olds = new Set();
 
   rows.forEach((r, i) => {
     const notes = [], it = { state: "ok", notes, n: r.n ?? i + 1, routine: [] };
@@ -185,11 +251,16 @@ export function analyse(rows, fmt, opts) {
     // Old address: always a path
     const t = stripTracking(fmt.unescape ? fmt.unescape(o.path) : o.path);
     const oc = characters(t.path, "old address", fmt.keepLetters);
+    olds.add(oc.path);
     for (const p of oc.problems) bad("o", p.text, p.fixes, p.group, p.title);
     inFile("o", oc.path, [o.host && { key: "domain" }, t.removed && { key: "tracking" }, o.fragment && { key: "hash" },
       oc.encodedNote && { text: oc.encodedNote }].filter(Boolean));
     const noSlash = (cell) => notes.push({ cell, kind: "warn", group: cell + ":noslash", title: "have no / at the start", text: "No / at the start: is this an address?" });
     if (o.added) noSlash("o");
+    const ends = (p, t) => `Punctuation at the end: <code>${esc(p.slice(0, p.length - t.length))}<mark>${esc(t)}</mark></code>`;
+    const twice = (p) => `Encoded twice: <code>${marked(p, TWICE)}</code>`;
+    const lost = (p) => `A ? inside a word, as Excel saves a letter it can’t store: <code>${marked(p, /\?/g)}</code>`;
+    const warn = (cell, group, title, text, fixes = []) => notes.push({ cell, kind: "warn", group: cell + ":" + group, title, text, fixes });
 
     // New address: a path on this site, or the full URL when it's another site (or the visitor asked for full URLs)
     const nc = characters(n.path, "new address", fmt.keepLetters, fmt.refs);
@@ -210,6 +281,17 @@ export function analyse(rows, fmt, opts) {
     }
     if (PREVIEW_QUERY.test(n.path)) bad("n", "Preview link", [["Remove the preview part", dropPreview, true]], "preview-link", "Preview links");
     if (n.added) noSlash("n");
+    // An old address can be a real one with the mistake in it (a 404 from a link that took the full stop with it), so
+    // it's marked to check, and not at all when the row sends it to the address without the mistake
+    const ot = trailing(oc.path);
+    if (ot && nc.path !== oc.path.slice(0, -ot.length)) warn("o", "trail", "end in punctuation", ends(oc.path, ot), [["Remove it", dropTrailing, true]]);
+    if (encodedTwice(oc.path) && nc.path !== decodeOnce(oc.path)) warn("o", "twice", "are encoded twice", twice(oc.path), [["Decode it once", decodeOnce, true]]);
+    if (lostLetter(oc.path)) warn("o", "lost", "may have lost a letter", lost(oc.path));
+    // A new address with these sends visitors to a page that isn't there
+    const nt = trailing(n.path);
+    if (nt) bad("n", ends(n.path, nt), [["Remove it", dropTrailing, true]], "trail", "end in punctuation");
+    if (encodedTwice(n.path)) bad("n", twice(n.path), [["Decode it once", decodeOnce, true]], "twice", "are encoded twice");
+    if (lostLetter(n.path)) warn("n", "lost", "may have lost a letter", lost(n.path));
     if (it.state === "bad") return;
 
     // With full URLs, old.com/page to new.com/page is a real redirect; as paths it would point to itself
@@ -309,6 +391,35 @@ export function analyse(rows, fmt, opts) {
     for (const p of problems) {
       if (p.warn) l.it.notes.push({ cell: p.cell, kind: "warn", text: p.text });   // said, but the row still goes in
       else l.bad(p.cell, p.text, p.fixes || [], "rule-" + p.id, p.title || p.text, "Leave it out");
+    }
+  }
+
+  // Files, feeds and system addresses sent to a page, said on rows the platform hasn't already refused. leaveAll: the
+  // line above the sheet offers to leave them all out, as a crawl can list dozens
+  const going = ready.map((r) => live.find((x) => x.id === r.id)).filter((l) => l.it.state !== "bad");
+  for (const l of going) {
+    const p = l.from.split("?")[0], to = l.to.split(/[?#]/)[0];
+    const kind = NOT_PAGES.find(([re]) => re.test(p) || re.test(l.from));
+    if (kind && !kind[0].test(to.replace(/^https?:\/\/[^/]+/i, ""))) {
+      l.it.notes.push({ cell: "o", kind: "warn", group: "o:notpage:" + kind[1], title: kind[3], text: kind[2], leave: "Leave it out", leaveAll: true });
+    } else if (FILE_EXT.test(p) && !FILE_EXT.test(to)) {
+      l.it.notes.push({ cell: "o", kind: "warn", group: "o:notpage:file", title: "are files, not pages", text: `A ${esc(p.match(FILE_EXT)[0].toLowerCase())} file, not a page`, leave: "Leave it out", leaveAll: true });
+    }
+  }
+  // One page listed with several ? parts (?page=2, ?sort=price), all sent to one place, without the page itself: most
+  // likely one redirect, which removing the ? parts makes (the repeats are then left out as the same as the first)
+  const variants = new Map();
+  for (const l of going) {
+    const [p, q] = l.from.split("?");
+    if (q === undefined || p === "/" || BY_QUERY.test(p) || olds.has(p)) continue;
+    (variants.get(p) || variants.set(p, []).get(p)).push(l);
+  }
+  for (const [p, g] of variants) {
+    if (g.length < 2 || new Set(g.map((l) => l.to)).size > 1) continue;
+    for (const l of g) {
+      const others = g.filter((x) => x !== l), who = rowList(others).replace(/^r/, "R");
+      l.it.notes.push({ cell: "o", kind: "warn", group: "o:variants", title: "are one page with different ? parts", fixes: [["Remove the ? part", dropQuery, true]],
+        text: `${who} ${others.length > 1 ? "have" : "has"} this page with another ? part, and <code>${esc(p)}</code> itself isn’t in the sheet` });
     }
   }
 

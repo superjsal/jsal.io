@@ -29,6 +29,19 @@ paths:
   - Vercel: `statusCode` (permanent: true means 308), 2,048 in vercel.json; bulk redirects CSV (`source,destination,statusCode`) on Pro and Enterprise. Neither matches ?.
   - Netlify: case-sensitive, URL-encoded paths, no ? in the old path. Ghost: `301:` group of `old: new`, keys read as patterns.
 - **Copy-paste traps from audits and reports** (`core.js`): addresses cut short with … (red), new addresses on a platform's preview domain or localhost (red, "Use the path"; Wix also drops its site-name folder), preview links like ?preview_theme_id (red), netlify.app / vercel.app / github.io and staging-style subdomains (terracotta), addresses with no letters or numbers (terracotta). A preview domain that is most of the sheet's full URLs is taken as the new site and removed as routine ("Done for you"), but never used to write full URLs.
+- **Audit-export traps** (`core.js`, 3 Nov): what a crawl, Search Console export or document copies in with the
+  addresses. In a new address they're red, as visitors would land on nothing; in an old one terracotta, as a real
+  404 can carry them (a link that took the full stop with it), and no note at all when the row sends it to the address
+  without the mistake. Punctuation at the end (`. , ; :`, and `)` `]` only without an opening one; "Remove it");
+  encoded twice (`%2520`, only where decoding once gives a sound address; "Decode it once"). Garbled letters (`Ã©`, a
+  UTF-8 file opened as Windows-1252) are red with "Fix the letters", which decodes them again; the other character
+  checks look past a garbled run, as it holds curly quotes and dashes of its own. A lost letter (U+FFFD, shown as �) is red with
+  no fix; a ? inside a word with no = after it (`/caf?-menu`, Excel's plain CSV) is terracotta. Files, feeds,
+  sitemaps, robots.txt and WordPress or server system addresses sent to a page are terracotta with Leave it out, said
+  only on rows the platform hasn't refused (Squarespace's own file rule stays), and the line above the sheet offers
+  "Leave all N out" (`leaveAll`). One page listed with two or more ? parts, all to one new address, without the page
+  itself in the sheet, is terracotta with "Remove the ? part": done on all, the repeats become "Same as row N". Not
+  for `/` or `.php`-style pages, whose ? part says which page it is, nor where the platform already refuses the ?.
 - **Rules worth keeping:** old addresses are always paths; a new address keeps its domain unless the domain is the site's own (in the old column, or used by at least two rows and half the new full URLs). Same path on a new domain is "only the domain changes" unless Format is set to full URLs. `slashSame` only decides whether chains and domain-only rows are followed through a last / and capitals.
 - **A / or capital is the visitor's call** (John, 2 Nov): few platforms document how they match the last / or capitals, so
   addresses that differ only there are terracotta, never merged: two old addresses ("Row 10 has it without the last /. May be one page on Shopify") and a row whose new address

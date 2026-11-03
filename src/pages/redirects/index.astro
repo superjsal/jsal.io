@@ -170,6 +170,14 @@ import { v, importmap } from "../../lib/v.mjs";
     </ol>
 
     <details>
+      <summary><h3>Getting a clean sheet</h3></summary>
+      <ul>
+        <li>Search Console exports at most 1,000 addresses for each issue in its Pages report, so on a bigger site add the old sitemap or a crawl to its list of pages not found.</li>
+        <li>From Excel, save as CSV UTF-8. A plain CSV saves letters outside your computer’s language settings as ?, and a UTF-8 CSV opened with a double-click shows é as Ã©.</li>
+      </ul>
+    </details>
+
+    <details>
       <summary><h3>What it fixes for you</h3></summary>
       <ul>
         <li>Removes the domain from old addresses, and from new ones on your own site (addresses on other sites keep theirs).</li>
@@ -186,6 +194,8 @@ import { v, importmap } from "../../lib/v.mjs";
         <li>Addresses cut short with …, as reports show long ones (copying the text copies the shortened address).</li>
         <li>New addresses on a preview or staging site (myshopify.com, webflow.io, wixsite.com, a staging subdomain, localhost and others), which would send visitors there once the site is live.</li>
         <li>Spaces, Word’s long dashes and curly quotes, hidden tabs and line breaks, a stray %, and characters an address can’t hold (&lt; &gt; " {"{"} {"}"} | \ ^ `).</li>
+        <li>What audits and crawls copy in with the addresses: a full stop or bracket from the sentence around one, an address encoded twice (%2520 for a space), and letters garbled (é as Ã©) or saved as ?.</li>
+        <li>Files, feeds, sitemaps and WordPress system addresses (/wp-admin, /wp-json) sent to a page, and one page listed several times with different ? parts (?page=2, ?sort=price) but never on its own.</li>
         <li>A missing old or new address.</li>
         <li>The same old address sent to two different places (you pick which row to keep), and loops.</li>
         <li>Addresses that differ only by the last / or capitals (/about-us/ and /About-us), which some platforms treat as one. They go in the file, marked to test after importing, except where a row would loop.</li>
