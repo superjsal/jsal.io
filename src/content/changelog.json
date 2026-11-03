@@ -1,4 +1,5 @@
 [
+  {"date": "2026-11-03", "tag": "Redirect Import", "text": "HubSpot files now say how each redirect treats the ? part and the last /, so a row that would loop there is marked."},
   {"date": "2026-11-03", "tag": "Redirect Import", "text": "Catches what audit exports copy in: a full stop on the end, addresses encoded twice, garbled letters, files, feeds and sitemaps."},
   {"date": "2026-11-03", "tag": "Site", "text": "The [changelog](/changelog/) can show one part of the site at a time, and each view has its own link to share."},
   {"date": "2026-11-03", "tag": "Site", "text": "Cautions and errors now differ by shape as well as colour (a dashed ring or a solid dot), so they stay clear with colour blindness."},

@@ -18,7 +18,7 @@ paths:
 - **Reading the sheet:** routine changes (domains, tracking tags, # parts, a missing /) are said once above the sheet ("Done for you"); rows carry notes only for unusual changes, problems and warnings. A problem on two or more rows gets a fix-all button there. Filters are Ready / Needs you / Left out; rows worked on stay visible under a filter until it's picked again.
 - **Formats** (`js/formats.js`) were checked on 1 November 2026 against each platform's help page and sample file:
   - Shopify: sample file `Redirect from,Redirect to` (help.shopify.com sample-redirect-template.csv). Reserved starts `/apps /application /cart /carts /orders /services /shop /a /community /tools` and the exact list pages `/products /collections /collections/all` (and /vendors, /types) can't be redirected; `/products/<handle>` can. ? "might not work as expected" (a warning, not a block). Only broken (404) addresses redirect.
-  - HubSpot: its sample `sample-redirect-import.csv` starts `original url,redirect to,redirect type,redirect style,…`; the tool writes the first four (STANDARD, 301/302). 500 per import, 140 characters, one bad row fails the import.
+  - HubSpot: its sample `sample-redirect-import.csv` (rechecked 3 Nov) is `original url,redirect to,redirect type,redirect style,priority,match query strings,ignore trailing slash,ignore protocol,disable if page exists,note`; the tool writes the first four (STANDARD, 301/302) plus `match query strings` (TRUE only where the old address has a ?, as HubSpot otherwise ignores the ? part, so `/page?id=1` and `/page?id=2` would be one address) and `ignore trailing slash` (TRUE, HubSpot's default, so `/page/` still redirects). With the last / ignored, a row that only adds or drops it loops (`slashLoop`). The note says to tick "Overwrite existing redirects with same original URL" to change redirects already there. 500 per import, 140 characters, one bad row fails the import.
   - Duda: its template is `Old Page URL,Destination Page URL, Redirect Type`. Any % gives a 400 error, so accented letters stay as typed (`keepLetters`); no ? and no .php in old addresses; 200 per file.
   - BigCommerce: template `Domain,Old Path,Manual URL/Path,Dynamic Target Type,Dynamic Target ID`, with the store's domain in Domain (Format's Store domain).
   - Webflow: two columns, no header row documented (`headerOff`); old paths escape `% - & * ( ) = _ + ?` with %, and a / before ? stops a redirect firing. Still unverified: whether a header row is accepted (its help names no columns; a site's own Export would settle it). Webflow's import replaces every redirect on the site, so the team loads Webflow's export, adds rows and imports the whole file back: old paths already escaped (`/spring%-sale`, from that export) are read back plainly (`unescape`), so duplicates and chains match across exported and new rows, and escaped once on the way out; its wildcard `(.*)` is never escaped and `%1`–`%9` in a new address aren't a stray % (`refs`). Not checked: how Webflow wants an accented letter in an old path (the file writes `%%C3%%A9`).
@@ -47,7 +47,8 @@ paths:
   addresses that differ only there are terracotta, never merged: two old addresses ("Row 10 has it without the last /. May be one page on Shopify") and a row whose new address
   differs only there ("Only capitals differ from the old address…"); the note names what differs (John, 2 Nov), each with Leave it out. Exact
   duplicates stay red. Red too where it's known to loop (`slashLoop`): Netlify, whose docs say it matches with or
-  without the last / (checked 2 Nov), and Apache and Ghost, as the tool writes their patterns with `/?$`. Nginx's
+  without the last / (checked 2 Nov), HubSpot, as the file sets `ignore trailing slash` (3 Nov), and Apache and Ghost,
+  as the tool writes their patterns with `/?$`. Nginx's
   `location =` is exact (`exact`), so it gets none of these. Vercel bulk's docs say its matching ignores capitals by
   default (`caseSensitive: false`); not used yet.
 - **Off the docs is always said** (John, 2 Nov): a file that strays from the platform's help page gets a terracotta
@@ -61,7 +62,12 @@ paths:
   as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
   platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
   (`fixedName`), as those platforms find the file by its name.
-- **Tests:** none in the repo yet. The scratch tests covered 43 tricky addresses, each platform's documented rules, a hand-built .xlsx, a Windows-1252 semicolon CSV, Wix's 500 per import and 5,000 rows for speed. Re-run something like them after changing `core.js` or `formats.js`.
+- **Tests:** `.github/scripts/redirects.test.mjs` (3 Nov; 183 checks) runs the real `core.js` and `formats.js` on tricky
+  addresses, pasted text, junk and cut-short addresses, preview sites, each platform's documented rules and file, the
+  audit-export traps, chains, duplicates and capitals. `check.py` (so `check.ps1`) and Site checks run it on every push
+  to `main` and `staging`; a failure prints FAIL lines. When a result should change, agree it first, then update the
+  expectation. Browser flows (paste, filters, folding, 5,000 rows for speed) are still scratch tests in
+  `private\redirect-import\tests\`, run by hand against port 8766.
 - **Analytics:** `redirect_file` (platform, redirects, action) on Copy and Download; never the addresses.
 - **A partial file is always said:** while rows need you, Copy and Download read "Copy 4 of 10" / "Download 4 of 10" and
   the file pane opens with "6 rows need fixing before they go in the file. Fix them" (Needs you filter, first row
