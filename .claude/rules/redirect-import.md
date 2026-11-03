@@ -28,7 +28,8 @@ paths:
   header row where it shows none (Webflow), or header names unlike the help's (`offDocs()` in `main.js`; Wix's help
   names no columns, `anyHead`). Header cautions sit under the header row, with a terracotta edge on it, as the box above
   the file was easy to miss while typing there. Where the importer's code was read (Redirection: `seps`, `heads`) the
-  caution says what will happen instead of "may not import".
+  caution says what will happen instead of "may not import". Download stays allowed while one shows (John's call): on a
+  platform known only from its help page, "may not import" is a guess, not a known failure.
 - **Tests:** none in the repo yet. The scratch tests covered 43 tricky addresses, each platform's documented rules, a hand-built .xlsx, a Windows-1252 semicolon CSV, Wix's 500 per import and 5,000 rows for speed. Re-run something like them after changing `core.js` or `formats.js`.
 - **Analytics:** `redirect_file` (platform, redirects, action) on Copy and Download; never the addresses.
 - **A partial file is always said:** while rows need you, Copy and Download read "Copy 4 of 10" / "Download 4 of 10" and
