@@ -1,3 +1,18 @@
 # Response headers for the host. The workers.dev address serves the same files as jsal.io, so it stays out of search.
 https://jsal-io.still-cell-826b.workers.dev/*
   X-Robots-Tag: noindex
+
+# Pages keep the default (checked on every visit), so a change shows at once.
+# Stylesheets and scripts are always linked with ?v= and their content hash, so a browser keeps each copy for a year.
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fonts never change under the same name; without this every page waited on them and drew its text twice.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Pictures, some without a hash: a day, then refreshed in the background.
+/img/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
