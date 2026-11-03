@@ -122,9 +122,10 @@ and the docs describe the new setup.
 
 ## Before shipping (done on the branch)
 
-- **The GitHub Pages fallback is retired on the branch:** `deploy-pages.yml`, `site\CNAME` and the nightly Action's
-  "Deploy Pages (fallback)" step are gone, as the fallback serves `site\`, which no longer has pages. It takes effect
-  when the move ships, so ship on or after 2026-11-09 (the date set for retiring it), unless John retires it sooner.
+- **The GitHub Pages fallback lives on until 2026-11-09:** John chose to ship the move sooner and keep the fallback
+  for its full week, so `deploy-pages.yml` now builds with Astro, as Cloudflare does, and publishes `dist\` (with
+  `site\CNAME` copied in). Retire it on or after 2026-11-09 as planned: delete the workflow, `site\CNAME` and the
+  nightly Action's "Deploy Pages (fallback)" step; John unpublishes Pages in the settings.
 - **IndexNow on push** builds the site before and after a push (`indexnow-on-push.yml`) and sends every page whose built
   HTML differs (`indexnow.py built`), so layout, data and changelog changes count without a list of paths.
 - **The checks stay:** they now test the built pages, so the top bar, early script and `?v=` rules hold by
@@ -142,6 +143,6 @@ and the docs describe the new setup.
    should look the same, so perhaps only quicker updates are worth saying, or nothing).
 3. Delete `.github\build\astro-move\` and this file; `.github\docs\how-it-works.md` describes the new setup.
 4. Run every check, merge `astro` into `staging`, push, check the staging preview, then John's "ship it" pushes `main`.
-5. **John:** in GitHub → Settings → Pages, unpublish the site (Source: none), once jsal.io serves the Astro build.
+5. On or after 2026-11-09: retire the fallback (above).
 6. Watch the first nightly publish after shipping: it should commit `data.json` and the dates file only, and its
    IndexNow step should name the pages whose dates moved.
