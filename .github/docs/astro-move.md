@@ -14,7 +14,9 @@ and the docs describe the new setup.
 - **Step 2, done:** the security policy, the checks and the layout, with Privacy as the first page moved.
   - `.github\build\csp.mjs` (an Astro integration) writes the policy into `dist\_headers` at the end of every build,
     from the built pages; `site\_headers` keeps only the empty `csp:start`/`csp:end` markers. `csp.py` is gone, and
-    the bump no longer touches `_headers`. Its first run wrote the same 13 hashes as `csp.py` had.
+    the bump no longer touches `_headers`. Its first run wrote the same 13 hashes as `csp.py` had. Merging staging
+    conflicts in `site\_headers` whenever staging changed an inline script: keep the branch's empty markers
+    (`git checkout --ours site/_headers`); the build writes the new hashes.
   - `check.py` builds first and checks `dist\` (so pages from `src\` and files from `site\` are checked alike);
     `browser-check.mjs`, `check.ps1` and the "Site checks" Action use the build too, served on port 8766 (the
     `jsal-build` preview). The root `package.json` lost `"type": "module"`, which had broken the quiz's CommonJS
