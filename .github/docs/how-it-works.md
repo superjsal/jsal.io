@@ -21,12 +21,13 @@ flowchart TB
     data["cms-picker/data.json<br>answers, profiles, sources"]
     logos["cms-picker/logos/uploaded/"]
     dates["src/data/cms-picker-dates.json<br>each page's date, moved on only<br>when the data it shows changed"]
-    smap["sitemap.xml<br>(lastmod from those dates)"]
     checkd["check_data.py<br>fits cms-picker.schema.json;<br>no source, stale, unverified"]
   end
   picker --> pub
   app_data --> pub
-  pub --> checkd --> data & logos & dates & smap
+  pub --> checkd --> data & logos & dates
+  smap["sitemap.xml, written by the build<br>lastmod from those dates and<br>each page's newest changelog line"]
+  dates -.-> smap
 
   subgraph PAGE["/cms-picker/ in the browser"]
     appjs["app.js + score.js<br>quiz, cards, table"]

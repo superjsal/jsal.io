@@ -6,7 +6,7 @@
 #  - structured data (JSON-LD) parses
 #  - no unused CSS classes, keyframes or variables
 #  - branding: no standalone "JSAL"; the WoW art keeps its credit
-#  - every sitemap address exists
+#  - every sitemap address exists (the build writes the sitemap from its pages)
 # It builds the site first (npm run build, which also writes the content security policy and stops on a changelog
 # entry the collection's schema rejects) and checks the build in dist\: the pages from src\pages\ and the files
 # copied from site\. A problem in a built page is reported by its served path (privacy/index.html). The layout writes

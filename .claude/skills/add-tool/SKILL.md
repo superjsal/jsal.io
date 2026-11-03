@@ -9,7 +9,7 @@ description: Checklist for adding a new tool or page to jsal.io (layout, top bar
 - `<TopBar class="app-header">` with its title in the `title` slot: its icon before its name (`.jsal-title-ico`, the same address as its tab icon) and its About link in the default slot.
 - The `APPS` menu in `nav.js`.
 - A bento tile on the home page, in its own tint, with a real-looking piece of the tool and its icon as a watermark (the home page's design rules, `.claude\rules\home-page.md`).
-- `sitemap.xml` and `llms.txt` in `site\`.
+- A line for it in `src\pages\llms.txt.js`. The sitemap needs nothing: the build lists every page that isn't noindex, dated by its newest changelog line.
 - The checks find a new page on their own (`check.py` and `browser-check.mjs` walk the build in `dist\` for `index.html`); add its main flow to `browser-check.mjs` if it has one worth testing at phone width.
 - `TOOLS` in `nav.js` if it should count toward Explorer, plus a `window.jsalUsed?.()` call at its first real action (First steps and Explorer unlock on use, not on opening the page). Its own achievements go under its tool in `GROUP` on `/play/`.
 - A share image (add it to `.github\build\og\og.html` and `make-og.ps1`).
@@ -17,4 +17,4 @@ description: Checklist for adding a new tool or page to jsal.io (layout, top bar
 - GA4 events, if any, in `.claude\rules\analytics.md` and on `/privacy/`; a `.claude\rules\<tool>.md` for what a later session must know before changing it.
 - Built and shown on `staging`; it goes live when John says ship it.
 
-A new non-tool page uses the same layout (its own `<style is:inline slot="head">`, `<TopBar />` inside its `.wrap`, as `src\pages\privacy\index.astro` does) and, if indexable, a line in `sitemap.xml`.
+A new non-tool page uses the same layout (its own `<style is:inline slot="head">`, `<TopBar />` inside its `.wrap`, as `src\pages\privacy\index.astro` does); the build adds it to the sitemap unless it's noindex.

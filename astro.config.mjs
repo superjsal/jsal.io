@@ -2,6 +2,7 @@
 // file in site/ (the apps' CSS and JS, images, fonts, data) copied as it is.
 import { defineConfig } from "astro/config";
 import csp from "./.github/build/csp.mjs";
+import sitemap from "./src/lib/sitemap.mjs";
 
 export default defineConfig({
   site: "https://jsal.io",
@@ -12,6 +13,7 @@ export default defineConfig({
   trailingSlash: "ignore",
   // Pages keep their markup as written: no whitespace folding, so a built page reads like its source
   compressHTML: false,
-  // The content security policy in dist/_headers, written from the built pages once they're all written
-  integrations: [csp()],
+  // Written from the built pages once they're all written: the content security policy in dist/_headers, and
+  // dist/sitemap.xml
+  integrations: [csp(), sitemap()],
 });

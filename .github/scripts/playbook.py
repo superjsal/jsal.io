@@ -13,7 +13,7 @@
 #                  labels and the platform order from cms-picker.json next to this file), any logos admins
 #                  uploaded, then each page's date (the build makes the pages from data.json). Nightly by GitHub Action.
 #   publish --from-backup <file>   → the same, from a backup file (no key needed)
-#   dates        → moves on the date of each CMS Picker page whose data changed, and the sitemap (no key needed)
+#   dates        → moves on the date of each CMS Picker page whose data changed (no key needed)
 #
 # Small fixes don't need this: sign in on jsal.io/ic as an admin and use Edit (the CMS Picker's answers,
 # profiles, logos and "on the CMS Picker" switches are on the admin-only CMS Picker tab;
@@ -327,11 +327,11 @@ def write_logos(public, uploads):
     return paths
 
 
-# ── The CMS Picker's pages: their dates and the sitemap ──
+# ── The CMS Picker's pages: their dates ──
 # The build makes the CMS Picker page's plain-HTML copy and one page per platform from data.json
 # (src/lib/cms-picker.mjs). What it can't know is when each page last changed, so the publish keeps that in
-# src/data/cms-picker-dates.json: a page's date moves on only when the data it shows changed, and the
-# sitemap's lastmod follows. The nightly commit of that file is also what tells IndexNow which pages changed.
+# src/data/cms-picker-dates.json: a page's date moves on only when the data it shows changed, and the build's
+# sitemap takes its lastmod from it. The nightly commit of that file is also what tells IndexNow which pages changed.
 DATES = SITE.parent / 'src' / 'data' / 'cms-picker-dates.json'
 
 
@@ -352,10 +352,6 @@ def page_inputs(d):
 def page_dates():
     d = json.loads(PUBLIC.read_text(encoding='utf-8'))
     old = json.loads(DATES.read_text(encoding='utf-8')) if DATES.exists() else {}
-    sm_p = SITE / 'sitemap.xml'
-    sm = sm_p.read_text(encoding='utf-8')
-    lastmod = {(pid or 'cms-picker'): lm for pid, lm in
-               re.findall(r'<loc>https://jsal\.io/cms-picker/(?:([a-z0-9-]+)/)?</loc><lastmod>([\d-]+)</lastmod>', sm)}
     today = datetime.date.today().isoformat()
     new, changed = {}, []
     for page, inputs in page_inputs(d).items():
@@ -364,20 +360,12 @@ def page_dates():
         if was and was['hash'] == h:
             new[page] = was
             continue
-        # A page this file hasn't seen yet keeps the sitemap's date if it has one (a new platform has none)
-        new[page] = {'date': today if was else lastmod.get(page, today), 'hash': h}
+        new[page] = {'date': today, 'hash': h}
         changed.append(page)
     removed = [p for p in old if p not in new]   # platforms taken off the CMS Picker: the build drops their pages
     if new != old:
         DATES.parent.mkdir(exist_ok=True)
         DATES.write_text(json.dumps(new, indent=2) + '\n', encoding='utf-8')
-    # sitemap.xml: the CMS Picker's date, then one line per platform page straight after it
-    sm = re.sub(r'(<loc>https://jsal\.io/cms-picker/</loc><lastmod>)[\d-]+', rf'\g<1>{new["cms-picker"]["date"]}', sm)
-    sm = re.sub(r'[ \t]*<url><loc>https://jsal\.io/cms-picker/[a-z0-9-]+/</loc>.*?</url>\n', '', sm)
-    lines = ''.join(f'  <url><loc>https://jsal.io/cms-picker/{pid}/</loc><lastmod>{v["date"]}</lastmod></url>\n'
-                    for pid, v in new.items() if pid != 'cms-picker')
-    sm = re.sub(r'([ \t]*<url><loc>https://jsal\.io/cms-picker/</loc>.*?</url>\n)', lambda m: m.group(1) + lines, sm, count=1)
-    sm_p.write_text(sm, encoding='utf-8')
     print(f'page dates: {len(new)} pages, ' + (f'changed: {", ".join(changed)}' if changed else 'none changed')
           + (f'; removed: {", ".join(removed)}' if removed else ''))
 

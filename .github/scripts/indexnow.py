@@ -16,7 +16,21 @@ HOST = 'jsal.io'
 
 
 def sitemap():
-    return re.findall(r'<loc>(https://jsal\.io/[^<]*)</loc>', (SITE / 'sitemap.xml').read_text(encoding='utf-8'))
+    """Every address in the sitemap, which the build writes: from a build here if there is one, else from the live
+    site (the publish and the push Action run this once their build is live)."""
+    built = SITE.parent / 'dist' / 'sitemap.xml'
+    if built.exists():
+        text = built.read_text(encoding='utf-8')
+    else:
+        # Named, as Cloudflare turns away Python's default user agent; no sitemap means nothing is sent
+        req = urllib.request.Request(f'https://{HOST}/sitemap.xml', headers={'User-Agent': 'jsal.io IndexNow script'})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                text = r.read().decode('utf-8')
+        except (urllib.error.URLError, TimeoutError) as e:
+            print(f'IndexNow: couldn\'t read https://{HOST}/sitemap.xml ({e}), so nothing can be checked against it')
+            return []
+    return re.findall(r'<loc>(https://jsal\.io/[^<]*)</loc>', text)
 
 
 DATES = 'src/data/cms-picker-dates.json'   # each CMS Picker page's date, moved on by the publish when its data changes
