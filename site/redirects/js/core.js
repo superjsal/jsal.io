@@ -144,6 +144,9 @@ export function analyse(rows, fmt, opts) {
   // that differ only there are marked to test, never merged; key follows the platform's setting for chains
   const loose = (p) => (p.length > 1 ? p.replace(/\/$/, "") : p).toLowerCase();
   const key = (p) => fmt.slashSame ? loose(p) : p;
+  // How b differs from a when they match loosely, so the note names it: "the last /", "capitals" or both
+  const trim = (p) => (p.length > 1 ? p.replace(/\/$/, "") : p);
+  const looseDiff = (a, b) => ({ slash: trim(a) !== a ? (trim(b) !== b ? "" : "without") : (trim(b) !== b ? "with" : ""), caps: trim(a) !== trim(b) });
   const on = fmt.doc ? "on " + esc(fmt.name.replace(/ \(.*/, "")) : "on some platforms";
   const live = [];
 
@@ -217,9 +220,12 @@ export function analyse(rows, fmt, opts) {
       if (fmt.slashLoop && oc.path.replace(/\/$/, "") === nc.path.replace(/\/$/, "")) {
         return bad("n", `Only the last / differs, and ${on} both are one address, so this would loop`, [], "slashloop", "would loop: only the last / differs", "Leave it out");
       }
-      if (!fmt.exact && loose(oc.path) === loose(nc.path)) notes.push({ cell: "n", kind: "warn", group: "n:slashcase", leave: "Leave it out",
-        title: "differ from their old address only by a / or capital",
-        text: `Only a / or capital differs from the old address, which may be the same page ${on}. Test after import` });
+      if (!fmt.exact && loose(oc.path) === loose(nc.path)) {
+        const d = looseDiff(oc.path, nc.path);
+        notes.push({ cell: "n", kind: "warn", group: "n:slashcase", leave: "Leave it out",
+          title: "differ from their old address only by a / or capital",
+          text: `Only ${d.caps && d.slash ? "capitals and the last / differ" : d.caps ? "capitals differ" : "the last / differs"} from the old address, which may be the same page ${on}. Test after import` });
+      }
     }
     live.push({ id: r.id, raw: r.new, it, from: oc.path, to, own: !external, internal: !external && !(domainOnly && opts.newAddr === "url"), fix, bad, out });
   });
@@ -245,8 +251,14 @@ export function analyse(rows, fmt, opts) {
   for (const l of kept) (alike.get(loose(l.from)) || alike.set(loose(l.from), []).get(loose(l.from))).push(l);
   for (const g of alike.values()) {
     if (g.length < 2 || fmt.exact) continue;
-    for (const l of g) l.it.notes.push({ cell: "o", kind: "warn", group: "o:alike", leave: "Leave this one out", title: "may share an address with another row",
-      text: `May be the same address as ${rowList(g.filter((x) => x !== l))} ${on}: only a / or capital differs. Test after import` });
+    for (const l of g) {
+      const others = g.filter((x) => x !== l), ds = others.map((x) => looseDiff(l.from, x.from));
+      const d = ds.every((x) => x.slash === ds[0].slash && x.caps === ds[0].caps) ? ds[0] : null;
+      const how = d ? [d.caps && "with different capitals", d.slash && `${d.slash} the last /`].filter(Boolean).join(" and ") : "with a different / or capitals";
+      const who = rowList(others).replace(/^r/, "R");
+      l.it.notes.push({ cell: "o", kind: "warn", group: "o:alike", leave: "Leave this one out", title: "may share an address with another row",
+        text: `${who} ${others.length > 1 ? "have" : "has"} it ${how}. May be the same page ${on}. Test after import` });
+    }
   }
 
   // Chains (A → B, then B → C) go in the file as typed, so the visitor stays in charge of their redirects; both rows

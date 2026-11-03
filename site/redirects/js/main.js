@@ -1,5 +1,5 @@
 // Redirect Import: the sheet, the file beside it and its Settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=79c82227";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=d59f15ae";
 import { FORMATS, byId } from "./formats.js?v=40d4556b";
 
 const $ = (id) => document.getElementById(id);

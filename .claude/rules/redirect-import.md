@@ -24,8 +24,8 @@ paths:
 - **Copy-paste traps from audits and reports** (`core.js`): addresses cut short with … (red), new addresses on a platform's preview domain or localhost (red, "Use the path"; Wix also drops its site-name folder), preview links like ?preview_theme_id (red), netlify.app / vercel.app / github.io and staging-style subdomains (terracotta), addresses with no letters or numbers (terracotta). A preview domain that is most of the sheet's full URLs is taken as the new site and removed as routine ("Done for you"), but never used to write full URLs.
 - **Rules worth keeping:** old addresses are always paths; a new address keeps its domain unless the domain is the site's own (in the old column, or used by at least two rows and half the new full URLs). Same path on a new domain is "only the domain changes" unless Format is set to full URLs. `slashSame` only decides whether chains and domain-only rows are followed through a last / and capitals.
 - **A / or capital is the visitor's call** (John, 2 Nov): few platforms document how they match the last / or capitals, so
-  addresses that differ only there are terracotta, never merged: two old addresses ("May be the same address as row 10
-  on Shopify") and a row whose new address differs only there ("may be the same page"), each with Leave it out. Exact
+  addresses that differ only there are terracotta, never merged: two old addresses ("Row 10 has it without the last /. May be the same page on Shopify") and a row whose new address
+  differs only there ("Only capitals differ from the old address…"); the note names what differs (John, 2 Nov), each with Leave it out. Exact
   duplicates stay red. Red too where it's known to loop (`slashLoop`): Netlify, whose docs say it matches with or
   without the last / (checked 2 Nov), and Apache and Ghost, as the tool writes their patterns with `/?$`. Nginx's
   `location =` is exact (`exact`), so it gets none of these. Vercel bulk's docs say its matching ignores capitals by
