@@ -418,7 +418,7 @@ function update() {
   $("summary").innerHTML = `<b>${count.ready} ready</b>` + (count.check ? ` · ${count.check} to check` : "") + (count.bad ? ` · ${count.bad} need you` : "") + (count.out ? ` · ${count.out} left out` : "");
   // The row count is on the All filter, so this says only where the rows came from; a long file name is cut short, never
   // the note after it
-  const meta = `<span class="meta-name" title="${esc(table.name)}">${esc(table.name)}</span>` + (table.pick.header ? `<span>${table.name ? " · " : ""}headings skipped</span>` : "");
+  const meta = `<span class="meta-name" title="${esc(table.name)}">${esc(table.name)}</span>` + (table.pick.header ? `<span>${table.name ? " · " : ""}headings skipped</span>` : "");   // a plain space would be dropped at the start of the span
   if ($("sheetMeta").dataset.h !== meta) { $("sheetMeta").innerHTML = meta; $("sheetMeta").dataset.h = meta; }
   $("undoAll").hidden = !rows.some((r) => r.added || r.deleted || r.old !== r.old0 || r.new !== r.new0);
   renderFile();
