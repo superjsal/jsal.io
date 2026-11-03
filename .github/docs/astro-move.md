@@ -39,10 +39,22 @@ and the docs describe the new setup.
   markup and in Edge at both widths and themes; the full browser checks pass in Edge and WebKit.
   - The Changelog page stays in `site\` until just before shipping: Updates reads it there, and staging keeps
     adding to it. Move it last, as a straight move like Privacy (the entries can stay HTML).
+- **Step 5, done:** Clean Paste, the Image Resizer, Redirect Import and Off the clock moved
+  (`src\pages\formatter\`, `image-resizer\`, `redirects\`, `play\`). A tool's stylesheet, import map and module script
+  go in the head slot with every `?v=` worked out as it builds (`v("styles.css", "/formatter/")`, and
+  `importmap()` in `src\lib\v.mjs`; vendor files keep their own `?v=`), its title in TopBar's `title` slot and the
+  bar's `app-header` class as a prop. The modules themselves stay in `site\`, where the bump still versions their
+  imports of each other. Each page is the same as staging in markup and in Edge at both widths and themes; axe and the
+  full browser checks pass in Edge and WebKit, and every inline script (the new import maps too) is in the policy.
+  - **The CMS Picker waits for the platform pages (step 5 below):** the publish writes a plain-HTML copy of the
+    data into `site\cms-picker\index.html` every night, so the page and the platform pages move together, once
+    the build reads `data.json` itself.
 - **Merging staging into `astro`:** a change on staging to a page that has moved comes in as a modify/delete
   conflict. Port the change into the page's `.astro` file by hand, then `git rm` the old file. On staging,
   `updates.py` rewrites `site\index.html` whenever a `data-short` line is added: that one needs no porting (the
-  build makes Updates itself), so just `git rm site/index.html`.
+  build makes Updates itself), so just `git rm site/index.html`. The same goes for a change on staging that only
+  moves a moved page's `?v=` numbers (a bump after editing a tool's CSS or JS): the build works them out, so take the
+  `site\` side of the CSS or JS and `git rm` the page.
 - Still on `site\`: `playbook.py`, the nightly Action and `versions.py` (which only sees `site\`; moved pages use
   `v()` instead).
 
@@ -61,8 +73,9 @@ and the docs describe the new setup.
    markup against staging's; it lists the differences it allows) and `node .github\build\astro-move\pagediff.mjs
    /<page>/` (every element's box, colour and font against staging's, both themes, two widths). Anything either
    reports is a bug. Then axe through `browser-check.mjs --axe`.
-4. Order, simplest first: Privacy, 404, the design system and the home page (done); the four tools and Off the
-   clock; the Playbook (`/ic/`), as it has its own login flow; the Changelog last, just before shipping.
+4. Order, simplest first: Privacy, 404, the design system, the home page, three tools and Off the clock (done); the
+   CMS Picker with its platform pages (5); the Playbook (`/ic/`), as it has its own login flow; the Changelog last,
+   just before shipping.
 5. **Platform pages:** one `src\pages\cms-picker\[platform].astro` reading `site\cms-picker\data.json` at build time
    replaces the 14 files `playbook.py` writes from `.github\scripts\platform-page.html`. Then `playbook.py` only
    writes data, and the nightly publish's commit triggers a rebuild.

@@ -11,6 +11,12 @@
 #    and the layout adds one where a page had none)
 #  - tags the layout adds on purpose (ADDED): every share card states its image's size (all are 1200 by 628), every
 #    page has the home-screen icon, and the layout's note on the shell.css link
+#  - the tools' notes on lines the layout now writes for them (DROPPED), charset in capitals, and the line breaks
+#    inside an inline script (the tools wrote the theme script over five lines, the layout on one)
+DROPPED = {'<!-- Apply the saved light/dark choice (shared by all jsal.io apps) before first paint -->',
+           '<!-- Each ?v= is that file\'s content hash, so browsers fetch fresh files after an update -->',
+           '<!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app\'s modules have loaded -->',
+           '<!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app\'s own scripts have run -->'}
 import pathlib, re, subprocess, sys
 from collections import Counter
 
@@ -24,7 +30,8 @@ ADDED = {'<meta property="og:image:width" content="1200">', '<meta property="og:
 def norm(s):
     s = re.sub(rf'<({SVG})\b([^<>]*?)\s*/>', r'<\1\2></\1>', s)
     s = re.sub(r'\s*/>', '>', s)
-    s = s.replace('initial-scale=1.0', 'initial-scale=1')
+    s = s.replace('initial-scale=1.0', 'initial-scale=1').replace('charset="UTF-8"', 'charset="utf-8"')
+    s = re.sub(r'(<script\b[^>]*>)\s+|\s+(</script>)', r'\1\2', s)
     s = re.sub(r'\?v=[\w.-]+(?=")', '', s)
     return re.sub(r'\s+', ' ', s).strip()
 
@@ -46,7 +53,7 @@ def compare(rel):
     # The markers a script once wrote the home page's Updates between; the build makes the list itself now
     old = re.sub(r'<!-- updates:(?:start.*?|end) -->', '', old, flags=re.S)
     (oh, ob), (nh, nb) = split(old), split(new)
-    out = [f'only in staging\'s head: {t[:200]}' for t in (oh - nh)] + [f'only in the build\'s head: {t[:200]}' for t in (nh - oh) if t not in ADDED]
+    out = [f'only in staging\'s head: {t[:200]}' for t in (oh - nh) if t not in DROPPED] +[f'only in the build\'s head: {t[:200]}' for t in (nh - oh) if t not in ADDED]
     if ob != nb:
         i = next((i for i, (a, b) in enumerate(zip(ob, nb)) if a != b), min(len(ob), len(nb)))
         out.append(f'body differs at character {i}:\n    staging: {ob[max(0, i - 80):i + 160]}\n    build:   {nb[max(0, i - 80):i + 160]}')
