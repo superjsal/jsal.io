@@ -5,7 +5,8 @@
 // as typed, for a platform that rejects any %. caution: what could go wrong on import, and note: worth knowing,
 // both said above the file. A file that strays from the help page (another separator, header row or names) gets a
 // caution. seps: the only separators the importer reads, where its code says so. heads: the names it accepts for each
-// of the first columns, where it skips only a header row that uses them. anyHead: the help names no columns. A rule
+// of the first columns, where it skips only a header row that uses them. anyHead: the help names no columns. fixedName: the
+// platform reads the file by its name, so it can't be renamed. A rule
 // with warn: true is said under the cell
 // without keeping the row out of the file.
 
@@ -120,12 +121,12 @@ export const FORMATS = [
     doc: "https://yoast.com/help/import-redirects/",
     cols: () => [FROM("Origin"), TO("Target"), CODE("Type"), col("Format", () => "plain")], codes: "required", slashSame: true },
 
-  { id: "netlify", name: "Netlify (_redirects)", group: "Hosting and servers", kind: "lines", file: "_redirects",
+  { id: "netlify", name: "Netlify (_redirects)", group: "Hosting and servers", kind: "lines", file: "_redirects", fixedName: true,
     note: "Netlify matches capitals exactly: /About and /about are different addresses.",
     doc: "https://docs.netlify.com/routing/redirects/",
     line: (r) => `${r.from}  ${r.to}  ${r.code}`, codes: "required",
     rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "_redirects can’t match the ? part" }] },
-  { id: "vercel", name: "Vercel (vercel.json)", group: "Hosting and servers", kind: "file", file: "vercel.json", max: 2048,
+  { id: "vercel", name: "Vercel (vercel.json)", group: "Hosting and servers", kind: "file", file: "vercel.json", fixedName: true, max: 2048,
     doc: "https://vercel.com/docs/routing/redirects/configuration-redirects",
     codes: "required",
     rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Vercel ignores the ? part" }],

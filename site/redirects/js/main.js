@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
 import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=320e0bf5";
-import { FORMATS, byId } from "./formats.js?v=df5e3ad4";
+import { FORMATS, byId } from "./formats.js?v=d8fa96d8";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -18,7 +18,7 @@ const stay = new Set();
 let fmt = byId(store.get("jsal-redirects-platform") || "shopify"), opts = defaults(fmt);
 
 function defaults(f) {
-  return { code: "301", newAddr: "path", newSite: "", headerOn: f.kind === "csv" && !f.headerOff, sep: ",", header: null, statusCol: f.codes === "required" };
+  return { code: "301", newAddr: "path", newSite: "", headerOn: f.kind === "csv" && !f.headerOff, sep: ",", header: null, statusCol: f.codes === "required", name: null };
 }
 const sepName = (s) => ({ ",": "Comma", ";": "Semicolon", "\t": "Tab", "|": "Pipe" })[s] || `“${s}”`;
 const sepShown = (s) => s.replace(/\t/g, "\\t");
@@ -479,8 +479,18 @@ function parts() {
   if (!fmt.limit || all.length <= fmt.limit) return [all];
   return Array.from({ length: Math.ceil(all.length / fmt.limit) }, (_, i) => all.slice(i * fmt.limit, (i + 1) * fmt.limit));
 }
+// The visitor can rename the file but not its extension; a platform that reads its file by name keeps that name
+const fileExt = () => fmt.file.match(/\.[^.]*$/)?.[0] || "";
+const fileBase = () => (!fmt.fixedName && opts.name) || fmt.file.slice(0, fmt.file.length - fileExt().length);
+const fileEnd = (i, total) => (total > 1 ? `-part-${i + 1}` : "") + fileExt();
 function fileName(i, total) {
-  return total > 1 ? fmt.file.replace(/(\.[^.]*)?$/, (ext) => `-part-${i + 1}${ext}`) : fmt.file;
+  return fileBase() + fileEnd(i, total);
+}
+// Characters no file name can hold are dropped, and so is the extension if it's typed too
+function cleanName(v) {
+  const s = v.replace(/[\\/:*?"<>|\x00-\x1F]/g, "").trim();
+  const ext = fileExt();
+  return (ext && s.toLowerCase().endsWith(ext) ? s.slice(0, -ext.length) : s).trim() || null;
 }
 // The site's domain without https://, for a platform that wants it on every row
 const domain = () => (opts.newSite || result.site || "").trim().replace(/^https?:\/\//i, "").replace(/\/.*$/, "");
@@ -498,7 +508,13 @@ function showWhere() {
 function renderFile() {
   const { w, p, head } = fileText();
   part = Math.min(part, p.length - 1);
-  $("fileName").textContent = $("fileName").title = fileName(part, p.length);   // the title shows it in full when it's cut short
+  $("fileName").title = fileName(part, p.length);   // the title shows it in full when it's cut short
+  const nameIn = $("nameIn");
+  nameIn.hidden = !!fmt.fixedName;
+  if (document.activeElement !== nameIn) nameIn.value = fileBase();
+  nameIn.style.width = `calc(${Math.max(4, nameIn.value.length)}ch + 12px)`;   // mono type, so it fits the name exactly
+  $("nameEnd").textContent = fmt.fixedName ? fileName(part, p.length) : fileEnd(part, p.length);
+  keep();
   $("parts").hidden = p.length < 2;
   if (p.length > 1) {
     $("parts").innerHTML = p.map((_, i) => `<button type="button" data-part="${i}" aria-pressed="${i === part}" aria-label="Part ${i + 1} of ${p.length}">${i + 1}</button>`).join("");
@@ -546,7 +562,7 @@ function renderFile() {
   if (document.activeElement !== $("sep")) $("sep").value = sepShown(opts.sep);
   $("fmtSummary").textContent = [csv && sepName(opts.sep), opts.newAddr === "url" ? "full URLs" : "paths", (fmt.codes === "required" || (fmt.codes && opts.statusCol)) && opts.code].filter(Boolean).join(" · ");
   const d = defaults(fmt);
-  $("resetFmt").hidden = Object.keys(d).every((k) => d[k] === opts[k]);
+  $("resetFmt").hidden = Object.keys(d).every((k) => k === "name" || d[k] === opts[k]);
 
   // Squarespace's lines are pasted, so Copy is the main action there
   $("copyBtn").classList.toggle("primary", !!fmt.paste);
@@ -585,7 +601,11 @@ $("fmtBtn").addEventListener("click", () => {
   $("fmt").hidden = !open;
   $("fmtBtn").setAttribute("aria-expanded", open);
 });
-$("resetFmt").addEventListener("click", () => { opts = defaults(fmt); update(); });
+$("resetFmt").addEventListener("click", () => { opts = { ...defaults(fmt), name: opts.name }; update(); });
+$("nameIn").addEventListener("input", (e) => { opts.name = cleanName(e.target.value); renderFile(); });
+// Leaving the box shows the name the file will have (the default again if it was emptied); Enter leaves it
+$("nameIn").addEventListener("blur", (e) => { e.target.value = fileBase(); renderFile(); });
+$("nameIn").addEventListener("keydown", (e) => { if (e.key === "Enter") e.target.blur(); });
 $("codeSeg").addEventListener("click", (e) => {
   const b = e.target.closest("button");
   if (!b) return;

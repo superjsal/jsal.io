@@ -30,6 +30,10 @@ paths:
   the file was easy to miss while typing there. Where the importer's code was read (Redirection: `seps`, `heads`) the
   caution says what will happen instead of "may not import". Download stays allowed while one shows (John's call): on a
   platform known only from its help page, "may not import" is a guess, not a known failure.
+- **The file can be renamed** in place (the name in the file pane is a box, like the header row); the extension stays
+  as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
+  platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
+  (`fixedName`), as those platforms find the file by its name.
 - **Tests:** none in the repo yet. The scratch tests covered 43 tricky addresses, each platform's documented rules, a hand-built .xlsx, a Windows-1252 semicolon CSV, Wix's 500 per import and 5,000 rows for speed. Re-run something like them after changing `core.js` or `formats.js`.
 - **Analytics:** `redirect_file` (platform, redirects, action) on Copy and Download; never the addresses.
 - **A partial file is always said:** while rows need you, Copy and Download read "Copy 4 of 10" / "Download 4 of 10" and

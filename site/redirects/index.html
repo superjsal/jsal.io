@@ -67,20 +67,20 @@
   <link rel="preload" href="/fonts/lora-italic.woff2" as="font" type="font/woff2" crossorigin />
   <!-- Each ?v= is that file's content hash, so browsers fetch fresh files after an update -->
   <link rel="stylesheet" href="/shell.css?v=dee1ef84">
-  <link rel="stylesheet" href="styles.css?v=25b74c6a" />
+  <link rel="stylesheet" href="styles.css?v=050a3a68" />
   <script type="importmap">
     {
       "imports": {
-        "./js/main.js":    "./js/main.js?v=caa07b34",
+        "./js/main.js":    "./js/main.js?v=97416982",
         "./js/core.js":    "./js/core.js?v=320e0bf5",
-        "./js/formats.js": "./js/formats.js?v=df5e3ad4",
+        "./js/formats.js": "./js/formats.js?v=d8fa96d8",
         "./js/xlsx.js":    "./js/xlsx.js?v=8b577352"
       }
     }
   </script>
   <!-- jsal.io app switcher (shared by all the apps); first, so the logo menu works before the app's modules have loaded -->
   <script src="/nav.js?v=8e6a6b80" defer></script>
-  <script type="module" src="js/main.js?v=caa07b34"></script>
+  <script type="module" src="js/main.js?v=97416982"></script>
 </head>
 <body>
   <main class="app" id="app">
@@ -168,7 +168,7 @@
       <!-- The file as it will be downloaded; the header row is editable, and Format holds the rest -->
       <section class="pane file-pane" id="filePane" aria-labelledby="fileName" data-needs-content>
         <div class="pane-head">
-          <h2 class="pane-title mono" id="fileName"></h2>
+          <h2 class="pane-title mono file-name" id="fileName"><input class="name-in" id="nameIn" spellcheck="false" autocomplete="off" aria-label="File name" title="Rename the file"><span class="name-end" id="nameEnd"></span></h2>
           <div class="jsal-seg parts" id="parts" aria-label="Part" hidden></div>
           <button type="button" class="fmt-btn" id="fmtBtn" aria-expanded="false" aria-controls="fmt"><span id="fmtSummary"></span> <b>Format</b><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
           <button type="button" class="fmt-btn fold-btn" id="foldBtn" aria-label="Hide file">Hide<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
