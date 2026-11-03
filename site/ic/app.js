@@ -49,6 +49,16 @@ const unmd = (t) => String(t)
   .replace(/\*\*(?=\S)(.+?)\*\*/g, '$1')
   .replace(/(^|[^*\w])\*(?=\S)(.+?)\*(?!\w)/g, '$1$2')
   .replace(/~~(?=\S)(.+?)~~/g, '$1');
+// A note as plain text (copied, searched, in a tooltip): a team edit's is Markdown, built-in text is HTML.
+const noteText = (note, fromEdit) => (fromEdit ? unmd(note || '') : plain(note || ''));
+// Built-in text is HTML with only these tags. Any other "<" (a folder path's "<theme>", "a < b") is escaped as the
+// content loads, so it shows as written instead of hiding the words after it; "&lt;" and the code samples stay as they are.
+const STRAY_LT = /<(?!\/?(?:b|i|em|strong|code|a|br|p|ul|ol|li|span|kbd|small)(?=[\s/>])[^<>]*>)/gi;
+const proseSafe = (x, key) => (key === 'code' ? x
+  : typeof x === 'string' ? x.replace(STRAY_LT, '&lt;')
+  : Array.isArray(x) ? x.map((v) => proseSafe(v))
+  : x && typeof x === 'object' ? Object.fromEntries(Object.entries(x).map(([k, v]) => [k, proseSafe(v, k)]))
+  : x);
 // Built-in text is HTML; in the edit boxes it's shown as the same Markdown so formatting survives an edit.
 const htmlToMd = (h) => plain(String(h).replace(/<code>(.*?)<\/code>/g, '`$1`').replace(/<b>(.*?)<\/b>/g, '**$1**').replace(/<i>(.*?)<\/i>/g, '*$1*'));
 
@@ -62,6 +72,9 @@ const NOTES = new Map();   // platform id → its watch-out note (platform_notes
 let canEditAnswers = false;
 const editKey = (pid, sec, id) => `${pid}~${sec}~${id}`;
 const ownEdit = (p, sec, id) => EDITS.get(editKey(p.id, sec, id));
+
+// Whether an answer's shown note is a team edit's (Markdown) rather than built-in text: a page-builder choice is built in
+const noteFromEdit = (p, sec, id) => (ownAnswer(p, sec, id) || !variantCell(p, sec, id)) && !!sourceEdit(p, sec, id);
 
 // Page types: the Content section key for a platform ("content" when it has no page-type answers),
 // and the built-in page-type entry for an item, if any.
@@ -322,7 +335,7 @@ function searchEntries(p) {
   const words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
   const secs = state.sec === 'tech' ? ['tech', contentSec(p)] : [contentSec(p), 'tech'];
   return entriesFor(p, secs).filter((e) => {
-    const hay = plain(`${e.it.label} ${e.it.hint || ''} ${e.cell[1]} ${unmd(e.cell[3] || '')}`).toLowerCase();
+    const hay = `${plain(`${e.it.label} ${e.it.hint || ''} ${e.cell[1]}`)} ${noteText(e.cell[3], e.edit)}`.toLowerCase();
     return words.every((w) => hay.includes(w));
   });
 }
@@ -407,7 +420,7 @@ function renderGrid() {
   const body = itemsFor(sec).map((it) => `<tr><th scope="row">${it.label}</th>${P.map((p) => {
       const s = sec === 'content' ? contentSec(p) : sec;
       const [verdict, , scope, note] = cellFor(p, s, it.id);
-      const tip = esc(`${p.name} · ${plain(it.label)}: ${VERDICT[verdict]} (${SCOPE[scope]}). ${plain(unmd(note))}`);
+      const tip = esc(`${p.name} · ${plain(it.label)}: ${VERDICT[verdict]} (${SCOPE[scope]}). ${noteText(note, noteFromEdit(p, s, it.id))}`);
       return `<td><span class="v ${verdict}" title="${tip}" tabindex="0">${VERDICT[verdict]}${SCOPE_SHORT[scope] ? `<span class="sc">· ${SCOPE_SHORT[scope]}</span>` : ''}</span></td>`;
     }).join('')}</tr>`).join('');
   $('#grid').innerHTML = head + `<tbody>${body}</tbody>`;
@@ -517,10 +530,10 @@ $('#panel').addEventListener('click', (e) => {
   const one = e.target.closest('[data-copy]');
   if (one) {
     const [sec, id] = one.dataset.copy.split(':');
-    return copy(unmd(cellFor(p, sec, id)[3]), one.closest('.card').querySelector('.note'));
+    return copy(noteText(cellFor(p, sec, id)[3], noteFromEdit(p, sec, id)), one.closest('.card').querySelector('.note'));
   }
   if (e.target.id === 'copy-all') {
-    const text = visibleEntries(p).map((x) => `${plain(x.it.label)} — ${answerOf(x.cell[1], x.cell[0])}${x.cell[3] ? `: ${unmd(x.cell[3])}` : ''}`).join('\n');
+    const text = visibleEntries(p).map((x) => `${plain(x.it.label)} — ${answerOf(x.cell[1], x.cell[0])}${x.cell[3] ? `: ${noteText(x.cell[3], x.edit)}` : ''}`).join('\n');
     const v = VARIANTS[p.id] && state.sec !== 'tech' && state.variant[p.id];
     const t = state.sec === 'content' && contentSec(p) !== 'content' ? ` · ${PTYPES[state.ptype]}` : '';
     copy(`${p.name} — ${SEC_LABEL[state.sec]}${t}${v ? ` (${v})` : ''}\n${text}`, e.target.closest('.panel-head'));
@@ -586,7 +599,7 @@ function pkAnswerWaiting(p, r, id) {
   const pa = ((PK.pub.answers || {})[p.id] || {})[id];
   if (!pa) return true;
   const [v, m, s] = pkAnswer(r, id), src = pkSource(r, id);
-  return v !== pa.verdict || plain(m) !== pa.mark || s !== pa.scope || ((src && src.url) || '') !== (pa.sourceUrl || '') || ((src && src.where) || '') !== (pa.where || '');
+  return v !== pa.verdict || m !== pa.mark || s !== pa.scope || ((src && src.url) || '') !== (pa.sourceUrl || '') || ((src && src.where) || '') !== (pa.where || '');
 }
 const pkProfileWaiting = (p, r) => pkPublic(p) && stable(r.profile || {}) !== stable((pubPlatform(p.id) || {}).profile || {});
 const pkSwitchWaiting = (p) => pkPublic(p) !== !!pubPlatform(p.id);
@@ -615,8 +628,8 @@ function pbTwin(id) {
 function twinFromPlaybook(p, id) {   // the Playbook's answer for a CMS Picker row, if the topic is shared
   const t = pbTwin(id);
   if (!t) return null;
-  const c = cellFor(p, t.view === 'tech' ? 'tech' : contentSec(p), id);   // content: the page type on show, as in the Playbook
-  return c ? { verdict: c[0], scope: c[2], text: unmd(c[3] || '').trim() } : null;
+  const sec = t.view === 'tech' ? 'tech' : contentSec(p), c = cellFor(p, sec, id);   // content: the page type on show, as in the Playbook
+  return c ? { verdict: c[0], scope: c[2], text: noteText(c[3], noteFromEdit(p, sec, id)).trim() } : null;
 }
 function twinFromPicker(p, id) {   // the CMS Picker's answer for a Playbook row, if it has the topic
   if (!PK.items.some((x) => x.id === id) || !PK.rows.has(p.id)) return null;
@@ -1642,6 +1655,7 @@ function applyShared(x) {
 }
 async function loadShared() { applyShared(await fetchShared()); lastLoad = Date.now(); }
 function useContent(d) {
+  d = proseSafe(d);
   ({ ITEMS, CONTENT_ITEMS, VERDICT, SCOPE, P, CONTENT, VARIANTS, HOW, WARN, H1_FIX, PTYPES, BY_TYPE, GUIDES, HOW_GUIDES } = d);
   DATA_AT = d.AT || null;
   // Alphabetical, so a platform is quick to find; Headless CMS last, as it's a category, not a product

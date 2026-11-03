@@ -41,8 +41,8 @@
     --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
     --jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
     --jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
-    --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0956a; --jsal-warn-soft: #34231b;
-    --jsal-bad: #ff8c96; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+    --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #d9773f; --jsal-warn-soft: #34231b;
+    --jsal-bad: #ffb3bb; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
     --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill);
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
     --jsal-mark-edge: #6b7180; --jsal-tool-edge: #6b7180;   /* a dark tile's edge, 3:1 on every dark surface */
@@ -55,8 +55,8 @@
     --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
     --jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
     --jsal-fill: #e3b04b; --jsal-on-fill: #16130c;
-    --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #f0956a; --jsal-warn-soft: #34231b;
-    --jsal-bad: #ff8c96; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
+    --jsal-ok: #7fbf7a; --jsal-ok-soft: #1c2a1d; --jsal-warn: #d9773f; --jsal-warn-soft: #34231b;
+    --jsal-bad: #ffb3bb; --jsal-bad-soft: #3a1b22; --jsal-info: #8fb1ff; --jsal-info-soft: #1d2540;
     --jsal-gold-line: var(--jsal-accent); --jsal-fill-edge: var(--jsal-fill);
     --jsal-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
     --jsal-mark-edge: #6b7180; --jsal-tool-edge: #6b7180;   /* a dark tile's edge, 3:1 on every dark surface */

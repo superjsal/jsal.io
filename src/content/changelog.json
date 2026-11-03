@@ -1,5 +1,6 @@
 [
   {"date": "2026-11-03", "tag": "Redirect Import", "text": "Catches what audit exports copy in: a full stop on the end, addresses encoded twice, garbled letters, files, feeds and sitemaps."},
+  {"date": "2026-11-03", "tag": "Site", "text": "Cautions and errors now differ by shape as well as colour (a dashed ring or a solid dot), so they stay clear with colour blindness."},
   {"date": "2026-11-03", "tag": "Redirect Import", "text": "No platform is picked for you: until you choose one, the file is a plain CSV, which also covers platforms not on the list."},
   {"date": "2026-11-03", "tag": "Redirect Import", "text": "Small fixes: Webflow’s own redirect export loads back in, wildcards included, the notes under each row say only what that row needs, and phones get a Paste button and a way to send the page to a computer."},
   {"date": "2026-11-02", "tag": "Site", "text": "jsal.io now runs on Cloudflare instead of GitHub Pages: the same pages at the same addresses, quicker to open, and [Privacy](/privacy/) says so."},

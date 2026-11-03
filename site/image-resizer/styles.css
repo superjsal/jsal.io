@@ -501,7 +501,7 @@ body {
 /* Under the preview, in place of the crop hint, when the image is smaller than the output size */
 .upscale-note { display: flex; align-items: center; gap: var(--jsal-space-8); margin: 0; padding: var(--jsal-pad-note); border: 1px solid var(--jsal-warn); border-radius: var(--jsal-radius); background: var(--jsal-warn-soft); color: var(--jsal-ink); font-size: 13px; line-height: 1.45; }
 .upscale-note b { color: var(--jsal-warn); }
-.upscale-ico { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--jsal-warn); color: var(--jsal-bg); font-weight: 700; font-size: 13px; }
+.upscale-ico { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 2px dashed var(--jsal-warn); color: var(--jsal-warn); font-weight: 700; font-size: 13px; }   /* a caution is an outline, never a solid disc */
 
 /* Remove button: shows on hover and on keyboard focus */
 .card-remove {

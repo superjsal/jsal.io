@@ -98,6 +98,12 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   note, something in flight such as "waiting for publish") and links inside a tool's content (Clean Paste's
   editor, the Playbook's "How to" and sources); neutral for everything else (labels, type badges, icons, cost
   bands, states such as "not verified" or "unclear"). The team Playbook follows the same roles.
+- **A caution and an error differ by shape, not only colour.** Terracotta, red, gold and green all sit on the
+  red-green axis that colour-blind visitors lose (in light mode a deuteranope sees terracotta, red and gold text as
+  one colour). So an error's mark is filled (a solid red disc with the "!", a solid red count pill, `.jsal-error`)
+  and a caution's is an outline (a dashed terracotta ring with the "?", a dashed pill), and each keeps its words.
+  In dark mode the two are also split by lightness: a deeper terracotta and a pale red. A label sitting on a
+  picture (the Image Resizer's "upscaled" tag) keeps its fill to stay readable, and words say what it is.
 - **Check:** `check.py` fails on written-out colours, selected states without the `--jsal-selected-*` tokens,
   gold on hover, button corners off the scale and odd font weights. A deliberate exception carries a
   `/* style: allow (reason) */` comment on that line; never add one just to make the check pass.
