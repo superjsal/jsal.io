@@ -1,46 +1,14 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy | jsal.io</title>
-<meta name="description" content="What jsal.io collects: your files stay in your browser; Google Analytics only with consent in Europe. Cookies, retention and how to change your choice.">
-<link rel="canonical" href="https://jsal.io/privacy/">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://jsal.io/privacy/">
-<meta property="og:site_name" content="jsal.io">
-<meta property="og:title" content="Privacy | jsal.io">
-<meta property="og:description" content="Your files never leave your browser. Basic Google Analytics usage stats, only with your consent in Europe.">
-<meta property="og:image" content="https://jsal.io/og/home.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.svg?v=26e56056" type="image/svg+xml">
-<!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet; the first page of a visit folds the logo into its mark before the first paint, for /nav.js to unfold -->
-<script data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});try{if(!sessionStorage.getItem("jsal-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){var h=document.documentElement;h.classList.add("jsal-intro");setTimeout(function(){h.classList.remove("jsal-intro")},4e3);}}catch(e){}</script>
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
-<!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
-     only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  // Consent Mode v2: analytics stays off in the EU, EEA, UK and Switzerland until the visitor allows it
-  // (the card from /nav.js); ads storage is never used. A choice saved earlier applies straight away.
-  gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'] });
-  gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
-  try { var jc = localStorage.getItem('jsal-analytics'); if (jc === 'granted' || jc === 'denied') gtag('consent', 'update', { analytics_storage: jc }); } catch (e) {}
-  gtag('js', new Date());
-  gtag('config', 'G-Z0BSTC9TT9');
-</script>
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/lora.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/lora-italic.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
-<script>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
-<!-- Colours and top bar: shared styles in /shell.css -->
-<link rel="stylesheet" href="/shell.css?v=3a5bd920">
-<style>
+---
+import Page from "../../layouts/Page.astro";
+import TopBar from "../../components/TopBar.astro";
+---
+<Page
+  title="Privacy | jsal.io"
+  description="What jsal.io collects: your files stay in your browser; Google Analytics only with consent in Europe. Cookies, retention and how to change your choice."
+  path="/privacy/"
+  ogDescription="Your files never leave your browser. Basic Google Analytics usage stats, only with your consent in Europe."
+>
+<style is:inline slot="head">
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 var(--jsal-gutter) var(--jsal-page-end); }
@@ -59,15 +27,8 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
 .policy a { color: var(--jsal-accent); text-underline-offset: 2px; }
 .policy code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 </style>
-</head>
-<body>
 <div class="wrap">
-  <header class="jsal-top">
-    <a class="jsal-brand" href="/" data-jsal-nav><span class="jsal-name"><span class="jsal-j">j<svg class="jsal-j-draw" viewBox="0 -30 900 1080" aria-hidden="true"><path class="jsal-j-line" d="M585.5 277.5V780A100 100 0 0 1 435.5 866.6" stroke-width="147"/><path class="jsal-j-fold" d="M585.5 452V638A167.6 167.6 0 0 1 250.3 638" stroke-width="149"/><circle class="jsal-j-dot" cx="586" cy="57.5" r="77"/></svg></span><span class="jsal-sal">sal</span><span class="jsal-stop">.</span><span class="jsal-io">io</span></span><span class="jsal-caret"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></a>
-    <div class="jsal-actions">
-      <button type="button" class="jsal-theme" data-jsal-theme aria-label="Switch theme"><svg class="i-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg><svg class="i-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
-    </div>
-  </header>
+  <TopBar />
   <main class="policy">
     <p class="code">Privacy · updated 2 November 2026</p>
     <h1>Your <em>privacy</em></h1>
@@ -103,6 +64,4 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     <p><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Email <a href="mailto:dev@jsal.io">dev@jsal.io</a>. Made by <a href="/">John Salvador</a>.</p>
   </main>
 </div>
-<script src="/nav.js?v=8f0d84a2" defer></script>
-</body>
-</html>
+</Page>

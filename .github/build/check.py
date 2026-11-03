@@ -8,14 +8,24 @@
 #  - branding: no standalone "JSAL"; the WoW art keeps its credit
 #  - every sitemap address exists
 #  - Updates on the home page is what .github/scripts/updates.py would write from the changelog
-#  - the content security policy in site/_headers lists the hash of every inline script (csp.py)
-import json, pathlib, re, sys
+# It builds the site first (npm run build, which also writes the content security policy) and checks the build in
+# dist\, so pages made from src\ and files copied from site\ are checked alike; a problem in a built page is reported
+# by its served path (privacy/index.html), whose source is src\pages\ or site\.
+import json, pathlib, re, shutil, subprocess, sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]   # .github\build\check.py -> the project folder
-SITE = ROOT / 'site'                                   # what jsal.io serves
+SITE = ROOT / 'dist'                                   # what jsal.io serves: the build
 BUILD = ROOT / '.github' / 'build'                      # this folder: scripts, node_modules and the share-image templates, not site content
-# Every page in site\: each folder's index.html and the 404 page, found the same way as browser-check.mjs, so a new page
-# is checked without a list to keep
+
+npm = shutil.which('npm')
+if not npm or not (ROOT / 'node_modules' / 'astro').is_dir():
+    sys.exit('The checks build the site first: run npm ci in the project folder once, then try again.')
+run = subprocess.run([npm, 'run', 'build'], cwd=ROOT, capture_output=True, text=True, encoding='utf-8')
+if run.returncode:
+    sys.exit('The build failed:\n' + (run.stdout + run.stderr).strip())
+
+# Every page in the build: each folder's index.html and the 404 page, found the same way as browser-check.mjs, so a new
+# page is checked without a list to keep
 PAGES = sorted(str(p.relative_to(SITE)).replace('\\', '/') for p in SITE.rglob('index.html')) + ['404.html']
 # CMS Picker platform pages, written by playbook.py publish (cms-picker/<platform>/index.html)
 PLATFORM_PAGES = sorted(str(p.relative_to(SITE)).replace('\\', '/') for p in SITE.glob('cms-picker/*/index.html'))
@@ -55,11 +65,6 @@ sys.dont_write_bytecode = True   # no __pycache__ folder inside the site repo
 import versions
 for f, shown, v, h in versions.stale():
     fail(f'{f.relative_to(ROOT)}: {shown}?v={v} is out of date (the file hashes to {h}); run bump-version.ps1')
-
-# The content security policy in _headers allows each inline script by its hash (csp.py writes it), so an edited
-# inline script would be blocked on the live site until the policy is rewritten
-import csp
-if csp.stale(): fail(csp.stale())
 
 # Every page links the shared stylesheet with one identical line, in <head> before its own styles
 # (so shell.css loses to a page's own rules, as the inline copies used to)

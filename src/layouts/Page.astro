@@ -1,0 +1,98 @@
+---
+// Every page's document: the <head> each page shares (fonts, icons, the early click holder, analytics, the
+// theme, shell.css and nav.js) around the page's own. The top bar is TopBar.astro, placed by each page, since
+// pages wrap it differently. Anything the page adds to its head (JSON-LD, its own <style is:inline>, its
+// scripts) goes in the "head" slot, after shell.css, so the page's styles win; the body is the default slot.
+// Scripts and styles are written is:inline so they go out exactly as written: no bundling, no scoping.
+import { v } from "../lib/v.mjs";
+
+interface Props {
+  title: string;
+  description?: string;
+  // The page's address from the root ("/privacy/"): its canonical link and og:url
+  path?: string;
+  robots?: string;
+  // Share card: shown when ogDescription is given; the title defaults to the page's, the image to the home page's
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogImageAlt?: string;
+  // The tab icon: the logo, or a tool's own icon
+  icon?: string;
+  // viewport-fit=cover, for pages whose layout reads the safe-area insets
+  cover?: boolean;
+  // JetBrains Mono is preloaded where it shows above the fold
+  mono?: boolean;
+  // Google Analytics (with its Consent Mode defaults); off on the team Playbook
+  analytics?: boolean;
+  bodyAttrs?: Record<string, string | boolean>;
+}
+const {
+  title, description, path, robots, ogTitle = title, ogDescription, ogImage = "home", ogImageAlt,
+  icon = "/favicon.svg", cover = false, mono = true, analytics = true, bodyAttrs = {},
+} = Astro.props;
+const url = path && new URL(path, "https://jsal.io").href;
+// A comment inside a {…} block is dropped from the output, so this one is written as raw HTML
+const GTAG_NOTE = `<!-- Google tag (gtag.js): the queue and Consent Mode defaults are set here; /nav.js fetches the script
+     only where analytics may run (not in Europe until the visitor allows it), once the page is idle. -->`;
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content={cover ? "width=device-width, initial-scale=1, viewport-fit=cover" : "width=device-width, initial-scale=1"}>
+<title>{title}</title>
+{description && <meta name="description" content={description}>}
+{robots && <meta name="robots" content={robots}>}
+{url && <link rel="canonical" href={url}>}
+{ogDescription && (
+  <Fragment>
+    <meta property="og:type" content="website">
+    {url && <meta property="og:url" content={url}>}
+    <meta property="og:site_name" content="jsal.io">
+    <meta property="og:title" content={ogTitle}>
+    <meta property="og:description" content={ogDescription}>
+    <meta property="og:image" content={`https://jsal.io/og/${ogImage}.png`}>
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="628">
+    {ogImageAlt && <meta property="og:image:alt" content={ogImageAlt}>}
+    <meta name="twitter:card" content="summary_large_image">
+  </Fragment>
+)}
+<link rel="icon" href={v(icon)} type="image/svg+xml">
+<!-- Clicks before /nav.js is ready (the logo, or a page mid-transition) are held for it to replay; a transition the browser aborts is kept quiet; the first page of a visit folds the logo into its mark before the first paint, for /nav.js to unfold -->
+<script is:inline data-jsal-early>addEventListener("click",function(e){if(window.jsalNavReady)return;var q=window.jsalEarlyClicks=window.jsalEarlyClicks||[],l=e.target.closest&&e.target.closest("[data-jsal-nav]");if(l||q.length||e.target===document.documentElement||e.target===document.body){e.preventDefault();e.stopPropagation();q.push({x:e.clientX,y:e.clientY,logo:!!l,at:Date.now()});}},true);addEventListener("pagereveal",function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(p){p.catch(function(){});});});try{if(!sessionStorage.getItem("jsal-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){var h=document.documentElement;h.classList.add("jsal-intro");setTimeout(function(){h.classList.remove("jsal-intro")},4e3);}}catch(e){}</script>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
+{analytics && (
+<Fragment>
+<Fragment set:html={GTAG_NOTE} />
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  // Consent Mode v2: analytics stays off in the EU, EEA, UK and Switzerland until the visitor allows it
+  // (the card from /nav.js); ads storage is never used. A choice saved earlier applies straight away.
+  gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'] });
+  gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+  try { var jc = localStorage.getItem('jsal-analytics'); if (jc === 'granted' || jc === 'denied') gtag('consent', 'update', { analytics_storage: jc }); } catch (e) {}
+  gtag('js', new Date());
+  gtag('config', 'G-Z0BSTC9TT9');
+</script>
+</Fragment>
+)}
+<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/lora.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/lora-italic.woff2" as="font" type="font/woff2" crossorigin>
+{mono && <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>}
+<script is:inline>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<!-- Colours and top bar: shared styles in /shell.css -->
+<link rel="stylesheet" href={v("/shell.css")}>
+<script src={v("/nav.js")} defer></script>
+<slot name="head" />
+</head>
+<body {...bodyAttrs}>
+<slot />
+</body>
+</html>

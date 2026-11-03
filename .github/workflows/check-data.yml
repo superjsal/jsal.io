@@ -25,6 +25,8 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: "22"
+      - name: Install Astro, which check.py builds the site with
+        run: npm ci
       - name: Site checks (top bar, cache numbers, links, unused CSS, styling, branding, sitemap)
         run: python -I .github/build/check.py
       - name: Check the data and list what isn't sourced
@@ -44,10 +46,12 @@ jobs:
       - name: Install the checks' packages
         working-directory: .github/build
         run: npm ci
-      - name: Serve the site on port 8765
+      - name: Build the site
+        run: npm ci && npm run build
+      - name: Serve the build on port 8766
         run: |
-          npx --yes http-server site -p 8765 -a 127.0.0.1 -s &
-          for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:8765/ && break; sleep 1; done
+          npx --yes http-server dist -p 8766 -a 127.0.0.1 -s &
+          for i in $(seq 1 30); do curl -fsS -o /dev/null http://127.0.0.1:8766/ && break; sleep 1; done
       - name: Browser checks (axe on every page, 375/390px, each tool's main flow)
         env:
           HOME: /root   # Firefox won't start when HOME is owned by another user, which the container's default is

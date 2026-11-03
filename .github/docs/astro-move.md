@@ -11,20 +11,38 @@ and the docs describe the new setup.
   so it's copied into `dist\` unchanged; `wrangler.jsonc` runs `npm ci && npm run build` before each deploy and serves
   `dist\`. Checked: `dist\` matched `site\` byte for byte (149 files), and the branch preview
   (`https://astro-jsal-io.still-cell-826b.workers.dev`) matched staging on 17 addresses, headers included.
-- Nothing else uses the branch yet: the checks, the bump, `csp.py`, `playbook.py` and the nightly Action all still work
-  on `site\`, unchanged.
+- **Step 2, done:** the security policy, the checks and the layout, with Privacy as the first page moved.
+  - `.github\build\csp.mjs` (an Astro integration) writes the policy into `dist\_headers` at the end of every build,
+    from the built pages; `site\_headers` keeps only the empty `csp:start`/`csp:end` markers. `csp.py` is gone, and
+    the bump no longer touches `_headers`. Its first run wrote the same 13 hashes as `csp.py` had.
+  - `check.py` builds first and checks `dist\` (so pages from `src\` and files from `site\` are checked alike);
+    `browser-check.mjs`, `check.ps1` and the "Site checks" Action use the build too, served on port 8766 (the
+    `jsal-build` preview). The root `package.json` lost `"type": "module"`, which had broken the quiz's CommonJS
+    test scripts.
+  - `src\layouts\Page.astro` is the document and shared `<head>`; `src\components\TopBar.astro` the top bar, which
+    each page places itself (pages wrap it differently: `.wrap` on most, `main.app` on the tools). The logo, the
+    theme button and the analytics note go out as raw HTML (`set:html`), so the bar is byte for byte the markup the
+    unmoved pages carry and `check.py`'s top-bar rule still holds. `src\lib\v.mjs` works out each `?v=` as the page
+    builds, so the layout's numbers can't go stale.
+  - Privacy: `src\pages\privacy\index.astro`. Same markup as staging's (`compare.py`), and the same boxes, colours
+    and fonts at 1280 and 375px in light and dark (`pagediff.mjs`); logo menu works; axe clean.
+- Still on `site\`: `playbook.py`, the nightly Action and `versions.py` (which only sees `site\`; moved pages use
+  `v()` instead).
 
 ## How each page moves
 
-1. Make `src\layouts\Page.astro` from what every page shares: the `<head>` (charset, viewport, fonts and their
-   preloads, favicon, manifest, the one-line `data-jsal-early` script, the `shell.css` link, `nav.js`) and the
-   `.jsal-top` bar, with slots for the page's own head (title, description, canonical, JSON-LD, its styles) and the
-   tool name in the bar.
+1. Done: the layout and the top bar (above). A page passes its title, description, path, share card, tab icon and
+   flags (`cover`, `mono`, `analytics`, `robots`) as props; its JSON-LD, `<style is:inline>` and scripts go in the
+   `head` slot; a tool's `<h1 class="jsal-title">` in TopBar's `title` slot, its About link in the default slot.
+   Write every page script and style `is:inline` (bundling and scoping are a later choice). Text in the body with
+   `{` or `}` needs escaping (`{"{"}`), as Astro reads braces as code; a comment inside `{…}` is dropped.
 2. Move one page at a time from `site\<page>\index.html` to `src\pages\<page>\index.astro` using the layout, and
    delete the old file in the same commit (a page in both places is an Astro build error).
-3. **The test for each page:** build, then compare the new `dist\<page>\index.html` with the old file. Only whitespace
-   and the order of `<head>` tags may differ; anything else is a bug. Then the usual browser checks on the preview.
-4. Order, simplest first: Privacy, 404, Changelog, design system; the home page (with Updates); the four tools and
+3. **The test for each page:** `npm run build`, then `python -I .github\build\astro-move\compare.py <page>` (the
+   markup against staging's; it lists the differences it allows) and `node .github\build\astro-move\pagediff.mjs
+   /<page>/` (every element's box, colour and font against staging's, both themes, two widths). Anything either
+   reports is a bug. Then axe through `browser-check.mjs --axe`.
+4. Order, simplest first: Privacy (done), 404, Changelog, design system; the home page (with Updates); the four tools and
    Off the clock; the Playbook (`/ic/`) last of the pages, as it has its own login flow.
 5. **Platform pages:** one `src\pages\cms-picker\[platform].astro` reading `site\cms-picker\data.json` at build time
    replaces the 14 files `playbook.py` writes from `.github\scripts\platform-page.html`. Then `playbook.py` only
@@ -39,9 +57,9 @@ and the docs describe the new setup.
   choice.
 - **Page transitions stay native** (cross-document view transitions in `shell.css`). Don't add Astro's
   `<ClientRouter />`: it would replace them and break `nav.js`'s prerendering and held clicks.
-- **The security policy:** `csp.py` hashes every inline script. After the move it must hash the built `dist\` pages,
-  not `site\`; or switch to Astro's own CSP support if it covers `_headers` on Cloudflare. Decide before the first
-  page with an inline script moves (the layout has the early script, so: before step 1 above).
+- **The security policy is written at build time** from `dist\` (`csp.mjs`), not with Astro's own CSP support:
+  that sends a `<meta>` policy per page, which can't carry `frame-ancestors`, and hashes styles too, which the
+  inline `style` attributes on every page would break.
 - **Fingerprints:** `?v=` stays until every reference is built by Astro; then `bump-version.ps1` and `versions.py`
   go, and Astro's hashed file names take over for whatever it bundles.
 - **Comments in served files:** `check.py`'s rules apply to the built pages. Frontmatter comments in `.astro` files
@@ -49,9 +67,14 @@ and the docs describe the new setup.
 
 ## What else changes before shipping
 
-- `check.py` and `browser-check.mjs` run on `dist\` (build first); the checks made unnecessary by the layout (top bar
-  identical, early script copy, `?v=` current) are removed once nothing needs them.
-- `.claude\launch.json`: `npm run dev` (port 4321) replaces the Python server; previews of a worktree get simpler too.
-- The "Site checks" Action builds before checking; the nightly publish Action needs no build (Cloudflare builds).
+- The checks made unnecessary by the layout (top bar identical, early script copy, `?v=` current) are removed once
+  nothing needs them, and `.github\build\astro-move\` with them.
+- `.claude\launch.json`: `jsal-build` (port 8766) serves the build for the checks; `npm run dev` (port 4321) may
+  replace `jsal-site` for working on pages.
+- The nightly publish Action needs no build (Cloudflare builds).
+- **The GitHub Pages fallback** ("Deploy Pages") uploads `site\` as it is, so it would serve no moved page: retire it
+  (due on or after 2026-11-09) before shipping, as planned anyway.
+- **IndexNow on push** works out which pages changed from paths under `site\`; it needs to map `src\pages\` too (and
+  a layout change to every page).
 - Docs: CLAUDE.md, SETUP.md, `how-it-works.md`, `design-rules.md` (check names), the `add-tool` skill.
 - Ship the whole move at once, when every page on the branch preview matches staging, with John's "ship it".

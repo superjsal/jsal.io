@@ -1,5 +1,5 @@
 // Browser checks for the public tools, with Playwright (npm ci in this folder installs it; node_modules isn't committed).
-// Needs the local server on http://localhost:8765 (the jsal-site preview). Chromium runs on the installed Microsoft
+// Needs the build (npm run build, or check.py, which builds) served on http://127.0.0.1:8766 (the jsal-build preview). Chromium runs on the installed Microsoft
 // Edge (Playwright's own Chromium and Firefox builds don't start on this machine: Windows reports a missing
 // runtime), so a browser that can't start is reported and skipped; Firefox is in manual-checks.md.
 //   node .github\build\browser-check.mjs          axe on every public page (light and dark), then 375 and 390px in
@@ -13,12 +13,12 @@ import { createRequire } from 'module';
 import fs from 'fs';
 import { cleanPasteCases } from './clean-paste-cases.mjs';
 
-const BASE = 'http://localhost:8765';
+const BASE = 'http://127.0.0.1:8766';
 const AXE = fs.readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
-// Every page in site\ (each folder's index.html, and the 404 page), found the same way as check.py, so a new page is
+// Every page in the build (each folder's index.html, and the 404 page), found the same way as check.py, so a new page is
 // checked without a list to keep; left out on purpose: the team Playbook (/ic/ shows only its sign-in here) and all but
 // two platform pages, a full one and a sparse one, which stand for the 14 (they share one template)
-const SITE = new URL('../../site/', import.meta.url);
+const SITE = new URL('../../dist/', import.meta.url);
 const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true })
   .flatMap((e) => (e.isDirectory() ? walk(new URL(`${e.name}/`, dir)) : e.name === 'index.html' ? [dir.href.slice(SITE.href.length - 1)] : []));
 const SAMPLE = ['/cms-picker/squarespace/', '/cms-picker/sanity/'];
