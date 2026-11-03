@@ -1,7 +1,8 @@
 # jsal.io design rules
 
-How every page looks and behaves, in one place: the only copy of these rules (the project's `CLAUDE.md`
-imports this file). `.github/` isn't served, so this is for people working on the site, not
+How every page looks and behaves: the only copy of these rules (the project's `CLAUDE.md` imports this file). The
+home page's and the CMS Picker's own rules are in `.claude/rules/home-page.md` and `cms-picker-design.md`, which
+load when those pages' files are worked on. `.github/` isn't served, so this is for people working on the site, not
 visitors; `/design-system/` shows the same rules visually. Most are checked before each push by `check.py` and
 `browser-check.mjs` (both in `.github/build/`); where a check exists it's named.
 
@@ -128,17 +129,6 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   weight. Uneven pills stagger; equal tiles don't. **The one filled pill** is the home page's gold "Find your CMS":
   the page's main action, filled rather than bordered, so it never reads as a choice. It stays a pill to sit with the
   bento's round tiles; nothing else on the site uses that shape for an action.
-- **A tick that goes with a choice** (the quiz's "We already pay for HubSpot") is a plain checkbox line above the
-  choices, with no box, so it never reads as one more answer: ticked, only the checkbox fills, in
-  `accent-color: var(--jsal-accent)`; one focus ring on the line. It sits above, not below, because a tap on an answer
-  moves straight on.
-- **A question that takes several answers** ("Anything you'll need from day one?") is a list of bordered checkbox
-  rows (two columns where they fit, one on phones), each selected with the same `--jsal-selected-*` tokens and gold
-  edge as a pressed chip, with Back and a gold Next; never answer tiles, which move on at one tap. Nothing ticked is
-  an answer too, and the hint says so.
-- **Changing an answer on the results** opens its choices as equal rows, never boxes sized by their words: one column
-  on a phone and an even row of boxes on desktop, left-aligned, the picked one in the selected gold. A long list (the
-  platforms under "Moving from somewhere?") takes two columns on a phone.
 
 ## Layout
 
@@ -154,68 +144,13 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
 - **Tools fill the first screen;** the About section sits below the fold, reached by the top bar's About link.
   On phones the empty work box stretches to the bottom of the screen until there's content.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
-- **Home page:** tools only, as a bento grid (six columns, 32px gaps, the wide tile swapping sides each row): the
-  intro (two columns, at the shared distance under the bar) beside the CMS Picker (four); the Image Resizer (four)
-  and Clean Paste (two); Say hi (two) and Redirect Import (four); Updates across the bottom (six). From 1279px down the
-  intro, the CMS Picker, the Image Resizer, Redirect Import and Updates take the full width and Clean Paste sits beside
-  Say hi; that bento holds down to 600px, so a
-  phone on its side keeps it, and only upright phones get one column. Tab order follows the screen. Say hi never sits above a tool: beside one is fine,
-  but on upright phones, one tile per row, it moves after every tool, just before Updates (by CSS `order`, so there
-  alone the keyboard still reaches it before Redirect Import, its place on wider screens). Every tool tile
-  reads the same way at every width: its name and one line at the top left, then the picture.
-  - **Each tile** is its soft tint (CMS Picker lilac, Image Resizer teal, Clean Paste honey, Redirect Import berry; Say hi and
-    Updates plain) with its name in Lora in a deep shade of the tint, and a real-looking piece of its tool drawn in the
-    tools' own colours (`--jsal-surface`, ink and lines, so it changes with the theme as the tool does): the CMS
-    Picker a tilted brick of one key per platform, each in that platform's own colours with a darker edge under it, logos
-    only; the Image
-    Resizer its crop editor and the files it made from that one photo (the box takes each size's shape in
-    turn and each size lands in the output list); Clean Paste its Text | HTML switch over a short raid note, resting halfway through its wipe (the formatted text left of a gold line, its HTML right of it, as the switch reads); Redirect Import its sheet of old and new addresses with each row's check (ready, needs you, left out) and, beside it, the file it writes for the platform, both straight, the file poking out of the tile's bottom; Say hi an email draft; Updates the
-    newest change in each of the three most recently changed parts as a plain list under its heading (rows with a
-    rule between them, never cards, as they aren't links; nothing tilted, as people read them), read from the
-    changelog as the page builds (`src/lib/updates.mjs`). No fake buttons, no clickable-looking quiz pieces and no favoured platform in the pictures.
-  - **Each tool tile has its app icon as a watermark**, drawn large in the tile's ink at 7% with the gem in gold at
-    35% (45% in dark mode, where fainter gold reads as brown), a texture that never draws the eye before the picture, behind the tile's picture and never under its words, and whole, so its shape reads (the CMS Picker's podium
-    tilted like its keys, under the words and left of the keys, upright on phones on their side); set per breakpoint, and
-    hidden on upright phones. Updates has one too, a faint stack of notes with the gem on the newest, in the open middle
-    between its words and its list (above the words where there's no room); Say hi stays plain.
-  - **Breakouts:** a piece may poke a little past its tile (about 14px at most), never within 16px of another
-    tile, never into the page's side gutter (nothing reaches past the column at any width, and the column's gutter
-    widens for a notch: `viewport-fit=cover` with the safe-area insets), and two breakouts never crowd each other.
-    So a tile on the column's edge pokes up, down or towards its neighbour, and a piece is either inside its tile or
-    clearly out of it, never sitting across its edge. Mix straight and tilted pieces.
-  - **The pictures are decoration** (`aria-hidden`): each tile's link reads as its name and line, and Say hi's
-    as "Say hi by email". Tiles have a least height, not a fixed one, and the words keep room clear of the
-    pictures, so enlarged or spaced-out text grows the tile instead of sliding under a picture (WCAG 1.4.12).
-  - **The Platform guides** are a quiet row of links in the footer, with Off the clock beside Privacy. Gaming parts
-    live on `/play/`.
-- **Every new home page tool or section is a bento box:** a `.tile` (22px corners, 24px padding; 18px and 20px
-  on phones; anything lined up with the padding reads the tile's `--pad`), in its own tint if it's a tool, plain like Updates and "Say hi" if it isn't. The home page is
-  always bento boxes. Other pages keep an open layout, but may use a card in the same style (the tile's corners,
-  padding and a tint, such as the app's own home tile colour) where it helps, for example around a hero; they don't
-  become bento grids. The intro stays unboxed, so the byline keeps the shared distance and left edge.
-- **The CMS Picker is quiz first:** the platform cards and the comparison table open on request. The quiz box
-  reserves its first question's height (`.qz` min-height per column count) so the rows under it don't move at
-  load or between questions.
-- **A result card says everything it knows.** Each match lists every reason with its docs link, the facts, what
-  tipped it and what counts against it, even when a card runs past a phone screen: no trimming the reasons two cards
-  share, and no hiding long lists. The reasons are the evidence the pick stands on. The one exception: a card whose
-  list is an exact copy of another card's collapses to "Fits your answers for the same reasons as …" (the full list
-  is on the card above), and its box still says how it differs. The personas test checks this on every answer set.
-- **A match that lacks a must-have goes under a divider.** When a match lacks something the first has built in (the
-  need picked, languages, selling, a large catalogue), a divider sits above it: a label with a rule above, like a
-  group heading ("Also possible, with an add-on", or with custom code, or "Missing something you need"), and one
-  plain sentence per match from the table's verdicts ("Framer needs an add-on for selling online."). Above it every
-  card has the must-haves and none reads "Worth a look"; under it the pill is neutral, not green, as it isn't a fit.
-  When even the first match lacks one, the blue note above the cards says that nothing that fits has it all built in.
-- **"Varies" is a "*" right after the tag** in the comparison, at every width: never a word on its own line, which made
-  wide and narrow tags read unevenly down a row. The key above the table and the note under it say what it means,
-  and screen readers hear "varies". The rarer "not verified" stays in words, under the tag.
-- **The comparison on phones** is a card per question, one 44px line per platform (name, tag, "*"). Who's
-  compared is said once, in a card at the top (each platform's name, match label and type), not on every row. With
-  Tags on, an answer with a note is a button the width of its row, a muted chevron at its end; tapped, the note opens
-  under the answer and stays open (no floating box, which covered the next row and vanished on scroll). Group
-  headings are labels with a rule above, not boxes. On short screens with the full table (a phone on its side) the
-  pinned header drops its type line. On touch screens the Top button shows only while scrolling back up.
+- **Home page:** tools only, as a bento grid of tiles; every new home page tool or section is a bento box, and the
+  home page is always bento boxes. Other pages keep an open layout, but may use a card in the tiles' style (corners,
+  padding, a tint) where it helps; they don't become bento grids. The grid, the tiles, their pictures, watermarks,
+  breakouts and order are in `.claude/rules/home-page.md`, which loads with the home page's files.
+- **The CMS Picker** has its own layout and control rules (quiz first, the quiz's tick and checklist questions,
+  changing an answer, result cards, the must-have divider, "varies", the comparison on phones) in
+  `.claude/rules/cms-picker-design.md`, which loads with the CMS Picker's files.
 
 ## Motion
 
@@ -228,13 +163,8 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
 - **Page transitions are one slide everywhere** (`shell.css`): the old page drifts up and fades, the new one
   rises in, Back runs it downwards, and the top bar cross-fades in place. Only `shell.css` names
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.
-- **The home page's pictures move only when asked:** pointing at a tile or focusing it plays what its tool does
-  three times, then it rests as the still picture (the CMS Picker plays three needs in turn instead, each named in a
-  pill and pressing the three keys the real quiz ranks first for it, so no platform is favoured; the crop box takes
-  each size's shape in turn, the formatted text wipes into its HTML, the email types itself, and Redirect Import's rows are checked one at a time, each
-  ready row's line landing in the file and the row with a problem getting its "!" and note instead). Touch screens play each one once, when
-  its tile reaches the middle of the screen (the CMS Picker one need, picked at random). Updates stays still. When the
-  quiz's scoring changes, check the three needs still light its top three.
+- **The home page's pictures move only when asked** (pointing at or focusing a tile; once on touch screens); what
+  each one plays is in `.claude/rules/home-page.md`.
 - Nothing moves on its own for more than 5 seconds (WCAG 2.2.2): the home pictures' one play on touch screens takes
   under 3 seconds.
 
