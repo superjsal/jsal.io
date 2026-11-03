@@ -6,26 +6,31 @@
 #  - head order and whitespace; <meta ... /> against <meta ...>; initial-scale=1.0 against 1
 #  - an SVG shape's <path .../> written as <path ...></path> (how Astro writes them)
 #  - /nav.js in the head instead of at the end of the body (deferred, it runs at the same moment)
-#  - tags the layout adds on purpose (ADDED): every share card states its image's size (all are 1200 by 628), and
-#    every page has the home-screen icon
+#  - a comment above <html> moved into the head; the ?v= numbers themselves (check.py holds each to its file's hash,
+#    and the layout adds one where a page had none)
+#  - tags the layout adds on purpose (ADDED): every share card states its image's size (all are 1200 by 628), every
+#    page has the home-screen icon, and the layout's note on the shell.css link
 import pathlib, re, subprocess, sys
 from collections import Counter
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 SVG = r'path|circle|rect|line|polyline|polygon|ellipse|use|stop'
 ADDED = {'<meta property="og:image:width" content="1200">', '<meta property="og:image:height" content="628">',
-         '<link rel="apple-touch-icon" href="/apple-touch-icon.png">'}
+         '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
+         '<!-- Colours and top bar: shared styles in /shell.css -->'}
 
 
 def norm(s):
     s = re.sub(rf'<({SVG})\b([^<>]*?)\s*/>', r'<\1\2></\1>', s)
     s = re.sub(r'\s*/>', '>', s)
     s = s.replace('initial-scale=1.0', 'initial-scale=1')
+    s = re.sub(r'\?v=[\w.-]+(?=")', '', s)
     return re.sub(r'\s+', ' ', s).strip()
 
 
 def split(t):
-    head = t[t.index('<head>') + 6:t.index('</head>')]
+    head = t[:t.index('<head>')] + t[t.index('<head>') + 6:t.index('</head>')]
+    head = re.sub(r'<!doctype html>|<html[^>]*>', '', head, flags=re.I)
     body = t[t.index('</head>') + 7:]
     tags = re.findall(r'<!--.*?-->|<script\b.*?</script>|<style\b.*?</style>|<[^>]+>', head, re.S)
     for n in re.findall(r'<script src="/nav\.js[^"]*" defer></script>', body):

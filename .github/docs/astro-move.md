@@ -26,6 +26,10 @@ and the docs describe the new setup.
     builds, so the layout's numbers can't go stale.
   - Privacy: `src\pages\privacy\index.astro`. Same markup as staging's (`compare.py`), and the same boxes, colours
     and fonts at 1280 and 375px in light and dark (`pagediff.mjs`); logo menu works; axe clean.
+- **Step 3, done:** 404 and the design system moved (`src\pages\404.astro`, `src\pages\design-system\`), each the
+  same as staging in markup and in the browser; the 404's dropped-dot animation plays and settles. The Changelog
+  waits for Updates (6 below): `updates.py` and the checks read it from `site\`, and other sessions add
+  to it on staging almost daily, which a renamed file would make a merge chore each time.
 - Still on `site\`: `playbook.py`, the nightly Action and `versions.py` (which only sees `site\`; moved pages use
   `v()` instead).
 
@@ -35,20 +39,22 @@ and the docs describe the new setup.
    flags (`cover`, `mono`, `analytics`, `robots`) as props; its JSON-LD, `<style is:inline>` and scripts go in the
    `head` slot; a tool's `<h1 class="jsal-title">` in TopBar's `title` slot, its About link in the default slot.
    Write every page script and style `is:inline` (bundling and scoping are a later choice). Text in the body with
-   `{` or `}` needs escaping (`{"{"}`), as Astro reads braces as code; a comment inside `{…}` is dropped.
+   `{` or `}` needs escaping (`{"{"}`), as Astro reads braces as code. Astro drops an HTML comment inside `{…}` or
+   sitting directly in a component's slot (one nested in an element survives), so those go out as raw HTML:
+   `<Fragment set:html={`<!-- … -->`} />`. `.github\build\astro-move\move_page.py` does all of this for a page.
 2. Move one page at a time from `site\<page>\index.html` to `src\pages\<page>\index.astro` using the layout, and
    delete the old file in the same commit (a page in both places is an Astro build error).
 3. **The test for each page:** `npm run build`, then `python -I .github\build\astro-move\compare.py <page>` (the
    markup against staging's; it lists the differences it allows) and `node .github\build\astro-move\pagediff.mjs
    /<page>/` (every element's box, colour and font against staging's, both themes, two widths). Anything either
    reports is a bug. Then axe through `browser-check.mjs --axe`.
-4. Order, simplest first: Privacy (done), 404, Changelog, design system; the home page (with Updates); the four tools and
+4. Order, simplest first: Privacy, 404 and the design system (done); the home page with Updates and the Changelog; the four tools and
    Off the clock; the Playbook (`/ic/`) last of the pages, as it has its own login flow.
 5. **Platform pages:** one `src\pages\cms-picker\[platform].astro` reading `site\cms-picker\data.json` at build time
    replaces the 14 files `playbook.py` writes from `.github\scripts\platform-page.html`. Then `playbook.py` only
    writes data, and the nightly publish's commit triggers a rebuild.
 6. **Updates:** the home page reads the changelog's newest entries at build time, which retires `updates.py`. The
-   changelog may become a data file or a content collection for that.
+   changelog may become a data file or a content collection for that; the Changelog page moves then, built from it.
 
 ## Decisions to keep
 
