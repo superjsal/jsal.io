@@ -5,12 +5,13 @@
 # The page's own <style> blocks, any comment above <html> and its own note on the shell.css link go in the head
 # slot; its top bar becomes <TopBar> with whatever the bar held besides the theme button; body scripts become
 # is:inline; /nav.js is dropped (the layout loads it); comments directly in the body go out as raw HTML (Astro drops
-# a comment that sits directly in a component's slot); braces in body text are escaped. JSON-LD goes in the head slot
-# too, with a tool's stylesheet, import map (importmap() in src/lib/v.mjs) and scripts; every ?v= becomes v(), so it
-# can't go stale. A tool's title and the bar's own class go to <TopBar>. The home page's Updates markers become
-# <Updates />.
+# a comment that sits directly in a component's slot); braces in body text are escaped, and an attribute holding
+# braces becomes a string expression. JSON-LD goes in the head slot too, with a tool's stylesheet, import map
+# (importmap() in src/lib/v.mjs), scripts, preconnects and script preloads; every ?v= becomes v(), so it can't go
+# stale. A tool's title and the bar's own class go to <TopBar>; a bar with no actions box (the Playbook's) keeps its
+# layout with the shared logo and theme button (src/lib/topbar.mjs). The home page's Updates markers become <Updates />.
 # Then build, and run compare.py and pagediff.mjs.
-import pathlib, re, subprocess, sys
+import json, pathlib, re, subprocess, sys
 
 old_rel, new_rel, props = sys.argv[1:4]
 src = pathlib.Path('site') / old_rel
@@ -42,7 +43,10 @@ for m in re.finditer(r'(?:(<!--(?:(?!-->).)*-->)\n)?\s*<link rel="stylesheet" hr
 # Structured data, then the page's own styles, stylesheets, import map and scripts, in their order after shell.css
 for s in re.findall(r'<script type="application/ld\+json">\n.*?</script>', head, re.S):
     slot.append(s.strip().replace('<script ', '<script is:inline slot="head" ', 1))
-after = head[re.search(r'<link rel="stylesheet" href="/shell\.css[^"]*">', head).end():]
+# Connections and scripts a page warms up early (the team Playbook's database and its client library)
+for s in re.findall(r'<link rel="preconnect"[^>]*>|<link rel="preload" as="script"[^>]*>', head):
+    slot.append(re.sub(r'\s*/>$', '>', s).replace('<link ', '<link slot="head" ', 1))
+after =head[re.search(r'<link rel="stylesheet" href="/shell\.css[^"]*">', head).end():]
 for m in re.finditer(r'<style>\n.*?</style>|<link rel="stylesheet"[^>]*>|<script type="importmap">.*?</script>|<script [^>]*src="[^"]*"[^>]*></script>', after, re.S):
     s = m.group(0)
     if s.startswith('<style>'):
@@ -60,17 +64,23 @@ for m in re.finditer(r'<style>\n.*?</style>|<link rel="stylesheet"[^>]*>|<script
 body = t[t.index('<body'):t.rindex('</body>')]
 body = body[body.index('>') + 2:]
 body = re.sub(r'<script src="/nav\.js\?v=\w+" defer></script>\n', '', body)
-body = re.sub(r'<script>', '<script is:inline>', body)
 # The home page's Updates list, which a script used to write between two markers, is built from the changelog
 imports = ['import Page from "{depth}layouts/Page.astro";', 'import TopBar from "{depth}components/TopBar.astro";']
 if '<!-- updates:start' in body:
     body = re.sub(r'<!-- updates:start.*?<!-- updates:end -->', '<Updates />', body, flags=re.S)
     imports.append('import Updates from "{depth}components/Updates.astro";')
 
-# The bar: a tool's own class on it ("app-header"), its title (TopBar's title slot) and its links
+# The bar: a tool's own class on it ("app-header"), its title (TopBar's title slot) and its links. A bar laid out
+# without TopBar's actions box (the team Playbook's) stays as it is, with the shared logo and theme button.
+own_bar = False
 def bar(m):
+    global own_bar
     inner = m.group(0)
-    extra = re.search(r'<div class="jsal-actions">\n(.*?)\s*<button type="button" class="jsal-theme"', inner, re.S).group(1).strip()
+    if '<div class="jsal-actions">' not in inner:
+        own_bar = True
+        inner = re.sub(r'<a class="[\w ]*jsal-brand".*?</a>', '<Fragment set:html={BRAND} />', inner, count=1, flags=re.S)
+        return re.sub(r'<button type="button" class="jsal-theme".*?</button>', '<Fragment set:html={THEME} />', inner, count=1, flags=re.S)
+    extra =re.search(r'<div class="jsal-actions">\n(.*?)\s*<button type="button" class="jsal-theme"', inner, re.S).group(1).strip()
     title = re.search(r'<h1 class="jsal-title">.*?</h1>', inner, re.S)
     if title:
         extra = title.group(0).replace('<h1 ', '<h1 slot="title" ', 1) + ('\n' + extra if extra else '')
@@ -78,7 +88,9 @@ def bar(m):
     indent = re.match(r'\s*', m.group(0)).group(0)
     return f'{indent}<TopBar{cls}>{extra}</TopBar>\n' if extra else f'{indent}<TopBar{cls} />\n'
 body = re.sub(r'[ \t]*<header class="([\w -]*?)\s*jsal-top">.*?</header>\n', bar, body, count=1, flags=re.S)
-assert 'jsal-top">' not in body
+assert own_bar or 'jsal-top">' not in body
+if own_bar:
+    imports[1] = 'import {{ BRAND, THEME }} from "{depth}lib/topbar.mjs";'
 
 # Astro drops a comment sitting directly in a component's slot (one nested in an element survives), so the body's
 # top-level comments go out as raw HTML. Braces in text are escaped ({"{"}), as Astro reads them as code, and each
@@ -95,8 +107,17 @@ def astro_body(html):
             continue
         name = (m.group(2) or '').lower()
         if m.group(1):
+            # A script goes out as written (is:inline), its src's ?v= worked out as the page builds
+            if m.group(1) == 'script':
+                open_tag = s[:s.index('>') + 1]
+                tag = versioned(open_tag)
+                if 'is:inline' not in tag: tag = tag.replace('<script', '<script is:inline', 1)
+                s = tag + s[len(open_tag):]
             out.append(s); continue
-        assert '{' not in s and '}' not in s, f'braces in a tag: {s[:120]}'
+        if '<Fragment set:html={' in s: out.append(s); continue
+        # An attribute value with braces in it (a form field's pattern) goes out as a string expression
+        s = re.sub(r'(\s[\w:-]+)="([^"]*[{}][^"]*)"', lambda a: f'{a.group(1)}={{{json.dumps(a.group(2))}}}', s)
+        assert not re.search(r'="[^"]*[{}]', s), f'braces in a tag: {s[:120]}'
         out.append(versioned(s))
         if not name or name in VOID or m.group(3) == '/': continue
         depth += -1 if s.startswith('</') else 1

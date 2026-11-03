@@ -37,6 +37,8 @@ def norm(s):
     s = re.sub(rf'<({SVG})\b([^<>]*?)\s*/>', r'<\1\2></\1>', s)
     s = re.sub(r'\s*/>', '>', s)
     s = s.replace('initial-scale=1.0', 'initial-scale=1').replace('charset="UTF-8"', 'charset="utf-8"')
+    # The Playbook's logo link had a "brand" class nothing styles or reads; it now shares the logo markup
+    s = s.replace('<a class="brand jsal-brand"', '<a class="jsal-brand"')
     s = re.sub(r'(<script\b[^>]*>)\s+|\s+(</script>)', r'\1\2', s)
     s = re.sub(r'\?v=[\w.-]+(?=")', '', s)
     return re.sub(r'\s+', ' ', s).strip()

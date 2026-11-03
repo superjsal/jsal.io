@@ -55,6 +55,11 @@ and the docs describe the new setup.
   nightly Action commits those; IndexNow's `changed` reads the moved dates. All 15 pages are the same as staging in
   markup and in Edge (the CMS Picker at 1,305 elements); axe, the browser checks and the quiz to "Compare these side
   by side" work on the build.
+- **Step 7, done:** the team Playbook (`src\pages\ic\index.astro`). Its bar keeps its own layout (the view switcher
+  and the account sit beside the title as the bar's own children, and wrap to a second row on phones), so it doesn't
+  use TopBar; it takes the logo and the theme button from `src\lib\topbar.mjs`, the same markup TopBar uses. Its logo
+  link lost a `brand` class nothing used. Same as staging in markup, and in Edge signed out and signed in (from the
+  latest backup, Supabase blocked) at both widths and themes.
 - **Merging staging into `astro`:** a change on staging to a page that has moved comes in as a modify/delete
   conflict. Port the change into the page's `.astro` file by hand, then `git rm` the old file. On staging,
   `updates.py` rewrites `site\index.html` whenever a `data-short` line is added: that one needs no porting (the
@@ -81,11 +86,14 @@ and the docs describe the new setup.
    /<page>/` (every element's box, colour and font against staging's, both themes, two widths). Anything either
    reports is a bug. Then axe through `browser-check.mjs --axe`.
 4. Order, simplest first: Privacy, 404, the design system, the home page, three tools, Off the clock, the CMS
-   Picker and its platform pages (done); the Playbook (`/ic/`), as it has its own login flow; the Changelog last,
-   just before shipping.
+   Picker and its platform pages, the Playbook (done); the Changelog last, just before shipping, as a content
+   collection (below).
 5. **Platform pages:** done (step 6 above).
-6. **Updates:** done (step 4 above). When the Changelog page moves, point `CHANGELOG` in `src\lib\updates.mjs` at
-   wherever its entries then live.
+6. **Updates:** done (step 4 above).
+7. **The Changelog as a content collection:** when it moves, its entries become data (date, tag, sentence and the
+   optional short line for Updates) in an Astro content collection with a schema: the tag from the fixed list, the
+   short line about 40 characters, a real date. The Changelog page and Updates both read the collection, and
+   `src\lib\updates.mjs`'s parsing of the page's HTML goes. Markdown carries the links inside a sentence.
 
 ## Decisions to keep
 
