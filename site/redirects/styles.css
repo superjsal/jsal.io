@@ -19,7 +19,7 @@ code, .mono, .file, .cell, .txt, .head-in { font-family: "JetBrains Mono", ui-mo
 .bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--jsal-space-8) var(--jsal-space-16); margin-bottom: var(--jsal-space-16); }
 .plat { flex: 0 0 260px; }
 .field { width: 100%; min-height: 40px; padding: var(--jsal-space-8) var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: 14px var(--jsal-font); }
-.field:focus-visible, .txt:focus-visible, .cell:focus-visible, .head-in:focus-visible, .name-in:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.field:focus-visible, .txt:focus-visible, .cell:focus-visible, .head-in:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .where { flex: 1 1 160px; margin: 0 0 var(--jsal-space-8); font-size: 13px; line-height: 1.45; color: var(--jsal-muted); }
 .where[hidden] { display: none; }
 .where a { color: var(--jsal-info); text-underline-offset: 2px; white-space: nowrap; }
@@ -155,11 +155,14 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .head-in:hover { border-color: var(--jsal-line-hi); }
 .head-in.warn { border-color: var(--jsal-warn); }
 /* The file's name is edited in place, like the header row; its extension stays as text beside it */
-.file-name { display: flex; align-items: center; min-width: 0; }
-.name-in { flex: 0 1 auto; min-width: 6ch; margin: 0 0 0 -6px; padding: 1px 5px; border: 1px solid transparent; border-radius: var(--jsal-radius-sm); background: none; color: inherit; font: inherit; line-height: 1.7; text-overflow: ellipsis; }   /* style: allow (its text stays level with the pane's edge, as the header row's does) */
-.name-in:hover { border-color: var(--jsal-line-hi); }
+/* The edge and focus ring go round the whole name, extension too, so it reads as one word */
+.file-name { display: flex; align-items: center; min-width: 0; margin-left: -6px; padding: 1px 5px; border: 1px solid transparent; border-radius: var(--jsal-radius-sm); }   /* style: allow (its text stays level with the pane's edge, as the header row's does) */
+.file-name:has(.name-in:not([hidden])) { cursor: text; }
+.file-name:has(.name-in:not([hidden])):hover { border-color: var(--jsal-line-hi); }
+.file-name:focus-within { box-shadow: var(--jsal-focus-ring); }
+.name-in { flex: 0 1 auto; min-width: 6ch; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; line-height: 1.7; text-overflow: ellipsis; outline: none; }
 .name-in[hidden] { display: none; }
-.name-end { flex: none; margin-left: -5px; }   /* style: allow (tucked into the box's padding, so the name reads as one word) */
+.name-end { flex: none; }
 .head-warn { margin: var(--jsal-space-2) 0 var(--jsal-space-4); font-size: 12px; color: var(--jsal-warn); }
 .file { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre; tab-size: 4; }
 .file:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius-sm); }

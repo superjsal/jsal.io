@@ -512,7 +512,7 @@ function renderFile() {
   const nameIn = $("nameIn");
   nameIn.hidden = !!fmt.fixedName;
   if (document.activeElement !== nameIn) nameIn.value = fileBase();
-  nameIn.style.width = `calc(${Math.max(4, nameIn.value.length)}ch + 12px)`;   // mono type, so it fits the name exactly
+  nameIn.style.width = `calc(${Math.max(4, nameIn.value.length)}ch + 2px)`;   // the 2px is room for the caret   // mono type, so it fits the name exactly
   $("nameEnd").textContent = fmt.fixedName ? fileName(part, p.length) : fileEnd(part, p.length);
   keep();
   $("parts").hidden = p.length < 2;
@@ -606,6 +606,11 @@ $("nameIn").addEventListener("input", (e) => { opts.name = cleanName(e.target.va
 // Leaving the box shows the name the file will have (the default again if it was emptied); Enter leaves it
 $("nameIn").addEventListener("blur", (e) => { e.target.value = fileBase(); renderFile(); });
 $("nameIn").addEventListener("keydown", (e) => { if (e.key === "Enter") e.target.blur(); });
+// A click on the extension still lands in the name, as the box is drawn round both
+$("fileName").addEventListener("click", (e) => {
+  const n = $("nameIn");
+  if (e.target !== n && !n.hidden) { n.focus(); n.setSelectionRange(n.value.length, n.value.length); }
+});
 $("codeSeg").addEventListener("click", (e) => {
   const b = e.target.closest("button");
   if (!b) return;
