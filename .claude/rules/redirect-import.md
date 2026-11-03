@@ -23,6 +23,12 @@ paths:
   - Netlify: case-sensitive, URL-encoded paths, no ? in the old path. Ghost: `301:` group of `old: new`, keys read as patterns.
 - **Copy-paste traps from audits and reports** (`core.js`): addresses cut short with … (red), new addresses on a platform's preview domain or localhost (red, "Use the path"; Wix also drops its site-name folder), preview links like ?preview_theme_id (red), netlify.app / vercel.app / github.io and staging-style subdomains (terracotta), addresses with no letters or numbers (terracotta). A preview domain that is most of the sheet's full URLs is taken as the new site and removed as routine ("Done for you"), but never used to write full URLs.
 - **Rules worth keeping:** old addresses are always paths; a new address keeps its domain unless the domain is the site's own (in the old column, or used by at least two rows and half the new full URLs). Same path on a new domain is "only the domain changes" unless Format is set to full URLs. `slashSame` means the platform treats `/a` and `/a/` as one address.
+- **Off the docs is always said** (John, 2 Nov): a file that strays from the platform's help page gets a terracotta
+  caution, as it still downloads: a separator other than a comma, a missing header row where the help shows one, a
+  header row where it shows none (Webflow), or header names unlike the help's (`offDocs()` in `main.js`; Wix's help
+  names no columns, `anyHead`). Header cautions sit under the header row, with a terracotta edge on it, as the box above
+  the file was easy to miss while typing there. Where the importer's code was read (Redirection: `seps`, `heads`) the
+  caution says what will happen instead of "may not import".
 - **Tests:** none in the repo yet. The scratch tests covered 43 tricky addresses, each platform's documented rules, a hand-built .xlsx, a Windows-1252 semicolon CSV, Wix's 500 per import and 5,000 rows for speed. Re-run something like them after changing `core.js` or `formats.js`.
 - **Analytics:** `redirect_file` (platform, redirects, action) on Copy and Download; never the addresses.
 - **A partial file is always said:** while rows need you, Copy and Download read "Copy 4 of 10" / "Download 4 of 10" and

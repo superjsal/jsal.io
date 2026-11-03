@@ -3,8 +3,9 @@
 // redirect), or a whole file written by write(). codes: false when the platform has no status setting, "optional"
 // or "required". slashSame: the platform treats /page and /page/ as one address. keepLetters: accented letters stay
 // as typed, for a platform that rejects any %. caution: what could go wrong on import, and note: worth knowing,
-// both said above the file. seps: the only separators the importer reads, when it doesn't read them all. heads: the
-// names it accepts for each of the first columns, when it skips only a header row that uses them. A rule
+// both said above the file. A file that strays from the help page (another separator, header row or names) gets a
+// caution. seps: the only separators the importer reads, where its code says so. heads: the names it accepts for each
+// of the first columns, where it skips only a header row that uses them. anyHead: the help names no columns. A rule
 // with warn: true is said under the cell
 // without keeping the row out of the file.
 
@@ -45,7 +46,7 @@ export const FORMATS = [
   { id: "wix", name: "Wix", group: "Website platforms", kind: "csv", file: "wix-redirects.csv", limit: 500,
     where: "SEO & GEO → URL Redirect Manager → More Actions → Import redirects",
     doc: "https://support.wix.com/en/article/importing-or-exporting-url-redirects-with-a-csv-file",
-    cols: () => [FROM("Old URL"), TO("New URL")], codes: false, slashSame: true },
+    cols: () => [FROM("Old URL"), TO("New URL")], codes: false, slashSame: true, anyHead: true },
   { id: "squarespace", name: "Squarespace", group: "Website platforms", kind: "lines", file: "squarespace-url-mappings.txt",
     where: "Settings → Developer tools → URL mappings: paste the lines", paste: true,
     caution: "A redirect only works once the old page is deleted or disabled.",
@@ -58,7 +59,7 @@ export const FORMATS = [
       /\?(?!format=rss$)/.test(r.to) && { cell: "n", id: "query", fixes: DROP_QUERY, text: "Squarespace allows ? here only for ?format=rss" },
     ] },
   { id: "webflow", name: "Webflow", group: "Website platforms", kind: "csv", file: "webflow-redirects.csv", headerOff: true,
-    caution: "An import replaces every redirect already there: export yours first and add them to this file. Webflow’s help doesn’t mention a header row, so the file has none.",
+    caution: "An import replaces every redirect already there: export yours first and add them to this file.",
     note: "Old paths have - _ ? = & and the like escaped with %, as Webflow asks.",
     where: "Site settings → Publishing → 301 redirects → Import",
     doc: "https://help.webflow.com/hc/en-us/articles/33961294898835",

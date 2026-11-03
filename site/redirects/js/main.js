@@ -1,6 +1,6 @@
 // Redirect Import: the sheet, the file beside it and the Format settings. The checks themselves are in core.js.
 import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=320e0bf5";
-import { FORMATS, byId } from "./formats.js?v=1a2fc850";
+import { FORMATS, byId } from "./formats.js?v=3deba5af";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -22,16 +22,30 @@ function defaults(f) {
 }
 const sepName = (s) => ({ ",": "Comma", ";": "Semicolon", "\t": "Tab", "|": "Pipe" })[s] || `“${s}”`;
 const sepShown = (s) => s.replace(/\t/g, "\\t");
-// A separator the importer doesn't read still passes its upload, then imports nothing
-const csvSep = (f, s) => f.seps && !f.seps.includes(s) &&
-  `${f.name} reads only commas, semicolons or pipes between columns, so with ${s === "\t" ? "tabs" : sepName(s)} it imports nothing. Change the separator under Format.`;
-// A header row with names the importer doesn't know is read as one more redirect
-const csvHead = (f, head, sep) => {
-  if (!f.heads || head === null) return false;
-  const names = head.split(sep).map((s) => s.trim().replace(/^"|"$/g, "").toLowerCase());
-  if (f.heads.every((ok, i) => ok.includes(names[i]))) return false;
-  return `${f.name} skips a header row only when it starts ${f.heads.map((ok) => ok[0]).join(sep)} or ${f.heads.map((ok) => ok[1]).join(sep)}, so this one would go in as a redirect. Change it, or remove it.`;
-};
+const sepWord = (s) => ({ ";": "semicolons", "\t": "tabs", "|": "pipes" })[s] || `“${sepShown(s)}”`;
+const unquote = (s) => s.replace(/^"(.*)"$/, "$1");
+// Anything in the file that strays from the platform's help page. Where its importer has been read (seps, heads) the
+// caution says what will happen; elsewhere, that it may not import. One about the header row is said under it
+function offDocs(f, head, docHead) {
+  const out = { file: [], head: "" };
+  if (f.kind !== "csv" || !f.doc) return out;
+  const sep = opts.sep, names = head === null ? [] : head.split(sep).map(unquote), doc = docHead.split(sep).map(unquote).join(sep);
+  if (f.seps) {
+    if (!f.seps.includes(sep)) out.file.push(`${f.name} reads only commas, semicolons or pipes between columns, so with ${sepWord(sep)} it imports nothing. Change the separator under Format.`);
+  } else if (sep !== ",") out.file.push(`${f.name}’s help asks for commas between columns, so with ${sepWord(sep)} it may not import. Change the separator under Format.`);
+  if (f.heads) {
+    if (head !== null && !f.heads.every((ok, i) => ok.includes(names[i]?.trim().toLowerCase()))) {
+      out.head = `${f.name} skips a header row only when it starts ${f.heads.map((ok) => ok[0]).join(sep)} or ${f.heads.map((ok) => ok[1]).join(sep)}, so this one would go in as a redirect. Change it, or remove it.`;
+    }
+  } else if (f.headerOff) {
+    if (head !== null) out.head = `${f.name}’s help doesn’t mention a header row, so this one may go in as a redirect. Remove it with ×.`;
+  } else if (head === null) {
+    out.file.push(`${f.name}’s help shows a header row first, so without one the first redirect may be skipped. Add it back.`);
+  } else if (!f.anyHead && names.join(sep) !== doc) {
+    out.head = `${f.name}’s help shows the header row as ${doc.split(sep).join(",")}, so this one may not import. Change it back.`;
+  }
+  return out;
+}
 
 // ── Platforms ──────────────────────────────────────────────────────────────
 
@@ -493,9 +507,11 @@ function renderFile() {
   // Without one, the line to add it shows what it would say
   $("headAdd").hidden = fmt.kind !== "csv" || opts.headerOn;
   $("headAddText").textContent = opts.header ?? w.header ?? "";
-  const names = head === null ? 0 : head.split(opts.sep).length;
-  $("headWarn").hidden = head === null || opts.header === null || names === w.cols;
-  $("headWarn").textContent = `The header has ${names} name${names === 1 ? "" : "s"}; each row has ${w.cols} columns.`;
+  const names = head === null ? 0 : head.split(opts.sep).length, off = offDocs(fmt, head, w.header ?? "");
+  const count = head !== null && opts.header !== null && names !== w.cols && `The header has ${names} name${names === 1 ? "" : "s"}; each row has ${w.cols} columns.`;
+  $("headWarn").textContent = [count, off.head].filter(Boolean).join(" ");
+  $("headWarn").hidden = !$("headWarn").textContent;
+  headIn.classList.toggle("warn", !$("headWarn").hidden);
   $("fileText").textContent = w.body;
   $("fileText").hidden = !w.body;
   $("fileEmpty").hidden = !!w.body;
@@ -503,7 +519,7 @@ function renderFile() {
   // Anything to know before importing it
   showWhere();
   const warn = [fmt.caution,
-    csvSep(fmt, opts.sep), csvHead(fmt, head, opts.sep),
+    ...off.file,
     fmt.needsDomain && !domain() && `${fmt.name} needs the store’s domain on every row: add it under Format.`,
     fmt.max && result.ready.length > fmt.max && `${fmt.name} takes up to ${fmt.max.toLocaleString("en-GB")} redirects; this has ${result.ready.length.toLocaleString("en-GB")}. Vercel bulk redirects take more.`,
     opts.newAddr === "url" && !result.site && "Add the new site’s address under Format to write full URLs."].filter(Boolean);
