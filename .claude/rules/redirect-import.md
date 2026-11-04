@@ -53,7 +53,12 @@ paths:
   with nothing like an address in them sit last in each picker, under "No addresses in these columns", still
   pickable (paths typed without their first / count as none); a mark in the option text made the pickers too wide to
   share a line. Where the old and new columns share a repeated note's wording, its line above the sheet adds "in the
-  old address" / "in the new address".
+  old address" / "in the new address". The pickers only say where the addresses are, which people read as mapping
+  the file's columns (John picked BigCommerce's Dynamic columns, 4 Nov), so a line under them says "Pick only where
+  the addresses are: the file's other columns are filled in for you" ("…are in" on the labels made them too wide to
+  share a line). A picked column with no addresses in any row is said once above the sheet ("Column D (Dynamic
+  Target Type) has no addresses in it. Pick the column with the old addresses."), in place of its "no / at the
+  start" line; the row notes stay, for the one stray address without its /.
 - **Rules worth keeping:** old addresses are always paths; a new address keeps its domain unless the domain is the site's own (in the old column, or used by at least two rows and half the new full URLs). Same path on a new domain is "only the domain changes" unless Format is set to full URLs. `slashSame` only decides whether chains and domain-only rows are followed through a last / and capitals.
 - **A / or capital is the visitor's call, unless the docs settle it** (John, 2 Nov; the documented rules named 4 Nov):
   where a platform doesn't document how it matches the last / or capitals, addresses that differ only there are

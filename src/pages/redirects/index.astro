@@ -90,6 +90,8 @@ import { v, importmap } from "../../lib/v.mjs";
         <div class="cols" id="cols" hidden>
           <label>Old addresses <select class="field" id="colOld"></select></label>
           <label>New addresses <select class="field" id="colNew"></select></label>
+          <!-- The pickers only say where the addresses are; the file's own columns are written by the tool -->
+          <p class="cols-hint">Pick only where the addresses are: the file’s other columns are filled in for you.</p>
         </div>
         <!-- What was done to every row at once, and problems on several rows with a fix for all of them -->
         <div class="overview" id="overview" hidden></div>

@@ -628,7 +628,7 @@ export function parseDelimited(text) {
   return rows.filter((r) => r.some((c) => tidy(c)));
 }
 
-const looksLikeAddress = (v) => { const a = readAddress(v); return a.kind === "ok" && (a.host || /^\//.test(tidy(v))); };
+export const looksLikeAddress = (v) => { const a = readAddress(v); return a.kind === "ok" && (a.host || /^\//.test(tidy(v))); };
 export const colLetter = (i) => (i >= 26 ? colLetter(Math.floor(i / 26) - 1) : "") + String.fromCharCode(65 + (i % 26));
 
 // Headings that say which column is which (Old Path, Source, Redirect from; New URL, Target, Manual URL/Path), and
