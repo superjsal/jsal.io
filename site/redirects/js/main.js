@@ -68,13 +68,30 @@ $("platform").addEventListener("change", (e) => {
 
 function load(raw, name) {
   if (!raw.length) return showError("Nothing to read there. Copy two columns: old addresses and new ones.");
-  table = { raw, name, pick: pickColumns(raw) };
+  // The cells as loaded, so a row edited and then shown through other columns still knows what it started as
+  table = { raw, orig: raw.map((r) => [...r]), name, pick: pickColumns(raw) };
   build();
 }
-function build() {
-  const { raw, pick } = table;
+function build(prev) {
+  const { raw, orig, pick } = table;
+  // Switching columns keeps what was done to the sheet: each edit goes back into the cell it was made in, and deleted,
+  // left-out and added rows stay as they were
+  const was = new Map(), added = [];
+  if (prev) for (const r of rows) {
+    if (r.ri === undefined) { added.push(r); continue; }
+    raw[r.ri][prev.o] = r.old; raw[r.ri][prev.n] = r.new;
+    was.set(r.ri, r);
+  }
   lastN = 0;
-  rows = raw.slice(pick.header ? 1 : 0).map((r, i) => row(r[pick.o], r[pick.n], false, (r.at ?? i + (pick.header ? 1 : 0)) + 1));
+  const top = pick.header ? 1 : 0;
+  rows = raw.slice(top).map((r, i) => {
+    const ri = i + top, x = row(r[pick.o], r[pick.n], false, (r.at ?? ri) + 1), w = was.get(ri);
+    x.ri = ri; x.old0 = tidy(orig[ri]?.[pick.o] ?? ""); x.new0 = tidy(orig[ri]?.[pick.n] ?? "");
+    if (w) { x.deleted = w.deleted; x.skip = w.skip; }
+    return x;
+  });
+  rows.push(...added);
+  lastN = Math.max(lastN, ...added.map((r) => r.n));
   part = 0;
   const label = (i) => `${colLetter(i)}${pick.names[i] ? ": " + pick.names[i] : ""}`;
   $("cols").hidden = pick.width < 3;
@@ -97,7 +114,7 @@ function row(o = "", n = "", added = false, num = lastN + 1) {
   return r;
 }
 for (const [sel, k] of [[$("colOld"), "o"], [$("colNew"), "n"]]) {
-  sel.addEventListener("change", () => { table.pick[k] = +sel.value; build(); });
+  sel.addEventListener("change", () => { const prev = { ...table.pick }; table.pick[k] = +sel.value; build(prev); });
 }
 
 function show() {
