@@ -631,13 +631,33 @@ export function parseDelimited(text) {
 const looksLikeAddress = (v) => { const a = readAddress(v); return a.kind === "ok" && (a.host || /^\//.test(tidy(v))); };
 export const colLetter = (i) => (i >= 26 ? colLetter(Math.floor(i / 26) - 1) : "") + String.fromCharCode(65 + (i % 26));
 
+// Headings that say which column is which (Old Path, Source, Redirect from; New URL, Target, Manual URL/Path), and
+// ones that name something else even when they share a word (Dynamic Target Type, Domain, Notes from the client)
+const OLD_NAME = /\b(old|from|source|origin(al)?)\b/i, NEW_NAME = /\b(new|to|target|destination|manual)\b/i;
+const OTHER_NAME = /\b(type|id|code|status|domain|host|regex|format|notes?|title)\b/i;
+// A store's or site's own domain repeated on every row (BigCommerce's Domain column) is not an address column
+const HOST_ONLY = /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+\/?$/i;
+
 /** Which two columns hold the old and new addresses, and whether the first row is a header. */
 export function pickColumns(rows) {
   const width = Math.max(2, ...rows.map((r) => r.length));
+  const first = rows[0] || [];
+  const isName = (v) => tidy(v) && !looksLikeAddress(v) && !/^\//.test(tidy(v));
   const score = Array.from({ length: width }, (_, c) => rows.reduce((s, r) => s + (looksLikeAddress(r[c]) ? 1 : 0), 0));
+  const values = (c) => rows.slice(isName(first[c]) ? 1 : 0).map((r) => tidy(r[c])).filter(Boolean);
+  const hostOnly = score.map((s, c) => s > 0 && new Set(values(c)).size === 1 && values(c).length > 1 && HOST_ONLY.test(values(c)[0]));
+  // A domain column steps aside only where two other columns hold addresses, so a sheet sending everything to one
+  // home page keeps its new column
+  if (score.filter((s, c) => s > 0 && !hostOnly[c]).length >= 2) hostOnly.forEach((h, c) => { if (h) score[c] = 0; });
+  // Headings win where they name both columns and those hold addresses
+  const named = (re) => {
+    const c = first.map((v, i) => i).filter((i) => isName(first[i]) && re.test(first[i]) && !OTHER_NAME.test(first[i]) && score[i] > 0);
+    return c.length ? c.reduce((a, b) => (score[b] > score[a] ? b : a)) : -1;
+  };
+  const no = rows.length > 1 ? named(OLD_NAME) : -1, nn = rows.length > 1 ? named(NEW_NAME) : -1;
+  if (no >= 0 && nn >= 0 && no !== nn) return { o: no, n: nn, header: true, width, names: first.map(tidy) };
   const order = score.map((s, c) => [s, c]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).slice(0, 2).map((x) => x[1]).sort((a, b) => a - b);
   const [o, n] = order;
-  const first = rows[0] || [];
-  const header = rows.length > 1 && [first[o], first[n]].every((v) => tidy(v) && !looksLikeAddress(v) && !/^\//.test(tidy(v)));
+  const header = rows.length > 1 && [first[o], first[n]].every(isName);
   return { o, n, header, width, names: header ? first.map(tidy) : [] };
 }

@@ -81,6 +81,24 @@ check("csv columns", pick.o === 1 && pick.n === 2 && pick.header, JSON.stringify
 check("csv quoted comma", raw[1][1] === "/a,b", raw[1][1]);
 check("csv blank row keeps its place", raw[3].at === 4, raw[3].at);
 check("no header", !pickColumns(parseDelimited("/a\t/b\n/c\t/d")).header);
+// Which columns, in sheets of three to five (4 Nov): headings win where they name both; a domain repeated on every
+// row isn't an address column while two others are; [label, text, old column, new column, header]
+const picks = [
+  ["BigCommerce template, some dynamic rows", "Domain\tOld Path\tManual URL/Path\tDynamic Target Type\tDynamic Target ID\nmystore.com\t/old-mug\t/mugs/blue-mug/\t\t\nmystore.com\t/red-mug\t\tProduct\t112\nmystore.com\t/mugs-sale\t\tCategory\t23\nmystore.com\t/about\t/pages/about-us/\t\t", 1, 2, true],
+  ["domain, old, new, notes", "Domain\tOld Path\tNew Path\tNotes\nshop.com\t/a\t/b\tx\nshop.com\t/c\t/d\t\nshop.com\t/e\t/f\ty", 1, 2, true],
+  ["domain first, no header", "shop.com\t/a\t/b\t301\nshop.com\t/c\t/d\t301\nshop.com\t/e\t/f\t301", 1, 2, false],
+  ["https domain first, no header", "https://shop.com\t/a\t/b\nhttps://shop.com\t/c\t/d", 1, 2, false],
+  ["old, new, type, notes", "Old URL\tNew URL\tRedirect Type\tNotes\n/a\t/b\t301\tmoved\n/c\t/d\t301\t\n/e\thttps://new.com/f\t302\tsale", 0, 1, true],
+  ["new before old", "New URL\tOld URL\n/b\t/a\n/d\t/c", 1, 0, true],
+  ["a title column", "Old Title\tOld URL\tNew URL\nAbout\t/about\t/about-us\nTeam\t/team\t/team-us", 1, 2, true],
+  ["parent column", "Page\tOld\tNew\tParent\nAbout\t/about\t/about-us\t/\nTeam\t/team\t/about-us/team\t/about", 1, 2, true],
+  ["everything to one home page", "/a\thttps://new.com\n/b\thttps://new.com\n/c\thttps://new.com", 0, 1, false],
+  ["HubSpot's own columns", "original url,redirect to,redirect type,redirect style\n/a,/b,301,STANDARD\n/c,/d,301,STANDARD", 0, 1, true],
+];
+for (const [label, text, o, n, header] of picks) {
+  const p = pickColumns(parseDelimited(text));
+  check(`columns: ${label}`, p.o === o && p.n === n && p.header === header, JSON.stringify({ o: p.o, n: p.n, header: p.header }));
+}
 // "disregard" and other instruction words, pasted the ways they arrive
 const words = {
   "two columns": "Old\tNew\nhttps://blahblahblah.com/blahblah\tdisregard\n/keep-me\t/kept",

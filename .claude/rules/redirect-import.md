@@ -42,6 +42,14 @@ paths:
   "Leave all N out" (`leaveAll`). One page listed with two or more ? parts, all to one new address, without the page
   itself in the sheet, is terracotta with "Remove the ? part": done on all, the repeats become "Same as row N". Not
   for `/` or `.php`-style pages, whose ? part says which page it is, nor where the platform already refuses the ?.
+- **Which columns** (`pickColumns`, 4 Nov): a sheet of three or more columns shows Old address / New address pickers.
+  Headings win where they name both columns and those hold addresses (Old Path, Source, Redirect from, original url;
+  New, Target, Destination, Manual URL/Path; not ones naming a type, ID, code, domain, notes or title), so New before
+  Old reads right. Otherwise the two columns with the most addresses, except a domain repeated on every row
+  (BigCommerce's Domain, an audit's host column) while two other columns hold addresses: picking it once made every
+  row "Duplicate". A sheet sending every row to one home page keeps that column. Only the two columns are kept;
+  BigCommerce's Dynamic Target Type and ID are always written blank (Dynamic Links, to a product or category by ID,
+  aren't supported: John, 4 Nov, until someone asks), so a pasted Dynamic Link row reads "No new address".
 - **Rules worth keeping:** old addresses are always paths; a new address keeps its domain unless the domain is the site's own (in the old column, or used by at least two rows and half the new full URLs). Same path on a new domain is "only the domain changes" unless Format is set to full URLs. `slashSame` only decides whether chains and domain-only rows are followed through a last / and capitals.
 - **A / or capital is the visitor's call, unless the docs settle it** (John, 2 Nov; the documented rules named 4 Nov):
   where a platform doesn't document how it matches the last / or capitals, addresses that differ only there are
@@ -90,7 +98,7 @@ paths:
   as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
   platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
   (`fixedName`), as those platforms find the file by its name.
-- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 253 checks) runs the real `core.js` and `formats.js` on tricky
+- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 263 checks) runs the real `core.js` and `formats.js` on tricky
   addresses, pasted text, junk and cut-short addresses, preview sites, each platform's documented rules and file, the
   audit-export traps, chains, duplicates and capitals. `check.py` (so `check.ps1`) and Site checks run it on every push
   to `main` and `staging`; a failure prints FAIL lines. When a result should change, agree it first, then update the
