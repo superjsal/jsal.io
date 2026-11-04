@@ -3,11 +3,11 @@
 import {
   state, FORMATS, QUALITY_HINTS, CAN_WEBP, savePrefs, loadPrefs,
   loadRecents, addRecent, removeRecent,
-} from "./state.js?v=40d19ada";
+} from "./state.js?v=eecd5c7a";
 import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=332328fe";
-import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=d7b14b26";
-import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=5506a8d5";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=7478652f";
+import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=4dffa681";
+import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=c5051010";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=9317f613";
 import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=a29a8c08";
 import { makeZip, uniqueNames } from "./zip.js?v=eb36bced";
 import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=3f6bf90b";
@@ -64,6 +64,7 @@ function refreshAll() {
   downloadBtn.disabled = false;
   app.classList.add("has-images");
   showSummary();
+  renderNameEg();
 }
 
 // Stops a running load; it frees what it had decoded so far.
@@ -82,6 +83,7 @@ function resetUI() {
   clearEditor();
   downloadBtn.disabled = true;
   app.classList.remove("has-images");
+  renderNameEg();
 }
 
 // --- Loading files ---
@@ -196,6 +198,12 @@ function renderDest() {
   folderName.classList.toggle("empty", !folder);
   $("folderChange").textContent = folder ? "Change…" : "Choose…";
   if (!state.isExporting) downloadLabel.textContent = DEST_LABELS[state.dest];
+}
+
+// The name under "Add the size to file names": the first image's as it will save with the size,
+// or a stand-in photo's before any are loaded
+function renderNameEg() {
+  $("nameEg").textContent = getFilename(state.images[0] ?? { name: "photo", width: 4032, height: 3024 }, true);
 }
 
 async function chooseFolder() {
@@ -337,6 +345,7 @@ function applySize(w, h) {
   state.keepOriginal = false;
   state.size = { w, h };
   hintSize();
+  renderNameEg();
   savePrefs();
   setBadge(`${w} × ${h}`);
   if (state.images.length) refreshAll();
@@ -346,6 +355,7 @@ function applySize(w, h) {
 function applyOriginalMode() {
   state.keepOriginal = true;
   hintSize();
+  renderNameEg();
   savePrefs();
   setBadge("Original sizes");
   if (state.images.length) refreshAll();
@@ -355,6 +365,7 @@ function applyOriginalMode() {
 // Settings that change the encoded file but not the crop.
 function encodingChanged() {
   savePrefs();
+  renderNameEg();   // the format's extension
   updateCardMeta();
   prewarm();
   if (state.images.length && !state.isExporting) showSummary();
@@ -475,6 +486,13 @@ destButtons.forEach(btn => btn.addEventListener("click", async () => {
 }));
 $("folderChange").addEventListener("click", chooseFolder);
 
+$("sizeInName").addEventListener("change", e => {
+  state.sizeInName = e.target.checked;
+  savePrefs();
+});
+// A card renamed (its own change handler runs first) may be the first image, whose name the example shows
+$("previewGrid").addEventListener("change", renderNameEg);
+
 $("choiceReplace").addEventListener("click", () => acceptPending(false));
 $("choiceAdd").addEventListener("click", () => acceptPending(true));
 $("choiceCancel").addEventListener("click", () => {
@@ -585,5 +603,8 @@ if (state.dest === "folder" && !folderSupported) state.dest = "files";
 if (!folderSupported) destButtons.find(b => b.dataset.dest === "folder").hidden = true;
 renderDest();
 savedFolder().then(f => { folder = f; renderDest(); });
+
+$("sizeInName").checked = state.sizeInName;
+renderNameEg();
 
 renderRecents();

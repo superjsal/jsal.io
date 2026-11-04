@@ -1,8 +1,8 @@
 // Thumbnail cards for every loaded image: crop preview, rename, size, save, remove.
 
-import { state, outSizeFor } from "./state.js?v=40d19ada";
+import { state, outSizeFor } from "./state.js?v=eecd5c7a";
 import { drawCropped } from "./imaging.js?v=332328fe";
-import { freshEntry, errorFor } from "./export.js?v=d7b14b26";
+import { freshEntry, errorFor } from "./export.js?v=4dffa681";
 import { icon, formatBytes } from "./ui.js?v=a29a8c08";
 
 const previewGrid = document.getElementById("previewGrid");
@@ -26,8 +26,16 @@ export function cleanName(name) {
     .replace(/^-|-$/g, "") || "image";
 }
 
-export function getFilename(item) {
-  return cleanName(item.customName || item.name) + "." + state.format.ext;
+// With the size on, each file gets the size it's saved at (its own in Original mode), once:
+// a name that already ends in it, like a re-resized copy, isn't given it twice
+export function getFilename(item, withSize = state.sizeInName) {
+  let base = cleanName(item.customName || item.name);
+  if (withSize) {
+    const { w, h } = outSizeFor(item);
+    const tag = `-${w}x${h}`;
+    if (!base.toLowerCase().endsWith(tag)) base += tag;
+  }
+  return base + "." + state.format.ext;
 }
 
 export function drawThumb(i) {

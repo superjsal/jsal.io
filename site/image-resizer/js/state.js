@@ -35,6 +35,7 @@ export const state = {
   selectedIndex: 0,
   isExporting: false,
   dest: "files",                 // where Download All / Save go: "files" | "zip" | "folder"
+  sizeInName: false,             // photo-1200x628.jpg rather than photo.jpg
 };
 
 export const DESTS = ["files", "zip", "folder"];
@@ -62,6 +63,7 @@ export function savePrefs() {
   write("resizer-format",   Object.keys(FORMATS).find(k => FORMATS[k] === state.format) ?? "jpeg");
   write("resizer-original", state.keepOriginal ? "1" : "0");
   write("resizer-dest",     state.dest);
+  write("resizer-name-size", state.sizeInName ? "1" : "0");
 }
 
 export function loadPrefs() {
@@ -79,6 +81,8 @@ export function loadPrefs() {
 
   const dest = read("resizer-dest");
   if (DESTS.includes(dest)) state.dest = dest;
+
+  state.sizeInName = read("resizer-name-size") === "1";
 }
 
 export function loadRecents() {

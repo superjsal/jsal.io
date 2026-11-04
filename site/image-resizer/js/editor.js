@@ -2,7 +2,7 @@
 // the part that will be cropped away, and lets the crop window be dragged or
 // moved with arrow keys along whichever axis has room.
 
-import { state, outSizeFor } from "./state.js?v=40d19ada";
+import { state, outSizeFor } from "./state.js?v=eecd5c7a";
 import { getCropRect, decodeForEditor } from "./imaging.js?v=332328fe";
 import { clamp } from "./ui.js?v=a29a8c08";
 

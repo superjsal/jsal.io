@@ -142,6 +142,12 @@ import { v, importmap } from "../../lib/v.mjs";
         <button class="folder-change" id="folderChange">Choose…</button>
       </div>
 
+      <!-- Off by default, so files keep the names they came with; the example is the first image's name as it will save -->
+      <label class="name-tick">
+        <input type="checkbox" id="sizeInName" aria-labelledby="sizeInNameLabel" aria-describedby="nameEg">
+        <span><span class="name-tick-label" id="sizeInNameLabel">Add the size to file names</span><span class="name-eg" id="nameEg">photo-1200x628.jpg</span></span>
+      </label>
+
       <div class="toolbar">
         <button class="jsal-btn primary" id="download" disabled>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
@@ -200,7 +206,7 @@ import { v, importmap } from "../../lib/v.mjs";
       <li>Pick an output size: <strong>1200 × 628</strong> (blog posts and social share images), <strong>640 × 420</strong> (smaller feature images), <strong>Original</strong> to keep each image's size, or type your own width and height.</li>
       <li data-touch="Tap Choose images to pick them from your photos or files.">Drop your images on the page, or click to browse.</li>
       <li>Check the crop. <span data-touch="Tap any image in the strip to edit it, then drag the crop box to choose which part is kept.">Click any image in the strip to edit it, then drag the crop box (or use the arrow keys) to choose which part is kept.</span></li>
-      <li>Choose quality and format, then <strong>Download All</strong><span data-touch=""> (<kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>)</span>. You can also save single images and rename files first.</li>
+      <li>Choose quality and format, then <strong>Download All</strong><span data-touch=""> (<kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>)</span>. You can also save single images, rename files first, or add the size to every file name (photo-1200x628.jpg).</li>
     </ol>
 
     <details>

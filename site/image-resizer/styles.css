@@ -184,6 +184,28 @@ body {
   color: var(--jsal-ink-2);
 }
 .folder-row svg { flex-shrink: 0; color: var(--jsal-muted); }
+
+/* The one on/off setting: a tick row, gold while ticked like the chosen buttons above it, with the name it gives */
+.name-tick {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--jsal-space-12);
+  margin-bottom: var(--jsal-space-8);
+  padding: var(--jsal-space-8) var(--jsal-space-12);
+  border: 1px solid var(--jsal-line-hi);
+  border-radius: var(--jsal-radius);
+  background: var(--jsal-bg);
+  color: var(--jsal-ink);
+  cursor: pointer;
+  transition: border-color var(--jsal-quick), background var(--jsal-quick);
+}
+.name-tick:hover { border-color: var(--jsal-hover-line); }
+.name-tick:has(:checked) { border-color: var(--jsal-gold-line); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: var(--jsal-selected-ring); }
+.name-tick:has(:focus-visible) { box-shadow: var(--jsal-focus-ring); }
+.name-tick input { flex: none; width: 18px; height: 18px; margin: var(--jsal-space-2) 0 0; accent-color: var(--jsal-accent); cursor: pointer; }
+.name-tick input:focus-visible { outline: none; }
+.name-tick-label { display: block; font-size: 14px; font-weight: 600; }
+.name-eg { display: block; margin-top: var(--jsal-space-2); font: 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); overflow-wrap: anywhere; }
 .folder-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--jsal-ink); }
 .folder-name.empty { color: var(--jsal-muted); font-weight: 400; }
 .folder-change {
