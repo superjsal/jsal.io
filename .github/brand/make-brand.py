@@ -49,7 +49,7 @@ def glyph_mono(colour='currentColor'):
 
 
 # Wordmark text as outlines: Inter at weight 700, 18 units to the em, tracked -0.02em, as the site sets it
-font = TTFont(ROOT / 'site' / 'fonts' / 'inter.woff2')
+font = TTFont(ROOT / '.github' / 'build' / 'fonts' / 'inter.woff2')
 font = instantiateVariableFont(font, {'wght': 700})
 upm = font['head'].unitsPerEm
 cmap, gs, hmtx = font.getBestCmap(), font.getGlyphSet(), font['hmtx']
