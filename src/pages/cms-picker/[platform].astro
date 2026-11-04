@@ -53,7 +53,7 @@ const DIR = `/cms-picker/${p.id}/`;
       <ul class="pp-built" set:html={`\n${p.built}\n      `}></ul>
     </section>
 
-    <div class="pp-next"><a class="jsal-btn primary" href="../#quiz">Is {p.name} right for me?</a><a class="jsal-btn" href={`../#seo?with=${p.id}`}>Compare {p.name} with others</a></div>
+    <div class="pp-next"><a class="jsal-btn primary" href="../#quiz">Not sure? Find your fit</a><a class="jsal-btn" href={`../#seo?with=${p.id}`}>Compare {p.name} with others</a></div>
     <nav class="pp-others" aria-label="Other platforms"><span>Other platforms:</span><Fragment set:html={p.others} /></nav>
   </main>
 
