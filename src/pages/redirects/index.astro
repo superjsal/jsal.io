@@ -146,11 +146,14 @@ import { v, importmap } from "../../lib/v.mjs";
         <p class="file-box warn" id="fileWarn" hidden></p>
         <p class="file-box info" id="fileInfo" hidden></p>
         <div class="pane-body file-body">
-          <!-- The header row is labelled where it sits, so whether the file has one is seen in the file itself -->
+          <!-- The header row is labelled where it sits, so whether the file has one is seen in the file itself; a long
+               one wraps like the lines under it -->
           <div class="head-row" id="headRow">
-            <input class="head-in" id="headIn" spellcheck="false" autocomplete="off" aria-label="Header row" aria-describedby="headWarn" title="Edit the header row">
-            <span class="head-tag" aria-hidden="true">Header row</span>
-            <button type="button" class="del head-del" id="headDel" aria-label="Remove the header row"><span aria-hidden="true">×</span></button>
+            <div class="head-label">
+              <span class="head-tag" aria-hidden="true">Header row</span>
+              <button type="button" class="del head-del" id="headDel" aria-label="Remove the header row"><span aria-hidden="true">×</span></button>
+            </div>
+            <textarea class="head-in" id="headIn" rows="1" spellcheck="false" autocomplete="off" aria-label="Header row" aria-describedby="headWarn" title="Edit the header row"></textarea>
           </div>
           <p class="head-add" id="headAdd" hidden><span id="headAddText"></span> <button type="button" class="jsal-btn link" id="headAddBtn">Add one</button></p>
           <p class="head-warn" id="headWarn" hidden></p>

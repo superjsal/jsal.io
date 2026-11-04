@@ -153,8 +153,10 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .file-done[hidden] { display: none; }
 
 .file-body { padding: var(--jsal-space-8) var(--jsal-space-12) var(--jsal-space-12); }
-/* The header row reads as part of the file until it's pointed at, labelled and set off from the redirects under it */
-.head-row { display: flex; align-items: center; gap: var(--jsal-space-8); margin-bottom: var(--jsal-space-4); padding-bottom: var(--jsal-space-4); border-bottom: 1px dashed var(--jsal-line-hi); }
+/* The header row reads as part of the file until it's pointed at, labelled above and set off from the redirects
+   under it; a long one wraps like they do */
+.head-row { margin-bottom: var(--jsal-space-4); padding-bottom: var(--jsal-space-4); border-bottom: 1px dashed var(--jsal-line-hi); }
+.head-label { display: flex; align-items: center; gap: var(--jsal-space-8); margin-bottom: var(--jsal-space-2); }
 .head-row[hidden], .head-add[hidden] { display: none; }
 .head-tag { flex: none; padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-pill); background: var(--jsal-sunk); color: var(--jsal-muted); font-size: 12px; font-weight: 500; white-space: nowrap; }
 .head-row .del { position: relative; flex: none; width: 24px; height: 24px; margin-top: 0; }
@@ -162,7 +164,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .head-add { margin: 0 0 var(--jsal-space-8); font-size: 13px; color: var(--jsal-muted); }
 .head-add.warn { color: var(--jsal-warn); }   /* the platform's help shows a header row, so its absence is a warning */
 .head-add .jsal-btn.link { font-size: 13px; }
-.head-in { display: block; flex: 1; min-width: 0; margin: 0 0 0 -6px; padding: 1px 5px; border: 1px solid transparent; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-accent); font-size: 13px; font-weight: 600; line-height: 1.7; }   /* style: allow (its text stays level with the column it names) */
+.head-in { display: block; width: calc(100% + 12px); margin: 0 -6px; padding: 1px 5px; border: 1px solid transparent; border-radius: var(--jsal-radius-sm); background: none; color: var(--jsal-accent); font-size: 13px; font-weight: 600; line-height: 1.7; resize: none; overflow: hidden; white-space: pre-wrap; word-break: break-all; field-sizing: content; }   /* style: allow (its text stays level with the lines under it) */
 .head-in:hover { border-color: var(--jsal-line-hi); }
 .head-in.warn { border-color: var(--jsal-warn); }
 /* The file's name is edited in place, like the header row; its extension stays as text beside it */
@@ -175,7 +177,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .name-in[hidden] { display: none; }
 .name-end { flex: none; margin-left: -2px; }   /* style: allow (takes back the caret's room, so name and extension sit as one word) */
 .head-warn { margin: var(--jsal-space-2) 0 var(--jsal-space-4); font-size: 12px; color: var(--jsal-warn); }
-.file { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre; tab-size: 4; }
+/* Long lines wrap at the edge, as in a code editor, so each redirect shows whole without scrolling sideways */
+.file { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre-wrap; word-break: break-all; tab-size: 4; }
 .file:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); border-radius: var(--jsal-radius-sm); }
 /* Each line's sheet row number sits in a gutter as drawn text, so selecting or copying the file never takes it; the
    header row lines up with the lines under it */
@@ -237,7 +240,6 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
   .sheet .x { grid-column: 4; grid-row: 1; }
   .sheet .o, .sheet .nw { grid-column: 1 / -1; }
   .sheet .o::before, .sheet .nw::before { display: block; margin-bottom: var(--jsal-space-2); font-size: 12px; font-weight: 700; color: var(--jsal-muted); content: attr(data-label); }
-  .file { white-space: pre-wrap; overflow-wrap: anywhere; }
 }
 @media (pointer: coarse) {
   .cell, .txt, .head-in, .name-in, .field { font-size: 16px; }   /* style: allow (iPhones zoom into smaller text boxes) */

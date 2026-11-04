@@ -549,7 +549,7 @@ function renderFile() {
   }
   const headIn = $("headIn");
   $("headRow").hidden = head === null;
-  if (head !== null && document.activeElement !== headIn) headIn.value = head;
+  if (head !== null && document.activeElement !== headIn) { headIn.value = head; grow(headIn); }
   const names = head === null ? 0 : head.split(opts.sep).length, off = offDocs(fmt, head, w.header ?? "");
   // Without one, a line says so where it would be, as a warning where the platform's help shows one
   $("headAdd").hidden = fmt.kind !== "csv" || opts.headerOn;
@@ -669,9 +669,14 @@ $("sep").addEventListener("input", (e) => {
   opts.sep = v;
   renderFile();
 });
-// Typing the header row sets the separator too: whichever of tab, semicolon, comma or pipe it uses
+// Typing the header row sets the separator too: whichever of tab, semicolon, comma or pipe it uses. It's one line of
+// the file, so Enter and pasted line breaks never split it
+$("headIn").addEventListener("keydown", (e) => { if (e.key === "Enter") e.preventDefault(); });
 $("headIn").addEventListener("input", (e) => {
-  const v = e.target.value;
+  const el = e.target;
+  if (/[\r\n]/.test(el.value)) { const at = el.selectionStart; el.value = el.value.replace(/[\r\n]+/g, ""); el.selectionStart = el.selectionEnd = Math.min(at, el.value.length); }
+  const v = el.value;
+  grow(el);
   opts.header = v;
   const sep = ["\t", ";", ",", "|"].find((s) => v.includes(s));
   if (sep) opts.sep = sep;
@@ -718,6 +723,11 @@ for (const b of [$("viewSheet"), $("viewFile")]) b.addEventListener("click", () 
 // Each pane fills the rest of the first screen, so the page itself doesn't need to scroll while working
 function place() { work.style.setProperty("--work-top", `${Math.round(work.getBoundingClientRect().top + scrollY)}px`); }
 addEventListener("resize", () => { if (table) place(); });
+// The header row's box is grown again whenever its width changes, as when a phone first shows the file
+if (autoSize) {
+  let headW = -1;
+  new ResizeObserver(([e]) => { const w = Math.round(e.contentRect.width); if (w !== headW) { headW = w; grow($("headIn")); } }).observe($("headRow"));
+}
 
 showWhere();
 restore();
