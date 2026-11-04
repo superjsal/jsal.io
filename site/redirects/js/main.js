@@ -1,5 +1,5 @@
 // Redirect Import: the sheet, the file beside it and its Settings. The checks themselves are in core.js.
-import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=64dbd3d9";
+import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy } from "./core.js?v=49988daf";
 import { FORMATS, byId } from "./formats.js?v=a43b7548";
 
 const $ = (id) => document.getElementById(id);
@@ -78,8 +78,13 @@ function build() {
   part = 0;
   const label = (i) => `${colLetter(i)}${pick.names[i] ? ": " + pick.names[i] : ""}`;
   $("cols").hidden = pick.width < 3;
+  // Columns with nothing like an address in them are listed apart, under a heading that says so, but stay a choice:
+  // paths typed without their first / count as none
+  const cols = Array.from({ length: pick.width }, (_, i) => i), none = cols.filter((i) => pick.counts?.[i] === 0);
+  const opt = (i) => `<option value="${i}">${esc(label(i))}</option>`;
+  const list = cols.filter((i) => !none.includes(i)).map(opt).join("") + (none.length ? `<optgroup label="No addresses in these columns">${none.map(opt).join("")}</optgroup>` : "");
   for (const [sel, at] of [[$("colOld"), pick.o], [$("colNew"), pick.n]]) {
-    sel.innerHTML = Array.from({ length: pick.width }, (_, i) => `<option value="${i}">${esc(label(i))}</option>`).join("");
+    sel.innerHTML = list;
     sel.value = at;
   }
   show();
@@ -473,11 +478,14 @@ function overview(live) {
   }
   // Duplicates always come in twos or more, and each pair is its own, so they aren't listed as repeats
   const repeats = [...groups].filter(([k, g]) => g.ids.length > 1 && !k.endsWith(":clash")).sort((a, b) => b[1].ids.length - a[1].ids.length);
+  // Where the old and new columns share a line's wording, each line says which column it's about
+  const shared = (g) => repeats.filter(([, h]) => h.title === g.title).length > 1;
+  const which = (key) => key[0] === "o" ? " in the old address" : key[0] === "n" ? " in the new address" : "";
   const domainOnly = live.filter((r) => result.items.get(r.id).notes.some((x) => x.group === "domain-only")).length;
   const html = (done.length ? `<p class="done"><b>Done for you:</b> ${done.join("; ")}.</p>` : "") +
     (domainOnly ? `<p class="done">${plural(domainOnly, "row only changes", "rows only change")} the domain, so ${domainOnly === 1 ? "it’s" : "they’re"} left out: connecting the old domain to the new site redirects ${domainOnly === 1 ? "it" : "them"}. <button type="button" class="jsal-btn link" data-full>Put ${domainOnly === 1 ? "it" : "them"} in with full URLs</button></p>` : "") +
     repeats.map(([key, g]) =>
-    `<p class="repeat ${g.kind}"><span class="count">${g.ids.length} rows</span> <span>${g.title}</span>${g.fixes.map(([label], i) =>
+    `<p class="repeat ${g.kind}"><span class="count">${g.ids.length} rows</span> <span>${g.title}${shared(g) ? which(key) : ""}</span>${g.fixes.map(([label], i) =>
       ` <button type="button" class="jsal-btn small" data-fixall="${esc(key)}|${i}">${esc(label)} in ${g.ids.length === 2 ? "both" : "all " + g.ids.length}</button>`).join("")}${g.leaveAll
       ? ` <button type="button" class="jsal-btn small" data-leaveall="${esc(key)}">Leave ${g.ids.length === 2 ? "both" : "all " + g.ids.length} out</button>` : ""}</p>`).join("");
   const box = $("overview");

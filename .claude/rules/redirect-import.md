@@ -49,7 +49,11 @@ paths:
   (BigCommerce's Domain, an audit's host column) while two other columns hold addresses: picking it once made every
   row "Duplicate". A sheet sending every row to one home page keeps that column. Only the two columns are kept;
   BigCommerce's Dynamic Target Type and ID are always written blank (Dynamic Links, to a product or category by ID,
-  aren't supported: John, 4 Nov, until someone asks), so a pasted Dynamic Link row reads "No new address".
+  aren't supported: John, 4 Nov, until someone asks), so a pasted Dynamic Link row reads "No new address". Columns
+  with nothing like an address in them sit last in each picker, under "No addresses in these columns", still
+  pickable (paths typed without their first / count as none); a mark in the option text made the pickers too wide to
+  share a line. Where the old and new columns share a repeated note's wording, its line above the sheet adds "in the
+  old address" / "in the new address".
 - **Rules worth keeping:** old addresses are always paths; a new address keeps its domain unless the domain is the site's own (in the old column, or used by at least two rows and half the new full URLs). Same path on a new domain is "only the domain changes" unless Format is set to full URLs. `slashSame` only decides whether chains and domain-only rows are followed through a last / and capitals.
 - **A / or capital is the visitor's call, unless the docs settle it** (John, 2 Nov; the documented rules named 4 Nov):
   where a platform doesn't document how it matches the last / or capitals, addresses that differ only there are

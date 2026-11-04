@@ -71,8 +71,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .filter > button span { font-weight: 500; font-variant-numeric: tabular-nums; }
 
 .cols { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8) var(--jsal-space-16); padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); font-size: 13px; color: var(--jsal-muted); }
-.cols label { display: flex; align-items: center; gap: var(--jsal-space-8); }
-.cols .field { width: auto; min-height: 32px; font-size: 13px; }
+.cols label { display: flex; align-items: center; gap: var(--jsal-space-8); min-width: 0; max-width: 100%; }
+.cols .field { width: auto; min-width: 0; max-width: 100%; min-height: 32px; font-size: 13px; text-overflow: ellipsis; }   /* a long column name is cut short in the box, never past the edge */
 
 .overview { display: grid; gap: var(--jsal-space-8); max-height: 40%; overflow: auto; padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); background: var(--jsal-bg); font-size: 13px; line-height: 1.45; }
 .overview p { margin: 0; }

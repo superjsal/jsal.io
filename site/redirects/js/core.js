@@ -644,6 +644,7 @@ export function pickColumns(rows) {
   const first = rows[0] || [];
   const isName = (v) => tidy(v) && !looksLikeAddress(v) && !/^\//.test(tidy(v));
   const score = Array.from({ length: width }, (_, c) => rows.reduce((s, r) => s + (looksLikeAddress(r[c]) ? 1 : 0), 0));
+  const counts = [...score];   // how many addresses each column holds, so a picker can say which hold none
   const values = (c) => rows.slice(isName(first[c]) ? 1 : 0).map((r) => tidy(r[c])).filter(Boolean);
   const hostOnly = score.map((s, c) => s > 0 && new Set(values(c)).size === 1 && values(c).length > 1 && HOST_ONLY.test(values(c)[0]));
   // A domain column steps aside only where two other columns hold addresses, so a sheet sending everything to one
@@ -655,9 +656,9 @@ export function pickColumns(rows) {
     return c.length ? c.reduce((a, b) => (score[b] > score[a] ? b : a)) : -1;
   };
   const no = rows.length > 1 ? named(OLD_NAME) : -1, nn = rows.length > 1 ? named(NEW_NAME) : -1;
-  if (no >= 0 && nn >= 0 && no !== nn) return { o: no, n: nn, header: true, width, names: first.map(tidy) };
+  if (no >= 0 && nn >= 0 && no !== nn) return { o: no, n: nn, header: true, width, names: first.map(tidy), counts };
   const order = score.map((s, c) => [s, c]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).slice(0, 2).map((x) => x[1]).sort((a, b) => a - b);
   const [o, n] = order;
   const header = rows.length > 1 && [first[o], first[n]].every(isName);
-  return { o, n, header, width, names: header ? first.map(tidy) : [] };
+  return { o, n, header, width, names: header ? first.map(tidy) : [], counts };
 }
