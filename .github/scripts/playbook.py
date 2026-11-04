@@ -102,6 +102,18 @@ def pull():
 # lost "<theme>", a note "<table>"). Prose may carry only these tags, balanced; a guide block's code sample ("code") is
 # shown as text and may hold anything. push refuses the file until it's clean; "check" lints it without pushing.
 PROSE_TAGS = {'b', 'i', 'em', 'strong', 'code', 'a', 'br', 'p', 'ul', 'ol', 'li', 'span', 'kbd', 'small'}
+# Attributes: only a link's href (a web, mail, on-page or same-site address), target, rel and title, double-quoted;
+# nothing on any other tag, so no event handler or javascript: link can ride in on an allowed tag. The page's
+# proseSafe() drops anything else as the content loads, too.
+LINK_ATTRS = {'href', 'target', 'rel', 'title'}
+ATTR = re.compile(r'([a-zA-Z-]+)\s*=\s*"([^"]*)"')
+SAFE_HREF = re.compile(r'(https?:|mailto:|#|/(?!/))', re.I)
+def bad_attrs(tag, attrs):
+    rest = ATTR.sub('', attrs).strip(' /')
+    bad = [k for k, v in ATTR.findall(attrs) if tag != 'a' or k.lower() not in LINK_ATTRS
+           or (k.lower() == 'href' and not SAFE_HREF.match(re.sub(r'[\x00-\x20\x7f]', '', v)))]
+    return bad + ([rest] if rest else [])
+
 def bad_html(data):
     out = []
     def walk(x, path, in_code):
@@ -114,6 +126,10 @@ def bad_html(data):
             odd = sorted({t for _, t in tags if t.lower() not in PROSE_TAGS})
             if odd: out.append(f'{path}: <{">, <".join(odd)}> in prose (write &lt; for a literal "<")')
             if re.search(r'<(?![/a-zA-Z!])', x): out.append(f'{path}: a bare "<" (write &lt;)')
+            for t, attrs in re.findall(r'<([a-zA-Z][a-zA-Z0-9-]*)(\s[^<>]*)>', x):
+                if t.lower() in PROSE_TAGS and (bad := bad_attrs(t.lower(), attrs)):
+                    out.append(f'{path}: <{t}> with {", ".join(bad)} (a link may carry only href, target, rel and title, its href '
+                               'starting https://, http://, mailto:, # or /; other tags carry nothing)')
             depth = {}
             for close, t in tags:
                 t = t.lower()

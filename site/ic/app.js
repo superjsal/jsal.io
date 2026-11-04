@@ -54,8 +54,18 @@ const noteText = (note, fromEdit) => (fromEdit ? unmd(note || '') : plain(note |
 // Built-in text is HTML with only these tags. Any other "<" (a folder path's "<theme>", "a < b") is escaped as the
 // content loads, so it shows as written instead of hiding the words after it; "&lt;" and the code samples stay as they are.
 const STRAY_LT = /<(?!\/?(?:b|i|em|strong|code|a|br|p|ul|ol|li|span|kbd|small)(?=[\s/>])[^<>]*>)/gi;
+// The tags that stay keep only a link's href (web, mail, on-page or same-site), target, rel and title; nothing on the
+// rest, so no event handler or javascript: link gets through (the publish's check refuses them too)
+const PROSE_TAG = /<(\/?)(b|i|em|strong|code|a|br|p|ul|ol|li|span|kbd|small)(\s[^<>]*)?>/gi;
+const safeHref = (v) => /^(https?:|mailto:|#|\/(?!\/))/i.test(v.replace(/[\x00-\x20\x7f]/g, ''));
+const keepAttrs = (_, close, name, attrs = '') => {
+  const link = !close && name.toLowerCase() === 'a';
+  const kept = link ? [...attrs.matchAll(/([a-z-]+)\s*=\s*"([^"]*)"/gi)].map(([, k, v]) => [k.toLowerCase(), v])
+    .filter(([k, v]) => ['href', 'target', 'rel', 'title'].includes(k) && (k !== 'href' || safeHref(v))) : [];
+  return `<${close}${name}${kept.map(([k, v]) => ` ${k}="${v}"`).join('')}>`;
+};
 const proseSafe = (x, key) => (key === 'code' ? x
-  : typeof x === 'string' ? x.replace(STRAY_LT, '&lt;')
+  : typeof x === 'string' ? x.replace(STRAY_LT, '&lt;').replace(PROSE_TAG, keepAttrs)
   : Array.isArray(x) ? x.map((v) => proseSafe(v))
   : x && typeof x === 'object' ? Object.fromEntries(Object.entries(x).map(([k, v]) => [k, proseSafe(v, k)]))
   : x);
