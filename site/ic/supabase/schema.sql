@@ -258,10 +258,11 @@ end $$;
 create policy "members read" on public.members for select to authenticated using (public.is_member());
 
 -- access_requests: you can see and create your own; admins see all and can decline (delete).
-create policy "own request read" on public.access_requests for select to authenticated using (user_id = auth.uid() or public.is_admin());
-create policy "own request create" on public.access_requests for insert to authenticated with check (user_id = auth.uid() and not public.is_member());
-create policy "own request touch" on public.access_requests for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
-create policy "admin decline" on public.access_requests for delete to authenticated using (public.is_admin() or user_id = auth.uid());
+-- (select auth.uid()) rather than auth.uid() throughout: the same value, read once per query instead of once per row.
+create policy "own request read" on public.access_requests for select to authenticated using (user_id = (select auth.uid()) or public.is_admin());
+create policy "own request create" on public.access_requests for insert to authenticated with check (user_id = (select auth.uid()) and not public.is_member());
+create policy "own request touch" on public.access_requests for update to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+create policy "admin decline" on public.access_requests for delete to authenticated using (public.is_admin() or user_id = (select auth.uid()));
 
 -- app_data: members read; nobody writes from the browser. The page changes it only through add_platform and
 -- set_platform_hidden (which run as the table owner), and the publish uses the secret key.
@@ -280,20 +281,20 @@ create policy "picker: admins change" on public.picker for update to authenticat
 -- requests: members post as themselves (always starting "Not reviewed"); only admins change them; authors or admins delete.
 create policy "members read" on public.requests for select to authenticated using (public.is_member());
 create policy "members post" on public.requests for insert to authenticated
-  with check (public.is_member() and author = auth.uid() and status = 'new' and status_at is null);
+  with check (public.is_member() and author = (select auth.uid()) and status = 'new' and status_at is null);
 create policy "admins update" on public.requests for update to authenticated using (public.is_admin()) with check (public.is_admin());
-create policy "author or admin delete" on public.requests for delete to authenticated using (author = auth.uid() or public.is_admin());
+create policy "author or admin delete" on public.requests for delete to authenticated using (author = (select auth.uid()) or public.is_admin());
 
 -- votes: members upvote and remove their upvote as themselves only.
 create policy "members read" on public.votes for select to authenticated using (public.is_member());
-create policy "vote" on public.votes for insert to authenticated with check (public.is_member() and user_id = auth.uid());
-create policy "unvote" on public.votes for delete to authenticated using (user_id = auth.uid());
+create policy "vote" on public.votes for insert to authenticated with check (public.is_member() and user_id = (select auth.uid()));
+create policy "unvote" on public.votes for delete to authenticated using (user_id = (select auth.uid()));
 
 -- comments: members comment as themselves; authors or admins delete.
 create policy "members read" on public.comments for select to authenticated using (public.is_member());
 create policy "members comment" on public.comments for insert to authenticated
-  with check (public.is_member() and author = auth.uid());
-create policy "author or admin delete" on public.comments for delete to authenticated using (author = auth.uid() or public.is_admin());
+  with check (public.is_member() and author = (select auth.uid()));
+create policy "author or admin delete" on public.comments for delete to authenticated using (author = (select auth.uid()) or public.is_admin());
 
 -- Signed-out visitors get nothing at all.
 revoke all on public.members, public.access_requests, public.app_data, public.edits, public.requests, public.votes, public.comments, public.platform_notes, public.picker from anon;
