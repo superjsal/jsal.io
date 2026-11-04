@@ -85,7 +85,7 @@ paths:
   as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
   platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
   (`fixedName`), as those platforms find the file by its name.
-- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 210 checks) runs the real `core.js` and `formats.js` on tricky
+- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 222 checks) runs the real `core.js` and `formats.js` on tricky
   addresses, pasted text, junk and cut-short addresses, preview sites, each platform's documented rules and file, the
   audit-export traps, chains, duplicates and capitals. `check.py` (so `check.ps1`) and Site checks run it on every push
   to `main` and `staging`; a failure prints FAIL lines. When a result should change, agree it first, then update the
@@ -110,6 +110,13 @@ paths:
   Both rows are terracotta, in the standard term ("Redirect chain: row 9 sends this on to /x"; "Redirect chain: row 8
   points here"), with a "Point to the end" button on the first and a fix-all line above the sheet for two or more. The point is that the
   team feels in control of their redirects.
+- **A loop is red only when it's certain** (John, 4 Nov): every step is the same address on the platform (as typed,
+  or alike by its documented rule, `slashLoop` / `capsSame`). Where a step needs a / or capitals to match and the docs
+  don't settle it, the row is terracotta and stays in the file: "May loop: rows 2 → 3 → back here, if /A and /a are
+  one page on Shopify", with Leave this one out. A row whose new address may be its own old one gets only its "may be
+  one page" note, never a loop as well. A loop note names every row it passes and where it comes back to ("back
+  here", or "back to row 3" for a row that leads into a loop). On Vercel bulk, /About → /about/ with /About/ → /about
+  is a certain loop, as capitals are ignored and each step then matches exactly.
 - **Blue notes say "In the download:"**, never "In the file", which read as ambiguous.
 - **A note says only what that row needs** (John's reading pass, 3 Nov): never what the row's mark already says (no
   "Test after import" on a ?, no ": left out" on a –) or what its button says (no "Leave one out" above Leave this one

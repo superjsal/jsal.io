@@ -357,23 +357,34 @@ export function analyse(rows, fmt, opts) {
   }
 
   // Chains (A → B, then B → C) go in the file as typed, so the visitor stays in charge of their redirects; both rows
-  // are marked to check, and a button sends A straight to C. A chain that comes back round is a loop.
-  const map = new Map(kept.map((l) => [key(l.from), l]));
+  // are marked to check, and a button sends A straight to C. A chain that comes back round is a loop: certain where
+  // every step is the same address on the platform, and only "may" where a step needs a / or capitals to match.
+  const byKey = new Map();
+  for (const l of kept) (byKey.get(key(l.from)) || byKey.set(key(l.from), []).get(key(l.from))).push(l);
+  // The row an address leads to: the one the platform matches for sure, or else the first that may match
+  const follow = (p) => { const c = byKey.get(key(p)) || []; return c.find((x) => same(x.from) === same(p)) || c[0]; };
   const ends = new Map(), into = new Map();   // a new address as typed → the end of its chain; a row → rows leading in
   const straight = [["Point to the end", (v) => ends.get(v) ?? v]];   // the note names where it ends, so the button stays short
   const ready = [];
   for (const l of kept) {
-    let to = l.to, internal = l.internal, hops = [];
-    const seen = new Set([key(l.from)]);
-    let loop = false;
+    let to = l.to, internal = l.internal, hops = [], loop = null, doubtful = null;
     while (internal) {
-      const next = map.get(key(to.split("#")[0]));
-      if (!next || (next === l && !hops.length)) break;   // a row that only changes its last / or capitals is marked to test, not a loop
-      if (seen.has(key(next.from))) { loop = true; break; }
-      seen.add(key(next.from)); hops.push(next); to = next.to; internal = next.internal;
-      if (hops.length > 50) { loop = true; break; }
+      const p = to.split("#")[0], next = follow(p);
+      // A row whose new address may be its own old one is already marked to test, so it isn't a loop as well
+      if (!next || (!hops.length && key(next.from) === key(l.from))) break;
+      if (!doubtful && same(next.from) !== same(p)) doubtful = [p, next.from];
+      const back = [l, ...hops].indexOf(next);
+      if (back >= 0) { loop = back; break; }
+      hops.push(next); to = next.to; internal = next.internal;
+      if (hops.length > 50) { loop = 0; doubtful = null; break; }
     }
-    if (loop) { l.bad("n", `Loop: rows ${[l, ...hops].map((h) => h.it.n).join(" → ")} → back here`, [], "loop", "A loop"); continue; }
+    if (loop !== null) {
+      const path = `rows ${[l, ...hops].map((h) => h.it.n).join(" → ")} → ${loop ? `back to row ${[l, ...hops][loop].it.n}` : "back here"}`;
+      if (!doubtful) { l.bad("n", `Loop: ${path}`, [], "loop", "A loop"); continue; }
+      l.it.notes.push({ cell: "n", kind: "warn", group: "n:mayloop", leave: "Leave this one out", title: "may loop",
+        text: `May loop: ${path}, if <code>${esc(doubtful[0])}</code> and <code>${esc(doubtful[1])}</code> are one page ${on}` });
+      hops = [];
+    }
     if (hops.length) {
       ends.set(l.raw, to);
       (into.get(hops[0]) || into.set(hops[0], []).get(hops[0])).push(l);

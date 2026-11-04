@@ -1,5 +1,5 @@
 [
-  {"date": "2026-11-04", "tag": "Redirect Import", "text": "Where a platform documents how it treats capitals or the last /, rows say what will happen instead of “may be one page”."},
+  {"date": "2026-11-04", "tag": "Redirect Import", "text": "Where a platform documents how it treats capitals or the last /, rows say what will happen instead of “may be one page”, and a loop that hangs on them says “may loop”."},
   {"date": "2026-11-03", "tag": "CMS Picker", "text": "Small fixes: each platform guide’s source links name the site they lead to, and promise menu paths only where every setting has one."},
   {"date": "2026-11-03", "tag": "Image Resizer", "short": "The size in file names, if you want it", "text": "A tick under Save to adds each image’s size to its file name, so copies saved beside their originals don’t get a (1)."},
   {"date": "2026-11-03", "tag": "Redirect Import", "text": "HubSpot files now say how each redirect treats the ? part and the last /, so a row that would loop there is marked."},

@@ -300,5 +300,30 @@ for (const [p, pairs, row, state, text, leave] of known) {
     : !x.notes.some((y) => y.kind === "warn" || y.kind === "bad")) && !notes.includes("bulk"), `${x.state} ${notes}`);
 }
 
-console.log(fail ? `${fail} of ${count} Redirect Import tests failed` : `All ${count} Redirect Import tests passed`);
+// Loops (4 Nov): red only where every step is the same address on the platform; a step that needs a / or capitals to
+// match makes it "May loop" (terracotta, still in the file). A note names every row and where it comes back to.
+// [platform, rows, row checked (as the sheet numbers it, from 2), state, a fragment of its notes, its button, a fragment
+// its notes must not hold]
+const loops = [
+  ["shopify", [["/About", "/about/"], ["/About/", "/about"], ["/zz", "/yy"]], 2, "warn", "May be one page on Shopify", "Leave it out", "oop"],
+  ["shopify", [["/About", "/about/"], ["/About/", "/about"], ["/zz", "/yy"]], 3, "warn", "May be one page on Shopify", "Leave it out", "oop"],
+  ["shopify", [["/a", "/b"], ["/b", "/A"]], 2, "warn", "May loop: rows 2 → 3 → back here, if /A and /a are one page on Shopify", "Leave this one out", "Loop:"],
+  ["shopify", [["/a", "/b"], ["/b", "/a"]], 2, "bad", "Loop: rows 2 → 3 → back here", "", "May loop"],
+  ["shopify", [["/x", "/b"], ["/b", "/c"], ["/c", "/b"]], 2, "bad", "Loop: rows 2 → 3 → 4 → back to row 3", "", "back here"],
+  ["shopify", [["/x", "/B"], ["/b", "/c"], ["/c", "/b"]], 2, "warn", "May loop: rows 2 → 3 → 4 → back to row 3, if /B and /b are one page on Shopify", "Leave this one out", "Loop:"],
+  ["shopify", [["/x", "/B"], ["/b", "/c"], ["/c", "/b"]], 3, "bad", "Loop: rows 3 → 4 → back here", "", "May loop"],
+  ["hubspot", [["/a", "/b"], ["/b", "/A"]], 2, "warn", "May loop: rows 2 → 3 → back here, if /A and /a are one page on HubSpot", "Leave this one out", "Loop:"],
+  ["vercel-bulk", [["/a", "/b"], ["/b", "/A"]], 2, "bad", "Loop: rows 2 → 3 → back here", "", "May loop"],
+  ["vercel-bulk", [["/About", "/about/"], ["/About/", "/about"], ["/zz", "/yy"]], 3, "bad", "Loop: rows 3 → 2 → back here", "", "May loop"],
+  ["netlify", [["/a", "/b"], ["/b", "/A"]], 2, "warn", "Redirect chain: row 3 sends this on to /A", "", "oop"],
+];
+for (const [p, pairs, row, state, text, leave, absent] of loops) {
+  const x = items(pairs, p).get(row - 1), notes = notesOf(x);
+  const note = x.notes.find((y) => plain(y.text).includes(text));
+  check(`loop ${p} ${pairs.map((q) => q.join(" → ")).join(", ")} row ${row}`, x.state === state && note && (note.leave || "") === leave && !notes.includes(absent), `${x.state} ${notes}`);
+}
+r = run("shopify", [["/a", "/b"], ["/b", "/A"]]);
+check("a may-loop row stays in the file", r.body === "/a,/b\n/b,/A", r.body);
+
+console.log(fail ?`${fail} of ${count} Redirect Import tests failed` : `All ${count} Redirect Import tests passed`);
 process.exit(fail ? 1 : 0);
