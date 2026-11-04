@@ -1,4 +1,5 @@
 [
+  {"date": "2026-11-04", "tag": "CMS Picker", "text": "Small fixes: the quiz’s answers sit in even rows on tablets and laptops, and the page no longer jumps as the quiz loads."},
   {"date": "2026-11-04", "tag": "Site", "text": "Small fixes: opening a tool in a new tab from the logo menu no longer leaves the page you’re on unresponsive."},
   {"date": "2026-11-04", "tag": "Image Resizer", "text": "Small fixes: a name you type keeps its dots (Banner 2.0), and a folder save that fails leaves no broken file behind."},
   {"date": "2026-11-04", "tag": "Clean Paste", "text": "Small fixes: code blocks keep their line breaks and indents, text that only mentions a tag stays text, and every script link is removed."},

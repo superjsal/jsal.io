@@ -12,8 +12,11 @@ These are part of the site's design rules (`design-rules.md` beside this file), 
 CMS Picker work.
 
 - **The CMS Picker is quiz first:** the platform cards and the comparison table open on request. The quiz box
-  reserves its first question's height (`.qz` min-height per column count) so the rows under it don't move at
-  load or between questions.
+  reserves its first question's height (`.qz` min-height per layout of its four answers) so the rows under it don't
+  move at load or between questions; after any change to the answers' wording or layout, measure the first question's
+  natural height at 760, 1024 and 1280px and match it.
+- **Answers sit in even rows, never one left alone:** four answers are one row where all four fit (from 1280px),
+  2 + 2 below, one column on phones; five are 3 + 2, one column below about 760px (a container query on `.qz`).
 - **A result card says everything it knows.** Each match lists every reason with its docs link, the facts, what
   tipped it and what counts against it, even when a card runs past a phone screen: no trimming the reasons two cards
   share, and no hiding long lists. The reasons are the evidence the pick stands on. The one exception: a card whose

@@ -374,12 +374,13 @@ body {
   --info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5M12 8h.01'/%3E%3C/svg%3E");
   padding: var(--jsal-space-24); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface);
   scroll-margin-top: 12px;   /* brought into view after an answer: a little room above its edge */
+  container-type: inline-size;   /* its answers lay out by the box's own width (below) */
   /* The first question's height is reserved before the script fills the box, so the rows under it don't move at load;
-     it also keeps the box steady between questions. Per column count of the answers; phones scroll anyway */
-  min-height: 214px;
+     it also keeps the box steady between questions. Per layout of its four answers (one row from 1280px, 2 + 2 below,
+     one column on phones); phones scroll anyway */
+  min-height: 261px;
 }
-@media (max-width: 1099px) { .qz { min-height: 314px; } }
-@media (max-width: 899px) { .qz { min-height: 252px; } }
+@media (max-width: 1279px) { .qz { min-height: 297px; } }
 @media (max-width: 759px) { .qz { min-height: 317px; } }
 @media (max-width: 520px) { .qz { min-height: 445px; } }   /* phones: the first question is taller than this, so it only binds on small tablets */
 .qz-top { display: flex; align-items: center; gap: var(--jsal-space-12); margin-bottom: var(--jsal-space-12); color: var(--jsal-muted); font-size: 13px; }
@@ -388,6 +389,13 @@ body {
 .qz h3 { color: var(--jsal-ink); font-size: 20px; outline: none; }
 .qz-hint { margin: var(--jsal-space-4) 0 var(--jsal-space-12); color: var(--jsal-muted); font-size: 14px; }
 .qz-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: var(--jsal-space-8); }
+/* Four or five answers in even rows, never one left alone on the last: four 2 + 2 until all four fit at full width,
+   five 3 + 2; one column in a narrow box */
+.qz-opts:has(> .qz-opt:nth-child(4):last-child) { grid-template-columns: repeat(2, 1fr); }
+.qz-opts:has(> .qz-opt:nth-child(5):last-child) { grid-template-columns: repeat(3, 1fr); }
+@container (min-width: 904px) { .qz-opts:has(> .qz-opt:nth-child(4):last-child) { grid-template-columns: repeat(4, 1fr); } }
+@container (max-width: 639px) { .qz-opts:has(> .qz-opt:nth-child(5):last-child) { grid-template-columns: 1fr; } }
+@container (max-width: 459px) { .qz-opts:has(> .qz-opt:nth-child(4):last-child) { grid-template-columns: 1fr; } }
 /* A checkbox row, selected like a choice: a row of a checklist (.qz-checks), or plain (.qz-plain, below) */
 .qz-tick { display: flex; align-items: center; gap: var(--jsal-space-12); width: max-content; max-width: 100%; margin: 0 0 var(--jsal-space-12); padding: var(--jsal-space-8) var(--jsal-space-12) var(--jsal-space-8) var(--jsal-space-12); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick); }
 .qz-tick:hover { border-color: var(--jsal-hover-line); }
