@@ -1,15 +1,15 @@
 {
   "cms-picker": {
-    "date": "2026-11-03",
-    "hash": "11dbb07d43eb17e6"
+    "date": "2026-11-04",
+    "hash": "0e785c3af802ac83"
   },
   "wordpress": {
-    "date": "2026-11-02",
-    "hash": "dcf2981c92994d8c"
+    "date": "2026-11-04",
+    "hash": "59e5538d572d1bd0"
   },
   "shopify": {
-    "date": "2026-11-02",
-    "hash": "c5b4582641bdb0aa"
+    "date": "2026-11-04",
+    "hash": "25452eaf4c04d42a"
   },
   "wix": {
     "date": "2026-11-02",
@@ -36,12 +36,12 @@
     "hash": "ea80d481d16f714d"
   },
   "drupal": {
-    "date": "2026-11-02",
-    "hash": "e1e73d9dee3eb01a"
+    "date": "2026-11-04",
+    "hash": "cc356f0b60316df7"
   },
   "duda": {
-    "date": "2026-11-02",
-    "hash": "352e652817fb1c3d"
+    "date": "2026-11-04",
+    "hash": "384a4936b9cf669b"
   },
   "ghost": {
     "date": "2026-11-02",
@@ -52,8 +52,8 @@
     "hash": "85999eea9e49bb4b"
   },
   "square": {
-    "date": "2026-11-02",
-    "hash": "2c9fa3e9fdc8601a"
+    "date": "2026-11-04",
+    "hash": "16eacca6cccd8f7d"
   },
   "substack": {
     "date": "2026-11-02",
