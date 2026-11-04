@@ -2,8 +2,10 @@
 // (doc). kind: "csv" (columns, a header row and a separator the visitor can change), "lines" (one line of text per
 // redirect), or a whole file written by write(). codes: false when the platform has no status setting, "optional"
 // or "required". slashSame: chains are followed as if /page and /page/ were one address. slashLoop: /page and
-// /page/ are known to match as one, so a row from one to the other loops. exact: the match is documented as exact, so
-// addresses differing by a / or capital are never marked as maybe the same. keepLetters: accented letters stay
+// /page/ are known to match as one, so a row from one to the other loops and two rows with them are one address.
+// capsExact: capitals are documented to matter, so /About and /about are different addresses. capsSame: capitals are
+// documented to be ignored, like slashLoop for the last /. exact: the match is documented as exact, so addresses
+// differing by a / or capital are never marked as maybe the same. short: the name notes use. keepLetters: accented letters stay
 // as typed, for a platform that rejects any %. caution: what could go wrong on import, and note: worth knowing,
 // both said above the file. A file that strays from the help page (another separator, header row or names) gets a
 // caution. seps: the only separators the importer reads, where its code says so. heads: the names it accepts for each
@@ -132,7 +134,7 @@ export const FORMATS = [
     doc: "https://yoast.com/help/import-redirects/",
     cols: () => [FROM("Origin"), TO("Target"), CODE("Type"), col("Format", () => "plain")], codes: "required", slashSame: true },
 
-  { id: "netlify", name: "Netlify (_redirects)", group: "Hosting and servers", kind: "lines", file: "_redirects", fixedName: true, slashLoop: true,
+  { id: "netlify", name: "Netlify (_redirects)", group: "Hosting and servers", kind: "lines", file: "_redirects", fixedName: true, slashLoop: true, capsExact: true,
     note: "Netlify matches capitals exactly: /About and /about are different addresses.",
     doc: "https://docs.netlify.com/routing/redirects/",
     line: (r) => `${r.from}  ${r.to}  ${r.code}`, codes: "required",
@@ -143,7 +145,8 @@ export const FORMATS = [
     rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Vercel ignores the ? part" }],
     write: (rows) => JSON.stringify({ redirects: rows.map((r) => ({
       source: r.from.replace(/[:()*+?{}]/g, "\\$&"), destination: r.to, statusCode: +r.code })) }, null, 2) },
-  { id: "vercel-bulk", name: "Vercel bulk redirects (CSV)", group: "Hosting and servers", kind: "csv", file: "redirects.csv",
+  // Bulk redirects ignore capitals unless a row's caseSensitive column says otherwise, and the file doesn't write it
+  { id: "vercel-bulk", name: "Vercel bulk redirects (CSV)", short: "Vercel", group: "Hosting and servers", kind: "csv", file: "redirects.csv", capsSame: true,
     note: "Bulk redirects are on Vercel’s Pro and Enterprise plans.",
     doc: "https://vercel.com/docs/routing/redirects/bulk-redirects",
     cols: () => [FROM("source"), TO("destination"), CODE("statusCode")], codes: "required",

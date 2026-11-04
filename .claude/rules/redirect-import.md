@@ -27,7 +27,7 @@ paths:
   - Redirection (source read 2 Nov 2026, github.com/johngodley/redirection `includes/import-export/`): the browser check (`import-sniff.ts`) and the server (`CsvParser`) both take a `source,target` or `source url,target url` header, any case, and skip it; with no header the first row must look like a redirect. `source,target,regex,code` is how its own export starts, so the header row is on by default. A source with ( ) [ ] $ ^ * is regex unless column 3 is 0, so regex 0 is always written. A two-column `source url,target url` file also imports (missing columns take the defaults), but John chose to keep all four columns every time (2 Nov): the same shape for every file, and the odd regex-like address or 302 can't go quietly wrong. Only the first two header names are checked; any other header row is read as a redirect, so `heads` on the format lists the accepted names and an edited header without them gets a caution above the file. The server tries only `,` `;` `|` as separators, so a Tab file passes the browser check and then imports nothing: `seps` on the format lists the ones it reads, and any other separator gets a caution above the file. An old address with a non-English letter is a terracotta warning (whether its matching decodes `%C3%A9` wasn't checked).
   - Rank Math: lowercase headers `source,destination,type`; Yoast: `Origin,Target,Type,Format` with `plain`, UTF-8, Unix line endings.
   - Vercel: `statusCode` (permanent: true means 308), 2,048 in vercel.json; bulk redirects CSV (`source,destination,statusCode`) on Pro and Enterprise. Neither matches ?.
-  - Netlify: case-sensitive, URL-encoded paths, no ? in the old path. Ghost: `301:` group of `old: new`, keys read as patterns.
+  - Netlify: case-sensitive (`capsExact`), URL-encoded paths, no ? in the old path. Ghost: `301:` group of `old: new`, keys read as patterns.
 - **Copy-paste traps from audits and reports** (`core.js`): addresses cut short with … (red), new addresses on a platform's preview domain or localhost (red, "Use the path"; Wix also drops its site-name folder), preview links like ?preview_theme_id (red), netlify.app / vercel.app / github.io and staging-style subdomains (terracotta), addresses with no letters or numbers (terracotta). A preview domain that is most of the sheet's full URLs is taken as the new site and removed as routine ("Done for you"), but never used to write full URLs.
 - **Audit-export traps** (`core.js`, 3 Nov): what a crawl, Search Console export or document copies in with the
   addresses. In a new address they're red, as visitors would land on nothing; in an old one terracotta, as a real
@@ -43,14 +43,27 @@ paths:
   itself in the sheet, is terracotta with "Remove the ? part": done on all, the repeats become "Same as row N". Not
   for `/` or `.php`-style pages, whose ? part says which page it is, nor where the platform already refuses the ?.
 - **Rules worth keeping:** old addresses are always paths; a new address keeps its domain unless the domain is the site's own (in the old column, or used by at least two rows and half the new full URLs). Same path on a new domain is "only the domain changes" unless Format is set to full URLs. `slashSame` only decides whether chains and domain-only rows are followed through a last / and capitals.
-- **A / or capital is the visitor's call** (John, 2 Nov): few platforms document how they match the last / or capitals, so
-  addresses that differ only there are terracotta, never merged: two old addresses ("Row 10 has it without the last /. May be one page on Shopify") and a row whose new address
-  differs only there ("Only capitals differ from the old address…"); the note names what differs (John, 2 Nov), each with Leave it out. Exact
-  duplicates stay red. Red too where it's known to loop (`slashLoop`): Netlify, whose docs say it matches with or
-  without the last / (checked 2 Nov), HubSpot, as the file sets `ignore trailing slash` (3 Nov), and Apache and Ghost,
-  as the tool writes their patterns with `/?$`. Nginx's
-  `location =` is exact (`exact`), so it gets none of these. Vercel bulk's docs say its matching ignores capitals by
-  default (`caseSensitive: false`); not used yet.
+- **A / or capital is the visitor's call, unless the docs settle it** (John, 2 Nov; the documented rules named 4 Nov):
+  where a platform doesn't document how it matches the last / or capitals, addresses that differ only there are
+  terracotta, never merged: two old addresses ("Row 10 has it without the last /. May be one page on Shopify") and a
+  row whose new address differs only there ("Only capitals differ from the old address…"); the note names what
+  differs (John, 2 Nov), each with Leave it out. Exact duplicates stay red. Where the docs settle it, the note names
+  the rule instead of "may be" (the platform's short name, `short`, so "Vercel", not "Vercel bulk redirects"):
+  - The last / (`slashLoop`): Netlify, whose docs say it matches with or without it (checked 2 Nov), HubSpot, as the
+    file sets `ignore trailing slash` (3 Nov), and Apache and Ghost, as the tool writes their patterns with `/?$`. A
+    row that only adds or drops it is red, "Would loop: Netlify matches it with or without the last /". Two old
+    addresses that differ only by it are one address: to the same page the repeat is out ("Same as row N"); to
+    different pages both are red, "Same address as row N: Netlify matches it with or without the last /", with
+    Leave this one out.
+  - Capitals matter (`capsExact`): Netlify ("Paths are case-sensitive", docs.netlify.com, checked 4 Nov). /About →
+    /about (or /About/ → /about) is a real redirect, and /B and /b are two addresses: no note on either.
+  - Capitals ignored (`capsSame`): Vercel bulk, whose `caseSensitive` column defaults to false and isn't written
+    (vercel.com bulk redirects docs, checked 4 Nov). /About → /about is red, "Would loop: Vercel ignores capitals";
+    /B and /b are grouped as one address, as above. Its last / isn't documented, so that stays terracotta.
+  - Where capitals differ as well as a documented last /, the terracotta note stays (HubSpot's /a and /A/), except on
+    Netlify, where capitals matter. Nginx's `location =` is exact (`exact`), so it gets none of these.
+- **"Leave this one out" or "Leave it out":** "this one" only on notes that name another row (a duplicate or same
+  address, "Row 10 has it…"); every other note says "Leave it out".
 - **Off the docs is always said** (John, 2 Nov): a file that strays from the platform's help page gets a terracotta
   caution, as it still downloads: a separator other than a comma, a missing header row where the help shows one, a
   header row where it shows none (Webflow), or header names unlike the help's (`offDocs()` in `main.js`; Wix's help
@@ -62,7 +75,7 @@ paths:
   as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
   platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
   (`fixedName`), as those platforms find the file by its name.
-- **Tests:** `.github/scripts/redirects.test.mjs` (3 Nov; 183 checks) runs the real `core.js` and `formats.js` on tricky
+- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 206 checks) runs the real `core.js` and `formats.js` on tricky
   addresses, pasted text, junk and cut-short addresses, preview sites, each platform's documented rules and file, the
   audit-export traps, chains, duplicates and capitals. `check.py` (so `check.ps1`) and Site checks run it on every push
   to `main` and `staging`; a failure prints FAIL lines. When a result should change, agree it first, then update the

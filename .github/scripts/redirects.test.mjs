@@ -261,5 +261,40 @@ check("duplicate to different pages", it.get(1).state === "bad" && notesOf(it.ge
 it = items([["/about-us/", "/x"], ["/About-us", "/y"]], "shopify");
 check("alike old addresses marked, not merged", it.get(1).state === "warn" && it.get(2).state === "warn", notesOf(it.get(1)));
 
+// Where the docs settle the last / or capitals, the platform's rule is named instead of "may be" (4 Nov): Netlify
+// matches capitals exactly and ignores the last /, Vercel bulk ignores capitals, Shopify's docs settle neither.
+// [platform, rows, row checked (1-based), state, a fragment of its notes, the button its note offers]
+const known = [
+  ["netlify", [["/About", "/about"]], 1, "ok", "", ""],
+  ["netlify", [["/About/", "/about"]], 1, "ok", "", ""],
+  ["netlify", [["/B", "/x"], ["/b", "/y"]], 1, "ok", "", ""],
+  ["netlify", [["/B", "/x"], ["/b", "/y"]], 2, "ok", "", ""],
+  ["netlify", [["/page", "/page/"]], 1, "bad", "Would loop: Netlify matches it with or without the last /", "Leave it out"],
+  ["netlify", [["/a", "/x"], ["/a/", "/x"]], 2, "out", "Same as row 2", ""],
+  ["netlify", [["/a", "/x"], ["/a/", "/y"]], 1, "bad", "Same address as row 3: Netlify matches it with or without the last /", "Leave this one out"],
+  ["netlify", [["/a", "/x"], ["/a/", "/y"]], 2, "bad", "Same address as row 2: Netlify matches it with or without the last /", "Leave this one out"],
+  ["netlify", [["/a", "/x"], ["/A/", "/y"]], 1, "ok", "", ""],
+  ["netlify", [["/a", "/x"], ["/a", "/y"]], 1, "bad", "Duplicate of row 3", "Leave this one out"],
+  ["hubspot", [["/a", "/x"], ["/a/", "/y"]], 1, "bad", "Same address as row 3: HubSpot matches it with or without the last /", "Leave this one out"],
+  ["hubspot", [["/a", "/x"], ["/A/", "/y"]], 1, "warn", "May be one page on HubSpot", "Leave this one out"],
+  ["hubspot", [["/About", "/about/"]], 1, "warn", "Only capitals and the last / differ from the old address. May be one page on HubSpot", "Leave it out"],
+  ["vercel-bulk", [["/About", "/about"]], 1, "bad", "Would loop: Vercel ignores capitals", "Leave it out"],
+  ["vercel-bulk", [["/B", "/x"], ["/b", "/x"]], 2, "out", "Same as row 2", ""],
+  ["vercel-bulk", [["/B", "/x"], ["/b", "/y"]], 1, "bad", "Same address as row 3: Vercel ignores capitals", "Leave this one out"],
+  ["vercel-bulk", [["/a", "/a/"]], 1, "warn", "Only the last / differs from the old address. May be one page on Vercel", "Leave it out"],
+  ["vercel-bulk", [["/About/", "/about"]], 1, "warn", "May be one page on Vercel", "Leave it out"],
+  ["vercel-bulk", [["/a", "/x"], ["/a/", "/y"]], 1, "warn", "Row 3 has it with the last /. May be one page on Vercel", "Leave this one out"],
+  ["shopify", [["/About", "/about"]], 1, "warn", "Only capitals differ from the old address. May be one page on Shopify", "Leave it out"],
+  ["shopify", [["/a", "/a/"]], 1, "warn", "May be one page on Shopify", "Leave it out"],
+  ["shopify", [["/B", "/x"], ["/b", "/y"]], 1, "warn", "Row 3 has it with different capitals. May be one page on Shopify", "Leave this one out"],
+  ["shopify", [["/page", "/x"], ["/page/", "/y"]], 2, "warn", "Row 2 has it without the last /. May be one page on Shopify", "Leave this one out"],
+];
+for (const [p, pairs, row, state, text, leave] of known) {
+  const x = items(pairs, p).get(row), notes = notesOf(x), st = x.state === "fixed" ? "ok" : x.state;
+  const note = x.notes.find((y) => plain(y.text).includes(text));
+  check(`${p} ${pairs.map((q) => q.join(" → ")).join(", ")} row ${row}`, st === state && (text ? note && (note.leave || "") === leave
+    : !x.notes.some((y) => y.kind === "warn" || y.kind === "bad")) && !notes.includes("bulk"), `${x.state} ${notes}`);
+}
+
 console.log(fail ? `${fail} of ${count} Redirect Import tests failed` : `All ${count} Redirect Import tests passed`);
 process.exit(fail ? 1 : 0);

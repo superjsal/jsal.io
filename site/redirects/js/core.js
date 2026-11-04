@@ -206,15 +206,20 @@ export function analyse(rows, fmt, opts) {
   const items = new Map();
   const { hosts, newHost } = siteHosts(rows);
   const site = tidy(opts.newSite) || (newHost ? "https://" + newHost : "");
-  // loose: an address without its last / or capitals. Few platforms document how they match those, so two addresses
-  // that differ only there are marked to test, never merged; key follows the platform's setting for chains
-  const loose = (p) => (p.length > 1 ? p.replace(/\/$/, "") : p).toLowerCase();
-  const key = (p) => fmt.slashSame ? loose(p) : p;
-  // How b differs from a when they match loosely, so the note names it: "the last /", "capitals" or both
+  // same: the address as the platform is documented to match it (with or without the last /, or any capitals), so two
+  // addresses alike there are one. loose: without its last / or capitals; where the docs don't settle those, two
+  // addresses that differ only there are marked to test, never merged. key follows the platform's setting for chains
   const trim = (p) => (p.length > 1 ? p.replace(/\/$/, "") : p);
+  const same = (p) => { const s = fmt.slashLoop ? trim(p) : p; return fmt.capsSame ? s.toLowerCase() : s; };
+  const loose = (p) => fmt.capsExact ? trim(p) : trim(p).toLowerCase();
+  const key = (p) => fmt.slashSame ? loose(p) : same(p);
+  // How b differs from a when they match loosely, so the note names it: "the last /", "capitals" or both
   const looseDiff = (a, b) => ({ slash: trim(a) !== a ? (trim(b) !== b ? "" : "without") : (trim(b) !== b ? "with" : ""), caps: trim(a) !== trim(b) });
-  const on = fmt.doc ? "on " + esc(fmt.name.replace(/ \(.*/, "")) : "on some platforms";
-  const matches = fmt.doc ? esc(fmt.name.replace(/ \(.*/, "")) + " matches" : "some platforms match";
+  const short = fmt.doc ? esc(fmt.short || fmt.name.replace(/ \(.*/, "")) : "";
+  const on = short ? "on " + short : "on some platforms";
+  const matches = short ? short + " matches" : "some platforms match";
+  // Why two addresses that differ only by d are one on this platform
+  const why = (d) => [d.caps && `${short} ignores capitals`, d.slash && `${matches} it with or without the last /`].filter(Boolean).join(", and ");
   const live = [], olds = new Set();
 
   rows.forEach((r, i) => {
@@ -299,9 +304,10 @@ export function analyse(rows, fmt, opts) {
     if (!external && !(domainOnly && opts.newAddr === "url")) {
       if (domainOnly && key(oc.path) === key(nc.path)) return out("n", "Only the domain changes", "domain-only");
       if (oc.path === nc.path) return out("n", "Points to itself");
-      // Where a path with and without its last / is known to match as one, a row that only adds or drops it loops
-      if (fmt.slashLoop && oc.path.replace(/\/$/, "") === nc.path.replace(/\/$/, "")) {
-        return bad("n", `Would loop: ${matches} it with or without the last /`, [], "slashloop", "would loop: only the last / differs", "Leave it out");
+      // Where the platform is known to match both as one address, a row that only changes its last / or capitals loops
+      if (same(oc.path) === same(nc.path)) {
+        const d = looseDiff(oc.path, nc.path), what = d.caps ? "capitals" : "the last /";
+        return bad("n", `Would loop: ${why(d)}`, [], d.caps ? "capsloop" : "slashloop", `would loop: only ${what} ${d.caps ? "differ" : "differs"}`, "Leave it out");
       }
       if (!fmt.exact && loose(oc.path) === loose(nc.path)) {
         const d = looseDiff(oc.path, nc.path);
@@ -313,10 +319,10 @@ export function analyse(rows, fmt, opts) {
     live.push({ id: r.id, raw: r.new, it, from: oc.path, to, own: !external, internal: !external && !(domainOnly && opts.newAddr === "url"), fix, bad, out });
   });
 
-  // The same old address on more than one row: to the same page, the repeats are dropped; to different pages, each
-  // row is a duplicate to delete until one is left
+  // The same old address on more than one row (or one the platform matches as the same): to the same page, the
+  // repeats are dropped; to different pages, each row is a duplicate to delete until one is left
   const groups = new Map();
-  for (const l of live) (groups.get(l.from) || groups.set(l.from, []).get(l.from)).push(l);
+  for (const l of live) (groups.get(same(l.from)) || groups.set(same(l.from), []).get(same(l.from))).push(l);
   const rowList = (ls) => { const n = ls.map((x) => x.it.n); return (n.length > 1 ? "rows " : "row ") + (n.length > 1 ? `${n.slice(0, -1).join(", ")} and ${n[n.length - 1]}` : n[0]); };
   const kept = [];
   for (const [k, g] of groups) {
@@ -327,7 +333,11 @@ export function analyse(rows, fmt, opts) {
       g.slice(1).forEach((l) => l.out("o", `Same as row ${g[0].it.n}`));
       continue;
     }
-    for (const l of g) l.bad("o", `Duplicate of ${rowList(g.filter((x) => x !== l))}`, [], "clash", "Duplicates", "Leave this one out");
+    for (const l of g) {
+      const others = g.filter((x) => x !== l), differ = others.filter((x) => x.from !== l.from);
+      const d = differ.reduce((a, x) => { const y = looseDiff(l.from, x.from); return { caps: a.caps || y.caps, slash: a.slash || y.slash }; }, { caps: false, slash: "" });
+      l.bad("o", differ.length ? `Same address as ${rowList(others)}: ${why(d)}` : `Duplicate of ${rowList(others)}`, [], "clash", "Duplicates", "Leave this one out");
+    }
   }
   // Old addresses that differ only by the last / or capitals (/about-us/ and /About-us) go in the file, marked to test
   const alike = new Map();
