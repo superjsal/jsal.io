@@ -962,7 +962,7 @@
         // Where it counts against an answer given (score.js "but"), so the pick never hides it
         if (r.but && r.but.length) card.append(el('p', 'qz-lim', `Worth knowing: ${r.but.join('; ')}.`));
         const skip = lessSuited(data.quiz, r.p, a);
-        if (skip) card.append(el('p', 'qz-lim', `Less suited if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
+        if (skip) card.append(el('p', 'qz-lim', `Not ideal if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
         list.append(card);
         if (!i) list.append(feedback(r));
       });

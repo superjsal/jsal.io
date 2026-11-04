@@ -95,8 +95,9 @@ const SEO_HEAD = { meta_title: 'Change the title and description in Google', url
   gsc404: 'Redirect old links (301s)', schema: 'Add structured data (schema)',
   noindex: 'Hide a page from search (noindex)', ai_crawlers: 'Allow or block AI crawlers' };
 // Who each page is about, for its structured data: the official site and, where Wikidata has a clear item, that
-// item, so search engines know which "Squarespace" is meant. Framer and Duda have no reliable item, so site only;
-// BigCommerce's company item is now "Commerce.com", so it's the platform's own item.
+// item, so search engines know which "Squarespace" is meant. Framer, Duda and Square Online have no reliable item
+// (Weebly's is another product), so site only; BigCommerce's company item is now "Commerce.com", so it's the
+// platform's own item.
 const ENTITY = {
   wordpress: ['https://wordpress.org/', 'Q13166'], shopify: ['https://www.shopify.com/', 'Q7501150'],
   wix: ['https://www.wix.com/', 'Q420506'], squarespace: ['https://www.squarespace.com/', 'Q7582097'],
@@ -105,9 +106,11 @@ const ENTITY = {
   magento: ['https://business.adobe.com/products/magento/magento-commerce.html', 'Q1884012'],
   drupal: ['https://www.drupal.org/', 'Q170855'], duda: ['https://www.duda.co/', null],
   ghost: ['https://ghost.org/', 'Q16251204'], sanity: ['https://www.sanity.io/', 'Q56242360'],
+  square: ['https://squareup.com/us/en/online-store', null], substack: ['https://substack.com/', 'Q63435709'],
 };
 // As Python's urllib.parse.quote: only letters, digits, _.-~ and / stay as they are
 const quote = (s) => encodeURIComponent(s).replace(/[!'()*]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase()).replace(/%2F/g, '/');
+const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return u; } };
 const month = (iso) => {
   const t = /^\d{4}-\d{2}-\d{2}$/.test(iso ?? '') && new Date(iso + 'T00:00:00Z');
   return t && !isNaN(t) ? t.toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }) : '';
@@ -137,22 +140,24 @@ export function platform(pid, d = data) {
   const questions = rows.map((r) => {
     const a = ans[r];
     const where = a.where ? `<div class="pp-where"><span class="pp-where-l">Where</span><div>${paths(a.where)}</div></div>` : '';
-    const src = a.sourceUrl ? `<a class="pp-src" href="${e(a.sourceUrl)}" target="_blank" rel="noopener" data-track="docs_click" data-track-platform="${pid}" data-track-question="${r}">${e(name)}’s help page`
+    // Named by its site, as a source can be a plugin's docs rather than the platform's (Yoast's for WordPress)
+    const src = a.sourceUrl ? `<a class="pp-src" href="${e(a.sourceUrl)}" target="_blank" rel="noopener" data-track="docs_click" data-track-platform="${pid}" data-track-question="${r}">Source: ${e(host(a.sourceUrl))}`
       + '<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>' : '';
     return `        <article class="pp-q" id="${r}"><h3>${e(SEO_HEAD[r] ?? items[r].label)}</h3>`
       + `<div class="pp-ans">${tag(a)}${note(a)}</div>${where}${src}</article>`;
   });
   const cost = ans.cost_site;
   const costText = cost ? (cost.mark || d.verdicts[cost.verdict] || '') : '';
-  const facts = [['Type', pr.type], ['Starts at', costText], ['Hosting and updates', pr.hosting], ['Take with you', pr.export]];
-  const fit = [['A good fit for', 'goodFit'], ['Less suited when', 'lessSuited']].filter(([, k]) => pr[k]?.length)
+  const facts = [['Type', pr.type], ['Starts at', costText], ['Hosting and updates', pr.hosting], ['If you leave', pr.export]];
+  const fit = [['A good fit for', 'goodFit'], ['Not ideal if', 'lessSuited']].filter(([, k]) => pr[k]?.length)
     .map(([t, k]) => `<div><h3>${t}</h3><ul>` + pr[k].map((x) => `<li>${e(x)}</li>`).join('') + '</ul></div>').join('');
   const built = BUILT_ROWS.filter((r) => r in ans && r in items)
     .map((r) => `        <li><span>${e(items[r].label)}</span><span>${tag(ans[r])}</span>${note(ans[r]) || '<span></span>'}</li>`);
   const checked = rows.map((r) => ans[r].lastVerified ?? '').reduce((a, b) => (b > a ? b : a), '') || d.asOf || '';
-  const hasWhere = rows.some((r) => ans[r].where);
+  // Menu paths are promised only when every setting there is to find has one: an automatic answer or a "no" has none
+  const hasWhere = rows.filter((r) => !['auto', 'no'].includes(ans[r].verdict)).every((r) => ans[r].where);
   const desc = `${name} SEO answered: titles, URLs, redirects, schema, noindex and AI crawlers, `
-    + `${hasWhere ? 'each with where to find the setting' : 'and what each takes'}, checked against ${name}’s own docs.`;
+    + `${hasWhere ? 'each with where to find the setting' : 'and what each takes'}, checked against official docs.`;
   const url = `https://jsal.io/cms-picker/${pid}/`;
   // A plain Thing (not SoftwareApplication or Organization), so it can't set off Google's rich-result checks
   const [site, qid] = ENTITY[pid] ?? [null, null];
@@ -176,13 +181,13 @@ export function platform(pid, d = data) {
     jsonld: '\n' + JSON.stringify(ld, null, 2).split('\n').map((l) => '  ' + l).join('\n') + '\n  ',
     // Platforms with no menus to point to (a headless CMS: the developer builds the fields) say what each takes instead
     lede: e((`${pr.summary ?? ''} Here’s what you can change for search on ${name}, and `
-      + `${hasWhere ? 'where each setting is' : 'what each change takes'}. Every answer is checked against ${name}’s own help docs.`).trim()),
+      + `${hasWhere ? 'where each setting is' : 'what each change takes'}. Every answer is checked against official documentation, linked under it.`).trim()),
     sub: hasWhere ? 'What people ask most often, with the menu path to each setting.' : `What people ask most often, and what each takes on ${e(name)}.`,
     meta: e(meta),
     questions: questions.join('\n'),
     facts: facts.filter(([, x]) => x).map(([t, x]) => `        <div><dt>${t}</dt><dd>${e(x)}</dd></div>`).join('\n'),
     fit: fit ? `      <div class="pp-fit">${fit}</div>` : '',
     built: built.join('\n'),
-    others: plats.filter((o) => o.id !== pid).map((o) => `<a href="../${o.id}/">${e(o.name)}</a>`).join(' · '),
+    others: plats.filter((o) => o.id !== pid).map((o) => `<a href="../${o.id}/">${e(o.name)}</a>`).join(''),
   };
 }

@@ -503,7 +503,7 @@ body {
 /* What sets it apart from its neighbour: one gold rule and label, no fill, so it reads as the one insight */
 .qz-vs { grid-column: 2; margin-top: var(--jsal-space-12); padding: var(--jsal-space-2) 0 var(--jsal-space-2) var(--jsal-space-12); border-left: 3px solid var(--jsal-gold-line); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; }
 .qz-vs-h { margin-bottom: var(--jsal-space-2); color: var(--jsal-accent); font-size: 13px; font-weight: 700; }
-/* "Less suited if…": context, not an alarm (a platform its own card rules out never reaches the top three) */
+/* "Not ideal if…": context, not an alarm (a platform its own card rules out never reaches the top three) */
 .qz-lim { grid-column: 2; display: flex; gap: var(--jsal-space-8); margin-top: var(--jsal-space-12); padding-top: var(--jsal-space-8); border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
 .qz-lim::before { content: ""; flex: none; width: 15px; height: 15px; margin-top: var(--jsal-space-2); background: var(--jsal-muted); -webkit-mask: var(--info) center / contain no-repeat; mask: var(--info) center / contain no-repeat; }
 /* The key facts as a strip of labelled boxes, side by side; stacked on a phone */

@@ -1,7 +1,7 @@
 /* CMS Picker platform pages (/cms-picker/<platform>/), written by the publish from a template. Tags (.tag, .sc) come from styles.css. */
 /* The CMS Picker's byline: the same place, size and type, so the two pages' headings line up */
 .pp-crumbs { margin: var(--jsal-page-top) 0 0; color: var(--jsal-muted); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
-.pp-crumbs a { color: var(--jsal-accent); text-underline-offset: 3px; }
+.pp-crumbs a { display: inline-block; padding: var(--jsal-space-4) 0; margin: calc(var(--jsal-space-4) * -1) 0; color: var(--jsal-accent); text-underline-offset: 3px; }   /* a 24px target that takes no more of the line, so the title stays put */
 /* Headings in the home page's serif, like the page titles and the CMS Picker's own headings; the gold word italic */
 .pp-title { margin: var(--jsal-space-12) 0 var(--jsal-space-8); font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the CMS Picker's heading size */
 .pp-title-sub { display: block; margin-top: var(--jsal-space-8); color: var(--jsal-ink-2); font: 500 clamp(20px, 2.6vw, 24px)/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }   /* the heading's second line */
@@ -43,12 +43,10 @@
 .pp-built .tag + .sc { margin-left: var(--jsal-space-8); }   /* "varies" a step clear of its tag, as elsewhere */
 
 .pp-next { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin: var(--jsal-space-40) 0 var(--jsal-space-8); }
-.pp-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--jsal-space-20); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); color: var(--jsal-ink); font-weight: var(--jsal-btn-weight); text-decoration: none; }
-.pp-btn:hover { border-color: var(--jsal-hover-line); }
-.pp-btn.main { border-color: var(--jsal-fill-edge); background: var(--jsal-fill); color: var(--jsal-on-fill); }
-.pp-btn:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-.pp-others { margin: var(--jsal-space-20) 0 var(--jsal-space-40); color: var(--jsal-muted); font-size: 14px; }
-.pp-others a { color: var(--jsal-accent); text-underline-offset: 2px; }
+/* An index of links, like the home page footer's platform guides: muted, underlined only on hover, in a wrapping row */
+.pp-others { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--jsal-space-4) var(--jsal-space-12); margin: var(--jsal-space-20) 0 var(--jsal-space-40); color: var(--jsal-muted); font-size: 14px; }
+.pp-others a { padding: var(--jsal-space-4) 0; color: var(--jsal-muted); text-decoration: none; text-underline-offset: 2px; }
+.pp-others a:hover { color: var(--jsal-ink); text-decoration: underline; }
 
 @media (max-width: 720px) {
   .pp-facts { grid-template-columns: 1fr 1fr; }

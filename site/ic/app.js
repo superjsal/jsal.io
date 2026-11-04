@@ -555,7 +555,7 @@ const PK = { on: false, rows: new Map(), items: [], verdicts: {}, pubLogos: new 
 const PK_GOALS = { store: 'Online store', site: 'Business or marketing site', content: 'Blog or content', custom: 'Custom build with developers' };
 const PK_FIELDS = [   // profile field, label, kind
   ['type', 'Type', 'text'], ['summary', 'Summary', 'area'], ['tags', 'Known for', 'list'], ['aiTags', 'AI tools', 'list'],
-  ['goals', 'Fits', 'goals'], ['goodFit', 'Good fit for', 'lines'], ['lessSuited', 'Less suited if', 'lines'],
+  ['goals', 'Fits', 'goals'], ['goodFit', 'Good fit for', 'lines'], ['lessSuited', 'Not ideal if', 'lines'],
   ['hosting', 'Hosting and updates', 'text'], ['export', 'If you leave', 'text'],
 ];
 const PUBLISH_URL = 'https://github.com/superjsal/jsal.io/actions/workflows/publish-cms-picker.yml';

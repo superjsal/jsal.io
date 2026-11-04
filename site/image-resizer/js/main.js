@@ -10,7 +10,7 @@ import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=c50
 import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=9317f613";
 import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=a29a8c08";
 import { makeZip, uniqueNames } from "./zip.js?v=eb36bced";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=3f6bf90b";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=0a4870d5";
 
 const $ = id => document.getElementById(id);
 

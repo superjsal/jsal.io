@@ -14,11 +14,18 @@ function withStore(mode, fn) {
     const open = indexedDB.open(DB_NAME, 1);
     open.onupgradeneeded = () => open.result.createObjectStore(STORE);
     open.onerror = () => reject(open.error);
+    // A throw in here (a store that's gone, a handle that can't be stored) would land in the event handler and
+    // leave the promise waiting forever, so the save behind it never ran: it rejects instead
     open.onsuccess = () => {
-      const tx = open.result.transaction(STORE, mode);
-      const req = fn(tx.objectStore(STORE));
-      tx.oncomplete = () => { open.result.close(); resolve(req?.result); };
-      tx.onerror = () => { open.result.close(); reject(tx.error); };
+      try {
+        const tx = open.result.transaction(STORE, mode);
+        const req = fn(tx.objectStore(STORE));
+        tx.oncomplete = () => { open.result.close(); resolve(req?.result); };
+        tx.onerror = () => { open.result.close(); reject(tx.error); };
+      } catch (err) {
+        open.result.close();
+        reject(err);
+      }
     };
   });
 }

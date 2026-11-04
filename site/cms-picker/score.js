@@ -120,7 +120,7 @@
   const matches = (when, a) => Object.entries(when).every(([q, vs]) => (q === 'needs' ? vs.some((v) => need(a, v)) : vs.includes(TICKS[q] ? (ticked(a, q) ? 'yes' : 'no') : a[q])));
   // The first of a platform's "Not ideal if" lines (quiz.notIdeal) these answers match
   const notIdealFor = (Q, id, a) => ((Q.notIdeal || {})[id] || []).find((n) => matches(n.when, a));
-  // The card's first "Less suited if" line, skipping one a tick has answered ("You don't otherwise use HubSpot" when it's ticked)
+  // The card's first "Not ideal if" line, skipping one a tick has answered ("You don't otherwise use HubSpot" when it's ticked)
   const lessSuited = (Q, p, a) => ((p.profile || {}).lessSuited || []).find((l) => !((Q.notIdeal || {})[p.id] || []).some((n) => l.startsWith(n.if) && Object.entries(n.when).some(([q, vs]) => TICKS[q] && ticked(a, q) && !vs.includes('yes'))));
   // The card's "Good fit" lines that answer these answers (quiz.fitFor), in card order; they break an exact tie
   const fitLines = (Q, id, a) => [...new Set(((Q.fitFor || {})[id] || []).filter((f) => matches(f.when, a)).map((f) => f.line))];
