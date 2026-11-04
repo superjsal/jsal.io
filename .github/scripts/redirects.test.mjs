@@ -94,6 +94,12 @@ const picks = [
   ["parent column", "Page\tOld\tNew\tParent\nAbout\t/about\t/about-us\t/\nTeam\t/team\t/about-us/team\t/about", 1, 2, true],
   ["everything to one home page", "/a\thttps://new.com\n/b\thttps://new.com\n/c\thttps://new.com", 0, 1, false],
   ["HubSpot's own columns", "original url,redirect to,redirect type,redirect style\n/a,/b,301,STANDARD\n/c,/d,301,STANDARD", 0, 1, true],
+  // A first line of slugs typed without their / is a redirect, not headings (4 Nov); lowercase heading words still are
+  ["slugs without their /", "about-us\tour-story\nteam\tpeople", 0, 1, false],
+  ["Rank Math's lowercase headings", "source,destination,type\n/a,/b,301\n/c,/d,301", 0, 1, true],
+  ["lowercase old and new", "old\tnew\nabout-us\tour-story", 0, 1, true],
+  ["one-word capitalised headings", "From\tTo\nabout-us\tour-story", 0, 1, true],
+  ["headings with spaces", "page url\tredirect url\nabout-us\tour-story", 0, 1, true],
 ];
 for (const [label, text, o, n, header] of picks) {
   const p = pickColumns(parseDelimited(text));

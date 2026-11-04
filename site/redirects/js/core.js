@@ -659,6 +659,9 @@ export function pickColumns(rows) {
   if (no >= 0 && nn >= 0 && no !== nn) return { o: no, n: nn, header: true, width, names: first.map(tidy), counts };
   const order = score.map((s, c) => [s, c]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).slice(0, 2).map((x) => x[1]).sort((a, b) => a - b);
   const [o, n] = order;
-  const header = rows.length > 1 && [first[o], first[n]].every(isName);
+  // A first line of page slugs (about-us, our-story) is a redirect typed without its /, not headings: headings have a
+  // capital, a space or other punctuation, or are a heading word themselves (source, destination)
+  const slug = (v) => /^[a-z0-9]+([-_.][a-z0-9]+)*$/.test(tidy(v)) && !OLD_NAME.test(v) && !NEW_NAME.test(v);
+  const header = rows.length > 1 && [first[o], first[n]].every(isName) && ![first[o], first[n]].every(slug);
   return { o, n, header, width, names: header ? first.map(tidy) : [], counts };
 }

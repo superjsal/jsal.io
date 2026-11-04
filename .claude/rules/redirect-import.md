@@ -58,7 +58,9 @@ paths:
   the addresses are: the file's other columns are filled in for you" ("…are in" on the labels made them too wide to
   share a line). A picked column with no addresses in any row is said once above the sheet ("Column D (Dynamic
   Target Type) has no addresses in it. Pick the column with the old addresses."), in place of its "no / at the
-  start" line; the row notes stay, for the one stray address without its /.
+  start" line; the row notes stay, for the one stray address without its /. A first line is headings only if its two
+  cells read as names (a capital, a space or other punctuation, or a heading word such as source or destination): a
+  first line of slugs (about-us, our-story) is a redirect typed without its /, and was once dropped silently.
 - **Rules worth keeping:** old addresses are always paths; a new address keeps its domain unless the domain is the site's own (in the old column, or used by at least two rows and half the new full URLs). Same path on a new domain is "only the domain changes" unless Format is set to full URLs. `slashSame` only decides whether chains and domain-only rows are followed through a last / and capitals.
 - **A / or capital is the visitor's call, unless the docs settle it** (John, 2 Nov; the documented rules named 4 Nov):
   where a platform doesn't document how it matches the last / or capitals, addresses that differ only there are
