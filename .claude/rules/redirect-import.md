@@ -90,7 +90,7 @@ paths:
   as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
   platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
   (`fixedName`), as those platforms find the file by its name.
-- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 247 checks) runs the real `core.js` and `formats.js` on tricky
+- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 253 checks) runs the real `core.js` and `formats.js` on tricky
   addresses, pasted text, junk and cut-short addresses, preview sites, each platform's documented rules and file, the
   audit-export traps, chains, duplicates and capitals. `check.py` (so `check.ps1`) and Site checks run it on every push
   to `main` and `staging`; a failure prints FAIL lines. When a result should change, agree it first, then update the
@@ -124,7 +124,11 @@ paths:
   don't settle it, the row is terracotta and stays in the file: "May loop: rows 2 → 3 → back here, if /A and /a are
   one page on Shopify", with Leave this one out. Loops are looked for through every step that may match, on every
   platform whose notes say "may be" (Vercel bulk's last /: /a → /b/ with /b → /a is "May loop… if /b/ and /b are one
-  page on Vercel"); `slashSame` still decides only which steps a "Redirect chain" note follows, and domain-only rows. A
+  page on Vercel"); `slashSame` still decides only which steps a "Redirect chain" note follows, and domain-only rows.
+  Every step that only may match is named, as each is a condition ("…if /B and /b are one page on Shopify, and so are
+  /a/ and /a"; past three, "(and 4 more steps that may match)"). Where a step may match two or more rows and the first
+  leads nowhere back, the others are tried too (/x → /Y with /y → /z and /y/ → /x: "May loop: rows 2 → 4 → back
+  here, if /Y and /y/ are one page"), in a search capped at 300 steps a row (code review, 4 Nov). A
   certain Loop drops the row's "may be one page" notes, which would read as doubt beside it. A row whose new address
   may be its own old one gets only its "may be one page" note, never a loop as well, and a chain from another row
   doesn't turn back into it on a may-match (it looks for another row that may match): on Shopify /About → /ABOUT/

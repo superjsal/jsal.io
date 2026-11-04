@@ -337,6 +337,12 @@ const loops = [
   ["shopify", [["/About", "/ABOUT/"], ["/about", "/About"], ["/zz", "/yy"]], 3, "warn", "May loop: rows 3 → 2 → back here, if /ABOUT/ and /about are one page on Shopify", "Leave this one out", "back to row"],
   ["shopify", [["/About", "/ABOUT/"], ["/about", "/About"], ["/zz", "/yy"]], 2, "warn", "May be one page on Shopify", "Leave it out", "oop"],
   ["shopify", [["/x", "/B"], ["/B", "/b/"]], 2, "warn", "Redirect chain: row 3 sends this on to /b/", "", "oop"],
+  // Every step that only may match is named, as each is a condition (code review, 4 Nov)
+  ["shopify", [["/a", "/B"], ["/b", "/a/"]], 2, "warn", "May loop: rows 2 → 3 → back here, if /B and /b are one page on Shopify, and so are /a/ and /a", "Leave this one out", "Loop:"],
+  // The other rows a step may match are tried for a loop where the first led nowhere back
+  ["shopify", [["/x", "/Y"], ["/y", "/z"], ["/y/", "/x"]], 2, "warn", "May loop: rows 2 → 4 → back here, if /Y and /y/ are one page on Shopify", "Leave this one out", "chain"],
+  ["shopify", [["/x", "/Y"], ["/y", "/z"], ["/y/", "/x"]], 4, "warn", "May loop: rows 4 → 2 → back here, if /Y and /y/ are one page on Shopify", "Leave this one out", "Redirect chain ("],
+  ["shopify", [["/x", "/Y"], ["/y", "/z"], ["/y/", "/x"]], 3, "warn", "Row 4 has it with the last /. May be one page on Shopify", "Leave this one out", "oop"],
   // A certain loop carries no "may be one page" notes beside it
   ["vercel-bulk", [["/About", "/about/"], ["/About/", "/about"], ["/zz", "/yy"]], 2, "bad", "Loop: rows 2 → 3 → back here", "", "May be"],
 ];
@@ -355,6 +361,10 @@ const longs = [
   [Array.from({ length: 60 }, (_, i) => [`/p${i}`, `/p${(i + 1) % 60}`]), 1, "bad", "Loop: rows 2 → 3 → 4 → … (60 rows) → back here"],
   [Array.from({ length: 80 }, (_, i) => [`/p${i}`, `/p${i === 79 ? 60 : i + 1}`]), 1, "bad", "Loop: rows 2 → 3 → 4 → … (80 rows) → back to row 62"],
   [Array.from({ length: 60 }, (_, i) => [`/p${i}`, i === 55 ? "/P56" : `/p${(i + 1) % 60}`]), 1, "warn", "May loop: rows 2 → 3 → 4 → … (60 rows) → back here, if /P56 and /p56 are one page on Shopify"],
+  [Array.from({ length: 60 }, (_, i) => [`/p${i}`, [5, 20, 55, 58].includes(i) ? `/P${i + 1}` : `/p${(i + 1) % 60}`]), 1, "warn",
+    "May loop: rows 2 → 3 → 4 → … (60 rows) → back here, if /P6 and /p6 are one page on Shopify, and so are /P21 and /p21, and /P56 and /p56 (and 1 more step that may match)"],
+  [Array.from({ length: 80 }, (_, i) => [`/p${i}`, i === 79 ? "/P60" : i === 10 ? "/P11" : `/p${i + 1}`]), 1, "warn",
+    "May loop: rows 2 → 3 → 4 → … (80 rows) → back to row 62, if /P11 and /p11 are one page on Shopify, and so are /P60 and /p60"],
   [Array.from({ length: 13 }, (_, i) => [`/p${i}`, `/p${i + 1}`]), 1, "warn", "Redirect chain (13 hops): rows 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 and 14 send this on to /p13"],
 ];
 for (const [pairs, id, state, text] of longs) {
