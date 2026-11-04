@@ -215,6 +215,8 @@ export function analyse(rows, fmt, opts) {
   const key = (p) => fmt.slashSame ? loose(p) : same(p);
   // How b differs from a when they match loosely, so the note names it: "the last /", "capitals" or both
   const looseDiff = (a, b) => ({ slash: trim(a) !== a ? (trim(b) !== b ? "" : "without") : (trim(b) !== b ? "with" : ""), caps: trim(a) !== trim(b) });
+  // What's in doubt: capitals a platform is known to ignore aren't
+  const doubt = (a, b) => { const d = looseDiff(a, b); return fmt.capsSame ? { ...d, caps: false } : d; };
   const short = fmt.doc ? esc(fmt.short || fmt.name.replace(/ \(.*/, "")) : "";
   const on = short ? "on " + short : "on some platforms";
   const matches = short ? short + " matches" : "some platforms match";
@@ -310,7 +312,7 @@ export function analyse(rows, fmt, opts) {
         return bad("n", `Would loop: ${why(d)}`, [], d.caps ? "capsloop" : "slashloop", `would loop: only ${what} ${d.caps ? "differ" : "differs"}`, "Leave it out");
       }
       if (!fmt.exact && loose(oc.path) === loose(nc.path)) {
-        const d = looseDiff(oc.path, nc.path);
+        const d = doubt(oc.path, nc.path);
         notes.push({ cell: "n", kind: "warn", group: "n:slashcase", leave: "Leave it out",
           title: "differ from their old address only by a / or capital",
           text: `Only ${d.caps && d.slash ? "capitals and the last / differ" : d.caps ? "capitals differ" : "the last / differs"} from the old address. May be one page ${on}` });
@@ -345,7 +347,7 @@ export function analyse(rows, fmt, opts) {
   for (const g of alike.values()) {
     if (g.length < 2 || fmt.exact) continue;
     for (const l of g) {
-      const others = g.filter((x) => x !== l), ds = others.map((x) => looseDiff(l.from, x.from));
+      const others = g.filter((x) => x !== l), ds = others.map((x) => doubt(l.from, x.from));
       const d = ds.every((x) => x.slash === ds[0].slash && x.caps === ds[0].caps) ? ds[0] : null;
       const how = d ? [d.caps && "with different capitals", d.slash && `${d.slash} the last /`].filter(Boolean).join(" and ") : "with a different / or capitals";
       const who = rowList(others).replace(/^r/, "R");

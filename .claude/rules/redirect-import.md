@@ -59,7 +59,8 @@ paths:
     /about (or /About/ → /about) is a real redirect, and /B and /b are two addresses: no note on either.
   - Capitals ignored (`capsSame`): Vercel bulk, whose `caseSensitive` column defaults to false and isn't written
     (vercel.com bulk redirects docs, checked 4 Nov). /About → /about is red, "Would loop: Vercel ignores capitals";
-    /B and /b are grouped as one address, as above. Its last / isn't documented, so that stays terracotta.
+    /B and /b are grouped as one address, as above. Its last / isn't documented, so that stays terracotta, and the
+    note names only the / ("Only the last / differs…" for /About/ → /about), as the capitals aren't in doubt.
   - Where capitals differ as well as a documented last /, the terracotta note stays (HubSpot's /a and /A/), except on
     Netlify, where capitals matter. Nginx's `location =` is exact (`exact`), so it gets none of these.
 - **"Leave this one out" or "Leave it out":** "this one" only on notes that name another row (a duplicate or same
@@ -75,7 +76,7 @@ paths:
   as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
   platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
   (`fixedName`), as those platforms find the file by its name.
-- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 206 checks) runs the real `core.js` and `formats.js` on tricky
+- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 208 checks) runs the real `core.js` and `formats.js` on tricky
   addresses, pasted text, junk and cut-short addresses, preview sites, each platform's documented rules and file, the
   audit-export traps, chains, duplicates and capitals. `check.py` (so `check.ps1`) and Site checks run it on every push
   to `main` and `staging`; a failure prints FAIL lines. When a result should change, agree it first, then update the
