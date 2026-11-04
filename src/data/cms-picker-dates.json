@@ -1,62 +1,62 @@
 {
   "cms-picker": {
     "date": "2026-11-04",
-    "hash": "0e785c3af802ac83"
+    "hash": "21e9d1216d607035"
   },
   "wordpress": {
     "date": "2026-11-04",
-    "hash": "59e5538d572d1bd0"
+    "hash": "71dcf7dac09f623f"
   },
   "shopify": {
     "date": "2026-11-04",
-    "hash": "25452eaf4c04d42a"
+    "hash": "56bb96812998b6b3"
   },
   "wix": {
-    "date": "2026-11-02",
-    "hash": "eac4ca9e867b4eb5"
+    "date": "2026-11-04",
+    "hash": "443bc32fe36db5cf"
   },
   "squarespace": {
-    "date": "2026-11-02",
-    "hash": "767d7af45a90dbeb"
+    "date": "2026-11-04",
+    "hash": "7c60490a3ff12b4e"
   },
   "webflow": {
-    "date": "2026-11-02",
-    "hash": "28e887bf1605c8a5"
+    "date": "2026-11-04",
+    "hash": "1949a245b61a17a2"
   },
   "framer": {
-    "date": "2026-11-02",
-    "hash": "67bf5c2b55cc83b2"
+    "date": "2026-11-04",
+    "hash": "cea5253fdcf8042d"
   },
   "hubspot": {
-    "date": "2026-11-02",
-    "hash": "24d11e4b15f23d8d"
+    "date": "2026-11-04",
+    "hash": "4bab1c313d94dd00"
   },
   "bigcommerce": {
-    "date": "2026-11-03",
-    "hash": "ea80d481d16f714d"
+    "date": "2026-11-04",
+    "hash": "f6a0d90888e818a5"
   },
   "drupal": {
     "date": "2026-11-04",
-    "hash": "cc356f0b60316df7"
+    "hash": "5c509d22433b7000"
   },
   "duda": {
     "date": "2026-11-04",
-    "hash": "384a4936b9cf669b"
+    "hash": "459000851bc821bf"
   },
   "ghost": {
-    "date": "2026-11-02",
-    "hash": "243f6a7f9e60fc81"
+    "date": "2026-11-04",
+    "hash": "2448d361a5aabc05"
   },
   "sanity": {
-    "date": "2026-11-02",
-    "hash": "85999eea9e49bb4b"
+    "date": "2026-11-04",
+    "hash": "cd48fc7b2752cf4a"
   },
   "square": {
     "date": "2026-11-04",
-    "hash": "16eacca6cccd8f7d"
+    "hash": "a7f68596bcabfa8a"
   },
   "substack": {
-    "date": "2026-11-02",
-    "hash": "05922b212914fd86"
+    "date": "2026-11-04",
+    "hash": "65ccf1962d653715"
   }
 }
