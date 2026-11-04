@@ -215,8 +215,8 @@ export function analyse(rows, fmt, opts) {
   const key = (p) => fmt.slashSame ? loose(p) : same(p);
   // How b differs from a when they match loosely, so the note names it: "the last /", "capitals" or both
   const looseDiff = (a, b) => ({ slash: trim(a) !== a ? (trim(b) !== b ? "" : "without") : (trim(b) !== b ? "with" : ""), caps: trim(a) !== trim(b) });
-  // What's in doubt: capitals a platform is known to ignore aren't
-  const doubt = (a, b) => { const d = looseDiff(a, b); return fmt.capsSame ? { ...d, caps: false } : d; };
+  // What's in doubt: capitals or a last / the platform is known to ignore aren't
+  const doubt = (a, b) => { const d = looseDiff(a, b); return { slash: fmt.slashLoop ? "" : d.slash, caps: !fmt.capsSame && d.caps }; };
   const short = fmt.doc ? esc(fmt.short || fmt.name.replace(/ \(.*/, "")) : "";
   const on = short ? "on " + short : "on some platforms";
   const matches = short ? short + " matches" : "some platforms match";

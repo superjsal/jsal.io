@@ -49,8 +49,13 @@ paths:
   row whose new address differs only there ("Only capitals differ from the old address…"); the note names what
   differs (John, 2 Nov), each with Leave it out. Exact duplicates stay red. Where the docs settle it, the note names
   the rule instead of "may be" (the platform's short name, `short`, so "Vercel", not "Vercel bulk redirects"):
-  - The last / (`slashLoop`): Netlify, whose docs say it matches with or without it (checked 2 Nov), HubSpot, as the
-    file sets `ignore trailing slash` (3 Nov), and Apache and Ghost, as the tool writes their patterns with `/?$`. A
+  - The last / (`slashLoop`), each with its source (rechecked 4 Nov): Netlify ("will match paths to rules regardless
+    of whether or not they contain a trailing slash", with a looping example, on docs.netlify.com
+    `manage/routing/redirects/redirect-options`); HubSpot, as the file sets `ignore trailing slash` (the redirect
+    applies "whether the original URL includes a forward slash / at the end or not", knowledge.hubspot.com
+    `create-and-manage-url-redirects`, linked from its bulk-upload page); Apache, as the tool writes `RedirectMatch`
+    patterns with `/?$` (httpd.apache.org mod_alias); and Ghost, whose keys are JavaScript regular expressions
+    (ghost.org/tutorials/implementing-redirects), written with `/?$` too. A
     row that only adds or drops it is red, "Would loop: Netlify matches it with or without the last /". Two old
     addresses that differ only by it are one address: to the same page the repeat is out ("Same as row N"); to
     different pages both are red, "Same address as row N: Netlify matches it with or without the last /", with
@@ -61,8 +66,12 @@ paths:
     (vercel.com bulk redirects docs, checked 4 Nov). /About → /about is red, "Would loop: Vercel ignores capitals";
     /B and /b are grouped as one address, as above. Its last / isn't documented, so that stays terracotta, and the
     note names only the / ("Only the last / differs…" for /About/ → /about), as the capitals aren't in doubt.
-  - Where capitals differ as well as a documented last /, the terracotta note stays (HubSpot's /a and /A/), except on
-    Netlify, where capitals matter. Nginx's `location =` is exact (`exact`), so it gets none of these.
+  - Where capitals differ as well as a documented last /, the terracotta note stays and names only the capitals
+    (HubSpot's /a and /A/: "Row 3 has it with different capitals"; /About → /about/: "Only capitals differ…"), except
+    on Netlify, where capitals matter. A "may be" note never names what the platform's docs settle. Nginx's
+    `location =` is exact (`exact`), so it gets none of these.
+  - The help link above the file (`doc`) is each platform's page on importing redirects; where the matching rule is on
+    another page (Netlify's Redirect options, HubSpot's advanced options), that page is reached from it.
 - **"Leave this one out" or "Leave it out":** "this one" only on notes that name another row (a duplicate or same
   address, "Row 10 has it…"); every other note says "Leave it out".
 - **Off the docs is always said** (John, 2 Nov): a file that strays from the platform's help page gets a terracotta
@@ -76,7 +85,7 @@ paths:
   as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
   platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
   (`fixedName`), as those platforms find the file by its name.
-- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 208 checks) runs the real `core.js` and `formats.js` on tricky
+- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 210 checks) runs the real `core.js` and `formats.js` on tricky
   addresses, pasted text, junk and cut-short addresses, preview sites, each platform's documented rules and file, the
   audit-export traps, chains, duplicates and capitals. `check.py` (so `check.ps1`) and Site checks run it on every push
   to `main` and `staging`; a failure prints FAIL lines. When a result should change, agree it first, then update the

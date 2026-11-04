@@ -136,7 +136,7 @@ export const FORMATS = [
 
   { id: "netlify", name: "Netlify (_redirects)", group: "Hosting and servers", kind: "lines", file: "_redirects", fixedName: true, slashLoop: true, capsExact: true,
     note: "Netlify matches capitals exactly: /About and /about are different addresses.",
-    doc: "https://docs.netlify.com/routing/redirects/",
+    doc: "https://docs.netlify.com/manage/routing/redirects/overview/",
     line: (r) => `${r.from}  ${r.to}  ${r.code}`, codes: "required",
     rules: (r) => [r.from.includes("?") && { cell: "o", id: "query", fixes: DROP_QUERY, text: "Netlify can’t match the ? part" }] },
   { id: "vercel", name: "Vercel (vercel.json)", group: "Hosting and servers", kind: "file", file: "vercel.json", fixedName: true, max: 2048,
