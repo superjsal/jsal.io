@@ -322,10 +322,10 @@ export function analyse(rows, fmt, opts) {
   });
 
   // The same old address on more than one row (or one the platform matches as the same): to the same page, the
-  // repeats are dropped; to different pages, each row is a duplicate to delete until one is left. Where the platform
-  // matches with or without the last /, it serves its own pages that way too, so /p and /p/ are one page there
+  // repeats are dropped; to different pages, each row is a duplicate to delete until one is left. Where the site
+  // serves its pages with or without the last /, /p and /p/ are one page
   const groups = new Map();
-  const page = (l) => (fmt.slashLoop && l.internal ? trim(l.to) : l.to);
+  const page = (l) => (fmt.slashPages && l.internal ? trim(l.to) : l.to);
   for (const l of live) (groups.get(same(l.from)) || groups.set(same(l.from), []).get(same(l.from))).push(l);
   const rowList = (ls) => { const n = ls.map((x) => x.it.n); return (n.length > 1 ? "rows " : "row ") + (n.length > 1 ? `${n.slice(0, -1).join(", ")} and ${n[n.length - 1]}` : n[0]); };
   const kept = [];
@@ -371,21 +371,73 @@ export function analyse(rows, fmt, opts) {
   const ends = new Map(), into = new Map();   // a new address as typed → the end of its chain; a row → rows leading in
   const straight = [["Point to the end", (v) => ends.get(v) ?? v]];   // the note names where it ends, so the button stays short
   const ready = [];
+  // Past the first 50 hops, where a row leads is worked out once and shared by every chain through it, so a sheet
+  // of long chains stays quick: the end it reaches or the loop it falls into, its first step that only may match,
+  // and its first step a chain isn't said through
+  const stepOf = (r) => {
+    if (!r.internal) return null;
+    const p = r.to.split("#")[0], next = follow(p, r);
+    return next && { next, p, sure: same(next.from) === same(p), brk: key(next.from) !== key(p) };
+  };
+  const fates = new Map();
+  const fate = (start) => {
+    const trail = [], at = new Map();
+    let r = start;
+    while (r && !fates.has(r) && !at.has(r)) { at.set(r, trail.length); trail.push(r); r = stepOf(r)?.next; }
+    let rest = trail.length;
+    if (r && at.has(r)) {
+      // The trail came back on itself: those rows are a ring, each the way into it
+      const ring = trail.slice(at.get(r)), set = new Set(ring), n = ring.length;
+      // Twice round backwards, so each row knows the first step from it, round the ring, that only may match
+      let unsure = null;
+      for (let k = 2 * n - 1; k >= 0; k--) {
+        const s = stepOf(ring[k % n]);
+        if (!s.sure) unsure = [s.p, s.next.from];
+        if (k < n) fates.set(ring[k], { ring: set, entry: ring[k], dist: 0, len: n, unsure });
+      }
+      rest = at.get(r);
+    }
+    for (let i = rest - 1; i >= 0; i--) {
+      const u = trail[i], s = stepOf(u);
+      if (!s) { fates.set(u, { end: u, dist: 0, unsure: null, brk: null }); continue; }
+      const f = fates.get(s.next);
+      fates.set(u, { ...f, dist: f.dist + 1, unsure: s.sure ? f.unsure : [s.p, s.next.from],
+        brk: f.ring ? null : s.brk ? { row: u, dist: 0 } : f.brk && { row: f.brk.row, dist: f.brk.dist + 1 } });
+    }
+    return fates.get(start);
+  };
   for (const l of kept) {
-    let to = l.to, internal = l.internal, hops = [], loop = null, doubtful = null, chainEnd = -1;
+    let to = l.to, internal = l.internal, hops = [], loop = null, doubtful = null, chainEnd = -1, more = 0, rows = 0;
+    const seen = new Map([[l, 0]]);   // each row passed → its place on the way
     while (internal) {
       const p = to.split("#")[0], next = follow(p, hops.length ? hops[hops.length - 1] : l), sure = next && same(next.from) === same(p);
       // A row whose new address may be its own old one is already marked to test, so it isn't a loop as well
       if (!next || (!hops.length && !sure && walk(next.from) === walk(l.from))) break;
       if (!sure && !doubtful) doubtful = [p, next.from];
       if (chainEnd < 0 && key(next.from) !== key(p)) chainEnd = hops.length;
-      const back = [l, ...hops].indexOf(next);
-      if (back >= 0) { loop = back; break; }
-      hops.push(next); to = next.to; internal = next.internal;
-      if (hops.length > 50) { loop = 0; doubtful = null; break; }
+      if (seen.has(next)) { loop = seen.get(next); break; }
+      hops.push(next); seen.set(next, hops.length); to = next.to; internal = next.internal;
+      if (hops.length > 50) {
+        const x = hops[hops.length - 1], f = fate(x);
+        if (f.ring) {
+          // It loops further on: back into rows already passed, or into a ring of its own
+          const back = [l, ...hops].findIndex((h) => f.ring.has(h));
+          loop = back >= 0 ? back : f.entry;
+          rows = (back >= 0 ? back : hops.length + f.dist) + f.len;
+          doubtful = doubtful || f.unsure;
+        } else if (chainEnd < 0) {
+          const end = f.brk ? f.brk.row : f.end;
+          more = f.brk ? f.brk.dist : f.dist;
+          to = end.to;
+        }
+        break;
+      }
     }
     if (loop !== null) {
-      const path = `rows ${[l, ...hops].map((h) => h.it.n).join(" → ")} → ${loop ? `back to row ${[l, ...hops][loop].it.n}` : "back here"}`;
+      const all = [l, ...hops], ns = all.map((h) => h.it.n), back = typeof loop === "number" ? all[loop] : loop;
+      // A long way round names only its first rows and how many, so the note stays readable
+      const way = rows || ns.length > 12 ? `${ns.slice(0, 3).join(" → ")} → … (${rows || ns.length} rows)` : ns.join(" → ");
+      const path = `rows ${way} → ${back === l ? "back here" : `back to row ${back.it.n}`}`;
       if (!doubtful) {
         // A certain loop says all the row needs: its "may be one page" notes would read as doubt beside it
         const ns = l.it.notes;
@@ -402,9 +454,11 @@ export function analyse(rows, fmt, opts) {
     if (hops.length) {
       ends.set(l.raw, to);
       (into.get(hops[0]) || into.set(hops[0], []).get(hops[0])).push(l);
-      const by = hops.length > 1 ? `rows ${hops.slice(0, -1).map((h) => h.it.n).join(", ")} and ${hops[hops.length - 1].it.n} send` : `row ${hops[0].it.n} sends`;
+      const ns = hops.map((h) => h.it.n), count = ns.length + more;
+      const by = count > 12 ? `rows ${ns.slice(0, 3).join(", ")} … (${count} rows) send`
+        : ns.length > 1 ? `rows ${ns.slice(0, -1).join(", ")} and ${ns[ns.length - 1]} send` : `row ${ns[0]} sends`;
       l.it.notes.push({ cell: "n", kind: "warn", fixes: straight, group: "n:chain", title: "start a redirect chain",
-        text: `Redirect chain${hops.length > 1 ? ` (${hops.length + 1} hops)` : ""}: ${by} this on to <code>${esc(to)}</code>` });
+        text: `Redirect chain${count > 1 ? ` (${count + 1} hops)` : ""}: ${by} this on to <code>${esc(to)}</code>` });
     }
     if (!l.own || opts.newAddr !== "url") ready.push({ id: l.id, from: l.from, to: l.to, code: opts.code || "301" });
     else ready.push({ id: l.id, from: l.from, to: site ? site.replace(/\/$/, "") + l.to : l.to, code: opts.code || "301" });

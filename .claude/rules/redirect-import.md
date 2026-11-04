@@ -59,7 +59,10 @@ paths:
     row that only adds or drops it is red, "Would loop: Netlify matches it with or without the last /". Two old
     addresses that differ only by it are one address: to the same page the repeat is out ("Same as row N"), and a
     new address on the site that differs only by its last / is the same page there too (/a → /p with /a/ → /p/;
-    John, 4 Nov, as these platforms serve their pages that way); to
+    John, 4 Nov) where the site serves its pages either way (`slashPages`): Netlify, whose Pretty URLs (on by
+    default) forward /about to /about/ (docs.netlify.com redirect options, "Trailing slash"), and Ghost, whose
+    pretty-URL middleware adds the last / with a 301 (connect-slashes in Ghost's `pretty-urls.js`, read 4 Nov). Not
+    Apache (a file at /p gives a 404 at /p/) or HubSpot (not documented), where both rows stay red; to
     different pages both are red, "Same address as row N: Netlify matches it with or without the last /", with
     Leave this one out.
   - Capitals matter (`capsExact`): Netlify ("Paths are case-sensitive", docs.netlify.com, checked 4 Nov). /About →
@@ -87,7 +90,7 @@ paths:
   as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
   platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
   (`fixedName`), as those platforms find the file by its name.
-- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 238 checks) runs the real `core.js` and `formats.js` on tricky
+- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 247 checks) runs the real `core.js` and `formats.js` on tricky
   addresses, pasted text, junk and cut-short addresses, preview sites, each platform's documented rules and file, the
   audit-export traps, chains, duplicates and capitals. `check.py` (so `check.ps1`) and Site checks run it on every push
   to `main` and `staging`; a failure prints FAIL lines. When a result should change, agree it first, then update the
@@ -110,7 +113,11 @@ paths:
   "Left out by you · Put it back" (`r.skip`, kept with the sheet); Copy sheet drops it, like a deleted row.
 - **Chains are the visitor's call** (John, 2 Nov): A → B plus B → C go in the file as typed, never shortened silently.
   Both rows are terracotta, in the standard term ("Redirect chain: row 9 sends this on to /x"; "Redirect chain: row 8
-  points here"), with a "Point to the end" button on the first and a fix-all line above the sheet for two or more. The point is that the
+  points here"), with a "Point to the end" button on the first and a fix-all line above the sheet for two or more.
+  Chains and loops are followed to their end however long (code review, 4 Nov: a 50-hop limit once called a long
+  chain a loop and left its row out of the file); past 50 hops where a row leads is worked out once and shared, so
+  5,000 rows in one chain take about 0.2 s. Past 12 rows a note names the first three and how many ("rows 3, 4, 5 …
+  (59 rows) send this on to /p60"; "Loop: rows 2 → 3 → 4 → … (60 rows) → back here"). The point is that the
   team feels in control of their redirects.
 - **A loop is red only when it's certain** (John, 4 Nov): every step is the same address on the platform (as typed,
   or alike by its documented rule, `slashLoop` / `capsSame`). Where a step needs a / or capitals to match and the docs

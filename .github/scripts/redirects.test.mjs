@@ -274,11 +274,14 @@ const known = [
   ["netlify", [["/a", "/x"], ["/a/", "/y"]], 1, "bad", "Same address as row 3: Netlify matches it with or without the last /", "Leave this one out"],
   ["netlify", [["/a", "/x"], ["/a/", "/y"]], 2, "bad", "Same address as row 2: Netlify matches it with or without the last /", "Leave this one out"],
   ["netlify", [["/a", "/x"], ["/A/", "/y"]], 1, "ok", "", ""],
-  // Where the last / is matched either way, new addresses that differ only there are one page (John, 4 Nov)
+  // Where the site serves its pages with or without the last / (Netlify's Pretty URLs, Ghost), new addresses that
+  // differ only there are one page (John, 4 Nov); Apache and HubSpot don't promise it
   ["netlify", [["/a", "/p"], ["/a/", "/p/"]], 2, "out", "Same as row 2", ""],
   ["netlify", [["/a", "/p"], ["/a/", "/p/"]], 1, "ok", "", ""],
   ["netlify", [["/a", "/p/"], ["/a", "/p"]], 2, "out", "Same as row 2", ""],
-  ["hubspot", [["/a", "/p"], ["/a/", "/p/"]], 2, "out", "Same as row 2", ""],
+  ["ghost", [["/a", "/p"], ["/a/", "/p/"]], 2, "out", "Same as row 2", ""],
+  ["hubspot", [["/a", "/p"], ["/a/", "/p/"]], 2, "bad", "Same address as row 2: HubSpot matches it with or without the last /", "Leave this one out"],
+  ["apache", [["/a", "/p/"], ["/a/", "/p"]], 1, "bad", "Same address as row 3: Apache matches it with or without the last /", "Leave this one out"],
   ["netlify", [["/a", "/P"], ["/a/", "/p/"]], 2, "bad", "Same address as row 2: Netlify matches it with or without the last /", "Leave this one out"],
   ["shopify", [["/a", "/p"], ["/a", "/p/"]], 2, "bad", "Duplicate of row 2", "Leave this one out"],
   ["netlify", [["/a", "/x"], ["/a", "/y"]], 1, "bad", "Duplicate of row 3", "Leave this one out"],
@@ -345,6 +348,20 @@ for (const [p, pairs, row, state, text, leave, absent] of loops) {
 }
 r = run("shopify", [["/a", "/b"], ["/b", "/A"]]);
 check("a may-loop row stays in the file", r.body === "/a,/b\n/b,/A", r.body);
+// Chains and loops past 50 hops (worked out once per row there) are still told apart; a long list of rows is cut short
+const longs = [
+  [Array.from({ length: 60 }, (_, i) => [`/p${i}`, `/p${i + 1}`]), 1, "warn", "Redirect chain (60 hops): rows 3, 4, 5 … (59 rows) send this on to /p60"],
+  [Array.from({ length: 60 }, (_, i) => [`/p${i}`, `/p${i + 1}`]), 31, "warn", "Redirect chain (30 hops): rows 33, 34, 35 … (29 rows) send this on to /p60"],
+  [Array.from({ length: 60 }, (_, i) => [`/p${i}`, `/p${(i + 1) % 60}`]), 1, "bad", "Loop: rows 2 → 3 → 4 → … (60 rows) → back here"],
+  [Array.from({ length: 80 }, (_, i) => [`/p${i}`, `/p${i === 79 ? 60 : i + 1}`]), 1, "bad", "Loop: rows 2 → 3 → 4 → … (80 rows) → back to row 62"],
+  [Array.from({ length: 60 }, (_, i) => [`/p${i}`, i === 55 ? "/P56" : `/p${(i + 1) % 60}`]), 1, "warn", "May loop: rows 2 → 3 → 4 → … (60 rows) → back here, if /P56 and /p56 are one page on Shopify"],
+  [Array.from({ length: 13 }, (_, i) => [`/p${i}`, `/p${i + 1}`]), 1, "warn", "Redirect chain (13 hops): rows 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 and 14 send this on to /p13"],
+];
+for (const [pairs, id, state, text] of longs) {
+  const x = items(pairs, "shopify").get(id);
+  check(`long: ${text}`, x.state === state && notesOf(x).includes(text), `${x.state} ${notesOf(x)}`);
+}
+check("a 60-row chain is all in the file", run("shopify", longs[0][0]).body.split("\n").length === 60);
 
 console.log(fail ?`${fail} of ${count} Redirect Import tests failed` : `All ${count} Redirect Import tests passed`);
 process.exit(fail ? 1 : 0);

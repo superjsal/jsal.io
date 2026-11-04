@@ -3,7 +3,7 @@
 // redirect), or a whole file written by write(). codes: false when the platform has no status setting, "optional"
 // or "required". slashSame: chains are followed as if /page and /page/ were one address. slashLoop: /page and
 // /page/ are known to match as one, so a row from one to the other loops and two rows with them are one address.
-// capsExact: capitals are documented to matter, so /About and /about are different addresses. capsSame: capitals are
+// slashPages: the site serves its pages with or without the last /, so new addresses /p and /p/ are one page. capsExact: capitals are documented to matter, so /About and /about are different addresses. capsSame: capitals are
 // documented to be ignored, like slashLoop for the last /. exact: the match is documented as exact, so addresses
 // differing by a / or capital are never marked as maybe the same. short: the name notes use. keepLetters: accented letters stay
 // as typed, for a platform that rejects any %. caution: what could go wrong on import, and note: worth knowing,
@@ -106,7 +106,7 @@ export const FORMATS = [
   { id: "ghost", name: "Ghost", group: "Website platforms", kind: "file", file: "redirects.yaml",
     caution: "Uploading replaces Ghost’s whole redirects file. Download the current one first and add these lines to it.",
     doc: "https://ghost.org/help/redirects/",
-    codes: "required", slashSame: true, slashLoop: true,
+    codes: "required", slashSame: true, slashLoop: true, slashPages: true,
     // Ghost reads each old address as a pattern, so it's escaped and pinned to the whole path, with or without its last /
     write: (rows) => {
       const by = {};
@@ -134,7 +134,7 @@ export const FORMATS = [
     doc: "https://yoast.com/help/import-redirects/",
     cols: () => [FROM("Origin"), TO("Target"), CODE("Type"), col("Format", () => "plain")], codes: "required", slashSame: true },
 
-  { id: "netlify", name: "Netlify (_redirects)", group: "Hosting and servers", kind: "lines", file: "_redirects", fixedName: true, slashLoop: true, capsExact: true,
+  { id: "netlify", name: "Netlify (_redirects)", group: "Hosting and servers", kind: "lines", file: "_redirects", fixedName: true, slashLoop: true, slashPages: true, capsExact: true,
     note: "Netlify matches capitals exactly: /About and /about are different addresses.",
     doc: "https://docs.netlify.com/manage/routing/redirects/overview/",
     line: (r) => `${r.from}  ${r.to}  ${r.code}`, codes: "required",
