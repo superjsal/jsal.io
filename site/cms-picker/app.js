@@ -1159,5 +1159,11 @@
     data.quiz = Object.fromEntries(Object.entries(quiz).filter(([k]) => !k.startsWith('_')));
     build();
   })
-    .catch(() => { $('#grid').replaceChildren(el('p', 'empty', 'Could not load the answers. Try reloading the page.')); });
+    .catch(() => {
+      $('#grid').replaceChildren(el('p', 'empty', 'Could not load the answers. Try reloading the page.'));
+      // The table is closed until asked for, so the quiz box, the first thing on the page, says it too
+      const err = el('p', 'jsal-error', 'Couldn’t load the quiz. Check your connection and reload the page.');
+      err.setAttribute('role', 'alert');
+      $('#qz')?.replaceChildren(err);
+    });
 })();

@@ -474,7 +474,8 @@
   const KEY = 'jsal-early-clicks';
   let leaving = false;
   const heldHere = [];
-  menu.addEventListener('click', (e) => { if (e.target.closest('a[href]')) leaving = true; });
+  // Only a plain click leaves: Ctrl, ⌘ or Shift opens the app in a new tab or window and this page stays in use
+  menu.addEventListener('click', (e) => { if (e.target.closest('a[href]') && e.button === 0 && !(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) leaving = true; });
   addEventListener('click', (e) => {
     if (!leaving) return;
     const l = e.target.closest && e.target.closest('[data-jsal-nav]');

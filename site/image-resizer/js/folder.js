@@ -71,8 +71,12 @@ export async function writeToFolder(handle, name, blob) {
   const out = await file.createWritable();
   try {
     await out.write(blob);
-  } finally {
-    await out.close();
+  } catch (err) {
+    // A write that fails (a full disk) is dropped, not kept half-written, and the empty file made for it goes too
+    await out.abort().catch(() => {});
+    await handle.removeEntry(name).catch(() => {});
+    throw err;
   }
+  await out.close();
   return name;
 }

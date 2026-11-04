@@ -20,7 +20,7 @@ export function initGrid(h) {
 
 export function cleanName(name) {
   return name
-    .replace(/\.[^.]+$/, "")
+    .replace(/\.(jpe?g|jfif|png|webp|gif|avif|heic|heif|bmp|tiff?|svg|ico)$/i, "")   // only an image's extension: "Banner 2.0" keeps its .0
     .replace(/[^\p{L}\p{N}_-]+/gu, "-")   // letters and digits in any language stay (café, 日本); symbols and spaces become dashes
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "") || "image";

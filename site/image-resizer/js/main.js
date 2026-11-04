@@ -7,10 +7,10 @@ import {
 import { DEFAULT_ANCHOR, isImageFile, isHeicFile, loadImage } from "./imaging.js?v=332328fe";
 import { ensureBlob, freeItem, schedulePrewarm, cancelPrewarm } from "./export.js?v=4dffa681";
 import { initEditor, drawEditor, clearEditor, setBadge } from "./editor.js?v=c5051010";
-import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=9317f613";
+import { initGrid, renderGrid, drawThumb, markSelected, updateCardMeta, setSaveState, getFilename } from "./grid.js?v=bf1f4e25";
 import { plural, clamp, setStatus, setPressed, triggerDownload } from "./ui.js?v=a29a8c08";
 import { makeZip, uniqueNames } from "./zip.js?v=eb36bced";
-import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=0a4870d5";
+import { folderSupported, savedFolder, pickFolder, ensureWritable, writeToFolder } from "./folder.js?v=9f88a62f";
 
 const $ = id => document.getElementById(id);
 
