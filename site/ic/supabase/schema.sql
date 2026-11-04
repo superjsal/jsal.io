@@ -36,12 +36,15 @@ language sql stable security definer set search_path = public as $$
   select exists (select 1 from public.members where user_id = auth.uid() and role = 'admin');
 $$;
 
--- Name, avatar and Discord id always come from the Discord sign-in, never from what the browser sends.
+-- Name, avatar and Discord id always come from the Discord sign-in, never from what the browser sends: from
+-- auth.identities, not the profile (raw_user_meta_data), which anyone signed in can rewrite with updateUser().
 create or replace function public.fill_identity() returns trigger
 language plpgsql security definer set search_path = public as $$
 declare m jsonb;
 begin
-  select raw_user_meta_data into m from auth.users where id = new.user_id;
+  select identity_data into m from auth.identities
+   where user_id = new.user_id and provider = 'discord'
+   order by last_sign_in_at desc nulls last limit 1;
   new.discord_id := coalesce(m ->> 'provider_id', m ->> 'sub');
   new.name := coalesce(m -> 'custom_claims' ->> 'global_name', m ->> 'full_name', m ->> 'name', m ->> 'user_name');
   new.avatar := m ->> 'avatar_url';
@@ -260,16 +263,19 @@ create policy "own request create" on public.access_requests for insert to authe
 create policy "own request touch" on public.access_requests for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
 create policy "admin decline" on public.access_requests for delete to authenticated using (public.is_admin() or user_id = auth.uid());
 
--- app_data, edits and platform notes: members read, admins write.
+-- app_data: members read; nobody writes from the browser. The page changes it only through add_platform and
+-- set_platform_hidden (which run as the table owner), and the publish uses the secret key.
 create policy "members read" on public.app_data for select to authenticated using (public.is_member());
-create policy "admins write" on public.app_data for all to authenticated using (public.is_admin()) with check (public.is_admin());
+-- edits and platform notes: members read, admins write.
 create policy "members read" on public.edits for select to authenticated using (public.is_member());
 create policy "admins write" on public.edits for all to authenticated using (public.is_admin()) with check (public.is_admin());
 create policy "members read" on public.platform_notes for select to authenticated using (public.is_member());
 create policy "admins write" on public.platform_notes for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
--- picker: admins only.
-create policy "picker: admins only" on public.picker for all to authenticated using (public.is_admin()) with check (public.is_admin());
+-- picker: admins only, to read, add and change rows; the page never deletes one (taking a platform off is a switch).
+create policy "picker: admins read" on public.picker for select to authenticated using (public.is_admin());
+create policy "picker: admins add" on public.picker for insert to authenticated with check (public.is_admin());
+create policy "picker: admins change" on public.picker for update to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- requests: members post as themselves (always starting "Not reviewed"); only admins change them; authors or admins delete.
 create policy "members read" on public.requests for select to authenticated using (public.is_member());
