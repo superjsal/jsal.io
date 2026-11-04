@@ -219,8 +219,10 @@ function showResult() {
       : `<li class="check ${c.level}">${body}</li>`;
   }).join("");
   // Screen readers hear the summary when it changes (not on every keystroke)
-  const warns = shownChecks.filter((c) => c.level === "warn").length;
-  const say = !n ? "" : warns ? `${warns} thing${warns === 1 ? "" : "s"} to check, listed under Checks.` : "No problems found.";
+  const warns = shownChecks.filter((c) => c.level === "warn").length, notes = shownChecks.filter((c) => c.level === "info").length;
+  const noted = notes ? `${notes} note${notes === 1 ? "" : "s"}` : "";
+  const say = !n ? "" : warns ? `${warns} thing${warns === 1 ? "" : "s"} to check${noted && ` and ${noted}`}, listed under Checks.`
+    : noted ? `No problems found. ${noted[0].toUpperCase() + noted.slice(1)}, listed under Checks.` : "No problems found.";
   if (say !== $("checksSay").textContent) $("checksSay").textContent = say;
 }
 
