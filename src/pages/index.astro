@@ -349,7 +349,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .cms, .ir, .cp, .hi, .ri { min-height: 0; }
   .tile.cms { padding-bottom: 262px; }   /* style: allow (room for the brick under the words) */
   .pcs { left: 14px; top: 146px; --rest: rotate(-10deg) scale(0.6); --hover: var(--rest); }
-  .fit-for { left: 20px; top: -12px; }   /* no room under the line here, so it pokes out of the tile's top */
+  .fit-for { left: 20px; top: auto; bottom: -12px; }   /* no room under the line here, so it pokes out of the tile's foot, clear of the heading */
   /* the editor and the sheet follow their words: the editor at the tile's full width, inside it, and the sheet
      centred, a negative margin taking back the room its scaling frees */
   .ir .clip { position: static; order: 1; overflow: visible; }
@@ -365,8 +365,6 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .intro p { font-size: 17px; }
 }
 #updates, #hi-h { scroll-margin-top: 16px; }
-/* Phones: a smaller title and tiles, one spacing step for the grid, and only the Updates link kept in the top bar
-   (Email is in Say hi) */
 /* The narrowest phones: a smaller brick, so it fits across the tile and the page never scrolls sideways */
 @media (max-width: 374px) {
   .pcs { left: calc(50% - 130px); top: 170px; --rest: rotate(-10deg) scale(0.54); }   /* centred (275px across, its box starting 8px left of its corner) and under the line's two lines */
@@ -378,8 +376,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .rs-row { grid-template-columns: 12px 18px 1fr 1fr; gap: var(--jsal-space-8); }
   .rs-row .mono { font-size: 10px; }   /* style: allow (miniature) */
 }
+/* Phones: a smaller title and tiles, and one spacing step for the grid */
 @media (max-width: 520px) {
-  .jsal-top nav a:not([href="#updates"]) { display: none; }
   .grid { gap: var(--jsal-space-32); }
   .roles span + span::before { margin: 0 var(--jsal-space-8); }
   .intro h1 { font-size: 40px; }
