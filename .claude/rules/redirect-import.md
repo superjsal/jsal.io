@@ -116,6 +116,16 @@ paths:
   expectation. Browser flows (paste, filters, folding, 5,000 rows for speed) are still scratch tests in
   `private\redirect-import\tests\`, run by hand against port 8766.
 - **Analytics:** `redirect_file` (platform, redirects, action) on Copy and Download; never the addresses.
+- **Check live redirects** (being built on `claude/redirect-checker`, plan in `private\redirect-import\checker-plan.md`;
+  John said go, 4 Nov): once the site is live, the old addresses go to `/api/redirect-check` (`worker\index.js`, the
+  site's only server code), which follows each hop itself (8 addresses a request, up to 5 redirects each, 4 at a time to
+  one site, an honest User-Agent, Origin jsal.io only, public hostnames only, one site per request, the CHECK_LIMIT rate
+  limit) and returns status codes and Locations only. `js/live.js` reads them against the row's new address by the
+  platform's rules (`classify`: ok, chain at 3+ redirects, temporary 302/307, elsewhere, live old page, missing,
+  broken target, loop, error; the last / never counts, capitals only where `capsExact`), tested in
+  `redirects.test.mjs`. It's opt-in: the tool's "nothing is uploaded" line and /privacy/ must say so before it ships.
+  Some sites' bot protection answers 429 (one Shopify store did; two others didn't); the row then says the site asked to
+  slow down. Never disguise the checker's User-Agent to get past that.
 - **A partial file is always said:** while rows need you, Copy and Download read "Copy 4 of 10" / "Download 4 of 10" and
   the file pane opens with "6 rows need fixing before they go in the file. Fix them" (Needs you filter, first row
   focused). Don't go back to a plain "Download file" while rows are missing: a silently short file is the problem the

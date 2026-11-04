@@ -6,3 +6,4 @@ private/
 /dist/
 /.astro/
 __pycache__/
+/.wrangler/

@@ -1,6 +1,6 @@
 # How jsal.io works behind the pages
 
-The site is static files on Cloudflare (a Worker with static assets only), built by Astro from GitHub on every push; the only moving parts are one database (Supabase, for the team Playbook and the CMS Picker's answers), eight GitHub Actions (one of them the GitHub Pages copy, a fallback until 2026-11-09), and the checks that run before a push. This page is the map; the rules that govern each part are in `CLAUDE.md` and `.claude\rules\cms-picker-playbook.md` (in the repo, never served), and the CMS Picker's data rules in `cms-picker-maintenance.md`.
+The site is static files on Cloudflare (a Worker serving static assets, with one small script for `/api/*`: Redirect Import's live redirect check, `worker\index.js`, which follows a sheet's old addresses on request and returns only status codes and hops, never stores anything), built by Astro from GitHub on every push; the only moving parts are one database (Supabase, for the team Playbook and the CMS Picker's answers), eight GitHub Actions (one of them the GitHub Pages copy, a fallback until 2026-11-09), and the checks that run before a push. This page is the map; the rules that govern each part are in `CLAUDE.md` and `.claude\rules\cms-picker-playbook.md` (in the repo, never served), and the CMS Picker's data rules in `cms-picker-maintenance.md`.
 
 ```mermaid
 flowchart TB

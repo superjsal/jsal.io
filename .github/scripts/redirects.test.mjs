@@ -397,5 +397,40 @@ for (const [pairs, id, state, text] of longs) {
 }
 check("a 60-row chain is all in the file", run("shopify", longs[0][0]).body.split("\n").length === 60);
 
+// ── Check live redirects: reading the checker's hops (live.js), no network ───────────────────────────────────────
+// [label, expected, hops or { hops, error, loop }, platform, kind, a fragment of the note]
+const { classify, samePage } = await import(pathToFileURL(path.join(js, "live.js")));
+const S = "https://shop.com";
+const hop = (p, status, to) => ({ url: p.startsWith("http") ? p : S + p, status, ...(to ? { location: to.startsWith("http") ? to : S + to } : {}) });
+const live = [
+  ["lands on the new page", "/new", [hop("/old", 301, "/new"), hop("/new", 200)], "shopify", "ok", "Lands on /new (301)"],
+  ["a 308 is permanent too", "/new", [hop("/old", 308, "/new"), hop("/new", 200)], "vercel-bulk", "ok", "(308)"],
+  ["the site adds the last /: still the page", "/new", [hop("/old", 301, "/new"), hop("/new", 301, "/new/"), hop("/new/", 200)], "netlify", "ok", "Lands on /new"],
+  ["capitals folded where they don't matter", "/About", [hop("/old", 301, "/about"), hop("/about", 200)], "shopify", "ok", "Lands on /About"],
+  ["capitals matter on Netlify", "/About", [hop("/old", 301, "/about"), hop("/about", 200)], "netlify", "elsewhere", "Ends on /about instead of /About"],
+  ["encoded and plain letters are one page", "/café", [hop("/old", 301, "/caf%C3%A9"), hop("/caf%C3%A9", 200)], "shopify", "ok", "Lands on"],
+  ["www and https hops don't count against it", "/new", [hop("http://www.shop.com/old", 301, "https://www.shop.com/old"), hop("https://www.shop.com/old", 301, "https://www.shop.com/new"), hop("https://www.shop.com/new", 200)], "shopify", "ok", "Lands on /new (301)"],
+  ["three redirects: shorten it", "/new", [hop("/old", 301, "/mid"), hop("/mid", 301, "/mid2"), hop("/mid2", 301, "/new"), hop("/new", 200)], "shopify", "chain", "in 3 redirects"],
+  ["a 302 lands but is temporary", "/new", [hop("/old", 302, "/new"), hop("/new", 200)], "shopify", "temporary", "temporary 302"],
+  ["ends somewhere else", "/new", [hop("/old", 301, "/"), hop("/", 200)], "shopify", "elsewhere", "Ends on / instead of /new"],
+  ["another site, as written", "https://other.org/b", [hop("/old", 301, "https://other.org/b"), hop("https://other.org/b", 200)], "shopify", "ok", "Lands on https://other.org/b"],
+  ["the old page is still live", "/new", [hop("/old", 200)], "shopify", "live", "wins over the redirect"],
+  ["no redirect yet", "/new", [hop("/old", 404)], "shopify", "missing", "Imported and published?"],
+  ["gone (410) is the same", "/new", [hop("/old", 410)], "shopify", "missing", "(410)"],
+  ["redirects to a missing page", "/new", [hop("/old", 301, "/new"), hop("/new", 404)], "shopify", "broken", "which is not found (404)"],
+  ["a loop", "/b", { hops: [hop("/a", 301, "/b"), hop("/b", 301, "/a")], loop: true }, "shopify", "loop", "Loops: /a → /b → /a"],
+  ["a redirect to itself", "/a", { hops: [hop("/a", 301, "/a")], loop: true }, "shopify", "loop", "Loops: /a → /a"],
+  ["too many hops", "/new", { hops: [1, 2, 3, 4, 5, 6].map((n) => hop(`/h${n}`, 301, `/h${n + 1}`)), error: "too many hops" }, "shopify", "error", "more than 5 redirects"],
+  ["the site refuses", "/new", [hop("/old", 403)], "shopify", "error", "refused the check (403)"],
+  ["the site asks to slow down", "/new", [hop("/old", 429)], "shopify", "error", "slow down"],
+  ["no answer at all", "/new", { hops: [], error: "timeout" }, "shopify", "error", "Couldn’t check: timeout"],
+  ["a ? part counts when the new address has one", "/p?id=2", [hop("/old", 301, "/p?id=1"), hop("/p?id=1", 200)], "shopify", "elsewhere", "Ends on /p?id=1"],
+];
+for (const [label, expected, res, fmtId, kind, text] of live) {
+  const r = classify({ old: S + "/old", expected: expected.startsWith("http") ? expected : S + expected }, Array.isArray(res) ? { hops: res } : res, byId(fmtId));
+  check(`live: ${label}`, r.kind === kind && r.text.includes(text), `${r.kind} ${r.text}`);
+}
+check("live: a ? part on the landing page doesn't matter when none was asked for", samePage(S + "/p?utm_source=x", S + "/p", byId("shopify")));
+
 console.log(fail ?`${fail} of ${count} Redirect Import tests failed` : `All ${count} Redirect Import tests passed`);
 process.exit(fail ? 1 : 0);

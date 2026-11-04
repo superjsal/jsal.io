@@ -1,8 +1,12 @@
-// Cloudflare Workers config: serves the Astro build (dist/) as plain files, no Worker code.
-// Builds run from the repo on every push: main is jsal.io, other branches get preview addresses.
+// Cloudflare Workers config: serves the Astro build (dist/) as plain files, plus one small Worker script for
+// /api/* (worker/index.js: Redirect Import's live check). Builds run from the repo on every push: main is jsal.io,
+// other branches get preview addresses.
 {
   "name": "jsal-io",
   "compatibility_date": "2026-11-01",
+  "main": "worker/index.js",
+  // Rate limit for the live check, per visitor and Cloudflare location: 60 requests (480 addresses) a minute
+  "ratelimits": [{ "name": "CHECK_LIMIT", "namespace_id": "1001", "simple": { "limit": 60, "period": 60 } }],
   // Astro writes the site into dist/ before each deploy and preview upload
   "build": { "command": "npm ci && npm run build" },
   // The workers.dev address (kept out of search by site/_headers) and the branch previews, such as staging
@@ -12,6 +16,9 @@
   "previews": {},
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    // Only /api/* runs the Worker; every page and file is served straight from the build
+    "run_worker_first": ["/api/*"],
     // Unknown addresses get 404.html with a real 404 status
     "not_found_handling": "404-page",
     // /cms-picker redirects to /cms-picker/, as GitHub Pages does
