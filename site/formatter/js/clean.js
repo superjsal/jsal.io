@@ -28,8 +28,12 @@ const pageKey = (a) => (a.getAttribute("href") || "").replace(/^https?:\/\/(www\
 // Link text that doesn't say where it goes
 const VAGUE_TEXT = /^(click here|click|here|this|this link|link|read more|learn more|more|see more|find out more|more info|details|go)$/i;
 
-// Plain text that is actually HTML code (copied from a code view or a file)
-export const looksLikeHtml = (text) => /<\/?(p|h[1-6]|ul|ol|li|a|strong|b|em|i|br|div|span|table|tr|td|blockquote)\b[^>]*>/i.test(text || "");
+// Plain text that is actually HTML code (copied from a code view or a file). Code starts with a tag; text that only
+// mentions one ("Use the <br> tag…") stays text
+export const looksLikeHtml = (text) => /^\s*</.test(text || "") && /<\/?(p|h[1-6]|ul|ol|li|a|strong|b|em|i|br|div|span|table|tr|td|blockquote)\b[^>]*>/i.test(text || "");
+
+// A link's scheme as the browser reads it: it ignores tabs, line breaks and control characters, so "java<tab>script:" still runs
+const scheme = (href) => (href.replace(/[\x00-\x20\x7f]/g, "").match(/^([a-z][a-z0-9+.-]*):/i) || [])[1]?.toLowerCase() || "";
 
 export function detectSource(html, text) {
   if (!html) return text ? (looksLikeHtml(text) ? "HTML code" : "Plain text") : "";
@@ -83,7 +87,8 @@ function convertChildren(node, ctx) {
 
 function convert(node, ctx) {
   const { out } = ctx;
-  if (node.nodeType === 3) return [out.createTextNode(node.data.replace(SPACE, " "))];
+  // Code blocks keep their line breaks and indentation as written
+  if (node.nodeType === 3) return [out.createTextNode(ctx.pre ? node.data : node.data.replace(SPACE, " "))];
   if (node.nodeType !== 1) return [];
 
   const tag = node.localName;
@@ -124,8 +129,9 @@ function convert(node, ctx) {
     case "i": case "em":
       return /font-style:\s*normal/.test(style) ? kids() : [el("em", kids())];
     case "sup": case "sub": return [el(tag, kids())];
+    case "pre": return [el(tag, convertChildren(node, { ...ctx, pre: true }))];
     case "h1": case "h2": case "h3": case "h4": case "h5": case "h6":
-    case "blockquote": case "pre": case "caption":
+    case "blockquote": case "caption":
       return [el(tag, kids())];
     case "p":
       if (/MsoTitle\b/.test(cls)) return [el("h1", kids())];
@@ -216,7 +222,7 @@ function link(node, ctx, kids) {
     if (real) { href = real; ctx.stats.googleLinks++; }
   }
   if (/^www\./i.test(href)) { href = "https://" + href; ctx.stats.fixedLinks++; }
-  if (/^(javascript|data|vbscript):/i.test(href)) return kids();
+  if (["javascript", "data", "vbscript"].includes(scheme(href))) return kids();
   const a = ctx.out.createElement("a");
   a.setAttribute("href", href);
   a.append(...kids());

@@ -1,4 +1,5 @@
 [
+  {"date": "2026-11-04", "tag": "Clean Paste", "text": "Small fixes: code blocks keep their line breaks and indents, text that only mentions a tag stays text, and every script link is removed."},
   {"date": "2026-11-04", "tag": "Redirect Import", "text": "Small fixes: long lines and header rows in the file wrap to fit instead of scrolling sideways, and a sheet that starts with a domain column picks the right columns."},
   {"date": "2026-11-04", "tag": "Redirect Import", "text": "Where a platform documents how it treats capitals or the last /, rows say what will happen instead of “may be one page”, and a loop that hangs on them says “may loop”."},
   {"date": "2026-11-03", "tag": "CMS Picker", "text": "Small fixes: each platform guide’s source links name the site they lead to, and promise menu paths only where every setting has one."},
