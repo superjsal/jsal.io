@@ -32,7 +32,8 @@ jobs:
           [ -n "$BACKUP_PASSPHRASE" ] || { echo "Set the BACKUP_PASSPHRASE secret first (Settings → Secrets and variables → Actions)."; exit 1; }
           python .github/scripts/playbook.py backup
           for f in "$PLAYBOOK_BACKUP_DIR"/*.json; do
-            gpg --symmetric --batch --yes --cipher-algo AES256 --passphrase "$BACKUP_PASSPHRASE" -o "$f.gpg" "$f"
+            # The passphrase goes in on standard input, never on the command line where other processes could see it
+            printf '%s' "$BACKUP_PASSPHRASE" | gpg --symmetric --batch --yes --pinentry-mode loopback --passphrase-fd 0 --cipher-algo AES256 -o "$f.gpg" "$f"
             rm "$f"
           done
           ls -l "$PLAYBOOK_BACKUP_DIR"

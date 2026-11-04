@@ -178,7 +178,8 @@ export function platform(pid, d = data) {
     ogAlt: ownOg ? `${name} SEO on CMS Picker: its six SEO settings, marked built in, plugin or needs code`
       : 'CMS Picker: which website platform fits you, what’s built in, and getting found on Google and AI search',
     nameUrl: quote(name),
-    jsonld: '\n' + JSON.stringify(ld, null, 2).split('\n').map((l) => '  ' + l).join('\n') + '\n  ',
+    // "<" written as \u003c (the same character to a JSON reader), so no name in the data can close the script tag
+    jsonld: '\n' + JSON.stringify(ld, null, 2).replace(/</g, '\\u003c').split('\n').map((l) => '  ' + l).join('\n') + '\n  ',
     // Platforms with no menus to point to (a headless CMS: the developer builds the fields) say what each takes instead
     lede: e((`${pr.summary ?? ''} Here’s what you can change for search on ${name}, and `
       + `${hasWhere ? 'where each setting is' : 'what each change takes'}. Every answer is checked against official documentation, linked under it.`).trim()),

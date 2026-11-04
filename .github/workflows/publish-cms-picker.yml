@@ -42,6 +42,9 @@ jobs:
           git config user.email "dev@jsal.io"
           git add -A site/cms-picker/data.json site/cms-picker/logos src/data/cms-picker-dates.json
           git commit -m "CMS Picker: nightly publish from Playbook"
+          # main may have moved since the checkout (a ship meanwhile): replay this commit on top, which only
+          # touches the published data files, rather than lose the night's publish to a rejected push
+          git pull --rebase --quiet origin main
           git push
           echo "pushed=true" >> "$GITHUB_OUTPUT"
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
