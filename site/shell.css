@@ -408,5 +408,7 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 .jsal-about summary:hover h3 { text-decoration: underline; text-decoration-color: var(--jsal-hover-line); text-underline-offset: 3px; }
 .jsal-about summary:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .jsal-about details > ul { margin-bottom: var(--jsal-space-12); }
+/* A file name in the text, in mono: Inter would draw the x of "1200x628" as × */
+.jsal-about code { font-family: "JetBrains Mono", Consolas, monospace; font-size: 0.86em; }
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 @media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }

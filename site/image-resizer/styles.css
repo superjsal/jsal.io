@@ -317,6 +317,7 @@ body {
   border: 1px solid var(--jsal-line);
   color: var(--jsal-ink-2);
   overflow-wrap: anywhere;
+  font-variant-ligatures: no-contextual;   /* it names saved files: Inter would draw the x of "-1200x628" as × */
 }
 
 .status-dot {
