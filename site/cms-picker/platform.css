@@ -25,7 +25,7 @@
 .pp-path-l { margin-right: var(--jsal-space-2); color: var(--jsal-muted); font-size: 13px; }
 .pp-step { padding: var(--jsal-pad-tag); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); background: var(--jsal-bg); font-size: 13px; line-height: 1.45; }
 .pp-sep { color: var(--jsal-muted); font-size: 13px; }   /* the arrow; screen readers hear ", then" */
-.pp-src { display: inline-block; margin-top: var(--jsal-space-8); color: var(--jsal-info); font-size: 13px; text-underline-offset: 2px; }   /* a source link inside the content, blue like the Playbook's */
+.pp-src { display: inline-block; padding: var(--jsal-space-2) 0; margin: calc(var(--jsal-space-8) - var(--jsal-space-2)) 0 calc(var(--jsal-space-2) * -1); color: var(--jsal-info); font-size: 13px; text-underline-offset: 2px; }   /* a source link inside the content, blue like the Playbook's; a 24px target that sits where the 20px line did */
 @media (pointer: coarse) { .pp-src { position: relative; } .pp-src::after { content: ""; position: absolute; inset: -13px -4px; } }   /* 44px to tap */
 
 /* The short profile */

@@ -187,7 +187,7 @@ function removeImage(i) {
 
 // --- Where exports go: Downloads, one ZIP, or a chosen folder ---
 
-const DEST_LABELS = { files: "Download All", zip: "Download ZIP", folder: "Save All to Folder" };
+const DEST_LABELS = { files: "Download all", zip: "Download ZIP", folder: "Save all to folder" };
 
 let folder = null;   // FileSystemDirectoryHandle, remembered across visits
 

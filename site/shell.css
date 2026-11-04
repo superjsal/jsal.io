@@ -379,7 +379,7 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
   border-top: 1px solid var(--jsal-line);
   font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 }
-.jsal-about > * { max-width: 680px; }
+.jsal-about > * { max-width: 580px; }   /* about 70 characters a line, the comfortable reading length */
 .jsal-about h2 { margin: 0 0 var(--jsal-space-8); font: 700 24px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
 .jsal-about h3 { margin: var(--jsal-space-32) 0 var(--jsal-space-8); font-size: 17px; color: var(--jsal-ink); }
 .jsal-about p { margin: 0 0 var(--jsal-flow); }
