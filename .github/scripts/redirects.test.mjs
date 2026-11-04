@@ -274,6 +274,13 @@ const known = [
   ["netlify", [["/a", "/x"], ["/a/", "/y"]], 1, "bad", "Same address as row 3: Netlify matches it with or without the last /", "Leave this one out"],
   ["netlify", [["/a", "/x"], ["/a/", "/y"]], 2, "bad", "Same address as row 2: Netlify matches it with or without the last /", "Leave this one out"],
   ["netlify", [["/a", "/x"], ["/A/", "/y"]], 1, "ok", "", ""],
+  // Where the last / is matched either way, new addresses that differ only there are one page (John, 4 Nov)
+  ["netlify", [["/a", "/p"], ["/a/", "/p/"]], 2, "out", "Same as row 2", ""],
+  ["netlify", [["/a", "/p"], ["/a/", "/p/"]], 1, "ok", "", ""],
+  ["netlify", [["/a", "/p/"], ["/a", "/p"]], 2, "out", "Same as row 2", ""],
+  ["hubspot", [["/a", "/p"], ["/a/", "/p/"]], 2, "out", "Same as row 2", ""],
+  ["netlify", [["/a", "/P"], ["/a/", "/p/"]], 2, "bad", "Same address as row 2: Netlify matches it with or without the last /", "Leave this one out"],
+  ["shopify", [["/a", "/p"], ["/a", "/p/"]], 2, "bad", "Duplicate of row 2", "Leave this one out"],
   ["netlify", [["/a", "/x"], ["/a", "/y"]], 1, "bad", "Duplicate of row 3", "Leave this one out"],
   ["hubspot", [["/a", "/x"], ["/a/", "/y"]], 1, "bad", "Same address as row 3: HubSpot matches it with or without the last /", "Leave this one out"],
   ["hubspot", [["/a", "/x"], ["/A/", "/y"]], 1, "warn", "Row 3 has it with different capitals. May be one page on HubSpot", "Leave this one out"],

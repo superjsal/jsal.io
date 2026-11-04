@@ -57,7 +57,9 @@ paths:
     patterns with `/?$` (httpd.apache.org mod_alias); and Ghost, whose keys are JavaScript regular expressions
     (ghost.org/tutorials/implementing-redirects), written with `/?$` too. A
     row that only adds or drops it is red, "Would loop: Netlify matches it with or without the last /". Two old
-    addresses that differ only by it are one address: to the same page the repeat is out ("Same as row N"); to
+    addresses that differ only by it are one address: to the same page the repeat is out ("Same as row N"), and a
+    new address on the site that differs only by its last / is the same page there too (/a → /p with /a/ → /p/;
+    John, 4 Nov, as these platforms serve their pages that way); to
     different pages both are red, "Same address as row N: Netlify matches it with or without the last /", with
     Leave this one out.
   - Capitals matter (`capsExact`): Netlify ("Paths are case-sensitive", docs.netlify.com, checked 4 Nov). /About →
@@ -85,7 +87,7 @@ paths:
   as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
   platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
   (`fixedName`), as those platforms find the file by its name.
-- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 232 checks) runs the real `core.js` and `formats.js` on tricky
+- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 238 checks) runs the real `core.js` and `formats.js` on tricky
   addresses, pasted text, junk and cut-short addresses, preview sites, each platform's documented rules and file, the
   audit-export traps, chains, duplicates and capitals. `check.py` (so `check.ps1`) and Site checks run it on every push
   to `main` and `staging`; a failure prints FAIL lines. When a result should change, agree it first, then update the

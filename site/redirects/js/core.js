@@ -322,14 +322,16 @@ export function analyse(rows, fmt, opts) {
   });
 
   // The same old address on more than one row (or one the platform matches as the same): to the same page, the
-  // repeats are dropped; to different pages, each row is a duplicate to delete until one is left
+  // repeats are dropped; to different pages, each row is a duplicate to delete until one is left. Where the platform
+  // matches with or without the last /, it serves its own pages that way too, so /p and /p/ are one page there
   const groups = new Map();
+  const page = (l) => (fmt.slashLoop && l.internal ? trim(l.to) : l.to);
   for (const l of live) (groups.get(same(l.from)) || groups.set(same(l.from), []).get(same(l.from))).push(l);
   const rowList = (ls) => { const n = ls.map((x) => x.it.n); return (n.length > 1 ? "rows " : "row ") + (n.length > 1 ? `${n.slice(0, -1).join(", ")} and ${n[n.length - 1]}` : n[0]); };
   const kept = [];
   for (const [k, g] of groups) {
     if (g.length === 1) { kept.push(g[0]); continue; }
-    const distinct = new Set(g.map((l) => l.to));
+    const distinct = new Set(g.map(page));
     if (distinct.size === 1) {
       kept.push(g[0]);
       g.slice(1).forEach((l) => l.out("o", `Same as row ${g[0].it.n}`));
