@@ -2,8 +2,10 @@
 # sources), kept as a workflow artifact for 90 days, so a copy exists off John's PC (the free Supabase tier has no
 # point-in-time recovery). The repo is public and anyone with a GitHub account can download a public repo's
 # artifacts, so the file is encrypted with the BACKUP_PASSPHRASE secret before upload (gpg, symmetric).
-#   Fetch:   gh run download <run id> -n playbook-backup
-#   Open:    gpg --decrypt --batch --passphrase "<the passphrase>" playbook-<stamp>.json.gpg > playbook-<stamp>.json
+#   Fetch:   gh run download <run id> -n playbook-backup -D private\backups
+#   Open (PowerShell, with Git for Windows' own gpg; the passphrase is in John's password manager, letters, numbers
+#   and dashes only; -o rather than ">", which would write the file as UTF-16):
+#     & 'C:\Program Files\Git\usr\bin\gpg.exe' --decrypt --batch --pinentry-mode loopback --passphrase '<passphrase>' -o private\backups\playbook-<stamp>.json private\backups\playbook-<stamp>.json.gpg
 # The by-hand `playbook.py backup` still writes a plain file to private\backups on the PC.
 name: Back up Platform Playbook
 
