@@ -320,7 +320,8 @@ grant execute on function public.ping() to anon;
 -- Functions: signed-in people only (each admin action refuses non-admins itself; the access rules
 -- above need is_member and is_admin). Supabase's Advisor still lists these as "Signed-In Users Can
 -- Execute SECURITY DEFINER Function", on purpose. "Leaked Password Protection" doesn't apply:
--- everyone signs in with Discord.
+-- everyone signs in with Discord, the only provider switched on (Authentication → Sign In / Providers;
+-- Email is off, so nobody can make an account with an address and password).
 revoke execute on function public.is_member(), public.is_admin(), public.approve_member(uuid), public.remove_member(uuid),
   public.set_member_role(uuid, text), public.add_platform(text, text, text), public.set_platform_hidden(text, boolean) from public, anon;
 grant execute on function public.is_member(), public.is_admin(), public.approve_member(uuid), public.remove_member(uuid),
