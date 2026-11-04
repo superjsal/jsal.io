@@ -363,15 +363,16 @@ export function analyse(rows, fmt, opts) {
   const walk = (p) => fmt.exact ? same(p) : loose(p);
   const byKey = new Map();
   for (const l of kept) (byKey.get(walk(l.from)) || byKey.set(walk(l.from), []).get(walk(l.from))).push(l);
-  // The row an address leads to: the one the platform matches for sure, or else the first that may match
-  const follow = (p) => { const c = byKey.get(walk(p)) || []; return c.find((x) => same(x.from) === same(p)) || c[0]; };
+  // The row an address leads to: the one the platform matches for sure, or else the first that may match. A row whose
+  // new address only may be its own old one says so in its own note, so a chain doesn't turn back into it there
+  const follow = (p, cur) => { const c = byKey.get(walk(p)) || []; return c.find((x) => same(x.from) === same(p)) || c.find((x) => x !== cur); };
   const ends = new Map(), into = new Map();   // a new address as typed → the end of its chain; a row → rows leading in
   const straight = [["Point to the end", (v) => ends.get(v) ?? v]];   // the note names where it ends, so the button stays short
   const ready = [];
   for (const l of kept) {
     let to = l.to, internal = l.internal, hops = [], loop = null, doubtful = null, chainEnd = -1;
     while (internal) {
-      const p = to.split("#")[0], next = follow(p), sure = next && same(next.from) === same(p);
+      const p = to.split("#")[0], next = follow(p, hops.length ? hops[hops.length - 1] : l), sure = next && same(next.from) === same(p);
       // A row whose new address may be its own old one is already marked to test, so it isn't a loop as well
       if (!next || (!hops.length && !sure && walk(next.from) === walk(l.from))) break;
       if (!sure && !doubtful) doubtful = [p, next.from];

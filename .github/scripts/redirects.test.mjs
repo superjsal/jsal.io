@@ -323,6 +323,10 @@ const loops = [
   ["vercel", [["/a", "/b/"], ["/b", "/c"]], 2, "ok", "", "", "chain"],
   ["shopify", [["/a", "/b/"], ["/b", "/a"]], 2, "warn", "May loop: rows 2 → 3 → back here, if /b/ and /b are one page on Shopify", "Leave this one out", "Loop:"],
   ["nginx", [["/a", "/b/"], ["/b", "/a"]], 2, "warn", "Redirect chain: row 3 points here", "", "oop"],
+  // A chain doesn't turn back into a row whose new address only may be its own old one: that row's own note says it
+  ["shopify", [["/About", "/ABOUT/"], ["/about", "/About"], ["/zz", "/yy"]], 3, "warn", "May loop: rows 3 → 2 → back here, if /ABOUT/ and /about are one page on Shopify", "Leave this one out", "back to row"],
+  ["shopify", [["/About", "/ABOUT/"], ["/about", "/About"], ["/zz", "/yy"]], 2, "warn", "May be one page on Shopify", "Leave it out", "oop"],
+  ["shopify", [["/x", "/B"], ["/B", "/b/"]], 2, "warn", "Redirect chain: row 3 sends this on to /b/", "", "oop"],
   // A certain loop carries no "may be one page" notes beside it
   ["vercel-bulk", [["/About", "/about/"], ["/About/", "/about"], ["/zz", "/yy"]], 2, "bad", "Loop: rows 2 → 3 → back here", "", "May be"],
 ];

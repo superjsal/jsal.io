@@ -85,7 +85,7 @@ paths:
   as text beside it, and a split file adds -part-N after the name. It's kept with the sheet, survives "Back to the
   platform's format" and resets when the platform changes. Netlify's `_redirects` and `vercel.json` can't be renamed
   (`fixedName`), as those platforms find the file by its name.
-- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 229 checks) runs the real `core.js` and `formats.js` on tricky
+- **Tests:** `.github/scripts/redirects.test.mjs` (4 Nov; 232 checks) runs the real `core.js` and `formats.js` on tricky
   addresses, pasted text, junk and cut-short addresses, preview sites, each platform's documented rules and file, the
   audit-export traps, chains, duplicates and capitals. `check.py` (so `check.ps1`) and Site checks run it on every push
   to `main` and `staging`; a failure prints FAIL lines. When a result should change, agree it first, then update the
@@ -117,7 +117,10 @@ paths:
   platform whose notes say "may be" (Vercel bulk's last /: /a → /b/ with /b → /a is "May loop… if /b/ and /b are one
   page on Vercel"); `slashSame` still decides only which steps a "Redirect chain" note follows, and domain-only rows. A
   certain Loop drops the row's "may be one page" notes, which would read as doubt beside it. A row whose new address
-  may be its own old one gets only its "may be one page" note, never a loop as well. A loop note names every row it passes and where it comes back to ("back
+  may be its own old one gets only its "may be one page" note, never a loop as well, and a chain from another row
+  doesn't turn back into it on a may-match (it looks for another row that may match): on Shopify /About → /ABOUT/
+  with /about → /About, row 3 is "May loop: rows 3 → 2 → back here, if /ABOUT/ and /about are one page", row 2 only
+  its may-be note (code review, 4 Nov). A loop note names every row it passes and where it comes back to ("back
   here", or "back to row 3" for a row that leads into a loop). On Vercel bulk, /About → /about/ with /About/ → /about
   is a certain loop, as capitals are ignored and each step then matches exactly.
 - **Blue notes say "In the download:"**, never "In the file", which read as ambiguous.
