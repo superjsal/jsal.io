@@ -316,11 +316,21 @@ const loops = [
   ["vercel-bulk", [["/a", "/b"], ["/b", "/A"]], 2, "bad", "Loop: rows 2 → 3 → back here", "", "May loop"],
   ["vercel-bulk", [["/About", "/about/"], ["/About/", "/about"], ["/zz", "/yy"]], 3, "bad", "Loop: rows 3 → 2 → back here", "", "May loop"],
   ["netlify", [["/a", "/b"], ["/b", "/A"]], 2, "warn", "Redirect chain: row 3 sends this on to /A", "", "oop"],
+  // Looked for through every step that may match, also where chains aren't followed through a / (4 Nov, second pass)
+  ["vercel-bulk", [["/a", "/b/"], ["/b", "/a"], ["/zz", "/yy"]], 2, "warn", "May loop: rows 2 → 3 → back here, if /b/ and /b are one page on Vercel", "Leave this one out", "chain"],
+  ["vercel-bulk", [["/a", "/b/"], ["/b", "/a"], ["/zz", "/yy"]], 3, "warn", "May loop: rows 3 → 2 → back here, if /b/ and /b are one page on Vercel", "Leave this one out", "chain"],
+  ["vercel", [["/a", "/b/"], ["/b", "/a"]], 2, "warn", "May loop: rows 2 → 3 → back here, if /b/ and /b are one page on Vercel", "Leave this one out", "chain"],
+  ["vercel", [["/a", "/b/"], ["/b", "/c"]], 2, "ok", "", "", "chain"],
+  ["shopify", [["/a", "/b/"], ["/b", "/a"]], 2, "warn", "May loop: rows 2 → 3 → back here, if /b/ and /b are one page on Shopify", "Leave this one out", "Loop:"],
+  ["nginx", [["/a", "/b/"], ["/b", "/a"]], 2, "warn", "Redirect chain: row 3 points here", "", "oop"],
+  // A certain loop carries no "may be one page" notes beside it
+  ["vercel-bulk", [["/About", "/about/"], ["/About/", "/about"], ["/zz", "/yy"]], 2, "bad", "Loop: rows 2 → 3 → back here", "", "May be"],
 ];
 for (const [p, pairs, row, state, text, leave, absent] of loops) {
   const x = items(pairs, p).get(row - 1), notes = notesOf(x);
   const note = x.notes.find((y) => plain(y.text).includes(text));
-  check(`loop ${p} ${pairs.map((q) => q.join(" → ")).join(", ")} row ${row}`, x.state === state && note && (note.leave || "") === leave && !notes.includes(absent), `${x.state} ${notes}`);
+  const said = text ? note && (note.leave || "") === leave : !x.notes.some((y) => y.kind === "warn" || y.kind === "bad");
+  check(`loop ${p} ${pairs.map((q) => q.join(" → ")).join(", ")} row ${row}`, (x.state === "fixed" ? "ok" : x.state) === state && said && !notes.includes(absent), `${x.state} ${notes}`);
 }
 r = run("shopify", [["/a", "/b"], ["/b", "/A"]]);
 check("a may-loop row stays in the file", r.body === "/a,/b\n/b,/A", r.body);

@@ -358,21 +358,24 @@ export function analyse(rows, fmt, opts) {
 
   // Chains (A → B, then B → C) go in the file as typed, so the visitor stays in charge of their redirects; both rows
   // are marked to check, and a button sends A straight to C. A chain that comes back round is a loop: certain where
-  // every step is the same address on the platform, and only "may" where a step needs a / or capitals to match.
+  // every step is the same address on the platform, and only "may" where a step needs a / or capitals to match. Loops
+  // are looked for through every step that may match; a chain is said only through the steps key() follows.
+  const walk = (p) => fmt.exact ? same(p) : loose(p);
   const byKey = new Map();
-  for (const l of kept) (byKey.get(key(l.from)) || byKey.set(key(l.from), []).get(key(l.from))).push(l);
+  for (const l of kept) (byKey.get(walk(l.from)) || byKey.set(walk(l.from), []).get(walk(l.from))).push(l);
   // The row an address leads to: the one the platform matches for sure, or else the first that may match
-  const follow = (p) => { const c = byKey.get(key(p)) || []; return c.find((x) => same(x.from) === same(p)) || c[0]; };
+  const follow = (p) => { const c = byKey.get(walk(p)) || []; return c.find((x) => same(x.from) === same(p)) || c[0]; };
   const ends = new Map(), into = new Map();   // a new address as typed → the end of its chain; a row → rows leading in
   const straight = [["Point to the end", (v) => ends.get(v) ?? v]];   // the note names where it ends, so the button stays short
   const ready = [];
   for (const l of kept) {
-    let to = l.to, internal = l.internal, hops = [], loop = null, doubtful = null;
+    let to = l.to, internal = l.internal, hops = [], loop = null, doubtful = null, chainEnd = -1;
     while (internal) {
-      const p = to.split("#")[0], next = follow(p);
+      const p = to.split("#")[0], next = follow(p), sure = next && same(next.from) === same(p);
       // A row whose new address may be its own old one is already marked to test, so it isn't a loop as well
-      if (!next || (!hops.length && key(next.from) === key(l.from))) break;
-      if (!doubtful && same(next.from) !== same(p)) doubtful = [p, next.from];
+      if (!next || (!hops.length && !sure && walk(next.from) === walk(l.from))) break;
+      if (!sure && !doubtful) doubtful = [p, next.from];
+      if (chainEnd < 0 && key(next.from) !== key(p)) chainEnd = hops.length;
       const back = [l, ...hops].indexOf(next);
       if (back >= 0) { loop = back; break; }
       hops.push(next); to = next.to; internal = next.internal;
@@ -380,10 +383,18 @@ export function analyse(rows, fmt, opts) {
     }
     if (loop !== null) {
       const path = `rows ${[l, ...hops].map((h) => h.it.n).join(" → ")} → ${loop ? `back to row ${[l, ...hops][loop].it.n}` : "back here"}`;
-      if (!doubtful) { l.bad("n", `Loop: ${path}`, [], "loop", "A loop"); continue; }
+      if (!doubtful) {
+        // A certain loop says all the row needs: its "may be one page" notes would read as doubt beside it
+        const ns = l.it.notes;
+        ns.splice(0, ns.length, ...ns.filter((x) => x.group !== "n:slashcase" && x.group !== "o:alike"));
+        l.bad("n", `Loop: ${path}`, [], "loop", "A loop"); continue;
+      }
       l.it.notes.push({ cell: "n", kind: "warn", group: "n:mayloop", leave: "Leave this one out", title: "may loop",
         text: `May loop: ${path}, if <code>${esc(doubtful[0])}</code> and <code>${esc(doubtful[1])}</code> are one page ${on}` });
       hops = [];
+    } else if (chainEnd >= 0) {
+      hops = hops.slice(0, chainEnd);
+      to = hops.length ? hops[hops.length - 1].to : l.to;
     }
     if (hops.length) {
       ends.set(l.raw, to);
