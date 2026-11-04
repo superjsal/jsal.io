@@ -179,7 +179,7 @@ a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--
 .th { flex: none; display: grid; place-items: center; width: 44px; height: 30px; }
 .th img { display: block; width: min(44px, 30px * var(--ar)); height: min(30px, 44px / var(--ar)); border-radius: var(--jsal-radius-sm); object-fit: cover; }
 .outs .row span { display: flex; flex-direction: column; font-size: 11px; line-height: 1.4; color: var(--jsal-muted); }   /* style: allow (miniature) */
-.outs .row b { color: var(--jsal-ink); }
+.outs .row b { color: var(--jsal-ink); font-weight: 800; }   /* bolder than its row's 600 would ask for 900, past the font's heaviest */
 
 /* Clean Paste: its Text | HTML switch over a short post, straight and poking past the tile's left edge so the watermark
    shows. At rest a gold line stands just past halfway, where the text's lines end, the formatted text on its left and the HTML on its right (the switch's

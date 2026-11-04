@@ -241,9 +241,9 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 #ach-h, #hi-h { scroll-margin-top: 16px; }   /* where the Achievements link and "Say hi" land */
 /* Phones: the editorial type scaled down rather than squeezed. A smaller name with a shorter
    indent, one spacing step (14 / 20px) for the grid and tile padding, a smaller corner radius,
-   and only the page's own Achievements link kept in the top bar (the logo menu goes to the tools). */
+   and the top bar without Tools (the logo menu goes to the tools). */
 @media (max-width: 520px) {
-  .jsal-top nav a:not([href="#ach-h"]) { display: none; }
+  .jsal-top nav a[href="/"] { display: none; }
   .grid { gap: var(--jsal-space-12); }
   .roles { margin: 0 0 var(--jsal-space-12); }
   .roles span + span::before { margin: 0 var(--jsal-space-8); }
@@ -255,6 +255,10 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .now-playing { gap: var(--jsal-space-12); min-height: 300px; }
   .now-playing .big { font-size: 24px; }
   footer { margin-top: var(--jsal-space-32); }
+}
+/* The narrowest phones: Achievements alone, as Email beside it would wrap the bar (Email is in the Backpack too) */
+@media (max-width: 374px) {
+  .jsal-top nav a[href^="mailto"] { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } a.tile:hover { transform: none; } }
 /* This page's intro runs across the grid */

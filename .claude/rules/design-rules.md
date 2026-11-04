@@ -156,6 +156,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   in the bar starts with its icon (22px, `.jsal-title-ico`, the same file as its tab icon), as in
   the logo menu; the icon drops out below 430px. From 360px up the bar keeps one row on every tool (at 420px and under the
   title is 17px and the gaps tighten), so the work area starts at the same height on each.
+- **A page's own top bar links stay on one row on phones** (520px and under), dropping the ones that don't fit rather
+  than wrapping: the home page keeps Updates and Email down to 320px; Off the clock drops Tools (the logo menu goes
+  to the tools) and keeps Achievements, with Email beside it from 375px. Email shows wherever it fits; a new link is
+  measured at 320px and 375px before it's kept.
 - **One distance under the top bar:** pages that open with a heading (home, Off the clock, the CMS Picker and
   its platform pages, Privacy, Changelog, 404) start their first thing at `--jsal-page-top` from `shell.css`
   (32px, 24px at 720px and under), flush with the logo's left edge: no optical indent on the mono line, the
