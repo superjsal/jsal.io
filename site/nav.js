@@ -84,7 +84,7 @@
     };
     const later = () => { if (!frame) frame = requestAnimationFrame(place); };
     const ro = new ResizeObserver(later);
-    const key = (e) => { if (e.key === 'Escape') { e.stopPropagation(); end(); } };
+    const key = (e) => { if (e.key === 'Escape') { e.stopPropagation(); end('closed'); } };
     const show = (i) => {
       const dir = i < at ? -1 : 1;
       while (i >= 0 && i < steps.length && !find(steps[i])) i += dir;
@@ -103,7 +103,14 @@
       place(box.isConnected && !!box.dataset.side);
       box.focus({ preventScroll: true });
     };
-    function end() {
+    // Ends once, however it ends: Done, × or Esc ("closed"), or its control gone from the page ("gone", such as
+    // after Clear). Analytics hears which, the tool and the step it ended on, nothing else.
+    let over = false;
+    function end(how = 'gone') {
+      if (over) return;
+      over = true;
+      cancelAnimationFrame(frame);
+      track('tour_end', { tour: id, step: at + 1, how });
       try { localStorage.setItem(seen, '1'); } catch (e) {}
       const was = target;
       target = null;
@@ -114,8 +121,8 @@
       if (shown(was) && was.matches('a[href], button, input, select, textarea, [tabindex]')) was.focus({ preventScroll: true });
     }
     prev.addEventListener('click', () => show(at - 1));
-    next.addEventListener('click', () => (next.textContent === 'Done' ? end() : show(at + 1)));
-    box.querySelector('.jsal-tour-x').addEventListener('click', end);
+    next.addEventListener('click', () => (next.textContent === 'Done' ? end('done') : show(at + 1)));
+    box.querySelector('.jsal-tour-x').addEventListener('click', () => end('closed'));
     addEventListener('resize', later);
     addEventListener('scroll', later, true);
     addEventListener('keydown', key, true);
