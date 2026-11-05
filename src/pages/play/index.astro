@@ -99,9 +99,9 @@ p, li { text-wrap: pretty; }
 .now-playing .art { position: absolute; top: -18%; left: 0; z-index: -2; width: 100%; height: 118%; object-fit: cover; object-position: 12% 50%; }
 .now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }   /* style: allow (WoW tile: shade over the art for the text) */
 .now-playing .label { margin-bottom: var(--jsal-space-8); }
-.now-playing .label, .now-playing .pill { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
+.now-playing .label { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
 .now-playing .big { font: 700 30px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
-.now-playing .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-12); }
+.now-playing .row { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-12); }   /* the credit, bottom right */
 .now-playing .credit { font-size: 12px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); border: 1px solid currentColor; white-space: nowrap; }
 .desc { margin-top: var(--jsal-space-4) !important; font-size: 15px; }
@@ -287,9 +287,9 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       <img class="art" src="/img/wow-forever.webp" srcset="/img/wow-forever-1200.webp 1200w, /img/wow-forever.webp 1920w" sizes="800px" width="1920" height="800" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" loading="lazy" decoding="async">
       <div>
         <p class="label">currently</p>
-        <p class="big">Getting ready for WoW Forever</p>
+        <p class="big">Playing WoW Forever</p>
       </div>
-      <div class="row"><span class="pill">Coming soon</span><span class="credit">Art © Blizzard Entertainment</span></div>
+      <div class="row"><span class="credit">Art © Blizzard Entertainment</span></div>
     </section>
     <section class="tile mail pack" aria-labelledby="hi-h">
       <div class="pack-h"><span class="portrait"><img src="/img/wow/inv_misc_bag_08.jpg" width="56" height="56" alt=""></span><div><p class="label">say hi</p><h2 id="hi-h">Backpack</h2></div></div>
