@@ -154,7 +154,7 @@ if PLATFORM_PAGES:
 for f in files(['**/*.html', '**/*.js', 'llms.txt']):
     if 'vendor' in f.parts: continue
     for line_no, line in enumerate(f.read_text(encoding='utf-8').splitlines(), 1):
-        if re.search(r'(?<![\w/.\\-])JSAL(?![\w.-])', line):
+        if re.search(r'(?<![\w/.\\-])JSAL(?![\w.-]|#\d{4,6}\b)', line):   # a BattleTag (JSAL#11206) is an account name, not branding
             fail(f'{f.relative_to(SITE)}:{line_no}: standalone "JSAL" (brand as jsal.io or John Salvador)')
 for p, t in html.items():
     if 'wow-forever' in t and 'Art © Blizzard Entertainment' not in t:
