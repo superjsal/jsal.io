@@ -534,7 +534,7 @@
   // gem as its dot (folded by the head script before the first paint). The j's curve shortens into the name's j as its
   // stem rises into the gem; the stem's top pinches off as the j's own dot and knocks the gem over the name to land as
   // the full stop, with "sal" showing in its wake, while the dot overshoots its place and settles. "io" slides out of
-  // the landed gem, then a light runs across the gem and on over "io". Once per visit; a page loaded ahead shows the
+  // the landed gem, which ends it. Once per visit; a page loaded ahead shows the
   // name as it is.
   (() => {
     const root = document.documentElement;
@@ -634,7 +634,7 @@
         draw(Math.min(t, 1320));
         if (t < 1320) return requestAnimationFrame(step);
         // Settle: the name's own path takes over from the reshaped one (the same shape), the short path goes back to
-        // the fold, and the inline styles go; "sal"'s mask is left fully open as drawn, so no pixel changes. Then the glint
+        // the fold, and the inline styles go; "sal"'s mask is left fully open as drawn, so no pixel changes
         stop.style.transform = io.style.transform = io.style.opacity = dot.style.opacity = '';
         io.style.webkitMaskImage = io.style.maskImage = '';
         if (caret) caret.style.transform = '';
@@ -642,8 +642,6 @@
         fold.setAttribute('d', foldD); fold.setAttribute('stroke-width', foldW);
         dot.setAttribute('cy', dotY); dot.setAttribute('r', dotR);
         neck.remove();
-        setTimeout(() => logo.classList.add('jsal-glint'), 130);
-        setTimeout(() => logo.classList.remove('jsal-glint'), 980);
       };
       requestAnimationFrame(step);
     };

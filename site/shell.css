@@ -313,24 +313,6 @@ html.jsal-intro [data-jsal-nav] .jsal-io { opacity: 0; }
    of the name as it unfolds */
 html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 [data-jsal-nav].jsal-unfolding .jsal-caret { transition: none; }
-/* Once unfolded, a light runs across the gem and on over "io", like loot catching the light. It passes over the
-   letters as a layer of its own, so the letters underneath are never repainted. */
-[data-jsal-nav].jsal-glint .jsal-stop::after {
-  content: ""; position: absolute; inset: 0; transform: translateX(-120%);
-  background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 0.85) 50%, transparent 70%);
-  animation: jsal-glint .3s ease-in;   /* style: allow (the logo unfold) */
-}
-[data-jsal-nav].jsal-glint .jsal-io::after {
-  content: "io"; content: "io" / ""; position: absolute; inset: 0; color: transparent;
-  background: linear-gradient(115deg, transparent 40%, rgb(255 255 255 / 0.85) 50%, transparent 60%) 100% 0 / 300% 100% no-repeat;
-  -webkit-background-clip: text; background-clip: text;
-  animation: jsal-glint-text .5s ease-out .18s both;   /* style: allow (the logo unfold) */
-}
-@keyframes jsal-glint { to { transform: translateX(120%); } }
-@keyframes jsal-glint-text { from { background-position: 100% 0; } to { background-position: 0 0; } }
-@media (prefers-reduced-motion: reduce) {
-  [data-jsal-nav].jsal-glint .jsal-stop::after, [data-jsal-nav].jsal-glint .jsal-io::after { display: none; }
-}
 /* Page titles in the home page's serif, the gold word in italic (as "one job" on the home page) */
 .jsal-title { margin: 0; font: 700 20px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
 .jsal-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }

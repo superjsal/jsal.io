@@ -98,8 +98,8 @@ shortens into the name's taller j (round ends throughout) while its stem rises, 
 the gem. The top pinches off as the j's own dot and shoots up, throwing the gem over the name on a high arc, turning
 half a turn and growing to full size, with "sal" showing in its wake; the dot flies a little past its place, dips
 just below it and settles, and the arrow slides out ahead of the name. The gem lands on the baseline as the full
-stop with a small swell, "io" slides out from behind it, and a light runs across the gem and on over "io". About
-1.3 seconds, then the glint. The letters keep their places throughout, so nothing beside the logo moves.
+stop with a small swell, and "io" slides out from behind it. About 1.3 seconds in all; the dot's bounce and "io"
+are the ending, with no glint after. The letters keep their places throughout, so nothing beside the logo moves.
 Each part is set off by the one before: the hook feeds the stem, the stem makes the dot, the dot sends the gem, and
 the gem lets out "io".
 
