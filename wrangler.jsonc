@@ -12,8 +12,11 @@
   // The workers.dev address (kept out of search by site/_headers) and the branch previews, such as staging
   "workers_dev": true,
   "preview_urls": true,
-  // Branch previews take the settings above; the block only has to exist
-  "previews": {},
+  // Branch previews take the files and Worker above, but no bindings: each is declared again here. The preview's rate
+  // limit counts apart from jsal.io's (its own namespace), so testing a preview never slows the live site's visitors.
+  "previews": {
+    "ratelimits": [{ "name": "CHECK_LIMIT", "namespace_id": "1002", "simple": { "limit": 60, "period": 60 } }]
+  },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
