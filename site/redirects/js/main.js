@@ -1,6 +1,7 @@
 // Redirect Import: the sheet, the file beside it and its Settings. The checks themselves are in core.js.
 import { analyse, writeFile, parseDelimited, pickColumns, colLetter, tidy, looksLikeAddress } from "./core.js?v=1eafa119";
 import { FORMATS, byId } from "./formats.js?v=a43b7548";
+import { checkLive, classify } from "./live.js?v=5467e7e0";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app"), work = $("work"), tbody = $("rows");
@@ -70,6 +71,7 @@ function load(raw, name) {
   if (!raw.length) return showError("Nothing to read there. Copy two columns: old addresses and new ones.");
   // The cells as loaded, so a row edited and then shown through other columns still knows what it started as
   table = { raw, orig: raw.map((r) => [...r]), name, pick: pickColumns(raw) };
+  forgetLive();
   build();
 }
 function build(prev) {
@@ -379,6 +381,7 @@ function restore() {
 $("clearBtn").addEventListener("click", () => {
   cleared = { table, rows };
   forget();
+  forgetLive();
   table = null; rows = []; tbody.innerHTML = "";
   app.classList.remove("has-content");
   $("undoClear").hidden = $("undoSep").hidden = false;
@@ -465,6 +468,7 @@ function update() {
   if ($("sheetMeta").dataset.h !== meta) { $("sheetMeta").innerHTML = meta; $("sheetMeta").dataset.h = meta; }
   $("undoAll").hidden = !rows.some((r) => r.added || r.deleted || r.old !== r.old0 || r.new !== r.new0);
   renderFile();
+  if (lv.results.size || work.dataset.side === "live") renderLive();
   keep();
 }
 
@@ -751,10 +755,162 @@ $("foldBtn").addEventListener("click", (e) => { fold(true); $("unfoldBtn").focus
 $("unfoldBtn").addEventListener("click", (e) => { fold(false); $("foldBtn").focus({ focusVisible: !e.detail }); });
 if (store.get("jsal-redirects-folded") === "1") fold(true);
 
-// Phones show one pane at a time
-for (const b of [$("viewSheet"), $("viewFile")]) b.addEventListener("click", () => {
-  work.dataset.view = b === $("viewFile") ? "file" : "sheet";
-  for (const x of [$("viewSheet"), $("viewFile")]) { x.setAttribute("aria-selected", x === b); x.tabIndex = x === b ? 0 : -1; }
+// Beside the sheet, the file or Live check; phones show one of the three at a time, by the tabs
+const VIEWS = { sheet: $("viewSheet"), file: $("viewFile"), live: $("viewLive") };
+function setSide(s) {
+  work.dataset.side = s;
+  for (const b of document.querySelectorAll(".side > button")) b.setAttribute("aria-pressed", b.dataset.side === s);
+  if (s === "live") renderLive();
+}
+function setView(v) {
+  work.dataset.view = v;
+  if (v !== "sheet") setSide(v);
+  for (const [k, b] of Object.entries(VIEWS)) { b.setAttribute("aria-selected", k === v); b.tabIndex = k === v ? 0 : -1; }
+}
+for (const [k, b] of Object.entries(VIEWS)) b.addEventListener("click", () => setView(k));
+// The pane pressed in goes away, so focus moves to the same button in the pane that takes its place
+for (const b of document.querySelectorAll(".side > button")) b.addEventListener("click", (e) => {
+  setSide(b.dataset.side);
+  document.querySelector(`.${b.dataset.side}-pane .side [data-side="${b.dataset.side}"]`).focus({ focusVisible: !e.detail });
+});
+
+// ── Live check ─────────────────────────────────────────────────────────────
+
+// Once the new site is live, each old address in the file is sent to jsal.io's checker, which visits it and says
+// where it lands; only the old addresses leave the browser, and only when Check is pressed. Results are kept per row
+// with the addresses they were for, so a row edited since reads as not checked
+const lv = { results: new Map(), filter: "all", run: null, edited: false, frame: 0 };
+// A mark per result: it works (green), it works but fix it (a dashed ring), it doesn't (red), not checked (grey)
+const LV = { ok: "ok", chain: "warn", temporary: "warn", elsewhere: "bad", live: "bad", missing: "bad", broken: "bad", loop: "bad", error: "out" };
+const LV_SAY = { ok: ["✓", "Works"], warn: ["?", "Works, but fix it"], bad: ["!", "Doesn’t work"], out: ["–", "Not checked"] };
+const LV_NOTE = { ok: "lv-ok", warn: "warn", bad: "bad", out: "out" };
+
+// The site to check: the old addresses' own domain where the sheet has one, else the new site's
+function guessSite() {
+  for (const r of rows) {
+    const m = !r.deleted && /^(https?:\/\/[^/?#\s]+)/i.exec(tidy(r.old0 || r.old));
+    if (m) return m[1].toLowerCase();
+  }
+  return result?.site ? result.site.replace(/\/+$/, "") : "";
+}
+// What was typed as the site, as an origin, or null if it isn't one
+function siteOrigin() {
+  let v = $("liveSite").value.trim();
+  if (!v) return null;
+  if (!/^https?:\/\//i.test(v)) v = "https://" + v;
+  try { const u = new URL(v); return u.hostname.includes(".") ? u.origin : null; } catch (e) { return null; }
+}
+const bareHost = (u) => { try { return new URL(u).hostname.toLowerCase().replace(/^www\./, ""); } catch (e) { return ""; } };
+
+function liveError(text) { $("liveError").textContent = text || ""; $("liveError").hidden = !text; }
+
+async function runLive(only) {
+  const base = siteOrigin();
+  if (!base) { liveError("Type the live site’s address, like https://www.example.com."); $("liveSite").focus(); return; }
+  const items = result.ready.filter((x) => !only || only.has(x.id));
+  if (!items.length) { liveError("No redirects in the file yet."); return; }
+  liveError("");
+  lv.run?.abort();
+  const ac = new AbortController(), btn = $("liveGo");
+  lv.run = ac;
+  if (!only) lv.results.clear();
+  const host = bareHost(base), send = [];
+  for (const x of items) {
+    const old = /^https?:\/\//i.test(x.from) ? x.from : base + (x.from.startsWith("/") ? "" : "/") + x.from;
+    const keep = { from: x.from, to: x.to };
+    // A pattern (* or :name) isn't one address, and the checker visits one site per check
+    if (/[*]|\/:[a-z]/i.test(x.from)) { lv.results.set(x.id, { ...keep, r: { kind: "error", text: "Couldn’t check (a pattern)", detail: "A pattern matches many addresses, so there’s no one address to visit" } }); continue; }
+    if (bareHost(old) !== host) { lv.results.set(x.id, { ...keep, r: { kind: "error", text: "Couldn’t check (another site)", detail: `On another site than ${host}: check it on its own` } }); continue; }
+    let expected;
+    try { expected = new URL(x.to, old).href; } catch (e) { expected = x.to; }
+    lv.results.set(x.id, { ...keep, pending: true });
+    send.push({ id: x.id, old, expected, ...keep });
+  }
+  let done = 0;
+  const say = () => { btn.textContent = `Checking ${done} of ${send.length}…`; };
+  btn.disabled = true; say();
+  $("liveStop").hidden = false;
+  renderLive();
+  await checkLive(send, { signal: ac.signal, onResults(part, res) {
+    if (lv.run !== ac) return;   // a newer check took over
+    part.forEach((x, i) => lv.results.set(x.id, { from: x.from, to: x.to, old: x.old, expected: x.expected, hops: res[i]?.hops || [], r: classify(x, res[i], fmt) }));
+    done += part.length; say();
+    queueLive();
+  } });
+  if (lv.run !== ac) return;
+  lv.run = null;
+  for (const [id, s] of lv.results) if (s.pending) lv.results.delete(id);   // stopped before these were reached
+  btn.disabled = false; btn.textContent = "Check";
+  $("liveStop").hidden = true;
+  renderLive();
+  if (!only && !ac.signal.aborted) {
+    const c = lv.counts;
+    window.jsalTrack?.("redirect_check", { platform: picked ? fmt.id : "none", rows: items.length, works: c.ok, fix: c.fix, not_checked: c.out });
+  }
+}
+function queueLive() { if (!lv.frame) lv.frame = requestAnimationFrame(() => { lv.frame = 0; renderLive(); }); }
+
+// Each row in the file with its old address and what the live site does there
+function renderLive() {
+  if (!table) return;
+  if (!lv.edited && document.activeElement !== $("liveSite")) $("liveSite").value = guessSite();
+  const any = lv.results.size > 0;
+  $("liveIntro").hidden = any;
+  $("liveList").hidden = $("liveFilter").hidden = $("liveFoot").hidden = !any;
+  if (!any) { $("liveEmpty").hidden = true; return; }
+  const rowN = new Map(rows.map((r) => [r.id, r.n]));
+  const count = { all: 0, ok: 0, fix: 0, out: 0 }, again = [];
+  const html = result.ready.map((x) => {
+    const s = lv.results.get(x.id), fresh = s && s.from === x.from && s.to === x.to;
+    let k = "out", text, act = "";
+    if (!fresh) { text = s ? "Changed since the check" : "Not checked yet"; act = "Check"; }
+    else if (s.pending) text = "Checking…";
+    else { k = LV[s.r.kind]; text = s.r.text; if (k === "out") act = "Retry"; }
+    if (act) again.push(x.id);
+    const group = k === "ok" ? "ok" : k === "out" ? "out" : "fix";
+    count.all++; count[group]++;
+    if (lv.filter !== "all" && lv.filter !== group) return "";
+    return `<li><span class="n">${rowN.get(x.id) ?? ""}</span><span class="dot ${k}"><span aria-hidden="true">${LV_SAY[k][0]}</span><span class="sr-only">${LV_SAY[k][1]}</span></span>` +
+      `<div><p class="path">${esc(x.from)}</p><p class="note ${LV_NOTE[k]}">${esc(text)}${act ? `<button type="button" class="jsal-btn link" data-retry="${x.id}">${act}</button>` : ""}</p></div></li>`;
+  }).join("");
+  lv.counts = count; lv.again = again;
+  if ($("liveList").dataset.h !== html) { $("liveList").innerHTML = html; $("liveList").dataset.h = html; }
+  $("liveEmpty").hidden = !!html;
+  for (const b of $("liveFilter").children) b.querySelector("span").textContent = count[b.dataset.lv];
+  // Several rows to try again get one button for all of them
+  $("liveRetry").hidden = again.length < 2 || !!lv.run;
+  $("liveRetry").textContent = `Retry ${again.length}`;
+}
+
+$("liveForm").addEventListener("submit", (e) => { e.preventDefault(); runLive(); });
+$("liveSite").addEventListener("input", () => { lv.edited = true; });
+$("liveStop").addEventListener("click", () => { lv.run?.abort(); $("liveGo").focus(); });
+$("liveRetry").addEventListener("click", () => runLive(new Set(lv.again)));
+$("liveList").addEventListener("click", (e) => { const b = e.target.closest("[data-retry]"); if (b && !lv.run) runLive(new Set([+b.dataset.retry])); });
+for (const b of $("liveFilter").children) b.addEventListener("click", () => {
+  lv.filter = b.dataset.lv;
+  for (const x of $("liveFilter").children) x.setAttribute("aria-pressed", x === b);
+  renderLive();
+});
+function forgetLive() { lv.run?.abort(); lv.run = null; lv.results.clear(); lv.edited = false; $("liveGo").disabled = false; $("liveGo").textContent = "Check"; $("liveStop").hidden = true; liveError(""); }
+
+// The results as a sheet for the client: each row's addresses, what happened, and every hop on the way
+$("liveDownload").addEventListener("click", (e) => {
+  const q = (s) => `"${String(s ?? "").replace(/"/g, '""')}"`;
+  const rowN = new Map(rows.map((r) => [r.id, r.n]));
+  const lines = [["Row", "Old address", "Should land on", "Result", "Details", "Ends on", "Hops"]];
+  for (const x of result.ready) {
+    const s = lv.results.get(x.id), fresh = s && s.from === x.from && s.to === x.to && !s.pending;
+    lines.push([rowN.get(x.id), s?.old || x.from, s?.expected || x.to, fresh ? LV_SAY[LV[s.r.kind]][1] : "Not checked", fresh ? s.r.detail : "", fresh ? s.r.final || "" : "",
+      fresh && s.hops ? s.hops.map((h) => `${h.status} ${h.url}`).join(" → ") : ""]);
+  }
+  const host = bareHost(siteOrigin() || "") || "site";
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["﻿" + lines.map((l) => l.map(q).join(",")).join("\r\n") + "\r\n"], { type: "text/csv;charset=utf-8" }));   // the mark tells Excel it's UTF-8
+  a.download = `live-check-${host}.csv`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  window.jsalDone?.(e.currentTarget, "Downloaded");
 });
 
 // Each pane fills the rest of the first screen, so the page itself doesn't need to scroll while working

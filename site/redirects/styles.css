@@ -187,6 +187,30 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .file .ln::before { content: attr(data-n); position: absolute; left: 0; width: var(--gut); text-align: right; color: var(--jsal-muted); user-select: none; }
 .file-body.numbered .head-row, .file-body.numbered .head-add, .file-body.numbered .head-warn { padding-left: calc(var(--gut) + var(--jsal-space-12)); }
 
+/* ── Live check: in the file's place, where each old address lands on the live site ── */
+
+.lv-site { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); font-size: 13px; color: var(--jsal-muted); }
+.lv-site .txt { flex: 1 1 160px; width: auto; min-width: 0; }
+.lv-site .txt:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.lv-site .jsal-btn.small { min-height: 30px; }
+.lv-site .jsal-btn.link { min-height: 0; font-size: 13px; }
+.live-pane > .jsal-error { margin: var(--jsal-space-8) var(--jsal-space-12) 0; }
+.lv-filter { display: grid; grid-template-columns: repeat(4, auto); margin: var(--jsal-space-8) var(--jsal-space-12); }
+.lv-filter > button span { font-weight: 500; font-variant-numeric: tabular-nums; }
+.lv-intro { padding: var(--jsal-space-16) var(--jsal-space-12); font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
+.lv-intro p { margin: 0 0 var(--jsal-space-8); }
+.lv-priv { color: var(--jsal-muted); font-size: 13px; }
+.lv-list { margin: 0; padding: 0; list-style: none; }
+.lv-list li { display: grid; grid-template-columns: 28px 20px minmax(0, 1fr); gap: var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-12); border-top: 1px solid var(--jsal-line); }
+.lv-list .n { color: var(--jsal-muted); font-size: 13px; line-height: 1.5; font-variant-numeric: tabular-nums; text-align: right; }
+.lv-list .path { margin: 0; font: 13px/1.5 "JetBrains Mono", ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
+.lv-list .note { margin-top: var(--jsal-space-2); }
+.lv-list .note .jsal-btn.link { position: relative; margin-left: var(--jsal-space-8); }
+.lv-list .note .jsal-btn.link::after { content: ""; position: absolute; inset: -4px; }   /* a 24px target on a link in a line of text */
+.note.lv-ok { color: var(--jsal-ok); }
+.live-pane .pane-foot { align-items: center; }
+.live-pane .pane-foot .lv-priv { margin-left: auto; }
+
 /* ── Hiding the file: a tab down the side that says what's in it, so the sheet gets the width ── */
 
 .fold-btn { margin-left: 0; }
@@ -207,6 +231,11 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
   .app.has-content .work.folded { grid-template-columns: minmax(0, 1fr) 104px; }
   .work.folded .file-pane > :not(.fold-tab) { display: none; }
   .work.folded .fold-tab { display: flex; }
+  /* The file and Live check take turns beside the sheet; hidden, either folds to the file's tab */
+  /* The switch and the file's Settings and Hide share the top line, the file's name under them */
+  .file-pane .pane-head .side, .file-pane .file-acts { order: -1; }
+  .file-pane .file-acts { flex: 1 0 auto; justify-content: flex-end; }
+  .work[data-side="live"]:not(.folded) .file-pane, .work:not([data-side="live"]) .live-pane, .work.folded .live-pane { display: none; }
 }
 
 /* ── Narrow screens: one pane at a time ─────────────────────────────────── */
@@ -215,8 +244,8 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
   .app.has-content .work { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-12); }
   .app.has-content .views { display: flex; }
   .views > button { flex: 1; }
-  .work[data-view="sheet"] .file-pane, .work[data-view="file"] .sheet-pane { display: none; }
-  .fold-btn, .fold-tab { display: none !important; }   /* the panes already take turns */
+  .work[data-view="sheet"] :is(.file-pane, .live-pane), .work[data-view="file"] :is(.sheet-pane, .live-pane), .work[data-view="live"] :is(.sheet-pane, .file-pane) { display: none; }
+  .fold-btn, .fold-tab, .side, .live-pane > .pane-head { display: none !important; }   /* the panes already take turns, by the tabs */
   .plat { flex: 1 1 100%; }
   .filter { flex: 1 1 100%; }
   /* Five filters as two even rows: three on top, two below */
@@ -241,6 +270,11 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
   .sheet .x { grid-column: 4; grid-row: 1; }
   .sheet .o, .sheet .nw { grid-column: 1 / -1; }
   .sheet .o::before, .sheet .nw::before { display: block; margin-bottom: var(--jsal-space-2); font-size: 12px; font-weight: 700; color: var(--jsal-muted); content: attr(data-label); }
+  /* The site's label above its box, so the box and Check share one line */
+  .lv-site label { flex-basis: 100%; }
+  .lv-site .txt { flex-basis: 0; }
+  .lv-filter { grid-template-columns: repeat(2, 1fr); }
+  .live-pane .pane-foot .lv-priv { margin-left: 0; flex-basis: 100%; }
 }
 @media (pointer: coarse) {
   .cell, .txt, .head-in, .name-in, .field { font-size: 16px; }   /* style: allow (iPhones zoom into smaller text boxes) */
@@ -248,7 +282,9 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
   .del { width: 44px; height: 44px; margin-top: 0; }
   .head-row .del { width: 24px; height: 24px; }
   .head-row .del::after { content: ""; position: absolute; inset: -10px; }   /* a 44px tap area that keeps the header line slim */
-  .cell, .field, .fixes .jsal-btn.small, .overview .jsal-btn.small, .pane-foot .jsal-btn.link, .drop-links .jsal-btn.link, .drop-desk .jsal-btn.link, .head-add .jsal-btn.link { min-height: 44px; }
+  .cell, .field, .fixes .jsal-btn.small, .overview .jsal-btn.small, .pane-foot .jsal-btn.link, .drop-links .jsal-btn.link, .drop-desk .jsal-btn.link, .head-add .jsal-btn.link, .lv-site .txt, .lv-site .jsal-btn { min-height: 44px; }
+  .lv-site .jsal-btn.small { min-height: 44px; }
+  .lv-list .note .jsal-btn.link::after { inset: -14px -8px; }   /* a 44px tap area on a link in a line of text */
 }
 @media (prefers-reduced-motion: reduce) {
   .drop, .set-btn .chev { transition: none; }

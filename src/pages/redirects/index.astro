@@ -5,10 +5,10 @@ import { v, importmap } from "../../lib/v.mjs";
 ---
 <Page
   title="Redirect Import: Spreadsheet to Redirect File | jsal.io"
-  description="Turn a spreadsheet of old and new addresses into the redirect file Shopify, WordPress, Wix and others import, each one checked first. Free, nothing uploaded."
+  description="Turn a spreadsheet of old and new addresses into the redirect file Shopify, WordPress, Wix and others import, each one checked first, then where each lands on the live site. Free."
   path="/redirects/"
   ogTitle="Redirect Import: Spreadsheet to Redirect File | jsal.io"
-  ogDescription="Turn a spreadsheet of old and new addresses into the redirect file your platform imports, with every address checked first. Free and entirely in your browser."
+  ogDescription="Turn a spreadsheet of old and new addresses into the redirect file your platform imports, with every address checked first. Free, and your sheet stays in your browser."
   ogImage="redirects"
   ogImageAlt="Redirect Import: a sheet of old and new addresses, checked and ready to import"
   icon="/img/icons/redirect-import.svg"
@@ -20,7 +20,7 @@ import { v, importmap } from "../../lib/v.mjs";
     "@type": "WebApplication",
     "name": "Redirect Import",
     "url": "https://jsal.io/redirects/",
-    "description": "Paste or drop a spreadsheet of old and new addresses and get the redirect import file for Shopify, WordPress (Redirection, Rank Math, Yoast), Wix, Squarespace, Webflow, Framer, HubSpot, BigCommerce, Duda, Ghost, Netlify, Vercel, Apache or Nginx. Checks every address first. Runs entirely in the browser.",
+    "description": "Paste or drop a spreadsheet of old and new addresses and get the redirect import file for Shopify, WordPress (Redirection, Rank Math, Yoast), Wix, Squarespace, Webflow, Framer, HubSpot, BigCommerce, Duda, Ghost, Netlify, Vercel, Apache or Nginx. Checks every address first, and once the new site is live, checks where each old address lands. The sheet stays in the browser.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Any (web browser)",
     "isAccessibleForFree": true,
@@ -30,7 +30,7 @@ import { v, importmap } from "../../lib/v.mjs";
   }
   </script>
 <link slot="head" rel="stylesheet" href={v("styles.css", "/redirects/")}>
-<script is:inline slot="head" type="importmap" set:html={importmap("/redirects/", ["./js/main.js", "./js/core.js", "./js/formats.js", "./js/xlsx.js"])}></script>
+<script is:inline slot="head" type="importmap" set:html={importmap("/redirects/", ["./js/main.js", "./js/core.js", "./js/formats.js", "./js/xlsx.js", "./js/live.js"])}></script>
 <script is:inline slot="head" type="module" src={v("js/main.js", "/redirects/")}></script>
   <main class="app" id="app">
 
@@ -64,7 +64,7 @@ import { v, importmap } from "../../lib/v.mjs";
           <p><b>Easiest on a computer.</b> Your sheet and the file sit side by side there.</p>
           <p><button type="button" class="jsal-btn link" id="shareBtn">Send this page to my computer</button></p>
         </div>
-        <p class="drop-privacy">Everything stays in your browser. Nothing is uploaded.</p>
+        <p class="drop-privacy">Your sheet stays in your browser. Nothing is uploaded.</p>
         <input type="file" id="fileInput" accept=".csv,.tsv,.txt,.xlsx,text/csv,text/tab-separated-values,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
       </div>
 
@@ -72,6 +72,7 @@ import { v, importmap } from "../../lib/v.mjs";
       <div class="jsal-seg views" role="tablist" aria-label="Show" data-needs-content>
         <button type="button" role="tab" id="viewSheet" aria-selected="true" aria-controls="sheetPane">Your sheet</button>
         <button type="button" role="tab" id="viewFile" aria-selected="false" aria-controls="filePane" tabindex="-1">File</button>
+        <button type="button" role="tab" id="viewLive" aria-selected="false" aria-controls="livePane" tabindex="-1">Live check</button>
       </div>
 
       <!-- The visitor's own rows, editable; the notes under each cell say what the file does with it -->
@@ -118,6 +119,7 @@ import { v, importmap } from "../../lib/v.mjs";
       <!-- The file as it will be downloaded; the header row is editable, and Settings holds the rest -->
       <section class="pane file-pane" id="filePane" aria-labelledby="fileName" data-needs-content>
         <div class="pane-head">
+          <div class="jsal-seg side" aria-label="Show"><button type="button" data-side="file" aria-pressed="true">File</button><button type="button" data-side="live" aria-pressed="false">Live check</button></div>
           <h2 class="pane-title mono file-name" id="fileName"><input class="name-in" id="nameIn" spellcheck="false" autocomplete="off" aria-label="File name" title="Rename the file"><span class="name-end" id="nameEnd"></span></h2>
           <div class="jsal-seg parts" id="parts" aria-label="Part" hidden></div>
           <div class="file-acts">
@@ -163,6 +165,41 @@ import { v, importmap } from "../../lib/v.mjs";
           <p class="file-empty" id="fileEmpty" hidden>No redirects ready yet.</p>
         </div>
       </section>
+
+      <!-- Live check, in place of the file: once the new site is live, where each old address in the file lands -->
+      <section class="pane live-pane" id="livePane" aria-labelledby="liveH" data-needs-content>
+        <div class="pane-head">
+          <div class="jsal-seg side" aria-label="Show"><button type="button" data-side="file" aria-pressed="false">File</button><button type="button" data-side="live" aria-pressed="true">Live check</button></div>
+          <h2 class="sr-only" id="liveH">Live check</h2>
+        </div>
+        <form class="lv-site" id="liveForm">
+          <label for="liveSite">Live site</label>
+          <input class="txt" id="liveSite" inputmode="url" spellcheck="false" autocomplete="off" placeholder="https://www.example.com" aria-describedby="liveError">
+          <button type="submit" class="jsal-btn small" id="liveGo">Check</button>
+          <button type="button" class="jsal-btn link" id="liveStop" hidden>Stop</button>
+        </form>
+        <p class="jsal-error" id="liveError" role="alert" hidden></p>
+        <div class="jsal-seg lv-filter" id="liveFilter" aria-label="Show results" hidden>
+          <button type="button" data-lv="all" aria-pressed="true">All <span></span></button>
+          <button type="button" data-lv="ok" aria-pressed="false">Works <span></span></button>
+          <button type="button" data-lv="fix" aria-pressed="false">Fix <span></span></button>
+          <button type="button" data-lv="out" aria-pressed="false">Not checked <span></span></button>
+        </div>
+        <div class="pane-body">
+          <!-- Before the first check: what it does, and that this is the one part of the tool that sends anything -->
+          <div class="lv-intro" id="liveIntro">
+            <p>Once the new site is live, see where each old address in the file lands.</p>
+            <p class="lv-priv">Check sends the old addresses to jsal.io, which visits each one. Nothing is saved.</p>
+          </div>
+          <ol class="lv-list" id="liveList" hidden></ol>
+          <p class="filter-empty" id="liveEmpty" hidden>No rows here.</p>
+        </div>
+        <div class="pane-foot" id="liveFoot" hidden>
+          <button type="button" class="jsal-btn link" id="liveDownload">Download</button>
+          <button type="button" class="jsal-btn link" id="liveRetry" hidden></button>
+          <span class="lv-priv">Checked through jsal.io. Nothing is saved.</span>
+        </div>
+      </section>
     </section>
   </main>
 
@@ -177,6 +214,7 @@ import { v, importmap } from "../../lib/v.mjs";
       <li>Pick where you’re importing them.</li>
       <li>Fix anything marked red in your sheet. The file beside it changes as you type.</li>
       <li>Download the file, or copy it, and import it on the platform.</li>
+      <li>Once the new site is live, open Live check to see where each old address lands.</li>
     </ol>
 
     <details>
@@ -225,6 +263,17 @@ import { v, importmap } from "../../lib/v.mjs";
       </ul>
     </details>
 
+    <details>
+      <summary><h3>What Live check finds</h3></summary>
+      <ul>
+        <li>Works: the old address redirects to its new one (a 301 or 308).</li>
+        <li>Fix: an old page still live at the address (it wins over the redirect), not found (the redirect isn’t live: imported and published?), a redirect to another page or to one that’s missing, a loop, a temporary 302, or three redirects or more in a row.</li>
+        <li>Not checked: the site didn’t answer, refused the check or asked to slow down. Try those again in a minute.</li>
+        <li>It can’t check before the domain points at the new site, pages behind a login, or what a search engine will do later.</li>
+        <li>Download gives each row’s result in full, with every hop, for a client report.</li>
+      </ul>
+    </details>
+
     <h3>Common questions</h3>
     <dl>
       <dt>Can I change the header row or separator?</dt>
@@ -232,7 +281,7 @@ import { v, importmap } from "../../lib/v.mjs";
       <dt>Why is my file in parts?</dt>
       <dd>Some platforms take a set number of redirects per import. Import each part in turn.</dd>
       <dt>Is my sheet uploaded anywhere?</dt>
-      <dd>No. It’s read and checked in your browser, and kept there until you press Clear, so a reload doesn’t lose your edits.</dd>
+      <dd>No. It’s read and checked in your browser, and kept there until you press Clear, so a reload doesn’t lose your edits. Only Live check sends anything, when you press Check: the old addresses, to jsal.io, which visits each one on the site you name and keeps nothing.</dd>
     </dl>
 
     <p class="jsal-feedback">Useful? Ideas or problems? <a href="mailto:dev@jsal.io?subject=Redirect%20Import">Email me</a>.</p>

@@ -123,7 +123,14 @@ paths:
   limit) and returns status codes and Locations only. `js/live.js` reads them against the row's new address by the
   platform's rules (`classify`: ok, chain at 3+ redirects, temporary 302/307, elsewhere, live old page, missing,
   broken target, loop, error; the last / never counts, capitals only where `capsExact`), tested in
-  `redirects.test.mjs`. It's opt-in: the tool's "nothing is uploaded" line and /privacy/ must say so before it ships.
+  `redirects.test.mjs`. The page (option B of three mockups, John's pick, 4 Nov): a File / Live check switch at the top
+  of the file pane (a third tab, Live check, on narrower screens), the live site's box (the old addresses' own domain
+  from the sheet, else the new site) with Check, a filter (All / Works / Fix / Not checked), and one line per row in the
+  file: its number, the mark, the old path and a few words (`classify`'s `text`: "Works", "Old page still live (200)",
+  "Not found (404)", "Goes to /x", "Temporary redirect (302)", "Couldn't check (429)" with Retry). John asked for few
+  words: the full sentence with what to do (`detail`) goes only in the downloaded CSV, with every hop. It's opt-in:
+  the line before the first check, the About FAQ and /privacy/ say the old addresses go to jsal.io's checker, and
+  only when Check is pressed.
   Some sites' bot protection answers 429 (one Shopify store did to a home connection, but not to Cloudflare's network);
   the row then says the site asked to slow down. Never disguise the checker's User-Agent to get past that. From
   Cloudflare, jsal.io itself answers 522 (the same account), so test with other sites. Branch previews get no bindings

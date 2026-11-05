@@ -30,8 +30,9 @@ const CHAIN = 3;   // this many redirects or more is worth shortening
 /**
  * One row's live result. item: { old, expected } as full addresses; res: the checker's { hops: [{ url, status,
  * location? }], error? }; fmt: the platform (formats.js), or null for a plain CSV.
- * Returns { kind, text, final }: kind is "ok", "chain", "temporary", "elsewhere", "live", "missing", "broken",
- * "loop" or "error"; text is the note shown under the row.
+ * Returns { kind, text, detail, final }: kind is "ok", "chain", "temporary", "elsewhere", "live", "missing", "broken",
+ * "loop" or "error"; text is the few words shown under the row (its mark says how it went), detail the full sentence
+ * with what to do, for the downloaded results.
  */
 export function classify(item, res, fmt) {
   const site = new URL(item.old).hostname.replace(/^www\./, "");
@@ -40,25 +41,33 @@ export function classify(item, res, fmt) {
   const first = hops[0], last = hops[hops.length - 1];
   const redirects = hops.filter((h) => isRedirect(h.status) && h.location);
   const to = shown(item.expected, site);
-  if (!first) return { kind: "error", text: `Couldn’t check: ${err || "no answer"}` };
+  const say = (kind, text, detail, final) => ({ kind, text, detail, final });
+  if (!first) return say("error", `Couldn’t check (${SHORT[err] || err || "no answer"})`, `Couldn’t check: ${err || "no answer"}`);
   // The loop: the last redirect points back to an address already visited (the checker stops there)
   const back = last && last.location && hops.some((h) => h.url === last.location);
-  if (back || (res && res.loop)) return { kind: "loop", text: `Loops: ${[...hops.map((h) => h.url), last.location].map((u) => shown(u, site)).join(" → ")}` };
-  if (h0(first.status) === 2) return { kind: "live", text: `The old page still shows (${first.status}): a live page at this address wins over the redirect. Remove it or change its address.`, final: first.url };
-  if (first.status === 404 || first.status === 410) return { kind: "missing", text: `Not found (${first.status}): the redirect isn’t live. Imported and published?`, final: first.url };
-  if (!isRedirect(first.status)) return { kind: "error", text: statusText(first.status) };
-  if (err) return { kind: "error", text: err === "too many hops" ? `Couldn’t check: more than 5 redirects in a row` : `Couldn’t check where it leads: ${err}` };
-  const final = last.url;
+  if (back || (res && res.loop)) { const path = `Loops: ${[...hops.map((h) => h.url), last.location].map((u) => shown(u, site)).join(" → ")}`; return say("loop", path, path); }
+  if (h0(first.status) === 2) return say("live", `Old page still live (${first.status})`, `The old page still shows (${first.status}): a live page at this address wins over the redirect. Remove it or change its address.`, first.url);
+  if (first.status === 404 || first.status === 410) return say("missing", `Not found (${first.status})`, `Not found (${first.status}): the redirect isn’t live. Imported and published?`, first.url);
+  if (!isRedirect(first.status)) return say("error", `Couldn’t check (${first.status})`, statusText(first.status));
+  if (err) return err === "too many hops" ? say("error", "Couldn’t check (over 5 redirects)", "Couldn’t check: more than 5 redirects in a row") : say("error", `Couldn’t check (${SHORT[err] || err})`, `Couldn’t check where it leads: ${err}`);
+  const final = last.url, end = shown(final, site);
   if (h0(last.status) !== 2) {
-    if (last.status === 404 || last.status === 410) return { kind: "broken", text: `Redirects to ${shown(final, site)}, which is not found (${last.status})`, final };
-    return { kind: "error", text: `Redirects to ${shown(final, site)}, which answers: ${statusText(last.status)}`, final };
+    if (last.status === 404 || last.status === 410) return say("broken", `Goes to ${end}, not found (${last.status})`, `Redirects to ${end}, which is not found (${last.status})`, final);
+    return say("error", `Goes to ${end} (${last.status})`, `Redirects to ${end}, which answers: ${statusText(last.status)}`, final);
   }
-  if (!samePage(final, item.expected, fmt)) return { kind: "elsewhere", text: `Ends on ${shown(final, site)} instead of ${to}`, final };
-  if (!PERMANENT.has(first.status)) return { kind: "temporary", text: `Lands on ${to}, but with a temporary ${first.status}: make it a 301`, final };
-  if (redirects.length >= CHAIN) return { kind: "chain", text: `Lands on ${to}, but in ${redirects.length} redirects: point it straight there`, final };
-  return { kind: "ok", text: `Lands on ${to} (${first.status})`, final };
+  if (!samePage(final, item.expected, fmt)) return say("elsewhere", `Goes to ${end}`, `Ends on ${end} instead of ${to}`, final);
+  if (!PERMANENT.has(first.status)) return say("temporary", `Temporary redirect (${first.status})`, `Lands on ${to}, but with a temporary ${first.status}: make it a 301`, final);
+  if (redirects.length >= CHAIN) return say("chain", `Works, in ${redirects.length} redirects`, `Lands on ${to}, but in ${redirects.length} redirects: point it straight there`, final);
+  return say("ok", "Works", `Lands on ${to} (${first.status})`, final);
 }
 const h0 = (s) => Math.floor(s / 100);
+// The checker's and the page's reasons, in the few words a row has room for
+const SHORT = {
+  "the site didn’t answer in time": "no answer", "the site couldn’t be reached": "can’t reach the site",
+  "not a public web address": "not a public address", "redirects to an address that can’t be checked": "leaves the public web",
+  "a redirect to an address that isn’t one": "broken redirect", "the checker is busy, try again in a minute": "checker busy",
+  "couldn’t reach jsal.io’s checker": "checker offline", stopped: "stopped",
+};
 function statusText(s) {
   if (s === 403 || s === 401) return `The site refused the check (${s})`;
   if (s === 429) return "The site asked to slow down (429). Try these again in a minute";

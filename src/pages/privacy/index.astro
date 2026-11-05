@@ -30,16 +30,16 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
 <div class="wrap">
   <TopBar />
   <main class="policy">
-    <p class="code">Privacy · updated <time data-updated datetime="2026-11-03">3 November 2026</time></p>
+    <p class="code">Privacy · updated <time data-updated datetime="2026-11-04">4 November 2026</time></p>
     <h1>Your <em>privacy</em></h1>
-    <p class="lead">The tools here run in your browser: images, documents, spreadsheets and anything you paste never leave your device. The only thing sent anywhere is basic usage stats through Google Analytics, and in Europe only if you allow it.</p>
+    <p class="lead">The tools here run in your browser: images, documents, spreadsheets and anything you paste never leave your device. The only things sent anywhere are basic usage stats through Google Analytics, in Europe only if you allow it, and the old addresses you check with Redirect Import’s Live check, only when you press Check.</p>
 
     <h2>Google Analytics</h2>
     <p>It tells me which pages and tools get used. It records:</p>
     <ul>
       <li>pages viewed, how you arrived (a search, a link) and roughly how long you stayed</li>
       <li>your device, browser and approximate location (city level, worked out from your IP address; Google Analytics 4 doesn’t log or store the address itself)</li>
-      <li>a few actions: finishing the CMS Picker quiz (and its top match), whether you’d pick that match (and which you’d pick instead, if you say), opening a platform page, adding a platform to the comparison, clicking a platform’s help link, and copying or downloading a Redirect Import file (which platform it’s for and how many redirects, never the addresses)</li>
+      <li>a few actions: finishing the CMS Picker quiz (and its top match), whether you’d pick that match (and which you’d pick instead, if you say), opening a platform page, adding a platform to the comparison, clicking a platform’s help link, copying or downloading a Redirect Import file (which platform it’s for and how many redirects, never the addresses), and running its Live check (how many rows, and how many work, need fixing or couldn’t be checked, never the addresses)</li>
     </ul>
     <p>No ads, no ad profiles: Google signals and advertising links are off, and no names, emails or user IDs are sent.</p>
     <p><b>Cookies.</b> <code>_ga</code> and <code>_ga_Z0BSTC9TT9</code> tell one visit from another. They last up to 2 years.</p>
@@ -50,6 +50,9 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     <h2>Changing your choice</h2>
     <p>Your choice is kept in this browser. <button type="button" class="jsal-btn" data-jsal-consent>Change analytics choice</button></p>
     <p>Choosing “No thanks” stops Google Analytics and removes its cookies. The same button is in the footer of the <a href="/">home page</a>.</p>
+
+    <h2>Redirect Import’s Live check</h2>
+    <p>Only when you press Check: the old addresses in your file go to jsal.io’s checker, which runs on Cloudflare, visits each one on the site you named and sends back only the status codes and where each redirect points. It keeps nothing: the addresses aren’t stored or logged. The site being checked sees a visit from jsal.io’s checker, not from you. The rest of your sheet never leaves your browser.</p>
 
     <h2>Kept in your browser only</h2>
     <p>A few settings are saved in your browser’s storage and never sent anywhere: light or dark theme, achievements and which tools you’ve opened, which Backpack items you’ve looked at, your analytics choice, the CMS Picker’s Tags or Notes choice, the Image Resizer’s settings and the save folder you picked, and Redirect Import’s platform, whether its file is hidden and the sheet you’re working on, until you press Clear. Clearing this site’s data in your browser removes them.</p>

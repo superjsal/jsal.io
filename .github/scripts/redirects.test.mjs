@@ -428,8 +428,17 @@ const live = [
 ];
 for (const [label, expected, res, fmtId, kind, text] of live) {
   const r = classify({ old: S + "/old", expected: expected.startsWith("http") ? expected : S + expected }, Array.isArray(res) ? { hops: res } : res, byId(fmtId));
-  check(`live: ${label}`, r.kind === kind && r.text.includes(text), `${r.kind} ${r.text}`);
+  check(`live: ${label}`, r.kind === kind && r.detail.includes(text), `${r.kind} ${r.detail}`);
 }
+// The row itself shows only a few words; the sentence above goes in the downloaded results
+const short = (expected, res, fmtId = "shopify") => classify({ old: S + "/old", expected: S + expected }, Array.isArray(res) ? { hops: res } : res, byId(fmtId)).text;
+check("live short: works", short("/new", [hop("/old", 301, "/new"), hop("/new", 200)]) === "Works");
+check("live short: old page", short("/new", [hop("/old", 200)]) === "Old page still live (200)");
+check("live short: 404", short("/new", [hop("/old", 404)]) === "Not found (404)");
+check("live short: elsewhere", short("/new", [hop("/old", 301, "/"), hop("/", 200)]) === "Goes to /");
+check("live short: 302", short("/new", [hop("/old", 302, "/new"), hop("/new", 200)]) === "Temporary redirect (302)");
+check("live short: 429", short("/new", [hop("/old", 429)]) === "Couldn’t check (429)");
+check("live short: no answer", short("/new", { hops: [], error: "the site didn’t answer in time" }) === "Couldn’t check (no answer)");
 check("live: a ? part on the landing page doesn't matter when none was asked for", samePage(S + "/p?utm_source=x", S + "/p", byId("shopify")));
 
 console.log(fail ?`${fail} of ${count} Redirect Import tests failed` : `All ${count} Redirect Import tests passed`);
