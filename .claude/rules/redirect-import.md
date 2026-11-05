@@ -138,7 +138,9 @@ paths:
   so, on the preview `limit()` answered success to 430 requests a minute (4 Nov), while `wrangler dev` refuses past 60,
   and on jsal.io after it shipped (4 Nov) it let through 120 requests in 2 seconds and 225 over 100 seconds: the binding
   doesn't hold. The real limit is Cloudflare's one free WAF rate-limiting rule (John's dashboard: Security → WAF → Rate
-  limiting rules; URI Path equals `/api/redirect-check`, per IP, 20 requests per 10 seconds, block for 10 seconds). The
+  limiting rules; URI Path equals `/api/redirect-check`, per IP, 20 requests per 10 seconds, block for 10 seconds), in
+  place since 4 Nov: 120 requests at about 4 a second got 63 429s, and a normal check still runs. Blocked requests stop
+  at the WAF, so they never reach the Worker or count against its free 100,000 a day. The
   page waits 15 seconds and tries again on a 429, up to 3 times, so a fast site's long sheet slows down rather than
   failing. The binding stays in the Worker, harmless, in case it starts to count.
 - **A partial file is always said:** while rows need you, Copy and Download read "Copy 4 of 10" / "Download 4 of 10" and
