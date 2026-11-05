@@ -28,7 +28,7 @@ const json = (body, status = 200) => new Response(JSON.stringify(body), {
 });
 
 async function check(request, env) {
-  if (request.method !== "POST") return json({ error: "POST only" }, 405);
+  if (request.method !== "POST") return json({ error: "POST only", limit: env.CHECK_LIMIT ? typeof env.CHECK_LIMIT.limit : "none" }, 405);
   if (!ORIGINS.test(request.headers.get("origin") || "")) return json({ error: "only from jsal.io" }, 403);
   if (env.CHECK_LIMIT) {
     const { success } = await env.CHECK_LIMIT.limit({ key: request.headers.get("cf-connecting-ip") || "unknown" });
