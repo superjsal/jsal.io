@@ -401,6 +401,10 @@ body {
 }
 .canvas-empty-title { font-size: 15px; font-weight: 600; color: var(--jsal-ink); }
 .canvas-empty-sub { color: var(--jsal-muted); }
+/* Try an example sits under the empty area's words; the words move up a little to make room for it */
+.canvas-empty { padding-bottom: var(--jsal-space-48); }
+.canvas-example { position: absolute; z-index: 3; left: 50%; top: calc(50% + 40px); transform: translateX(-50%); }
+.canvas-empty.hidden + .canvas-example { visibility: hidden; }
 
 .canvas-badge {
   position: absolute;

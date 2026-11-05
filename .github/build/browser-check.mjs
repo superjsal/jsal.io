@@ -169,6 +169,8 @@ if (!axeOnly) {
       }
       // Clean Paste: the example, a check's Show, the copy note area
       await page.goto(BASE + '/formatter/', { waitUntil: 'networkidle' });
+      // As someone who has seen the example's tour (axe checks it on desktop): on a phone its box sits over the checks
+      await page.evaluate(() => { try { localStorage.setItem('jsal-tour-clean-paste', '1'); } catch (e) {} });
       await page.click('#sampleBtn');
       await page.waitForSelector('.app.has-content');
       const show = await showCheck(page, true);

@@ -178,6 +178,8 @@ import { v, importmap } from "../../lib/v.mjs";
           <span class="canvas-empty-title" data-touch="Choose images">Drop images here</span>
           <span class="canvas-empty-sub" data-touch="Tap to browse — JPG, PNG, WebP, HEIC">or click to browse — JPG, PNG, WebP, HEIC</span>
         </button>
+        <!-- Its own button under the empty area's words (a button can't hold another): loads a sample photo -->
+        <button type="button" class="jsal-btn link canvas-example" id="exampleBtn">Try an example</button>
         <canvas id="out" tabindex="0" aria-label="Crop preview — use arrow keys to reposition the crop"></canvas>
         <div class="canvas-badge" id="canvasBadge"></div>
       </div>

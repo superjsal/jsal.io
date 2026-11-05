@@ -181,7 +181,13 @@ $("blankSheet").addEventListener("click", () => {
   show();
   tbody.querySelector(".cell")?.focus();
 });
-$("exampleBtn").addEventListener("click", () => load(parseDelimited(EXAMPLE), "Example"));
+// The example's tour, once per browser (/nav.js jsalTour)
+const TOUR = [
+  { el: "#platform", title: "Pick a platform", text: "The file and its checks follow the platform you’re importing into. Until you pick one, it’s a plain CSV." },
+  { el: "#filter", title: "Fix the red rows", text: "Red rows aren’t in the file yet. Fix them in the sheet, or pick <b>Needs you</b> to see only those." },
+  { el: "#downloadBtn", title: "Download the file", text: "Or copy it, and import it on the platform. Once the new site is live, <b>Live check</b> shows where each old address lands." },
+];
+$("exampleBtn").addEventListener("click", () => { load(parseDelimited(EXAMPLE), "Example"); window.jsalTour?.("redirect-import", TOUR); });
 $("undoClear")?.addEventListener("click", undoClear);
 
 // Dropping a file anywhere on the page loads it

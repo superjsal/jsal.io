@@ -205,6 +205,12 @@ One rule for how every tool answers an action, so "it worked" and "it didn't" lo
   to do, and stays until the next try there. The Playbook's `fail()` puts it in the form, card or row of the last click;
   with nowhere to put it (a refresh on load) the bottom message stays until the next click.
 - **Running state** lives in the Image Resizer's status line (what's loaded, where it saves), not in pop-ups.
+- **An example tour** (`window.jsalTour(id, steps)` in `nav.js`, `.jsal-tour` in `shell.css`; John's pick B of
+  three mockups, 5 Nov) runs only when a visitor loads a tool's example, once per tool in that browser
+  (`jsal-tour-<id>`): a box beside the control it explains (right, then left, else under it), a blue ring round the
+  control, dots, Back and Next (Done on the last), × and Esc to end it. Blue, as it explains; the page stays usable
+  under it, nothing is dimmed. Three steps at most, each a short title and one or two sentences; a step whose
+  control isn't shown at that width is passed over. Never on page load: the team uses the tools every day.
 - A final answer replaces its question in place ("Thanks, that helps make the quiz better." with a green tick).
 
 ## Touch and accessibility

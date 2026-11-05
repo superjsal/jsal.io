@@ -103,7 +103,15 @@ if (canReadClipboard) {
     }
   });
 }
-$("sampleBtn").addEventListener("click", () => load({ html: SAMPLE_HTML, text: "" }));
+// The example's tour, once per browser (/nav.js jsalTour). The checks are pointed at as a list where there's room
+// beside them, otherwise by their first check, as the whole list is taller than a narrow screen.
+const TOUR = [
+  { el: () => { const c = $("checks"); return innerWidth - c.getBoundingClientRect().right > 360 ? c : c.querySelector(".check") || c; },
+    title: "Read the checks", text: "Each one says what to fix. <b>Show</b> jumps to the line it means." },
+  { el: "#toolbar", title: "Fix it here", text: "The toolbar fixes headings, lists, links and bold, or edit the code in the <b>HTML</b> tab." },
+  { el: "#copyRich", title: "Copy it for your editor", text: "Formatted for visual editors, HTML for code views, plain text, or WordPress blocks." },
+];
+$("sampleBtn").addEventListener("click", () => { load({ html: SAMPLE_HTML, text: "" }); window.jsalTour?.("clean-paste", TOUR); });
 $("blankBtn").addEventListener("click", () => { load({ html: "", text: "" }, true); editor.focus(); });
 
 function load(data, blank = false) {

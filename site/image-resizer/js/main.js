@@ -508,6 +508,28 @@ $("clear").addEventListener("click", () => {
 downloadBtn.addEventListener("click", downloadAll);
 dropZone.addEventListener("click", () => fileInput.click());
 $("canvasEmpty").addEventListener("click", () => fileInput.click());
+
+// The example: a public-domain photo from this site, loaded like a chosen file, then its tour once per browser
+// (/nav.js jsalTour)
+const TOUR = [
+  { el: () => document.querySelector(".segment-group"), title: "Pick a size", text: "Presets for blog and social images, <b>Original</b> to keep each image’s size, or type your own width and height." },
+  { el: "#out", title: "Check the crop", text: "Drag the box to choose which part is kept. Each image in the strip below has its own crop." },
+  { el: "#download", title: "Download them", text: "Each image on its own, one ZIP, or straight into a folder. Quality and format are just above." },
+];
+$("exampleBtn").addEventListener("click", async () => {
+  const btn = $("exampleBtn");
+  btn.disabled = true;
+  try {
+    const res = await fetch("/image-resizer/example/coffee-talks.jpg");
+    if (!res.ok) throw new Error(res.status);
+    await loadFiles([new File([await res.blob()], "coffee-talks.jpg", { type: "image/jpeg" })]);
+    if (state.images.length) window.jsalTour?.("image-resizer", TOUR);
+  } catch {
+    setStatus("Couldn't load the example. Check your connection and try again.", "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
 fileInput.addEventListener("change", () => {
   if (fileInput.files.length) handleFiles(fileInput.files);
   fileInput.value = "";

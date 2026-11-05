@@ -32,6 +32,86 @@
       doneTimers.delete(btn);
     }, 2000));
   };
+  // A tool's example tour, called when its example loads: one box at a time beside the control it explains, a blue
+  // ring round that control, Back and Next (/shell.css .jsal-tour). Once per tool in this browser; Esc or × ends it.
+  // Each step is { el: a selector or a function giving the element, title, text (the app's own HTML) }; a step whose
+  // control isn't on screen at this width is passed over.
+  window.jsalTour = (id, steps) => {
+    const seen = 'jsal-tour-' + id;
+    try { if (localStorage.getItem(seen)) return; } catch (e) {}
+    if (document.querySelector('.jsal-tour')) return;
+    const ring = document.createElement('div');
+    ring.className = 'jsal-tour-ring';
+    const box = document.createElement('div');
+    box.className = 'jsal-tour';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-labelledby', 'jsal-tour-t');
+    box.setAttribute('aria-describedby', 'jsal-tour-d');
+    box.tabIndex = -1;
+    box.innerHTML = '<div class="jsal-tour-head"><span class="jsal-tour-label">Tour<span class="sr-only"></span></span><button type="button" class="jsal-tour-x" aria-label="Close the tour">×</button></div>'
+      + '<p class="jsal-tour-title" id="jsal-tour-t"></p><p class="jsal-tour-text" id="jsal-tour-d"></p>'
+      + '<div class="jsal-tour-acts"><span class="jsal-tour-dots" aria-hidden="true">' + steps.map(() => '<i></i>').join('') + '</span>'
+      + '<button type="button" class="jsal-btn small">Back</button><button type="button" class="jsal-btn small primary">Next</button></div>';
+    const [prev, next] = box.querySelectorAll('.jsal-tour-acts button');
+    const shown = (el) => el && el.isConnected && el.getClientRects().length ? el : null;
+    const find = (s) => shown(typeof s.el === 'function' ? s.el() : document.querySelector(s.el));
+    let at = 0, target = null, frame = 0;
+    // Beside the control where there's room (right, then left), otherwise under it with the point above the control
+    const place = () => {
+      frame = 0;
+      if (!shown(target)) return end();
+      const r = target.getBoundingClientRect(), vw = document.documentElement.clientWidth, w = Math.min(320, vw - 32);
+      Object.assign(ring.style, { left: r.left + scrollX - 4 + 'px', top: r.top + scrollY - 4 + 'px', width: r.width + 8 + 'px', height: r.height + 8 + 'px' });
+      let side = 'below', left = Math.max(16, Math.min(r.left, vw - 16 - w)), top = r.bottom + 14;
+      if (vw - r.right >= w + 40) { side = 'right'; left = r.right + 16; top = r.top; }
+      else if (r.left >= w + 40) { side = 'left'; left = r.left - 16 - w; top = r.top; }
+      box.dataset.side = side;
+      box.style.width = w + 'px';
+      box.style.setProperty('--jsal-tour-ax', Math.max(16, Math.min(r.left + 20 - left, w - 32)) + 'px');
+      box.style.left = left + scrollX + 'px';
+      box.style.top = top + scrollY + 'px';
+    };
+    const later = () => { if (!frame) frame = requestAnimationFrame(place); };
+    const ro = new ResizeObserver(later);
+    const key = (e) => { if (e.key === 'Escape') { e.stopPropagation(); end(); } };
+    const show = (i) => {
+      const dir = i < at ? -1 : 1;
+      while (i >= 0 && i < steps.length && !find(steps[i])) i += dir;
+      if (i < 0 || i >= steps.length) return end();
+      at = i;
+      target = find(steps[i]);
+      box.querySelector('.jsal-tour-title').textContent = steps[i].title;
+      box.querySelector('.jsal-tour-text').innerHTML = steps[i].text;
+      box.querySelector('.jsal-tour-label .sr-only').textContent = `, step ${i + 1} of ${steps.length}`;
+      [...box.querySelectorAll('.jsal-tour-dots i')].forEach((d, n) => d.classList.toggle('on', n === i));
+      prev.disabled = !steps.slice(0, i).some(find);
+      next.textContent = steps.slice(i + 1).some(find) ? 'Next' : 'Done';
+      // Off screen, or too close to the bottom for the box under it: brought into view first
+      const r = target.getBoundingClientRect();
+      if (r.top < 64 || r.bottom > innerHeight - 200) target.scrollIntoView({ block: r.height > innerHeight / 2 ? 'start' : 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      place();
+      box.focus({ preventScroll: true });
+    };
+    function end() {
+      try { localStorage.setItem(seen, '1'); } catch (e) {}
+      const was = target;
+      target = null;
+      ring.remove(); box.remove(); ro.disconnect();
+      removeEventListener('resize', later);
+      removeEventListener('scroll', later, true);
+      removeEventListener('keydown', key, true);
+      if (shown(was) && was.matches('a[href], button, input, select, textarea, [tabindex]')) was.focus({ preventScroll: true });
+    }
+    prev.addEventListener('click', () => show(at - 1));
+    next.addEventListener('click', () => (next.textContent === 'Done' ? end() : show(at + 1)));
+    box.querySelector('.jsal-tour-x').addEventListener('click', end);
+    addEventListener('resize', later);
+    addEventListener('scroll', later, true);
+    addEventListener('keydown', key, true);
+    document.body.append(ring, box);
+    ro.observe(document.body);
+    show(0);
+  };
   addEventListener('click', (e) => {
     const t = e.target.closest && e.target.closest('[data-track]');
     if (!t) return;
