@@ -355,6 +355,8 @@ const TROPHIES = {
   share: { icon: 'inv_misc_horn_03', q: 'uncommon', name: 'Herald’s Horn', flavor: 'Heard from three zones away.' },
   batch: { icon: 'inv_crate_03', q: 'rare', name: 'Crate of Even Sizes', flavor: 'Ten in, ten out, none uploaded.' },
   blocks: { icon: 'inv_misc_scrollrolled04', q: 'uncommon', name: 'Scroll of Clean Blocks', flavor: 'Ready for the editor.' },
+  moved: { icon: 'inv_misc_map_01', q: 'uncommon', name: 'Map of the New Place', flavor: 'Old roads, new addresses.' },
+  roadtest: { icon: 'ability_hunter_pathfinding', q: 'rare', name: 'Pathfinder’s Mark', flavor: 'Followed every road to its end.' },
   social: { icon: 'inv_misc_flower_02', q: 'uncommon', name: 'Friendly Daisy', flavor: 'Butterflies love these.' },
   lost: { icon: 'inv_misc_questionmark', q: 'epic', name: 'Mark of the Lost', flavor: 'Page not found. You were.' },
   inspector: { icon: 'inv_misc_bag_07', q: 'epic', name: 'Inspector’s Satchel', flavor: 'You looked in every pocket.' },
@@ -512,8 +514,8 @@ function drawPouch(A, got) {
 }
 // Achievements: drawn from /nav.js's list (it loads after this, so wait for it), redrawn on each unlock. Each sits
 // under the tool it's earned in; one not listed here goes under Around the site, and every secret under Secrets.
-const GROUP = { decision: 'cms', compare: 'cms', twocents: 'cms', opinion: 'cms', share: 'cms', pixel: 'ir', batch: 'ir', spotless: 'cp', blocks: 'cp' };
-const GROUPS = [['cms', 'CMS Picker', '/img/icons/cms-picker.svg'], ['ir', 'Image Resizer', '/img/icons/image-resizer.svg'], ['cp', 'Clean Paste', '/img/icons/clean-paste.svg'], ['site', 'Around the site', '/img/icons/jsal-io.svg'], ['secret', 'Secrets']];
+const GROUP = { decision: 'cms', compare: 'cms', twocents: 'cms', opinion: 'cms', share: 'cms', pixel: 'ir', batch: 'ir', spotless: 'cp', blocks: 'cp', moved: 'ri', roadtest: 'ri' };
+const GROUPS = [['cms', 'CMS Picker', '/img/icons/cms-picker.svg'], ['ir', 'Image Resizer', '/img/icons/image-resizer.svg'], ['cp', 'Clean Paste', '/img/icons/clean-paste.svg'], ['ri', 'Redirect Import', '/img/icons/redirect-import.svg'], ['site', 'Around the site', '/img/icons/jsal-io.svg'], ['secret', 'Secrets']];
 const LOCK = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
 const line = (p, s) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 function drawAchievements() {

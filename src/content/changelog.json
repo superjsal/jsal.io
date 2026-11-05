@@ -1,4 +1,5 @@
 [
+  {"date": "2026-11-05", "tag": "Off the clock", "short": "Two achievements for Redirect Import", "text": "Two new achievements for Redirect Import, each with its trophy: saving your own redirect file, and running a Live check."},
   {"date": "2026-11-05", "tag": "Site", "short": "A quick tour with each tool’s example", "text": "Try an example now walks you through each tool in three steps, and the Image Resizer has an example of its own."},
   {"date": "2026-11-05", "tag": "Site", "text": "Small fixes: each tool says it’s for anyone doing that job, the CMS Picker’s About reads like the others, and the logo ends without a glint."},
   {"date": "2026-11-04", "tag": "Redirect Import", "short": "Live check: where each old address lands", "text": "Once the new site is live, Live check visits each old address and says whether it lands on its new page, with a download for the client."},

@@ -733,6 +733,8 @@ $("headIn").addEventListener("input", (e) => {
 function output(action) {
   const { text, p } = fileText();
   window.jsalTrack?.("redirect_file", { platform: picked ? fmt.id : "none", redirects: result.ready.length, action });
+  // Achievement (/nav.js): a file of the visitor's own redirects; the example doesn't count
+  if (table.name !== "Example" && result.ready.length) window.jsalAchieve?.("moved");
   return { text, name: fileName(part, p.length) };
 }
 $("copyBtn").addEventListener("click", async (e) => {
@@ -852,6 +854,7 @@ async function runLive(only) {
   if (!only && !ac.signal.aborted) {
     const c = lv.counts;
     window.jsalTrack?.("redirect_check", { platform: picked ? fmt.id : "none", rows: items.length, works: c.ok, fix: c.fix, not_checked: c.out });
+    if (c.ok + c.fix) window.jsalAchieve?.("roadtest");   // achievement (/nav.js): a check that reached the site
   }
 }
 function queueLive() { if (!lv.frame) lv.frame = requestAnimationFrame(() => { lv.frame = 0; renderLive(); }); }

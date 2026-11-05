@@ -306,6 +306,8 @@
     { id: 'share', name: 'Word of mouth', done: 'Copied the link to a result', todo: 'Copy the link to a result', icon: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>' },
     { id: 'batch', name: 'Batch job', done: 'Resized 10 images at once', todo: 'Resize 10 images at once', icon: '<rect x="7" y="3" width="14" height="14" rx="2"/><path d="M17 21H5a2 2 0 0 1-2-2V7"/>' },
     { id: 'blocks', name: 'Ready to publish', done: 'Copied WordPress blocks', todo: 'Copy WordPress blocks', icon: '<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="18" height="8" rx="1.5"/>' },
+    { id: 'moved', name: 'Change of address', done: 'Saved a redirect file', todo: 'Copy or download a redirect file', icon: '<path d="M4 19v-8a4 4 0 0 1 4-4h12"/><path d="m16 3 4 4-4 4"/>' },
+    { id: 'roadtest', name: 'Road test', done: 'Ran a Live check', todo: 'Run a Live check', icon: '<path d="M3 12h4l3-8 4 16 3-8h4"/>' },
     { id: 'social', name: 'Social butterfly', done: 'Said hi', todo: 'Say hi', icon: '<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20.5l1.4-5.1A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01"/>' },
     { id: 'lost', name: 'Lost adventurer', done: 'Found the 404 page', todo: 'Secret', secret: true, icon: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>' },
     { id: 'inspector', name: 'Bag inspector', done: 'Inspected every item', todo: 'Secret', secret: true, icon: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.3-4.3"/>' },
