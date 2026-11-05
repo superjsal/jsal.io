@@ -420,7 +420,7 @@ body {
 .qz-plain:has(:focus-visible) { border-radius: var(--jsal-radius-sm); box-shadow: var(--jsal-focus-ring); }
 .qz-ans-ed .qz-plain { align-items: center; margin: 0; padding: var(--jsal-space-8) 0; }
 .qz-ans-ed .qz-plain input { margin-top: 0; }
-.qz-opt { position: relative; display: grid; gap: var(--jsal-space-2); padding: var(--jsal-space-12) var(--jsal-space-32) var(--jsal-space-12) var(--jsal-space-12); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: inherit; text-align: left; cursor: pointer; }
+.qz-opt { position: relative; display: grid; align-content: start; gap: var(--jsal-space-2); padding: var(--jsal-space-12) var(--jsal-space-32) var(--jsal-space-12) var(--jsal-space-12); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: inherit; text-align: left; cursor: pointer; }
 .qz-opt b { font-size: 15px; font-weight: 600; }
 .qz-opt small { color: var(--jsal-muted); font-size: 13px; }
 .qz-opt:hover { border-color: var(--jsal-hover-line); }

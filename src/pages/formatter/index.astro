@@ -138,7 +138,7 @@ import { v, importmap } from "../../lib/v.mjs";
   <Fragment set:html={`<!-- About: below the app (which fills the first screen); styles in /shell.css -->`} />
   <section class="jsal-about" id="about" aria-labelledby="about-h">
     <h2 id="about-h">About Clean Paste</h2>
-    <p class="jsal-lead">Checks your post before it goes live (stray H1s, bold lines that should be headings, draft and "click here" links) and copies it for any editor, as HTML or as WordPress blocks.</p>
+    <p class="jsal-lead">Checks your post before it goes live (stray H1s, bold lines that should be headings, draft and “click here” links) and copies it for any editor, as HTML or as WordPress blocks.</p>
     <p>It turns content copied from Word, Google Docs or a web page into clean, minimal HTML, keeping the real structure: headings, lists, links, tables, bold and italic.</p>
 
     <h3>How to use it</h3>
@@ -153,8 +153,8 @@ import { v, importmap } from "../../lib/v.mjs";
     <details>
       <summary><h3>What it cleans up</h3></summary>
       <ul>
-        <li>Inline styles, fonts, spans, classes and Word's hidden markup and comments.</li>
-        <li>Word's fake bullet and number paragraphs, rebuilt as real nested lists.</li>
+        <li>Inline styles, fonts, spans, classes and Word’s hidden markup and comments.</li>
+        <li>Word’s fake bullet and number paragraphs, rebuilt as real nested lists.</li>
         <li>Google Docs redirect links, changed back to the real address, and links starting with www. given https://.</li>
         <li>Images, marked as [Image] placeholders so you know where to upload them in the CMS.</li>
       </ul>
@@ -162,7 +162,7 @@ import { v, importmap } from "../../lib/v.mjs";
 
     <details>
       <summary><h3>Keyboard shortcuts</h3></summary>
-      <p>The same keys as WordPress's block editor and Google Docs, in the <strong>Text</strong> tab:</p>
+      <p>The same keys as WordPress’s block editor and Google Docs, in the <strong>Text</strong> tab:</p>
       <ul>
         <li>Headings: <kbd class="mod-key">Ctrl</kbd> + <kbd class="alt-key">Alt</kbd> + <kbd>2</kbd>, <kbd>3</kbd> or <kbd>4</kbd> for H2 to H4, and <kbd class="mod-key">Ctrl</kbd> + <kbd class="alt-key">Alt</kbd> + <kbd>0</kbd> for a normal paragraph. Or type <kbd>##</kbd> and a space at the start of a line (<kbd>###</kbd> for H3).</li>
         <li>Lists: <kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>8</kbd> for bullets and <kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>7</kbd> for numbers, or type <kbd>-</kbd> or <kbd>1.</kbd> and a space at the start of a line.</li>
@@ -176,7 +176,7 @@ import { v, importmap } from "../../lib/v.mjs";
       <ul>
         <li>An H1 in the body (most CMSs already use the title as the H1) and skipped heading levels.</li>
         <li>Lines that are only bold text and were probably meant as headings.</li>
-        <li>Links to drafts, file shares or local files, Word bookmark links, links that go nowhere, "click here" link text, the same page linked more than once, and http:// links.</li>
+        <li>Links to drafts, file shares or local files, Word bookmark links, links that go nowhere, “click here” link text, the same page linked more than once, and http:// links.</li>
         <li>Paragraphs over 150 words. It also shows the word count and reading time.</li>
       </ul>
     </details>

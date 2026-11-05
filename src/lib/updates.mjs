@@ -23,6 +23,6 @@ export function updates(collection) {
     .slice(0, SHOWN)
     .map((e) => {
       const [, m, d] = e.date.split('-');
-      return { section: e.tag.toLowerCase().replace(/ /g, '-'), icon: `/img/icons/${SECTIONS.find((s) => s.name === e.tag).icon}.svg`, name: e.tag, date: e.date, label: `${MONTHS[+m - 1]} ${+d}`, short: e.short };
+      return { section: e.tag.toLowerCase().replace(/ /g, '-'), icon: `/img/icons/${SECTIONS.find((s) => s.name === e.tag).icon}.svg`, name: e.tag, date: e.date, label: `${+d} ${MONTHS[+m - 1]}`, short: e.short };
     });
 }

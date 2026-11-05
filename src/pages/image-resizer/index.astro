@@ -53,7 +53,7 @@ import { v, importmap } from "../../lib/v.mjs";
           <span class="seg-label">640 × 420</span>
           <span class="seg-hint">Small feature image</span>
         </button>
-        <button class="seg-btn" id="originalBtn" title="Keep each image's own dimensions — no resizing or cropping, just convert the format">
+        <button class="seg-btn" id="originalBtn" title="Keep each image’s own dimensions and only convert the format">
           <span class="seg-label">Original</span>
           <span class="seg-hint">Keep sizes, convert only</span>
         </button>
@@ -130,7 +130,7 @@ import { v, importmap } from "../../lib/v.mjs";
       <div class="option-row option-row-wide">
         <span class="option-label" id="destLabel">Save to</span>
         <div class="jsal-seg" role="group" aria-labelledby="destLabel">
-          <button class="dest-btn active" data-dest="files" title="Each image downloads separately to your browser's download location">Downloads</button>
+          <button class="dest-btn active" data-dest="files" title="Each image downloads separately to your browser’s download location">Downloads</button>
           <button class="dest-btn" data-dest="zip" title="All images in one .zip file">ZIP</button>
           <button class="dest-btn" data-dest="folder" title="Save straight into a folder you choose (Chrome/Edge)">Folder</button>
         </div>
@@ -203,7 +203,7 @@ import { v, importmap } from "../../lib/v.mjs";
 
     <h3>How to use it</h3>
     <ol>
-      <li>Pick an output size: <strong>1200 × 628</strong> (blog posts and social share images), <strong>640 × 420</strong> (smaller feature images), <strong>Original</strong> to keep each image's size, or type your own width and height.</li>
+      <li>Pick an output size: <strong>1200 × 628</strong> (blog posts and social share images), <strong>640 × 420</strong> (smaller feature images), <strong>Original</strong> to keep each image’s size, or type your own width and height.</li>
       <li data-touch="Tap Choose images to pick them from your photos or files.">Drop your images on the page, or click to browse.</li>
       <li>Check the crop. <span data-touch="Tap any image in the strip to edit it, then drag the crop box to choose which part is kept.">Click any image in the strip to edit it, then drag the crop box (or use the arrow keys) to choose which part is kept.</span></li>
       <li>Choose quality and format, then <strong>Download all</strong><span data-touch=""> (<kbd class="mod-key">Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd>)</span>. You can also save single images, rename files first, or add the size to every file name (<code>photo-1200x628.jpg</code>).</li>
@@ -213,7 +213,7 @@ import { v, importmap } from "../../lib/v.mjs";
       <summary><h3>What it supports</h3></summary>
       <ul>
         <li><strong>Input:</strong> JPG, PNG, WebP and HEIC (iPhone photos).</li>
-        <li><strong>Output:</strong> JPG or WebP at low, medium or high quality, or PNG (lossless, keeps transparency, biggest files). Safari can't save WebP, so there it saves JPG.</li>
+        <li><strong>Output:</strong> JPG or WebP at low, medium or high quality, or PNG (lossless, keeps transparency, biggest files). Safari can’t save WebP, so there it saves JPG.</li>
         <li><strong>Sizes:</strong> presets, any custom size from 32 to 20,000 pixels (your last five are kept as shortcuts), or original size.</li>
         <li><strong>Saving:</strong> one download per image, a single ZIP file, or straight into a folder you choose (Chrome and Edge).</li>
       </ul>
@@ -222,7 +222,7 @@ import { v, importmap } from "../../lib/v.mjs";
     <h3>Common questions</h3>
     <dl>
       <dt>Is it free?</dt>
-      <dd>Yes. There's no sign-up, no watermark and no limit on how many images you resize.</dd>
+      <dd>Yes. There’s no sign-up, no watermark and no limit on how many images you resize.</dd>
       <dt>Does it work on a phone?</dt>
       <dd>Yes, in any up-to-date browser on iPhone or Android. Pick images from your photos or files; they save as downloads or a ZIP.</dd>
     </dl>

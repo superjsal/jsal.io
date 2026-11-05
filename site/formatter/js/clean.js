@@ -520,7 +520,7 @@ function runChecks(root, stats) {
   if (empty) add("warn", `${n(empty, "link")} ${empty === 1 ? "goes" : "go"} nowhere (the address is just #).`, { id: "empty", find: findEmpty });
   const findVague = (r) => [...r.querySelectorAll("a")].filter((a) => VAGUE_TEXT.test(a.textContent.trim().replace(/[.:!…»›→]+$/, "")));
   const vague = findVague(root).length;
-  if (vague) add("warn", `${n(vague, "link")} ${vague === 1 ? "says" : "say"} something like "click here". Link words that describe the page instead, which helps readers and SEO.`, { id: "vague", find: findVague });
+  if (vague) add("warn", `${n(vague, "link")} ${vague === 1 ? "says" : "say"} something like “click here”. Link words that describe the page instead, which helps readers and SEO.`, { id: "vague", find: findVague });
   // The same page linked more than once: usually once per post is enough
   const findRepeats = (r) => {
     const all = [...r.querySelectorAll("a")].filter((a) => !/^(#|mailto:|tel:)/i.test(a.getAttribute("href") || ""));

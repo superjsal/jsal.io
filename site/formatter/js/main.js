@@ -1,4 +1,4 @@
-import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=0ba8f465";
+import { clean, detectSource, looksLikeHtml, words, boldOnlyLines, wpBlocks, PRIVATE_LINK, DEAD_LINK } from "./clean.js?v=15494bc2";
 import { SAMPLE_HTML } from "./sample.js?v=b060f559";
 
 const $ = (id) => document.getElementById(id);
