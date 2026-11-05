@@ -124,8 +124,13 @@ paths:
   platform's rules (`classify`: ok, chain at 3+ redirects, temporary 302/307, elsewhere, live old page, missing,
   broken target, loop, error; the last / never counts, capitals only where `capsExact`), tested in
   `redirects.test.mjs`. It's opt-in: the tool's "nothing is uploaded" line and /privacy/ must say so before it ships.
-  Some sites' bot protection answers 429 (one Shopify store did; two others didn't); the row then says the site asked to
-  slow down. Never disguise the checker's User-Agent to get past that.
+  Some sites' bot protection answers 429 (one Shopify store did to a home connection, but not to Cloudflare's network);
+  the row then says the site asked to slow down. Never disguise the checker's User-Agent to get past that. From
+  Cloudflare, jsal.io itself answers 522 (the same account), so test with other sites. Branch previews get no bindings
+  from the main settings: CHECK_LIMIT is declared again in `previews` in `wrangler.jsonc`, with its own namespace. Even
+  so, on the preview `limit()` answered success to 430 requests a minute (4 Nov), while `wrangler dev` refuses past 60:
+  test the limit on jsal.io once it ships, and if it doesn't hold there, add Cloudflare's one free WAF rate-limiting
+  rule on `/api/*` (John's dashboard).
 - **A partial file is always said:** while rows need you, Copy and Download read "Copy 4 of 10" / "Download 4 of 10" and
   the file pane opens with "6 rows need fixing before they go in the file. Fix them" (Needs you filter, first row
   focused). Don't go back to a plain "Download file" while rows are missing: a silently short file is the problem the

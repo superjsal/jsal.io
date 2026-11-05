@@ -30,13 +30,10 @@ const json = (body, status = 200) => new Response(JSON.stringify(body), {
 async function check(request, env) {
   if (request.method !== "POST") return json({ error: "POST only" }, 405);
   if (!ORIGINS.test(request.headers.get("origin") || "")) return json({ error: "only from jsal.io" }, 403);
-  let dbg = "none";
   if (env.CHECK_LIMIT) {
-    const out = await env.CHECK_LIMIT.limit({ key: request.headers.get("cf-connecting-ip") || "unknown" });
-    dbg = JSON.stringify(out) + " key=" + (request.headers.get("cf-connecting-ip") || "unknown");
-    if (!out.success) return json({ error: "busy" }, 429);
+    const { success } = await env.CHECK_LIMIT.limit({ key: request.headers.get("cf-connecting-ip") || "unknown" });
+    if (!success) return json({ error: "busy" }, 429);
   }
-  if (new URL(request.url).searchParams.has("dbg")) return json({ dbg });
   let body;
   try { body = await request.json(); } catch (e) { return json({ error: "not JSON" }, 400); }
   const urls = Array.isArray(body && body.urls) ? body.urls : [];
