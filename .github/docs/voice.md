@@ -53,7 +53,7 @@ client would use.
 | Place | Tone | Example from the site |
 |---|---|---|
 | Buttons and labels | The shortest exact words. No jokes | "Compare these side by side" |
-| The line under a tool's title | Who it's for, by name | "For writers and editors pasting from Word or Google Docs into WordPress, Shopify, Wix or any CMS." |
+| The line under a tool's title | Who it's for, by the job in hand, never a job title: anyone can use the tools | "For anyone pasting from Word or Google Docs into WordPress, Shopify, Wix or any CMS." |
 | About sections | A bold tagline, then how to use it, then two or three FAQs | "Exact sizes for one image or a batch, with a crop you control, and nothing ever leaves your device." |
 | Warnings | What happened and what it means, with no apology and no blame | "May look blurry" |
 | Changelog | One sentence on what changed, from the visitor's side (rules below) | "The mouse wheel scrolls the page again over the settings column." |
