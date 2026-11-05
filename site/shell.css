@@ -250,8 +250,11 @@ html[data-jsal-back]::view-transition-new(root) { animation-name: jsal-in-down; 
 .jsal-tour-dots { display: flex; gap: var(--jsal-space-4); margin-right: auto; }
 .jsal-tour-dots i { width: 8px; height: 8px; border-radius: var(--jsal-radius-pill); background: var(--jsal-line-hi); }
 .jsal-tour-dots i.on { background: var(--jsal-info); }
+/* Next and Back: the box and ring glide to the next control together (nav.js adds the class for the move only, so
+   they never trail behind a resize or a scroll) */
+.jsal-tour.jsal-tour-glide, .jsal-tour-ring.jsal-tour-glide { transition: left var(--jsal-settle) var(--jsal-ease-out), top var(--jsal-settle) var(--jsal-ease-out), width var(--jsal-settle) var(--jsal-ease-out), height var(--jsal-settle) var(--jsal-ease-out); }
 @keyframes jsal-tour-in { from { opacity: 0; transform: translateY(4px); } }
-@media (prefers-reduced-motion: reduce) { .jsal-tour { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .jsal-tour { animation: none; } .jsal-tour.jsal-tour-glide, .jsal-tour-ring.jsal-tour-glide { transition: none; } }
 @media print { .jsal-tour, .jsal-tour-ring { display: none; } }
 /* Analytics choice card (/nav.js): bottom left, above a page's own bottom bar; full width on phones */
 .jsal-consent { position: fixed; z-index: 2147483000; left: 16px; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + var(--jsal-ach-lift, 0px)); width: min(380px, calc(100vw - 32px));

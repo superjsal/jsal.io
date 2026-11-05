@@ -56,15 +56,26 @@
     const shown = (el) => el && el.isConnected && el.getClientRects().length ? el : null;
     const find = (s) => shown(typeof s.el === 'function' ? s.el() : document.querySelector(s.el));
     let at = 0, target = null, frame = 0;
-    // Beside the control where there's room (right, then left), otherwise under it with the point above the control
-    const place = () => {
+    // Beside the control where there's room (right, then left), otherwise under it with the point above the control.
+    // Moving to the next step, the box and ring glide there so the eye follows; where the box changes side of its
+    // control, gliding across would cross the page, so it fades in at its new place instead.
+    let glideEnd = 0;
+    const place = (move) => {
       frame = 0;
       if (!shown(target)) return end();
       const r = target.getBoundingClientRect(), vw = document.documentElement.clientWidth, w = Math.min(320, vw - 32);
-      Object.assign(ring.style, { left: r.left + scrollX - 4 + 'px', top: r.top + scrollY - 4 + 'px', width: r.width + 8 + 'px', height: r.height + 8 + 'px' });
       let side = 'below', left = Math.max(16, Math.min(r.left, vw - 16 - w)), top = r.bottom + 14;
       if (vw - r.right >= w + 40) { side = 'right'; left = r.right + 16; top = r.top; }
       else if (r.left >= w + 40) { side = 'left'; left = r.left - 16 - w; top = r.top; }
+      if (move === true) {
+        const same = box.dataset.side === side;
+        ring.classList.add('jsal-tour-glide');
+        box.classList.toggle('jsal-tour-glide', same);
+        if (!same) { box.style.animation = 'none'; void box.offsetWidth; box.style.animation = ''; }
+        clearTimeout(glideEnd);
+        glideEnd = setTimeout(() => { ring.classList.remove('jsal-tour-glide'); box.classList.remove('jsal-tour-glide'); }, 400);
+      }
+      Object.assign(ring.style, { left: r.left + scrollX - 4 + 'px', top: r.top + scrollY - 4 + 'px', width: r.width + 8 + 'px', height: r.height + 8 + 'px' });
       box.dataset.side = side;
       box.style.width = w + 'px';
       box.style.setProperty('--jsal-tour-ax', Math.max(16, Math.min(r.left + 20 - left, w - 32)) + 'px');
@@ -89,7 +100,7 @@
       // Off screen, or too close to the bottom for the box under it: brought into view first
       const r = target.getBoundingClientRect();
       if (r.top < 64 || r.bottom > innerHeight - 200) target.scrollIntoView({ block: r.height > innerHeight / 2 ? 'start' : 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-      place();
+      place(box.isConnected && !!box.dataset.side);
       box.focus({ preventScroll: true });
     };
     function end() {
