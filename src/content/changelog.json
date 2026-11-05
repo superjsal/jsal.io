@@ -1,4 +1,5 @@
 [
+  {"date": "2026-11-05", "tag": "Site", "text": "Small fixes: each tool says it’s for anyone doing that job, the CMS Picker’s About reads like the others, and the logo ends without a glint."},
   {"date": "2026-11-04", "tag": "Redirect Import", "short": "Live check: where each old address lands", "text": "Once the new site is live, Live check visits each old address and says whether it lands on its new page, with a download for the client."},
   {"date": "2026-11-04", "tag": "CMS Picker", "text": "Small fixes: the quiz’s answers sit in even rows on tablets and laptops, and the page no longer jumps as the quiz loads."},
   {"date": "2026-11-04", "tag": "Site", "text": "Small fixes: opening a tool in a new tab from the logo menu no longer leaves the page you’re on unresponsive."},
