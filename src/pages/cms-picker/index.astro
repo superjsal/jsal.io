@@ -116,24 +116,37 @@ const LD = `
 
   <section class="jsal-about" id="about" aria-labelledby="about-h">
     <h2 id="about-h">About CMS Picker</h2>
-    <p>CMS Picker helps you choose a website builder or CMS (content management system). It answers the two questions that come up on almost every project: <em>which platform fits this business?</em> and <em>can we actually change that on it?</em></p>
+    <p class="jsal-lead">Answers the two questions that come up on almost every website project: <em>which platform fits this business?</em> and <em>can we actually change that on it?</em></p>
+
+    <h3>How to use it</h3>
+    <ol>
+      <li>Answer the <a href="#quiz">quiz</a>: a few quick questions about what you’re making and what you need. It ranks the website builders and CMSs (content management systems), with the reasons behind each match.</li>
+      <li>Under your matches, <strong>Compare these side by side</strong> puts them in the comparison, where you can add any other platform.</li>
+      <li>Or skip the quiz: <strong>Browse all <span class="n-plats"><Fragment set:html={pre.count} /></span> platforms</strong> for a card each, or <strong>Compare what each can do</strong> for every question side by side.</li>
+    </ol>
 
     <details>
       <summary><h3>How to read it</h3></summary>
       <ul>
-        <li><a href="#quiz">Find your fit</a> asks a few quick questions and ranks the platforms, with the reasons from the answers below. Nothing you choose is stored or sent anywhere; the result is in the page address, so you can share it.</li>
         <li>Each card says what kind of platform it is, who it’s for, what it’s known for, who looks after hosting and updates, what you can take with you if you leave, and when it’s not the right choice.</li>
         <li>Each row of the comparison is a plain question, with its SEO name in small text under it.</li>
         <li>The tags run from <em>Built in</em> and <em>Automatic</em> through <em>Plugin/app</em> and <em>Needs code</em> to <em>Not possible</em>. <em>Unclear</em> means the platform’s docs don’t say.</li>
       </ul>
     </details>
 
-    <h3>Good to know</h3>
-    <p>Answers come from each platform’s own documentation and are rechecked every few months. Anything not checked yet is marked <em>not verified</em>.</p>
-    <p>The profiles and answers are general guidance. Plans, themes, apps and permissions change what is possible on a given site, and platforms update often. For SEO, each answer also says where to find the setting.</p>
+    <h3>Common questions</h3>
+    <dl>
+      <dt>Where do the answers come from?</dt>
+      <dd>Each platform’s own documentation, linked under every answer and rechecked every few months. Anything not checked yet is marked <em>not verified</em>.</dd>
+      <dt>Will it be right for my site?</dt>
+      <dd>It’s general guidance. Plans, themes, apps and permissions change what’s possible on a given site, and platforms update often. Each SEO answer says where to find the setting, so you can check it on your own site.</dd>
+      <dt>Can I share my result?</dt>
+      <dd>Yes. Your answers are in the page address, so the link opens the same result. Nothing you choose is stored or sent anywhere.</dd>
+    </dl>
+
     <p>Platform names and logos are trademarks of their owners and are used only to identify each platform. Logos from <a href="https://simpleicons.org/">Simple Icons</a>.</p>
 
     <p class="jsal-feedback">Useful? Ideas or problems? <a href="mailto:dev@jsal.io?subject=CMS%20Picker">Email me</a>.</p>
-    <p><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. Also try <a href="/formatter/">Clean Paste</a> or the <a href="/image-resizer/">Image Resizer</a>. <a href="/privacy/">Privacy</a>.</p>
+    <p><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>Made by <a href="/">John Salvador</a>. Also try <a href="/redirects/">Redirect Import</a> to keep old links working when you move, or <a href="/formatter/">Clean Paste</a> for clean HTML from Word and Google Docs. <a href="/privacy/">Privacy</a>.</p>
   </section>
 </Page>
