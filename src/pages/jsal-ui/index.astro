@@ -13,9 +13,9 @@ const REPO = "https://github.com/superjsal/jsal-ui";
 ---
 <Page
   title="jsal.ui: a free WoW Forever addon | jsal.io"
-  description="jsal.ui is a free WoW Forever addon: a clean UI in one click, a Daily Word and other games, talent and training planners, a flight bar and easy helpers."
+  description="jsal.ui is a free WoW Forever addon: a Daily Word and other games for your guild, talent and training planners, a flight bar and easy helpers."
   path="/jsal-ui/"
-  ogDescription="A free WoW Forever addon: your UI in one click, daily games for your guild, talent and training planners."
+  ogDescription="A free WoW Forever addon: daily games for your guild, talent and training planners, and easy helpers."
 >
 <style is:inline slot="head">
 * { box-sizing: border-box; }
@@ -54,7 +54,7 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
     </div>
     <p class="meta">Version 0.2.0 · free, with its code <a href={REPO}>on GitHub</a></p>
     <ul class="has">
-      <li><span><b>Your look in one click.</b> An installer for the jsal.ui EllesmereUI look (the profile is on its way).</span></li>
+      <li><span><b>Made to sit beside EllesmereUI,</b> the free UI, in the same dark, clean style, or to work on its own.</span></li>
       <li><span><b>Daily Word, Icon Guess and the Guild Word,</b> the same for everyone each day, with a Guild tab of today's scores.</span></li>
       <li><span><b>Build Planner</b> for every class's Forever talents, with Wowhead links in and out, and your next talent marked in the game's talent window.</span></li>
       <li><span><b>Training Planner:</b> what's ready to train, what's coming, your road to 60.</span></li>
@@ -64,16 +64,13 @@ h1 em { font-weight: 600; color: var(--jsal-accent); }
 
     <h2 id="install">How to install</h2>
     <ol class="steps">
-      <li>Install <a href="https://www.curseforge.com/wow/addons/ellesmereui">EllesmereUI</a>, which is free: jsal.ui's look is an EllesmereUI profile.</li>
       <li><a href={RELEASES}>Download jsal.ui</a> and unzip it into <code>World of Warcraft\_forever_\Interface\AddOns</code>, so you have an <code>AddOns\jsalUI</code> folder.</li>
       <li>Log in, or type <code>/reload</code>, then type <code>/jsal</code>.</li>
     </ol>
-    <p>Every part has a switch in <code>/jsal settings</code>, so turn off anything you don't want.</p>
+    <p>Every part has a switch in <code>/jsal settings</code>, so turn off anything you don't want. It works on its own, or alongside <a href="https://www.curseforge.com/wow/addons/ellesmereui">EllesmereUI</a> if you use it.</p>
 
     <h3>Is it really free?</h3>
     <p>Yes, all of it, with no subscription or Patreon tier. Its code is <a href={REPO}>on GitHub</a>.</p>
-    <h3>Can I play the Daily Word here?</h3>
-    <p>No, only in game, so nobody knows the word before they play it and the guild's scores stay fair.</p>
     <p>Made by John Salvador. Questions or ideas: <a href="mailto:dev@jsal.io">dev@jsal.io</a>.</p>
   </main>
 </div>
