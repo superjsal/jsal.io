@@ -103,7 +103,6 @@ p, li { text-wrap: pretty; }
 .now-playing .big { font: 700 30px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
 .now-playing .row { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-12); }   /* the credit, bottom right */
 .now-playing .credit { font-size: 12px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
-.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); border: 1px solid currentColor; white-space: nowrap; }
 .desc { margin-top: var(--jsal-space-4) !important; font-size: 15px; }
 
 /* The UI tile is text only and a step smaller than the live tools */
@@ -112,9 +111,6 @@ p, li { text-wrap: pretty; }
 .ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); }
 .ui .label { color: var(--green-acc); }
 .ui .desc { color: var(--green-muted); margin-top: var(--jsal-space-8) !important; }
-.ui .pill { margin-top: var(--jsal-space-12); color: var(--green-acc); }
-/* Live projects are the default and carry no badge; what isn't ready yet is an outline with no fill */
-.tile.soon { background: none; border: 2px dashed var(--jsal-line-hi); }
 
 .now { grid-column: 1 / 13; background: var(--plain); }
 .now h2 { margin: 0 0 var(--jsal-space-8); font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
@@ -273,14 +269,13 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       <h1>Mostly <em>Warcraft</em>.</h1>
       <p>Warcraft, my game UI, a backpack of ways to say hi, and the achievements hidden around the site.</p>
     </section>
-    <section class="tile ui soon" aria-labelledby="ui-h">
+    <a class="tile ui" href="/jsal.ui/" data-jsal-nav aria-labelledby="ui-h">
       <div>
         <p class="label">for WoW Forever</p>
         <h2 id="ui-h">jsal.ui</h2>
-        <p class="desc">A clean, minimal interface for raiding and everyday play. One import string, a few minutes.</p>
-        <span class="pill">Coming soon</span>
+        <p class="desc">My free addon: a clean UI in one click, daily games for the guild, talent and training planners.</p>
       </div>
-    </section>
+    </a>
     <section class="tile now-playing" aria-label="Currently">
       <!-- It covers a tall box, so it's drawn about 800px wide whatever the screen: sizes says that,
            and 2x screens still get the 1920px original. Well below the first screen, so it loads late. -->
