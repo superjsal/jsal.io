@@ -28,7 +28,7 @@ export function GET() {
 
 - [Home](https://jsal.io/): Who John is and the tools.
 - [Off the clock](https://jsal.io/play/): Mostly Warcraft: what John is playing, his game UI, ways to say hi, and the site's achievements.
-- [jsal.ui](https://jsal.io/jsal.ui/): John's free WoW Forever addon: a UI in one click, daily games for the guild, talent and training planners, a flight bar and easy helpers. Code: https://github.com/superjsal/jsal-ui
+- [jsal.ui](https://jsal.io/jsal-ui/): John's free WoW Forever addon: a UI in one click, daily games for the guild, talent and training planners, a flight bar and easy helpers. Code: https://github.com/superjsal/jsal-ui
 - [Privacy](https://jsal.io/privacy/): Files never leave the browser; basic Google Analytics usage stats, only with consent in Europe.
 - Contact: dev@jsal.io
 - Code: https://github.com/superjsal

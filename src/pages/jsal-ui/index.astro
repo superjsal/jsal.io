@@ -3,7 +3,9 @@
 // how to install it. Layout C of three mockups (6 Nov 2026) without its web
 // Daily Word card: a game played here would give away the in-game word and
 // let guildmates inflate their scores, so the word stays in the addon. The
-// addon's code and releases are on GitHub (superjsal/jsal-ui).
+// addon's code and releases are on GitHub (superjsal/jsal-ui). First shipped at
+// /jsal.ui/, moved to /jsal-ui/ the same day to match the repo's name; site/_redirects
+// sends the old address here.
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
 const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
@@ -12,7 +14,7 @@ const REPO = "https://github.com/superjsal/jsal-ui";
 <Page
   title="jsal.ui: a free WoW Forever addon | jsal.io"
   description="jsal.ui is a free WoW Forever addon: a clean UI in one click, a Daily Word and other games, talent and training planners, a flight bar and easy helpers."
-  path="/jsal.ui/"
+  path="/jsal-ui/"
   ogDescription="A free WoW Forever addon: your UI in one click, daily games for your guild, talent and training planners."
 >
 <style is:inline slot="head">
