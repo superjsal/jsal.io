@@ -1,78 +1,203 @@
 ---
 // jsal.ui, John's free WoW Forever addon: what it is, where to get it and
-// how to install it. Layout C of three mockups (6 Nov 2026) without its web
-// Daily Word card: a game played here would give away the in-game word and
-// let guildmates inflate their scores, so the word stays in the addon. The
-// addon's code and releases are on GitHub (superjsal/jsal-ui). First shipped at
-// /jsal.ui/, moved to /jsal-ui/ the same day to match the repo's name; site/_redirects
-// sends the old address here.
+// how to install it, as a bento grid like the home page's (John, 7 Nov 2026:
+// the gaming side of the site may use bento; the work tools never do). Each
+// feature tile shows a screenshot from the game. The addon's code and
+// releases are on GitHub (superjsal/jsal-ui). First shipped at /jsal.ui/ and
+// moved to /jsal-ui/ the same day to match the repo's name; site/_redirects
+// sends the old address here. The "Version x.y.z" line below is updated with
+// every jsal.ui release.
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
 const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
 const REPO = "https://github.com/superjsal/jsal-ui";
+// Each tile's screenshot: a file under site/img/jsal-ui/ (WebP, about 1200px
+// wide, its width and height), or null while it's still to come.
+const SHOTS: Record<string, { src: string; w: number; h: number; alt: string } | null> = {
+  journal: null,
+  guild: null,
+  games: null,
+  plan: null,
+  prof: null,
+};
+const TILES = [
+  { key: "journal", cls: "journal wide", name: "Journal", line: "Your character's story: totals from its whole life, the moments worth keeping, and every level's numbers, for all your characters." },
+  { key: "guild", cls: "guild wide", name: "With your guild", line: "Change layers by joining a guildmate, see who in the guild crafts what, and play chess with a win-loss record." },
+  { key: "games", cls: "games", name: "Daily games", line: "Daily Word and Icon Guess, the same for everyone each day, and a Guild Word from your guild master." },
+  { key: "plan", cls: "plan", name: "Road to 60", line: "A talent build to follow, your next trainer visit and what it costs." },
+  { key: "prof", cls: "prof wide", name: "Professions", line: "What to craft for each next rank, with the fewest materials, the nearest trainer and a shopping list." },
+];
 ---
 <Page
   title="jsal.ui: a free WoW Forever addon | jsal.io"
-  description="jsal.ui is a free WoW Forever addon: a Daily Word, chess and other games for your guild, talent, training and profession planners, and easy helpers."
+  description="jsal.ui is a free WoW Forever addon: a journal of your character's story, layer changes, crafters and chess with your guild, daily games, and talent, training and profession planners."
   path="/jsal-ui/"
-  ogDescription="A free WoW Forever addon: daily games and chess for your guild, talent, training and profession planners, and easy helpers."
+  ogDescription="A free WoW Forever addon: your character's journal, layer changes and chess with your guild, daily games, and planners for your road to 60."
 >
 <style is:inline slot="head">
+/* Tile colours: each feature its own soft tint with a deep shade of it for the words, as on the home page; the
+   install tile is plain. */
+:root {
+  --t-journal: #f3dc9a; --t-journal-ink: #4f3a08;
+  --t-guild: #c6e2dd; --t-guild-ink: #13453f;
+  --t-games: #d7c6f0; --t-games-ink: #3d2466;
+  --t-plan: #cfdcf0; --t-plan-ink: #1f3557;
+  --t-prof: #f0d2dc; --t-prof-ink: #5c1a30;
+  --t-plain: #e8e5dd;
+  --shot-shadow: 0 18px 40px rgb(30 20 10 / 0.22), 0 2px 6px rgb(30 20 10 / 0.1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --t-journal: #30280f; --t-journal-ink: #f3dc9a; --t-guild: #132a28; --t-guild-ink: #c6e2dd;
+    --t-games: #2c2140; --t-games-ink: #e3d4ff; --t-plan: #16213a; --t-plan-ink: #cfdcf0;
+    --t-prof: #321b24; --t-prof-ink: #f4d2de; --t-plain: #1c1f27;
+    --shot-shadow: 0 18px 40px rgb(0 0 0 / 0.55);
+  }
+}
+:root[data-theme="dark"] {
+  --t-journal: #30280f; --t-journal-ink: #f3dc9a; --t-guild: #132a28; --t-guild-ink: #c6e2dd;
+  --t-games: #2c2140; --t-games-ink: #e3d4ff; --t-plan: #16213a; --t-plan-ink: #cfdcf0;
+  --t-prof: #321b24; --t-prof-ink: #f4d2de; --t-plain: #1c1f27;
+  --shot-shadow: 0 18px 40px rgb(0 0 0 / 0.55);
+}
+
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
-.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 var(--jsal-gutter) var(--jsal-page-end); }
-.addon { margin-top: var(--jsal-page-top); max-width: 40em; }
-.code { margin: 0 0 var(--jsal-space-12); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }   /* every page title's size */
-@media (max-width: 520px) { h1 { font-size: 40px; } }
-h1 em { font-weight: 600; color: var(--jsal-accent); }
-.lead { margin: var(--jsal-space-20) 0 0; font-size: 17px; color: var(--jsal-ink-2); text-wrap: pretty; }
-.actions { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin-top: var(--jsal-space-24); }
-.meta { margin: var(--jsal-space-12) 0 0; font-size: 13px; color: var(--jsal-muted); }
-.addon a:not(.jsal-btn) { color: var(--jsal-accent); text-underline-offset: 2px; }
-.has { margin: var(--jsal-space-32) 0 0; padding: 0; list-style: none; display: grid; gap: var(--jsal-space-8); }
-.has li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--jsal-space-8); color: var(--jsal-ink-2); }
-.has li::before { content: ""; width: 8px; height: 8px; margin: var(--jsal-space-8) 0 0 var(--jsal-space-4); background: var(--jsal-fill); transform: rotate(45deg); }   /* the logo's gem as the bullet */
-.has b { color: var(--jsal-ink); }
-.addon h2 { margin: var(--jsal-space-48) 0 var(--jsal-space-8); font: 700 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
-.addon h3 { margin: var(--jsal-space-24) 0 var(--jsal-space-4); font: 700 17px/1.4 var(--jsal-font); }
-.addon p:not(.code):not(.meta), .addon ol li { color: var(--jsal-ink-2); }
-.addon ol { margin: 0 0 var(--jsal-flow); padding-left: 1.3em; }
-.addon ol li + li { margin-top: var(--jsal-space-4); }
-.addon .steps + p, .addon h3 + p { margin: 0 0 var(--jsal-flow); }
-.addon code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) var(--jsal-page-end) max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
+h1, h2 { text-wrap: balance; }
+p { text-wrap: pretty; }
+.ui a:not(.jsal-btn) { color: var(--jsal-accent); text-underline-offset: 2px; }
+
+/* Top bar: the shared one (/shell.css), with section links, as on the home page */
+.jsal-top nav { display: flex; gap: var(--jsal-space-2); font-size: 14px; }
+.jsal-top nav a { padding: var(--jsal-space-8) var(--jsal-space-8); line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }
+.jsal-top nav a:hover { color: var(--jsal-ink); }
+@media (pointer: coarse) {
+  .jsal-top nav a { position: relative; }
+  .jsal-top nav a::after { content: ""; position: absolute; inset: -4px 0; }   /* 36px drawn, 44px to tap */
+}
+
+/* Bento grid: six columns, the wide tile swapping sides each row, and Install across the bottom */
+.ui { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--jsal-space-32); margin-top: var(--jsal-page-top); }
+.intro { grid-column: 1 / 3; align-self: start; padding-right: var(--jsal-space-12); }
+.journal { grid-column: 3 / 7; }
+.guild { grid-column: 1 / 5; }
+.games { grid-column: 5 / 7; }
+.plan { grid-column: 1 / 3; }
+.prof { grid-column: 3 / 7; }
+.install { grid-column: 1 / 7; }
+
+/* The intro: at the shared distance under the top bar, flush with the logo */
+.roles { margin: 0; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
+.intro h1 { margin: var(--jsal-space-12) 0 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
+.intro h1 em { font-weight: 600; color: var(--jsal-accent); }
+.intro p { margin: var(--jsal-space-16) 0 0; font-size: 17px; color: var(--jsal-ink-2); }
+.actions { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin-top: var(--jsal-space-20); }
+.intro .meta { margin-top: var(--jsal-space-12); font-size: 13px; color: var(--jsal-muted); }
+
+/* Tiles: soft colour, a deep-shade serif name and its line at the top left, then the game as it looks. A wide
+   tile puts its screenshot beside the words, a narrow one under them. */
+.tile { position: relative; display: flex; flex-direction: column; min-height: 280px; border-radius: var(--jsal-radius-tile); --pad: var(--jsal-space-24); padding: var(--pad); background: var(--bg); color: var(--ink); }
+.tile h2 { margin: 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
+.tile .txt p { margin: var(--jsal-space-8) 0 0; font-size: 17px; line-height: 1.45; }
+.wide { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--jsal-space-24); align-items: start; }
+.wide .shot { align-self: center; }
+.journal { min-height: 440px; }
+.journal { --bg: var(--t-journal); --ink: var(--t-journal-ink); }
+.guild { --bg: var(--t-guild); --ink: var(--t-guild-ink); }
+.games { --bg: var(--t-games); --ink: var(--t-games-ink); }
+.plan { --bg: var(--t-plan); --ink: var(--t-plan-ink); }
+.prof { --bg: var(--t-prof); --ink: var(--t-prof-ink); }
+
+/* A screenshot, framed and tilted a little like the home page's pictures; the wide tiles' lean the other way each row */
+.shot { margin: 0; justify-self: end; width: 100%; transform: rotate(-1.5deg); }
+.guild .shot, .plan .shot { transform: rotate(1.5deg); }
+.shot img, .shot .soon { display: block; width: 100%; height: auto; border-radius: var(--jsal-radius-lg); box-shadow: var(--shot-shadow); }
+.tile:not(.wide) .shot { margin-top: auto; padding-top: var(--jsal-space-20); }
+/* While a screenshot is still to come: an empty frame that says so */
+.shot .soon { display: grid; place-items: center; aspect-ratio: 16 / 10; background: var(--jsal-surface); color: var(--jsal-muted); font-size: 13px; outline: 1px dashed var(--jsal-line-hi); outline-offset: -1px; }
+
+/* Install: plain, across the bottom, the steps and the one question people ask */
+.install { --bg: var(--t-plain); --ink: var(--jsal-ink); min-height: 0; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--jsal-space-32); }
+.install h2 { margin-bottom: var(--jsal-space-12); }
+.install h3 { margin: 0 0 var(--jsal-space-4); font: 700 17px/1.4 var(--jsal-font); }
+.install p, .install li { color: var(--jsal-ink-2); }
+.install ol { margin: 0 0 var(--jsal-flow); padding-left: 1.3em; }
+.install li + li { margin-top: var(--jsal-space-4); }
+.install p { margin: 0 0 var(--jsal-flow); }
+.install code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
+.credit { grid-column: 1 / 7; margin: calc(var(--jsal-space-16) * -1) 0 0; font-size: 13px; color: var(--jsal-muted); }
+
+/* From 1279px down: the intro, the Journal, the guild tile, Professions and Install take the full width, and the
+   two narrow tiles sit side by side */
+@media (max-width: 1279px) {
+  .intro, .journal, .guild, .prof, .install { grid-column: 1 / -1; }
+  .games { grid-column: 1 / 4; }
+  .plan { grid-column: 4 / 7; }
+  .intro { padding-right: 0; max-width: 40em; }
+  .journal { min-height: 0; }
+}
+/* Upright phones: one tile per row, every screenshot under its words */
+@media (max-width: 699px) {
+  .ui > * { grid-column: 1 / -1 !important; }
+  .wide, .install { display: flex; flex-direction: column; }
+  .wide .shot { margin-top: var(--jsal-space-8); }
+  .tile { min-height: 0; }
+}
+@media (max-width: 520px) {
+  .intro h1 { font-size: 40px; }
+  .tile { --pad: var(--jsal-space-20); }
+  .tile h2 { font-size: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shot, .guild .shot, .plan .shot { transform: none; }
+}
 </style>
 <div class="wrap">
   <TopBar><nav aria-label="Sections"><a href="/play/" data-jsal-nav>Off the clock</a><a href="#install">Install</a></nav></TopBar>
-  <main class="addon">
-    <p class="code">For WoW Forever</p>
-    <h1>jsal.<em>ui</em></h1>
-    <p class="lead">A free UI pack, daily games and easy helpers for WoW Forever. One install, no subscription.</p>
-    <div class="actions">
-      <a class="jsal-btn primary" href={RELEASES}>Download jsal.ui</a>
-      <a class="jsal-btn" href="#install">How to install</a>
-    </div>
-    <p class="meta">Version 0.3.13 · free, with its code <a href={REPO}>on GitHub</a></p>
-    <ul class="has">
-      <li><span><b>Made to sit beside EllesmereUI,</b> the free UI, in the same dark, clean style, or to work on its own.</span></li>
-      <li><span><b>Daily Word, Icon Guess and the Guild Word,</b> the same for everyone each day, with a Guild tab of today's scores.</span></li>
-      <li><span><b>Chess with your guildmates,</b> with a win-loss record and their games to watch as they're played.</span></li>
-      <li><span><b>Build Planner</b> for every class's Forever talents, with a ready-made leveling build to follow, Wowhead links in and out, and your next talent marked in the game's talent window.</span></li>
-      <li><span><b>Training and Professions:</b> what's ready to train, your road to 60, each profession's road to the next rank, and the nearest trainer.</span></li>
-      <li><span><b>A flight bar</b> with your route, the time left and today's games.</span></li>
-      <li><span><b>Easy helpers:</b> quests on autopilot, a vendor run, level-up tips, bag and gear warnings.</span></li>
-    </ul>
-
-    <h2 id="install">How to install</h2>
-    <ol class="steps">
-      <li><a href={RELEASES}>Download jsal.ui</a> and unzip it into <code>World of Warcraft\_forever_\Interface\AddOns</code>, so you have an <code>AddOns\jsalUI</code> folder.</li>
-      <li>Log in, or type <code>/reload</code>, then type <code>/jsal</code>.</li>
-    </ol>
-    <p>Every part has a switch in <code>/jsal settings</code>, so turn off anything you don't want. It works on its own, or alongside <a href="https://www.curseforge.com/wow/addons/ellesmereui">EllesmereUI</a> if you use it.</p>
-
-    <h3>Is it really free?</h3>
-    <p>Yes, all of it, with no subscription or Patreon tier. Its code is <a href={REPO}>on GitHub</a>.</p>
-    <p>Made by John Salvador. Questions or ideas: <a href="mailto:dev@jsal.io">dev@jsal.io</a>.</p>
+  <main class="ui">
+    <section class="intro">
+      <p class="roles">For WoW Forever</p>
+      <h1>jsal.<em>ui</em></h1>
+      <p>A free UI pack, daily games and easy helpers for WoW Forever. One install, no subscription.</p>
+      <div class="actions">
+        <a class="jsal-btn primary" href={RELEASES}>Download jsal.ui</a>
+        <a class="jsal-btn" href="#install">How to install</a>
+      </div>
+      <p class="meta">Version 0.3.13 · free, with its code <a href={REPO}>on GitHub</a></p>
+    </section>
+    {TILES.map((t) => {
+      const shot = SHOTS[t.key];
+      return (
+        <section class={`tile ${t.cls}`} aria-labelledby={`${t.key}-h`}>
+          <div class="txt">
+            <h2 id={`${t.key}-h`}>{t.name}</h2>
+            <p>{t.line}</p>
+          </div>
+          <figure class="shot">
+            {shot
+              ? <img src={shot.src} width={shot.w} height={shot.h} alt={shot.alt} loading={t.key === "journal" ? "eager" : "lazy"} decoding="async">
+              : <div class="soon">Screenshot to come</div>}
+          </figure>
+        </section>
+      );
+    })}
+    <section class="tile install" id="install" aria-labelledby="install-h">
+      <div>
+        <h2 id="install-h">Install</h2>
+        <ol>
+          <li><a href={RELEASES}>Download jsal.ui</a> and unzip it into <code>World of Warcraft\_forever_\Interface\AddOns</code>, so you have an <code>AddOns\jsalUI</code> folder. Or get it from CurseForge or Wago.</li>
+          <li>Log in, or restart the game if it was running, then type <code>/jsal</code>.</li>
+        </ol>
+        <p>Every part has a switch in <code>/jsal settings</code>, so turn off anything you don't want. It works on its own, or alongside <a href="https://www.curseforge.com/wow/addons/ellesmereui">EllesmereUI</a> if you use it.</p>
+      </div>
+      <div>
+        <h3>Is it really free?</h3>
+        <p>Yes, all of it, with no subscription or Patreon tier. Its code is <a href={REPO}>on GitHub</a>.</p>
+        <p>Made by John Salvador. Questions or ideas: <a href="mailto:dev@jsal.io">dev@jsal.io</a>, or Report a problem inside the addon.</p>
+      </div>
+    </section>
+    <p class="credit">Screenshots of World of Warcraft © Blizzard Entertainment.</p>
   </main>
 </div>
 </Page>

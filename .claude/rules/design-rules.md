@@ -169,8 +169,12 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   On phones the empty work box stretches to the bottom of the screen until there's content.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
 - **Home page:** tools only, as a bento grid of tiles; every new home page tool or section is a bento box, and the
-  home page is always bento boxes. Other pages keep an open layout, but may use a card in the tiles' style (corners,
-  padding, a tint) where it helps; they don't become bento grids. The grid, the tiles, their pictures, watermarks,
+  home page is always bento boxes. **The work tools never become bento grids** (the CMS Picker and its platform
+  pages, Clean Paste, the Image Resizer, Redirect Import, the Playbook, Privacy, Changelog): they keep an open layout,
+  and may use a card in the tiles' style (corners, padding, a tint) where it helps. **The gaming side may** (John,
+  7 Nov 2026): `/play/`'s tiles and the jsal.ui page's (`/jsal-ui/`: the intro beside a big Journal tile, then
+  feature tiles that swap sides each row, each with a tilted screenshot from the game, and Install across the
+  bottom). The grid, the tiles, their pictures, watermarks,
   breakouts and order are in `.claude/rules/home-page.md`, which loads with the home page's files.
 - **The CMS Picker** has its own layout and control rules (quiz first, the quiz's tick and checklist questions,
   changing an answer, result cards, the must-have divider, "varies", the comparison on phones) in
