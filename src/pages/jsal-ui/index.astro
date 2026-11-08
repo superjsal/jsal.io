@@ -12,10 +12,11 @@ import TopBar from "../../components/TopBar.astro";
 import { v } from "../../lib/v.mjs";
 const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
 const REPO = "https://github.com/superjsal/jsal-ui";
-// Each tile's screenshot: a file under site/img/jsal-ui/ (WebP, about 1200px
-// wide, its width and height), or null while it's still to come.
-const SHOTS: Record<string, { src: string; w: number; h: number; alt: string } | null> = {
-  journal: null,
+// Each tile's screenshot: a WebP under site/img/jsal-ui/, cropped from John's
+// in-game screenshots at the game's own size (never scaled up), with its width
+// and height.
+const SHOTS: Record<string, { src: string; w: number; h: number; alt: string }> = {
+  journal: { src: "/img/jsal-ui/journal.webp", w: 760, h: 692, alt: "The Journal's Summary for a level 21 hunter: foes defeated, miles travelled, quests done, deaths and more, with the most-used spells and the zones they spent most time in." },
   guild: { src: "/img/jsal-ui/chess.webp", w: 758, h: 654, alt: "jsal.ui's Chess page: a board against a guildmate, with the win-loss record and open challenges beside it." },
   games: { src: "/img/jsal-ui/daily-word.webp", w: 353, h: 550, alt: "Daily Word solved in three guesses, with buttons to share to the guild and to play Icon Guess." },
   plan: { src: "/img/jsal-ui/road-to-60.webp", w: 396, h: 348, alt: "The Training Planner's road to 60: the spells each trainer level brings, and what each visit costs." },
@@ -113,12 +114,9 @@ p { text-wrap: pretty; }
 /* A screenshot, framed and tilted a little like the home page's pictures; the wide tiles' lean the other way each row */
 .shot { margin: 0; justify-self: end; width: 100%; transform: rotate(-1.5deg); }
 .guild .shot, .plan .shot { transform: rotate(1.5deg); }
-.shot img, .shot .soon { display: block; width: 100%; height: auto; border-radius: var(--jsal-radius-lg); box-shadow: var(--shot-shadow); }
 /* A small window (a pop-out such as Daily Word) shows at its own size at most, so it never blurs */
-.shot img { width: auto; max-width: 100%; margin-left: auto; }
+.shot img { display: block; width: auto; max-width: 100%; height: auto; margin-left: auto; border-radius: var(--jsal-radius-lg); box-shadow: var(--shot-shadow); }
 .tile:not(.wide) .shot { margin-top: auto; padding-top: var(--jsal-space-20); }
-/* While a screenshot is still to come: an empty frame that says so */
-.shot .soon { display: grid; place-items: center; aspect-ratio: 16 / 10; background: var(--jsal-surface); color: var(--jsal-muted); font-size: 13px; outline: 1px dashed var(--jsal-line-hi); outline-offset: -1px; }
 
 /* Install: plain, across the bottom, the steps and the one question people ask */
 .install { --bg: var(--t-plain); --ink: var(--jsal-ink); min-height: 0; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--jsal-space-32); }
@@ -178,9 +176,7 @@ p { text-wrap: pretty; }
             <p>{t.line}</p>
           </div>
           <figure class="shot">
-            {shot
-              ? <img src={v(shot.src)} width={shot.w} height={shot.h} alt={shot.alt} loading={t.key === "journal" ? "eager" : "lazy"} decoding="async">
-              : <div class="soon">Screenshot to come</div>}
+            <img src={v(shot.src)} width={shot.w} height={shot.h} alt={shot.alt} loading={t.key === "journal" ? "eager" : "lazy"} decoding="async">
           </figure>
         </section>
       );

@@ -1,6 +1,7 @@
 ---
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
+import { v } from "../../lib/v.mjs";
 ---
 <Page
   title="Mostly Warcraft: Off the Clock | jsal.io"
@@ -28,16 +29,19 @@ import TopBar from "../../components/TopBar.astro";
 :root {
   --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
   --plain: #e8e5dd; --plain-line: #cfc3a9;
+  --peek-shadow: 0 12px 28px rgb(30 20 10 / 0.2), 0 2px 6px rgb(30 20 10 / 0.1);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
     --plain: #1c1f27; --plain-line: #3d424e;
+    --peek-shadow: 0 12px 28px rgb(0 0 0 / 0.5);
   }
 }
 :root[data-theme="dark"] {
   --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
   --plain: #1c1f27; --plain-line: #3d424e;
+  --peek-shadow: 0 12px 28px rgb(0 0 0 / 0.5);
 }
 
 * { box-sizing: border-box; }
@@ -105,12 +109,24 @@ p, li { text-wrap: pretty; }
 .now-playing .credit { font-size: 12px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .desc { margin-top: var(--jsal-space-4) !important; font-size: 15px; }
 
-/* The UI tile is text only and a step smaller than the live tools */
+/* The UI tile: its words a step smaller than the live tools, and a peek at the addon on the right, the top of
+   the Journal tilted and cut off by the tile's bottom edge. The peek takes no height of its own (height 0,
+   stretched to the row), so the words set the tile's size. */
 .ui { padding: var(--jsal-space-24) var(--jsal-space-24); }
 .ui h2 { font-size: 24px; }
 .ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); }
 .ui .label { color: var(--green-acc); }
 .ui .desc { color: var(--green-muted); margin-top: var(--jsal-space-8) !important; }
+.ui { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 320px); gap: var(--jsal-space-24); overflow: hidden; min-height: 168px; }
+.ui > div { align-self: center; }
+.ui .peek { height: 0; min-height: 100%; }
+.ui .peek img { display: block; width: 100%; height: auto; margin-top: var(--jsal-space-8); border-radius: var(--jsal-radius-lg); box-shadow: var(--peek-shadow); transform: rotate(-2deg); }
+/* Phones: the peek goes under the words, a short slice of it */
+@media (max-width: 699px) {
+  .ui { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-8); padding-bottom: 0 !important; }
+  .ui .peek { height: 128px; min-height: 0; }
+  .ui .peek img { width: min(100%, 320px); margin-left: auto; }
+}
 
 .now { grid-column: 1 / 13; background: var(--plain); }
 .now h2 { margin: 0 0 var(--jsal-space-8); font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
@@ -275,6 +291,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
         <h2 id="ui-h">jsal.ui</h2>
         <p class="desc">My free addon: your character's journal, layer swaps, crafters and chess with your guild, daily games and planners.</p>
       </div>
+      <span class="peek" aria-hidden="true"><img src={v("/img/jsal-ui/journal.webp")} width="760" height="692" alt="" loading="lazy" decoding="async"></span>
     </a>
     <section class="tile now-playing" aria-label="Currently">
       <!-- It covers a tall box, so it's drawn about 800px wide whatever the screen: sizes says that,
