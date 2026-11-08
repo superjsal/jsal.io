@@ -9,16 +9,17 @@
 // every jsal.ui release.
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
+import { v } from "../../lib/v.mjs";
 const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
 const REPO = "https://github.com/superjsal/jsal-ui";
 // Each tile's screenshot: a file under site/img/jsal-ui/ (WebP, about 1200px
 // wide, its width and height), or null while it's still to come.
 const SHOTS: Record<string, { src: string; w: number; h: number; alt: string } | null> = {
   journal: null,
-  guild: null,
-  games: null,
-  plan: null,
-  prof: null,
+  guild: { src: "/img/jsal-ui/chess.webp", w: 758, h: 654, alt: "jsal.ui's Chess page: a board against a guildmate, with the win-loss record and open challenges beside it." },
+  games: { src: "/img/jsal-ui/daily-word.webp", w: 353, h: 550, alt: "Daily Word solved in three guesses, with buttons to share to the guild and to play Icon Guess." },
+  plan: { src: "/img/jsal-ui/road-to-60.webp", w: 396, h: 348, alt: "The Training Planner's road to 60: the spells each trainer level brings, and what each visit costs." },
+  prof: { src: "/img/jsal-ui/leatherworking.webp", w: 336, h: 424, alt: "Leatherworking's road to the next rank: three crafts to make, then everything they need from your bags." },
 };
 const TILES = [
   { key: "journal", cls: "journal wide", name: "Journal", line: "Your character's story: totals from its whole life, the moments worth keeping, and every level's numbers, for all your characters." },
@@ -113,6 +114,8 @@ p { text-wrap: pretty; }
 .shot { margin: 0; justify-self: end; width: 100%; transform: rotate(-1.5deg); }
 .guild .shot, .plan .shot { transform: rotate(1.5deg); }
 .shot img, .shot .soon { display: block; width: 100%; height: auto; border-radius: var(--jsal-radius-lg); box-shadow: var(--shot-shadow); }
+/* A small window (a pop-out such as Daily Word) shows at its own size at most, so it never blurs */
+.shot img { width: auto; max-width: 100%; margin-left: auto; }
 .tile:not(.wide) .shot { margin-top: auto; padding-top: var(--jsal-space-20); }
 /* While a screenshot is still to come: an empty frame that says so */
 .shot .soon { display: grid; place-items: center; aspect-ratio: 16 / 10; background: var(--jsal-surface); color: var(--jsal-muted); font-size: 13px; outline: 1px dashed var(--jsal-line-hi); outline-offset: -1px; }
@@ -176,7 +179,7 @@ p { text-wrap: pretty; }
           </div>
           <figure class="shot">
             {shot
-              ? <img src={shot.src} width={shot.w} height={shot.h} alt={shot.alt} loading={t.key === "journal" ? "eager" : "lazy"} decoding="async">
+              ? <img src={v(shot.src)} width={shot.w} height={shot.h} alt={shot.alt} loading={t.key === "journal" ? "eager" : "lazy"} decoding="async">
               : <div class="soon">Screenshot to come</div>}
           </figure>
         </section>
