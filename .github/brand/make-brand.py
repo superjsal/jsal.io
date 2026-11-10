@@ -150,6 +150,10 @@ TOOLS = {   # file name: (tile colour, glyph drawn in ink with the gem's colour)
         'M9.35 8.65H22.65a2.45 2.45 0 0 1 2.45 2.45V20.9a2.45 2.45 0 0 1-2.45 2.45H9.35a2.45 2.45 0 0 1-2.45-2.45V11.1'
         'a2.45 2.45 0 0 1 2.45-2.45zM10.75 20.55V18.94C10.75 16.28 12.15 14.95 14.6 14.95H15.3', ink)
         + solid('M19.36 14.95L15.16 11.87V18.03z', ink) + gem('M21.67 13.27l1.68 1.68-1.68 1.68-1.68-1.68z', g)),
+    # A page under a magnifying glass, the gem what the lens finds there, on Implement Check's rust
+    'implement-check': ('#9c4623', lambda ink, g: stroke(
+        'M18.6 12.6V8.3H9.4v15.4h5.2M12.2 12.2h3.5M12.2 15.9h1.8M23.1 18.9a3.5 3.5 0 1 1-7 0 3.5 3.5 0 1 1 7 0zM21.9 21.5l2.6 2.6', ink)
+        + gem('M19.6 17.5l1.4 1.4-1.4 1.4-1.4-1.4z', g)),
     # An open book, the gem its bookmark
     'platform-playbook': ('#3b5a9a', lambda ink, g: stroke(
         'M16 12.15C13.9 10.75 11.1 10.4 8.65 11.1v10.5c2.45-.7 5.25-.35 7.35 1.05 2.1-1.4 4.9-1.75 7.35-1.05V11.1'
@@ -174,7 +178,7 @@ for name, svg in files.items():
 # Site, which keeps the dark tile's edge everywhere so it holds on the dark Updates box
 icons = ROOT / 'site' / 'img' / 'icons'
 icons.mkdir(parents=True, exist_ok=True)
-for name in ('cms-picker', 'clean-paste', 'image-resizer', 'redirect-import', 'platform-playbook', 'off-the-clock'):
+for name in ('cms-picker', 'clean-paste', 'image-resizer', 'redirect-import', 'implement-check', 'platform-playbook', 'off-the-clock'):
     (icons / f'{name}.svg').write_text(files[f'tools/{name}.svg'] + '\n', encoding='utf-8', newline='\n')
 (icons / 'jsal-io.svg').write_text(f'<svg {XMLNS} viewBox="0 0 32 32">{tile(edge=True)}{glyph(PARCH, GOLD)}</svg>\n', encoding='utf-8', newline='\n')
 print('\n'.join(files))

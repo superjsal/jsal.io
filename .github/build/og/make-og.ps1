@@ -12,7 +12,7 @@ function Shot($url, $out, $w, $h) {
   Write-Output "$out  $((Get-Item $out).Length) bytes"
 }
 
-foreach ($p in "home", "image-resizer", "formatter", "redirects", "cms-picker", "play") {
+foreach ($p in "home", "image-resizer", "formatter", "redirects", "implement-check", "cms-picker", "play") {
   Shot "$($tpl)?p=$p" (Join-Path $site "og\$p.png") 1200 628
 }
 $icon = "file:///" + ((Join-Path $here "icon.html") -replace '\\', '/')
@@ -47,7 +47,7 @@ function ShotClear($url, $out, $w, $h) {
 Shot "$($kit)?p=linkedin" (Join-Path $kitDir "linkedin-banner.png") 1584 396
 Shot "$($kit)?p=github" (Join-Path $kitDir "github-social-preview.png") 1280 640
 Shot "$($kit)?p=avatar" (Join-Path $kitDir "avatar-800.png") 800 800
-foreach ($t in "cms-picker", "clean-paste", "image-resizer", "redirect-import", "platform-playbook") {
+foreach ($t in "cms-picker", "clean-paste", "image-resizer", "redirect-import", "implement-check", "platform-playbook") {
   ShotClear "$($kit)?p=icon&t=$t" (Join-Path $kitDir "tool-$t-512.png") 512 512
 }
 ShotClear "$($kit)?p=signature&theme=light" (Join-Path $kitDir "signature-light.png") 369 112

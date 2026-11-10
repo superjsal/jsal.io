@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- Link-preview image template (1200 × 628). Rendered to PNG by make-og.ps1:
-     og.html?p=home | image-resizer | formatter | redirects | cms-picker | play  → site/og/<p>.png
+     og.html?p=home | image-resizer | formatter | redirects | implement-check | cms-picker | play  → site/og/<p>.png
      icon.html → site/apple-touch-icon.png -->
 <html lang="en">
 <head>
@@ -108,7 +108,16 @@ const table = `<div class="tbl">
   <div><span>Custom design</span><span class="t cd">Needs code</span><span class="t cd">Needs code</span></div>
   <div><span>Languages</span><span class="t pl">Plugin</span><span class="t ok">Built in</span></div>
 </div>`;
+// Implement Check: a page's fields, each with its verdict, as its panel lists them
+const check = `<div class="tbl seo">
+  <div><span>Title</span><span class="t ok">In the HTML</span></div>
+  <div><span>Description</span><span class="t ok">In the HTML</span></div>
+  <div><span>Canonical</span><span class="t cd">Changed by JS</span></div>
+  <div><span>Schema</span><span class="t pl">Added by JS</span></div>
+  <div><span>Your text</span><span class="t no">Not found</span></div>
+</div>`;
 const pages = {
+  'implement-check': { label: 'Free · Runs in your browser', title: 'Implement<br>Check', sub: 'Where a page’s content and SEO tags really come from.', visual: check },
   home: { label: 'Technical SEO · Web tools', title: 'John<br><em>Salvador</em>', sub: 'CMS Picker and free browser tools for website content.', visual: table },
   'image-resizer': { label: 'Free · Runs in your browser', title: 'Image<br>Resizer', sub: 'Resize one image or a whole batch: JPG, PNG, WebP and HEIC.', visual: resizer },
   formatter: { label: 'Free · Runs in your browser', title: 'Clean<br>Paste', sub: 'Word and Google Docs to clean HTML, with SEO checks.', visual: paste },

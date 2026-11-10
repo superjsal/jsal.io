@@ -8,6 +8,7 @@ export const SECTIONS = [
   { name: 'Clean Paste', href: '/formatter/', icon: 'clean-paste' },
   { name: 'Image Resizer', href: '/image-resizer/', icon: 'image-resizer' },
   { name: 'Redirect Import', href: '/redirects/', icon: 'redirect-import' },
+  { name: 'Implement Check', href: '/implement-check/', icon: 'implement-check' },
   { name: 'Off the clock', href: '/play/', icon: 'off-the-clock' },
   { name: 'Site', href: null, icon: 'jsal-io' },
 ];

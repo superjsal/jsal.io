@@ -250,6 +250,8 @@
       icon: '<path class="l" d="M8.65 10.4h14.7v11.9h-14.7zM8.65 19.5l4.55-4.55 3.5 3.5 2.1-2.1 4.55 4.55" stroke-width="2.2"/><path class="g" d="M20.2 11.73l1.61 1.61-1.61 1.61-1.61-1.61z"/>' },
     { href: '/redirects/', name: 'Redirect Import', tile: 'var(--jsal-tool-redirect)',
       icon: '<path class="l" d="M9.35 8.65H22.65a2.45 2.45 0 0 1 2.45 2.45V20.9a2.45 2.45 0 0 1-2.45 2.45H9.35a2.45 2.45 0 0 1-2.45-2.45V11.1a2.45 2.45 0 0 1 2.45-2.45zM10.75 20.55V18.94C10.75 16.28 12.15 14.95 14.6 14.95H15.3" stroke-width="2.2"/><path class="f" d="M19.36 14.95L15.16 11.87V18.03z"/><path class="g" d="M21.67 13.27l1.68 1.68-1.68 1.68-1.68-1.68z"/>' },
+    { href: '/implement-check/', name: 'Implement Check', tile: 'var(--jsal-tool-check)',
+      icon: '<path class="l" d="M18.6 12.6V8.3H9.4v15.4h5.2M12.2 12.2h3.5M12.2 15.9h1.8M23.1 18.9a3.5 3.5 0 1 1-7 0 3.5 3.5 0 1 1 7 0zM21.9 21.5l2.6 2.6" stroke-width="2.2"/><path class="g" d="M19.6 17.5l1.4 1.4-1.4 1.4-1.4-1.4z"/>' },
     { href: '/ic/', name: 'Platform Playbook', tag: 'Team', tile: 'var(--jsal-tool-playbook)',
       icon: '<path class="l" d="M16 12.15C13.9 10.75 11.1 10.4 8.65 11.1v10.5c2.45-0.7 5.25-0.35 7.35 1.05 2.1-1.4 4.9-1.75 7.35-1.05V11.1C20.9 10.4 18.1 10.75 16 12.15zM16 12.15v10.5" stroke-width="2.2"/><path class="g" d="M16 6.48l1.82 1.82-1.82 1.82-1.82-1.82z"/>' },
   ];

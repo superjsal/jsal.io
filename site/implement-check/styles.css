@@ -1,0 +1,77 @@
+/* Implement Check. Colours, corners and the font are the shared --jsal-* tokens in /shell.css (light and dark). */
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; color: var(--jsal-ink); font: 15px/1.5 var(--jsal-font); -webkit-font-smoothing: antialiased; }
+
+.app { width: 100%; max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-space-20), env(safe-area-inset-left, 0px)) var(--jsal-space-20); }
+.app-header { margin-bottom: var(--jsal-space-24); }
+.jsal-for { margin: calc(var(--jsal-space-8) * -1) 0 var(--jsal-space-16); }
+kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
+
+/* ── The bookmark to drag ─────────────────────────────────────────────── */
+
+.install { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-16); margin-bottom: var(--jsal-space-20); padding: var(--jsal-space-12) var(--jsal-space-16); border: 1px dashed var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
+/* Shaped like a bookmark on the bar, gold as the page's one main action */
+.bm { display: inline-flex; align-items: center; gap: var(--jsal-space-8); min-height: 40px; padding: 0 var(--jsal-space-16); border-radius: var(--jsal-radius); background: var(--jsal-fill); color: var(--jsal-on-fill); font-size: 14px; font-weight: var(--jsal-btn-weight); text-decoration: none; cursor: grab; }
+.bm:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.install-how { flex: 1 1 360px; margin: 0; font-size: 14px; color: var(--jsal-ink-2); }
+.install-how strong { color: var(--jsal-ink); }
+.install-bar { color: var(--jsal-muted); }
+.install-tap { flex-basis: 100%; margin: 0; font-size: 13px; color: var(--jsal-info); }
+.install-desk { display: none; flex-basis: 100%; margin: 0; font-size: 13px; color: var(--jsal-muted); }
+@media (pointer: coarse) { .install-desk { display: block; } .install-bar { display: none; } }
+
+/* ── Page types beside the chosen one's report ────────────────────────── */
+
+.work { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: var(--jsal-space-20); align-items: start; }
+.type-list { margin: 0; padding: 0; list-style: none; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); overflow: hidden; }
+.type-list li + li { border-top: 1px solid var(--jsal-line); }
+.type { display: flex; align-items: center; justify-content: space-between; gap: var(--jsal-space-8); width: 100%; min-height: 44px; padding: var(--jsal-space-8) var(--jsal-space-16); border: 0; background: none; color: var(--jsal-ink); font: 14px var(--jsal-font); text-align: left; cursor: pointer; transition: background var(--jsal-quick); }
+.type:hover { background: var(--jsal-sunk); }
+.type:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--jsal-accent); }
+.type[aria-current="true"] { background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); box-shadow: inset 3px 0 0 var(--jsal-selected-ring); }
+.type-sum { flex: none; font-size: 12px; color: var(--jsal-muted); }
+.type-sum.ok { color: var(--jsal-ok); }
+.type-sum.note { color: var(--jsal-warn); }
+.add { display: flex; gap: var(--jsal-space-8); margin-top: var(--jsal-space-8); }
+.add input { flex: 1; min-width: 0; min-height: 32px; padding: var(--jsal-space-4) var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: 14px var(--jsal-font); }
+.add input:focus-visible, .d-own textarea:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
+.type-tools { display: flex; flex-wrap: wrap; gap: var(--jsal-space-4) var(--jsal-space-8); margin: var(--jsal-space-12) 0 0; font-size: 14px; color: var(--jsal-muted); }
+.privacy { margin: var(--jsal-space-8) 0 0; font-size: 13px; color: var(--jsal-muted); }
+
+.detail { min-height: 360px; padding: var(--jsal-pad-card); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
+.d-title { margin: 0 0 var(--jsal-space-4); font: 700 24px/1.2 Lora, Georgia, serif; }
+.d-meta { margin: 0 0 var(--jsal-space-16); font-size: 13px; color: var(--jsal-muted); overflow-wrap: anywhere; }
+.detail a { color: var(--jsal-info); text-underline-offset: 2px; }
+.d-steps { margin: var(--jsal-space-12) 0 var(--jsal-space-20); padding-left: var(--jsal-space-20); color: var(--jsal-ink-2); }
+.d-fields { display: grid; grid-template-columns: max-content max-content minmax(0, 1fr); gap: var(--jsal-space-8) var(--jsal-space-12); margin: 0; font-size: 14px; align-items: baseline; }
+.d-fields dt { color: var(--jsal-ink-2); }
+.d-fields dd { margin: 0; }
+.d-val { font: 13px/1.45 "JetBrains Mono", ui-monospace, Consolas, monospace; color: var(--jsal-ink-2); overflow-wrap: anywhere; }
+
+/* Verdicts: green in the HTML, blue added by a script, a dashed terracotta edge where a script changes what was sent */
+.tag { display: inline-block; padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-sm); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.tag.html { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
+.tag.added { background: var(--jsal-info-soft); color: var(--jsal-info); }
+.tag.changed { border: 1px dashed var(--jsal-warn); color: var(--jsal-warn); }
+.tag.missing { background: var(--jsal-sunk); color: var(--jsal-muted); }
+
+.d-notes { margin-top: var(--jsal-space-20); padding: var(--jsal-pad-note); border-radius: var(--jsal-radius); background: var(--jsal-warn-soft); font-size: 14px; }
+.d-notes h3 { margin: 0 0 var(--jsal-space-4); font-size: 14px; font-weight: 700; }
+.d-notes ul { margin: 0; padding-left: var(--jsal-space-20); }
+.d-notes li + li { margin-top: var(--jsal-space-4); }
+.d-all { margin: var(--jsal-space-20) 0 0; padding: var(--jsal-pad-note); border-radius: var(--jsal-radius); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 14px; }
+.d-own { margin-top: var(--jsal-space-20); }
+.d-own label { display: block; margin-bottom: var(--jsal-space-4); font-size: 14px; font-weight: 600; }
+.d-own textarea { display: block; width: 100%; min-height: 72px; padding: var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: 14px/1.45 var(--jsal-font); resize: vertical; }
+.d-tools { display: flex; flex-wrap: wrap; gap: var(--jsal-space-4) var(--jsal-space-8); margin: var(--jsal-space-12) 0 0; font-size: 14px; color: var(--jsal-muted); }
+
+@media (max-width: 760px) {
+  .work { grid-template-columns: minmax(0, 1fr); }
+  .d-fields { grid-template-columns: max-content minmax(0, 1fr); }
+  .d-fields .d-val { grid-column: 1 / -1; margin-top: calc(var(--jsal-space-4) * -1); }
+}
+@media (pointer: coarse) {
+  .add input, .d-own textarea { font-size: 16px; } /* style: allow (iPhones zoom into smaller text boxes) */
+}
