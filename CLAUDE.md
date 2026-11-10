@@ -63,3 +63,17 @@ Type, colour roles, building blocks, sizes and spacing, layout, motion and touch
 - **Never put multi-line code or text inside a shell command** (no Bash heredocs, no `node -e`/`python -c` longer than a line, no `git commit -m` with quotes). The site's copy is full of curly quotes (’ “ ”) and backticks, which break the shell's quoting. Write the script or the commit message to the scratchpad with the Write tool first, then run it (`python -I file.py`, `node file.js`, `git commit -F msg.txt`).
 - **One-off Playwright scripts** (screenshots, measurements, mockups with injected CSS) go in `.github\build\`, where Playwright is installed, run with the sandbox off, and get deleted afterwards (never committed); their screenshots and mockups go to the session's scratchpad, never into `site\`. Use `channel: 'msedge'` for Chromium. Run them from PowerShell: Edge doesn't start from the Bash tool. If `jsal-build` is already running from another chat, this session's own server may not answer; check which folder's `dist\` it serves before trusting what the checks report.
 - **Checks from a worktree:** run `npm ci` in it once (the build needs Astro), then `check.ps1` as usual. Port 8766 serves whichever checkout's `dist\` started it, and the browser checks test whatever answers there, so serve the worktree's own (`python -m http.server 8766 --bind 127.0.0.1 --directory dist`, started hidden from PowerShell) after stopping any other. `browser-check.mjs` borrows the main checkout's Playwright when its own folder has none; one-off Playwright scripts in a worktree load it with `createRequire('C:/Users/JSAL/Desktop/jsal.io/.github/build/package.json')`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues on superjsal/jsal.io (public), via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five default labels: needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `GLOSSARY.md` and `docs/adr/` at the repo root, created only when a term or decision is settled. See `docs/agents/domain.md`.
