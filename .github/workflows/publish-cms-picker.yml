@@ -15,7 +15,6 @@ on:
 
 permissions:
   contents: write             # commit the published files
-  actions: write              # start the GitHub Pages deploy, kept as a fallback for now
   checks: read                # watch Cloudflare's build of that commit
 
 concurrency:
@@ -48,13 +47,6 @@ jobs:
           git push
           echo "pushed=true" >> "$GITHUB_OUTPUT"
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-      # The GitHub Pages copy stays current while it's the fallback. A push made with the workflow's own token
-      # starts no other workflow, so its deploy is started here.
-      - name: Deploy Pages (fallback)
-        if: steps.commit.outputs.pushed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run deploy-pages.yml --ref main
       # Tell Bing and the other IndexNow engines which pages changed, once Cloudflare's build of the commit is
       # live (up to ~5 minutes; Cloudflare reports it as a check on the commit)
       - name: Announce changed pages (IndexNow)

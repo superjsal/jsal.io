@@ -1,6 +1,6 @@
 # How jsal.io works behind the pages
 
-The site is static files on Cloudflare (a Worker serving static assets, with one small script for `/api/*`: Redirect Import's live redirect check, `worker\index.js`, which follows a sheet's old addresses on request and returns only status codes and hops, never stores anything), built by Astro from GitHub on every push; the only moving parts are one database (Supabase, for the team Playbook and the CMS Picker's answers), eight GitHub Actions (one of them the GitHub Pages copy, a fallback until 2026-11-09), and the checks that run before a push. This page is the map; the rules that govern each part are in `CLAUDE.md` and `.claude\rules\cms-picker-playbook.md` (in the repo, never served), and the CMS Picker's data rules in `cms-picker-maintenance.md`.
+The site is static files on Cloudflare (a Worker serving static assets, with one small script for `/api/*`: Redirect Import's live redirect check, `worker\index.js`, which follows a sheet's old addresses on request and returns only status codes and hops, never stores anything), built by Astro from GitHub on every push; the only moving parts are one database (Supabase, for the team Playbook and the CMS Picker's answers), seven GitHub Actions, and the checks that run before a push. This page is the map; the rules that govern each part are in `CLAUDE.md` and `.claude\rules\cms-picker-playbook.md` (in the repo, never served), and the CMS Picker's data rules in `cms-picker-maintenance.md`.
 
 ```mermaid
 flowchart TB
@@ -41,7 +41,6 @@ flowchart TB
   subgraph GH["GitHub"]
     main[("main branch")]
     staging[("staging branch<br>day-to-day work; merged into main to ship")]
-    deploy["Action: Deploy Pages (fallback until 2026-11-09)<br>every push to main: the same Astro build on GitHub Pages,<br>which no longer serves jsal.io"]
     a1["Action: Publish CMS Picker<br>daily 07:41 UTC: publish, commit,<br>wait for Cloudflare's build check, IndexNow ping"]
     a2["Action: Site checks<br>every push to main or staging: check.py, check_data.py, personas,<br>and the browser checks on Playwright's<br>Chromium, WebKit and Firefox (HOME=/root, or Firefox won't start)"]
     a3["Action: Keep Platform Playbook awake<br>Mon + Thu: calls the ping() function<br>so the free Supabase project doesn't pause<br>(URL and anon key: repository variables)"]
@@ -63,7 +62,6 @@ flowchart TB
   staging --> build
   worker --> preview
   staging -->|"ship: fast-forward"| main
-  main --> deploy
   main & staging --> a2
   a3 --> DB
   DB --> a5
