@@ -2,7 +2,9 @@
 // jsal.ui, John's free WoW Forever addon: what it is, where to get it and
 // how to install it, as a bento grid like the home page's (John, 7 Nov 2026:
 // the gaming side of the site may use bento; the work tools never do). Each
-// feature tile shows a screenshot from the game. The addon's code and
+// feature tile shows a screenshot from the game, under a heading in the voice
+// of its store pictures (John, 12 Nov 2026: mockup A); the Companion is the
+// big tile beside the intro, marked New. The addon's code and
 // releases are on GitHub (superjsal/jsal-ui). First shipped at /jsal.ui/ and
 // moved to /jsal-ui/ the same day to match the repo's name; site/_redirects
 // sends the old address here. The "Version x.y.z" line below is updated with
@@ -14,8 +16,10 @@ const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
 const REPO = "https://github.com/superjsal/jsal-ui";
 // Each tile's screenshot: a WebP under site/img/jsal-ui/, cropped from John's
 // in-game screenshots at the game's own size (never scaled up), with its width
-// and height.
+// and height. The Companion's is the addon's own pixel art, a creature in its pen.
 const SHOTS: Record<string, { src: string; w: number; h: number; alt: string }> = {
+  pet: { src: "/img/jsal-ui/companion.webp", w: 880, h: 400, alt: "The Companion's pen in pixel art: a meadow with a fence and a tree, and a grown creature in a mushroom hat among butterflies and toadstools." },
+  gear: { src: "/img/jsal-ui/gear-plan.webp", w: 330, h: 502, alt: "The Gear plan's slot list: each slot with what's worn, or Empty, and in green what its best upgrade would add." },
   journal: { src: "/img/jsal-ui/journal.webp", w: 760, h: 692, alt: "The Journal's Summary for a level 21 hunter: foes defeated, miles travelled, quests done, deaths and more, with the most-used spells and the zones they spent most time in." },
   guild: { src: "/img/jsal-ui/chess.webp", w: 758, h: 654, alt: "jsal.ui's Chess page: a board against a guildmate, with the win-loss record and open challenges beside it." },
   games: { src: "/img/jsal-ui/daily-word.webp", w: 353, h: 550, alt: "Daily Word solved in three guesses, with buttons to share to the guild and to play Icon Guess." },
@@ -23,16 +27,18 @@ const SHOTS: Record<string, { src: string; w: number; h: number; alt: string }> 
   prof: { src: "/img/jsal-ui/leatherworking.webp", w: 336, h: 424, alt: "Leatherworking's road to the next rank: three crafts to make, then everything they need from your bags." },
 };
 const TILES = [
-  { key: "journal", cls: "journal wide", name: "Journal", line: "Your character's story: totals from its whole life, the moments worth keeping, and every level's numbers, for all your characters." },
-  { key: "guild", cls: "guild wide", name: "With your guild", line: "Change layers by joining a guildmate, see who in the guild crafts what, and play chess with a win-loss record." },
-  { key: "games", cls: "games", name: "Daily games", line: "Daily Word and Icon Guess, the same for everyone each day, and a Guild Word from your guild master." },
-  { key: "plan", cls: "plan", name: "Road to 60", line: "A talent build to follow, your next trainer visit and what it costs." },
-  { key: "prof", cls: "prof wide", name: "Professions", line: "What to craft for each next rank, with the fewest materials, the nearest trainer and a shopping list." },
+  { key: "pet", cls: "pet", tag: "New", name: "Hatch a little friend", line: "Choose an egg, name what comes out of it, and look after it. A quest handed in is a meal, a flight is a new toy. Off until you turn it on." },
+  { key: "journal", cls: "journal wide", name: "Every level, kill and oops, remembered", line: "Totals from your character's whole life, the moments worth keeping, and a photo every time you level." },
+  { key: "games", cls: "games", name: "One puzzle a day", line: "Daily Word and Icon Guess, the same for everyone, so you can out-guess your guild." },
+  { key: "plan", cls: "plan", name: "Never miss a spell again", line: "Your next trainer visit, what it'll cost you, and the whole road to 60." },
+  { key: "guild", cls: "guild wide", name: "Better with your guild", line: "Chess a move at a time, who crafts that thing you need, and a hop to a guildmate's layer." },
+  { key: "prof", cls: "prof wide", name: "Craft this. Then this. Then that.", line: "Exactly what to make for your next rank, using what's in your bags first." },
+  { key: "gear", cls: "gear", name: "Ooh, shiny. Where do I get it?", line: "The best upgrade for every slot, and which boss, quest or crafter has it." },
 ];
 ---
 <Page
   title="jsal.ui: a free WoW Forever addon | jsal.io"
-  description="jsal.ui is a free WoW Forever addon: a journal of your character's story, layer changes, crafters and chess with your guild, daily games, and talent, training and profession planners."
+  description="jsal.ui is a free WoW Forever addon: planners for talents, training, gear and professions, a journal of your character's story, daily games and chess with your guild, and a small creature to raise."
   path="/jsal-ui/"
   ogDescription="A free WoW Forever addon: your character's journal, layer changes and chess with your guild, daily games, and planners for your road to 60."
 >
@@ -45,6 +51,8 @@ const TILES = [
   --t-games: #d7c6f0; --t-games-ink: #3d2466;
   --t-plan: #cfdcf0; --t-plan-ink: #1f3557;
   --t-prof: #f0d2dc; --t-prof-ink: #5c1a30;
+  --t-pet: #cfe6b8; --t-pet-ink: #24481a;
+  --t-gear: #f6dcc4; --t-gear-ink: #5a2f0c;
   --t-plain: #e8e5dd;
   --shot-shadow: 0 18px 40px rgb(30 20 10 / 0.22), 0 2px 6px rgb(30 20 10 / 0.1);
 }
@@ -53,6 +61,7 @@ const TILES = [
     --t-journal: #30280f; --t-journal-ink: #f3dc9a; --t-guild: #132a28; --t-guild-ink: #c6e2dd;
     --t-games: #2c2140; --t-games-ink: #e3d4ff; --t-plan: #16213a; --t-plan-ink: #cfdcf0;
     --t-prof: #321b24; --t-prof-ink: #f4d2de; --t-plain: #1c1f27;
+    --t-pet: #1c2e16; --t-pet-ink: #cfe6b8; --t-gear: #33210f; --t-gear-ink: #f6dcc4;
     --shot-shadow: 0 18px 40px rgb(0 0 0 / 0.55);
   }
 }
@@ -60,6 +69,7 @@ const TILES = [
   --t-journal: #30280f; --t-journal-ink: #f3dc9a; --t-guild: #132a28; --t-guild-ink: #c6e2dd;
   --t-games: #2c2140; --t-games-ink: #e3d4ff; --t-plan: #16213a; --t-plan-ink: #cfdcf0;
   --t-prof: #321b24; --t-prof-ink: #f4d2de; --t-plain: #1c1f27;
+    --t-pet: #1c2e16; --t-pet-ink: #cfe6b8; --t-gear: #33210f; --t-gear-ink: #f6dcc4;
   --shot-shadow: 0 18px 40px rgb(0 0 0 / 0.55);
 }
 
@@ -79,14 +89,17 @@ p { text-wrap: pretty; }
   .jsal-top nav a::after { content: ""; position: absolute; inset: -4px 0; }   /* 36px drawn, 44px to tap */
 }
 
-/* Bento grid: six columns, the wide tile swapping sides each row, and Install across the bottom */
+/* Bento grid: six columns, the Companion beside the intro, then the wide tile swapping sides each row, and Install
+   across the bottom */
 .ui { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--jsal-space-32); margin-top: var(--jsal-page-top); }
 .intro { grid-column: 1 / 3; align-self: start; padding-right: var(--jsal-space-12); }
-.journal { grid-column: 3 / 7; }
-.guild { grid-column: 1 / 5; }
+.pet { grid-column: 3 / 7; }
+.journal { grid-column: 1 / 5; }
 .games { grid-column: 5 / 7; }
 .plan { grid-column: 1 / 3; }
-.prof { grid-column: 3 / 7; }
+.guild { grid-column: 3 / 7; }
+.prof { grid-column: 1 / 5; }
+.gear { grid-column: 5 / 7; }
 .install { grid-column: 1 / 7; }
 
 /* The intro: at the shared distance under the top bar, flush with the logo */
@@ -104,8 +117,12 @@ p { text-wrap: pretty; }
 .tile .txt p { margin: var(--jsal-space-8) 0 0; font-size: 17px; line-height: 1.45; }
 .wide { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--jsal-space-24); align-items: start; }
 .wide .shot { align-self: center; }
-.journal { min-height: 440px; }
+.pet { min-height: 440px; }
+.pet { --bg: var(--t-pet); --ink: var(--t-pet-ink); }
+.gear { --bg: var(--t-gear); --ink: var(--t-gear-ink); }
 .journal { --bg: var(--t-journal); --ink: var(--t-journal-ink); }
+/* The tag over a new part's name: the tile's own two colours, swapped */
+.tag { display: inline-block; margin-bottom: var(--jsal-space-8); padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--ink); color: var(--bg); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.06em; text-transform: uppercase; }
 .guild { --bg: var(--t-guild); --ink: var(--t-guild-ink); }
 .games { --bg: var(--t-games); --ink: var(--t-games-ink); }
 .plan { --bg: var(--t-plan); --ink: var(--t-plan-ink); }
@@ -113,7 +130,9 @@ p { text-wrap: pretty; }
 
 /* A screenshot, framed and tilted a little like the home page's pictures; the wide tiles' lean the other way each row */
 .shot { margin: 0; justify-self: end; width: 100%; transform: rotate(-1.5deg); }
-.guild .shot, .plan .shot { transform: rotate(1.5deg); }
+.guild .shot, .plan .shot, .gear .shot { transform: rotate(1.5deg); }
+.pet .shot { transform: rotate(-1deg); }
+.pet .shot img { width: 100%; }   /* the pen fills its tile; it's drawn smaller than its file at every width */
 /* A small window (a pop-out such as Daily Word) shows at its own size at most, so it never blurs */
 .shot img { display: block; width: auto; max-width: 100%; height: auto; margin-left: auto; border-radius: var(--jsal-radius-lg); box-shadow: var(--shot-shadow); }
 .tile:not(.wide) .shot { margin-top: auto; padding-top: var(--jsal-space-20); }
@@ -129,14 +148,18 @@ p { text-wrap: pretty; }
 .install code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .credit { grid-column: 1 / 7; margin: calc(var(--jsal-space-16) * -1) 0 0; font-size: 13px; color: var(--jsal-muted); }
 
-/* From 1279px down: the intro, the Journal, the guild tile, Professions and Install take the full width, and the
-   two narrow tiles sit side by side */
+/* From 1279px down: the intro, the Companion, the Journal, the guild tile, Professions and Install take the full
+   width, and the three narrow tiles sit side by side after the Journal (the Gear plan moves up to join them) */
 @media (max-width: 1279px) {
-  .intro, .journal, .guild, .prof, .install { grid-column: 1 / -1; }
-  .games { grid-column: 1 / 4; }
-  .plan { grid-column: 4 / 7; }
+  .intro, .pet, .journal, .guild, .prof, .install { grid-column: 1 / -1; }
+  .games { grid-column: 1 / 3; }
+  .plan { grid-column: 3 / 5; }
+  .gear { grid-column: 5 / 7; }
+  .games, .plan, .gear { order: 1; }
+  .guild, .prof { order: 2; }
+  .install, .credit { order: 3; }
   .intro { padding-right: 0; max-width: 40em; }
-  .journal { min-height: 0; }
+  .pet { min-height: 0; }
 }
 /* Upright phones: one tile per row, every screenshot under its words */
 @media (max-width: 699px) {
@@ -151,7 +174,7 @@ p { text-wrap: pretty; }
   .tile h2 { font-size: 24px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .shot, .guild .shot, .plan .shot { transform: none; }
+  .shot, .guild .shot, .plan .shot, .gear .shot, .pet .shot { transform: none; }
 }
 </style>
 <div class="wrap">
@@ -160,7 +183,7 @@ p { text-wrap: pretty; }
     <section class="intro">
       <p class="roles">For WoW Forever</p>
       <h1>jsal.<em>ui</em></h1>
-      <p>A free UI pack, daily games and easy helpers for WoW Forever. One install, no subscription.</p>
+      <p>A friendlier road to 60: planners that do the remembering, a journal that writes itself, daily games and a small creature to raise. Free, no subscription.</p>
       <div class="actions">
         <a class="jsal-btn primary" href={RELEASES}>Download jsal.ui</a>
         <a class="jsal-btn" href="#install">How to install</a>
@@ -172,11 +195,12 @@ p { text-wrap: pretty; }
       return (
         <section class={`tile ${t.cls}`} aria-labelledby={`${t.key}-h`}>
           <div class="txt">
+            {t.tag && <span class="tag">{t.tag}</span>}
             <h2 id={`${t.key}-h`}>{t.name}</h2>
             <p>{t.line}</p>
           </div>
           <figure class="shot">
-            <img src={v(shot.src)} width={shot.w} height={shot.h} alt={shot.alt} loading={t.key === "journal" ? "eager" : "lazy"} decoding="async">
+            <img src={v(shot.src)} width={shot.w} height={shot.h} alt={shot.alt} loading={t.key === "pet" ? "eager" : "lazy"} decoding="async">
           </figure>
         </section>
       );
@@ -196,7 +220,7 @@ p { text-wrap: pretty; }
         <p>Made by John Salvador. Questions or ideas: <a href="mailto:dev@jsal.io">dev@jsal.io</a>, or Report a problem inside the addon.</p>
       </div>
     </section>
-    <p class="credit">Screenshots of World of Warcraft © Blizzard Entertainment.</p>
+    <p class="credit">Screenshots of World of Warcraft © Blizzard Entertainment. The Companion's pixel art is jsal.ui's own.</p>
   </main>
 </div>
 </Page>

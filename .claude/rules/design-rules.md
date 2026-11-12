@@ -172,7 +172,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   home page is always bento boxes. **The work tools never become bento grids** (the CMS Picker and its platform
   pages, Clean Paste, the Image Resizer, Redirect Import, the Playbook, Privacy, Changelog): they keep an open layout,
   and may use a card in the tiles' style (corners, padding, a tint) where it helps. **The gaming side may** (John,
-  7 Nov 2026): `/play/`'s tiles and the jsal.ui page's (`/jsal-ui/`: the intro beside a big Journal tile, then
+  7 Nov 2026): `/play/`'s tiles and the jsal.ui page's (`/jsal-ui/`: the intro beside the big Companion tile, then
   feature tiles that swap sides each row, each with a tilted screenshot from the game, and Install across the
   bottom). The grid, the tiles, their pictures, watermarks,
   breakouts and order are in `.claude/rules/home-page.md`, which loads with the home page's files.
