@@ -18,7 +18,7 @@ const REPO = "https://github.com/superjsal/jsal-ui";
 // in-game screenshots at the game's own size (never scaled up), with its width
 // and height. The Companion's is the addon's own pixel art, a creature in its pen.
 const SHOTS: Record<string, { src: string; w: number; h: number; alt: string }> = {
-  pet: { src: "/img/jsal-ui/companion.webp", w: 880, h: 400, alt: "The Companion's pen in pixel art: a meadow with a fence and a tree, and a grown creature in a mushroom hat among butterflies and toadstools." },
+  pet: { src: "/img/jsal-ui/companion.webp", w: 880, h: 400, alt: "A pen of Jsal's Pals in pixel art: a meadow with a fence and a tree, and a grown creature in a mushroom hat among butterflies and toadstools." },
   gear: { src: "/img/jsal-ui/gear-plan.webp", w: 330, h: 502, alt: "The Gear plan's slot list: each slot with what's worn, or Empty, and in green what its best upgrade would add." },
   journal: { src: "/img/jsal-ui/journal.webp", w: 760, h: 692, alt: "The Journal's Summary for a level 21 hunter: foes defeated, miles travelled, quests done, deaths and more, with the most-used spells and the zones they spent most time in." },
   guild: { src: "/img/jsal-ui/chess.webp", w: 758, h: 654, alt: "jsal.ui's Chess page: a board against a guildmate, with the win-loss record and open challenges beside it." },
@@ -27,7 +27,7 @@ const SHOTS: Record<string, { src: string; w: number; h: number; alt: string }> 
   prof: { src: "/img/jsal-ui/leatherworking.webp", w: 336, h: 424, alt: "Leatherworking's road to the next rank: three crafts to make, then everything they need from your bags." },
 };
 const TILES = [
-  { key: "pet", cls: "pet", tag: "New", name: "Hatch a little friend", line: "Choose an egg, name what comes out of it, and look after it. A quest handed in is a meal, a flight is a new toy. Off until you turn it on." },
+  { key: "pet", cls: "pet", tag: "New", name: "Jsal's Pals", line: "Hatch a little friend: choose an egg, name what comes out of it, and look after it. A quest handed in is a meal, a flight is a new toy. Off until you turn it on." },
   { key: "journal", cls: "journal wide", name: "Every level, kill and oops, remembered", line: "Totals from your character's whole life, the moments worth keeping, and a photo every time you level." },
   { key: "games", cls: "games", name: "One puzzle a day", line: "Daily Word and Icon Guess, the same for everyone, so you can out-guess your guild." },
   { key: "plan", cls: "plan", name: "Never miss a spell again", line: "Your next trainer visit, what it'll cost you, and the whole road to 60." },
@@ -188,7 +188,7 @@ p { text-wrap: pretty; }
         <a class="jsal-btn primary" href={RELEASES}>Download jsal.ui</a>
         <a class="jsal-btn" href="#install">How to install</a>
       </div>
-      <p class="meta">Version 0.3.34 · free, with its code <a href={REPO}>on GitHub</a></p>
+      <p class="meta">Version 0.3.35 · free, with its code <a href={REPO}>on GitHub</a></p>
     </section>
     {TILES.map((t) => {
       const shot = SHOTS[t.key];
@@ -220,7 +220,7 @@ p { text-wrap: pretty; }
         <p>Made by John Salvador. Questions or ideas: <a href="mailto:dev@jsal.io">dev@jsal.io</a>, or Report a problem inside the addon.</p>
       </div>
     </section>
-    <p class="credit">Screenshots of World of Warcraft © Blizzard Entertainment. The Companion's pixel art is jsal.ui's own.</p>
+    <p class="credit">Screenshots of World of Warcraft © Blizzard Entertainment. The pixel art of Jsal's Pals is jsal.ui's own.</p>
   </main>
 </div>
 </Page>
