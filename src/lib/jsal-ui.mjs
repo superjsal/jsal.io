@@ -1,8 +1,13 @@
 // jsal.ui's parts as the jsal.ui page shows them, in the store pages' three groups (Plan, Craft, Play), each with its
 // window from the game in the addon's current look: a WebP under site/img/jsal-ui/ui/, at the game's own size.
 // The headlines and points are the store cards' own words.
-// menu: the window is the dashboard, with its menu down the left, which phones crop off
-const shot = (name, w, h, alt, menu = false) => ({ src: `/img/jsal-ui/ui/${name}.webp`, w, h, alt, menu });
+// menu: the window is the dashboard, with its menu down the left. A crop (a card, or a window on a phone) starts at
+// the page's own content, under the title bar and past the menu: the dashboard's bar is 49px tall and its menu
+// 233px wide, any other window's bar 33px. cx and cy are those as shares of the picture, for a CSS translate.
+const shot = (name, w, h, alt, menu = false) => {
+  const left = menu ? 233 : 0, top = menu ? 49 : 33;
+  return { src: `/img/jsal-ui/ui/${name}.webp`, w, h, alt, menu, cx: +(left / w * 100).toFixed(2), cy: +(top / h * 100).toFixed(2) };
+};
 
 export const HOME = shot("home", 1319, 806, "jsal.ui's Home for a level 40 hunter: the XP bar and what level 41 brings, a trainer visit ready now, and cards for the build, gear, professions, dungeons, the guild, today's games and the journal.", true);
 

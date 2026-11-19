@@ -182,8 +182,13 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   three **numbers** (36 parts, 35 dungeons and raids, 100% free; change them by hand when the addon's data does);
   five parts as big rows with a gold-dot list beside a straight, framed window, swapping sides; the other six as
   cards ending in their window's top corner; a **Latest release** card and a **Discord** band; the little things;
-  Install. No tints, no tilts. Big part names are Lora 30px (a callout), 24px at 520px and under. On phones every
-  window shows its top corner at a readable size, past the dashboard's menu and title bar. The parts and windows
+  Install. No tints, no tilts. Big part names are Lora 30px (a callout), 24px at 520px and under. Every crop of a
+  window (the cards, and every window on phones) starts at the page's own content: under the title bar and past
+  the dashboard's menu, by each picture's measured offsets (`cx`, `cy` in `jsal-ui.mjs`), so they all begin alike.
+  **Scrolling down** (John, 18 Nov 2026: "subtle animations"), each block that starts below the fold rises 24px and
+  fades in once a sixth of it shows (0.6s, eased out, `style: allow`); a part's window follows its words by 0.12s,
+  numbers and cards follow one another along their row by 0.08s. Nothing on the first screen waits, nothing plays
+  twice, and with reduced motion (or no script) everything simply shows. The parts and windows
   are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store cards are (the game
   trimmed off, the version hidden, guildmates' names made up). The version line and the release card read
   `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest release.
@@ -198,7 +203,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   step) takes `--jsal-quick` (0.15s); something that moves or arrives (a tile lifting, a bar filling, a pop-up sliding
   in) takes `--jsal-settle` (0.3s). Plain `ease`, or `--jsal-ease-out` when something comes in, so it lands softly. Choreographed pieces keep their
   own timing and carry `style: allow`: the page change, the logo unfold, the 404's dropped dot, the home pictures,
-  /play/'s effects and Clean Paste's Show. **Check:** `check.py` fails any other timing, and any `--jsal-*` used without being defined.
+  /play/'s effects, Clean Paste's Show and the jsal.ui page's scroll reveal. **Check:** `check.py` fails any other timing, and any `--jsal-*` used without being defined.
 - **Page transitions are one slide everywhere** (`shell.css`): the old page drifts up and fades, the new one
   rises in, Back runs it downwards, and the top bar cross-fades in place. Only `shell.css` names
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.

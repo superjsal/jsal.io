@@ -121,9 +121,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .card h3 { margin: var(--jsal-space-4) 0 0; font: 700 17px/1.35 var(--jsal-font); }
 .card > p:not(.label) { margin: var(--jsal-space-4) 0 var(--jsal-space-20); color: var(--jsal-ink-2); }
 .card .crop { position: relative; overflow: hidden; flex: none; height: 210px; margin: auto calc(var(--jsal-space-20) * -1) 0; border-top: 1px solid var(--jsal-line-hi); background: var(--win-fill); }
-.card .crop img { position: absolute; left: 0; top: 0; width: 640px; max-width: none; height: auto; }
-/* The dashboard's pages skip its menu and title bar, so the page itself shows */
-.card .crop.menu img { transform: translate(-17.8%, -5.2%); }
+/* Every crop starts at the page's own content, under the title bar and past the dashboard's menu (--cx, --cy) */
+.card .crop img { position: absolute; left: 0; top: 0; width: 640px; max-width: none; height: auto; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
 
 /* The latest release, and the Discord */
 .band { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--jsal-space-48); margin-top: var(--jsal-space-64); padding: var(--jsal-space-32); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
@@ -156,6 +155,14 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .install > div > :last-child { margin-bottom: 0; }
 .credit { margin: var(--jsal-space-16) 0 0; font-size: 13px; color: var(--jsal-muted); }
 
+/* Scrolling down, each block rises a little and fades in as it comes into view; a part's window follows its words,
+   and cards and numbers follow one another along the row. Only what starts below the fold waits (.rv), and only
+   when the page's script runs and motion is welcome; printed, everything shows. */
+.rv { opacity: 0; transform: translateY(var(--jsal-space-24)); }
+.rv.in { opacity: 1; transform: none; transition: opacity 0.6s var(--jsal-ease-out) var(--d, 0s), transform 0.6s var(--jsal-ease-out) var(--d, 0s); }   /* style: allow (a scroll reveal: slower than a state change, so it reads as arriving) */
+@media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; } }
+@media print { .rv { opacity: 1; transform: none; } }
+
 /* Under 900px: one column; each part's words over its window, two cards a row */
 @media (max-width: 899px) {
   .stage-head, .part, .part.flip, .install, .band { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
@@ -171,8 +178,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .stage { padding: var(--jsal-space-40) 0; }
   .homewin, .win:not(.narrow) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
   .homewin { border-color: var(--stage-edge); }
-  .homewin img, .win:not(.narrow) img { width: 760px; max-width: none; border: 0; border-radius: 0; box-shadow: none; }
-  .homewin img, .win.menu img { transform: translate(-17.8%, -5.2%); }
+  .homewin img, .win:not(.narrow) img { width: 760px; max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
   .numbers { grid-template-columns: minmax(0, 1fr); border: 0; }
   .numbers div { display: flex; align-items: baseline; gap: var(--jsal-space-12); padding: var(--jsal-space-12) 0; border-bottom: 1px solid var(--jsal-line); }
   .numbers div + div { border-left: 0; }
@@ -205,7 +211,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           <p class="meta">Version {RELEASE.version} · free, with its code <a href={REPO}>on GitHub</a> · also on <a href={CURSEFORGE}>CurseForge</a> and <a href={WAGO}>Wago</a></p>
         </div>
       </div>
-      <figure class="homewin"><img src={v(HOME.src)} width={HOME.w} height={HOME.h} alt={HOME.alt} decoding="async"></figure>
+      <figure class="homewin" style={`--cx: ${HOME.cx}; --cy: ${HOME.cy}`}><img src={v(HOME.src)} width={HOME.w} height={HOME.h} alt={HOME.alt} decoding="async"></figure>
     </div>
   </section>
   <div class="wrap end">
@@ -222,7 +228,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           <p>{p.line}</p>
           <ul>{p.points.map((x) => <li>{x}</li>)}</ul>
         </div>
-        <figure class={win(p.shot)} style={`--w: ${p.shot.w}px`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></figure>
+        <figure class={win(p.shot)} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></figure>
       </article>
     ))}
     <section class="rest" aria-labelledby="rest-h">
@@ -234,7 +240,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
             <p class="label">{p.group}</p>
             <h3 id={`${p.key}-h`}>{p.label}: {p.name.charAt(0).toLowerCase() + p.name.slice(1)}</h3>
             <p>{p.line}</p>
-            <div class={`crop${p.shot.menu ? " menu" : ""}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></div>
+            <div class="crop" style={`--cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></div>
           </article>
         ))}
       </div>
@@ -280,4 +286,25 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     <p class="credit">Screenshots of World of Warcraft © Blizzard Entertainment. The pixel art of Jsal's Pals is jsal.ui's own.</p>
   </div>
 </main>
+<script is:inline>
+// The scroll reveal: blocks below the fold wait, then rise into place once a sixth of them is in view. Within a
+// part, the window follows its words; along a row of numbers or cards, each follows the one before.
+if (matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window) {
+  const groups = [['.numbers > div', 0.08], ['.part .txt', 0], ['.part .win', 0.12], ['.rest > h2, .rest > p', 0], ['.card', 0.08], ['.band', 0], ['.little', 0], ['.install', 0]];
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    io.unobserve(e.target);
+  }), { threshold: 0.16 });
+  for (const [sel, step] of groups) {
+    document.querySelectorAll(sel).forEach((el, i) => {
+      if (el.getBoundingClientRect().top < innerHeight) return;   // already on screen: shown as it is
+      const cols = sel === '.card' ? (getComputedStyle(el.parentElement).gridTemplateColumns.split(' ').length) : 3;
+      if (step) el.style.setProperty('--d', `${(sel === '.part .win' ? 1 : i % cols) * step}s`);
+      el.classList.add('rv');
+      io.observe(el);
+    });
+  }
+}
+</script>
 </Page>
