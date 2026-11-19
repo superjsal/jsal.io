@@ -1,6 +1,6 @@
 # How jsal.io works behind the pages
 
-The site is static files on Cloudflare (a Worker serving static assets, with one small script for `/api/*`: Redirect Import's live redirect check, `worker\index.js`, which follows a sheet's old addresses on request and returns only status codes and hops, never stores anything), built by Astro from GitHub on every push; the only moving parts are one database (Supabase, for the team Playbook and the CMS Picker's answers), seven GitHub Actions, and the checks that run before a push. This page is the map; the rules that govern each part are in `CLAUDE.md` and `.claude\rules\cms-picker-playbook.md` (in the repo, never served), and the CMS Picker's data rules in `cms-picker-maintenance.md`.
+The site is static files on Cloudflare (a Worker serving static assets, with one small script for `/api/*`: Redirect Import's live redirect check, `worker\index.js`, which follows a sheet's old addresses on request and returns only status codes and hops, never stores anything), built by Astro from GitHub on every push; the only moving parts are one database (Supabase, for the team Playbook and the CMS Picker's answers), eight GitHub Actions, and the checks that run before a push. This page is the map; the rules that govern each part are in `CLAUDE.md` and `.claude\rules\cms-picker-playbook.md` (in the repo, never served), and the CMS Picker's data rules in `cms-picker-maintenance.md`.
 
 ```mermaid
 flowchart TB
@@ -48,6 +48,7 @@ flowchart TB
     a6["Action: IndexNow for changed pages<br>every hand push to main: builds before and after,<br>announces pages whose built HTML changed,<br>once Cloudflare's build is live"]
     a4["Action: Quarterly recheck reminder<br>1 Jan/Apr/Jul/Oct: opens an issue<br>(cost bands, add-on tiers, 'varies', devices)"]
     a7["Action: Source links<br>monthly: asks every help page the Picker links to;<br>opens an issue listing dead ones"]
+    a8["Action: jsal.ui version line<br>hourly: reads jsal.ui's latest release into<br>src/data/jsal-ui-release.json (version, date, notes)<br>and commits it to main when it changed"]
   end
   subgraph CF["Cloudflare (DNS for jsal.io; the domain stays registered at Porkbun)"]
     build["Astro build (npm ci && npm run build, wrangler.jsonc)<br>src/pages + site/ → dist/: the layout, the CMS Picker page<br>and 14 platform pages from data.json and the dates,<br>the changelog collection, the CSP into dist/_headers"]
@@ -58,6 +59,7 @@ flowchart TB
 
   a1 --> pub
   data & logos & dates & smap -->|"commit: CMS Picker: nightly publish"| main
+  a8 -->|"commit: jsal.ui page: version x.y.z"| main
   main -->|"Cloudflare's GitHub app builds every push"| build --> worker --> live
   staging --> build
   worker --> preview

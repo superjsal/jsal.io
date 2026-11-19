@@ -1,8 +1,10 @@
-# Keeps the jsal.ui page's "Version x.y.z" line (src/pages/jsal-ui/index.astro) on jsal.ui's latest
-# release. Every hour it asks GitHub for superjsal/jsal-ui's latest release (public, so no secret is
-# needed) and, when the page names another version, changes that line and commits it to main;
+# Keeps the jsal.ui page on jsal.ui's latest release: its "Version x.y.z" line and its Latest release card
+# (the version, the day it came out and its notes' bullets), both read from src/data/jsal-ui-release.json.
+# Every hour it asks GitHub for superjsal/jsal-ui's latest release (public, so no secret is needed),
+# rewrites that file with .github/scripts/jsal_ui_release.py and, when it changed, commits it to main;
 # Cloudflare deploys the push on its own. Nothing is committed while they match.
-# John, 15 Nov 2026: "is there a way to connect jsal.io so it automatically does it as well".
+# John, 15 Nov 2026: "is there a way to connect jsal.io so it automatically does it as well"; the
+# notes joined the version on 18 Nov 2026, with the page's Latest release card.
 name: jsal.ui version line
 
 on:
@@ -11,7 +13,7 @@ on:
   workflow_dispatch:          # "Run workflow" button to check now
 
 permissions:
-  contents: write             # commit the version line
+  contents: write             # commit the release file
 
 concurrency:
   group: jsal-ui-version
@@ -25,28 +27,20 @@ jobs:
         with:
           ref: main
       - name: Read jsal.ui's latest release
-        id: latest
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag=$(gh api repos/superjsal/jsal-ui/releases/latest --jq .tag_name)
-          version=${tag#v}
-          if ! printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "The latest release's tag isn't a version: '$tag'"; exit 1
-          fi
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-      - name: Commit if the page names another version
-        env:
-          VERSION: ${{ steps.latest.outputs.version }}
+          gh api repos/superjsal/jsal-ui/releases/latest > "$RUNNER_TEMP/release.json"
+          python3 .github/scripts/jsal_ui_release.py "$RUNNER_TEMP/release.json"
+      - name: Commit if the release changed
         run: |
-          page=src/pages/jsal-ui/index.astro
-          grep -Eq 'Version [0-9]+\.[0-9]+\.[0-9]+ ·' "$page" || { echo "No version line in $page"; exit 1; }
-          sed -i -E "s/Version [0-9]+\.[0-9]+\.[0-9]+ ·/Version $VERSION ·/" "$page"
-          if [ -z "$(git status --porcelain)" ]; then echo "The page already says $VERSION."; exit 0; fi
+          file=src/data/jsal-ui-release.json
+          if [ -z "$(git status --porcelain -- "$file")" ]; then echo "The page already has this release."; exit 0; fi
+          version=$(python3 -c "import json; print(json.load(open('$file'))['version'])")
           git config user.name "superjsal"
           git config user.email "dev@jsal.io"
-          git add "$page"
-          git commit -m "jsal.ui page: version $VERSION" -m "jsal.ui $VERSION is out, so the line under its download buttons names it (by the hourly check)."
-          # main may have moved since the checkout: replay this one-line commit on top of it
+          git add "$file"
+          git commit -m "jsal.ui page: version $version" -m "jsal.ui $version is out, so the page's version line and Latest release card show it (by the hourly check)."
+          # main may have moved since the checkout: replay this one-file commit on top of it
           git pull --rebase --quiet origin main
           git push origin HEAD:main

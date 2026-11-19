@@ -1,0 +1,10 @@
+{
+  "version": "0.3.56",
+  "date": "2026-11-18",
+  "notes": [
+    "Profession roads take the cheapest way to your next rank, with no short detours.",
+    "Skipping a spell's rank skips the ranks after it.",
+    "Gear plan: change the weight of any stat WoWSims weighs, and Retribution has new weights.",
+    "And a few smaller fixes."
+  ]
+}
