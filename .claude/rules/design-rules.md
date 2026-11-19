@@ -172,10 +172,16 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   home page is always bento boxes. **The work tools never become bento grids** (the CMS Picker and its platform
   pages, Clean Paste, the Image Resizer, Redirect Import, the Playbook, Privacy, Changelog): they keep an open layout,
   and may use a card in the tiles' style (corners, padding, a tint) where it helps. **The gaming side may** (John,
-  7 Nov 2026): `/play/`'s tiles and the jsal.ui page's (`/jsal-ui/`: the intro beside the big Companion tile, then
-  feature tiles that swap sides each row, each with a tilted screenshot from the game, and Install across the
-  bottom). The grid, the tiles, their pictures, watermarks,
+  7 Nov 2026): `/play/`'s tiles. The grid, the tiles, their pictures, watermarks,
   breakouts and order are in `.claude/rules/home-page.md`, which loads with the home page's files.
+- **The jsal.ui page** (`/jsal-ui/`) is a product page, no longer a bento (John, 18 Nov 2026: "a bit more
+  professional", mockup A of three), in the look of jsal.ui's store cards: the intro beside the Home window, then
+  the parts in the stores' groups (Plan, Craft, Play), one row each with a gold-dot list beside a straight, framed
+  window from the game, swapping sides each row; no tints, no tilts. Its part names are Lora 30px (a callout), 24px
+  at 520px and under. On phones each window shows its top corner at a readable size, cut off by its frame, with the
+  dashboard's menu skipped. The parts and their windows are in `src/lib/jsal-ui.mjs`; new windows are cut from
+  John's screenshots the way the store cards are (the game trimmed off, the version hidden, guildmates' names made
+  up).
 - **The CMS Picker** has its own layout and control rules (quiz first, the quiz's tick and checklist questions,
   changing an answer, result cards, the must-have divider, "varies", the comparison on phones) in
   `.claude/rules/cms-picker-design.md`, which loads with the CMS Picker's files.

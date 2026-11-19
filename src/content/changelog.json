@@ -1,5 +1,6 @@
 [
-  {"date": "2026-11-18", "tag": "Off the clock", "short": "jsal.ui has a Discord server", "text": "[jsal.ui](/jsal-ui/) has a [Discord server](https://discord.gg/BfUKeCjNeZ) for bug reports, ideas and help."},
+  {"date": "2026-11-18", "tag": "Off the clock", "short": "A new look for the jsal.ui page", "text": "The [jsal.ui](/jsal-ui/) page has a new look: every part of the addon in its redesigned windows, grouped into Plan, Craft and Play."},
+  {"date": "2026-11-18","tag": "Off the clock", "short": "jsal.ui has a Discord server", "text": "[jsal.ui](/jsal-ui/) has a [Discord server](https://discord.gg/BfUKeCjNeZ) for bug reports, ideas and help."},
   {"date": "2026-11-12", "tag": "Off the clock", "short": "jsal.ui's page meets its Companion", "text": "The [jsal.ui](/jsal-ui/) page leads with the Companion, a small creature to hatch and raise, and adds the Gear plan."},
   {"date": "2026-11-07", "tag": "Off the clock", "short": "The jsal.ui page, with screenshots", "text": "The [jsal.ui](/jsal-ui/) page is laid out in tiles, each showing a part of the addon as it looks in the game."},
   {"date": "2026-11-06", "tag": "Off the clock", "short": "jsal.ui, my free WoW Forever addon", "text": "[jsal.ui](/jsal-ui/) is out: my free WoW Forever addon, with daily games and chess for the guild, talent, training and profession planners, and easy helpers."},

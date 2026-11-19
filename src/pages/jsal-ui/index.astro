@@ -1,17 +1,16 @@
 ---
-// jsal.ui, John's free WoW Forever addon: what it is, where to get it and
-// how to install it, as a bento grid like the home page's (John, 7 Nov 2026:
-// the gaming side of the site may use bento; the work tools never do). Each
-// feature tile shows a screenshot from the game, under a heading in the voice
-// of its store pictures (John, 12 Nov 2026: mockup A); the Companion is the
-// big tile beside the intro, marked New. The addon's code and
-// releases are on GitHub (superjsal/jsal-ui). First shipped at /jsal.ui/ and
-// moved to /jsal-ui/ the same day to match the repo's name; site/_redirects
-// sends the old address here. The "Version x.y.z" line below follows jsal.ui's
-// latest release by itself: .github/workflows/jsal-ui-version.yml checks hourly.
+// jsal.ui, John's free WoW Forever addon: what it does, where to get it and how to install it. A product page in the
+// look of its store cards (John, 18 Nov 2026: mockup A of three, "a bit more professional" than the bento it
+// replaced): the intro beside the Home window, then the parts in the stores' three groups (Plan, Craft, Play), one
+// row each, its words beside a straight window from the game that swaps sides each row; then the small helpers and
+// Install. The parts, their words and windows are in src/lib/jsal-ui.mjs. The addon's code and releases are on
+// GitHub (superjsal/jsal-ui). First shipped at /jsal.ui/ and moved to /jsal-ui/ the same day to match the repo's
+// name; site/_redirects sends the old address here. The "Version x.y.z" line below follows jsal.ui's latest release
+// by itself: .github/workflows/jsal-ui-version.yml checks hourly.
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
 import { v } from "../../lib/v.mjs";
+import { HOME, GROUPS, LITTLE } from "../../lib/jsal-ui.mjs";
 const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
 const REPO = "https://github.com/superjsal/jsal-ui";
 // The same releases on the two addon stores, for their apps' one-click installs and updates.
@@ -19,71 +18,31 @@ const CURSEFORGE = "https://www.curseforge.com/wow/addons/jsal-ui";
 const WAGO = "https://addons.wago.io/addons/jsal-ui";
 // jsal.ui's Discord server, for bug reports, ideas and help: an invite that never expires.
 const DISCORD = "https://discord.gg/BfUKeCjNeZ";
-// Each tile's screenshot: a WebP under site/img/jsal-ui/, cropped from John's
-// in-game screenshots at the game's own size (never scaled up), with its width
-// and height. The Companion's is the addon's own pixel art, a creature in its pen.
-const SHOTS: Record<string, { src: string; w: number; h: number; alt: string }> = {
-  pet: { src: "/img/jsal-ui/companion.webp", w: 880, h: 400, alt: "A pen of Jsal's Pals in pixel art: a meadow with a fence and a tree, and a grown creature in a mushroom hat among butterflies and toadstools." },
-  gear: { src: "/img/jsal-ui/gear-plan.webp", w: 330, h: 502, alt: "The Gear plan's slot list: each slot with what's worn, or Empty, and in green what its best upgrade would add." },
-  journal: { src: "/img/jsal-ui/journal.webp", w: 760, h: 692, alt: "The Journal's Summary for a level 21 hunter: foes defeated, miles travelled, quests done, deaths and more, with the most-used spells and the zones they spent most time in." },
-  guild: { src: "/img/jsal-ui/chess.webp", w: 758, h: 654, alt: "jsal.ui's Chess page: a board against a guildmate, with the win-loss record and open challenges beside it." },
-  games: { src: "/img/jsal-ui/daily-word.webp", w: 353, h: 550, alt: "Daily Word solved in three guesses, with buttons to share to the guild and to play Icon Guess." },
-  plan: { src: "/img/jsal-ui/road-to-60.webp", w: 396, h: 348, alt: "The Training Planner's road to 60: the spells each trainer level brings, and what each visit costs." },
-  prof: { src: "/img/jsal-ui/leatherworking.webp", w: 336, h: 424, alt: "Leatherworking's road to the next rank: three crafts to make, then everything they need from your bags." },
-};
-const TILES = [
-  { key: "pet", cls: "pet", tag: "New", name: "Jsal's Pals", line: "Hatch a little friend: choose an egg, name what comes out of it, and look after it. A quest handed in is a meal, a flight is a new toy. Off until you turn it on." },
-  { key: "journal", cls: "journal wide", name: "Every level, kill and oops, remembered", line: "Totals from your character's whole life, the moments worth keeping, and a photo every time you level." },
-  { key: "games", cls: "games", name: "One puzzle a day", line: "Daily Word and Icon Guess, the same for everyone, so you can out-guess your guild." },
-  { key: "plan", cls: "plan", name: "Never miss a spell again", line: "Your next trainer visit, what it'll cost you, and the whole road to 60." },
-  { key: "guild", cls: "guild wide", name: "Better with your guild", line: "Chess a move at a time, who crafts that thing you need, and a hop to a guildmate's layer." },
-  { key: "prof", cls: "prof wide", name: "Craft this. Then this. Then that.", line: "Exactly what to make for your next rank, using what's in your bags first." },
-  { key: "gear", cls: "gear", name: "Ooh, shiny. Where do I get it?", line: "The best upgrade for every slot, and which boss, quest or crafter has it." },
-];
+// Every part in order, so the rows can swap sides down the whole page rather than within a group
+let row = 0;
+const win = (s) => `win${s.w < 600 ? " narrow" : ""}${s.menu ? " menu" : ""}`;
 ---
 <Page
   title="jsal.ui: a free WoW Forever addon | jsal.io"
-  description="jsal.ui is a free WoW Forever addon: planners for talents, training, gear and professions, a journal of your character's story, daily games and chess with your guild, and a small creature to raise."
+  description="jsal.ui is a free WoW Forever addon that plans your road to 60: training, talents, gear, dungeons and professions in one dashboard, plus a journal, guild crafting orders and daily games."
   path="/jsal-ui/"
-  ogDescription="A free WoW Forever addon: your character's journal, layer changes and chess with your guild, daily games, and planners for your road to 60."
+  ogDescription="A free WoW Forever addon: your road to 60, planned. Training, talents, gear, dungeons and professions in one dashboard, with a journal and daily games for your guild."
 >
 <style is:inline slot="head">
-/* Tile colours: each feature its own soft tint with a deep shade of it for the words, as on the home page; the
-   install tile is plain. */
-:root {
-  --t-journal: #f3dc9a; --t-journal-ink: #4f3a08;
-  --t-guild: #c6e2dd; --t-guild-ink: #13453f;
-  --t-games: #d7c6f0; --t-games-ink: #3d2466;
-  --t-plan: #cfdcf0; --t-plan-ink: #1f3557;
-  --t-prof: #f0d2dc; --t-prof-ink: #5c1a30;
-  --t-pet: #cfe6b8; --t-pet-ink: #24481a;
-  --t-gear: #f6dcc4; --t-gear-ink: #5a2f0c;
-  --t-plain: #e8e5dd;
-  --shot-shadow: 0 18px 40px rgb(30 20 10 / 0.22), 0 2px 6px rgb(30 20 10 / 0.1);
-}
+/* The shadow under each window from the game */
+:root { --win-shadow: 0 24px 60px rgb(20 14 6 / 0.18), 0 2px 8px rgb(20 14 6 / 0.08); }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --t-journal: #30280f; --t-journal-ink: #f3dc9a; --t-guild: #132a28; --t-guild-ink: #c6e2dd;
-    --t-games: #2c2140; --t-games-ink: #e3d4ff; --t-plan: #16213a; --t-plan-ink: #cfdcf0;
-    --t-prof: #321b24; --t-prof-ink: #f4d2de; --t-plain: #1c1f27;
-    --t-pet: #1c2e16; --t-pet-ink: #cfe6b8; --t-gear: #33210f; --t-gear-ink: #f6dcc4;
-    --shot-shadow: 0 18px 40px rgb(0 0 0 / 0.55);
-  }
+  :root:not([data-theme="light"]) { --win-shadow: 0 24px 60px rgb(0 0 0 / 0.55); }
 }
-:root[data-theme="dark"] {
-  --t-journal: #30280f; --t-journal-ink: #f3dc9a; --t-guild: #132a28; --t-guild-ink: #c6e2dd;
-  --t-games: #2c2140; --t-games-ink: #e3d4ff; --t-plan: #16213a; --t-plan-ink: #cfdcf0;
-  --t-prof: #321b24; --t-prof-ink: #f4d2de; --t-plain: #1c1f27;
-    --t-pet: #1c2e16; --t-pet-ink: #cfe6b8; --t-gear: #33210f; --t-gear-ink: #f6dcc4;
-  --shot-shadow: 0 18px 40px rgb(0 0 0 / 0.55);
-}
+:root[data-theme="dark"] { --win-shadow: 0 24px 60px rgb(0 0 0 / 0.55); }
 
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) var(--jsal-page-end) max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
 h1, h2 { text-wrap: balance; }
 p { text-wrap: pretty; }
-.ui a:not(.jsal-btn) { color: var(--jsal-accent); text-underline-offset: 2px; }
+main a:not(.jsal-btn) { color: var(--jsal-accent); text-underline-offset: 2px; }
+code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 
 /* Top bar: the shared one (/shell.css), with section links, as on the home page */
 .jsal-top nav { display: flex; gap: var(--jsal-space-2); font-size: 14px; }
@@ -94,128 +53,123 @@ p { text-wrap: pretty; }
   .jsal-top nav a::after { content: ""; position: absolute; inset: -4px 0; }   /* 36px drawn, 44px to tap */
 }
 
-/* Bento grid: six columns, the Companion beside the intro, then the wide tile swapping sides each row, and Install
-   across the bottom */
-.ui { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--jsal-space-32); margin-top: var(--jsal-page-top); }
-.intro { grid-column: 1 / 3; align-self: start; padding-right: var(--jsal-space-12); }
-.pet { grid-column: 3 / 7; }
-.journal { grid-column: 1 / 5; }
-.games { grid-column: 5 / 7; }
-.plan { grid-column: 1 / 3; }
-.guild { grid-column: 3 / 7; }
-.prof { grid-column: 1 / 5; }
-.gear { grid-column: 5 / 7; }
-.install { grid-column: 1 / 7; }
+.eyebrow { margin: 0; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 
-/* The intro: at the shared distance under the top bar, flush with the logo */
-.roles { margin: 0; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-.intro h1 { margin: var(--jsal-space-12) 0 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
-.intro h1 em { font-weight: 600; color: var(--jsal-accent); }
-.intro p { margin: var(--jsal-space-16) 0 0; font-size: 17px; color: var(--jsal-ink-2); }
-.actions { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin-top: var(--jsal-space-20); }
-.intro .meta { margin-top: var(--jsal-space-12); font-size: 13px; color: var(--jsal-muted); }
+/* The intro beside the Home window, at the shared distance under the top bar */
+.hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--jsal-space-48); align-items: start; margin-top: var(--jsal-page-top); }
+.hero h1 { margin: var(--jsal-space-12) 0 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
+.hero h1 em { font-weight: 600; color: var(--jsal-accent); }
+.lead { margin: var(--jsal-space-16) 0 0; font-size: 17px; color: var(--jsal-ink-2); }
+.lead strong { color: var(--jsal-ink); }
+.actions { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin-top: var(--jsal-space-24); }
+.meta { margin: var(--jsal-space-12) 0 0; font-size: 13px; color: var(--jsal-muted); }
 
-/* Tiles: soft colour, a deep-shade serif name and its line at the top left, then the game as it looks. A wide
-   tile puts its screenshot beside the words, a narrow one under them. */
-.tile { position: relative; display: flex; flex-direction: column; min-height: 280px; border-radius: var(--jsal-radius-tile); --pad: var(--jsal-space-24); padding: var(--pad); background: var(--bg); color: var(--ink); }
-.tile h2 { margin: 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
-.tile .txt p { margin: var(--jsal-space-8) 0 0; font-size: 17px; line-height: 1.45; }
-.wide { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--jsal-space-24); align-items: start; }
-.wide .shot { align-self: center; }
-.pet { min-height: 440px; }
-.pet { --bg: var(--t-pet); --ink: var(--t-pet-ink); }
-.gear { --bg: var(--t-gear); --ink: var(--t-gear-ink); }
-.journal { --bg: var(--t-journal); --ink: var(--t-journal-ink); }
-/* The tag over a new part's name: the tile's own two colours, swapped */
-.tag { display: inline-block; margin-bottom: var(--jsal-space-8); padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--ink); color: var(--bg); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.06em; text-transform: uppercase; }
-.guild { --bg: var(--t-guild); --ink: var(--t-guild-ink); }
-.games { --bg: var(--t-games); --ink: var(--t-games-ink); }
-.plan { --bg: var(--t-plan); --ink: var(--t-plan-ink); }
-.prof { --bg: var(--t-prof); --ink: var(--t-prof-ink); }
+/* A window from the game: straight, framed and lifted. A small one (the pals) keeps its own size, so it never blurs. */
+.win { margin: 0; }
+.win img { display: block; width: 100%; height: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); box-shadow: var(--win-shadow); }
+.win.narrow img { max-width: var(--w); margin-inline: auto; }
 
-/* A screenshot, framed and tilted a little like the home page's pictures; the wide tiles' lean the other way each row */
-.shot { margin: 0; justify-self: end; width: 100%; transform: rotate(-1.5deg); }
-.guild .shot, .plan .shot, .gear .shot { transform: rotate(1.5deg); }
-.pet .shot { transform: rotate(-1deg); }
-.pet .shot img { width: 100%; }   /* the pen fills its tile; it's drawn smaller than its file at every width */
-/* A small window (a pop-out such as Daily Word) shows at its own size at most, so it never blurs */
-.shot img { display: block; width: auto; max-width: 100%; height: auto; margin-left: auto; border-radius: var(--jsal-radius-lg); box-shadow: var(--shot-shadow); }
-.tile:not(.wide) .shot { margin-top: auto; padding-top: var(--jsal-space-20); }
+/* Each group: its name and one line over a rule, then its parts */
+.group { margin-top: var(--jsal-space-64); }
+.group-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--jsal-space-4) var(--jsal-space-16); padding-bottom: var(--jsal-space-12); border-bottom: 1px solid var(--jsal-line); }
+.group-head p:last-child { margin: 0; color: var(--jsal-muted); }
 
-/* Install: plain, across the bottom, the steps and the one question people ask */
-.install { --bg: var(--t-plain); --ink: var(--jsal-ink); min-height: 0; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--jsal-space-32); }
+/* A part: its words beside its window, swapping sides each row */
+.part { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--jsal-space-48); align-items: center; padding: var(--jsal-space-48) 0; }
+.part + .part { border-top: 1px solid var(--jsal-line); }
+.part.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); }
+.part.flip .txt { order: 2; }
+.label { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-muted); }
+.part h2 { margin: var(--jsal-space-8) 0 0; font: 700 30px/1.15 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.part .txt > p:not(.label) { margin: var(--jsal-space-12) 0 0; font-size: 17px; color: var(--jsal-ink-2); }
+.part ul { list-style: none; margin: var(--jsal-space-16) 0 0; padding: 0; }
+.part li { position: relative; padding-left: var(--jsal-space-20); font-weight: 500; }
+.part li + li { margin-top: var(--jsal-space-4); }
+.part li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 8px; height: 8px; border-radius: 50%; background: var(--jsal-fill); }
+
+/* The small helpers, two columns of name and line */
+.little, .install { margin-top: var(--jsal-space-64); }
+.little h2, .install h2 { margin: 0; font: 700 24px/1.2 "Lora", Georgia, serif; }
+.little > p { margin: var(--jsal-space-8) 0 var(--jsal-space-16); color: var(--jsal-ink-2); }
+.little dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--jsal-space-48); margin: 0; }
+.little dl div { padding: var(--jsal-space-12) 0; border-top: 1px solid var(--jsal-line); }
+.little dt { font-weight: 600; }
+.little dd { margin: 0; color: var(--jsal-ink-2); }
+
+/* Install: a card with the steps, and the one question people ask beside them */
+.install { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--jsal-space-48); padding: var(--jsal-space-32); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
 .install h2 { margin-bottom: var(--jsal-space-12); }
 .install h3 { margin: 0 0 var(--jsal-space-4); font: 700 17px/1.4 var(--jsal-font); }
 .install p, .install li { color: var(--jsal-ink-2); }
 .install ol { margin: 0 0 var(--jsal-flow); padding-left: 1.3em; }
-.install li + li { margin-top: var(--jsal-space-4); }
+.install li + li { margin-top: var(--jsal-space-8); }
 .install p { margin: 0 0 var(--jsal-flow); }
-.install code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
-.credit { grid-column: 1 / 7; margin: calc(var(--jsal-space-16) * -1) 0 0; font-size: 13px; color: var(--jsal-muted); }
+.install > div > :last-child { margin-bottom: 0; }
+.credit { margin: var(--jsal-space-16) 0 0; font-size: 13px; color: var(--jsal-muted); }
 
-/* From 1279px down: the intro, the Companion, the Journal, the guild tile, Professions and Install take the full
-   width, and the three narrow tiles sit side by side after the Journal (the Gear plan moves up to join them) */
-@media (max-width: 1279px) {
-  .intro, .pet, .journal, .guild, .prof, .install { grid-column: 1 / -1; }
-  .games { grid-column: 1 / 3; }
-  .plan { grid-column: 3 / 5; }
-  .gear { grid-column: 5 / 7; }
-  .games, .plan, .gear { order: 1; }
-  .guild, .prof { order: 2; }
-  .install, .credit { order: 3; }
-  .intro { padding-right: 0; max-width: 40em; }
-  .pet { min-height: 0; }
+/* Under 900px: one column, each part's words over its window */
+@media (max-width: 899px) {
+  .hero, .part, .part.flip, .install { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
+  .part.flip .txt { order: 0; }
+  .part { padding: var(--jsal-space-40) 0; }
+  .little dl { grid-template-columns: minmax(0, 1fr); }
 }
-/* Upright phones: one tile per row, every screenshot under its words */
-@media (max-width: 699px) {
-  .ui > * { grid-column: 1 / -1 !important; }
-  .wide, .install { display: flex; flex-direction: column; }
-  .wide .shot { margin-top: var(--jsal-space-8); }
-  .tile { min-height: 0; }
+/* Upright phones: a whole window would be too small to read, so each shows its top corner at a readable size,
+   cut off by its frame; the dashboard's menu is skipped so the page itself shows */
+@media (max-width: 599px) {
+  .win:not(.narrow) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); box-shadow: var(--win-shadow); }
+  .win:not(.narrow) img { width: 760px; max-width: none; border: 0; border-radius: 0; box-shadow: none; }
+  .win.menu img { transform: translate(-17.8%, -5.2%); }   /* past the menu and the title bar */
 }
 @media (max-width: 520px) {
-  .intro h1 { font-size: 40px; }
-  .tile { --pad: var(--jsal-space-20); }
-  .tile h2 { font-size: 24px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .shot, .guild .shot, .plan .shot, .gear .shot, .pet .shot { transform: none; }
+  .hero h1 { font-size: 40px; }
+  .part h2 { font-size: 24px; }
+  .install { padding: var(--jsal-space-20); }
 }
 </style>
 <div class="wrap">
   <TopBar><nav aria-label="Sections"><a href="/play/" data-jsal-nav>Off the clock</a><a href="#install">Install</a></nav></TopBar>
-  <main class="ui">
-    <section class="intro">
-      <p class="roles">For WoW Forever</p>
-      <h1>jsal.<em>ui</em></h1>
-      <p>A friendlier road to 60: planners that do the remembering, a journal that writes itself, daily games and a small creature to raise. Free, no subscription.</p>
-      <div class="actions">
-        <a class="jsal-btn primary" href={RELEASES}>Download jsal.ui</a>
-        <a class="jsal-btn" href="#install">How to install</a>
+  <main>
+    <section class="hero" aria-labelledby="top-h">
+      <div>
+        <p class="eyebrow">Free for WoW Forever</p>
+        <h1 id="top-h">jsal.<em>ui</em></h1>
+        <p class="lead"><strong>Your road to 60, planned.</strong> Training, talents, gear, dungeons and professions in one dashboard, with a journal of your adventure and daily games for your guild.</p>
+        <div class="actions">
+          <a class="jsal-btn primary" href={RELEASES}>Download jsal.ui</a>
+          <a class="jsal-btn" href="#install">How to install</a>
+        </div>
+        <p class="meta">Version 0.3.56 · free, with its code <a href={REPO}>on GitHub</a> · also on <a href={CURSEFORGE}>CurseForge</a> and <a href={WAGO}>Wago</a></p>
       </div>
-      <p class="meta">Version 0.3.56 · free, with its code <a href={REPO}>on GitHub</a> · also on <a href={CURSEFORGE}>CurseForge</a> and <a href={WAGO}>Wago</a></p>
+      <figure class={win(HOME)}><img src={v(HOME.src)} width={HOME.w} height={HOME.h} alt={HOME.alt} decoding="async"></figure>
     </section>
-    {TILES.map((t) => {
-      const shot = SHOTS[t.key];
-      return (
-        <section class={`tile ${t.cls}`} aria-labelledby={`${t.key}-h`}>
-          <div class="txt">
-            {t.tag && <span class="tag">{t.tag}</span>}
-            <h2 id={`${t.key}-h`}>{t.name}</h2>
-            <p>{t.line}</p>
-          </div>
-          <figure class="shot">
-            <img src={v(shot.src)} width={shot.w} height={shot.h} alt={shot.alt} loading={t.key === "pet" ? "eager" : "lazy"} decoding="async">
-          </figure>
-        </section>
-      );
-    })}
-    <section class="tile install" id="install" aria-labelledby="install-h">
+    {GROUPS.map((g) => (
+      <section class="group" id={g.key} aria-label={g.name}>
+        <div class="group-head"><p class="eyebrow">{g.name}</p><p>{g.line}</p></div>
+        {g.parts.map((p) => (
+          <article class={`part${row++ % 2 ? " flip" : ""}`} aria-labelledby={`${p.key}-h`}>
+            <div class="txt">
+              <p class="label">{p.label}</p>
+              <h2 id={`${p.key}-h`}>{p.name}</h2>
+              <p>{p.line}</p>
+              <ul>{p.points.map((x) => <li>{x}</li>)}</ul>
+            </div>
+            <figure class={win(p.shot)} style={`--w: ${p.shot.w}px`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></figure>
+          </article>
+        ))}
+      </section>
+    ))}
+    <section class="little" aria-labelledby="little-h">
+      <h2 id="little-h">And the little things</h2>
+      <p>Smaller helpers around the game, each with its own switch in Settings.</p>
+      <dl>{LITTLE.map(([t, d]) => <div><dt>{t}</dt><dd>{d}</dd></div>)}</dl>
+    </section>
+    <section class="install" id="install" aria-labelledby="install-h">
       <div>
         <h2 id="install-h">Install</h2>
         <ol>
           <li><a href={RELEASES}>Download jsal.ui</a> and unzip it into <code>World of Warcraft\_forever_\Interface\AddOns</code>, so you have an <code>AddOns\jsalUI</code> folder. Or get it from <a href={CURSEFORGE}>CurseForge</a> or <a href={WAGO}>Wago</a>, whose apps keep it up to date.</li>
-          <li>Log in, or restart the game if it was running, then type <code>/jsal</code>.</li>
+          <li>Log in, or restart the game if it was running, then type <code>/jsal</code> or click the minimap button.</li>
         </ol>
         <p>Every part has a switch in <code>/jsal settings</code>, so turn off anything you don't want. It works on its own, or alongside <a href="https://www.curseforge.com/wow/addons/ellesmereui">EllesmereUI</a> if you use it.</p>
       </div>
