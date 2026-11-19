@@ -125,6 +125,11 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   that isn't a token (or 0, 50%, `inherit`); the home tiles' miniature pictures and the backpack drawing carry
   `style: allow`.
 
+- **A dark island** (`.jsal-dark` in `shell.css`): an element and everything in it in the dark theme's colours,
+  whatever the page's theme, for something that sits on a dark picture (the jsal.ui page's top bar and stage). It
+  uses the dark theme's own tokens, not copies, and works out its selected, hover and focus colours from them.
+  Use it only on a dark picture; everywhere else the visitor's theme rules.
+
 - **One button and one switch, defined once in `shell.css`.** `.jsal-btn` is every page's button: outlined in
   `--jsal-line-hi` on a `--jsal-surface` fill, 14px at 600, 40px tall (44px on touch screens). `.primary` makes it
   the gold main action, `.small` (32px, 13px) suits dense screens such as the Playbook's forms, and `.danger`
@@ -177,7 +182,11 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
 - **The jsal.ui page** (`/jsal-ui/`) is a product page, no longer a bento, modelled on ellesmereui.com's layout
   but in jsal.io's own type and gold (John, 18 Nov 2026: "a bit more professional", then "look and feel more like
   ellesmereui.com", mockup D). From the top: a full-width dark **stage** (one of John's game screenshots, blurred
-  and darkened so no chat or names can be read; the same in both themes) with the eyebrow, headline and buttons on
+  and darkened so no chat or names can be read; the same in both themes) that runs up behind the top bar (John:
+  the bar on its own strip above it looked wrong; mockup A of two), so the bar sits on the game. The bar keeps its
+  markup and place; on this page it and the stage are `.jsal-dark` islands, in the dark theme's colours in either
+  theme. The stage starts `--bar-h` above itself, mirroring the bar's height in `shell.css`: change both together.
+  Below 340px the bar drops Off the clock (the logo menu has it) to stay one row. On the stage: the eyebrow, headline and buttons on
   the left, the description level with the headline's first line on the right, and the Home window sharp below;
   three **numbers** (36 parts, 35 dungeons and raids, 100% free; change them by hand when the addon's data does);
   five parts as big rows with a gold-dot list beside a straight, framed window, swapping sides; the other six as

@@ -49,8 +49,10 @@
     color-scheme: dark;
   }
 }
+/* .jsal-dark is a dark island: one element in the dark theme's colours whatever the page's, for something that sits
+   on a dark picture (the jsal.ui page's top bar, over the game) */
 @media screen {
-  :root[data-theme="dark"] {
+  :root[data-theme="dark"], .jsal-dark {
     --jsal-bg: #111318; --jsal-surface: #191c23; --jsal-sunk: #22262f;
     --jsal-ink: #ece6d6; --jsal-ink-2: #cfc8b6; --jsal-muted: #9a9688; --jsal-line: #2a2e38; --jsal-line-hi: #3d424e;
     --jsal-accent: #e3b04b; --jsal-accent-soft: #2c2618; --jsal-accent-ring: rgba(227, 176, 75, 0.35);
@@ -64,6 +66,16 @@
   }
 }
 body { background: var(--jsal-bg); }
+/* A dark island works out its own selected, hover and focus colours from its dark tokens (on :root they were
+   worked out from the page's) */
+@media screen {
+  .jsal-dark {
+    --jsal-selected-bg: var(--jsal-accent-soft); --jsal-selected-ink: var(--jsal-accent);
+    --jsal-selected-ring: inset 0 0 0 1px var(--jsal-accent-ring);
+    --jsal-hover-line: var(--jsal-muted);
+    --jsal-focus-ring: 0 0 0 2px var(--jsal-bg), 0 0 0 4px var(--jsal-accent);
+  }
+}
 
 /* Shared building blocks, so the apps look like one site; use these rather than new values (the checks flag written-out
    colours, selected states without these tokens, corners off the scale and odd weights; "style: allow" marks an exception).

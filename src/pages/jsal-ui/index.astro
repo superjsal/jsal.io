@@ -43,7 +43,10 @@ let row = 0;
   --win-fill: #191c23;
   --win-shadow: 0 24px 60px rgb(0 0 0 / 0.16), 0 2px 8px rgb(0 0 0 / 0.08);
   --stage-shadow: 0 30px 80px rgb(0 0 0 / 0.6);
+  /* How far down the top bar reaches (shell.css: its padding above one 36px row), so the stage can start behind it */
+  --bar-h: calc(40px - (36px - 18px * 1.65) / 2 + 36px);
 }
+@media (max-width: 520px) { :root { --bar-h: calc(var(--jsal-space-12) + 36px); } }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) { --win-shadow: 0 24px 60px rgb(0 0 0 / 0.55); }
 }
@@ -66,11 +69,16 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .jsal-top nav a { position: relative; }
   .jsal-top nav a::after { content: ""; position: absolute; inset: -4px 0; }   /* 36px drawn, 44px to tap */
 }
+/* The narrowest phones keep the bar on one row: Off the clock goes (the logo menu has it), Install stays */
+@media (max-width: 339px) { .jsal-top nav a[href="/play/"] { display: none; } }
 
 .eyebrow { margin: 0; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 
-/* The stage: the game behind, blurred and darkened, the words on it, and the Home window sharp on top */
-.stage { position: relative; margin-top: var(--jsal-space-16); padding: var(--jsal-space-64) 0; background: var(--stage-base) var(--stage-bg) center 30% / cover; color: var(--stage-ink); }
+/* The stage: the game behind, blurred and darkened, from the very top of the page, so the top bar sits on it; the
+   bar and the stage both take the dark theme's colours in either theme (.jsal-dark), so the buttons read on the
+   game too. The words and the Home window sit sharp on top. */
+.topwrap { position: relative; z-index: 2; color: var(--jsal-ink); }
+.stage { position: relative; margin-top: calc(var(--bar-h) * -1); padding: calc(var(--bar-h) + var(--jsal-space-48)) 0 var(--jsal-space-64); background: var(--stage-base) var(--stage-bg) center 30% / cover; color: var(--stage-ink); }
 .stage::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0.38) 45%, rgb(0 0 0 / 0.62) 100%); }
 .stage > .wrap { position: relative; }
 .stage-head { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: var(--jsal-space-48); align-items: start; }
@@ -149,6 +157,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .install h2 { margin-bottom: var(--jsal-space-12); }
 .install h3 { margin: 0 0 var(--jsal-space-4); font: 700 17px/1.4 var(--jsal-font); }
 .install p, .install li { color: var(--jsal-ink-2); }
+.install code { overflow-wrap: anywhere; }   /* the AddOns folder's long path breaks on the narrowest phones */
 .install ol { margin: 0 0 var(--jsal-flow); padding-left: 1.3em; }
 .install li + li { margin-top: var(--jsal-space-8); }
 .install p { margin: 0 0 var(--jsal-flow); }
@@ -175,7 +184,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* Upright phones: a whole window would be too small to read, so each shows its top corner at a readable size,
    cut off by its frame, past the dashboard's menu and title bar */
 @media (max-width: 599px) {
-  .stage { padding: var(--jsal-space-40) 0; }
+  .stage { padding: calc(var(--bar-h) + var(--jsal-space-32)) 0 var(--jsal-space-40); }
   .homewin, .win:not(.narrow) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
   .homewin { border-color: var(--stage-edge); }
   .homewin img, .win:not(.narrow) img { width: 760px; max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
@@ -191,11 +200,11 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .install, .band { padding: var(--jsal-space-20); }
 }
 </style>
-<div class="wrap">
+<div class="wrap topwrap jsal-dark">
   <TopBar><nav aria-label="Sections"><a href="/play/" data-jsal-nav>Off the clock</a><a href="#install">Install</a></nav></TopBar>
 </div>
 <main>
-  <section class="stage" style={`--stage-bg: url(${v("/img/jsal-ui/ui/stage.webp")})`} aria-labelledby="top-h">
+  <section class="stage jsal-dark" style={`--stage-bg: url(${v("/img/jsal-ui/ui/stage.webp")})`} aria-labelledby="top-h">
     <div class="wrap">
       <div class="stage-head">
         <div>
