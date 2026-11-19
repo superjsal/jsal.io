@@ -1,10 +1,11 @@
 {
-  "version": "0.3.56",
-  "date": "2026-11-18",
+  "version": "0.3.57",
+  "date": "2026-11-19",
   "notes": [
-    "Profession roads take the cheapest way to your next rank, with no short detours.",
-    "Skipping a spell's rank skips the ranks after it.",
-    "Gear plan: change the weight of any stat WoWSims weighs, and Retribution has new weights.",
-    "And a few smaller fixes."
+    "A new welcome the first time you log in, with a switch for each part, and every part switched on once for everyone. /jsal welcome opens it again.",
+    "Games: the Guild page is now on Games, with the Guild Word as a fourth game and a countdown to the next day's games. Point at a guildmate to see how their day went.",
+    "Gear plan: about 1,100 more pieces, with most of what the level 53 to 60 dungeons drop.",
+    "The dashboard has an Unlock button beside Reload, and jsal.ui has a Discord: /jsal discord.",
+    "Guild Crafts: an order is marked sent once you mail it or trade it over, and asking shows the item or enchant you get."
   ]
 }
