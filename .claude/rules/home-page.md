@@ -18,8 +18,10 @@ home page work.
   19 Nov 2026. Turned down before it, so don't re-propose them: the full-width colour bands, and three plainer
   layouts (four doors, a side column, job-first rows). The cost John accepted: one tool shows at a time, where the
   bento showed all four.
-- **Set in Outfit**, the jsal.ui addon's own font, as the jsal.ui page is: headline, names, text and labels. The
-  top bar keeps the shared look. The tools themselves keep Lora and Inter.
+- **Two fonts, as on the jsal.ui page** (John, 20 Nov 2026, his pick A of three pairings): Outfit, the jsal.ui
+  addon's own font, for names, headings and buttons; Inter for everything that is read (lines, facts, labels,
+  small text), as Outfit is weak at 13 to 15px. Turned down: Lora for the line under each name, and JetBrains Mono
+  for the small labels. The top bar keeps the shared look. The tools themselves keep Lora and Inter.
 - **The top bar and the column stay the site's own**, so the logo sits where it does on every other page. The
   mockup had no top bar and ran the full width of the window; the build keeps both, as the top bar never moves
   between pages.

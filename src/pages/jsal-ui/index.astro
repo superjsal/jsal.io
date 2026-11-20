@@ -48,10 +48,12 @@ const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB
 :root[data-theme="dark"] { --win-shadow: 0 24px 60px rgb(0 0 0 / 0.55); }
 
 * { box-sizing: border-box; }
-body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--f); -webkit-font-smoothing: antialiased; }
+body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) var(--jsal-page-end) max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
 h1, h2 { text-wrap: balance; }
 p { text-wrap: pretty; }
+/* Two fonts: Outfit (--f) for names, headings and buttons; Inter for everything that is read */
+.get .jsal-btn, .band .jsal-btn, .little dt { font-family: var(--f); }
 main a:not(.jsal-btn, .slot) { color: var(--jsal-accent); text-underline-offset: 2px; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; border-radius: var(--jsal-radius); }
 code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
@@ -67,7 +69,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* The narrowest phones keep the bar on one row: Off the clock goes (the logo menu has it), Install stays */
 @media (max-width: 339px) { .jsal-top nav a[href="/play/"] { display: none; } }
 
-.eyebrow { margin: 0; font: 600 12px/1.5 var(--f); letter-spacing: 0.08em; text-transform: uppercase; color: var(--jsal-accent); }
+.eyebrow { margin: 0; font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; color: var(--jsal-accent); }
 
 /* Pick a part: the list on the left is the addon's own menu and never moves; the stage beside it is the chosen
    part, with its window from the game */
@@ -80,11 +82,11 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .jsal-btn.dl { min-height: 44px; padding: 0 var(--jsal-space-20); font: 700 15px/1 var(--f); }
 .meta { flex: 1 1 100%; margin: 0; color: var(--jsal-muted); font-size: 13px; line-height: 1.45; }
 .slots { margin-top: var(--jsal-space-24); }
-.grp { margin: var(--jsal-space-16) 0 var(--jsal-space-4); color: var(--jsal-muted); font: 600 12px/1.5 var(--f); letter-spacing: 0.08em; text-transform: uppercase; }
+.grp { margin: var(--jsal-space-16) 0 var(--jsal-space-4); color: var(--jsal-muted); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
 .slot { display: flex; align-items: center; justify-content: space-between; gap: var(--jsal-space-8); position: relative; padding: var(--jsal-space-4) var(--jsal-space-20) var(--jsal-space-4) var(--jsal-space-12); border-radius: var(--jsal-radius-lg) 0 0 var(--jsal-radius-lg); color: inherit; text-decoration: none; transition: background-color var(--jsal-quick); }
 .slot:hover { background: var(--jsal-sunk); }
 .slot b { font: 600 15px/1.6 var(--f); }
-.slot i { color: var(--jsal-muted); font: 600 12px/1.5 var(--f); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+.slot i { color: var(--jsal-muted); font: 600 12px/1.5 var(--jsal-font); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
 /* The chosen part's row takes the stage's fill and runs into it as one piece, and the logo's gold gem marks it */
 .slot[aria-selected="true"] { background: var(--jsal-sunk); }   /* style: allow (the chosen part's row is the same piece as its stage, so it wears the stage's fill) */
 .slot[aria-selected="true"]::before { content: ""; position: absolute; left: -16px; top: 50%; width: 10px; height: 10px; background: var(--jsal-fill); translate: 0 -50%; rotate: 45deg; }   /* style: allow (the logo's gem as a marker beside the row, not a selected fill) */
@@ -116,7 +118,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .slot[aria-selected="true"]::before { animation: gem 0.4s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem landing on the chosen row) */
 .head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--jsal-space-12); }
 .stage h2 { margin: 0; font: 800 clamp(40px, 10cqi, 88px)/0.95 var(--f); letter-spacing: -0.03em; }   /* style: allow (the stage's name: the page's one very large line) */
-.lv { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-sm); background: var(--jsal-surface); color: var(--jsal-ink-2); font: 600 12px/1.5 var(--f); letter-spacing: 0.08em; text-transform: uppercase; }
+.lv { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-sm); background: var(--jsal-surface); color: var(--jsal-ink-2); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
 .lead { margin: 0; font: 600 20px/1.3 var(--f); }
 .lead + p { margin: var(--jsal-space-8) 0 0; color: var(--jsal-ink-2); }
 .facts { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; line-height: 1.4; }
@@ -148,7 +150,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .band { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--jsal-space-48); margin-top: var(--jsal-space-64); padding: var(--jsal-space-32); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
 .ver { display: flex; align-items: baseline; gap: var(--jsal-space-12); margin: var(--jsal-space-8) 0 0; }
 .ver b { font: 700 30px/1.1 var(--f); }
-.tag { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); color: var(--jsal-on-fill); font: 600 12px/1.5 var(--f); letter-spacing: 0.06em; text-transform: uppercase; }
+.tag { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); color: var(--jsal-on-fill); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.06em; text-transform: uppercase; }
 .when { margin: var(--jsal-space-4) 0 0; color: var(--jsal-muted); }
 .band ul { margin: 0; padding-left: 1.2em; }
 .band li + li { margin-top: var(--jsal-space-8); }

@@ -77,7 +77,7 @@ const PLATFORMS = [["wordpress", "WordPress"], ["shopify", "Shopify"], ["wix", "
 :root[data-theme="dark"] .dk { display: block; }
 
 * { box-sizing: border-box; }
-body { margin: 0; color: var(--jsal-ink); font: 15px/1.5 var(--f); -webkit-font-smoothing: antialiased; }
+body { margin: 0; color: var(--jsal-ink); font: 15px/1.5 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
 a:focus-visible, .slot:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; border-radius: var(--jsal-radius); }
 /* The column: a 20px gutter each side, wider where a notch or rounded corner cuts in (phones on their side) */
@@ -94,6 +94,7 @@ a:focus-visible, .slot:focus-visible { outline: 2px solid var(--jsal-accent); ou
 
 h1, h2 { text-wrap: balance; }
 p { text-wrap: pretty; }
+/* Two fonts: Outfit (--f) for names, headings and buttons; Inter for everything that is read */
 
 /* Pick a job: the list of tools on the left never moves, and the stage beside it is the chosen tool, in its colour */
 .pick { display: grid; grid-template-columns: 296px minmax(0, 1fr); margin-top: var(--jsal-page-top); }
@@ -103,14 +104,14 @@ p { text-wrap: pretty; }
 /* The list runs to the stage's edge, so the chosen row joins its stage; everything else in the rail stops short */
 .rail > :not(.slots) { margin-right: var(--jsal-space-24); }
 .sub { margin: var(--jsal-space-8) 0 0; color: var(--jsal-muted); }
-.rail-h { margin: var(--jsal-space-32) 0 var(--jsal-space-8); color: var(--jsal-muted); font: 600 12px/1.5 var(--f); letter-spacing: 0.08em; text-transform: uppercase; }
+.rail-h { margin: var(--jsal-space-32) 0 var(--jsal-space-8); color: var(--jsal-muted); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
 .slots { display: grid; gap: var(--jsal-space-4); }
 .slot { display: grid; grid-template-columns: 44px minmax(0, 1fr) 20px; gap: var(--jsal-space-12); align-items: center; padding: var(--jsal-space-12) var(--jsal-space-20) var(--jsal-space-12) var(--jsal-space-12); border-radius: var(--jsal-radius-xl) 0 0 var(--jsal-radius-xl); text-decoration: none; transition: background-color var(--jsal-quick); }
 .slot:hover { background: var(--jsal-sunk); }
 .slot img, .more-ui img { border-radius: var(--jsal-radius-lg); }
 .slot b { display: block; font: 700 17px/1.2 var(--f); }
 .slot-t > span { display: block; margin-top: var(--jsal-space-2); color: var(--jsal-muted); font-size: 13px; line-height: 1.3; }
-.slot kbd { justify-self: center; min-width: 20px; padding: 1px 0; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); color: var(--jsal-muted); font: 600 12px/1.3 var(--f); text-align: center; }
+.slot kbd { justify-self: center; min-width: 20px; padding: 1px 0; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); color: var(--jsal-muted); font: 600 12px/1.3 var(--jsal-font); text-align: center; }
 /* The chosen tool's row wears its tint and runs into its stage as one piece, and the logo's gold gem marks it */
 .slot[aria-selected="true"] { background: var(--bg); color: var(--ink); }   /* style: allow (the chosen tool wears its own tint, as its stage does) */
 .slot[aria-selected="true"] .slot-t > span { color: inherit; }
@@ -160,7 +161,7 @@ p { text-wrap: pretty; }
 .slot[aria-selected="true"]::before { animation: gem 0.4s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem landing on the chosen row) */
 .stage h2 { grid-column: 1 / -1; margin: 0; color: var(--ink); font: 800 clamp(40px, 11cqi, 96px)/0.95 var(--f); letter-spacing: -0.03em; white-space: nowrap; }   /* style: allow (the stage's name: the page's one very large line) */
 .say { padding: var(--jsal-space-24) 0 var(--jsal-space-40); }
-.say p { margin: 0; font: 500 20px/1.4 var(--f); }
+.say p { margin: 0; font: 500 20px/1.4 var(--jsal-font); }
 .jsal-btn.go { min-height: 48px; margin-top: var(--jsal-space-24); padding: 0 var(--jsal-space-24); gap: var(--jsal-space-8); font: 700 17px/1 var(--f); }
 .go svg { width: 18px; height: 18px; }
 .facts { display: grid; gap: var(--jsal-space-12); margin: var(--jsal-space-32) 0 0; padding: 0; list-style: none; line-height: 1.4; }
@@ -209,7 +210,7 @@ p { text-wrap: pretty; }
 .upd-ico { grid-row: 1 / 3; border-radius: var(--jsal-radius); }
 .upd time { color: var(--jsal-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .upd-line { grid-column: 2 / 4; font: 600 17px/1.3 var(--f); }
-.hi p { margin: 0; font: 500 20px/1.4 var(--f); }
+.hi p { margin: 0; font: 500 20px/1.4 var(--jsal-font); }
 .hi .mail { display: inline-block; margin-top: var(--jsal-space-12); font: 700 24px/1.2 var(--f); }
 
 footer { margin-top: var(--jsal-space-48); padding-top: var(--jsal-space-8); border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--jsal-space-12); font-size: 13px; color: var(--jsal-muted); }
@@ -218,7 +219,7 @@ footer a, footer .foot-btn { padding: var(--jsal-space-8); color: var(--jsal-acc
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
 /* The platform guides: a quiet row of links above the footer's own line */
 .fg { flex: 1 0 100%; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--jsal-space-12); padding-bottom: var(--jsal-space-8); }
-.fg span { margin-right: var(--jsal-space-4); font: 600 12px/1.5 var(--f); letter-spacing: 0.08em; text-transform: uppercase; }
+.fg span { margin-right: var(--jsal-space-4); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
 footer .fg a { padding: var(--jsal-space-4) 0; color: var(--jsal-muted); text-decoration: none; }
 footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @media (pointer: coarse) {

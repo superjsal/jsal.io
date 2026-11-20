@@ -19,8 +19,8 @@ is for people working on the site, not visitors; `/design-system/` shows the sam
 ## Type
 
 Four fonts, all self-hosted with `@font-face` in `shell.css`. **Outfit** is the jsal.ui addon's own font and sets two
-pages only, the home page and the jsal.ui page (John, 20 Nov 2026): everything on them under the top bar. The
-tools and every other page keep the three below.
+pages only, the home page and the jsal.ui page (John, 20 Nov 2026): their names, headings and buttons, with Inter
+for everything that is read. The tools and every other page keep the three below.
 
 | Font | Used for |
 |---|---|
