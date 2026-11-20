@@ -9,26 +9,26 @@
 @font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: swap; src: url(/fonts/jetbrains-mono-1a711438.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 :root {
-  --jsal-bg: #f5efe2;
-  --jsal-surface: #fbf8f0;
-  --jsal-sunk: #e8e0d1;        /* wells and lines are a few degrees cooler than the page, so gold has something less gold behind it */
-  --jsal-ink: #1f1a12;
-  --jsal-ink-2: #3d362a;
-  --jsal-muted: #6b6253;
-  --jsal-line: #d8cfc0;
-  --jsal-line-hi: #bdb3a3;
-  --jsal-accent: #7e5a00;      /* gold for text and links: the lightest gold that keeps 4.5:1 on every light surface (5.5:1 on the page) */
-  --jsal-accent-soft: #f1e3c2;
+  --jsal-bg: #f3f4f6;          /* a cool, neutral page, so each tool's own colour and the gold are the only colour on it */
+  --jsal-surface: #ffffff;
+  --jsal-sunk: #e6e8ec;
+  --jsal-ink: #14171c;
+  --jsal-ink-2: #3a404a;
+  --jsal-muted: #5d6470;
+  --jsal-line: #d9dde3;
+  --jsal-line-hi: #b4bac4;
+  --jsal-accent: #7e5a00;      /* gold for text and links: the lightest gold that keeps 4.5:1 on every light surface */
+  --jsal-accent-soft: #f6e9c8;
   --jsal-accent-ring: rgba(126, 90, 0, 0.4);
   --jsal-fill: #e3b04b;        /* the gold itself, for main buttons and (in light mode) lines and rings, which only need 3:1 */
-  --jsal-on-fill: #1f1a12;
-  --jsal-gold-line: var(--jsal-fill);   /* gold as a graphic: the insight line's bar, a selected border, a column's underline */
-  --jsal-fill-edge: var(--jsal-accent); /* a gold button's edge, so it has a shape on cream; the fill itself in dark mode */
+  --jsal-on-fill: #14171c;
+  --jsal-gold-line: var(--jsal-fill);   /* gold as a graphic: a selected border, the step in hand, a column's underline */
+  --jsal-fill-edge: var(--jsal-accent); /* a gold button's edge, so it has a shape on a pale page; the fill itself in dark mode */
   --jsal-ok: #296d36;   --jsal-ok-soft: #dfeedb;
   --jsal-warn: #9a4a1c; --jsal-warn-soft: #f5e0d0;   /* terracotta, twenty degrees off the gold, so a warning never reads as gold */
   --jsal-bad: #b32d2a;  --jsal-bad-soft: #f7dcd9;
   --jsal-info: #2f5db5; --jsal-info-soft: #dfe6f5;   /* arcane blue */
-  --jsal-shadow: 0 1px 2px rgba(60, 40, 10, 0.08);
+  --jsal-shadow: 0 1px 2px rgba(20, 23, 28, 0.08);
   --jsal-mark-edge: transparent;   /* the logo tile's edge: none on light pages */
   --jsal-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --jsal-radius: 6px;
@@ -100,7 +100,7 @@ body { background: var(--jsal-bg); }
   --jsal-pad-note: var(--jsal-space-8) var(--jsal-space-12);     /* inside a boxed note, tip or message */
   --jsal-pad-cell: var(--jsal-space-8) var(--jsal-space-12);     /* inside a table cell */
   --jsal-pad-card: var(--jsal-space-12) var(--jsal-space-16);    /* inside a card */
-  --jsal-pad-panel: var(--jsal-space-16);                        /* inside a quiz panel or result box */
+  --jsal-pad-panel: var(--jsal-space-24);                        /* inside a result card or panel that sits on the page */
   /* Motion: a state change (hover, a colour, a chevron) takes --jsal-quick; something that moves or arrives takes
      --jsal-settle, easing out so it lands softly. Longer, choreographed pieces are marked where they're set */
   --jsal-quick: 0.15s; --jsal-settle: 0.3s; --jsal-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);

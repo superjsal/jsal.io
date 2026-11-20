@@ -624,18 +624,23 @@
       if (step >= list.length) return results('quiz');
       const q = list[step];
       box.replaceChildren();
-      const top = el('div', 'qz-top');
-      // Until "What are you making?" is answered, count the longest path (its follow-up question included),
+      box.classList.remove('qz-done');
+      // Until "What are you making?" is answered, show the longest path (its follow-up question included),
       // so the total doesn't jump from 6 to 7 after the first answer
-      const first = QUESTIONS[0], total = first.id in a ? list.length : Math.max(...first.opts.map(([v]) => steps({ ...a, [first.id]: v }).length));
+      const first = QUESTIONS[0], path = first.id in a ? list : first.opts.map(([v]) => steps({ ...a, [first.id]: v })).reduce((m, s) => (s.length > m.length ? s : m));
+      const total = path.length;
       const progress = `Question ${step + 1} of ${total}`;
-      const shown = el('span', null, progress);
-      shown.setAttribute('aria-hidden', 'true');   // screen readers get it from the heading below
-      top.append(shown);
-      const bar = el('span', 'qz-bar'), fill = el('i');
-      fill.style.width = `${(step / total) * 100}%`;
-      bar.append(fill);
-      top.append(bar);
+      // Every step by name, the ones done and the one in hand marked, so it's clear what will be asked. Screen
+      // readers get the progress from the heading below, so they skip the strip
+      const top = el('ol', 'qz-path');
+      top.setAttribute('aria-hidden', 'true');
+      path.forEach((s, i) => {
+        const li = el('li', i < step ? 'done' : i === step ? 'on' : null);
+        const lab = el('span', 'qz-path-l');
+        lab.append(el('b', null, String(i + 1)), STEP_LABEL[s.id] || ANS_LABEL[s.id] || '');
+        li.append(lab);
+        top.append(li);
+      });
       // Focus moves to this heading after each answer, so it carries the progress too ("Question 2 of 9: …")
       const h = el('h3');
       // A no-break space: an ordinary one at the end of the hidden span is dropped, and screen readers ran "9:Which" together
@@ -743,6 +748,7 @@
     let checking = null;   // "Had a platform in mind?": the platform being looked at, kept across re-renders
     // Each answer's tile: a short name for its question over the answer, so the answers read as a summary
     const ANS_LABEL = { what: 'Making', kind: 'Best describes', who: 'Built by', care: 'Hosting and updates', size: 'Shop', needs: 'From day one', look: 'Design', moving: 'Moving', budget: 'Each month' };
+    const STEP_LABEL = { care: 'Hosting' };   // the steps strip has less room than a tile
     const ansText = (q, opt) => (q.id === 'what' ? opt[3] : q.id !== 'moving' ? opt[1] : opt[0] === 'no' ? 'Starting fresh' : opt[0] === 'other' ? 'From another platform' : `From ${opt[1]}`);
     function answersBar() {
       const bar = el('div', 'qz-ans'), tap = matchMedia('(pointer: coarse)').matches ? 'tap' : 'click';
@@ -885,9 +891,8 @@
       window.jsalAchieve?.('decision');   // achievement (/nav.js)
       if (source) window.jsalTrack?.('quiz_result', { top_match: ranked[0].p.id, fit: weak ? 'closest' : 'best', source });
       box.replaceChildren();
+      box.classList.add('qz-done');   // the result isn't one box: each part sits on the page as its own piece
       box.classList.remove('qz-in'); void box.offsetWidth; box.classList.add('qz-in');   // fades in, like a new question
-      const head = el('div', 'qz-top');
-      head.append(el('span', null, `Your ${first}es`));   // no progress bar here: it would only be full
       const compareThese = () => {
         state.compare = new Set(top.map((r) => r.p.id));
         state.touched = true;
@@ -905,31 +910,34 @@
         // Straight to the result line and the first rows, past the platform chips and the key
         ($('#qz-line').hidden ? $('#seo') : $('#qz-line')).scrollIntoView();
       };
-      // The result is four screens tall on a phone: the compare action is at the top as well as the bottom
-      const jump = el('button', 'qz-jump', 'Compare these side by side ↓');
-      jump.type = 'button';
-      jump.addEventListener('click', compareThese);
-      head.append(jump);
       const h = el('h3', 'sr-only', `Your ${first}es`);
-      // A verdict panel in place of that row: how sure (green for a lead, neutral for a close call) and how close
-      // it is in words, large enough to read first (the first card's box says why it's first, so this doesn't repeat it)
-      let verdict = null;
-      if (top[1] && !weak) {
-        verdict = el('div', `qz-verdict${close ? ' close' : ''}`);
-        verdict.append(el('p', 'qz-verdict-eye', stand.pill), el('p', 'qz-verdict-line', stand.line), jump);
-      }
+      // The verdict band leads: how sure (a green tag for a lead, a neutral one for a close call) and how close it is
+      // in words, large enough to read first (the first card's box says why it's first, so this doesn't repeat it),
+      // then what to do with the result. Without a verdict it says only whose matches these are
+      const verdict = el('div', 'qz-verdict');
+      if (top[1] && !weak) verdict.append(el('p', `qz-verdict-eye${close ? ' close' : ''}`, stand.pill), el('p', 'qz-verdict-line', stand.line));
+      else verdict.append(el('p', 'qz-verdict-line', `Your ${first}es`));
       h.tabIndex = -1;
+      // The matches side by side where there's room, so a fact reads straight across them. A divider starts a new
+      // row: the matches under it lack a must-have, and sit apart from the ones that have them all
       const list = el('div', 'qz-res');
+      let row = null;
+      const rows = [];
       top.forEach((r, i) => {
         if (split && i === split.at) {
           const div = el('div', 'qz-div');
           div.append(el('p', 'qz-div-h', split.head), el('p', null, split.lines.join(' ')));
           list.append(div);
+          row = null;
         }
+        if (!row) { row = el('div', 'qz-row'); rows.push(row); list.append(row); }
         const card = el('article', `qz-card${isTop(r) ? ' top' : ''}`), pr = r.p.profile || {};
         const name = el('h4', null, r.p.name);
         name.append(el('span', `fitp${weak || !above(r) ? ' low' : ''}`, label(r)));   // under the divider: neutral, not a fit
-        card.append(logo(r.p), name, el('p', 'sum', pr.summary || ''));
+        // Five parts, in the same order on every card, so they line up across a row: name, summary, facts, reasons, notes
+        const head = el('div', 'qz-head'), fit = el('div', 'qz-fit'), foot = el('div', 'qz-foot');
+        head.append(logo(r.p), name);
+        card.append(head, el('p', 'sum', pr.summary || ''));
         // The key facts people compare first: skill, hosting and updates, and the cost band for what's being made
         const fx = el('dl', 'qz-facts'), ease = data.quiz.ease[r.p.id] ?? 1;
         const cost = ((data.answers[r.p.id] || {})[costRow(a)] || {}).verdict;
@@ -942,8 +950,8 @@
             f.append(el('dt', null, k), dd);
             fx.append(f);
           });
-        card.append(fx);
-        card.append(el('p', 'qz-sec', 'Why it fits'));
+        card.append(fx, fit, foot);
+        fit.append(el('p', 'qz-sec', 'Why it fits'));
         const ul = el('ul', 'qz-why');
         told[i].why.forEach((w) => {
           const li = el('li', null, w);
@@ -953,20 +961,21 @@
           if (src) li.append(' · ', docLink(src, 'docs'));
           ul.append(li);
         });
-        card.append(ul);
+        fit.append(ul);
         if (told[i].vs) {
           const vs = el('div', 'qz-vs');
           vs.append(el('p', 'qz-vs-h', boxHead(told[i].vs, weak)), el('p', null, told[i].vs.text));
-          card.append(vs);
+          foot.append(vs);
         }
         // Where it counts against an answer given (score.js "but"), so the pick never hides it
-        if (r.but && r.but.length) card.append(el('p', 'qz-lim', `Worth knowing: ${r.but.join('; ')}.`));
+        if (r.but && r.but.length) foot.append(el('p', 'qz-lim', `Worth knowing: ${r.but.join('; ')}.`));
         const skip = lessSuited(data.quiz, r.p, a);
-        if (skip) card.append(el('p', 'qz-lim', `Not ideal if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
-        list.append(card);
-        if (!i) list.append(feedback(r));
+        if (skip) foot.append(el('p', 'qz-lim', `Not ideal if ${skip.charAt(0).toLowerCase()}${skip.slice(1)}`));
+        row.append(card);
       });
-      box.append(h, verdict || head);
+      rows.forEach((r) => r.classList.add(['n1', 'n2', 'n3'][r.children.length - 1]));
+      rows[0].after(feedback(top[0]));   // under the row the best match is in
+      box.append(h, verdict);
       if (pending.size) {
         const more = el('button', 'jsal-btn qz-more', `${pending.size} newer question${pending.size === 1 ? '' : 's'} can sharpen this`);
         more.type = 'button';
@@ -1013,6 +1022,7 @@
       }
       box.append(list);
       // "Had a platform in mind?": any other platform ranked for these answers, with what counted for and against it
+      const after = el('div', 'qz-after');   // what to do next: the first steps, beside "Had a platform in mind?"
       const rest = [...(origin ? [origin] : []), ...ranked.slice(3)];
       if (origin && !rest.some((r) => r.p.id === checking)) checking = origin.p.id;
       if (rest.length) {
@@ -1057,7 +1067,7 @@
         };
         check.append(picker('Platform to check', rest.map((r) => [r.p.id, r.p.name]), checking, (id) => { showCheck(id); window.jsalAchieve?.('opinion'); }), res);   // "Second opinion" (/nav.js)
         if (checking && rest.some((r) => r.p.id === checking)) showCheck(checking);
-        box.append(check);
+        after.append(check);
       }
       // One first-steps panel under the cards, switched between the three matches
       const panel = el('section', 'qz-panel'), sw = el('div', 'qz-switch'), body = el('div');
@@ -1070,7 +1080,8 @@
       sw.append(picker('Show first steps for', top.map((r) => [r.p.id, r.p.name]), top[0].p.id, show));
       panel.append(sw, body);
       show(top[0].p.id);
-      box.append(panel);
+      after.prepend(panel);
+      box.append(after);
       // Also worth a look: each name opens "Had a platform in mind?" on that platform
       if (also.length) {
         const p = el('p', 'qz-also', 'Also worth a look: ');
@@ -1108,7 +1119,13 @@
       again.type = 'button';
       again.addEventListener('click', () => { a = {}; step = 0; editing = null; resume = false; ansOpen = false; checking = null; pending.clear(); history.replaceState(null, '', location.pathname); ask(); box.querySelector('h3')?.focus({ preventScroll: true }); });
       nav.append(cmp, copy, again);
-      box.append(nav);
+      verdict.append(nav);
+      // The result runs to several screens: the compare action is at its end as well as in the band
+      const end = el('div', 'qz-nav'), cmp2 = el('button', 'jsal-btn', 'Compare these side by side');
+      cmp2.type = 'button';
+      cmp2.addEventListener('click', compareThese);
+      end.append(cmp2);
+      box.append(end);
     }
 
     // A shared result opens straight on it; a link with an answer missing keeps the good ones and asks the first it
