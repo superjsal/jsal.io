@@ -13,10 +13,12 @@ const shot = (name, w, h, alt, menu = false) => {
 // from the same sim pages as the store pages' GIFs but at a steady 30 frames a second in full colour (a GIF's
 // fades have two to seven frames and 256 colours), its first frame as the still shown until it plays. The clips
 // are framed differently (a panel, or a window with some of the game round it), so x and y say where each one's own
-// content starts, in its pixels, for the crops.
-const clip = (name, w, h, x, y, alt) => ({ src: `/img/jsal-ui/ui/clips/${name}.mp4`, poster: `/img/jsal-ui/ui/clips/${name}.webp`, w, h, alt, cx: +(x / w * 100).toFixed(2), cy: +(y / h * 100).toFixed(2) });
+// content starts, in its pixels, for the crops. pw is how wide a phone draws it (760 unless given): smaller for a
+// narrow clip whose point is across its whole width.
+const clip = (name, w, h, x, y, alt, pw = 760) => ({ src: `/img/jsal-ui/ui/clips/${name}.mp4`, poster: `/img/jsal-ui/ui/clips/${name}.webp`, w, h, alt, pw, cx: +(x / w * 100).toFixed(2), cy: +(y / h * 100).toFixed(2) });
 const CLIPS = {
-  gear: clip("gear", 670, 684, 0, 0, "The Gear plan's upgrades for a hunter's chest, filtered by where they come from: dungeons, quests, crafted, world drops."),
+  // the filter row and each upgrade's name, source and level, all across: zoomed out so a phone shows them together
+  gear: clip("gear", 670, 684, 0, 0, "The Gear plan's upgrades for a hunter's chest, filtered by where they come from: dungeons, quests, crafted, world drops.", 420),
   professions: clip("professions", 824, 892, 60, 66, "Leatherworking's road to the cap: what to craft now, then each step ahead, with a recipe's tooltip saying where to learn it."),
   journal: clip("story", 836, 638, 0, 0, "The Journal's story of the day: levels reached, bosses defeated and loot, filtered by kind."),
   dungeons: clip("dungeons", 836, 722, 24, 44, "The Dungeon guide picking Maraudon: each boss's loot with drop chances and the upgrades marked, then the quests to pick up."),
