@@ -84,7 +84,7 @@ if (touch) {
   $("howPaste").textContent = `. Then tap and hold the paste area and choose Paste${canReadClipboard ? ", or tap Paste from clipboard" : ""} (or press ${keys} with a keyboard)`;
 }
 if (canReadClipboard) {
-  $("pasteBtn").hidden = $("pasteSep").hidden = false;
+  $("pasteBtn").hidden = false;
   $("pasteBtn").addEventListener("click", async () => {
     try {
       let html = "", text = "";
