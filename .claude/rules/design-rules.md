@@ -31,8 +31,9 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 - **Exception, kept on purpose:** on the platform pages the gold word is "SEO" ("WordPress *SEO*: what you can
   change, and where"). Lora's italic capitals barely lean, so it reads as a lighter word rather than an
   obvious italic. It stays because "SEO" is the page's key word.
-- **The home page's headline is the one line set larger than a page title:** Lora 700 at 76px from 1100px wide,
-  46px below that and 40px on phones (John's pick of the colour-band home page, 19 Nov 2026).
+- **The home page's headline is the one line set larger than a page title:** Lora 700 at 64px from 1280px wide,
+  in its opening tile's deep shade; 40px below that (30px between 600 and 860px, where it shares the tile with the
+  keys). John's pick of the improved bento, 19 Nov 2026.
 - **Every other page title is one size:** Lora 700, 46px, line height 1.05, −0.02em, and 40px at 520px and under (
   Off the clock, Privacy, Changelog, 404, `/design-system/`). The longer titles of the CMS Picker and its platform
   pages also stop at 46px but shrink with the screen to 30px. A short page's empty space beside its title stays
@@ -56,7 +57,7 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   | 17px | Leads and H3s (Inter 600/700): "How to use it", a panel's heading |
   | 20px | The tool title in the top bar (17px at 420px and under), the platform cards' names, a platform guide's "at a glance" heading |
   | 24px | Section headings: every H2, a result card's name, the changelog's dates |
-  | 30px | A home band's name below 1100px (46px above it) and big callouts, 24px on phones: Off the clock's line over the art, the CMS Picker's quiz question and verdict line, a tool's empty-page heading |
+  | 30px | Home tile names and big callouts, 24px on phones: Off the clock's line over the art, the CMS Picker's quiz question and verdict line, a tool's empty-page heading |
   | 40 / 46px | Page titles (above); the long titles' clamp runs from 30px |
 
   Body and H3 are two pixels and a weight apart, so a subheading reads as one at a glance. **Exceptions**, each
@@ -168,9 +169,8 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   parts of the site): equal-width rectangles with 6px corners in a grid, so every row lines up at any width, each
   with its icon, name and count, the chosen one in the selected gold. Not pills, whose rows stagger as they wrap; two
   to four options are a switch (`.jsal-seg`). **The one filled pill** is the home page's gold "Find your CMS":
-  the page's main action, filled rather than bordered, so it never reads as a choice. Each band under it has a pill
-  of its own, in its tint's deep shade, naming its tool's action ("Resize images"); nothing off the home page uses
-  that shape for an action.
+  the page's main action, filled rather than bordered, so it never reads as a choice. It stays a pill to sit with the
+  bento's round tiles; nothing else on the site uses that shape for an action.
 
 ## Layout
 
@@ -199,12 +199,13 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   a side panel about 500px wide). A change to its look is proved by recording every element's position and size
   before and after, at 1440 × 900, 500 × 1330 and 390 × 844, empty and with an image loaded.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
-- **Home page:** tools only, as a run of full-width colour bands, one per tool, each with a picture that can be
-  played with (John, 19 Nov 2026; the bento grid it replaced is gone). A new home page tool is a new band. **The
-  work tools never become bands or bento grids** (the CMS Picker and its platform pages, Clean Paste, the Image
-  Resizer, Redirect Import, the Playbook, Privacy, Changelog): they keep an open layout. **The gaming side keeps its
-  tiles** (John, 7 Nov 2026): `/play/`'s. The bands, their pictures, what can be played with and how they fit each
-  width are in `.claude/rules/home-page.md`, which loads with the home page's files.
+- **Home page:** tools only, as a bento grid of tiles with one big opening tile that carries the headline, and
+  pictures that can be played with (John, 19 Nov 2026, his pick over full-width colour bands); every new home page
+  tool or section is a bento box. **The work tools never become bento grids** (the CMS Picker and its platform
+  pages, Clean Paste, the Image Resizer, Redirect Import, the Playbook, Privacy, Changelog): they keep an open layout,
+  and may use a card in the tiles' style (corners, padding, a tint) where it helps. **The gaming side may** (John,
+  7 Nov 2026): `/play/`'s tiles. The grid, the tiles, their pictures, what can be played with, watermarks,
+  breakouts and order are in `.claude/rules/home-page.md`, which loads with the home page's files.
 - **The jsal.ui page** (`/jsal-ui/`) is a product page, no longer a bento, modelled on ellesmereui.com's layout
   but in jsal.io's own type and gold (John, 18 Nov 2026: "a bit more professional", then "look and feel more like
   ellesmereui.com", mockup D). From the top: a full-width dark **stage** (one of John's game screenshots, blurred

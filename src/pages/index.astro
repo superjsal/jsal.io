@@ -23,45 +23,44 @@ import Updates from "../components/Updates.astro";
 }
 </script>
 <style is:inline slot="head">
-/* Band colours: each tool keeps its own tint with a deep shade of it for the words.
-   The pieces of each tool laid on the bands wear the tools' own colours, so they change with the theme as the tools do;
+/* Tile colours: each tool keeps its own tint with a deep shade of it for the words; Updates and Say hi are plain.
+   The pieces of each tool laid on the tiles wear the tools' own colours, so they change with the theme as the tools do;
    in dark mode every piece has the same faint edge, and the platform keys a deeper shadow. */
 :root {
   --t-cms: #d7c6f0; --t-cms-ink: #3d2466;
   --t-cp: #f3dc9a; --t-cp-ink: #4f3a08;
   --t-ir: #c6e2dd; --t-ir-ink: #13453f;
   --t-ri: #f0d2dc; --t-ri-ink: #5c1a30;
+  --t-plain: #e6e8ec;
   --obj-shadow: 0 18px 40px rgb(30 20 10 / 0.2), 0 2px 6px rgb(30 20 10 / 0.08);
   --obj-edge: transparent;
   --key-sheen: inset 0 1px 0 rgb(255 255 255 / 0.35);
   --key-drop: 0 18px 24px rgb(30 20 40 / 0.22);
   --key-drop-low: 0 7px 11px rgb(30 20 40 / 0.2);
-
+  --wm-gem: 0.35;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de;
+    --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de; --t-plain: #1c1f27;
     --obj-shadow: 0 18px 40px rgb(0 0 0 / 0.5); --obj-edge: var(--jsal-line-hi);
     --key-drop: 0 18px 24px rgb(0 0 0 / 0.45); --key-drop-low: 0 7px 11px rgb(0 0 0 / 0.4);
-
+    --wm-gem: 0.45;   /* a little stronger, so the faint gold doesn't read as brown on the dark tints */
   }
 }
 :root[data-theme="dark"] {
-  --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de;
+  --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de; --t-plain: #1c1f27;
   --obj-shadow: 0 18px 40px rgb(0 0 0 / 0.5); --obj-edge: var(--jsal-line-hi);
   --key-drop: 0 18px 24px rgb(0 0 0 / 0.45); --key-drop-low: 0 7px 11px rgb(0 0 0 / 0.4);
-
+  --wm-gem: 0.45;
 }
 
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
-a:not(.band):focus-visible { border-radius: var(--jsal-radius); }
-/* The column: a 20px gutter each side, wider where a notch or rounded corner cuts in (phones on their side). The top
-   bar, the closing section and the footer sit in it; the bands run the full width, each with the same column inside (.in) */
-.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) 0 max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
-.wrap.end { padding-bottom: var(--jsal-page-end); }
+a:focus-visible { border-radius: var(--jsal-radius); }
+/* The column: a 20px gutter each side, wider where a notch or rounded corner cuts in (phones on their side) */
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) var(--jsal-page-end) max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
 
 /* Top bar: the shared one (/shell.css), with section links */
 .jsal-top nav { display: flex; gap: var(--jsal-space-2); font-size: 14px; }
@@ -76,47 +75,60 @@ a:not(.band):focus-visible { border-radius: var(--jsal-radius); }
 h1, h2 { text-wrap: balance; }
 p { text-wrap: pretty; }
 
-/* The page is a run of full-width bands, each in its tool's own colour: the tool's name and one line on one side, a
-   real-looking piece of the tool at work on the other, the sides swapping down the page. The first band carries the
-   page's headline beside the CMS Picker's keys. Each picture can be played with. */
-.band { background: var(--bg); color: var(--ink); }
-.in { display: flex; align-items: center; justify-content: space-between; gap: var(--jsal-space-48); max-width: calc(var(--jsal-col) + 40px); min-height: 520px; margin: 0 auto; padding: var(--jsal-space-64) max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) var(--jsal-space-64) max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
-.flip .in { flex-direction: row-reverse; }
-.hero { margin-top: var(--jsal-space-12); }
-.hero .in { min-height: 620px; }
-.txt { position: relative; z-index: 2; flex: 0 1 440px; min-width: 0; }
+/* Bento grid: six columns. The CMS Picker's tile takes the first row and carries the page's headline; then the wide
+   tile swaps sides each row, and Updates runs across the bottom */
+.grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: minmax(440px, auto) minmax(256px, auto) minmax(276px, auto) minmax(220px, auto); gap: var(--jsal-space-32); margin-top: var(--jsal-page-top); }
+.cms { grid-column: 1 / 7; grid-row: 1; }
+.ir { grid-column: 1 / 5; grid-row: 2; }
+.cp { grid-column: 5 / 7; grid-row: 2; }
+.hi { grid-column: 1 / 3; grid-row: 3; }
+.ri { grid-column: 3 / 7; grid-row: 3; }
+.now { grid-column: 1 / 7; grid-row: 4; }
+
+/* The headline, in the first tile: larger than a page title, in the tile's deep shade */
 .roles { display: flex; flex-wrap: wrap; margin: 0; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
-.roles span + span::before { content: "·"; content: "·" / ""; margin: 0 var(--jsal-space-8); color: var(--jsal-muted); }
-.hero h1 { margin: var(--jsal-space-16) 0 0; font: 700 76px/1 "Lora", Georgia, serif; letter-spacing: -0.03em; }   /* style: allow (the home page's headline: the one line set larger than a page title) */
-.hero h1 em { font-weight: 600; color: var(--jsal-accent); }
-.hero .txt p { max-width: 34ch; margin: var(--jsal-space-20) 0 0; font-size: 17px; }
+.roles span + span::before { content: "·"; content: "·" / ""; margin: 0 var(--jsal-space-8); }
+.cms h1 { margin: var(--jsal-space-16) 0 0; font: 700 64px/1 "Lora", Georgia, serif; letter-spacing: -0.03em; }   /* style: allow (the home page's headline: the one line set larger than a page title) */
+.cms h1 em { font-weight: 600; color: var(--jsal-accent); }
+.cms .txt p { max-width: 30em; margin: var(--jsal-space-20) 0 0; }
 .cta { display: flex; margin: var(--jsal-space-20) 0 0; }
-.cta a { display: inline-flex; align-items: center; padding: var(--jsal-space-8) var(--jsal-space-20); border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform var(--jsal-quick) ease; }
-.cta a:hover { transform: translateY(-2px); }
+.cta a { display: inline-flex; align-items: center; padding: var(--jsal-space-8) var(--jsal-space-20); border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; }
 .cta a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 @media (pointer: coarse) { .cta a { min-height: 44px; } }
-.band h2 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
-.band .txt p { max-width: 30ch; margin: var(--jsal-space-12) 0 0; font-size: 17px; line-height: 1.5; }
-/* The way into the band's tool, said as its action */
-.go { display: inline-flex; align-items: center; min-height: 40px; margin-top: var(--jsal-space-24); padding: 0 var(--jsal-space-20); border-radius: var(--jsal-radius-pill); background: var(--ink); color: var(--bg); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform var(--jsal-quick) ease; }
-.go:hover { transform: translateY(-2px); }
-.go:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-@media (pointer: coarse) { .go { min-height: 44px; } }
-/* A tool's picture: a small stage its pieces are placed on, drawn to the pieces' own scale and then enlarged as one,
-   so every piece keeps its place and its motion at any size */
-.pic { position: relative; flex: none; zoom: 1.3; }
+
+/* Tiles: soft colour, a deep-shade serif name, and real-looking pieces of the tool laid on top. Each tile
+   clips most of its pieces (.clip); a piece may poke a little past the edge, never near another tile and never into the
+   page's side gutter, so nothing reaches past the column at any width. Every tool tile reads the same way: its name and
+   line at the top left, then the picture. */
+.tile { position: relative; display: flex; flex-direction: column; border-radius: var(--jsal-radius-tile); --pad: var(--jsal-space-24); padding: var(--pad); background: var(--bg); color: var(--ink); text-decoration: none; transition: transform var(--jsal-settle) var(--jsal-ease-out); }
+.tile:not(.hands):has(.tile-link:hover), .hi:has(.hi-mail:hover) { transform: translateY(-4px) rotate(-0.4deg); }
+.tile .txt { position: static; }   /* static, so the tile's link can cover the whole tile (below) */
+/* A tile's link covers the whole tile; the pieces that can be played with sit above it */
+.tile-link { text-decoration: none; }
+.tile-link::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: var(--jsal-radius-tile); }
+.tile-link:focus-visible { outline: none; }
+.tile:has(.tile-link:focus-visible) { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
+.tile h2 { margin: 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
+.tile .txt p { margin: var(--jsal-space-8) 0 0; font-size: 17px; line-height: 1.45; }
+.clip { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
 .obj { position: absolute; transform: var(--rest, none); transition: transform var(--jsal-settle) var(--jsal-ease-out); }
-.band:hover .obj { transform: var(--hover, var(--rest, none)); }
+.tile:hover .obj { transform: var(--hover, var(--rest, none)); }
 /* The edge is an outline just inside the piece: a ring drawn as a shadow comes out uneven on a tilted piece, thin on
    one side and heavy at the corners, and an outer one did so in Firefox */
 .paper { background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); outline: 1px solid var(--obj-edge); outline-offset: -1px; }
 .mono { font: 600 11px/1.4 "JetBrains Mono", Consolas, monospace; }   /* style: allow (the pictures are miniatures of the tools) */
+/* Each tool's app icon drawn large and faint in the tile's ink, its gem a faint gold, behind the pictures and always
+   clear of the words: a texture, never something the eye goes to before the picture */
+.wm { position: absolute; color: var(--ink); }
+.wm .s { opacity: 0.07; }
+.wm .g { fill: var(--jsal-fill); opacity: var(--wm-gem); }
 
 /* CMS Picker: one key per platform it compares, its logo in that platform's own colours with a darker edge under it,
-   in a tilted brick. Playing, three needs take turns, each pressing the keys the quiz puts first for it (.fit-for names it). */
+   in a tilted brick clear of the words above it; it keeps its distance from the tile's right edge, which is the
+   column's, so the tilted brick never reaches the gutter however wide the tile is. Playing, three needs take turns, each pressing the keys the quiz puts first for it (.fit-for names it). */
 .cms { --bg: var(--t-cms); --ink: var(--t-cms-ink); }
-.cms .pic { width: 500px; height: 410px; }
-.pcs { left: 18px; top: 86px; z-index: 3; display: flex; flex-direction: column; gap: var(--jsal-space-12); transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
+.cms .txt { max-width: 560px; }
+.pcs { left: calc(100% - 482px); top: 116px; z-index: 3; display: flex; flex-direction: column; gap: var(--jsal-space-12); transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
 .pcs > span { display: flex; gap: var(--jsal-space-12); }
 .pcs > span:nth-child(even) { margin-left: 56px; }   /* style: allow (a picture, drawn to its own measure) */
 .pc { --edge: color-mix(in srgb, var(--b) 66%, black); display: grid; place-items: center; width: 100px; height: 66px; border-radius: var(--jsal-radius-xl); background: linear-gradient(180deg, color-mix(in srgb, var(--b) 80%, white), var(--b) 60%); color: var(--c); box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); cursor: pointer; transition: translate var(--jsal-quick) ease, box-shadow var(--jsal-quick) ease; }
@@ -128,8 +140,8 @@ p { text-wrap: pretty; }
 .pc .wide { width: 46px; }
 .pc .wix { -webkit-mask-size: 36px auto; mask-size: 36px auto; }
 .pc-light { --edge: color-mix(in srgb, var(--b) 80%, black); background: linear-gradient(180deg, var(--b), color-mix(in srgb, var(--b) 94%, black) 60%); }
-/* the need being played, in a pill at the picture's top corner */
-.fit-for { position: absolute; left: 0; top: 0; z-index: 4; display: grid; pointer-events: none; }
+/* the need being played, in a pill above the keys */
+.fit-for { position: absolute; left: calc(100% - 470px); top: 28px; z-index: 4; display: grid; pointer-events: none; }
 .fit-for span { grid-area: 1 / 1; justify-self: start; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); outline: 1px solid var(--obj-edge); outline-offset: -1px; font-size: 12px; white-space: nowrap; opacity: 0; }
 .p-wordpress { --b: #ffffff; --c: #21759b; }
 .p-shopify { --b: #5e8e3e; --c: #ffffff; }
@@ -146,13 +158,14 @@ p { text-wrap: pretty; }
 .p-sanity { --b: #f03e2f; --c: #ffffff; }
 .p-ghost { --b: #15171a; --c: #ffffff; }
 
-/* Image Resizer: the crop editor with its size buttons and a tilted list of the files it made from that one photo.
-   The crop box is the picked size's shape, as large as the photo allows, so playing it takes each size
+/* Image Resizer: the crop editor with its size buttons and a tilted list of the files it made from that one photo, the
+   row's breakout. The crop box is the picked size's shape, as large as the photo allows, so playing it takes each size
    in turn (--ar, the width over the height, is registered so it can move smoothly) and each lands in the list. */
 @property --ar { syntax: "<number>"; inherits: true; initial-value: 1.91; }
 .ir { --bg: var(--t-ir); --ink: var(--t-ir-ink); }
-.ir .pic { width: 460px; height: 280px; }
-.ed { left: 14px; top: 46px; width: 250px; padding: 12px; border-radius: 16px; --hover: translateY(-8px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
+.ir .txt { max-width: 258px; }
+.ir .wm { width: 394px; height: 394px; left: -80px; top: 36px; }   /* the photo's frame lined up with the words, starting under them */
+.ed { left: 290px; top: 22px; z-index: 2; width: 250px; padding: 12px; border-radius: 16px; pointer-events: auto; --hover: translateY(-8px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .ed-head { display: flex; justify-content: space-between; color: var(--jsal-muted); }
 .ed-photo { position: relative; display: block; margin-top: var(--jsal-space-8); height: 140px; border-radius: var(--jsal-radius-lg); overflow: hidden; container-type: size; }
 .ed-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -165,7 +178,7 @@ p { text-wrap: pretty; }
 .sizes { display: flex; gap: 4px; margin-top: 10px; }   /* style: allow (a picture, drawn to its own measure) */
 .sizes span { flex: 1; padding: 5px 0; border-radius: var(--jsal-radius); border: 1px solid var(--jsal-line); font-size: 10px; text-align: center; white-space: nowrap; cursor: pointer; }   /* style: allow (miniature: three sizes across the editor) */
 .sizes .on { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); }
-.outs { right: 20px; top: 22px; z-index: 3; width: 214px; padding: 12px 14px; border-radius: 16px; --rest: rotate(4deg); --hover: rotate(6deg) translate(4px, -4px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
+.outs { right: 20px; top: -2px; z-index: 3; width: 214px; padding: 12px 14px; border-radius: 16px; --rest: rotate(4deg); --hover: rotate(6deg) translate(4px, -4px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .outs-head { display: flex; justify-content: space-between; padding-bottom: var(--jsal-space-8); color: var(--jsal-muted); }
 .outs-head span { color: var(--jsal-ok); }
 .outs .row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }   /* style: allow (a picture, drawn to its own measure) */
@@ -174,16 +187,15 @@ p { text-wrap: pretty; }
 .th img { display: block; width: min(44px, 30px * var(--ar)); height: min(30px, 44px / var(--ar)); border-radius: var(--jsal-radius-sm); object-fit: cover; }
 .outs .row span { display: flex; flex-direction: column; font-size: 11px; line-height: 1.4; color: var(--jsal-muted); }   /* style: allow (miniature) */
 .outs .row b { color: var(--jsal-ink); font-weight: 800; }   /* bolder than its row's 600 would ask for 900, past the font's heaviest */
-/* the size picked by hand: its file marked in the list */
-.outs .row.pick b { color: var(--jsal-accent); }
+.outs .row.pick b { color: var(--jsal-accent); }   /* the size picked by hand: its file marked in the list */
 
-/* Clean Paste: its Text | HTML switch over a short post, straight.
-   At rest a gold line stands just past halfway, where the text's lines end, the formatted text on its left and the HTML on its right (the switch's
+/* Clean Paste: its Text | HTML switch over a short post, straight and poking past the tile's left edge so the watermark
+   shows. At rest a gold line stands just past halfway, where the text's lines end, the formatted text on its left and the HTML on its right (the switch's
    order), so the still picture shows the same words both ways; playing, the line shows all the text, wipes it all into
    HTML and comes back. */
 .cp { --bg: var(--t-cp); --ink: var(--t-cp-ink); }
-.cp .pic { width: 290px; height: 140px; zoom: 1.9; }
-.sheet { left: 4px; top: 14px; --w: 54%; cursor: ew-resize; touch-action: pan-y; z-index: 1; width: 258px; padding: 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
+.cp .wm { width: 354px; height: 354px; right: -134px; top: 64px; }   /* under the words, off the right edge */
+.sheet { left: -12px; top: 118px; z-index: 2; --w: 54%; cursor: ew-resize; touch-action: pan-y; width: 258px; padding: 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 /* the tool's switch in miniature, across the sheet: Text over the formatted half, HTML over the code, the gold line running
    up through it and the selected gold filling the HTML side of the line */
 .sw { position: relative; display: grid; grid-template-columns: 54% 1fr; padding: var(--jsal-space-2); border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
@@ -194,20 +206,37 @@ p { text-wrap: pretty; }
 .views { position: relative; display: grid; }
 .views > * { grid-area: 1 / 1; }
 .views::after { content: ""; position: absolute; top: -36px; bottom: -4px; left: var(--w); width: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); }
-.tx { display: flex; flex-direction: column; background: var(--jsal-surface); color: var(--jsal-ink-2); font-size: 12px; line-height: 1.6; clip-path: inset(0 calc(100% - var(--w)) 0 0); }
+.tx { display: flex; flex-direction: column; background: var(--jsal-surface); color: var(--jsal-ink-2); font-size: 12px; line-height: 1.6; clip-path: inset(0 calc(100% - var(--w)) 0 0); }   /* --w is where the line stands: the pointer moves it */
 .tx b { color: var(--jsal-ink); font: 700 14px/1.37 "Lora", Georgia, serif; }   /* one line of the code's height */
 .tx .li::before { content: "\2022"; margin-right: var(--jsal-space-8); color: var(--jsal-muted); }
 .sheet code { color: var(--jsal-muted); font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
 .sheet code i { font-style: normal; color: var(--jsal-info); }
 .sheet .ln { display: block; }
-/* --w is where the line stands across the note: the pointer moves it, wiping the text into its HTML and back */
+
+/* Say hi: a draft to the site's address, tilted and poking out at the tile's top-right corner (the row's breakout). The heading's
+   link covers the whole tile, so the GitHub link sits above it. */
+.hi { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
+.hi-mail { text-decoration: none; }
+.hi .txt { position: static; margin-top: 130px; }   /* style: allow (room for the draft) static: the link's cover below spans the whole tile; the margin keeps the words under the draft */
+.hi-mail::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: var(--jsal-radius-tile); }
+.hi-mail:focus-visible { outline: none; }
+.hi:has(.hi-mail:focus-visible) { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
+.hi .txt a:not(.hi-mail) { position: relative; z-index: 2; color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
+.draft { left: 40px; right: -12px; top: 2px; z-index: 3; padding: 12px 14px; border-radius: 16px; font-size: 12px; pointer-events: none; transform-origin: top right; --rest: rotate(2deg); --hover: rotate(2deg) translateY(-6px); }   /* a click on the draft reaches the email link under it; style: allow (a miniature) */
+.draft > span { display: flex; gap: 10px; padding: 4px 0; border-top: 1px solid var(--jsal-sunk); }   /* style: allow (a picture, drawn to its own measure) */
+.draft > span:first-child { justify-content: space-between; align-items: center; padding: 0 0 var(--jsal-space-4); border: 0; font-size: 13px; font-weight: 700; }
+.draft > span:first-child i { font-style: normal; font-weight: 400; color: var(--jsal-muted); }
+.draft em { width: 52px; font-style: normal; color: var(--jsal-muted); }
+.draft .body { padding-top: var(--jsal-space-8); }
+.draft .body i { overflow: hidden; font-style: normal; color: var(--jsal-ink-2); white-space: nowrap; text-overflow: ellipsis; }
 
 /* Redirect Import: the tool's sheet of old and new addresses, each row with its check, and the file it writes for the
-   platform, overlapping its corner; both straight. The sheet's last row shows only on
+   platform, poking out of the tile's bottom edge towards Updates; both straight. The sheet's last row shows only on
    phones, where the file is left out. */
 .ri { --bg: var(--t-ri); --ink: var(--t-ri-ink); }
-.ri .pic { width: 460px; height: 300px; }
-.rs { left: 14px; top: 10px; z-index: 2; width: 300px; padding: 10px 14px 8px; border-radius: 16px; display: flex; flex-direction: column; font-size: 12px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
+.ri .txt { max-width: 258px; }
+.ri .wm { width: 360px; height: 360px; left: -60px; top: 64px; }   /* the window under the words, its arrow pointing at the sheet */
+.rs { left: 290px; top: 10px; z-index: 2; width: 300px; padding: 10px 14px 8px; border-radius: 16px; display: flex; flex-direction: column; font-size: 12px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .rs-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: var(--jsal-space-8); font-size: 13px; }
 .rs-head .mono, .rs .n, .rs .out-cell { color: var(--jsal-muted); }
 .rs-row { display: grid; grid-template-columns: 12px 18px 1fr 1.2fr; gap: var(--jsal-space-8); align-items: center; padding: 3px 0; border-top: 1px solid var(--jsal-sunk); }
@@ -220,7 +249,7 @@ p { text-wrap: pretty; }
 .dot.ok { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
 .dot.bad { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
 .dot.out { background: var(--jsal-sunk); color: var(--jsal-muted); }
-.rf { right: 22px; bottom: 14px; z-index: 3; width: 252px; padding: 10px 14px 12px; border-radius: 16px; display: flex; flex-direction: column; gap: 6px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
+.rf { right: 22px; bottom: -10px; z-index: 3; width: 252px; padding: 10px 14px 12px; border-radius: 16px; display: flex; flex-direction: column; gap: 6px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
 .rf-head { display: flex; justify-content: space-between; color: var(--jsal-muted); }
 .rf-head span { color: var(--jsal-ok); }
 .rf code { font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
@@ -229,13 +258,13 @@ p { text-wrap: pretty; }
 /* pointing at a ready row lights it and the line it wrote in the file */
 .rs-row.lit, .rf .ln.lit { border-radius: var(--jsal-radius-sm); background: var(--jsal-accent-soft); }
 
-/* After the tools, on the plain page: a way to say hi, and the newest change in each of the three most recently
-   changed parts of the site, as a plain list (the rows aren't links, so they don't look like cards) */
-.tail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--jsal-space-48); padding-top: var(--jsal-space-64); }
-.tail h2 { margin: 0 0 var(--jsal-space-8); font: 700 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
-.tail p { margin: 0; color: var(--jsal-ink-2); }
-.tail a { position: relative; color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
-.upd { display: flex; flex-direction: column; margin: 0 0 var(--jsal-space-12); padding: 0; list-style: none; }
+/* Updates: the newest change in each of the three most recently changed parts, as a plain list, newest first (the
+   rows aren't links, so they don't look like cards), and a faint stack of notes as its watermark */
+.now { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
+.now .txt { max-width: 260px; }
+.now .txt a { color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
+.now .wm { width: 300px; height: 300px; left: calc(50% - 202px); top: -48px; }   /* a stack of notes, the gem on the newest, whole, in the open middle between the words and the list */
+.upd { position: absolute; right: var(--pad); top: 16px; width: min(404px, calc(100% - 340px)); display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
 .upd li { position: relative; padding: var(--jsal-space-8) 0 var(--jsal-space-8) var(--jsal-space-40); border-top: 1px solid var(--jsal-line); }
 .upd li:first-child { border-top: 0; }
 .upd-name { display: block; padding-right: var(--jsal-space-48); font-size: 13px; font-weight: 700; }
@@ -254,53 +283,115 @@ footer .fg a { padding: var(--jsal-space-4) 0; color: var(--jsal-muted); text-de
 footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @media (pointer: coarse) {
   footer a, footer .foot-btn { min-height: 44px; display: inline-flex; align-items: center; }
-  .tail a::after { content: ""; position: absolute; inset: -13px -4px; }
+  .hi .txt a:not(.hi-mail)::after, .now .txt a::after { content: ""; position: absolute; inset: -13px -4px; }
+}
+
+/* Narrower desktops and phones on their side: the intro on its own row, the CMS Picker, the Image Resizer, Redirect
+   Import and Updates full width, and Clean Paste beside Say hi */
+@media (max-width: 1279px) {
+  .now .wm { width: 200px; height: 200px; left: -8px; top: -24px; }   /* no open middle here: above the words, in line with them */
+  .grid { grid-template-rows: none; }
+  .cms h1 { font-size: 40px; line-height: 1.05; letter-spacing: -0.02em; }
+  .cms .txt { max-width: 320px; }
+  .fit-for { display: none; }   /* no clear room for it beside the words here */
+  .cms, .ir, .ri, .now { grid-column: 1 / -1; grid-row: auto; }
+  .cms { min-height: 440px; }
+  .ir, .cp { min-height: 256px; }
+  .ri { min-height: 276px; }   /* room for the sheet's four rows above the file */
+  .hi { min-height: 292px; }   /* the draft clear of the words under it */
+  .now { min-height: 272px; }
+  .cp { grid-column: 1 / 4; grid-row: auto; }
+  .hi { grid-column: 4 / 7; grid-row: auto; }
+  .sheet { left: var(--pad); }   /* the column's edge: in line with the words instead of poking into the gutter */
+  .draft { right: 0; }
+}
+/* Phones on their side: a shorter CMS Picker, its brick smaller, anchored to the right and filling the tile (its top
+   keys poking out, beside the words), its watermark under the words */
+@media (min-width: 600px) and (max-width: 860px) {
+  .cms { min-height: 340px; }
+  .cms h1 { font-size: 30px; line-height: 1.1; }
+  .cms .txt { max-width: 250px; }
+  .pcs { left: auto; right: 358px; top: 46px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
+}
+/* The narrowest of those: a smaller brick inside the tile, narrower words, and room for Say hi's three lines */
+@media (min-width: 600px) and (max-width: 699px) {
+  .cms .txt { max-width: 220px; }
+  .pcs { right: 290px; top: 36px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
+  .cp, .hi { min-height: 304px; }
+  .sheet { top: 140px; transform-origin: top left; --rest: scale(0.86); --hover: scale(0.86) translateY(-6px); }
+  .ri .txt { max-width: 236px; }   /* the name on one line, clear of the sheet */
+  .tile.ri { min-height: 224px; }   /* the smaller sheet needs less */
+  .ri .rs { left: auto; right: var(--pad); width: 300px; transform-origin: top right; --rest: scale(0.8); --hover: scale(0.8) translateY(-6px); }   /* the whole sheet, smaller, rather than its cells cut short */   /* the words take a second line here, so the sheet starts lower, and the tile is narrower than the sheet */
+}
+/* Too narrow for the output list beside the editor, the file beside the sheet, or the updates beside the words: the
+   list and the file go and the editor and sheet grow into their room, and the updates run across the tile under the words */
+@media (min-width: 600px) and (max-width: 759px) {
+  .ir { min-height: 272px; }   /* the taller editor */
+  .ed { left: 290px; right: var(--pad); width: auto; min-width: 250px; }
+  .ed-photo { height: 160px; }
+  .rf { display: none; }
+  .ri { min-height: 256px; }   /* no file under the sheet here */
+  .rs { right: var(--pad); width: auto; }
+}
+/* Clean Paste's line takes two lines here too */
+@media (min-width: 700px) and (max-width: 799px) {
+  .sheet { top: 140px; }
+}
+@media (max-width: 759px) {
+  .outs { display: none; }
+  .now .wm { display: none; }   /* the notes fill the top of the tile here */
+  .now { height: auto; }
+  .now .clip { position: static; overflow: visible; }
+  .upd { position: static; width: auto; margin: var(--jsal-space-8) 0 calc(var(--jsal-space-8) * -1); }   /* under the words; the last row's padding is the tile's */
+}
+/* One column (phones upright): each tile only as tall as its piece and words, each piece poking a little out of its
+   tile as on desktop; no watermarks */
+@media (max-width: 599px) {
+  .grid > * { grid-column: 1 / -1 !important; }
+  .hi { order: 1; }   /* one tile per row: Say hi after every tool, then Updates */
+  .now { order: 2; }
+  .wm { display: none; }
+  .cms, .ir, .cp, .hi, .ri { min-height: 0; }
+  .tile.cms { padding-bottom: 262px; }   /* style: allow (room for the brick under the words) */
+  .cms .txt { max-width: none; }
+  .cms h1 { font-size: 40px; }
+  .pcs { left: 14px; top: auto; bottom: -118px; --rest: rotate(-10deg) scale(0.6); --hover: var(--rest); }
+  .fit-for { display: grid; left: 20px; top: auto; bottom: -12px; }   /* it pokes out of the tile's foot, clear of the words */
+  /* the editor and the sheet follow their words: the editor at the tile's full width, inside it, and the sheet
+     centred, a negative margin taking back the room its scaling frees */
+  .ir .clip { position: static; order: 1; overflow: visible; }
+  .ed { position: relative; display: block; left: auto; top: auto; width: auto; margin: 18px 0 0; --rest: none; --hover: translateY(-6px); }   /* style: allow (a picture, drawn to its own measure) */
+  .ed-photo { height: 170px; }
+  .sheet { position: relative; left: auto; top: auto; margin: 26px auto -12px; width: min(258px, 100%); transform-origin: top center; --rest: rotate(-2deg) scale(0.9); --hover: rotate(-2deg) scale(0.9) translateY(-6px); }   /* style: allow (a picture, drawn to its own measure) */
+  /* Redirect Import's sheet under its words, inside the tile, with all four rows; no file */
+  .rs { position: relative; left: auto; top: auto; margin: 22px auto -8px; width: min(300px, 100%); }   /* style: allow (a picture, drawn to its own measure) */
+  .rs .last { display: grid; }
+  .rf { display: none; }
+  .hi .txt { margin-top: 136px; }   /* style: allow (room for the draft) */
+  .draft { left: 20px; right: 20px; width: auto; max-width: 340px; margin: 0 auto; transform-origin: top center; --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
 }
 #updates, #hi-h { scroll-margin-top: 16px; }
-
-/* Narrower windows: the headline at a page title's size, smaller names, and each picture a step smaller */
-@media (max-width: 1099px) {
-  .hero h1 { font-size: 46px; line-height: 1.05; letter-spacing: -0.02em; }
-  .band h2 { font-size: 30px; line-height: 1.1; }
-  .in { gap: var(--jsal-space-32); min-height: 400px; padding-top: var(--jsal-space-48); padding-bottom: var(--jsal-space-48); }
-  .hero .in { min-height: 440px; }
-  .txt { flex-basis: 320px; }
-  .pic { zoom: 1.05; }
-  .cms .pic { zoom: 1; }
-  .cp .pic { zoom: 1.6; }
+/* The narrowest phones: a smaller brick, so it fits across the tile and the page never scrolls sideways */
+@media (max-width: 374px) {
+  .pcs { left: calc(50% - 130px); --rest: rotate(-10deg) scale(0.54); }   /* centred (275px across, its box starting 8px left of its corner) */
+  .tile.cms { padding-bottom: 262px; }   /* style: allow (room for the brick) */
 }
-@media (max-width: 899px) {
-  .pic { zoom: 0.82; }
-  .cms .pic { zoom: 0.76; }
-  .cp .pic { zoom: 1.3; }
+/* The narrowest phones: the sheet takes the tile's padding too, its addresses smaller, so every one shows whole */
+@media (max-width: 389px) {
+  .rs { width: calc(100% + 20px); margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px; }   /* style: allow (a picture, drawn to its own measure) */
+  .rs-row { grid-template-columns: 12px 18px 1fr 1fr; gap: var(--jsal-space-8); }
+  .rs-row .mono { font-size: 10px; }   /* style: allow (miniature) */
 }
-/* Phones: the words, then the picture under them. A picture shrunk to fit would be too small to read, so each shows
-   its main piece only (the editor without its output list, the sheet without its file), larger */
-@media (max-width: 759px) {
-  .in, .flip .in { flex-direction: column; align-items: flex-start; gap: var(--jsal-space-32); min-height: 0; padding-top: var(--jsal-space-40); padding-bottom: var(--jsal-space-40); }
-  .hero .in { min-height: 0; }
-  .txt { flex: none; }
-  .pic { align-self: center; }
-  .outs, .rf { display: none; }
-  .cms .pic { zoom: 1; }
-  .ir .pic { width: 250px; height: 236px; zoom: 1.6; }
-  .ed { left: 0; top: 0; }
-  .ri .pic { width: 300px; height: 190px; zoom: 1.4; }
-  .rs { left: 0; top: 0; }
-  .rs .last { display: grid; }
-  .cp .pic { zoom: 1.6; }
-  .tail { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-32); padding-top: var(--jsal-space-40); }
+/* Phones: a smaller title and tiles, and one spacing step for the grid */
+@media (max-width: 520px) {
+  .grid { gap: var(--jsal-space-32); }
+  .roles span + span::before { margin: 0 var(--jsal-space-8); }
+  .tile { --pad: var(--jsal-space-20); }
+  footer { margin-top: var(--jsal-space-32); }
 }
-@media (max-width: 519px) {
-  .hero h1 { font-size: 40px; }
-  .cms .pic { zoom: 0.82; } .ir .pic { zoom: 1.35; } .ri .pic { zoom: 1.25; } .cp .pic { zoom: 1.4; }
-}
-@media (max-width: 419px) { .cms .pic { zoom: 0.72; } .ir .pic { zoom: 1.3; } .ri .pic { zoom: 1.12; } .cp .pic { zoom: 1.2; } }
-@media (max-width: 374px) { .cms .pic { zoom: 0.62; } .ir .pic { zoom: 1.15; } .ri .pic { zoom: 1; } .cp .pic { zoom: 1.05; } }
-@media (max-width: 339px) { .cms .pic { zoom: 0.55; } .ir .pic { zoom: 1.1; } .ri .pic { zoom: 0.92; } .cp .pic { zoom: 0.95; } }
-/* Pointing at a band (or focusing it) plays what its tool does three times; on touch screens once, the
-   first time the band comes into view (the script below sets .play). The CMS Picker's keys show what fits three needs
-   in turn (one, picked at random, on touch screens), the crop box takes each size's shape in turn, the formatted text wipes into its HTML and the
+/* Pointing at a tile (or focusing it) plays what its tool does three times; on touch screens once, the
+   first time the tile comes into view (the script below sets .play). The CMS Picker's keys show what fits three needs
+   in turn (one, picked at random, on touch screens), the crop box takes each size's shape in turn, the formatted text wipes into its HTML, the email types itself and the
    redirect sheet's rows are checked into their file. */
 @media (prefers-reduced-motion: no-preference) {
   /* each need lights the keys the real quiz ranks first for it: a small shop, a paid newsletter, a startup that wants
@@ -329,6 +420,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .sw::before { --k: cp-thumb; }
   .sw .t { --k: cp-t; }
   .sw .h { --k: cp-h; }
+  .hi:is(.play, :has(.hi-mail:is(:hover, :focus-visible))) .draft .body i { animation: hi-type 3.6s steps(41, end) 2.9 both; }   /* style: allow (the home pictures play) */
   .ri:not(.hands):is(:hover, :focus-within, .play) :is(.rs .dot, .rs-note, .rf .ln:not(.mute)) { animation: var(--k) 3s ease-out 2.9 both; }   /* style: allow (the home pictures play) */
   .rs-row:nth-of-type(2) .dot { --k: ri-d1; }
   .rs-row:nth-of-type(3) .dot { --k: ri-d2; }
@@ -366,6 +458,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes cp-thumb { 0% { left: calc(54% + 3px); } 13%, 31% { left: calc(100% + 3px); } 56%, 71% { left: 3px; } 84%, 100% { left: calc(54% + 3px); } }
 @keyframes cp-t { 0% { color: var(--jsal-muted); } 10%, 31% { color: var(--jsal-selected-ink); } 40%, 100% { color: var(--jsal-muted); } }
 @keyframes cp-h { 0% { color: var(--jsal-selected-ink); } 10%, 31% { color: var(--jsal-muted); } 40%, 100% { color: var(--jsal-selected-ink); } }
+@keyframes hi-type { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
 /* Redirect Import: the rows are checked one at a time and each ready row's line lands in the file just after (the full
    address with the site's own domain left off); the row with a space gets its "!" and note and adds nothing, and the row left out its dash.
    All held to 97%, past where the one play on touch screens stops, then cleared for the next loop */
@@ -379,111 +472,112 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes ri-note { 0%, 66% { opacity: 0; translate: 0 -4px; } 72%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
 @keyframes ri-d5 { 0%, 74% { scale: 0; } 80% { scale: 1.25; } 84%, 97% { scale: 1; } 100% { scale: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .obj, .cta a, .go, .pc, .crop { transition: none; }
-  .cta a:hover, .go:hover { transform: none; }
-  .band:hover .obj { transform: var(--rest, none); }
+  .tile, .obj, .pc, .crop { transition: none; }
+  .tile:has(.tile-link:hover), .hi:has(.hi-mail:hover) { transform: none; }
+  .tile:hover .obj { transform: var(--rest, none); }
 }
 </style>
 <div class="wrap">
   <TopBar><nav aria-label="Sections"><a href="#updates">Updates</a><a href="mailto:dev@jsal.io">Email</a></nav></TopBar>
-</div>
 
-<main>
-  <!-- The first band: the page's headline beside the CMS Picker's keys. Every picture is decoration, hidden from screen readers -->
-  <section class="band hero cms">
-    <div class="in">
+  <main class="grid">
+    <!-- Tool tiles: each one's name is its link (data-app marks the ones that open a tool) and covers the tile. The
+         pictures are decoration, apart from the platform keys, which open each platform's guide -->
+    <section class="tile cms">
+      <span class="obj pcs" role="group" aria-label="Platform guides">
+        <span><a class="pc pc-light p-wordpress" href="/cms-picker/wordpress/" tabindex="-1" aria-label="WordPress"><i style="--logo: url(/cms-picker/logos/wordpress.svg)"></i></a><a class="pc p-wix" href="/cms-picker/wix/" tabindex="-1" aria-label="Wix"><i class="wide wix" style="--logo: url(/cms-picker/logos/wix.svg)"></i></a><a class="pc p-substack" href="/cms-picker/substack/" tabindex="-1" aria-label="Substack"><i style="--logo: url(/cms-picker/logos/substack.svg)"></i></a><a class="pc p-shopify" href="/cms-picker/shopify/" tabindex="-1" aria-label="Shopify"><i style="--logo: url(/cms-picker/logos/shopify.svg)"></i></a></span>
+        <span><a class="pc pc-light p-squarespace" href="/cms-picker/squarespace/" tabindex="-1" aria-label="Squarespace"><i style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></a><a class="pc p-webflow" href="/cms-picker/webflow/" tabindex="-1" aria-label="Webflow"><i style="--logo: url(/cms-picker/logos/webflow.svg)"></i></a><a class="pc p-framer" href="/cms-picker/framer/" tabindex="-1" aria-label="Framer"><i style="--logo: url(/cms-picker/logos/framer.svg)"></i></a></span>
+        <span><a class="pc p-hubspot" href="/cms-picker/hubspot/" tabindex="-1" aria-label="HubSpot CMS"><i style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></a><a class="pc p-square" href="/cms-picker/square/" tabindex="-1" aria-label="Square Online"><i style="--logo: url(/cms-picker/logos/square.svg)"></i></a><a class="pc p-drupal" href="/cms-picker/drupal/" tabindex="-1" aria-label="Drupal"><i style="--logo: url(/cms-picker/logos/drupal.svg)"></i></a><a class="pc pc-light p-duda" href="/cms-picker/duda/" tabindex="-1" aria-label="Duda"><i class="wide" style="--logo: url(/cms-picker/logos/duda.svg)"></i></a></span>
+        <span><a class="pc p-bigcommerce" href="/cms-picker/bigcommerce/" tabindex="-1" aria-label="BigCommerce"><i style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></a><a class="pc p-sanity" href="/cms-picker/sanity/" tabindex="-1" aria-label="Sanity"><i style="--logo: url(/cms-picker/logos/sanity.svg)"></i></a><a class="pc p-ghost" href="/cms-picker/ghost/" tabindex="-1" aria-label="Ghost"><i style="--logo: url(/cms-picker/logos/ghost.svg)"></i></a></span>
+      </span>
+      <span class="fit-for mono" aria-hidden="true"><span>For selling online</span><span>For a paid newsletter</span><span>For designing every detail</span></span>
       <div class="txt">
         <div class="roles"><span>John Salvador</span><span>Technical SEO</span></div>
         <h1>Small tools that do <em>one job</em> well.</h1>
-        <p>Free tools for people who build and move websites. They run in your browser, and nothing is uploaded.</p>
-        <div class="cta"><a href="/cms-picker/" data-app>Find your CMS</a></div>
+        <p>Start with the CMS Picker: answer a few questions to see which website platform fits you, and what it lets you change for SEO.</p>
+        <div class="cta"><a class="tile-link" href="/cms-picker/" data-app>Find your CMS</a></div>
       </div>
-      <div class="pic">
-        <span class="obj pcs" role="group" aria-label="Platform guides">
-          <span><a class="pc pc-light p-wordpress" href="/cms-picker/wordpress/" tabindex="-1" aria-label="WordPress"><i style="--logo: url(/cms-picker/logos/wordpress.svg)"></i></a><a class="pc p-wix" href="/cms-picker/wix/" tabindex="-1" aria-label="Wix"><i class="wide wix" style="--logo: url(/cms-picker/logos/wix.svg)"></i></a><a class="pc p-substack" href="/cms-picker/substack/" tabindex="-1" aria-label="Substack"><i style="--logo: url(/cms-picker/logos/substack.svg)"></i></a><a class="pc p-shopify" href="/cms-picker/shopify/" tabindex="-1" aria-label="Shopify"><i style="--logo: url(/cms-picker/logos/shopify.svg)"></i></a></span>
-          <span><a class="pc pc-light p-squarespace" href="/cms-picker/squarespace/" tabindex="-1" aria-label="Squarespace"><i style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></a><a class="pc p-webflow" href="/cms-picker/webflow/" tabindex="-1" aria-label="Webflow"><i style="--logo: url(/cms-picker/logos/webflow.svg)"></i></a><a class="pc p-framer" href="/cms-picker/framer/" tabindex="-1" aria-label="Framer"><i style="--logo: url(/cms-picker/logos/framer.svg)"></i></a></span>
-          <span><a class="pc p-hubspot" href="/cms-picker/hubspot/" tabindex="-1" aria-label="HubSpot CMS"><i style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></a><a class="pc p-square" href="/cms-picker/square/" tabindex="-1" aria-label="Square Online"><i style="--logo: url(/cms-picker/logos/square.svg)"></i></a><a class="pc p-drupal" href="/cms-picker/drupal/" tabindex="-1" aria-label="Drupal"><i style="--logo: url(/cms-picker/logos/drupal.svg)"></i></a><a class="pc pc-light p-duda" href="/cms-picker/duda/" tabindex="-1" aria-label="Duda"><i class="wide" style="--logo: url(/cms-picker/logos/duda.svg)"></i></a></span>
-          <span><a class="pc p-bigcommerce" href="/cms-picker/bigcommerce/" tabindex="-1" aria-label="BigCommerce"><i style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></a><a class="pc p-sanity" href="/cms-picker/sanity/" tabindex="-1" aria-label="Sanity"><i style="--logo: url(/cms-picker/logos/sanity.svg)"></i></a><a class="pc p-ghost" href="/cms-picker/ghost/" tabindex="-1" aria-label="Ghost"><i style="--logo: url(/cms-picker/logos/ghost.svg)"></i></a></span>
-        </span>
-        <span class="fit-for mono" aria-hidden="true"><span>For selling online</span><span>For a paid newsletter</span><span>For designing every detail</span></span>
-      </div>
-    </div>
-  </section>
-
-  <!-- A band per tool (data-app marks the ones that open a tool) -->
-  <section class="band ir">
-    <div class="in">
-      <div class="txt">
-        <h2>Image Resizer</h2>
-        <p>One image or a whole batch at an exact size. Nothing is uploaded.</p>
-        <a class="go" href="/image-resizer/" data-app>Resize images</a>
-      </div>
-      <div class="pic" aria-hidden="true">
-          <span class="obj paper ed">
-            <span class="ed-head mono">mugs.jpg<span>6720 × 4480</span></span>
-            <span class="ed-photo"><img src="/img/home/mugs.webp" alt="" width="392" height="268"><span class="crop"><i></i><i></i><i></i><i></i></span></span>
-            <span class="sizes mono"><span class="on">1200 × 628</span><span>1080 × 1080</span><span>640 × 420</span></span>
-          </span>
-        <span class="obj paper outs mono">
-          <span class="outs-head">Output<span>96% smaller</span></span>
-          <span class="row"><span class="th" style="--ar: 1.91"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>1200 × 628</b>WebP · 182 KB</span></span>
-          <span class="row"><span class="th" style="--ar: 1"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>1080 × 1080</b>WebP · 236 KB</span></span>
-          <span class="row"><span class="th" style="--ar: 1.524"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>640 × 420</b>WebP · 58 KB</span></span>
-        </span>
-      </div>
-    </div>
-  </section>
-
-  <section class="band cp flip">
-    <div class="in">
-      <div class="txt">
-        <h2>Clean Paste</h2>
-        <p>A post pasted from Word or Google Docs, checked and copied as clean HTML.</p>
-        <a class="go" href="/formatter/" data-app>Clean a paste</a>
-      </div>
-      <div class="pic" aria-hidden="true">
-          <span class="obj paper sheet"><span class="sw"><span class="t">Text</span><span class="h">HTML</span></span><span class="views"><span class="tx"><b>Raid night</b><span>Bring flasks and food.</span><span class="li">Leeroy stays put</span></span><code><span class="ln"><i>&lt;h2&gt;</i>Raid night<i>&lt;/h2&gt;</i></span><span class="ln"><i>&lt;p&gt;</i>Bring flasks and food.<i>&lt;/p&gt;</i></span><span class="ln"><i>&lt;ul&gt;&lt;li&gt;</i>Leeroy stays put<i>&lt;/li&gt;</i></span></code></span></span>
-      </div>
-    </div>
-  </section>
-
-  <section class="band ri">
-    <div class="in">
-      <div class="txt">
-        <h2>Redirect Import</h2>
-        <p>A sheet of old and new addresses, turned into the file your platform imports.</p>
-        <a class="go" href="/redirects/" data-app>Build a redirect file</a>
-      </div>
-      <div class="pic" aria-hidden="true">
-        <span class="obj paper rs">
-          <span class="rs-head"><b>Your sheet</b><span class="mono">5 rows</span></span>
-          <span class="rs-row"><span class="n mono">2</span><i class="dot ok">✓</i><span class="mono">/about-us/</span><span class="mono">/pages/about</span></span>
-          <span class="rs-row"><span class="n mono">3</span><i class="dot ok">✓</i><span class="mono">/blog/sale</span><span class="mono">/blogs/news/sale</span></span>
-          <span class="rs-row"><span class="n mono">4</span><i class="dot ok">✓</i><span class="mono">mysite.com/faq</span><span class="mono">/pages/faq</span></span>
-          <span class="rs-row"><span class="n mono">5</span><i class="dot bad">!</i><span class="mono bad-cell">/our team</span><span class="mono">/pages/team</span></span>
-          <span class="rs-note">Has a space: /our team</span>
-          <span class="rs-row last"><span class="n mono">6</span><i class="dot out">–</i><span class="mono">/old-promo</span><span class="mono out-cell">Left out</span></span>
-        </span>
-        <span class="obj paper rf"><span class="mono rf-head">shopify-redirects.csv<span>3 ready</span></span><code><span class="ln mute">Redirect from,Redirect to</span><span class="ln">/about-us,/pages/about</span><span class="ln">/blog/sale,/blogs/news/sale</span><span class="ln">/faq,/pages/faq</span></code></span>
-      </div>
-    </div>
-  </section>
-
-  <!-- After the tools: a way to say hi, and the newest change in each of the three most recently changed parts of the site -->
-  <div class="wrap tail">
-    <section aria-labelledby="hi-h">
-      <h2 id="hi-h">Say hi</h2>
-      <p>Questions, tool ideas or SEO talk. <a href="mailto:dev@jsal.io">dev@jsal.io</a>, or on <a href="https://github.com/superjsal">GitHub</a>.</p>
     </section>
-    <section id="updates" aria-labelledby="updates-h">
-      <h2 id="updates-h">Updates</h2>
+
+    <section class="tile ir">
+      <div class="clip" aria-hidden="true">
+        <svg class="wm" viewBox="0 0 32 32" width="180" height="180"><path class="s" d="M8.65 10.4h14.7v11.9h-14.7zM8.65 19.5l4.55-4.55 3.5 3.5 2.1-2.1 4.55 4.55" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M20.2 11.73l1.61 1.61-1.61 1.61-1.61-1.61z"/></svg>
+        <span class="obj paper ed">
+          <span class="ed-head mono">mugs.jpg<span>6720 × 4480</span></span>
+          <span class="ed-photo"><img src="/img/home/mugs.webp" alt="" width="392" height="268"><span class="crop"><i></i><i></i><i></i><i></i></span></span>
+          <span class="sizes mono"><span class="on">1200 × 628</span><span>1080 × 1080</span><span>640 × 420</span></span>
+        </span>
+      </div>
+      <span class="obj paper outs mono" aria-hidden="true">
+        <span class="outs-head">Output<span>96% smaller</span></span>
+        <span class="row"><span class="th" style="--ar: 1.91"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>1200 × 628</b>WebP · 182 KB</span></span>
+        <span class="row"><span class="th" style="--ar: 1"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>1080 × 1080</b>WebP · 236 KB</span></span>
+        <span class="row"><span class="th" style="--ar: 1.524"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>640 × 420</b>WebP · 58 KB</span></span>
+      </span>
+      <div class="txt">
+        <h2><a class="tile-link" href="/image-resizer/" data-app>Image Resizer</a></h2>
+        <p>Exact sizes, nothing uploaded.</p>
+      </div>
+    </section>
+
+    <section class="tile cp">
+      <div class="txt">
+        <h2><a class="tile-link" href="/formatter/" data-app>Clean Paste</a></h2>
+        <p>Word or Google Docs to clean HTML.</p>
+      </div>
+      <div class="clip" aria-hidden="true">
+        <svg class="wm" viewBox="0 0 32 32" width="170" height="170"><path class="s" d="M12.85 9.7H10.4v13.3h11.2V9.7h-2.45M13.2 15.3h5.6M13.2 19.15h3.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M16 7.25l2.1 2.1-2.1 2.1-2.1-2.1z"/></svg>
+      </div>
+      <span class="obj paper sheet" aria-hidden="true"><span class="sw"><span class="t">Text</span><span class="h">HTML</span></span><span class="views"><span class="tx"><b>Raid night</b><span>Bring flasks and food.</span><span class="li">Leeroy stays put</span></span><code><span class="ln"><i>&lt;h2&gt;</i>Raid night<i>&lt;/h2&gt;</i></span><span class="ln"><i>&lt;p&gt;</i>Bring flasks and food.<i>&lt;/p&gt;</i></span><span class="ln"><i>&lt;ul&gt;&lt;li&gt;</i>Leeroy stays put<i>&lt;/li&gt;</i></span></code></span></span>
+    </section>
+
+    <!-- Say hi: the heading's link (email) covers the tile; the draft above it is decoration -->
+    <section class="tile hi" aria-labelledby="hi-h">
+      <span class="obj paper draft" aria-hidden="true">
+        <span>New message<i>×</i></span>
+        <span><em>To</em><b>dev@jsal.io</b></span>
+        <span><em>Subject</em>A question about the tools</span>
+        <span class="body"><i>Hi John, I was trying the CMS Picker and…</i></span>
+      </span>
+      <div class="txt">
+        <h2 id="hi-h"><a class="hi-mail" href="mailto:dev@jsal.io">Say hi<span class="sr-only"> by email</span></a></h2>
+        <p>Questions, tool ideas or SEO talk. Also on <a href="https://github.com/superjsal">GitHub</a>.</p>
+      </div>
+    </section>
+
+    <section class="tile ri">
+      <div class="txt">
+        <h2><a class="tile-link" href="/redirects/" data-app>Redirect Import</a></h2>
+        <p>Old and new addresses to a redirect file.</p>
+      </div>
+      <div class="clip" aria-hidden="true">
+        <svg class="wm" viewBox="0 0 32 32" width="180" height="180"><g class="s"><path d="M9.35 8.65H22.65a2.45 2.45 0 0 1 2.45 2.45V20.9a2.45 2.45 0 0 1-2.45 2.45H9.35a2.45 2.45 0 0 1-2.45-2.45V11.1a2.45 2.45 0 0 1 2.45-2.45zM10.75 20.55V18.94C10.75 16.28 12.15 14.95 14.6 14.95H15.3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.36 14.95L15.16 11.87V18.03z" fill="currentColor" stroke="currentColor" stroke-width="1.45" stroke-linejoin="round"/></g><path class="g" d="M21.67 13.27l1.68 1.68-1.68 1.68-1.68-1.68z"/></svg>
+      </div>
+      <span class="obj paper rs" aria-hidden="true">
+        <span class="rs-head"><b>Your sheet</b><span class="mono">5 rows</span></span>
+        <span class="rs-row"><span class="n mono">2</span><i class="dot ok">✓</i><span class="mono">/about-us/</span><span class="mono">/pages/about</span></span>
+        <span class="rs-row"><span class="n mono">3</span><i class="dot ok">✓</i><span class="mono">/blog/sale</span><span class="mono">/blogs/news/sale</span></span>
+        <span class="rs-row"><span class="n mono">4</span><i class="dot ok">✓</i><span class="mono">mysite.com/faq</span><span class="mono">/pages/faq</span></span>
+        <span class="rs-row"><span class="n mono">5</span><i class="dot bad">!</i><span class="mono bad-cell">/our team</span><span class="mono">/pages/team</span></span>
+        <span class="rs-note">Has a space: /our team</span>
+        <span class="rs-row last"><span class="n mono">6</span><i class="dot out">–</i><span class="mono">/old-promo</span><span class="mono out-cell">Left out</span></span>
+      </span>
+      <span class="obj paper rf" aria-hidden="true"><span class="mono rf-head">shopify-redirects.csv<span>3 ready</span></span><code><span class="ln mute">Redirect from,Redirect to</span><span class="ln">/about-us,/pages/about</span><span class="ln">/blog/sale,/blogs/news/sale</span><span class="ln">/faq,/pages/faq</span></code></span>
+    </section>
+
+    <!-- Site updates: the newest change in each of the three most recently changed parts of the site -->
+    <section id="updates" class="tile now" aria-labelledby="updates-h">
+      <div class="txt">
+        <h2 id="updates-h">Updates</h2>
+        <p>What changed on the site, newest first. <a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>
+      </div>
+      <div class="clip">
+      <svg class="wm" viewBox="0 0 32 32" width="260" height="260" aria-hidden="true"><path class="s" d="M10.5 11V9.5a2.5 2.5 0 0 1 2.5-2.5h11.5a2.5 2.5 0 0 1 2.5 2.5V21a2.5 2.5 0 0 1-2.5 2.5h-1.5M8 11h12.5a2.5 2.5 0 0 1 2.5 2.5v10.5a2.5 2.5 0 0 1-2.5 2.5H8a2.5 2.5 0 0 1-2.5-2.5V13.5A2.5 2.5 0 0 1 8 11zM9.5 18h10M9.5 22h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M10.6 12.7l1.8 1.8-1.8 1.8-1.8-1.8z"/></svg>
       <Updates />
-      <p><a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>
+      </div>
     </section>
-  </div>
-</main>
+  </main>
 
-<div class="wrap end">
   <footer>
     <!-- Platform guides: the CMS Picker's page per platform, in its order, as a quiet row of links -->
     <nav class="fg" aria-label="Platform guides"><span aria-hidden="true">Platform guides</span><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/webflow/">Webflow</a><a href="/cms-picker/framer/">Framer</a><a href="/cms-picker/hubspot/">HubSpot CMS</a><a href="/cms-picker/bigcommerce/">BigCommerce</a><a href="/cms-picker/drupal/">Drupal</a><a href="/cms-picker/duda/">Duda</a><a href="/cms-picker/ghost/">Ghost</a><a href="/cms-picker/sanity/">Sanity</a><a href="/cms-picker/square/">Square Online</a><a href="/cms-picker/substack/">Substack</a></nav>
@@ -493,8 +587,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 </div>
 <script is:inline>
 document.getElementById('y').textContent = new Date().getFullYear();
-// Touch screens have no hover: each band's picture plays once, the first time half the band is in the middle of the
-// screen (not while the band above is still being read), and stops before the loop would fade, so it rests as it started
+// Touch screens have no hover: each tile's picture plays once, the first time half the tile is in the middle of the
+// screen (not while the tile above is still being read), and stops before the loop would fade, so it rests as it started
 if (matchMedia('(hover: none)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window) {
   const seen = new IntersectionObserver((entries) => entries.forEach((e) => {
     if (!e.isIntersecting) return;
@@ -505,10 +599,10 @@ if (matchMedia('(hover: none)').matches && matchMedia('(prefers-reduced-motion: 
     e.target.classList.add('play');
     setTimeout(() => e.target.classList.remove('play'), cms ? 2600 : 2900);
   }), { rootMargin: '-20% 0px -20% 0px', threshold: 0.5 });
-  document.querySelectorAll('.cms, .ir, .cp, .ri').forEach((band) => seen.observe(band));
+  document.querySelectorAll('.cms, .ir, .cp, .hi, .ri').forEach((tile) => seen.observe(tile));
 }
-// The pictures can be played with. Once a pointer is on one, its own play stops (.hands) and it answers the pointer
-document.querySelectorAll('.pic').forEach((pic) => pic.addEventListener('pointerenter', () => pic.closest('.band').classList.add('hands'), { once: true }));
+// The pictures can be played with. Once a pointer is on a piece, its tile's own play stops (.hands) and it answers the pointer
+document.querySelectorAll('.tile .obj').forEach((piece) => piece.addEventListener('pointerenter', () => piece.closest('.tile').classList.add('hands'), { once: true }));
 // Image Resizer: pick a size and the crop box takes its shape, its file marked in the list
 const crop = document.querySelector('.crop'), sizes = [...document.querySelectorAll('.sizes span')], files = [...document.querySelectorAll('.outs .row')];
 sizes.forEach((size, i) => size.addEventListener('click', () => {
