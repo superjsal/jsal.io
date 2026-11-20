@@ -193,7 +193,10 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .stage { padding: calc(var(--bar-h) + var(--jsal-space-32)) 0 0; }
   .homewin { margin-bottom: calc(var(--jsal-space-40) * -1); }
   .homewin, .win:not(.narrow) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
-  .homewin { border-color: var(--stage-edge); }
+  .homewin { border-color: var(--stage-edge); aspect-ratio: 4 / 5; }   /* taller, so Home's plans show under the trainer visit */
+  /* a card's still is drawn as large as a big window's here, so its words can be read; a clip already is */
+  .card .crop { height: 240px; }
+  .card .crop img { width: 760px; }
   .homewin img, .win:not(.narrow) :is(img, video) { width: var(--pw, 760px); max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
   /* one card of three rows, each number in its own column so the words line up */
   .numbers { grid-template-columns: minmax(0, 1fr); margin-top: calc(var(--jsal-space-40) + var(--jsal-space-24)); padding: var(--jsal-space-4) var(--jsal-space-20); border: 0; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
