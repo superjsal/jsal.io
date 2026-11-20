@@ -94,6 +94,26 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .stages { display: grid; gap: var(--jsal-space-24); min-width: 0; }
 .stage { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--jsal-space-24) var(--jsal-space-32); align-items: start; padding: var(--jsal-space-32); border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--jsal-sunk); }
 .ui-js .stage:not(.on) { display: none; }
+/* Picking a part: the new stage's parts arrive in order from the way the list moved: its name, its words, then
+   its window. The first stage is simply there when the page opens. */
+@keyframes arrive { from { opacity: 0; translate: 0 calc(var(--dir, 1) * var(--far, 20px)); } }
+/* The gem travels: one gold gem slides down the list to the chosen row, turning as it goes, overshoots a little
+   and lands with a ring, so the eye is led to the new spot. From 1280px, where the list is a column. */
+.gem { display: none; position: absolute; left: -19px; top: 0; z-index: 1; width: 12px; height: 12px; background: var(--jsal-fill); translate: 0 var(--y, 0); rotate: var(--r, 45deg); pointer-events: none; transition: translate 0.55s cubic-bezier(0.34, 1.45, 0.64, 1), rotate 0.55s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem's trip between rows: a spring that overshoots and settles) */
+@keyframes land { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--jsal-fill) 70%, transparent); } to { box-shadow: 0 0 0 14px color-mix(in srgb, var(--jsal-fill) 0%, transparent); } }
+.gem.land { animation: land 0.7s 0.3s ease-out; }   /* style: allow (the ring as the gem lands, after its trip) */
+@media (min-width: 1280px) {
+  .slots { position: relative; }
+  .ui-js .gem { display: block; }
+  .ui-js .slot[aria-selected="true"]::before { display: none; }
+}
+@keyframes gem { from { scale: 0; rotate: -45deg; } }
+.live .stage.on :is(.head, .say, .facts, .win) { animation: arrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }   /* style: allow (a choreographed arrival: each part follows the one before) */
+.live .stage.on .head { --far: 32px; }
+.live .stage.on .say { --d: 0.05s; }
+.live .stage.on .facts { --d: 0.1s; }
+.live .stage.on .win { --d: 0.12s; --far: 56px; }
+.slot[aria-selected="true"]::before { animation: gem 0.4s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem landing on the chosen row) */
 .head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--jsal-space-12); }
 .stage h2 { margin: 0; font: 800 clamp(40px, 10cqi, 88px)/0.95 var(--f); letter-spacing: -0.03em; }   /* style: allow (the stage's name: the page's one very large line) */
 .lv { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-sm); background: var(--jsal-surface); color: var(--jsal-ink-2); font: 600 12px/1.5 var(--f); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -209,7 +229,11 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 @media (max-width: 520px) {
   .install, .band { padding: var(--jsal-space-20); }
 }
-@media (prefers-reduced-motion: reduce) { .slot { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .slot { transition: none; }
+  .live .stage.on :is(.head, .say, .facts, .win), .slot[aria-selected="true"]::before, .gem.land { animation: none; }
+  .gem { transition: none; }
+}
 </style>
 <div class="wrap">
   <TopBar><nav aria-label="Sections"><a href="/play/" data-jsal-nav>Off the clock</a><a href="#install">Install</a></nav></TopBar>
@@ -317,8 +341,23 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const orient = () => list.setAttribute('aria-orientation', wide.matches ? 'vertical' : 'horizontal');
   orient(); wide.addEventListener('change', orient);
   stages.forEach((s, i) => { s.setAttribute('role', 'tabpanel'); s.setAttribute('aria-labelledby', tabs[i].id); });
-  let cur = 0, rest = 0;
+  let cur = 0, rest = 0, live = false;
+  const box = document.querySelector('.stages');
+  // One gem for the whole list: it slides to the chosen row, half a turn each trip, and lands with a ring
+  const gem = list.appendChild(Object.assign(document.createElement('i'), { className: 'gem' }));
+  gem.setAttribute('aria-hidden', 'true');
+  let turns = 0;
+  const place = (i, moved) => {
+    gem.style.setProperty('--y', `${tabs[i].offsetTop + tabs[i].offsetHeight / 2 - 6}px`);
+    if (!moved) return;
+    gem.style.setProperty('--r', `${45 + 180 * ++turns}deg`);
+    gem.classList.remove('land'); void gem.offsetWidth; gem.classList.add('land');
+  };
+  addEventListener('resize', () => place(cur));
   const pick = (i, focus) => {
+    // after the first, a pick says which way the list moved, so the new stage's parts arrive from there
+    if (live && i !== cur) { box.style.setProperty('--dir', i < cur ? -1 : 1); box.classList.add('live'); }
+    place(i, live && i !== cur);
     cur = i;
     tabs.forEach((t, j) => { t.setAttribute('aria-selected', i === j ? 'true' : 'false'); t.tabIndex = i === j ? 0 : -1; });
     stages.forEach((s, j) => s.classList.toggle('on', i === j));
@@ -346,6 +385,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   }, { passive: false });
   const at = stages.findIndex((s) => `#pick-${s.id}` === location.hash);
   pick(at < 0 ? 0 : at);
+  live = true;
 })();
 // The scroll reveal: blocks below the fold wait, then rise into place once a sixth of them is in view; the numbers
 // follow one another along their row.

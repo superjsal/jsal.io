@@ -131,6 +131,33 @@ p { text-wrap: pretty; }
 .stages { display: grid; gap: var(--jsal-space-24); min-width: 0; }
 .stage { position: relative; container-type: inline-size; overflow: hidden; display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: var(--jsal-space-32); align-content: start; min-height: 664px; padding: var(--jsal-space-40) var(--jsal-space-40) 0; border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--bg); }
 .home-js .stage:not(.on) { display: none; }
+/* Picking a tool: the stage's colour turns to the new tool's (the colour sits behind the stages, so it can), and
+   the new stage's parts arrive in order from the way the list moved: its name, its words, then its pictures. The
+   first stage is simply there when the page opens. */
+.home-js .stages { border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--bg, var(--t-cms)); }
+.home-js .stages.live { transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the stage's colour turning: slower than a state change, so it reads as one move with the parts arriving) */
+.home-js .stage { background: none; }
+@keyframes arrive { from { opacity: 0; translate: 0 calc(var(--dir, 1) * var(--far, 20px)); } }
+/* The gem travels: one gold gem slides down the list to the chosen row, turning as it goes, overshoots a little
+   and lands with a ring, so the eye is led to the new spot. From 1280px, where the list is a column. */
+.gem { display: none; position: absolute; left: -19px; top: 0; z-index: 1; width: 12px; height: 12px; background: var(--jsal-fill); translate: 0 var(--y, 0); rotate: var(--r, 45deg); pointer-events: none; transition: translate 0.55s cubic-bezier(0.34, 1.45, 0.64, 1), rotate 0.55s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem's trip between rows: a spring that overshoots and settles) */
+@keyframes land { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--jsal-fill) 70%, transparent); } to { box-shadow: 0 0 0 14px color-mix(in srgb, var(--jsal-fill) 0%, transparent); } }
+.gem.land { animation: land 0.7s 0.3s ease-out; }   /* style: allow (the ring as the gem lands, after its trip) */
+@media (min-width: 1280px) {
+  .slots { position: relative; }
+  .home-js .gem { display: block; }
+  .home-js .slot[aria-selected="true"]::before { display: none; }
+}
+@keyframes gem { from { scale: 0; rotate: -45deg; } }
+.live .stage.on :is(h2, .say > *, .shot, .keys) { animation: arrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }   /* style: allow (a choreographed arrival: each part follows the one before) */
+.live .stage.on h2 { --far: 36px; }
+.live .stage.on .say > p { --d: 0.05s; }
+.live .stage.on .go { --d: 0.1s; }
+.live .stage.on .facts { --d: 0.15s; }
+.live .stage.on .a { --d: 0.1s; --far: 56px; }
+.live .stage.on .b { --d: 0.2s; --far: 72px; }
+.live .stage.on .keys { --d: 0.25s; }
+.slot[aria-selected="true"]::before { animation: gem 0.4s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem landing on the chosen row) */
 .stage h2 { grid-column: 1 / -1; margin: 0; color: var(--ink); font: 800 clamp(40px, 11cqi, 96px)/0.95 var(--f); letter-spacing: -0.03em; white-space: nowrap; }   /* style: allow (the stage's name: the page's one very large line) */
 .say { padding: var(--jsal-space-24) 0 var(--jsal-space-40); }
 .say p { margin: 0; font: 500 20px/1.4 var(--f); }
@@ -203,7 +230,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .pick { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
   .rail > :not(.slots) { margin-right: 0; }
   .rail-h, .slot kbd, .slot[aria-selected="true"]::before { display: none; }
-  .stage { border-radius: var(--jsal-radius-tile); }
+  .stage, .home-js .stages { border-radius: var(--jsal-radius-tile); }
   .slots { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: var(--jsal-space-24); }
   .slot { grid-template-columns: 44px minmax(0, 1fr); padding: var(--jsal-space-12); border-radius: var(--jsal-radius-xl); }
   .more-ui { order: 3; margin-top: var(--jsal-space-24); }
@@ -230,7 +257,9 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .more { grid-template-columns: minmax(0, 1fr); margin-top: var(--jsal-space-48); gap: var(--jsal-space-32); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .slot, .more-ui, .keys a { transition: none; }
+  .slot, .more-ui, .keys a, .home-js .stages.live { transition: none; }
+  .live .stage.on :is(h2, .say > *, .shot, .keys), .slot[aria-selected="true"]::before, .gem.land { animation: none; }
+  .gem { transition: none; }
 }
 </style>
 <div class="wrap">
@@ -310,8 +339,24 @@ document.getElementById('y').textContent = new Date().getFullYear();
   const orient = () => list.setAttribute('aria-orientation', wide.matches ? 'vertical' : 'horizontal');
   orient(); wide.addEventListener('change', orient);
   stages.forEach((s, i) => { s.setAttribute('role', 'tabpanel'); s.setAttribute('aria-labelledby', tabs[i].id); });
-  let cur = 0, rest = 0;
+  let cur = 0, rest = 0, live = false;
+  const box = document.querySelector('.stages');
+  // One gem for the whole list: it slides to the chosen row, half a turn each trip, and lands with a ring
+  const gem = list.appendChild(Object.assign(document.createElement('i'), { className: 'gem' }));
+  gem.setAttribute('aria-hidden', 'true');
+  let turns = 0;
+  const place = (i, moved) => {
+    gem.style.setProperty('--y', `${tabs[i].offsetTop + tabs[i].offsetHeight / 2 - 6}px`);
+    if (!moved) return;
+    gem.style.setProperty('--r', `${45 + 180 * ++turns}deg`);
+    gem.classList.remove('land'); void gem.offsetWidth; gem.classList.add('land');
+  };
+  addEventListener('resize', () => place(cur));
   const pick = (i, focus) => {
+    // after the first, a pick says which way the list moved, so the new stage's parts arrive from there
+    if (live && i !== cur) { box.style.setProperty('--dir', i < cur ? -1 : 1); box.classList.add('live'); }
+    box.style.setProperty('--bg', `var(--t-${stages[i].id})`);
+    place(i, live && i !== cur);
     cur = i;
     tabs.forEach((t, j) => { t.setAttribute('aria-selected', i === j ? 'true' : 'false'); t.tabIndex = i === j ? 0 : -1; });
     stages.forEach((s, j) => s.classList.toggle('on', i === j));
@@ -338,6 +383,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
   // #pick-<tool> names no element, so opening the page on a tool doesn't scroll down to its stage
   const at = stages.findIndex((s) => `#pick-${s.id}` === location.hash);
   pick(at < 0 ? 0 : at);
+  live = true;
   addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey || e.target.closest('input, textarea, select, [contenteditable]')) return;
     const n = '1234'.indexOf(e.key);
