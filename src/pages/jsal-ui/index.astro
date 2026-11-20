@@ -190,7 +190,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .stage { padding: calc(var(--bar-h) + var(--jsal-space-32)) 0 var(--jsal-space-40); }
   .homewin, .win:not(.narrow) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
   .homewin { border-color: var(--stage-edge); }
-  .homewin img, .win:not(.narrow) :is(img, video) { width: 760px; max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
+  .homewin img, .win:not(.narrow) :is(img, video) { width: var(--pw, 760px); max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
   .numbers { grid-template-columns: minmax(0, 1fr); border: 0; }
   .numbers div { display: flex; align-items: baseline; gap: var(--jsal-space-12); padding: var(--jsal-space-12) 0; border-bottom: 1px solid var(--jsal-line); }
   .numbers div + div { border-left: 0; }
@@ -241,7 +241,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           <ul>{p.points.map((x) => <li>{x}</li>)}</ul>
         </div>
         {p.clip ? (
-          <figure class="win clip" style={`--w: ${p.clip.w}px; --cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
+          <figure class="win clip" style={`--w: ${p.clip.w}px; --pw: ${p.clip.pw}px; --cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
             <video muted loop playsinline preload="none" poster={v(p.clip.poster)} width={p.clip.w} height={p.clip.h} aria-label={p.clip.alt}><source src={v(p.clip.src)} type="video/mp4"></video>
             <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
           </figure>
