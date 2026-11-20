@@ -215,7 +215,8 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   theme. The stage starts `--bar-h` above itself, mirroring the bar's height in `shell.css`: change both together.
   Below 340px the bar drops Off the clock (the logo menu has it) to stay one row. On the stage: the eyebrow, headline and buttons on
   the left, the description level with the headline's first line on the right, and the Home window sharp below;
-  three **numbers** (36 parts, 35 dungeons and raids, 100% free; change them by hand when the addon's data does);
+  three **numbers** (36 parts, 1 dashboard, 100% free; the middle one is a different kind of number on purpose, John,
+  19 Nov 2026; change the first by hand when the addon's parts do);
   five parts as big rows with a gold-dot list beside a straight, framed window, swapping sides; the other six as
   cards ending in their window's top corner; a **Latest release** card and a **Discord** band; the little things;
   Install. No tints, no tilts. Big part names are Lora 30px (a callout), 24px at 520px and under. Every crop of a
