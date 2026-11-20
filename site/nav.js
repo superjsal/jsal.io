@@ -436,7 +436,7 @@
       themeBtn.title = label;
       themeBtn.setAttribute('aria-label', label);
       const picked = root.dataset.theme;
-      bars.forEach((m) => { m.content = !picked ? m.dataset.own : picked === 'dark' ? '#111318' : '#f5efe2'; });
+      bars.forEach((m) => { m.content = !picked ? m.dataset.own : picked === 'dark' ? '#111318' : '#f3f4f6'; });
     };
     themeBtn.addEventListener('click', () => {
       const next = current() === 'dark' ? 'light' : 'dark';
