@@ -103,9 +103,12 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .numbers dd { margin: var(--jsal-space-4) 0 0; color: var(--jsal-muted); }
 
 /* A window from the game: straight, framed and lifted. A small one (the pals) keeps its own size, so it never blurs. */
-.win { margin: 0; }
-.win img { display: block; width: 100%; height: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); box-shadow: var(--win-shadow); }
+.win { position: relative; margin: 0; }
+.win :is(img, video) { display: block; width: 100%; height: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); box-shadow: var(--win-shadow); }
 .win.narrow img { max-width: var(--w); margin-inline: auto; }
+/* A clip plays in place of a still while it's on screen, and keeps a Pause button (in the dark theme's colours, on
+   the game) in its corner, so nothing moves without a way to stop it */
+.clip-ctl { position: absolute; right: var(--jsal-space-12); bottom: var(--jsal-space-12); z-index: 1; }
 
 /* A big part: its words beside its window, swapping sides each row */
 .part { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--jsal-space-48); align-items: center; padding: var(--jsal-space-48) 0; }
@@ -130,7 +133,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .card > p:not(.label) { margin: var(--jsal-space-4) 0 var(--jsal-space-20); color: var(--jsal-ink-2); }
 .card .crop { position: relative; overflow: hidden; flex: none; height: 210px; margin: auto calc(var(--jsal-space-20) * -1) 0; border-top: 1px solid var(--jsal-line-hi); background: var(--win-fill); }
 /* Every crop starts at the page's own content, under the title bar and past the dashboard's menu (--cx, --cy) */
-.card .crop img { position: absolute; left: 0; top: 0; width: 640px; max-width: none; height: auto; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
+.card .crop :is(img, video) { position: absolute; left: 0; top: 0; width: 640px; max-width: none; height: auto; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
 
 /* The latest release, and the Discord */
 .band { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--jsal-space-48); margin-top: var(--jsal-space-64); padding: var(--jsal-space-32); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
@@ -187,7 +190,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .stage { padding: calc(var(--bar-h) + var(--jsal-space-32)) 0 var(--jsal-space-40); }
   .homewin, .win:not(.narrow) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
   .homewin { border-color: var(--stage-edge); }
-  .homewin img, .win:not(.narrow) img { width: 760px; max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
+  .homewin img, .win:not(.narrow) :is(img, video) { width: 760px; max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
   .numbers { grid-template-columns: minmax(0, 1fr); border: 0; }
   .numbers div { display: flex; align-items: baseline; gap: var(--jsal-space-12); padding: var(--jsal-space-12) 0; border-bottom: 1px solid var(--jsal-line); }
   .numbers div + div { border-left: 0; }
@@ -237,7 +240,14 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           <p>{p.line}</p>
           <ul>{p.points.map((x) => <li>{x}</li>)}</ul>
         </div>
-        <figure class={win(p.shot)} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></figure>
+        {p.clip ? (
+          <figure class="win clip" style={`--w: ${p.clip.w}px; --cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
+            <video muted loop playsinline preload="none" poster={v(p.clip.poster)} width={p.clip.w} height={p.clip.h} aria-label={p.clip.alt}><source src={v(p.clip.src)} type="video/mp4"></video>
+            <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
+          </figure>
+        ) : (
+          <figure class={win(p.shot)} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></figure>
+        )}
       </article>
     ))}
     <section class="rest" aria-labelledby="rest-h">
@@ -249,7 +259,14 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
             <p class="label">{p.group}</p>
             <h3 id={`${p.key}-h`}>{p.label}: {p.name.charAt(0).toLowerCase() + p.name.slice(1)}</h3>
             <p>{p.line}</p>
-            <div class="crop" style={`--cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></div>
+            {p.clip ? (
+              <div class="crop clip" style={`--cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
+                <video muted loop playsinline preload="none" poster={v(p.clip.poster)} width={p.clip.w} height={p.clip.h} aria-label={p.clip.alt}><source src={v(p.clip.src)} type="video/mp4"></video>
+                <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
+              </div>
+            ) : (
+              <div class="crop" style={`--cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></div>
+            )}
           </article>
         ))}
       </div>
@@ -315,5 +332,35 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && 'Intersecti
     });
   }
 }
+// The clips: each plays while a third of its frame is on screen and stops when it leaves, downloading only then
+// (the frame, not the video, as phones show only a corner of the video). Its button says what a press does (Pause
+// or Play), and a pause holds until the visitor plays it again. With reduced motion nothing starts by itself; Play
+// still works. A page loaded ahead waits until it's shown.
+function clips() {
+  const calm = !matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  const watch = 'IntersectionObserver' in window && new IntersectionObserver((es) => es.forEach((e) => {
+    const v = e.target.querySelector('video');
+    if (e.isIntersecting && !v.dataset.held) v.play().catch(() => {});
+    else if (!e.isIntersecting && !v.paused) v.pause();
+  }), { threshold: 0.33 });
+  document.querySelectorAll('.clip video').forEach((v) => {
+    const btn = v.parentElement.querySelector('.clip-ctl button');
+    const say = () => {
+      btn.textContent = v.paused ? 'Play' : 'Pause';
+      btn.setAttribute('aria-label', `${btn.textContent} the ${btn.dataset.name} clip`);
+    };
+    v.addEventListener('play', say);
+    v.addEventListener('pause', say);
+    say();
+    btn.addEventListener('click', () => {
+      if (v.paused) { delete v.dataset.held; v.play().catch(() => {}); }
+      else { v.dataset.held = '1'; v.pause(); }
+    });
+    if (calm) v.dataset.held = '1';
+    if (watch) watch.observe(v.parentElement);
+  });
+}
+if (document.prerendering) document.addEventListener('prerenderingchange', clips, { once: true });
+else clips();
 </script>
 </Page>

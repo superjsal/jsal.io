@@ -197,7 +197,15 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   **Scrolling down** (John, 18 Nov 2026: "subtle animations"), each block that starts below the fold rises 24px and
   fades in once a sixth of it shows (0.6s, eased out, `style: allow`); a part's window follows its words by 0.12s,
   numbers and cards follow one another along their row by 0.08s. Nothing on the first screen waits, nothing plays
-  twice, and with reduced motion (or no script) everything simply shows. The parts and windows
+  twice, and with reduced motion (or no script) everything simply shows.
+  **Clips** (John, 19 Nov 2026, option A: the hero stays the Home still): five parts (Gear, Professions, Journal,
+  and the Dungeon guide and Guild Crafts cards) show a short clip instead of a still, muted MP4s made from the store
+  GIFs (`site/img/jsal-ui/ui/clips/`, each with its first frame as the still). A clip downloads and plays only
+  while a third of its frame is on screen, stops when it leaves, and keeps a `.jsal-btn.small` Pause/Play button
+  (a `.jsal-dark` island) in its corner, since clips run longer than 5 seconds; a pause holds until Play, and with
+  reduced motion nothing starts by itself. Each clip's crop origin is set by eye in `jsal-ui.mjs`, as they're framed
+  differently. The road and tour clips aren't used: the road is too thin for a row, and the tour would blur stretched
+  across the hero. The parts and windows
   are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store cards are (the game
   trimmed off, the version hidden, guildmates' names made up). The version line and the release card read
   `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest release.

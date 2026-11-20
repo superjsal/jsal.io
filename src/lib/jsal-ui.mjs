@@ -9,6 +9,19 @@ const shot = (name, w, h, alt, menu = false) => {
   return { src: `/img/jsal-ui/ui/${name}.webp`, w, h, alt, menu, cx: +(left / w * 100).toFixed(2), cy: +(top / h * 100).toFixed(2) };
 };
 
+// A short clip of a part in use, played in place of its still: a muted MP4 under site/img/jsal-ui/ui/clips/ (made
+// from the store pages' GIFs, a tenth of their size), its first frame as the still shown until it plays. The clips
+// are framed differently (a panel, or a window with some of the game round it), so x and y say where each one's own
+// content starts, in its pixels, for the crops.
+const clip = (name, w, h, x, y, alt) => ({ src: `/img/jsal-ui/ui/clips/${name}.mp4`, poster: `/img/jsal-ui/ui/clips/${name}.webp`, w, h, alt, cx: +(x / w * 100).toFixed(2), cy: +(y / h * 100).toFixed(2) });
+const CLIPS = {
+  gear: clip("gear", 671, 684, 0, 0, "The Gear plan's upgrades for a hunter's chest, filtered by where they come from: dungeons, quests, crafted, world drops."),
+  professions: clip("professions", 825, 893, 60, 66, "Leatherworking's road to the cap: what to craft now, then each step ahead, with a recipe's tooltip saying where to learn it."),
+  journal: clip("story", 836, 638, 0, 0, "The Journal's story of the day: levels reached, bosses defeated and loot, filtered by kind."),
+  dungeons: clip("dungeons", 836, 722, 24, 44, "The Dungeon guide picking Maraudon: each boss's loot with drop chances and the upgrades marked, then the quests to pick up."),
+  crafts: clip("orders", 836, 771, 12, 40, "Guild Crafts: orders from guildmates to make, the ones you asked for, and where each one stands."),
+};
+
 export const HOME = shot("home", 1319, 806, "jsal.ui's Home for a level 40 hunter: the XP bar and what level 41 brings, a trainer visit ready now, and cards for the build, gear, professions, dungeons, the guild, today's games and the journal.", true);
 
 export const GROUPS = [
@@ -50,6 +63,8 @@ export const GROUPS = [
     ],
   },
 ];
+
+for (const g of GROUPS) for (const p of g.parts) if (CLIPS[p.key]) p.clip = CLIPS[p.key];
 
 // The small helpers, each with its own switch in Settings
 export const LITTLE = [
