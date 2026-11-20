@@ -393,9 +393,9 @@ body {
   height: 44px;
   margin-bottom: var(--jsal-space-4);
   border-radius: var(--jsal-radius-xl);
-  background: var(--jsal-accent-soft);
-  border: 1px solid var(--jsal-accent-ring);
-  color: var(--jsal-accent);
+  background: var(--tool-tile);
+  border: 1px solid var(--tool-tile-edge);
+  color: var(--tool-tile-ink);
   display: grid;
   place-items: center;
 }
@@ -645,6 +645,24 @@ body {
 }
 /* The tool fills the window even before images are loaded (leaving room for the card strip): on purpose, so
    the About section stays below the fold and out of the way while someone is using the tool */
+
+/* The Image Resizer's own colour, as on its home tile: a soft teal behind the settings column on a full window, and
+   on the empty preview's icon. The dark theme keeps its own colours. --tool-on is a box that sits on the tint */
+:root { --tool-tint: #dcedea; --tool-ink: #13453f; --tool-line: #a9c9c3; --tool-on: #ffffff; --tool-tile: #dcedea; --tool-tile-ink: #13453f; --tool-tile-edge: transparent; }
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --tool-tint: transparent; --tool-ink: var(--jsal-muted); --tool-line: var(--jsal-line); --tool-on: var(--jsal-bg); --tool-tile: var(--jsal-accent-soft); --tool-tile-ink: var(--jsal-accent); --tool-tile-edge: var(--jsal-accent-ring); }
+}
+@media screen {
+  :root[data-theme="dark"] { --tool-tint: transparent; --tool-ink: var(--jsal-muted); --tool-line: var(--jsal-line); --tool-on: var(--jsal-bg); --tool-tile: var(--jsal-accent-soft); --tool-tile-ink: var(--jsal-accent); --tool-tile-edge: var(--jsal-accent-ring); }
+}
+/* The tint is painted around the column as a shadow, which takes no room, so no control moves or changes size.
+   A narrow window (a browser's side panel) stays plain: there the settings and the preview sit 8px apart */
+@media (min-width: 900px) {
+  .controls { border-radius: var(--jsal-radius-sm); background: var(--tool-tint); box-shadow: 0 0 0 8px var(--tool-tint); }
+  .controls .section-label { color: var(--tool-ink); }
+  .controls .divider { background: var(--tool-line); }
+  .controls .name-tick:not(:has(:checked)) { background: var(--tool-on); }
+}
 
 /* Full window: settings column + preview */
 @media (min-width: 900px) {
