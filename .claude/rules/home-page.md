@@ -10,6 +10,10 @@ paths:
 These are part of the site's design rules (`design-rules.md` beside this file), kept here so they load only for
 home page work.
 
+- **Each tile's tint is also the colour its tool wears on its own page** (design-rules.md, Colour; 19 Nov 2026), so
+  a change to a tile's tint is a change to that tool's page too. The home page's layout is open in the redesign
+  (John, 19 Nov 2026: "not opposed to changing to a different layout outside of bento or redoing the whole
+  homepage"); until a new one is agreed, the rules below describe what's live.
 - **Home page:** tools only, as a bento grid (six columns, 32px gaps, the wide tile swapping sides each row): the
   intro (two columns, at the shared distance under the bar) beside the CMS Picker (four); the Image Resizer (four)
   and Clean Paste (two); Say hi (two) and Redirect Import (four); Updates across the bottom (six). From 1279px down the

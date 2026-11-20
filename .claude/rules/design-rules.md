@@ -22,8 +22,8 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 
 | Font | Used for |
 |---|---|
-| **Lora** (serif) | Every H1 and H2 on the public pages: page titles (`.jsal-title`), heroes, section headings, home tile names, "About …" headings, the platform pages' headline and sections, Privacy, the changelog's dates. |
-| **Inter** (`--jsal-font`) | Everything else: body text, buttons, fields, top-bar links, H3s and smaller subheadings ("How to use it", quiz questions, platform names in lists, the platform pages' question headings), and small interface labels under 16px ("Checks", "Output size", "Export"). |
+| **Lora** (serif) | Every H1 and H2 on the public pages: page titles (`.jsal-title`), heroes, section headings, home tile names, "About …" headings, the platform pages' headline and sections, Privacy, the changelog's dates. Also the line a tool leads with: the CMS Picker's quiz question, its verdict line and each result card's name, and the heading on a tool's empty page ("Paste your content"). |
+| **Inter** (`--jsal-font`) | Everything else: body text, buttons, fields, top-bar links, H3s and smaller subheadings ("How to use it", platform names in lists, the platform pages' question headings), and small interface labels under 16px ("Checks", "Output size", "Export"). |
 | **JetBrains Mono** | The small uppercase labels above headings (gold on the site's own pages: `.roles`, Privacy's date line, "Changelog"; muted on the tools: the CMS Picker's `.byline`), code, and keyboard keys. |
 
 - A title's **gold word** is Lora italic 600 (`.hl`, or `em` on the home page and `/play/`): Clean *Paste*,
@@ -51,10 +51,10 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   | 13px | Secondary text: hints, chips, footers |
   | 14px | Controls and boxed tips: buttons, top-bar links, answer tiles, notes and warnings, the tools' "for" line |
   | 15px | Reading text in the tools |
-  | 17px | Leads and H3s (Inter 600/700): "How to use it", quiz questions, result card names |
-  | 20px | The tool title in the top bar (17px at 420px and under), the platform cards' names |
-  | 24px | Section headings: every H2, the CMS Picker's verdict line, the changelog's dates |
-  | 30px | Home tile names and big callouts (Off the clock's line over the art, 24px on phones) |
+  | 17px | Leads and H3s (Inter 600/700): "How to use it", a panel's heading |
+  | 20px | The tool title in the top bar (17px at 420px and under), the platform cards' names, a platform guide's "at a glance" heading |
+  | 24px | Section headings: every H2, a result card's name, the changelog's dates |
+  | 30px | Home tile names and big callouts, 24px on phones: Off the clock's line over the art, the CMS Picker's quiz question and verdict line, a tool's empty-page heading |
   | 40 / 46px | Page titles (above); the long titles' clamp runs from 30px |
 
   Body and H3 are two pixels and a weight apart, so a subheading reads as one at a glance. **Exceptions**, each
@@ -72,8 +72,8 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 - **Spacing roles** sit on top of the scale and say what a space is for: `--jsal-gutter` (a page's side margin),
   `--jsal-page-end` (below a page's last section), `--jsal-flow` (after a paragraph or list in reading text), and
   the paddings inside a tag (`--jsal-pad-tag`), a bordered pill (`--jsal-pad-pill`), a boxed note or message
-  (`--jsal-pad-note`), a table cell (`--jsal-pad-cell`), a card (`--jsal-pad-card`) and a quiz panel
-  (`--jsal-pad-panel`). A new thing of one of these kinds uses its role, so all of them change together; anything
+  (`--jsal-pad-note`), a table cell (`--jsal-pad-cell`), a card (`--jsal-pad-card`) and a result card or panel that
+  sits on the page (`--jsal-pad-panel`, 24px). A new thing of one of these kinds uses its role, so all of them change together; anything
   else takes the scale directly. Two roles can share a value (a note and a cell are both 8px 12px) and still change
   apart.
 - No named text-size tokens: the type scale above is the set.
@@ -84,12 +84,25 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   least 4.5:1; icons and other graphics people need to see at least 3:1. Light-mode gold text is
   `--jsal-accent` (#7e5a00); `--jsal-fill` (#e3b04b) is for fills and for text on images. The home tiles' own
   tint tokens stay in the home page (`src/pages/index.astro`), where they're used.
+- **Light mode is a cool grey page with white surfaces** (`--jsal-bg` #f3f4f6, `--jsal-surface` #ffffff; John,
+  19 Nov 2026, the redesign's "Series colours", his pick of four mockups). The parchment it replaced is gone:
+  don't bring warm creams back. **The dark theme's colours are fixed** (John, the same day): a change to the look
+  leaves them as they are.
+- **Each tool wears its home tile's colour on its own page**, so the home page and the tools read as one family:
+  the soft tint behind the part that asks for something, and the deep shade for that part's heading. The CMS
+  Picker's quiz, verdict band and platform-guide title are lilac; Redirect Import's empty page is berry; the
+  Image Resizer's settings column is teal, on a full window only (below 900px it stays plain, as the settings and
+  the preview sit 8px apart). Each tool defines its own `--tool-*` tokens in its own stylesheet (`--tool-tint`,
+  `--tool-soft`, `--tool-ink`, `--tool-line`, and `--tool-on` for a box that sits on the tint); in the dark
+  theme they fall back to the plain surfaces. **Clean Paste's honey stays on its icon's tile:** behind a whole
+  panel it sat too close to the gold button. **The top bar stays neutral and the same on every page:** a bar in
+  each tool's colour was mocked up and turned down (John, 19 Nov 2026).
 - **Gold is the site's accent: loud, and spent only where it matters.** Selected states, the main action, the
-  one insight line, brand touches (".io", each title's gold word, the home page name and role line, eyebrow
+  step in hand, brand touches (".io", each title's gold word, the home page name and role line, eyebrow
   labels on the site's own pages, achievements) and the site's own text links (About sections, footers, notes).
   Never hover. Focus is the focus ring, not a gold fill. **On the tools the small labels are muted**, so gold
-  stays for what you act on: the CMS Picker's "Updated" line is muted, and its section labels keep only the
-  number in gold ("**01** · Find your fit").
+  stays for what you act on: the CMS Picker's "Updated" line is muted. What sets a result apart (the CMS Picker's
+  "Why Wix first") is a box in the tool's tint, not a gold bar: a bar down one side of a box isn't used anywhere.
 - **The answer ramp**, for tags that say how well a platform does something: green = built in or automatic,
   blue = with an add-on or indirectly, terracotta = needs code, red = not possible. It reads as one scale
   wherever it appears, so a single tag's colour isn't a warning or information on its own.
@@ -118,9 +131,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   two gold lines. Where an outside line would be cut off (the CMS Picker's table cells, tabs inside a strip, the Image
   Resizer's canvas), the same 2px line sits just inside the edge instead.
 
-- **Corners by size of thing:** 4px small controls and chips inside a control, 6px buttons and fields, 8px cards,
-  12px a tool's main panel (the quiz box, Clean Paste's editor, the Image Resizer's canvas), icon tiles and the
-  achievement pop-up, 999px pills and round buttons, 22px the home and Off the clock tiles (18px at 520px and
+- **Corners by size of thing:** 4px small controls and chips inside a control, 6px buttons and fields, 8px cards
+  and boxes inside a panel, 12px a tool's main panel and anything that sits on the page as its own piece (the quiz
+  box, the verdict band, a result card, a platform guide's title band and answers table, a tool's empty page,
+  Clean Paste's editor, the Image Resizer's canvas), icon tiles and the achievement pop-up, 999px pills and round buttons, 22px the home and Off the clock tiles (18px at 520px and
   under, set on the token). Each step is larger than what sits inside it. **Check:** `check.py` fails any corner
   that isn't a token (or 0, 50%, `inherit`); the home tiles' miniature pictures and the backpack drawing carry
   `style: allow`.
@@ -172,6 +186,15 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   fills the first screen.
 - **Tools fill the first screen;** the About section sits below the fold, reached by the top bar's About link.
   On phones the empty work box stretches to the bottom of the screen until there's content.
+- **A tool's empty page says what to do and what the tool does** (Clean Paste, Redirect Import; John, 19 Nov
+  2026): one panel across the full width, its heading in Lora, one main way in as the gold button ("Paste from
+  clipboard", "Choose a file") with the others as links, and a short ticked list of what the tool does, in plain
+  text and never in boxes, so nothing looks clickable that isn't. Every line in the list is something the tool
+  really does. Clean Paste's Checks column is kept for screen readers only until something is pasted. Once there's
+  content, each tool's working layout is as it was.
+- **The Image Resizer's layout doesn't move** (John, 19 Nov 2026: his coworkers use it every day, often docked in
+  a side panel about 500px wide). A change to its look is proved by recording every element's position and size
+  before and after, at 1440 × 900, 500 × 1330 and 390 × 844, empty and with an image loaded.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
 - **Home page:** tools only, as a bento grid of tiles; every new home page tool or section is a bento box, and the
   home page is always bento boxes. **The work tools never become bento grids** (the CMS Picker and its platform

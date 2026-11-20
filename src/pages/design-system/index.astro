@@ -69,7 +69,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .theme { padding: var(--jsal-space-20); border-radius: var(--jsal-radius-lg); border: 1px solid var(--t-line); background: var(--t-bg); color: var(--t-ink); }
 .theme h3 { margin: 0 0 var(--jsal-space-12); font: 700 17px/1.2 "Lora", Georgia, serif; color: inherit; }
 .theme h3 small { display: block; margin-top: 3px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
-.theme.light { --t-bg: #f5efe2; --t-surface: #fbf8f0; --t-sunk: #e8e0d1; --t-ink: #1f1a12; --t-ink2: #3d362a; --t-muted: #6b6253; --t-line: #d8cfc0; --t-linehi: #bdb3a3; --t-accent: #7e5a00; --t-accentsoft: #f1e3c2; --t-fill: #e3b04b; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; --t-onfill: #1f1a12; --t-ring: rgba(126, 90, 0, 0.4); --t-markedge: transparent; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
+.theme.light { --t-bg: #f3f4f6; --t-surface: #ffffff; --t-sunk: #e6e8ec; --t-ink: #14171c; --t-ink2: #3a404a; --t-muted: #5d6470; --t-line: #d9dde3; --t-linehi: #b4bac4; --t-accent: #7e5a00; --t-accentsoft: #f6e9c8; --t-fill: #e3b04b; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; --t-onfill: #14171c; --t-ring: rgba(126, 90, 0, 0.4); --t-markedge: transparent; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
 .theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #d9773f; --t-warnsoft: #34231b; --t-bad: #ffb3bb; --t-badsoft: #3a1b22; --t-info: #8fb1ff; --t-infosoft: #1d2540; --t-onfill: #16130c; --t-ring: rgba(227, 176, 75, 0.35); --t-markedge: #6b7180; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
 .swatches { display: grid; gap: var(--jsal-space-8); }
 .sw { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 0 var(--jsal-space-12); }
@@ -223,27 +223,30 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .ach span.d { display: block; font-size: 13px; color: var(--jsal-muted); }
 .topbar-demo { padding: 0 var(--jsal-space-20); border: 1px dashed var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); }
 .topbar-demo .jsal-top { padding: var(--jsal-space-12) 0; }
-.insight { padding: var(--jsal-space-2) 0 var(--jsal-space-2) var(--jsal-space-12); border-left: 3px solid var(--jsal-gold-line); font-size: 15px; line-height: 1.45; max-width: 36em; }
-.insight b { display: block; margin-bottom: var(--jsal-space-2); color: var(--jsal-accent); font-size: 13px; font-weight: 700; }
+.insight { padding: var(--jsal-space-12) var(--jsal-space-16); border-radius: var(--jsal-radius-lg); background: var(--ds-soft); font-size: 15px; line-height: 1.45; max-width: 36em; }
+.insight b { display: block; margin-bottom: var(--jsal-space-2); color: var(--ds-ink); font-size: 13px; font-weight: 700; }
 .worth { display: flex; gap: var(--jsal-space-8); font-size: 13px; color: var(--jsal-muted); max-width: 36em; }
-/* The quiz result's verdict: green for a lead or winner, neutral for a close call (cms-picker .qz-verdict) */
-.verdict { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "eye jump" "line line"; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-12); padding: var(--jsal-space-20) var(--jsal-space-20); border-radius: var(--jsal-radius-lg); background: var(--jsal-ok-soft); }
-.verdict.close { background: var(--jsal-sunk); }
-.verdict .eye { grid-area: eye; margin: 0; color: var(--jsal-ok); font: 600 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+/* The quiz result's verdict: a band in the tool's tint; a green tag for a lead or winner, a neutral one for a close
+   call (cms-picker .qz-verdict). --ds-* stand in here for the CMS Picker's own --tool-* tokens */
+.verdict, .insight { --ds-tint: #e9e0f6; --ds-soft: #f1ebf9; --ds-ink: #3d2466; --ds-on: #ffffff; }   /* style: allow (the CMS Picker's own tint, shown as it is there) */
+@media screen and (prefers-color-scheme: dark) { :root:not([data-theme="light"]) :is(.verdict, .insight) { --ds-tint: var(--jsal-surface); --ds-soft: var(--jsal-sunk); --ds-ink: var(--jsal-ink); --ds-on: var(--jsal-bg); } }
+@media screen { :root[data-theme="dark"] :is(.verdict, .insight) { --ds-tint: var(--jsal-surface); --ds-soft: var(--jsal-sunk); --ds-ink: var(--jsal-ink); --ds-on: var(--jsal-bg); } }
+.verdict { display: grid; justify-items: start; gap: var(--jsal-space-12); padding: var(--jsal-space-24) var(--jsal-space-32); border-radius: var(--jsal-radius-xl); background: var(--ds-tint); }
+.verdict .eye { margin: 0; padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--ds-on); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
 .verdict.close .eye { color: var(--jsal-ink-2); }
-.verdict .line { grid-area: line; margin: 0; max-width: none; color: var(--jsal-ink); font: 600 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; text-wrap: balance; }
-.verdict .jump { grid-area: jump; color: var(--jsal-accent); font: 600 13px var(--jsal-font); text-underline-offset: 3px; }
-/* Your answers: equal tiles, a short name over each answer, ticked extras on a line beneath (cms-picker .qz-ans) */
-.ans { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--jsal-space-8); }
-.ans button { display: flex; flex-direction: column; gap: var(--jsal-space-2); min-height: 58px; padding: var(--jsal-space-8) var(--jsal-space-12); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-bg); color: var(--jsal-ink); font: 500 14px/1.3 var(--jsal-font); text-align: left; cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick), color var(--jsal-quick); }
+.verdict .line { margin: 0; max-width: 30ch; color: var(--ds-ink); font: 700 30px/1.2 "Lora", Georgia, serif; letter-spacing: -0.015em; text-wrap: balance; }
+.verdict .acts { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); }
+/* Your answers: small tiles in a row, a short name over each answer, ticked extras on a line beneath (cms-picker .qz-ans) */
+.ans { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); }
+.ans button { display: flex; flex-direction: column; gap: var(--jsal-space-2); min-height: 58px; padding: var(--jsal-space-8) var(--jsal-space-12); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius); background: var(--jsal-surface); color: var(--jsal-ink); font: 500 14px/1.3 var(--jsal-font); text-align: left; cursor: pointer; transition: border-color var(--jsal-quick), background var(--jsal-quick), color var(--jsal-quick); }
 .ans button small { color: var(--jsal-muted); font-size: 12px; }
 .ans button:hover { border-color: var(--jsal-hover-line); }
 .ans button[aria-expanded="true"] { background: var(--jsal-selected-bg); border-color: var(--jsal-gold-line); color: var(--jsal-selected-ink); }
 .ans-also { display: flex; align-items: center; gap: var(--jsal-space-8); font-size: 14px; font-weight: 500; }
 .ans-also i { display: grid; place-items: center; width: 16px; height: 16px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 /* A match that lacks a must-have the first has built in, under a divider; its pill neutral (cms-picker .qz-div, .fitp) */
-.match { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-8); font: 700 17px/1.3 var(--jsal-font); }
-.fitp { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
+.match { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-12); font: 700 24px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.fitp { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font: 700 12px/1.5 var(--jsal-font); letter-spacing: 0; }
 .fitp.low { background: var(--jsal-line); color: var(--jsal-ink-2); }
 .div { max-width: 36em; padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
 .div b { display: block; margin-bottom: var(--jsal-space-2); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -282,7 +285,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 @media (max-width: 599px) { .icons { grid-template-columns: repeat(4, minmax(0, 1fr)); } .checks { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 479px) { .live { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 720px) { .hero { padding-top: var(--jsal-space-32); } .sec { padding-top: var(--jsal-space-40); } .roles td:first-child { white-space: normal; } .jsal-top nav { display: none; } .ans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }   /* the contents list below does the nav's job on a phone */
-@media (max-width: 560px) { .ref-row, .dd { grid-template-columns: minmax(0, 1fr); } .ref { padding: var(--jsal-space-16); } .verdict { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "line" "jump"; padding: var(--jsal-space-16); } .verdict .jump { margin-top: var(--jsal-space-8); } }
+@media (max-width: 560px) { .ref-row, .dd { grid-template-columns: minmax(0, 1fr); } .ref { padding: var(--jsal-space-16); } .verdict { padding: var(--jsal-space-20); } .verdict .line { font-size: 24px; } }
 @media (pointer: coarse) { .cta, .chip, .chk, .chip-link, .tick, .fgdemo a, .ans button { min-height: 44px; } .chip, .chip-link, .fgdemo a { display: inline-flex; align-items: center; } }
 @media (prefers-reduced-motion: reduce) { .cta, .chip, .ans button { transition: none; } .cta:hover { transform: none; } }
 </style>
@@ -342,7 +345,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <li><b>Say each thing once</b><span>About sections follow a fixed order: a bold lead, "How to use it", any intro in one sentence, reference lists folded away, two or three questions the page doesn't already answer, then how to get in touch.</span><small>CLAUDE.md · About sections</small></li>
       <li><b>The tool fills the first screen</b><span>Explanations sit below the fold, reached by an About link in the top bar. On phones the empty work area stretches to the bottom of the screen until there's content.</span><small>design-rules.md · Layout</small></li>
       <li><b>The top bar never moves</b><span>One shared layout writes the same top bar on every page, so the logo and theme button stay put during page transitions while the rest of the page changes around them.</span><small>TopBar.astro · check.py compares it</small></li>
-      <li><b>Gold where it matters</b><span>One accent, kept loud by spending it only on selected states, the main action, the one insight line, brand touches and the site's own links. Never on hover.</span><small>check.py fails gold on hover</small></li>
+      <li><b>Gold where it matters</b><span>One accent, kept loud by spending it only on selected states, the main action, brand touches and the site's own links. Never on hover.</span><small>check.py fails gold on hover</small></li>
       <li><b>Words over widgets</b><span>Plain tags ("Built in", "Needs code") and plain states ("not verified", and "*" for varies, spelled out in the key and for screen readers) carry the meaning; colour reinforces, it never explains alone. Instructions swap "click" for "tap" on touch screens.</span><small>nav.js · data-touch</small></li>
       <li><b>Motion that steps aside</b><span>Two timings, 0.15s for a change and 0.3s for a move, every one with a reduced-motion fallback, and nothing moving on its own for more than five seconds.</span><small>check.py · WCAG 2.2.2</small></li>
       <li><b>Everything stays in the browser</b><span>Files, pasted documents and settings never leave the device; the only thing sent anywhere is basic analytics, and in Europe only with consent. The design makes the promise visible ("Nothing is uploaded") on every tool.</span><small>/privacy/</small></li>
@@ -352,34 +355,34 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
   <section class="sec" id="colour">
     <p class="eyebrow">03 · Colour system</p>
-    <h2>Parchment and gold; slate, gold and arcane blue.</h2>
+    <h2>Cool grey and gold; slate, gold and arcane blue.</h2>
     <p class="intro">Every colour on the site comes from a <code>--jsal-*</code> token defined in <code>shell.css</code>, with a light value and a dark one. Written-out colours fail the pre-push check. The gold is two tokens on purpose: <code>--jsal-accent</code> for text and links (dark enough for 4.5:1 on every light surface) and <code>--jsal-fill</code> for the main button's fill and for text over images.</p>
     <div class="themes">
       <article class="theme light">
         <h3>Light<small>default · prefers-color-scheme: light</small></h3>
         <p class="group">Surfaces</p>
         <div class="swatches">
-          <div class="sw"><i style="background:var(--t-bg)"></i><b>Background</b><code>--jsal-bg</code><code>#f5efe2</code></div>
-          <div class="sw"><i style="background:var(--t-surface)"></i><b>Surface</b><code>--jsal-surface</code><code>#fbf8f0</code></div>
-          <div class="sw"><i style="background:var(--t-sunk)"></i><b>Sunk</b><code>--jsal-sunk</code><code>#e8e0d1</code></div>
-          <div class="sw"><i style="background:var(--t-line)"></i><b>Line</b><code>--jsal-line</code><code>#d8cfc0</code></div>
-          <div class="sw"><i style="background:var(--t-linehi)"></i><b>Line, firm</b><code>--jsal-line-hi</code><code>#bdb3a3</code></div>
-          <div class="sw"><i style="background:var(--t-markedge)"></i><b>Logo edge</b><code>--jsal-mark-edge</code><code>none</code><small>the logo tile needs no edge on cream</small></div>
+          <div class="sw"><i style="background:var(--t-bg)"></i><b>Background</b><code>--jsal-bg</code><code>#f3f4f6</code></div>
+          <div class="sw"><i style="background:var(--t-surface)"></i><b>Surface</b><code>--jsal-surface</code><code>#ffffff</code></div>
+          <div class="sw"><i style="background:var(--t-sunk)"></i><b>Sunk</b><code>--jsal-sunk</code><code>#e6e8ec</code></div>
+          <div class="sw"><i style="background:var(--t-line)"></i><b>Line</b><code>--jsal-line</code><code>#d9dde3</code></div>
+          <div class="sw"><i style="background:var(--t-linehi)"></i><b>Line, firm</b><code>--jsal-line-hi</code><code>#b4bac4</code></div>
+          <div class="sw"><i style="background:var(--t-markedge)"></i><b>Logo edge</b><code>--jsal-mark-edge</code><code>none</code><small>the logo tile needs no edge on a pale page</small></div>
         </div>
         <p class="group">Text</p>
         <div class="swatches">
-          <div class="sw"><i style="background:var(--t-ink)"></i><b>Ink</b><code>--jsal-ink</code><code>#1f1a12</code></div>
-          <div class="sw"><i style="background:var(--t-ink2)"></i><b>Ink 2</b><code>--jsal-ink-2</code><code>#3d362a</code></div>
-          <div class="sw"><i style="background:var(--t-muted)"></i><b>Muted</b><code>--jsal-muted</code><code>#6b6253</code></div>
+          <div class="sw"><i style="background:var(--t-ink)"></i><b>Ink</b><code>--jsal-ink</code><code>#14171c</code></div>
+          <div class="sw"><i style="background:var(--t-ink2)"></i><b>Ink 2</b><code>--jsal-ink-2</code><code>#3a404a</code></div>
+          <div class="sw"><i style="background:var(--t-muted)"></i><b>Muted</b><code>--jsal-muted</code><code>#5d6470</code></div>
         </div>
         <p class="group">Gold</p>
         <div class="swatches">
           <div class="sw"><i style="background:var(--t-accent)"></i><b>Accent</b><code>--jsal-accent</code><code>#7e5a00</code><small>text and links, 4.5:1</small></div>
           <div class="sw"><i style="background:var(--t-fill)"></i><b>Fill</b><code>--jsal-fill</code><code>#e3b04b</code><small>main buttons, text on images</small></div>
-          <div class="sw"><i style="background:var(--t-accentsoft)"></i><b>Accent, soft</b><code>--jsal-accent-soft</code><code>#f1e3c2</code><small>selected tint</small></div>
-          <div class="sw"><i style="background:var(--t-onfill)"></i><b>On fill</b><code>--jsal-on-fill</code><code>#1f1a12</code><small>text on a gold button</small></div>
-          <div class="sw"><i style="background:var(--t-fill)"></i><b>Gold line</b><code>--jsal-gold-line</code><code>= fill</code><small>the insight bar, selected borders</small></div>
-          <div class="sw"><i style="background:var(--t-accent)"></i><b>Fill edge</b><code>--jsal-fill-edge</code><code>= accent</code><small>a gold button's edge on cream</small></div>
+          <div class="sw"><i style="background:var(--t-accentsoft)"></i><b>Accent, soft</b><code>--jsal-accent-soft</code><code>#f6e9c8</code><small>selected tint</small></div>
+          <div class="sw"><i style="background:var(--t-onfill)"></i><b>On fill</b><code>--jsal-on-fill</code><code>#14171c</code><small>text on a gold button</small></div>
+          <div class="sw"><i style="background:var(--t-fill)"></i><b>Gold line</b><code>--jsal-gold-line</code><code>= fill</code><small>selected borders, the step in hand</small></div>
+          <div class="sw"><i style="background:var(--t-accent)"></i><b>Fill edge</b><code>--jsal-fill-edge</code><code>= accent</code><small>a gold button's edge on a pale page</small></div>
           <div class="sw"><i style="background:var(--t-ring)"></i><b>Ring</b><code>--jsal-accent-ring</code><code>40%</code><small>accent at 40%, a soft gold glow</small></div>
         </div>
         <p class="group">Meaning</p>
@@ -419,7 +422,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
           <div class="sw"><i style="background:var(--t-fill)"></i><b>Fill</b><code>--jsal-fill</code><code>#e3b04b</code><small>main buttons</small></div>
           <div class="sw"><i style="background:var(--t-accentsoft)"></i><b>Accent, soft</b><code>--jsal-accent-soft</code><code>#2c2618</code><small>selected tint</small></div>
           <div class="sw"><i style="background:var(--t-onfill)"></i><b>On fill</b><code>--jsal-on-fill</code><code>#16130c</code><small>text on a gold button</small></div>
-          <div class="sw"><i style="background:var(--t-accent)"></i><b>Gold line</b><code>--jsal-gold-line</code><code>= accent</code><small>the insight bar, selected borders</small></div>
+          <div class="sw"><i style="background:var(--t-accent)"></i><b>Gold line</b><code>--jsal-gold-line</code><code>= accent</code><small>selected borders, the step in hand</small></div>
           <div class="sw"><i style="background:var(--t-fill)"></i><b>Fill edge</b><code>--jsal-fill-edge</code><code>= fill</code><small>the gold button is its own edge</small></div>
           <div class="sw"><i style="background:var(--t-ring)"></i><b>Ring</b><code>--jsal-accent-ring</code><code>35%</code><small>accent at 35%, a soft gold glow</small></div>
         </div>
@@ -444,8 +447,8 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <div class="table-wrap" tabindex="0" role="region" aria-label="What each colour means"><table class="roles">
       <thead><tr><th>Colour</th><th>Means</th><th>Where you see it</th></tr></thead>
       <tbody>
-        <tr><td><span class="dot" style="background:var(--jsal-accent)"></span>Gold</td><td>The site's accent: selected states, the main action, the one insight line, brand touches and the site's own text links. Never hover; focus is the ring, not a gold fill. On the tools the small labels are muted, so gold stays for what you act on; a section label keeps only its number in gold.</td><td>A pressed chip, "Find your CMS", "What tipped it", the gold word in each title, ".io", About links</td></tr>
-        <tr><td><span class="dot" style="background:var(--jsal-ok)"></span>Green</td><td>Fit, or success.</td><td>"Built in", a Copy button after it copied, "Best match", the quiz's verdict when one match leads</td></tr>
+        <tr><td><span class="dot" style="background:var(--jsal-accent)"></span>Gold</td><td>The site's accent: selected states, the main action, the step in hand, brand touches and the site's own text links. Never hover; focus is the ring, not a gold fill. On the tools the small labels are muted, so gold stays for what you act on.</td><td>A pressed chip, "Find your CMS", the quiz's current step, the gold word in each title, ".io", About links</td></tr>
+        <tr><td><span class="dot" style="background:var(--jsal-ok)"></span>Green</td><td>Fit, or success.</td><td>"Built in", a Copy button after it copied, "Best match", the verdict's tag when one match leads</td></tr>
         <tr><td><span class="dot" style="background:var(--jsal-info)"></span>Blue</td><td>Information, something in flight, and links inside a tool's content.</td><td>"Plugin/app", a note, "waiting for publish", links in Clean Paste's editor and in a quiz result's steps</td></tr>
         <tr><td><span class="dot" style="background:var(--jsal-warn)"></span>Terracotta</td><td>A genuine warning.</td><td>"Needs code", a missing or stale source, "may look blurry", a bold-only line that may be a heading</td></tr>
         <tr><td><span class="dot" style="background:var(--jsal-bad)"></span>Red</td><td>Not possible, destructive actions, and an action that failed.</td><td>"Not possible", Clear, Remove, Replace, an invalid size, "Couldn’t save"</td></tr>
@@ -456,6 +459,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <p>On the CMS Picker a row says how well a platform does something. Its tags are one scale, read left to right, and the scale is the same wherever it appears, on the comparison table, the cards and the platform pages.</p>
     <div class="ramp"><span class="tag yes">Built in</span><span class="arrow">→</span><span class="tag plugin">Plugin/app</span><span class="arrow">→</span><span class="tag code">Needs code</span><span class="arrow">→</span><span class="tag no">Not possible</span><span class="arrow" style="margin-left:var(--jsal-space-8)">·</span><span class="tag check">Unclear</span> <span class="sc">* varies</span></div>
     <div class="suggest"><b>Decided</b><p>The home page's bento tiles keep their own tint tokens (<code>--t-cms</code> lilac, <code>--t-ir</code> teal, <code>--t-cp</code> honey, <code>--t-ri</code> berry, each with a deep <code>-ink</code> shade for its words, and <code>--t-plain</code> for Say hi and Updates) in the home page's own styles. Moving them into <code>shell.css</code> would copy colours only the home page uses into every page, so they stay where they’re used and are listed here instead.</p></div>
+    <div class="suggest"><b>Decided</b><p>Each tool wears its home tile's colour on its own page, so the home page and the tools read as one family: a soft tint behind the part that asks for something (the CMS Picker's quiz and verdict, Redirect Import's empty page, the Image Resizer's settings column on a full window) and the deep shade for that part's heading. Each tool sets its own <code>--tool-*</code> tokens in its own styles. The top bar stays neutral and the same on every page, and the dark theme keeps its plain surfaces. Clean Paste's honey sits too close to the gold button to go behind a panel, so it stays on the icon's tile.</p></div>
   </section>
 
   <section class="sec" id="type">
@@ -487,10 +491,10 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <tbody>
         <tr><td>Page title</td><td>46px (40px on phones)</td><td>Lora 700, −0.02em</td><td>Home, Off the clock, Privacy, Changelog, 404, this page</td></tr>
         <tr><td>Long page title</td><td>clamp(30px, 4.6vw, 46px)</td><td>Lora 700, −0.02em</td><td>The CMS Picker's heading and /cms-picker/&lt;platform&gt;/, which shrink further on phones</td></tr>
-        <tr><td>Tile name, big callout</td><td>30px (24px callout on phones)</td><td>Lora 700, in the tile's deep shade</td><td>Home tiles, the line over Off the clock's art</td></tr>
-        <tr><td>Section heading</td><td>24px</td><td>Lora 700 (italic 600 for Currently, Achievements)</td><td>Every H2, the CMS Picker's verdict line, the changelog's dates</td></tr>
+        <tr><td>Tile name, big callout</td><td>30px (24px callout on phones)</td><td>Lora 700, in the tile's deep shade</td><td>Home tiles, the line over Off the clock's art, a quiz question, the verdict line, a tool's empty-page heading</td></tr>
+        <tr><td>Section heading</td><td>24px</td><td>Lora 700 (italic 600 for Currently, Achievements)</td><td>Every H2, a result card's name, the changelog's dates</td></tr>
         <tr><td>Tool title in the top bar</td><td>20px (17px on phones)</td><td>Lora 700, gold word italic, after the tool's 22px icon</td><td>.jsal-title; the platform cards' names</td></tr>
-        <tr><td>Lede, H3</td><td>17px</td><td>Inter 400 for ledes, 600 or 700 for H3s</td><td>Under titles; How to use it, quiz questions, result card names</td></tr>
+        <tr><td>Lede, H3</td><td>17px</td><td>Inter 400 for ledes, 600 or 700 for H3s</td><td>Under titles; How to use it, a panel's heading</td></tr>
         <tr><td>Body</td><td>15px / 1.6</td><td>Inter 400</td><td>Everywhere</td></tr>
         <tr><td>Controls, boxed tips</td><td>14px</td><td>Inter 600 (controls) or 400</td><td>Buttons, top-bar links, answer tiles, notes</td></tr>
         <tr><td>Secondary text</td><td>13px</td><td>Inter 400 or 600</td><td>Hints under fields, chips, footers</td></tr>
@@ -671,11 +675,11 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
       <article class="ref" id="c-verdict">
         <div class="ref-h"><h3>The result's verdict</h3><code>.qz-verdict</code><code>--jsal-pad-panel</code><span class="file">cms-picker/styles.css</span></div>
-        <div class="ref-row"><span>A lead</span><div><div class="verdict"><p class="eye">A clear lead</p><p class="line">Wix is ahead of Squarespace for what you need.</p><a class="jump" href="/cms-picker/">Compare these side by side ↓</a></div></div></div>
+        <div class="ref-row"><span>A lead</span><div><div class="verdict"><p class="eye">A clear lead</p><p class="line">Wix is ahead of Squarespace for what you need.</p><div class="acts"><a class="jsal-btn primary" href="/cms-picker/">Compare these side by side</a></div></div></div></div>
         <div class="ref-row"><span>A close call</span><div><div class="verdict close"><p class="eye">A close call</p><p class="line">Squarespace is slightly ahead of Wix for your answers, and either would work.</p></div></div></div>
         <dl class="ref-rules">
-          <div><dt>Use it for</dt><dd>The first thing read in a result: how sure in the small label, how far ahead in Lora. Green for a lead or a winner.</dd></div>
-          <div class="no"><dt>Not for</dt><dd>Green on a close call: it stays neutral, so green always means one is ahead.</dd></div>
+          <div><dt>Use it for</dt><dd>The first thing read in a result: how sure in the small tag, how far ahead in Lora, then the result's actions. The band is always the tool's tint; the tag is green for a lead or a winner.</dd></div>
+          <div class="no"><dt>Not for</dt><dd>A green tag on a close call: it stays neutral, so green always means one is ahead.</dd></div>
         </dl>
       </article>
 
@@ -698,11 +702,11 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       </article>
 
       <article class="ref" id="c-insight">
-        <div class="ref-h"><h3>The insight line and a caveat</h3><code>.qz-vs</code><code>.qz-lim</code><span class="file">cms-picker/styles.css</span></div>
+        <div class="ref-h"><h3>The insight box and a caveat</h3><code>.qz-vs</code><code>.qz-lim</code><span class="file">cms-picker/styles.css</span></div>
         <div class="ref-row"><span>Example</span><div class="stack"><div class="insight"><b>Ahead of Wix</b>What tipped it: you're making an online store, and Shopify is made for selling first.</div><div class="worth"><span aria-hidden="true">ⓘ</span><span>Worth knowing: moving to another platform later is harder (products, customers and orders as CSV).</span></div></div></div>
         <div class="dd">
-          <div class="do"><b>Do</b><div class="stack"><div class="insight"><b>Ahead of Wix</b>Shopify is made for selling first.</div></div><p>One gold line per card: the one insight.</p></div>
-          <div class="dont"><b>Don’t</b><div class="stack"><div class="insight"><b>Ahead of Wix</b>Made for selling first.</div><div class="insight"><b>Also</b>Easy to run.</div></div><p>Gold on every reason: then nothing stands out.</p></div>
+          <div class="do"><b>Do</b><div class="stack"><div class="insight"><b>Ahead of Wix</b>Shopify is made for selling first.</div></div><p>One tinted box per card: the one insight.</p></div>
+          <div class="dont"><b>Don’t</b><div class="stack"><div class="insight"><b>Ahead of Wix</b>Made for selling first.</div><div class="insight"><b>Also</b>Easy to run.</div></div><p>A box on every reason: then nothing stands out.</p></div>
         </div>
       </article>
 
