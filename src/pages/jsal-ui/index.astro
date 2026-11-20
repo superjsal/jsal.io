@@ -414,7 +414,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 })();
 // The Pals stage: one pal's life, played with the addon's own pictures. A press hatches the egg, the next two
 // grow it (gold motes gather into a ball of light, it changes underneath, the ball bursts), timed as the addon
-// times them. Nothing plays by itself; with reduced motion a press simply shows the next form.
+// times them. The game steps from picture to picture; here each one melts into the next, the ball of light swells
+// and breathes instead of flickering, and the pal lands with a small hop, so it reads as one smooth move. Nothing
+// plays by itself; with reduced motion a press simply shows the next form.
 (() => {
   const fig = document.querySelector('.family');
   if (!fig) return;
@@ -429,14 +431,34 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const hatch = load(fig.dataset.hatch), light = load(fig.dataset.grow), bodies = [null, null, ...fig.dataset.forms.split(' ').map(load)];
   const SAY = ['A Toadstool egg.', 'It hatched: a Capling.', 'It grew into a Lanternshell.', 'Fully grown: a Bloomsage.'];
   const calm = matchMedia('(prefers-reduced-motion: reduce)');
-  let at = 0, busy = false, frame = 0, cell = -1;
+  // frame and cell may sit between two pictures (3.7 is most of the way from the fourth to the fifth); lift and
+  // size move the pal itself (a hop, a landing), swell sizes the ball of light
+  let at = 0, busy = false, frame = 0, cell = -1, lift = 0, size = 1, swell = 1;
+  // a picture holds for the first half of its time, then melts into the next
+  const melt = (x) => { const t = Math.max(0, (x % 1) * 2 - 1); return t * t * (3 - 2 * t); };
+  const hatchAt = (n, a) => { ctx.globalAlpha = a; ctx.drawImage(hatch, n * 96, 0, 96, 96, -48, -48, 96, 96); };
+  const lightAt = (n, a) => { ctx.globalAlpha = a; ctx.drawImage(light, (n % 8) * 128, (n >> 3) * 128, 128, 128, -64, -64, 128, 128); };
   const draw = () => {
     ctx.imageSmoothingEnabled = false;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, 128, 128);
-    if (at < 2) ctx.drawImage(hatch, frame * 96, 0, 96, 96, 16, 16, 96, 96);
-    else if (bodies[at].naturalWidth) ctx.drawImage(bodies[at], (128 - bodies[at].naturalWidth) / 2, (128 - bodies[at].naturalHeight) / 2);
-    if (cell >= 0) ctx.drawImage(light, (cell % 8) * 128, (cell >> 3) * 128, 128, 128, 0, 0, 128, 128);
+    ctx.setTransform(size, 0, 0, size, 64, 64 - lift);
+    if (at < 2) {
+      const n = Math.min(9, Math.floor(frame)), t = n < 9 ? melt(frame) : 0;
+      hatchAt(n, 1 - t); if (t) hatchAt(n + 1, t);
+    } else if (bodies[at].naturalWidth) {
+      ctx.globalAlpha = 1;
+      ctx.drawImage(bodies[at], -bodies[at].naturalWidth / 2, -bodies[at].naturalHeight / 2);
+    }
+    if (cell >= 0) {
+      ctx.setTransform(swell, 0, 0, swell, 64, 64);
+      const n = Math.min(15, Math.floor(cell)), t = n < 15 ? melt(cell) : 0;
+      lightAt(n, 1 - t); if (t) lightAt(n + 1, t);
+    }
+    ctx.globalAlpha = 1;
   };
+  // a soft landing: past the mark, back to it
+  const settle = (x) => { const t = Math.min(1, Math.max(0, x)) - 1; return 1 + 2.7 * t * t * t + 1.7 * t * t; };
   const show = () => {
     names.forEach((n, i) => (i === at ? n.setAttribute('aria-current', 'step') : n.removeAttribute('aria-current')));
     btn.textContent = ['Hatch the egg', 'Grow', 'Grow', 'Start again'][at];
@@ -463,13 +485,20 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     if (calm.matches) { at = next; frame = 9; show(); return; }
     if (at === 0) {
       btn.textContent = 'Hatching…';
-      run(2, (c) => { frame = Math.min(9, Math.floor(c / 0.2)); }, () => { at = 1; frame = 9; });
+      // out of the shell by 1.8 seconds, then a small hop
+      run(2.3, (c) => {
+        frame = Math.min(9, c / 0.2);
+        lift = c > 1.8 ? 7 * Math.sin(Math.PI * Math.min(1, (c - 1.8) / 0.45)) : 0;
+      }, () => { at = 1; frame = 9; lift = 0; });
     } else {
       btn.textContent = 'Growing…';
-      run(2.96, (c) => {
-        cell = c < 1.4 ? Math.floor(c / 0.2) : c < 2 ? 7 - Math.floor((c - 1.4) / 0.1) % 2 : 8 + Math.min(7, Math.floor((c - 2) / 0.12));
+      run(3.2, (c) => {
+        // the ball gathers, holds while it breathes (the game flickers between two pictures here), then bursts
+        cell = c < 1.4 ? c / 0.2 : c < 2 ? 7 : Math.min(15, 8 + (c - 2) / 0.12);
+        swell = c >= 1.4 && c < 2 ? 1 + 0.045 * Math.sin((c - 1.4) / 0.3 * 2 * Math.PI) : 1;
         if (c >= 1.7) at = next;   // it's the new form once the light has closed over it
-      }, () => { cell = -1; at = next; });
+        size = c >= 2 ? 0.82 + 0.18 * settle((c - 2) / 0.6) : 1;   // and it lands as the light clears
+      }, () => { cell = -1; at = next; size = 1; swell = 1; });
     }
   });
   [hatch, light, ...bodies.slice(2)].forEach((img) => img.addEventListener('load', draw));
