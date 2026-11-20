@@ -199,8 +199,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   numbers and cards follow one another along their row by 0.08s. Nothing on the first screen waits, nothing plays
   twice, and with reduced motion (or no script) everything simply shows.
   **Clips** (John, 19 Nov 2026, option A: the hero stays the Home still): five parts (Gear, Professions, Journal,
-  and the Dungeon guide and Guild Crafts cards) show a short clip instead of a still, muted MP4s made from the store
-  GIFs (`site/img/jsal-ui/ui/clips/`, each with its first frame as the still). A clip downloads and plays only
+  and the Dungeon guide and Guild Crafts cards) show a short clip instead of a still: muted MP4s in
+  `site/img/jsal-ui/ui/clips/`, each with its first frame as the still. They're drawn from the same sim pages as
+  the store GIFs, never converted from a GIF (John: GIF-made video lost "the smoothness"): a steady 30 frames a
+  second in full colour, 13-frame fades, by `private\jsal-ui\sim\make_clips.py` (beside `make_gif.py`). A clip downloads and plays only
   while a third of its frame is on screen, stops when it leaves, and keeps a `.jsal-btn.small` Pause/Play button
   (a `.jsal-dark` island) in its corner, since clips run longer than 5 seconds; a pause holds until Play, and with
   reduced motion nothing starts by itself. Each clip's crop origin is set by eye in `jsal-ui.mjs`, as they're framed
