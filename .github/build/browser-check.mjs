@@ -61,16 +61,17 @@ async function axe(page, label) {
   log(`axe ${label}: ${r.length ? r.map((v) => `${v.impact} ${v.id} (${v.nodes}): ${v.help} @ ${v.where.join(' | ')}`).join('\n    ') : 'no problems'}`);
 }
 
-// Type rule (CLAUDE.md, "Type"): every visible H1 and H2 is Lora. Small interface labels (under 16px, like
+// Type rule (design-rules.md, "Type"): every visible H1 and H2 is Lora, or Outfit on the two pages set in the
+// addon's font (the home page and the jsal.ui page). Small interface labels (under 16px, like
 // Clean Paste's "Checks") and the visitor's own text in Clean Paste's editor are Inter on purpose
 async function headingFonts(page, label) {
   const bad = await page.evaluate(() => [...document.querySelectorAll('h1, h2')].filter((h) => {
     const cs = getComputedStyle(h);
     if (!h.getClientRects().length || cs.visibility === 'hidden' || h.closest('.sr-only, [hidden], #editor')) return false;
-    return parseFloat(cs.fontSize) >= 16 && !/^"?Lora/.test(cs.fontFamily);
+    return parseFloat(cs.fontSize) >= 16 && !/^"?(Lora|Outfit)/.test(cs.fontFamily);
   }).map((h) => `${h.tagName} "${h.textContent.trim().slice(0, 40)}" (${getComputedStyle(h).fontFamily.split(',')[0]})`));
   failed += bad.length;
-  if (bad.length) log(`type ${label}: headings not in Lora: ${bad.join('; ')}`);
+  if (bad.length) log(`type ${label}: headings not in Lora or Outfit: ${bad.join('; ')}`);
 }
 
 // Clean Paste's Show on the bold-line check (or the first one): the line ends up on screen, its background changes

@@ -22,6 +22,7 @@ WEIGHTS = {
     'lora': None,
     'lora-italic': None,
     'jetbrains-mono': None,
+    'outfit': (400, 800),   # jsal.ui's own font, on the home page and the jsal.ui page
 }
 # Browsers' default features (kern, liga, calt, ccmp, locl, mark…) plus tnum, which font-variant-numeric:
 # tabular-nums asks for. Nothing on the site sets font-feature-settings.

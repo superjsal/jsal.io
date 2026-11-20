@@ -18,7 +18,9 @@ is for people working on the site, not visitors; `/design-system/` shows the sam
 
 ## Type
 
-Three fonts, all self-hosted with `@font-face` in `shell.css`.
+Four fonts, all self-hosted with `@font-face` in `shell.css`. **Outfit** is the jsal.ui addon's own font and sets two
+pages only, the home page and the jsal.ui page (John, 20 Nov 2026): everything on them under the top bar. The
+tools and every other page keep the three below.
 
 | Font | Used for |
 |---|---|
@@ -31,9 +33,9 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 - **Exception, kept on purpose:** on the platform pages the gold word is "SEO" ("WordPress *SEO*: what you can
   change, and where"). Lora's italic capitals barely lean, so it reads as a lighter word rather than an
   obvious italic. It stays because "SEO" is the page's key word.
-- **The home page's headline is the one line set larger than a page title:** Lora 700 at 64px from 1280px wide,
-  in its opening tile's deep shade; 40px below that (30px between 600 and 860px, where it shares the tile with the
-  keys). John's pick of the improved bento, 19 Nov 2026.
+- **The one very large line** is a stage's name on the home page and the jsal.ui page: Outfit 800, up to 96px on
+  the home page and 88px on the jsal.ui page, shrinking with the stage to 40px (`style: allow`). Their headlines
+  sit in the list beside it at 30px.
 - **Every other page title is one size:** Lora 700, 46px, line height 1.05, −0.02em, and 40px at 520px and under (
   Off the clock, Privacy, Changelog, 404, `/design-system/`). The longer titles of the CMS Picker and its platform
   pages also stop at 46px but shrink with the screen to 30px. A short page's empty space beside its title stays
@@ -41,8 +43,8 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   title on wide screens).
 - Content inside a tool (the visitor's own post in Clean Paste's editor) and the team Playbook's screens keep
   Inter.
-- **Check:** `browser-check.mjs` fails on any visible H1 or H2 of 16px or more that isn't Lora. A new heading
-  style needs Lora, or should be a real H3.
+- **Check:** `browser-check.mjs` fails on any visible H1 or H2 of 16px or more that isn't Lora (or Outfit, for the
+  two pages set in it). A new heading style needs Lora, or should be a real H3.
 
 ## Sizes and spacing
 
@@ -143,7 +145,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   `style: allow`.
 
 - **A dark island** (`.jsal-dark` in `shell.css`): an element and everything in it in the dark theme's colours,
-  whatever the page's theme, for something that sits on a dark picture (the jsal.ui page's top bar and stage). It
+  whatever the page's theme, for something that sits on a dark picture (the Pause button on a jsal.ui clip). It
   uses the dark theme's own tokens, not copies, and works out its selected, hover and focus colours from them.
   Use it only on a dark picture; everywhere else the visitor's theme rules.
 
@@ -199,48 +201,50 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   a side panel about 500px wide). A change to its look is proved by recording every element's position and size
   before and after, at 1440 × 900, 500 × 1330 and 390 × 844, empty and with an image loaded.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
-- **Home page:** tools only, as a bento grid of tiles with one big opening tile that carries the headline, and
-  pictures that can be played with (John, 19 Nov 2026, his pick over full-width colour bands); every new home page
-  tool or section is a bento box. **The work tools never become bento grids** (the CMS Picker and its platform
-  pages, Clean Paste, the Image Resizer, Redirect Import, the Playbook, Privacy, Changelog): they keep an open layout,
-  and may use a card in the tiles' style (corners, padding, a tint) where it helps. **The gaming side may** (John,
-  7 Nov 2026): `/play/`'s tiles. The grid, the tiles, their pictures, what can be played with, watermarks,
-  breakouts and order are in `.claude/rules/home-page.md`, which loads with the home page's files.
-- **The jsal.ui page** (`/jsal-ui/`) is a product page, no longer a bento, modelled on ellesmereui.com's layout
-  but in jsal.io's own type and gold (John, 18 Nov 2026: "a bit more professional", then "look and feel more like
-  ellesmereui.com", mockup D). From the top: a full-width dark **stage** (one of John's game screenshots, blurred
-  and darkened so no chat or names can be read; the same in both themes) that runs up behind the top bar (John:
-  the bar on its own strip above it looked wrong; mockup A of two), so the bar sits on the game. The bar keeps its
-  markup and place; on this page it and the stage are `.jsal-dark` islands, in the dark theme's colours in either
-  theme. The stage starts `--bar-h` above itself, mirroring the bar's height in `shell.css`: change both together.
-  Below 340px the bar drops Off the clock (the logo menu has it) to stay one row. On the stage: the eyebrow, headline and buttons on
-  the left, the description level with the headline's first line on the right, and the Home window sharp below;
-  three **numbers** (36 parts, 3 groups: Plan, Craft and Play, 100% free; change the first by hand when the addon's
-  parts do). The numbers count only what the addon owns (John, 20 Nov 2026): never dungeons, loot or anything else
-  from Forever's data, which is new and still changing; never how often it updates; never "1 dashboard" (some pages
-  open outside it) or "0 other addons" (an EllesmereUI profile import is planned);
-  five parts as big rows with a gold-dot list beside a straight, framed window, swapping sides; the other six as
-  cards ending in their window's top corner; a **Latest release** card and a **Discord** band; the little things;
-  Install. No tints, no tilts. Big part names are Lora 30px (a callout), 24px at 520px and under. Every crop of a
-  window (the cards, and every window on phones) starts at the page's own content: under the title bar and past
-  the dashboard's menu, by each picture's measured offsets (`cx`, `cy` in `jsal-ui.mjs`), so they all begin alike.
-  **Scrolling down** (John, 18 Nov 2026: "subtle animations"), each block that starts below the fold rises 24px and
-  fades in once a sixth of it shows (0.6s, eased out, `style: allow`); a part's window follows its words by 0.12s,
-  numbers and cards follow one another along their row by 0.08s. Nothing on the first screen waits, nothing plays
-  twice, and with reduced motion (or no script) everything simply shows.
-  **Clips** (John, 19 Nov 2026, option A: the hero stays the Home still): five parts (Gear, Professions, Journal,
-  and the Dungeon guide and Guild Crafts cards) show a short clip instead of a still: muted MP4s in
-  `site/img/jsal-ui/ui/clips/`, each with its first frame as the still. They're drawn from the same sim pages as
-  the store GIFs, never converted from a GIF (John: GIF-made video lost "the smoothness"): a steady 30 frames a
-  second in full colour, 13-frame fades, by `private\jsal-ui\sim\make_clips.py` (beside `make_gif.py`). A clip downloads and plays only
-  while a third of its frame is on screen, stops when it leaves, and keeps a `.jsal-btn.small` Pause/Play button
-  (a `.jsal-dark` island) in its corner, since clips run longer than 5 seconds; a pause holds until Play, and with
-  reduced motion nothing starts by itself. Each clip's crop origin is set by eye in `jsal-ui.mjs`, as they're framed
-  differently. The road and tour clips aren't used: the road is too thin for a row, and the tour would blur stretched
-  across the hero. The parts and windows
-  are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store cards are (the game
-  trimmed off, the version hidden, guildmates' names made up). The version line and the release card read
-  `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest release.
+- **Home page:** tools only, as a "pick one" screen (John, 20 Nov 2026): the list of jobs on the left, the chosen
+  tool's stage beside it. A new tool is a new row in the list with its own stage and tint. **The work tools keep
+  an open layout** (the CMS Picker and its platform pages, Clean Paste, the Image Resizer, Redirect Import, the
+  Playbook, Privacy, Changelog), and may use a card with the tile corners where it helps. `/play/` keeps its tiles
+  (John, 7 Nov 2026). The list, the stages, their pictures and how the page works without scripts are in
+  `.claude/rules/home-page.md`, which loads with the home page's files.
+- **The jsal.ui page** (`/jsal-ui/`) is laid out like the addon's own dashboard, the same "pick one" screen as the
+  home page (John, 20 Nov 2026: "both pages"), in Outfit and the site's own colours in each theme; the dark stage
+  over a blurred game screenshot, modelled on ellesmereui.com, is gone, and so are its big rows and cards. The top
+  bar is the shared one, in the page's theme. From the top:
+  - **The list** (248px, from 1280px): the headline ("Your WoW Forever character, *in one dashboard.*": it has to
+    read as useful after 60, not only for leveling), Download and How to install, the version line, then the
+    addon's menu: Home, and Plan, Craft and Play with their parts. Every row carries "Any level" or "1 to 60"
+    (`when` in `src/lib/jsal-ui.mjs`; only the Training and Build planners end at 60). Below 1280px the parts are
+    four to a row above the stage; on upright phones they're a dock that slides sideways and sticks to the foot of
+    the screen while the stage is in view.
+  - **The stage** (the page's sunk fill, the tile corners): the part's name very large, a tag saying when it's
+    useful, its headline and line, three ticked points, and its window whole, straight and framed. A narrow window
+    (the pals) sits beside the words. Five parts show a clip in place of a still.
+  - Every stage is in the page, one under the other, and each row is a link to its stage; with scripts the rows
+    are tabs and one stage shows. The address keeps the choice as `#pick-gear`.
+  - Then three **numbers** (36 parts, 3 groups: Plan, Craft and Play, 100% free; change the first by hand when the
+    addon's parts do). The numbers count only what the addon owns (John, 20 Nov 2026): never dungeons, loot or
+    anything else from Forever's data, which is new and still changing; never how often it updates; never "1
+    dashboard" (some pages open outside it) or "0 other addons" (an EllesmereUI profile import is planned). Then a
+    **Latest release** card, a **Discord** band, the little things and Install.
+  - **On upright phones** a whole window would be too small to read, so each shows its top corner at a readable
+    size, cut off by its frame: past the dashboard's menu and title bar, by each picture's measured offsets (`cx`,
+    `cy` in `jsal-ui.mjs`), so they all begin alike.
+  - **Scrolling down** (John, 18 Nov 2026: "subtle animations"), each block below the stage that starts under the
+    fold rises 24px and fades in once a sixth of it shows (0.6s, eased out, `style: allow`); the numbers follow one
+    another by 0.08s. Nothing on the first screen waits, nothing plays twice, and with reduced motion (or no
+    script) everything simply shows.
+  - **Clips** (John, 19 Nov 2026): Gear, Professions, Journal, the Dungeon guide and Guild Crafts show a short
+    clip: muted MP4s in `site/img/jsal-ui/ui/clips/`, each with its first frame as the still. They're drawn from
+    the same sim pages as the store GIFs, never converted from a GIF (John: GIF-made video lost "the smoothness"):
+    a steady 30 frames a second in full colour, 13-frame fades, by `private\jsal-ui\sim\make_clips.py`. A clip
+    downloads and plays only while a third of its frame is on screen, stops when it leaves (or its stage is put
+    away), and keeps a `.jsal-btn.small` Pause/Play button (a `.jsal-dark` island) in its corner, since clips run
+    longer than 5 seconds; a pause holds until Play, and with reduced motion nothing starts by itself.
+  The parts and windows are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store
+  cards are (the game trimmed off, the version hidden, guildmates' names made up). The version line and the release
+  card read `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest
+  release.
 - **The CMS Picker** has its own layout and control rules (quiz first, the quiz's tick and checklist questions,
   changing an answer, result cards, the must-have divider, "varies", the comparison on phones) in
   `.claude/rules/cms-picker-design.md`, which loads with the CMS Picker's files.

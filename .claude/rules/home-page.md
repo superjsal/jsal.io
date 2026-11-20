@@ -3,6 +3,7 @@ paths:
   - "src/pages/index.astro"
   - "src/components/Updates.astro"
   - "src/lib/updates.mjs"
+  - ".github/build/home-shots.mjs"
 ---
 
 # Home page design
@@ -10,68 +11,43 @@ paths:
 These are part of the site's design rules (`design-rules.md` beside this file), kept here so they load only for
 home page work.
 
-- **The home page is a bento grid with one big opening tile** (John, 19 Nov 2026). In the redesign he was open to
-  leaving the bento, turned down three plainer layouts (four doors, a side column, job-first rows: too plain, too
-  much text, missing the product pictures, "still just boxes"), had full-width colour bands built, and then chose
-  this improved bento over them: it keeps everything in view in a screen and a half and the character of the
-  tilted, overlapping pieces. Don't re-propose the bands or the plainer layouts.
-- **The grid:** six columns, 32px gaps. The CMS Picker's tile takes the whole first row and carries the page's
-  headline; then the Image Resizer (four columns) and Clean Paste (two); Say hi (two) and Redirect Import (four);
-  Updates across the bottom (six). From 1279px down every wide tile takes the full width and Clean Paste sits beside
-  Say hi; that bento holds down to 600px, so a phone on its side keeps it, and only upright phones get one column.
-  Tab order follows the screen. Say hi never sits above a tool: beside one is fine, but on upright phones, one tile
-  per row, it moves after every tool, just before Updates (by CSS `order`, so there alone the keyboard still reaches
-  it before Redirect Import, its place on wider screens).
-  - **The opening tile** is lilac: the role line, the headline (Lora 64px, the one line on the site set larger than
-    a page title; 40px from 1279px down, 30px between 600 and 860px, 40px on upright phones), the intro and the gold
-    "Find your CMS" pill on the left, the platform keys on the right (under the words on upright phones). The pill is
-    the tile's link. The tile has no watermark, as the headline sits where it was.
-  - **Every other tool tile reads the same way at every width:** its name and one line at the top left, then the
-    picture. Each is its soft tint (Image Resizer teal, Clean Paste honey, Redirect Import berry; Say hi and Updates
-    plain) with its name in Lora in a deep shade of the tint. Each tint is also the colour its tool wears on its own
-    page (design-rules.md, Colour), so a change to a tile's tint is a change to that tool's page too.
-  - **Each picture** is a real-looking piece of its tool drawn in the tools' own colours (`--jsal-surface`, ink and
-    lines, so it changes with the theme as the tool does): the CMS Picker a tilted brick of one key per platform,
-    each in that platform's own colours with a darker edge under it, logos only; the Image Resizer its crop editor
-    and the files it made from that one photo; Clean Paste its Text | HTML switch over a short raid note with a
-    gold line through it; Redirect Import its sheet of old and new addresses with each row's check (ready, needs
-    you, left out) and, beside it, the file it writes for the platform, both straight, the file poking out of the
-    tile's bottom; Say hi an email draft; Updates the newest change in each of the three most recently changed
-    parts as a plain list under its heading (rows with a rule between them, never cards, as they aren't links),
-    read from the changelog as the page builds (`src/lib/updates.mjs`). No fake buttons and no favoured platform.
-  - **Each tool tile but the first has its app icon as a watermark**, drawn large in the tile's ink at 7% with the
-    gem in gold at 35% (45% in dark mode, where fainter gold reads as brown), behind the tile's picture and never
-    under its words, and whole, so its shape reads; set per breakpoint, and hidden on upright phones. Updates has
-    one too, a faint stack of notes; Say hi stays plain.
-  - **Breakouts:** a piece may poke a little past its tile (about 14px at most), never within 16px of another
-    tile, never into the page's side gutter (nothing reaches past the column at any width, and the column's gutter
-    widens for a notch: `viewport-fit=cover` with the safe-area insets), and two breakouts never crowd each other.
-    Mix straight and tilted pieces.
-  - **Tiles have a least height, not a fixed one**, and the words keep room clear of the pictures, so enlarged or
-    spaced-out text grows the tile instead of sliding under a picture (WCAG 1.4.12).
-  - **The Platform guides** are a quiet row of links in the footer, with Off the clock beside Privacy. Gaming parts
-    live on `/play/`.
-- **A tile's name is its link, and the link covers the whole tile** (`.tile-link`, its `::after` laid over the tile),
-  so a click anywhere on a tile opens its tool; the pieces that can be played with sit above that cover. The tile
-  itself is a section, not a link, so the pieces can take clicks of their own. Say hi works the same way with its
-  email link.
-- **The pictures can be played with** (John, 19 Nov 2026: "a bit more interactive/playful"). Everything in them
-  either does something real or visibly answers the pointer, so nothing invites a click that does nothing:
-  - each CMS key sinks under the pointer, goes down when pressed and opens that platform's guide (they're links,
-    named for screen readers, kept out of the tab order as the footer lists the same 14);
-  - a size under the Image Resizer's photo reshapes the crop box and marks its file in the list;
-  - Clean Paste's gold line follows the pointer across the note (`--w`), wiping it between text and HTML;
-  - a ready row in Redirect Import's sheet lights up with the line it wrote in the file.
-  The size picker, the line and the rows are pointer-only decoration (`aria-hidden`): each tile's link and the
-  platform keys are the way in for keyboards and screen readers.
-- **The pictures also play by themselves when asked:** pointing at a tile (or focusing its link) plays what its tool
-  does three times, then it rests as the still picture (the CMS Picker plays three needs in turn, each named in a
-  pill above the keys from 1280px and pressing the three keys the real quiz ranks first for it, so no platform is
-  favoured; the crop box takes each size's shape in turn, the formatted text wipes into its HTML, the email types
-  itself, and Redirect Import's rows are checked one at a time). Touch screens play each one once, when its tile
-  reaches the middle of the screen (the CMS Picker one need, picked at random). Updates stays still. Once a pointer
-  is on a piece its tile's play stops (`.hands`) and it answers the pointer instead. When the quiz's scoring
-  changes, check the three needs still light its top three (`candidates()` in `cms-picker/score.js`).
-- **Every new home page tool or section is a bento box:** a `.tile` (22px corners, 24px padding; 18px and 20px
-  on phones; anything lined up with the padding reads the tile's `--pad`), in its own tint if it's a tool, plain
-  like Updates and "Say hi" if it isn't. Other pages keep an open layout.
+- **The home page is a "pick one" screen** (John, 20 Nov 2026, his pick after asking how the page would look with
+  free rein; he saw it in the site's own dark colours and in Outfit before saying "both pages"). A list of the four
+  jobs down the left never moves; the stage beside it is the chosen tool: its name very large, one line on what it
+  does, its gold button, three ticked facts and a picture of the tool at work. It replaced the improved bento of
+  19 Nov 2026. Turned down before it, so don't re-propose them: the full-width colour bands, and three plainer
+  layouts (four doors, a side column, job-first rows). The cost John accepted: one tool shows at a time, where the
+  bento showed all four.
+- **Set in Outfit**, the jsal.ui addon's own font, as the jsal.ui page is: headline, names, text and labels. The
+  top bar keeps the shared look. The tools themselves keep Lora and Inter.
+- **The top bar and the column stay the site's own**, so the logo sits where it does on every other page. The
+  mockup had no top bar and ran the full width of the window; the build keeps both, as the top bar never moves
+  between pages.
+- **Layout:** from 1280px, the list (272px) beside the stage. Below that the headline, then the four tools as a row
+  of tabs, then the stage. On upright phones (under 700px) the tools are a dock that sticks to the foot of the
+  screen while the stage is in view. Off the clock (the jsal.ui page) is a quieter row under the list.
+- **A stage wears its tool's tint** (`--t-cms`, `--t-ir`, `--t-cp`, `--t-ri`, defined in the page, light and dark)
+  with the name in the tint's deep shade; the chosen row in the list wears the same tint, and the logo's gold gem
+  marks it in place of its number. Each tint is also the colour its tool wears on its own page (design-rules.md,
+  Colour), so a change to a tint is a change to that tool's page too.
+- **The pictures are the real tools**, each with its example loaded, in the light and the dark theme, cut to one or
+  two pieces: `node .github/build/home-shots.mjs` against the served build writes them to `site/img/home/`. Run it
+  again when a tool's look changes, and look at each picture afterwards: the cuts are fixed rectangles. The second
+  piece overlaps the first; both run off the stage's edge. No hand-drawn miniatures any more.
+- **The CMS Picker's stage ends in a key per platform** (logos only, each a link to that platform's guide, named
+  for screen readers). The footer keeps the same 14 as a quiet row of text links.
+- **How it works:** every stage is in the page, one under the other, and each row of the list is a link to its
+  stage, so it reads top to bottom without scripts. With scripts the rows become tabs (arrow keys along the list;
+  1 to 4 pick a tool from anywhere on the page; the mouse wheel over the list steps through it, and past either
+  end the page scrolls as usual: John, 20 Nov 2026) and one stage shows. From 1280px the chosen row runs into its
+  stage as one piece, with the gem just outside it (John: "I also liked this part where it connected"); the jsal.ui
+  page's list does both too. The address keeps the choice as `#pick-ir`,
+  which names no element, so opening the page on a tool doesn't scroll. The stage's button (`data-app`) opens the
+  tool.
+- **Under the stage:** Updates (the newest change in each of the three most recently changed parts, from the
+  changelog as the page builds, `src/lib/updates.mjs`; plain rows, as they aren't links) and the email line, then
+  the footer.
+- **Sizes:** a stage's name is the one very large line (up to 96px, shrinking with the stage; `style: allow`). The
+  headline in the list is 30px. Everything else is on the type scale.
+- **Not checked by a person yet:** the facts in each stage's ticked list are Claude's draft from each tool's own
+  page; John to confirm the wording.
