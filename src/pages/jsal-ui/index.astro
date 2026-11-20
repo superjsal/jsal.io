@@ -73,7 +73,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 
 /* Pick a part: the list on the left is the addon's own menu and never moves; the stage beside it is the chosen
    part, with its window from the game */
-.pick { display: grid; grid-template-columns: 272px minmax(0, 1fr); align-items: start; margin-top: var(--jsal-page-top); }
+.pick { display: grid; grid-template-columns: 272px minmax(0, 1fr); margin-top: var(--jsal-page-top); }
 /* The list runs to the stage's edge, so the chosen row joins its stage; everything else in the rail stops short */
 .rail > :not(.slots) { margin-right: var(--jsal-space-24); }
 .rail h1 { margin: 0; font: 700 30px/1.1 var(--f); letter-spacing: -0.02em; }
@@ -94,7 +94,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* A stage: the part's name very large, what it does, when it's useful, and its window. Without scripts every
    part's stage shows, one under the other. */
 .stages { display: grid; gap: var(--jsal-space-24); min-width: 0; }
-.stage { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--jsal-space-24) var(--jsal-space-32); align-items: start; padding: var(--jsal-space-32); border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--jsal-sunk); }
+/* every stage reaches at least the foot of the list, so the chosen row always joins it, even the last */
+.stage { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--jsal-space-24) var(--jsal-space-32); align-items: start; align-content: start; padding: var(--jsal-space-32); border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--jsal-sunk); }
 .ui-js .stage:not(.on) { display: none; }
 /* Picking a part: the new stage's parts arrive in order from the way the list moved: its name, its words, then
    its window. The first stage is simply there when the page opens. */
@@ -126,7 +127,23 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .facts svg { width: 20px; height: 20px; color: var(--jsal-accent); }
 /* A narrow window (the pals) sits beside its words; a wide one runs across the stage under them */
 .stage.side { grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); }
-.stage.side .say { display: grid; gap: var(--jsal-space-24); }
+.stage.side { grid-template-rows: auto 1fr; }
+.stage.side .say { display: flex; flex-direction: column; gap: var(--jsal-space-24); align-self: stretch; }
+/* One pal's life in the addon's own pixel art, standing on the stage's floor: egg, then each form it grows into */
+.family { margin: auto 0 0; padding-top: var(--jsal-space-24); }
+.family ol { display: flex; align-items: flex-end; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; }
+.family li { position: relative; flex: 1 1 0; display: grid; justify-items: center; gap: var(--jsal-space-4); min-width: 0; color: var(--jsal-ink-2); font-size: 13px; font-weight: 600; text-align: center; }
+.family img { max-width: 100%; height: auto; image-rendering: pixelated; }
+.family li + li::before { content: ""; position: absolute; left: calc(var(--jsal-space-8) * -1); bottom: 44px; width: 8px; height: 8px; border: solid var(--jsal-muted); border-width: 2px 2px 0 0; rotate: 45deg; translate: -50% 0; }
+/* With scripts the strip is played: one pal in a small window from the game (dark in both themes, as the light it
+   grows in is pale), a button that hatches the egg and then grows it, as Grow does in its pen, and the four names
+   as steps under it */
+.pal { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--jsal-space-16); margin-bottom: var(--jsal-space-16); }
+.pal canvas { flex: none; width: 256px; height: 256px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); image-rendering: pixelated; }
+.play ol img { display: none; }
+.play li + li::before { bottom: 6px; }
+.play li[aria-current] { color: var(--jsal-selected-ink); }
+.family figcaption { margin-top: var(--jsal-space-12); padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line-hi); color: var(--jsal-muted); font-size: 13px; }
 .stage.side .win { grid-column: 2; }
 .stage:not(.side) .win { grid-column: 1 / -1; }
 
@@ -273,6 +290,12 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
               <p>{p.line}</p>
             </div>
             {side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}</ul>}
+            {p.family && (
+              <figure class="family" data-hatch={v(`/img/jsal-ui/pals/${p.family.hatch}.png`)} data-grow={v(`/img/jsal-ui/pals/${p.family.grow}.png`)} data-forms={p.family.forms.slice(2).map(([file]) => v(`/img/jsal-ui/pals/${file}.png`)).join(" ")}>
+                <ol>{p.family.forms.map(([file, name, px]) => <li><img src={v(`/img/jsal-ui/pals/${file}.png`)} alt="" width={px * 2} height={px * 2} loading="lazy" decoding="async"><span>{name}</span></li>)}</ol>
+                <figcaption aria-live="polite">{p.family.say}</figcaption>
+              </figure>
+            )}
           </div>
           {!side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}</ul>}
           {p.clip ? (
@@ -388,6 +411,69 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const at = stages.findIndex((s) => `#pick-${s.id}` === location.hash);
   pick(at < 0 ? 0 : at);
   live = true;
+})();
+// The Pals stage: one pal's life, played with the addon's own pictures. A press hatches the egg, the next two
+// grow it (gold motes gather into a ball of light, it changes underneath, the ball bursts), timed as the addon
+// times them. Nothing plays by itself; with reduced motion a press simply shows the next form.
+(() => {
+  const fig = document.querySelector('.family');
+  if (!fig) return;
+  const names = [...fig.querySelectorAll('li')], say = fig.querySelector('figcaption');
+  const cv = Object.assign(document.createElement('canvas'), { width: 128, height: 128 });
+  const btn = Object.assign(document.createElement('button'), { type: 'button', className: 'jsal-btn primary' });
+  const box = Object.assign(document.createElement('div'), { className: 'pal' });
+  cv.setAttribute('role', 'img');
+  box.append(cv, btn); fig.prepend(box); fig.classList.add('play');
+  const ctx = cv.getContext('2d');
+  const load = (src) => Object.assign(new Image(), { src });
+  const hatch = load(fig.dataset.hatch), light = load(fig.dataset.grow), bodies = [null, null, ...fig.dataset.forms.split(' ').map(load)];
+  const SAY = ['A Toadstool egg.', 'It hatched: a Capling.', 'It grew into a Lanternshell.', 'Fully grown: a Bloomsage.'];
+  const calm = matchMedia('(prefers-reduced-motion: reduce)');
+  let at = 0, busy = false, frame = 0, cell = -1;
+  const draw = () => {
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, 128, 128);
+    if (at < 2) ctx.drawImage(hatch, frame * 96, 0, 96, 96, 16, 16, 96, 96);
+    else if (bodies[at].naturalWidth) ctx.drawImage(bodies[at], (128 - bodies[at].naturalWidth) / 2, (128 - bodies[at].naturalHeight) / 2);
+    if (cell >= 0) ctx.drawImage(light, (cell % 8) * 128, (cell >> 3) * 128, 128, 128, 0, 0, 128, 128);
+  };
+  const show = () => {
+    names.forEach((n, i) => (i === at ? n.setAttribute('aria-current', 'step') : n.removeAttribute('aria-current')));
+    btn.textContent = ['Hatch the egg', 'Grow', 'Grow', 'Start again'][at];
+    btn.disabled = false;
+    cv.setAttribute('aria-label', SAY[at]);
+    say.textContent = SAY[at];
+    draw();
+  };
+  const run = (length, step, done) => {
+    busy = true; btn.disabled = true;
+    const from = performance.now();
+    const tick = (now) => {
+      const clock = (now - from) / 1000;
+      step(Math.min(clock, length)); draw();
+      if (clock < length) requestAnimationFrame(tick);
+      else { busy = false; done(); show(); }
+    };
+    requestAnimationFrame(tick);
+  };
+  btn.addEventListener('click', () => {
+    if (busy) return;
+    if (at === 3) { at = 0; frame = 0; show(); return; }
+    const next = at + 1;
+    if (calm.matches) { at = next; frame = 9; show(); return; }
+    if (at === 0) {
+      btn.textContent = 'Hatching…';
+      run(2, (c) => { frame = Math.min(9, Math.floor(c / 0.2)); }, () => { at = 1; frame = 9; });
+    } else {
+      btn.textContent = 'Growing…';
+      run(2.96, (c) => {
+        cell = c < 1.4 ? Math.floor(c / 0.2) : c < 2 ? 7 - Math.floor((c - 1.4) / 0.1) % 2 : 8 + Math.min(7, Math.floor((c - 2) / 0.12));
+        if (c >= 1.7) at = next;   // it's the new form once the light has closed over it
+      }, () => { cell = -1; at = next; });
+    }
+  });
+  [hatch, light, ...bodies.slice(2)].forEach((img) => img.addEventListener('load', draw));
+  show();
 })();
 // The scroll reveal: blocks below the fold wait, then rise into place once a sixth of them is in view; the numbers
 // follow one another along their row.

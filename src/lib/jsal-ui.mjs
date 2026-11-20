@@ -66,6 +66,10 @@ export const GROUPS = [
       { key: "guild", when: "any", label: "Guild", name: "See how your guild is doing", line: "Who in the guild runs jsal.ui, who's online, and how everyone did in today's games.", points: ["Today's games, guildmate by guildmate", "Today's best, at a glance", "A Guild Word your guild master sets"],
         shot: shot("guild", 1319, 879, "The Guild page: seven guildmates who run jsal.ui, four online, with each one's scores in today's games and today's best beside them.", true) },
       { key: "pals", when: "any", label: "Jsal's Pals", name: "A little friend that grows with you", line: "Hatch an egg, name what comes out and look after it. Your questing pays for its keep.", points: ["Feed it, play, tuck it in", "It grows up, twice", "It walks along your screen"],
+        // One pal's life, from the addon's own pixel art (site/img/jsal-ui/pals/): [file, name, size in the art's pixels].
+        // The page plays it with the addon's own pictures: the egg hatching (hatch: ten 96-pixel frames in a row) and
+        // the light a pal grows in (grow: sixteen 128-pixel cells, eight to a row), timed as the addon times them.
+        family: { say: "From a Toadstool egg: a Capling, then a Lanternshell, then a Bloomsage.", hatch: "capling-hatch", grow: "grow", forms: [["capling-egg", "Toadstool egg", 64], ["capling", "Capling", 64], ["lanternshell", "Lanternshell", 64], ["bloomsage", "Bloomsage", 80]] },
         shot: shot("pals", 458, 665, "A pal named Kevin asleep in its paddock, in pixel art, with its needs, how fond it is of you, and buttons to feed, treat, play and bath it.") },
     ],
   },
