@@ -78,24 +78,27 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
    bar and the stage both take the dark theme's colours in either theme (.jsal-dark), so the buttons read on the
    game too. The words and the Home window sit sharp on top. */
 .topwrap { position: relative; z-index: 2; color: var(--jsal-ink); }
-.stage { position: relative; margin-top: calc(var(--bar-h) * -1); padding: calc(var(--bar-h) + var(--jsal-space-48)) 0 var(--jsal-space-64); background: var(--stage-base) var(--stage-bg) center 30% / cover; color: var(--stage-ink); }
-.stage::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0.38) 45%, rgb(0 0 0 / 0.62) 100%); }
-.stage > .wrap { position: relative; }
+.stage { position: relative; margin-top: calc(var(--bar-h) * -1); padding: calc(var(--bar-h) + var(--jsal-space-48)) 0 0; background: var(--stage-base) var(--stage-bg) center 30% / cover; color: var(--stage-ink); }
+/* darkened most at the top, where the words are, and round the edges, so the game shows warmest behind the window */
+.stage::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 70%, transparent 0%, rgb(0 0 0 / 0.45) 100%), linear-gradient(180deg, rgb(0 0 0 / 0.78) 0%, rgb(0 0 0 / 0.3) 55%, rgb(0 0 0 / 0.5) 100%); }
+/* flow-root: the Home window's negative margin shortens the stage, so the window pokes out of its foot onto the page */
+.stage > .wrap { position: relative; display: flow-root; }
 .stage-head { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: var(--jsal-space-48); align-items: start; }
 /* The description starts level with the headline's first line: past the eyebrow and its gap */
 .stage-head > div + div { padding-top: var(--jsal-space-32); }
 .stage .eyebrow { color: var(--stage-gold); }
-.stage h1 { margin: var(--jsal-space-12) 0 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
+.stage h1 { margin: var(--jsal-space-12) 0 0; font: 700 64px/1 "Lora", Georgia, serif; letter-spacing: -0.03em; }   /* style: allow (the stage's headline, at the home page's headline size) */
 .stage h1 em { display: block; font-weight: 600; color: var(--stage-gold); }
+@media (max-width: 1099px) { .stage h1 { font-size: 46px; line-height: 1.05; letter-spacing: -0.02em; } }
 .lead { margin: 0; font-size: 17px; color: var(--stage-ink-2); }
 .actions { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin-top: var(--jsal-space-24); }
 .meta { margin: var(--jsal-space-12) 0 0; font-size: 13px; color: var(--stage-ink-2); }
 .stage .meta a { color: var(--stage-ink); }
-.homewin { margin: var(--jsal-space-48) auto 0; max-width: 1040px; }
+.homewin { margin: var(--jsal-space-48) auto calc(var(--jsal-space-64) * -1); max-width: 1040px; }
 .homewin img { display: block; width: 100%; height: auto; border: 1px solid var(--stage-edge); border-radius: var(--jsal-radius-xl); box-shadow: var(--stage-shadow); }
 
 /* Three numbers under the stage */
-.numbers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: var(--jsal-space-40) 0 0; border-bottom: 1px solid var(--jsal-line); }
+.numbers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: calc(var(--jsal-space-64) + var(--jsal-space-48)) 0 0; border-bottom: 1px solid var(--jsal-line); }
 .numbers div { padding: 0 var(--jsal-space-24) var(--jsal-space-32); }
 .numbers div:first-child { padding-left: 0; }
 .numbers div + div { border-left: 1px solid var(--jsal-line); }
@@ -128,7 +131,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .rest > h2, .band h2:not(.eyebrow), .little h2, .install h2 { margin: 0; font: 700 24px/1.2 "Lora", Georgia, serif; }
 .rest > p { margin: var(--jsal-space-8) 0 var(--jsal-space-24); color: var(--jsal-ink-2); }
 .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--jsal-space-20); }
-.card { display: flex; flex-direction: column; overflow: hidden; padding: var(--jsal-space-20) var(--jsal-space-20) 0; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+.card { display: flex; flex-direction: column; overflow: hidden; padding: var(--jsal-space-20) var(--jsal-space-20) 0; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
 .card h3 { margin: var(--jsal-space-4) 0 0; font: 700 17px/1.35 var(--jsal-font); }
 .card > p:not(.label) { margin: var(--jsal-space-4) 0 var(--jsal-space-20); color: var(--jsal-ink-2); }
 .card .crop { position: relative; overflow: hidden; flex: none; height: 210px; margin: auto calc(var(--jsal-space-20) * -1) 0; border-top: 1px solid var(--jsal-line-hi); background: var(--win-fill); }
@@ -136,7 +139,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .card .crop :is(img, video) { position: absolute; left: 0; top: 0; width: 640px; max-width: none; height: auto; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
 
 /* The latest release, and the Discord */
-.band { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--jsal-space-48); margin-top: var(--jsal-space-64); padding: var(--jsal-space-32); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+.band { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--jsal-space-48); margin-top: var(--jsal-space-64); padding: var(--jsal-space-32); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
 .ver { display: flex; align-items: baseline; gap: var(--jsal-space-12); margin: var(--jsal-space-8) 0 0; }
 .ver b { font: 700 30px/1.1 "Lora", Georgia, serif; }
 .tag { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); color: var(--jsal-on-fill); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.06em; text-transform: uppercase; }
@@ -156,7 +159,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .little dd { margin: 0; color: var(--jsal-ink-2); }
 
 /* Install: a card with the steps, and the one question people ask beside them */
-.install { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--jsal-space-48); padding: var(--jsal-space-32); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+.install { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--jsal-space-48); padding: var(--jsal-space-32); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
 .install h2 { margin-bottom: var(--jsal-space-12); }
 .install h3 { margin: 0 0 var(--jsal-space-4); font: 700 17px/1.4 var(--jsal-font); }
 .install p, .install li { color: var(--jsal-ink-2); }
@@ -187,12 +190,16 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* Upright phones: a whole window would be too small to read, so each shows its top corner at a readable size,
    cut off by its frame, past the dashboard's menu and title bar */
 @media (max-width: 599px) {
-  .stage { padding: calc(var(--bar-h) + var(--jsal-space-32)) 0 var(--jsal-space-40); }
+  .stage { padding: calc(var(--bar-h) + var(--jsal-space-32)) 0 0; }
+  .homewin { margin-bottom: calc(var(--jsal-space-40) * -1); }
   .homewin, .win:not(.narrow) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
   .homewin { border-color: var(--stage-edge); }
   .homewin img, .win:not(.narrow) :is(img, video) { width: var(--pw, 760px); max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
-  .numbers { grid-template-columns: minmax(0, 1fr); border: 0; }
-  .numbers div { display: flex; align-items: baseline; gap: var(--jsal-space-12); padding: var(--jsal-space-12) 0; border-bottom: 1px solid var(--jsal-line); }
+  /* one card of three rows, each number in its own column so the words line up */
+  .numbers { grid-template-columns: minmax(0, 1fr); margin-top: calc(var(--jsal-space-40) + var(--jsal-space-24)); padding: var(--jsal-space-4) var(--jsal-space-20); border: 0; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+  .numbers div { display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: baseline; gap: var(--jsal-space-12); padding: var(--jsal-space-12) 0; border-top: 1px solid var(--jsal-line); }
+  .numbers div:first-child { border-top: 0; }
+  .numbers dt { font-size: 24px; }
   .numbers div + div { border-left: 0; }
   .numbers dd { margin: 0; }
   .cards, .band.discord { grid-template-columns: minmax(0, 1fr); }
@@ -287,7 +294,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         <h2 id="discord-h">Join the jsal.ui Discord</h2>
         <p>Bug reports, ideas and help, and the first word on what's coming.</p>
       </div>
-      <a class="jsal-btn" href={DISCORD}>Join the Discord</a>
+      <a class="jsal-btn primary" href={DISCORD}>Join the Discord</a>
     </section>
     <section class="little" aria-labelledby="little-h">
       <h2 id="little-h">And the little things</h2>
