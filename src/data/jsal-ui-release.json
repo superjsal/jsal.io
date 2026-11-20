@@ -1,11 +1,11 @@
 {
-  "version": "0.3.57",
-  "date": "2026-11-19",
+  "version": "0.3.58",
+  "date": "2026-11-20",
   "notes": [
-    "A new welcome the first time you log in, with a switch for each part, and every part switched on once for everyone. /jsal welcome opens it again.",
-    "Games: the Guild page is now on Games, with the Guild Word as a fourth game and a countdown to the next day's games. Point at a guildmate to see how their day went.",
-    "Gear plan: about 1,100 more pieces, with most of what the level 53 to 60 dungeons drop.",
-    "The dashboard has an Unlock button beside Reload, and jsal.ui has a Discord: /jsal discord.",
-    "Guild Crafts: an order is marked sent once you mail it or trade it over, and asking shows the item or enchant you get."
+    "Restart the game once for this version: it adds new files.",
+    "Dungeon guide: a Map tab for 33 dungeons and raids, Forever's own drawn by Santiago Reyes, with the bosses that have gear or a quest for you marked.",
+    "Jsal's Pals: a new pal, and a new egg to find.",
+    "Games: three cards across, and officers can set the Guild Word.",
+    "Talent helper: off until you switch it on in Settings, and its note no longer spends a point."
   ]
 }
