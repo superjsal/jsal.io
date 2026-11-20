@@ -174,6 +174,9 @@ export function platform(pid, d = data) {
   const meta = [month(checked) ? `Answers checked ${month(checked)}` : '', pr.type ?? ''].filter(Boolean).join(' · ');
   return {
     id: pid, name, desc,
+    // The platform's logo beside its name, on a tile (its address is read from the CMS Picker's stylesheet, so it's
+    // the same on these pages as on the CMS Picker itself)
+    mark: `<span class="pp-mark">${logo(p)}</span>`,
     ogImage: ownOg ? `cms-picker-${pid}` : 'cms-picker',
     ogAlt: ownOg ? `${name} SEO on CMS Picker: its six SEO settings, marked built in, plugin or needs code`
       : 'CMS Picker: which website platform fits you, what’s built in, and getting found on Google and AI search',

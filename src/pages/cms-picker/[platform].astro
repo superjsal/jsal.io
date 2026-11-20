@@ -33,10 +33,15 @@ const DIR = `/cms-picker/${p.id}/`;
     <TopBar class="app-header"><p slot="title" class="jsal-title"><img class="jsal-title-ico" src={v("/img/icons/cms-picker.svg")} alt="" width="22" height="22">CMS <span class="hl">Picker</span></p>
 <a class="jsal-link" href="#about">About</a></TopBar>
 
-    <nav class="pp-crumbs" aria-label="Breadcrumb"><a href="../">CMS Picker</a> <span aria-hidden="true">›</span> <span aria-current="page">{p.name}</span></nav>
-    <h1 class="pp-title">{p.name} <span class="hl">SEO</span><span class="sr-only">: </span><span class="pp-title-sub">What you can change, and where</span></h1>
-    <p class="pp-lede" set:html={p.lede}></p>
-    <p class="pp-meta" set:html={p.meta}></p>
+    <!-- The title on the CMS Picker's tint. The short profile sits beside it on a wide screen; on a narrow one it
+         comes after the SEO answers, so they stay near the top -->
+    <div class="pp-page">
+    <div class="pp-hero">
+      <nav class="pp-crumbs" aria-label="Breadcrumb"><a href="../">CMS Picker</a> <span aria-hidden="true">›</span> <span aria-current="page">{p.name}</span></nav>
+      <h1 class="pp-title"><Fragment set:html={p.mark} />{p.name} <span class="hl">SEO</span><span class="sr-only">: </span><span class="pp-title-sub">What you can change, and where</span></h1>
+      <p class="pp-lede" set:html={p.lede}></p>
+      <p class="pp-meta" set:html={p.meta}></p>
+    </div>
 
     <section aria-labelledby="pp-seo-h">
       <h2 class="pp-h" id="pp-seo-h">SEO on {p.name}</h2>
@@ -44,14 +49,19 @@ const DIR = `/cms-picker/${p.id}/`;
       <div class="pp-qs" set:html={`\n${p.questions}\n      `}></div>
     </section>
 
+    <section class="pp-glance" aria-labelledby="pp-glance-h">
+      <h2 class="pp-glance-h" id="pp-glance-h">{p.name} at a glance</h2>
+      <dl class="pp-facts" set:html={`\n${p.facts}\n      `}></dl>
+    </section>
+
     <section aria-labelledby="pp-fit-h">
       <h2 class="pp-h" id="pp-fit-h">Is {p.name} right for you?</h2>
       <p class="pp-sub">The short version, from the CMS Picker profile.</p>
-      <dl class="pp-facts" set:html={`\n${p.facts}\n      `}></dl>
 <Fragment set:html={p.fit} />
       <h3 class="pp-h3">What’s built in</h3>
       <ul class="pp-built" set:html={`\n${p.built}\n      `}></ul>
     </section>
+    </div>
 
     <div class="pp-next"><a class="jsal-btn primary" href="../#quiz">Not sure? Find your fit</a><a class="jsal-btn" href={`../#seo?with=${p.id}`}>Compare {p.name} with others</a></div>
     <nav class="pp-others" aria-label="Other platforms"><span>Other platforms:</span><Fragment set:html={p.others} /></nav>

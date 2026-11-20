@@ -180,8 +180,8 @@ body {
 .hcell.col-on .pname, .hcell.col-pick .pname { color: var(--jsal-accent); background-size: 100% 2px; }
 /* After the quiz's "Compare these": a fit label beside each name, one gold insight line, and ruled-out rows dimmed */
 .hcell .fitp { display: inline-block; margin-left: var(--jsal-space-8); vertical-align: 2px; }
-.qz-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--jsal-space-4) var(--jsal-space-8); margin: 0 0 var(--jsal-space-12); padding: var(--jsal-space-2) 0 var(--jsal-space-2) var(--jsal-space-12); border-left: 3px solid var(--jsal-gold-line); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; scroll-margin-top: 16px; }
-.qz-line b { color: var(--jsal-accent); font-size: 13px; }
+.qz-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--jsal-space-4) var(--jsal-space-8); margin: 0 0 var(--jsal-space-12); padding: var(--jsal-space-12) var(--jsal-space-16); border-radius: var(--jsal-radius-lg); background: var(--tool-soft); color: var(--jsal-ink); font-size: 15px; line-height: 1.45; scroll-margin-top: 16px; }
+.qz-line b { color: var(--tool-ink); font-size: 13px; }
 .qz-line a { color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; white-space: nowrap; }
 .row.off .item, .row.off .mark, .row.off .where, .row.off .plat { color: var(--jsal-muted); }
 .row.off .tag { background: var(--jsal-sunk); color: var(--jsal-muted); }
