@@ -289,7 +289,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
    middle with the weapons under it; and where the game shows attributes, the journal's totals, the professions and
    the hunter's pet. A slot's tile and its item's name wear the item's quality colour, and the small label says the
    quality in words too. Until the addon has saved what is worn, the slots are there without items. */
-.sheet { grid-column: 1 / 13; padding: 0; background: var(--plain); }
+/* the sheet lays itself out by its own width, not the window's, as the page's column changes width at 1280px */
+.sheet { grid-column: 1 / 13; padding: 0; background: var(--plain); container: sheet / inline-size; }
 .sheet-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--jsal-space-12) var(--jsal-space-24); padding: var(--jsal-space-20) var(--jsal-space-32); border-bottom: 1px solid var(--plain-line); }
 .sheet-who { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--jsal-space-4) var(--jsal-space-16); }
 .sheet h2 { margin: 0; font: 800 40px/1 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; }
@@ -427,7 +428,9 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .jr-zones[data-art] .zone span:last-child { color: color-mix(in srgb, var(--stage-ink) 80%, transparent); }
 .jr-zones[data-art] .zone i { background: color-mix(in srgb, var(--stage-ink) 80%, transparent); }
 @media (prefers-reduced-motion: reduce) { .tid { transition: none; } .tid:hover { transform: none; } }
-@media (max-width: 1099px) {
+/* the stats go under the doll unless the sheet has room for both: beside it, the gear columns need about 150px of
+   name each */
+@container sheet (max-width: 1039px) {
   .sheet-body { grid-template-columns: minmax(0, 1fr); }
   .sheet-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--plain-line); border-left: 0; }
 }
@@ -436,12 +439,10 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .jr-road, .jr-late, .jr-zones { grid-column: 1 / -1; grid-row: auto; }
   .sheet-stats { grid-template-columns: minmax(0, 1fr); }
 }
-/* Phones: level and class across the top, then the two columns of slots, both reading left to right */
-@media (max-width: 699px) {
-  .sheet-bar, .sheet-stats, .fresh { padding-inline: var(--jsal-space-20); }
-  .sheet h2 { font-size: 30px; }
-  /* on a phone the sheet is the game's own character window: the icons down both sides of the character and the
-     weapons in a row under her. An item's name is in its tooltip, which a tap opens beside the icon. */
+/* A sheet under 800px (a phone, or a narrow window) is the game's own character window: the icons down both sides of
+   the character and the weapons in a row under her, as names would get under 150px each. An item's name is in its
+   tooltip, which a tap opens beside the icon. */
+@container sheet (max-width: 799px) {
   .doll { container-type: inline-size; grid-template-columns: 60px minmax(0, 1fr) 60px; gap: var(--jsal-space-12); padding: var(--jsal-space-20); }
   .doll .gear, .side.r .gear { grid-template-columns: 60px; }
   .doll .gear > span:not([class]) { position: absolute; overflow: hidden; width: 1px; height: 1px; clip-path: inset(50%); white-space: nowrap; }
@@ -456,6 +457,11 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .weapons { position: relative; grid-template-columns: repeat(3, 60px); justify-content: center; padding-top: var(--jsal-space-16); }
   .weapons .gear { position: static; }
   .weapons .gear .worn-tip { inset: auto 0 100% 0; width: auto; }
+}
+/* Phones: level and class across the top, then the two columns of slots, both reading left to right */
+@media (max-width: 699px) {
+  .sheet-bar, .sheet-stats, .fresh { padding-inline: var(--jsal-space-20); }
+  .sheet h2 { font-size: 30px; }
   .jr { gap: var(--jsal-space-12); }
   .tid, .jr-box { padding: var(--jsal-space-20); }
   .tid { min-height: 136px; }
