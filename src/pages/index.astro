@@ -138,6 +138,10 @@ p { text-wrap: pretty; }
 /* clip, not hidden: a hidden box still scrolls to a focused control at its cut edge, which slid the whole stage */
 .stage { position: relative; container-type: inline-size; overflow: hidden; overflow: clip; display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); grid-template-rows: auto 1fr auto; column-gap: var(--jsal-space-32); align-content: start; min-height: 600px; padding: var(--jsal-space-40) var(--jsal-space-40) 0; border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--bg); }
 .home-js .stage:not(.on) { display: none; }
+/* Every tool's stage is as tall as the tallest, so what's under it stays put as the tools change (the tour, a
+   click). The script measures each one, unseen, to find that height. */
+.home-js .stages { position: relative; }
+.home-js .stage.measure { display: grid; position: absolute; left: 0; right: 0; top: 0; visibility: hidden; }
 /* Picking a tool: the stage's colour turns to the new tool's (the colour sits behind the stages, so it can), and
    the new stage's parts arrive in order from the way the list moved: its name, its words, then its pictures. The
    first stage is simply there when the page opens. */
@@ -403,6 +407,20 @@ document.querySelectorAll('.stage').forEach((stage) => {
     gem.classList.remove('land'); void gem.offsetWidth; gem.classList.add('land');
   };
   addEventListener('resize', () => place(cur));
+  // one height for every tool: the tallest, measured at this width (not on a phone, where the tools are a list)
+  const roomy = matchMedia('(min-width: 700px)');
+  const fit = () => {
+    box.style.minHeight = '';
+    if (!roomy.matches) return;
+    let tall = 0;
+    stages.forEach((s) => { s.classList.add('measure'); tall = Math.max(tall, s.offsetHeight); s.classList.remove('measure'); });
+    box.style.minHeight = `${Math.ceil(tall)}px`;
+  };
+  let soon = 0;
+  const refit = () => { cancelAnimationFrame(soon); soon = requestAnimationFrame(fit); };
+  addEventListener('resize', refit);
+  addEventListener('load', refit);
+  document.fonts?.ready.then(refit);
   const pick = (i, focus) => {
     // after the first, a pick says which way the list moved, so the new stage's parts arrive from there
     if (live && i !== cur) { box.style.setProperty('--dir', i < cur ? -1 : 1); box.classList.add('live'); }

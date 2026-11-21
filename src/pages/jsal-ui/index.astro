@@ -112,6 +112,16 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* every stage reaches at least the foot of the list, so the chosen row always joins it, even the last */
 .stage { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--jsal-space-24) var(--jsal-space-32); align-items: start; align-content: start; padding: var(--jsal-space-32); border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--jsal-sunk); }
 .ui-js .stage:not(.on) { display: none; }
+/* Every part's stage is as tall as the tallest, so what's under it stays put as the parts change (the tour, a
+   click). The script measures each one, unseen, to find that height. */
+.ui-js .stages { position: relative; }
+/* and every window shows in one frame, its top 460px, fading out at the foot, so the parts come out about the same
+   size and the shared height leaves no part with an empty gap (a phone crops its own way, below) */
+@media (min-width: 600px) {
+  .win:not(.pen) { max-height: 460px; overflow: hidden; border-radius: var(--jsal-radius-xl); }
+  .win:not(.pen)::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64px; background: linear-gradient(transparent, var(--jsal-sunk)); pointer-events: none; }
+}
+.ui-js .stage.measure { display: grid; position: absolute; left: 0; right: 0; top: 0; visibility: hidden; }
 /* Picking a part: the new stage's parts arrive in order from the way the list moved: its name, its words, then
    its window. The first stage is simply there when the page opens. */
 @keyframes arrive { from { opacity: 0; translate: 0 calc(var(--dir, 1) * var(--far, 20px)); } }
@@ -416,6 +426,20 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     gem.classList.remove('land'); void gem.offsetWidth; gem.classList.add('land');
   };
   addEventListener('resize', () => place(cur));
+  // one height for every part: the tallest, measured at this width (not on a phone, where the parts are a list)
+  const roomy = matchMedia('(min-width: 600px)');
+  const fit = () => {
+    box.style.minHeight = '';
+    if (!roomy.matches) return;
+    let tall = 0;
+    stages.forEach((s) => { s.classList.add('measure'); tall = Math.max(tall, s.offsetHeight); s.classList.remove('measure'); });
+    box.style.minHeight = `${Math.ceil(tall)}px`;
+  };
+  let soon = 0;
+  const refit = () => { cancelAnimationFrame(soon); soon = requestAnimationFrame(fit); };
+  addEventListener('resize', refit);
+  addEventListener('load', refit);
+  document.fonts?.ready.then(refit);
   const pick = (i, focus) => {
     // after the first, a pick says which way the list moved, so the new stage's parts arrive from there
     if (live && i !== cur) { box.style.setProperty('--dir', i < cur ? -1 : 1); box.classList.add('live'); }
