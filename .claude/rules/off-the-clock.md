@@ -58,11 +58,17 @@ paths:
     grey); a crafted item's "Made by" line is never published, as it names another player. Blizzard's page for an
     item is the fallback tooltip, and half of them answer 404.
   - **Blizzard's API** has Forever's game data under undocumented `forever` namespaces (`static-forever-us`: items,
-    icons), which is where the item icons come from. Its character profile was tested on 20 Nov 2026 with the wrong
-    realm (91, the game's folder; the armory files her under 251) and found nothing: the armory shows item levels,
-    health, mana, attributes, crit, talents and Skinning, so the profile API very likely answers with the right
-    realm. Not retested; none of that is on the page. The secret is John's, set in his own terminal, never in chat
-    or a file.
+    icons), which is where the item icons come from. It has no Forever characters: the profile API answered 404
+    for realm 91 (the game's folder) and for 251 (the armory's), under every name tried (20 Nov 2026). The secret
+    is John's, set in his own terminal, never in chat or a file.
+  - **Race, item level, attributes, talents and professions come from her armory page** (`ARMORY` in the
+    exporter), which carries the character as data in its own source (`characterProfileInitialState`). The
+    exporter reads that one public page once a run, needs no key, and keeps what it said last time (`armory` in
+    the JSON) when the page can't be read or changes shape. It also gives each worn item's level, added as the
+    tooltip's first line, and the render's address. The sheet shows Attributes (two columns, short labels so
+    none wraps: "Attack", "Crit"), Talents, Professions and Companion; the most used spells sit under "Lately"
+    in the journey. The armory lags the game by its own refresh, so its numbers can be a little behind the
+    journal's.
   - Numbers here are the character's own play, so the jsal.ui page's rule against counting Forever's game data
     doesn't apply to them.
 

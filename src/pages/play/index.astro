@@ -375,6 +375,10 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .sheet-stats { display: grid; gap: var(--jsal-space-24); align-content: start; padding: var(--jsal-space-24) var(--jsal-space-32); border-left: 1px solid var(--plain-line); background: var(--jsal-surface); }
 .stat { display: flex; justify-content: space-between; gap: var(--jsal-space-12); padding: var(--jsal-space-4) 0; border-top: 1px solid var(--jsal-line); font-size: 14px; }
 .stat:first-of-type { border-top: 0; }
+/* the attributes run in two columns, as the game's own sheet sets them */
+[data-attrs] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--jsal-space-20); }
+[data-attrs] .stat:nth-child(2) { border-top: 0; }
+.jr h3[data-next] { margin-top: var(--jsal-space-24); }
 .stat span:last-child { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .prof { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--jsal-space-2) var(--jsal-space-12); font-size: 14px; }
 .prof i { grid-column: 1 / -1; height: 6px; margin-bottom: var(--jsal-space-8); border-radius: var(--jsal-radius-sm); background: linear-gradient(to right, var(--jsal-fill) var(--at), var(--jsal-line-hi) var(--at)); }
@@ -459,7 +463,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     </section>
     <section class="tile sheet" aria-labelledby="char-h">
       <div class="sheet-bar">
-        <div class="sheet-who"><h2 id="char-h">{C.name}</h2><p class="who-line">Level {C.level} {C.class}<span>{C.guild && `<${C.guild}> · `}WoW Forever</span></p></div>
+        <div class="sheet-who"><h2 id="char-h">{C.name}</h2><p class="who-line">Level {C.level} {C.race} {C.class}<span>{C.guild && `<${C.guild}> · `}WoW Forever{C.itemLevel && ` · item level ${C.itemLevel}`}</span></p></div>
         <p class="seen">Last seen in {C.lastZone} · {date(C.lastSeen)}</p>
       </div>
       <div class="sheet-body">
@@ -470,12 +474,13 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
           <div class="weapons">{WEAPONS.map(([key, label]) => <div class="gear" data-q={worn(key)?.quality} tabindex={worn(key) ? "0" : undefined} aria-describedby={worn(key) ? `tip-${key}` : undefined}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span>{worn(key) && <span class="worn-tip" role="tooltip" id={`tip-${key}`}><b>{worn(key).name}</b>{(worn(key).tip?.length ? worn(key).tip : [{ t: `${label}, ${worn(key).quality}`, tone: "muted" }]).map((line) => <span data-t={line.tone}>{line.t}{line.r && <i>{line.r}</i>}</span>)}</span>}</div>)}</div>
         </div>
         <div class="sheet-stats">
-          <div><h3>Most used</h3>{C.spells.map(([spell, times]) => <div class="stat"><span>{spell}</span><span>{n(times)} times</span></div>)}</div>
+          {C.attributes && <div><h3>Attributes</h3><div data-attrs>{C.attributes.map(([what, much]) => <div class="stat"><span>{what}</span><span>{typeof much === "number" ? n(much) : much}</span></div>)}</div></div>}
+          {C.talents?.length > 0 && <div><h3>Talents</h3>{C.talents.map(([tree, points]) => <div class="stat"><span>{tree}</span><span>{points} points</span></div>)}</div>}
           <div><h3>Professions</h3><div class="prof">{C.professions.map(([name, skill, cap]) => <Fragment><span>{name}</span><span>{skill} / {cap}</span><i style={`--at:${Math.round(skill / cap * 100)}%`}></i></Fragment>)}</div></div>
           {C.pet && <div><h3>Companion</h3><div class="stat"><span>{C.pet.name}, a {C.pet.family.toLowerCase()}</span><span>Level {C.pet.level}</span></div></div>}
         </div>
       </div>
-      <p class="fresh">{C.gear ? `From jsal.ui, as it stood on ${date(C.updated)}.` : `From jsal.ui, as it stood on ${date(C.updated)}. What I'm wearing shows here after my next login.`}{(hasIcons || C.portrait) && ` ${[C.portrait && "Character", hasIcons && "item icons"].filter(Boolean).join(" and ")} © Blizzard Entertainment.`}</p>
+      <p class="fresh">{C.gear ? `From jsal.ui${C.attributes ? " and my armory page" : ""}, as it stood on ${date(C.updated)}.` : `From jsal.ui, as it stood on ${date(C.updated)}. What I'm wearing shows here after my next login.`}{(hasIcons || C.portrait) && ` ${[C.portrait && "Character", hasIcons && "item icons"].filter(Boolean).join(" and ")} © Blizzard Entertainment.`}</p>
     </section>
     <section class="jr" aria-labelledby="jr-h">
       <div class="jr-head"><h2 id="jr-h">The journey so far</h2><p>Written down by jsal.ui's Journal as I play.</p></div>
@@ -491,6 +496,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       <div class="jr-box jr-late">
         <h3>Lately</h3>
         <ul class="feed">{C.events.map((e) => <li><span>{e.text}</span><time datetime={e.date}>{date(e.date)}</time></li>)}</ul>
+        <h3 data-next>Most used spells</h3>
+        {C.spells.map(([spell, times]) => <div class="stat"><span>{spell}</span><span>{n(times)} times</span></div>)}
       </div>
       <div class="jr-box jr-zones">
         <h3>Where the time went</h3>

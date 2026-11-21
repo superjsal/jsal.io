@@ -24,6 +24,10 @@ CLASS = sys.argv[2] if len(sys.argv) > 2 else 'Hunter'   # the journal doesn't r
 # character's realm and number there (read from the character's armory page). Fetched on every run, as it changes
 # with the gear, and saved exactly as served.
 RENDERS = {'Vizdenia': 'https://render.worldofwarcraft.com/forever-us/character/251/27529979-main-raw.png'}
+# The character's page on Blizzard's armory. Blizzard's API has no Forever characters, but this public page carries
+# the character as data: race, item level, attributes, talents and professions. It is read once a run, for this one
+# character, and what it gave last time is kept when it can't be reached.
+ARMORY = {'Vizdenia': 'https://worldofwarcraft.blizzard.com/en-us/forever/us/armory/character/vizdenia-trueshot'}
 ROOT = Path(__file__).resolve().parents[2]
 SAVED = r'C:\Program Files (x86)\World of Warcraft\_forever_\WTF\Account\*\*\*\SavedVariables\jsalUI.lua'
 # The journal's kinds of entry that are about the character alone
@@ -257,10 +261,47 @@ out = {
     # site/img/play/<name>.webp
     'gearDate': day(worn['at']) if items and worn.get('at') else None,
 }
+def armory():
+    """What the armory page says of the character, or what it said last time: race, item level, the attributes the
+    game's character sheet shows, talent points by tree, professions, and each worn item's level by item id."""
+    target = DATA / 'character.json'
+    before = (json.loads(target.read_text(encoding='utf-8')).get('armory') if target.exists() else None) or None
+    url = ARMORY.get(NAME)
+    if not url: return before
+    page = ask(url, {'Accept-Language': 'en-US', 'User-Agent': 'Mozilla/5.0'})
+    mark = 'var characterProfileInitialState = '
+    if not page or mark not in page.decode('utf-8', 'replace'):
+        print(f'Armory: the page could not be read ({why[0] or "no character data in it"}); keeping what it said last time.')
+        return before
+    text = page.decode('utf-8', 'replace')
+    try:
+        c = json.JSONDecoder().raw_decode(text[text.index(mark) + len(mark):])[0]['character']
+        stats = {s['slug']: s['value'] for group in c['stats']['groups'] for s in group['stats']}
+        number = lambda slug: (stats.get(slug) or {}).get('value')
+        whole = lambda slug: None if number(slug) is None else round(number(slug))
+        shown = [('Health', whole('health')), ('Mana', whole('mana')), ('Agility', whole('agility')), ('Stamina', whole('stamina')),
+                 ('Strength', whole('strength')), ('Intellect', whole('intellect')), ('Attack', whole('attack-power')), ('Armor', whole('armor')),
+                 ('Crit', None if number('critical-strike') is None else f"{number('critical-strike'):.1f}%"),
+                 ('Dodge', None if number('dodge') is None else f"{number('dodge'):.1f}%")]
+        media = c.get('media') or {}
+        render = media.get('main-raw')
+        return {
+            'race': c['race']['name'], 'itemLevel': c.get('averageItemLevel'), 'updated': c['lastUpdatedTimestamp']['iso8601'][:10],
+            'attributes': [[label, value] for label, value in shown if value is not None],
+            'talents': [[s['name'], s['spentPoints']] for s in c.get('specs') or [] if s.get('spentPoints')],
+            'professions': [[p['name'], p['tiers'][0]['skillPoints'], p['tiers'][0]['maxSkillPoints']] for kind in ('primaries', 'secondaries') for p in (c.get('professions') or {}).get(kind) or [] if p.get('tiers')],
+            'itemLevels': {str(g['id']): g['level']['value'] for g in (c.get('gear') or {}).values() if isinstance(g, dict) and g.get('id') and (g.get('level') or {}).get('value')},
+            'render': render.get('url') if isinstance(render, dict) else render,
+        }
+    except (KeyError, IndexError, TypeError, ValueError) as e:
+        print(f'Armory: the page has changed shape ({type(e).__name__}: {e}); keeping what it said last time.')
+        return before
+
+
 def portrait():
     play = ROOT / 'site' / 'img' / 'play'
     render, shot = play / f'{NAME.lower()}-render.png', play / f'{NAME.lower()}.webp'
-    url = RENDERS.get(NAME)
+    url = (seen or {}).get('render') or RENDERS.get(NAME)
     if url and re.fullmatch(r'https://render\.worldofwarcraft\.com/[a-z\-]+/character/\d+/\d+-main-raw\.png', url):
         picture = ask(url)
         if picture and picture[:8] == b'\x89PNG\r\n\x1a\n':
@@ -278,7 +319,18 @@ def portrait():
     return {'portrait': None}
 
 
+seen = armory()
 out.update(portrait())
+if seen:
+    # the armory knows the race, the item level and Skinning, which the journal doesn't; its professions replace the journal's
+    out['race'], out['itemLevel'], out['attributes'], out['talents'] = seen.get('race'), seen.get('itemLevel'), seen.get('attributes'), seen.get('talents')
+    if seen.get('professions'): out['professions'] = sorted(seen['professions'], key=lambda p: -p[1])
+    levels = seen.get('itemLevels') or {}
+    for slot, piece in (out['gear'] or {}).items():
+        level = levels.get(str(items[slot].get('id')))
+        if level and not any(line['t'].startswith('Item Level') for line in piece.get('tip') or []):
+            piece['tip'] = [{'t': f'Item Level {level}', 'tone': 'gold'}] + (piece.get('tip') or [])
+    out['armory'] = seen
 bare = [g['name'] for g in (out['gear'] or {}).values() if not g.get('tip')]
 if bare: print(f"Tooltips: {len(bare)} worn item(s) have none yet ({', '.join(bare[:4])}{'…' if len(bare) > 4 else ''}). The addon saves them as you play: log in, then log out, and run this again.")
 target = ROOT / 'src' / 'data' / 'character.json'

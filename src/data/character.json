@@ -116,6 +116,11 @@
  ],
  "professions": [
   [
+   "Skinning",
+   256,
+   300
+  ],
+  [
    "First Aid",
    232,
    300
@@ -157,6 +162,10 @@
    "icon": "132514.jpg",
    "tip": [
     {
+     "t": "Item Level 39",
+     "tone": "gold"
+    },
+    {
      "t": "Soulbound"
     },
     {
@@ -184,6 +193,10 @@
    "icon": "133298.jpg",
    "tip": [
     {
+     "t": "Item Level 26",
+     "tone": "gold"
+    },
+    {
      "t": "Soulbound"
     },
     {
@@ -206,6 +219,10 @@
    "quality": "rare",
    "icon": "135038.jpg",
    "tip": [
+    {
+     "t": "Item Level 33",
+     "tone": "gold"
+    },
     {
      "t": "Soulbound"
     },
@@ -240,6 +257,10 @@
    "icon": "133773.jpg",
    "tip": [
     {
+     "t": "Item Level 33",
+     "tone": "gold"
+    },
+    {
      "t": "Soulbound"
     },
     {
@@ -264,6 +285,10 @@
    "quality": "rare",
    "icon": "135013.jpg",
    "tip": [
+    {
+     "t": "Item Level 34",
+     "tone": "gold"
+    },
     {
      "t": "Soulbound"
     },
@@ -301,6 +326,10 @@
    "icon": "132607.jpg",
    "tip": [
     {
+     "t": "Item Level 38",
+     "tone": "gold"
+    },
+    {
      "t": "Soulbound"
     },
     {
@@ -326,6 +355,10 @@
    "quality": "uncommon",
    "icon": "132955.jpg",
    "tip": [
+    {
+     "t": "Item Level 37",
+     "tone": "gold"
+    },
     {
      "t": "Soulbound"
     },
@@ -355,6 +388,10 @@
    "quality": "uncommon",
    "icon": "132501.jpg",
    "tip": [
+    {
+     "t": "Item Level 36",
+     "tone": "gold"
+    },
     {
      "t": "Soulbound"
     },
@@ -386,6 +423,10 @@
    "quality": "rare",
    "icon": "134588.jpg",
    "tip": [
+    {
+     "t": "Item Level 37",
+     "tone": "gold"
+    },
     {
      "t": "Soulbound"
     },
@@ -420,6 +461,10 @@
    "icon": "132539.jpg",
    "tip": [
     {
+     "t": "Item Level 20",
+     "tone": "gold"
+    },
+    {
      "t": "Soulbound"
     },
     {
@@ -450,6 +495,10 @@
    "icon": "133350.jpg",
    "tip": [
     {
+     "t": "Item Level 35",
+     "tone": "gold"
+    },
+    {
      "t": "Soulbound"
     },
     {
@@ -468,6 +517,10 @@
    "quality": "rare",
    "icon": "133347.jpg",
    "tip": [
+    {
+     "t": "Item Level 31",
+     "tone": "gold"
+    },
     {
      "t": "Soulbound"
     },
@@ -500,6 +553,10 @@
    "icon": "133633.jpg",
    "tip": [
     {
+     "t": "Item Level 33",
+     "tone": "gold"
+    },
+    {
      "t": "Soulbound"
     },
     {
@@ -516,6 +573,10 @@
    "quality": "rare",
    "icon": "135131.jpg",
    "tip": [
+    {
+     "t": "Item Level 34",
+     "tone": "gold"
+    },
     {
      "t": "Soulbound"
     },
@@ -554,6 +615,10 @@
    "icon": "135533.jpg",
    "tip": [
     {
+     "t": "Item Level 48",
+     "tone": "gold"
+    },
+    {
      "t": "Soulbound"
     },
     {
@@ -589,5 +654,157 @@
  "portraitSize": [
   1600,
   1200
- ]
+ ],
+ "race": "Night Elf",
+ "itemLevel": 33,
+ "attributes": [
+  [
+   "Health",
+   1715
+  ],
+  [
+   "Mana",
+   2115
+  ],
+  [
+   "Agility",
+   171
+  ],
+  [
+   "Stamina",
+   112
+  ],
+  [
+   "Strength",
+   52
+  ],
+  [
+   "Intellect",
+   79
+  ],
+  [
+   "Attack",
+   315
+  ],
+  [
+   "Armor",
+   1106
+  ],
+  [
+   "Crit",
+   "7.2%"
+  ],
+  [
+   "Dodge",
+   "9.5%"
+  ]
+ ],
+ "talents": [
+  [
+   "Beast Mastery",
+   31
+  ],
+  [
+   "Marksmanship",
+   3
+  ]
+ ],
+ "armory": {
+  "race": "Night Elf",
+  "itemLevel": 33,
+  "updated": "2026-11-21",
+  "attributes": [
+   [
+    "Health",
+    1715
+   ],
+   [
+    "Mana",
+    2115
+   ],
+   [
+    "Agility",
+    171
+   ],
+   [
+    "Stamina",
+    112
+   ],
+   [
+    "Strength",
+    52
+   ],
+   [
+    "Intellect",
+    79
+   ],
+   [
+    "Attack",
+    315
+   ],
+   [
+    "Armor",
+    1106
+   ],
+   [
+    "Crit",
+    "7.2%"
+   ],
+   [
+    "Dodge",
+    "9.5%"
+   ]
+  ],
+  "talents": [
+   [
+    "Beast Mastery",
+    31
+   ],
+   [
+    "Marksmanship",
+    3
+   ]
+  ],
+  "professions": [
+   [
+    "Leatherworking",
+    158,
+    225
+   ],
+   [
+    "Skinning",
+    256,
+    300
+   ],
+   [
+    "Cooking",
+    32,
+    75
+   ],
+   [
+    "First Aid",
+    232,
+    300
+   ]
+  ],
+  "itemLevels": {
+   "271716": 33,
+   "273038": 34,
+   "4788": 20,
+   "14594": 37,
+   "270067": 39,
+   "270053": 35,
+   "280766": 33,
+   "9624": 37,
+   "281290": 26,
+   "13039": 48,
+   "2933": 31,
+   "148": 1,
+   "273047": 33,
+   "279836": 36,
+   "273037": 34,
+   "274931": 38
+  },
+  "render": "https://render.worldofwarcraft.com/forever-us/character/251/27529979-main-raw.png"
+ }
 }
