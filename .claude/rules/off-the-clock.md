@@ -44,6 +44,13 @@ paths:
     in a rounded tile, square in a plain row ("round if the card is rounded, squared if not"). All are drawn 14%
     larger than their box so Blizzard's dark frame falls outside it (the files stay as served), and a tidbit's has
     a thin ring in its tile's own ink (his pick 2 of four). On phones a tidbit's icon sits above the number.
+  - **"Where the time went" shows the top zone itself** (John, 21 Nov 2026: "the card background be wetlands
+    itself"). Blizzard has no per-zone scenic art for Forever (its loading screens are continent ink drawings), so
+    the picture is cropped from John's own screenshot there (`ZONE_ART`, `site/img/play/zone-<zone>.webp`): the
+    level 25 shot, cropped to the hills and tree so no game UI, chat or names show ("crop for now"; a clean Alt+Z
+    shot can replace it). It is drawn like the WoW Forever tile, shaded on the left with light words in both
+    themes; a zone with no picture keeps the plain box. jsal.ui takes a screenshot at every level-up, and the
+    journal's level entries say where, which is how a zone's shots are found.
   - **Where the data comes from:** `python -I .github/scripts/character.py [name] [class]` reads the journal jsal.ui
     keeps in the game's SavedVariables on John's PC and writes that file. The game only writes its file at logout
     or a reload, and the site only changes when the new JSON is committed, so the page is as fresh as the last run;
