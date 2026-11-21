@@ -26,8 +26,11 @@ home page work.
   mockup had no top bar and ran the full width of the window; the build keeps both, as the top bar never moves
   between pages.
 - **Layout:** from 1280px, the list (272px) beside the stage. Below that the headline, then the four tools as a row
-  of tabs, then the stage. On upright phones (under 700px) the tools are a dock that sticks to the foot of the
-  screen while the stage is in view. Off the clock is a quieter row under the list; it goes to `/play/`, the page that carries
+  of tabs, then the stage. On upright phones (under 700px) the four tools are a list, each row with its name and
+  its job, and the chosen tool opens under its own row in its tint, with its line and its button (its facts and
+  picture wait for a wider screen); tapping another row opens that one (John, 21 Nov 2026, my pick A of three: it
+  replaced a dock at the foot of the screen, where only the chosen tool could be read). The list and the stages are
+  laid out together with `display: contents` and `order`. Off the clock is a quieter row under the list; it goes to `/play/`, the page that carries
   that name (John, 21 Nov 2026), which links on to jsal.ui.
 - **A stage wears its tool's tint** (`--t-cms`, `--t-ir`, `--t-cp`, `--t-ri`, defined in the page, light and dark)
   with the name in the tint's deep shade; the chosen row in the list wears the same tint, and the logo's gold gem

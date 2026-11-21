@@ -256,23 +256,37 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .more { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .more > div:first-child { grid-column: 1 / -1; }
 }
-/* An upright phone: the four tools become a dock that stays at the foot of the screen while the stage is in view */
+/* An upright phone: the four tools as a list, each with its name and its job, and the chosen one open under its own
+   row (its words and its button; the facts and the picture wait for a wider screen). Tapping another row opens that
+   one instead. The list and the stages are laid out together, each stage under its row. */
 @media (max-width: 699px) {
-  .pick { gap: var(--jsal-space-16); }
-  .slots { order: 3; position: sticky; bottom: 0; z-index: 2; gap: 0; margin: 0 calc(var(--jsal-gutter) * -1); padding: var(--jsal-space-4) var(--jsal-space-8) max(var(--jsal-space-8), env(safe-area-inset-bottom, 0px)); background: var(--jsal-bg); border-top: 1px solid var(--jsal-line); }
-  .slot { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: var(--jsal-space-4); padding: var(--jsal-space-8) var(--jsal-space-2); text-align: center; }
-  .slot img { width: 36px; height: 36px; }
-  .slot b { font-size: 12px; font-weight: 600; }
-  .slot-t > span { display: none; }
-  .more-ui { order: 4; margin-top: 0; }
+  .pick { gap: 0; }
+  .slots, .stages, .home-js .stages { display: contents; }
+  .slot:nth-child(1) { order: 1; } .stage:nth-child(1) { order: 2; }
+  .slot:nth-child(2) { order: 3; } .stage:nth-child(2) { order: 4; }
+  .slot:nth-child(3) { order: 5; } .stage:nth-child(3) { order: 6; }
+  .slot:nth-child(4) { order: 7; } .stage:nth-child(4) { order: 8; }
+  .more-ui { order: 9; margin-top: var(--jsal-space-24); }
+  .slot { grid-template-columns: 40px minmax(0, 1fr); margin-top: var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+  .slot img { width: 40px; height: 40px; }
+  .slot[aria-selected="true"] { border-radius: var(--jsal-radius-xl) var(--jsal-radius-xl) 0 0; }
+  .home-js .stage { min-height: 0; padding: var(--jsal-space-4) var(--jsal-space-20) var(--jsal-space-20); border-radius: 0 0 var(--jsal-radius-xl) var(--jsal-radius-xl); background: var(--bg); }
+  .home-js .stage :is(h2, .facts, .pic, .keys) { display: none; }
+  .home-js .say { padding-top: 0; }
+  .say p { font-size: 15px; }
   .stage { min-height: 0; padding: var(--jsal-space-24) var(--jsal-space-20) 0; }
-  .say { padding-top: var(--jsal-space-16); }
-  .say p { font-size: 17px; }
-  .facts { margin-top: var(--jsal-space-24); }
-  .keys { padding-bottom: var(--jsal-space-24); }
   .more { grid-template-columns: minmax(0, 1fr); margin-top: var(--jsal-space-48); gap: var(--jsal-space-32); }
 }
 @media (max-width: 520px) { .hello h1 { font-size: 40px; } }
+/* The tour: the chosen row's gold line fills while its turn lasts; it rests while the pointer or the keyboard is on
+   the list or the stage, or the list is off screen */
+.slot::after { content: ""; position: absolute; left: var(--jsal-space-12); right: var(--jsal-space-12); bottom: var(--jsal-space-4); height: 2px; border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); transform: scaleX(0); transform-origin: left; }
+.pick.tour .slot[aria-selected="true"]::after { animation: turn 6s linear forwards; }   /* style: allow (a tool's turn in the tour) */
+.pick.tour:is(:hover, :focus-within, .away) .slot[aria-selected="true"]::after { animation-play-state: paused; }
+@keyframes turn { to { transform: scaleX(1); } }
+.tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
+.pick.tour .tour-btn, .pick.rested .tour-btn { display: inline-flex; }
+@media (max-width: 699px) { .pick.tour .tour-btn, .pick.rested .tour-btn, .slot::after { display: none; } }
 @media (prefers-reduced-motion: reduce) {
   .slot, .more-ui, .keys a, .home-js .stages.live, .st { transition: none; }
   .live .stage.on :is(h2, .say > *, .shot, .keys), .slot[aria-selected="true"]::before, .gem.land, .gem.peek { animation: none; }
@@ -298,6 +312,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
           <a class={`slot ${t.id}`} href={`#${t.id}`} id={`tab-${t.id}`} aria-selected={i === 0 ? "true" : "false"}><img src={`/img/icons/${t.icon}.svg`} alt="" width="44" height="44"><span class="slot-t"><b>{t.name}</b><span>{t.job}</span></span><kbd aria-hidden="true">{i + 1}</kbd></a>
         ))}
       </div>
+      <button class="jsal-btn small tour-btn" type="button" aria-pressed="false">Pause the tour</button>
       <a class="more-ui" href="/play/"><img src="/img/icons/off-the-clock.svg" alt="" width="44" height="44"><span><b>Off the clock</b><span>My WoW Forever character and addon</span></span></a>
     </div>
 
@@ -436,6 +451,32 @@ document.querySelectorAll('.stage').forEach((stage) => {
     const n = '1234'.indexOf(e.key);
     if (e.key.length === 1 && n >= 0) pick(n, true);
   });
+  // The tour: on a screen wide enough for the list beside or above the stage, with motion welcome, the tools take
+  // turns by themselves, once round, back to where it started. A tool picked by hand ends it; Pause rests it.
+  const pickEl = document.querySelector('.pick'), btn = document.querySelector('.tour-btn');
+  if (matchMedia('(min-width: 700px)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    let steps = 0;
+    const end = () => { pickEl.classList.remove('tour', 'rested'); };
+    const start = () => {
+      pickEl.classList.add('tour');
+      list.addEventListener('animationend', (e) => {
+        if (!pickEl.classList.contains('tour') || e.animationName !== 'turn') return;
+        const next = (cur + 1) % tabs.length;
+        if (++steps >= tabs.length) end();
+        pick(next);
+      });
+      ['click', 'keydown', 'wheel'].forEach((type) => list.addEventListener(type, (e) => { if (e.isTrusted) end(); }, { capture: true }));
+      btn.addEventListener('click', () => {
+        const resting = pickEl.classList.toggle('rested');
+        pickEl.classList.toggle('tour', !resting);
+        btn.setAttribute('aria-pressed', String(resting));
+        btn.textContent = resting ? 'Play the tour' : 'Pause the tour';
+      });
+      const away = new IntersectionObserver(([e]) => pickEl.classList.toggle('away', !e.isIntersecting), { threshold: 0.4 });
+      away.observe(pickEl);
+    };
+    if (document.prerendering) document.addEventListener('prerenderingchange', start, { once: true }); else start();
+  }
 })();
 </script>
 </Page>
