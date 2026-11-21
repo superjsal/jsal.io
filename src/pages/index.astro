@@ -187,9 +187,7 @@ p { text-wrap: pretty; }
    control in the picture (an unseen mark laid exactly over the drawn one), presses it, and its state fades in. */
 .st { position: absolute; inset: 0; opacity: 0; transition: opacity var(--jsal-settle); }
 .st.on { opacity: 1; }
-.spot { position: absolute; pointer-events: none; border-radius: var(--jsal-radius-lg); transition: box-shadow var(--jsal-quick) ease, background-color var(--jsal-quick) ease; }
-/* the quiz's picture has no other states, so a pressed answer is shown chosen, as the quiz shows it: a gold edge and tint */
-.spot.picked { box-shadow: inset 0 0 0 2px var(--jsal-fill); background: color-mix(in srgb, var(--jsal-fill) 14%, transparent); }
+.spot { position: absolute; pointer-events: none; }
 .cursor { position: absolute; left: 0; top: 0; z-index: 2; width: 26px; height: 26px; pointer-events: none; opacity: 0; translate: var(--cx, 50%) var(--cy, 50%); transition: translate 0.55s cubic-bezier(0.45, 0, 0.2, 1), opacity var(--jsal-quick) ease; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.45)); }   /* style: allow (the home pictures' pointer gliding to a control) */
 .cursor.on { opacity: 1; }
 .cursor svg { display: block; width: 100%; height: 100%; transition: scale 0.12s ease; transform-origin: 3px 2px; }   /* style: allow (the press) */
@@ -421,7 +419,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
   // The demo: when a tool's stage shows (on a screen wide enough for its pictures, with motion welcome), a pointer
   // glides to each control in its picture in turn and presses it, and the picture shows that state; it ends back on
   // the first, in about five seconds, inside the tour's turn. Pause stops it; a new tool starts its own.
-  const STEPS = { cms: [0, 1, 3], ir: [1, 2, 0], cp: [1, 0], ri: [1, 3, 4, 0] };
+  const STEPS = { cms: [1], ir: [1, 2, 0], cp: [1, 0], ri: [1, 3, 4, 0] };
   const calm = matchMedia('(prefers-reduced-motion: reduce)'), demoRoom = matchMedia('(min-width: 700px)');
   let run = 0;
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -438,34 +436,35 @@ document.getElementById('y').textContent = new Date().getFullYear();
       pic.append(cursor);
     }
     const show = (state) => pic.querySelectorAll('.st').forEach((img) => img.classList.toggle('on', img.dataset.state === String(state)));
-    const choose = (mark) => marks.forEach((m) => m.classList.toggle('picked', m === mark));
     const goTo = (mark) => {
       const p = pic.getBoundingClientRect(), r = mark.getBoundingClientRect();
       cursor.style.setProperty('--cx', `${r.left - p.left + r.width / 2 - 3}px`);
       cursor.style.setProperty('--cy', `${r.top - p.top + r.height / 2 - 2}px`);
     };
     const stopped = () => mine !== run || !stage.classList.contains('on') || document.querySelector('.pick').classList.contains('rested');
-    show(0); choose(null);
+    show(0);
     cursor.style.transition = 'none'; goTo(marks[0] || pic); void cursor.offsetWidth; cursor.style.transition = '';
     await wait(700);
     if (stopped()) return;
     cursor.classList.add('on');
     for (const n of steps) {
-      const mark = stage.id === 'cms' ? marks[n] : marks.find((m) => m.dataset.state === String(n));
+      const mark = marks.find((m) => m.dataset.state === String(n));
       if (!mark) continue;
       goTo(mark);
       await wait(600);
       if (stopped()) break;
       cursor.classList.add('down');
-      if (stage.id === 'cms') choose(mark); else show(n);
+      show(n);
       await wait(180);
       cursor.classList.remove('down');
       await wait(450);
       if (stopped()) break;
     }
     cursor.classList.remove('on', 'down');
+    // a demo that ends away from the first state (the quiz on its second question) holds there a moment first
+    if (steps[steps.length - 1] !== 0) await wait(1800);
     if (mine !== run) return;
-    show(0); choose(null);
+    show(0);
   };
   const pick = (i, focus) => {
     // after the first, a pick says which way the list moved, so the new stage's parts arrive from there

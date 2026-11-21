@@ -115,42 +115,17 @@
   ]
  },
  "cms": {
-  "vary": [],
-  "states": 1,
+  "vary": [
+   "quiz"
+  ],
+  "states": 2,
   "spots": [
    {
     "piece": "quiz",
-    "href": "/cms-picker/#quiz?v=6&what=site",
-    "label": "Start the quiz with: A site for my business or work",
+    "state": 1,
+    "label": "Pick: A site for my business or work",
     "x": 4.76,
     "y": 46.43,
-    "w": 44.76,
-    "h": 20.47
-   },
-   {
-    "piece": "quiz",
-    "href": "/cms-picker/#quiz?v=6&what=store",
-    "label": "Start the quiz with: An online store",
-    "x": 50.48,
-    "y": 46.43,
-    "w": 44.76,
-    "h": 20.47
-   },
-   {
-    "piece": "quiz",
-    "href": "/cms-picker/#quiz?v=6&what=content",
-    "label": "Start the quiz with: A blog, newsletter or publication",
-    "x": 4.76,
-    "y": 69,
-    "w": 44.76,
-    "h": 20.47
-   },
-   {
-    "piece": "quiz",
-    "href": "/cms-picker/#quiz?v=6&what=custom",
-    "label": "Start the quiz with: Something custom",
-    "x": 50.48,
-    "y": 69,
     "w": 44.76,
     "h": 20.47
    }
