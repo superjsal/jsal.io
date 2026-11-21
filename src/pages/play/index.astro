@@ -2,15 +2,60 @@
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
 import { v } from "../../lib/v.mjs";
+// John's character: .github/scripts/character.py reads the journal the jsal.ui addon keeps in the game's saved file
+// on his PC (totals, the time at each level, the latest entries, places) and his Blizzard armory page (gear with
+// tooltips and icons, the render, race, attributes, talents, professions), and writes this. The page is as fresh as
+// the last time that ran.
+import C from "../../data/character.json";
+const n = (x) => x.toLocaleString("en-GB");
+const date = (iso) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+const hm = (m) => (m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`);
+const longest = Math.max(...C.levelMinutes), longestAt = C.levelMinutes.indexOf(longest) + 1;
+const zoneMax = Math.max(...C.zones.map(([, h]) => h));
+// Lately's entries by kind; a profession's entry takes that profession's icon, and a jsal's Pals find shows the
+// pal's own pixel art from the addon
+const KIND_ICONS = { level: "spell_holy_surgeoflight", death: "inv_misc_bone_humanskull_01", boss: "inv_misc_head_dragon_01", kill: "ability_dualwield", loot: "inv_misc_bag_10" };
+const feedIcon = (e) => {
+  if (e.pal) return `/img/jsal-ui/pals/${e.pal}.png`;
+  const name = e.kind === "prof" ? ICONS[Object.keys(ICONS).find((k) => e.text.includes(k))] : KIND_ICONS[e.kind];
+  return name && `/img/wow/${name}.jpg`;
+};
+// A picture of the place most time went, from John's own screenshots there, when there is one
+const ZONE_ART = { Wetlands: "/img/play/zone-wetlands.webp" };
+const zoneArt = ZONE_ART[C.zones[0]?.[0]];
+// Tidbits of the journey: each total with a line worked out from the journal itself, so it stays true as the
+// numbers move. [the number, what it counts, the line, the tile's colour]
+const S = C.stats;
+const TIDBITS = [
+  [S.hours, "hours played", `That's ${Math.floor(S.hours / 24)} days and ${S.hours % 24} hours, since ${date(C.since)}.`, "lilac", "inv_misc_pocketwatch_02"],
+  [S.jumps, "jumps", `About ${n(Math.round(S.jumps / S.hours))} an hour. Not one of them needed.`, "honey", "ability_hunter_aspectofthemonkey"],
+  [S.deaths, "deaths", `One every ${hm(Math.round(S.hours * 60 / S.deaths))}, on average.`, "berry", "inv_misc_bone_humanskull_01"],
+  [S.miles, "miles travelled", `${n(Math.round(S.miles / 26.2))} marathons, give or take.`, "teal", "ability_rogue_sprint"],
+  [S.foes, "foes defeated", `${n(Math.round(S.foes / S.deaths))} for every time one got me.`, "plain", "ability_dualwield"],
+  [S.quests, "quests done", `About ${Math.round(S.quests / C.level)} a level.`, "plain", "inv_misc_note_01"],
+];
+// The game's own icon for each spell, talent tree, profession and pet family the page may name (Blizzard's file
+// names, saved in /img/wow/ as served); a name with no icon here is shown without one
+const ICONS = {
+  "Arcane Shot": "ability_impalingbolt", "Hunter's Mark": "ability_hunter_snipershot", "Serpent Sting": "ability_hunter_quickshot",
+  "Beast Mastery": "ability_hunter_beasttaming", "Marksmanship": "ability_marksmanship",
+  "Skinning": "ui_profession_skinning", "First Aid": "spell_holy_sealofsacrifice", "Leatherworking": "ui_profession_leatherworking", "Cooking": "ui_profession_cooking",
+  "Cat": "ability_hunter_pet_cat",
+};
+const worn = (key) => C.gear?.[key];
+// The character sheet's slots, laid out as the game lays them out: down both sides of the middle, weapons under it
+const LEFT = [["head", "Head"], ["neck", "Neck"], ["shoulder", "Shoulders"], ["back", "Back"], ["chest", "Chest"], ["wrist", "Wrists"], ["hands", "Hands"]];
+const RIGHT = [["waist", "Waist"], ["legs", "Legs"], ["feet", "Feet"], ["finger1", "Ring"], ["finger2", "Ring"], ["trinket1", "Trinket"], ["trinket2", "Trinket"]];
+const WEAPONS = [["mainhand", "Main hand"], ["offhand", "Off hand"], ["ranged", "Ranged"]];
 ---
 <Page
   title="Mostly Warcraft: Off the Clock | jsal.io"
-  description="Off the clock with John Salvador: WoW Forever, the game UI I play with, a backpack of ways to say hi, and the achievements hidden around jsal.io."
+  description="Off the clock with John Salvador: my WoW Forever character and the journey my own addon keeps, the game UI I play with, a backpack of ways to say hi, and the achievements hidden around jsal.io."
   path="/play/"
   ogTitle="Mostly Warcraft: Off the Clock"
-  ogDescription="WoW Forever, the game UI I play with, a backpack of ways to say hi, and the achievements hidden around jsal.io."
+  ogDescription="My WoW Forever character and the journey my own addon keeps, a backpack of ways to say hi, and the achievements hidden around jsal.io."
   ogImage="play"
-  ogImageAlt="Mostly Warcraft: off the clock with John Salvador, with WoW Forever art"
+  ogImageAlt="Mostly Warcraft: my WoW Forever character, a night elf hunter, on a dark stage"
   icon="/img/icons/off-the-clock.svg"
 >
 <script is:inline slot="head" type="application/ld+json">
@@ -27,21 +72,30 @@ import { v } from "../../lib/v.mjs";
 <style is:inline slot="head">
 /* Tile colours: moss for the WoW UI, toned close to the page; the other tiles are plain, a neutral fill with no border */
 :root {
-  --green: #e7ebdd; --green-ink: #1f1a12; --green-muted: #3d362a; --green-acc: #3f6b3a;
-  --plain: #e8e5dd; --plain-line: #cfc3a9;
-  --peek-shadow: 0 12px 28px rgb(30 20 10 / 0.2), 0 2px 6px rgb(30 20 10 / 0.1);
+  --green: #e2ebdc; --green-hover: #d6e3ce; --green-ink: #14171c; --green-muted: #3a404a; --green-acc: #3f6b3a;
+  /* the portrait's stage: the game's dark character window, the same in both themes, lit behind her */
+  --stage-light: #3a3f4c; --stage: #1c1f27; --stage-deep: #14171c; --stage-line: #2a2e38; --stage-ink: #ece6d6;
+  --plain: #e6e8ec; --plain-line: #b4bac4;
+  --tip-shadow: 0 14px 32px rgb(20 23 28 / 0.28);
+  --ico-shadow: 0 4px 10px rgb(20 23 28 / 0.25);
+  /* the journey's tiles: four tints with a deep shade of each for their words, as the home page's stages have */
+  --jr-lilac: #d7c6f0; --jr-lilac-ink: #3d2466; --jr-honey: #f3dc9a; --jr-honey-ink: #4f3a08; --jr-berry: #f0d2dc; --jr-berry-ink: #5c1a30; --jr-teal: #c6e2dd; --jr-teal-ink: #13453f;
+  /* an item's name in the colour of its quality, as the game shows it, darkened to read on a light page */
+  --q-uncommon: #1a6a2c; --q-rare: #1d4fae; --q-epic: #6a35b5; --q-legendary: #9a4a00;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
+    --green: #19221b; --green-hover: #212d23; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
     --plain: #1c1f27; --plain-line: #3d424e;
-    --peek-shadow: 0 12px 28px rgb(0 0 0 / 0.5);
+    --q-uncommon: #7fd68a; --q-rare: #8fb1ff; --q-epic: #c9a8ff; --q-legendary: #ffb066;
+    --jr-lilac: #2c2140; --jr-lilac-ink: #e3d4ff; --jr-honey: #30280f; --jr-honey-ink: #f3dc9a; --jr-berry: #321b24; --jr-berry-ink: #f4d2de; --jr-teal: #132a28; --jr-teal-ink: #c6e2dd;
   }
 }
 :root[data-theme="dark"] {
-  --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
+  --green: #19221b; --green-hover: #212d23; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
   --plain: #1c1f27; --plain-line: #3d424e;
-  --peek-shadow: 0 12px 28px rgb(0 0 0 / 0.5);
+  --q-uncommon: #7fd68a; --q-rare: #8fb1ff; --q-epic: #c9a8ff; --q-legendary: #ffb066;
+  --jr-lilac: #2c2140; --jr-lilac-ink: #e3d4ff; --jr-honey: #30280f; --jr-honey-ink: #f3dc9a; --jr-berry: #321b24; --jr-berry-ink: #f4d2de; --jr-teal: #132a28; --jr-teal-ink: #c6e2dd;
 }
 
 * { box-sizing: border-box; }
@@ -76,60 +130,27 @@ a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) a.tile::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 65%); }
 }
-.tile h2 { margin: var(--jsal-space-2) 0 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
+.tile h2 { margin: var(--jsal-space-2) 0 0; font: 700 30px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; }
 .tile p { margin: 0; }
 
 /* Even line breaks: headings split into balanced lines, paragraphs avoid a lone last word */
-h1, h2, .big { text-wrap: balance; }
+h1, h2 { text-wrap: balance; }
 p, li { text-wrap: pretty; }
 
 /* Top padding lines the small line up with the picture's top edge in the CMS Picker tile beside it
    (tile padding 26px + 1px border) */
-.intro { grid-column: 1 / 6; padding: var(--jsal-space-32) 0 0; }
-.roles { display: flex; flex-wrap: wrap; margin: 0 0 var(--jsal-space-20); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-.roles span + span::before { content: "·"; content: "·" / ""; margin: 0 var(--jsal-space-8); color: var(--jsal-muted); }
-.intro h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }   /* every page title's size, as on the home page */
-.intro h1 em { font-weight: 600; color: var(--jsal-accent); }
-.intro p { margin: var(--jsal-space-32) 0 0; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
+/* the title on the left, and where she was last seen on the right, as the home page sets its line beside its title */
+.intro { grid-column: 1 / 13; display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--jsal-space-16) var(--jsal-space-32); padding: var(--jsal-space-32) 0 0; }
+.intro > div { max-width: 640px; }
+.intro h1 { margin: 0; font: 700 46px/1.05 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; }   /* every page title's size, as on the home page */
+.intro h1 em { font-style: normal; font-weight: 700; color: var(--jsal-accent); }
+.intro > div > p { margin: var(--jsal-space-32) 0 0; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
 
-/* Currently: WoW Forever art behind the text, scaled down but otherwise unaltered as Blizzard's fan-site policy
-   requires (the darkening is a separate layer on top, and the copyright notice stays on the
-   card). Same light text in both themes, since it sits on the picture. */
-.now-playing { grid-column: 1 / 9; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 380px; }   /* style: allow (WoW tile: dark green under the art) */
-/* Text over the sky at the top, so the dwarf and bear show in the lower half. The art is 2.4:1 and the
-   card is taller than that, so it fills the height and object-position picks the slice with the dwarf
-   and bear. It's drawn 18% taller than the card with the extra above it (sky), which lifts them clear
-   of the credit row at the bottom. The file itself is untouched. */
-.now-playing .art { position: absolute; top: -18%; left: 0; z-index: -2; width: 100%; height: 118%; object-fit: cover; object-position: 12% 50%; }
-.now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }   /* style: allow (WoW tile: shade over the art for the text) */
-.now-playing .label { margin-bottom: var(--jsal-space-8); }
-.now-playing .label { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
-.now-playing .big { font: 700 30px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
-.now-playing .row { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-12); }   /* the credit, bottom right */
-.now-playing .credit { font-size: 12px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .desc { margin-top: var(--jsal-space-4) !important; font-size: 15px; }
 
-/* The UI tile: its words a step smaller than the live tools, and a peek at the addon on the right, the top of
-   the Journal tilted and cut off by the tile's bottom edge. The peek takes no height of its own (height 0,
-   stretched to the row), so the words set the tile's size. */
-.ui { padding: var(--jsal-space-24) var(--jsal-space-24); }
-.ui h2 { font-size: 24px; }
-.ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); }
-.ui .label { color: var(--green-acc); }
-.ui .desc { color: var(--green-muted); margin-top: var(--jsal-space-8) !important; }
-.ui { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 320px); gap: var(--jsal-space-24); overflow: hidden; min-height: 168px; }
-.ui > div { align-self: center; }
-.ui .peek { height: 0; min-height: 100%; }
-.ui .peek img { display: block; width: 100%; height: auto; margin-top: var(--jsal-space-8); border-radius: var(--jsal-radius-lg); box-shadow: var(--peek-shadow); transform: rotate(-2deg); }
-/* Phones: the peek goes under the words, a short slice of it */
-@media (max-width: 699px) {
-  .ui { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-8); padding-bottom: 0 !important; }
-  .ui .peek { height: 128px; min-height: 0; }
-  .ui .peek img { width: min(100%, 320px); margin-left: auto; }
-}
 
 .now { grid-column: 1 / 13; background: var(--plain); }
-.now h2 { margin: 0 0 var(--jsal-space-8); font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
+.now h2 { margin: 0 0 var(--jsal-space-8); font: 700 24px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; color: var(--jsal-accent); }
 .now h3 { display: flex; align-items: baseline; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-8); font-size: 17px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
 .now h3 time { font-size: 14px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now ul { margin: 0; padding: 0; list-style: none; }
@@ -139,63 +160,60 @@ p, li { text-wrap: pretty; }
 
 /* Achievements (/nav.js unlocks them and keeps them in this browser; the script below lists them, grouped by
    where each is earned, in columns as wide as fit) */
-.ach { grid-column: 1 / 13; background: var(--plain); }
+.ach { grid-column: 1 / 9; background: var(--plain); }
 .ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--jsal-space-12); }
-.ach h2 { margin: 0; font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
+.ach h2 { margin: 0; font: 700 24px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; }
 .ach-count { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .ach-bar { height: 6px; margin: var(--jsal-space-12) 0 var(--jsal-space-20); border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
 .ach-bar i { display: block; height: 100%; background: var(--jsal-fill); border-radius: inherit; transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }   /* a transform, so filling it doesn't re-lay-out the page; style: allow (the achievements bar filling) */
-.ach-groups { columns: 3 280px; column-gap: var(--jsal-space-24); }
-.ach-grp { break-inside: avoid; padding-bottom: var(--jsal-space-20); }
-.ach-grp h3 { display: flex; align-items: center; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-8); font-size: 14px; font-weight: 600; }
+/* One small card per tool: its trophies in a row (earned ones in their quality's ring, the rest greyed), and the next
+   one to earn spelled out under them. Each trophy's name is its tooltip and is read out to screen readers. */
+.ach-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--jsal-space-12); }
+.ach-grp { padding: var(--jsal-space-16); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+.ach-grp h3 { display: flex; align-items: center; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-12); font-size: 14px; font-weight: 600; }
 .ach-grp h3 img, .ach-grp h3 .lk { flex: none; width: 20px; height: 20px; border-radius: var(--jsal-radius-sm); }
 .ach-grp h3 .lk { display: grid; place-items: center; background: var(--jsal-tool-home); color: var(--jsal-fill); }
 .ach-grp h3 .n { margin-left: auto; font-size: 13px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
-.ach-grp ul { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; }
-.ach-grp li { display: flex; align-items: center; gap: var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-8) var(--jsal-space-8) var(--jsal-space-8); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
-.ach-grp .medal { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
-.ach-grp b { display: block; font-weight: 600; }
-.ach-grp small { display: block; font-size: 13px; color: var(--jsal-muted); }
-.ach-grp li.locked { background: transparent; box-shadow: inset 0 0 0 1px var(--plain-line); }
-.ach-grp li.locked b { color: var(--jsal-muted); }
-.ach-grp li.locked .medal { background: none; color: var(--jsal-muted); box-shadow: inset 0 0 0 1px var(--plain-line); }
+.ach-grp ul { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; }
+.ach-grp .medal { display: block; width: 36px; height: 36px; overflow: hidden; border-radius: var(--jsal-radius); box-shadow: 0 0 0 2px var(--mq, var(--jsal-line-hi)); }
+.ach-grp .medal img { display: block; width: 100%; height: 100%; scale: 1.14; }
+.ach-grp li.locked .medal { box-shadow: 0 0 0 1px var(--plain-line); }
+.ach-grp li.locked .medal img { filter: grayscale(1); opacity: 0.45; }
+.ach .ach-next { margin: var(--jsal-space-12) 0 0; font-size: 13px; line-height: 1.45; color: var(--jsal-muted); }
+.ach-next b { font-weight: 600; color: var(--jsal-ink); }
 @media (prefers-reduced-motion: reduce) { .ach-bar i { transition: none; } }
 
-/* Say hi (the backpack): the socials as gear in a bag window drawn after the original game's, with a stone frame,
-   a round portrait and a leather title bar. It keeps its look in both themes, like the WoW Forever tile. The items
-   are Blizzard's own icons, shown as Blizzard serves them; hover, focus or tap one for its tooltip. */
-.mail { grid-column: 9 / 13; display: flex; flex-direction: column; gap: var(--jsal-space-4); }
+/* Say hi (the backpack): the socials as gear in a bag, in the same plain tile as the character sheet. The items are
+   Blizzard's own icons, shown as Blizzard serves them, in the game's quality colours; hover, focus or tap one for its
+   tooltip. */
+.mail { grid-column: 9 / 13; display: flex; flex-direction: column; gap: var(--jsal-space-16); }
+/* the bag comes first in the page, so the list fills the space beside it */
+.grid { grid-auto-flow: row dense; }
 .mail.pack {
   --q-legendary: #ff8000; --q-epic: #a335ee; --q-rare: #0070dd; --q-uncommon: #1eff00; --q-common: #ffffff;
   --cast-hi: #ffd84a; --cast-lo: #b8820f;
-  --st-hi: #57534b; --st-mid: #3a3732; --st-low: #2a2825; --st-bevel: #77726a; --st-dark: #1c1b19; --st-inner: #4a4640; --st-rim: #8a857a;
-  --lt-hi: #6a4422; --lt-low: #3e2610; --lt-edge: #1a0e04; --lt-shine: rgb(255 210 150 / 0.2);
-  --pk-ink: #f1e4c9; --pk-title: #ffd100; --pk-title-edge: #3a2a00; --pk-text: #e6dcc6; --pk-label: #e0c890; --pk-muted: #b8b0a0;
-  --pk-well: #0c0c0b; --pk-well-rim: #5a564e; --pk-empty-hi: #34322f; --pk-empty-low: #141412; --pk-empty-line: #4a4640;
+  --pk-title: #ffd100;
   --new-ring: rgb(255 240 180 / 0.9); --new-glow: rgb(255 220 120 / 0.55); --shine: rgb(255 200 120 / 0.6);
   --b-email: #b8820f; --b-discord: #5865f2; --b-battlenet: #4381c3; --b-steam: #1b2838; --b-github: #24292f; --b-logo: #fff;
   --pk-black: #000; --tip-bg: rgb(8 10 16 / 0.96); --tip-name: #fff; --tip-line: #5a6b8a; --tip-ink: #e8e8e8; --tip-muted: #8a8f9c; --tip-use: #1eff00; --tip-flavor: #ffd100; --tip-error: #ff2020;
-  --pk-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  position: relative; isolation: isolate; padding-top: 20px; border-radius: 40px 12px 12px; color: var(--pk-ink);   /* style: allow (the backpack's drawn shape) */
-  background: var(--pk-grain), linear-gradient(160deg, var(--st-hi), var(--st-mid) 50%, var(--st-low));
-  box-shadow: inset 0 0 0 1px var(--pk-black), inset 0 0 0 4px var(--st-bevel), inset 0 0 0 5px var(--st-dark), inset 0 0 0 7px var(--st-inner), 0 12px 28px -14px rgb(0 0 0 / 0.7);
+  position: relative; isolation: isolate; background: var(--plain); color: var(--jsal-ink);
 }
-.mail.pack .label { color: var(--pk-label); }
-.mail.pack .desc { color: var(--pk-text); margin-top: var(--jsal-space-12) !important; }
-.pack-h { display: flex; align-items: center; gap: 14px; padding: 6px 12px 6px 0; border-radius: 30px 8px 8px 30px; background: linear-gradient(var(--lt-hi), var(--lt-low)); box-shadow: inset 0 0 0 1px var(--lt-edge), inset 0 1px 0 var(--lt-shine), 0 2px 4px rgb(0 0 0 / 0.5); }   /* style: allow (part of the backpack drawing) */
-.pack-h h2 { margin: 0; font: 700 24px/1.1 "Lora", Georgia, serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black), 0 0 10px rgb(0 0 0 / 0.6); }
-.portrait { flex: none; width: 64px; height: 64px; margin: -8px 0 -8px -6px; border-radius: 50%; overflow: hidden; border: 4px solid var(--st-rim); box-shadow: 0 0 0 2px var(--st-dark), 0 4px 10px rgb(0 0 0 / 0.7); }   /* style: allow (part of the bag drawing, as drawn) */
+.mail.pack .desc { margin: 0 !important; line-height: 1.55; }
+.pack-h { display: flex; align-items: center; gap: var(--jsal-space-12); }
+.pack-h h2 { margin: 0; font: 700 24px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; }
+.portrait { flex: none; width: 48px; height: 48px; overflow: hidden; border-radius: var(--jsal-radius-lg); box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 55%, transparent), var(--ico-shadow); }
+.portrait img, .slot > img, .bagtab .bi img { scale: 1.14; }
 .portrait img, .slot img, .bagtab img { display: block; width: 100%; height: 100%; }
-.bag { position: relative; display: grid; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-well); box-shadow: inset 0 0 0 2px var(--st-dark), inset 0 0 0 3px var(--pk-well-rim), inset 0 2px 12px rgb(0 0 0 / 0.9); }   /* style: allow (part of the backpack drawing) */
+.bag { position: relative; display: grid; }
 /* Both bags share one cell, so switching between them never changes the tile's height */
 .slots { grid-area: 1 / 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: center; gap: var(--jsal-space-8); }
 .slots.pouch { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--jsal-space-8); }
 .slots[inert] { visibility: hidden; }
-.slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: var(--jsal-radius); border: 2px solid var(--q); background: var(--pk-black); box-shadow: 0 0 0 1px var(--pk-black), 0 0 12px -3px var(--q); cursor: pointer; font: inherit; transition: transform var(--jsal-quick) ease, box-shadow var(--jsal-quick) ease, filter var(--jsal-quick) ease; }
+.slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: var(--jsal-radius-lg); border: 2px solid var(--q); background: var(--pk-black); box-shadow: var(--ico-shadow); cursor: pointer; font: inherit; transition: transform var(--jsal-quick) ease, box-shadow var(--jsal-quick) ease, filter var(--jsal-quick) ease; }
 /* A soft bevel over the icon, as the game draws its slots */
-.slot::after { content: ""; position: absolute; inset: 0; border-radius: var(--jsal-radius-sm); pointer-events: none; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 0 6px rgb(0 0 0 / 0.55); background: linear-gradient(to bottom, rgb(255 255 255 / 0.08), transparent 40%); }
-.slot:hover, .slot:focus-visible, .slot.on { transform: translateY(-2px) scale(1.04); filter: brightness(1.15) saturate(1.1); box-shadow: 0 0 0 1px var(--pk-black), 0 0 20px -1px var(--q); outline: none; z-index: 1; }
-.slot.empty { border: 1px solid var(--pk-black); background: radial-gradient(circle at 50% 35%, var(--pk-empty-hi), var(--pk-empty-low)); box-shadow: inset 0 0 0 1px var(--pk-empty-line), inset 0 4px 8px rgb(0 0 0 / 0.85); cursor: default; }
+.slot::after { content: ""; position: absolute; inset: 0; border-radius: var(--jsal-radius); pointer-events: none; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 0 6px rgb(0 0 0 / 0.55); background: linear-gradient(to bottom, rgb(255 255 255 / 0.08), transparent 40%); }
+.slot:hover, .slot:focus-visible, .slot.on { transform: translateY(-2px) scale(1.04); filter: brightness(1.15) saturate(1.1); box-shadow: 0 0 16px -2px var(--q); outline: none; z-index: 1; }
+.slot.empty { border: 1px dashed var(--plain-line); background: transparent; box-shadow: none; cursor: default; }
 .slot.empty::after { display: none; }
 /* A social's logo in the corner of its icon, so it's known at a glance */
 .badge { position: absolute; z-index: 2; right: 3px; bottom: 3px; width: 20px; height: 20px; padding: 3px; border-radius: 50%; background: var(--b); box-shadow: 0 0 0 1.5px var(--pk-black), 0 1px 3px rgb(0 0 0 / 0.7); }
@@ -228,13 +246,12 @@ p, li { text-wrap: pretty; }
 .cast-name { position: relative; display: block; font: 600 12px/20px var(--jsal-font); text-align: center; color: var(--tip-name); text-shadow: 0 1px 2px var(--pk-black); }
 @keyframes cast { to { width: 100%; } }
 /* The bag bar switches between the backpack and the trophies, as the game's bag buttons do */
-.bagbar { display: flex; gap: var(--jsal-space-8); margin-top: var(--jsal-space-8); }
-.bagtab { flex: 1; display: flex; align-items: center; gap: var(--jsal-space-8); min-width: 0; min-height: 40px; padding: var(--jsal-space-4) var(--jsal-space-8) var(--jsal-space-4) var(--jsal-space-4); border-radius: var(--jsal-radius); border: 1px solid var(--pk-well-rim); background: var(--st-dark); color: var(--pk-text); font: 600 13px/1.2 var(--jsal-font); cursor: pointer; }
-.bagtab .bi { flex: none; width: 28px; height: 28px; overflow: hidden; border-radius: var(--jsal-radius); box-shadow: 0 0 0 1px var(--pk-black); }
-.bagtab em { margin-left: auto; font: 600 12px "JetBrains Mono", Consolas, monospace; font-style: normal; color: var(--pk-label); }
-.bagtab[aria-selected="true"] { border-color: var(--pk-title); box-shadow: 0 0 0 1px var(--pk-title-edge), 0 0 10px -2px var(--pk-title); color: var(--tip-name); }   /* style: allow (the bag's own game look, the same in both themes) */
-.bagtab:focus-visible { outline: 2px solid var(--pk-title); outline-offset: 2px; }
-.pack-credit { margin: var(--jsal-space-8) var(--jsal-space-2) 0; font-size: 12px; color: var(--pk-muted); }
+.bagbar { display: flex; gap: var(--jsal-space-8); }
+.bagtab { flex: 1; display: flex; align-items: center; gap: var(--jsal-space-8); min-width: 0; min-height: 40px; padding: var(--jsal-space-4) var(--jsal-space-8) var(--jsal-space-4) var(--jsal-space-4); border-radius: var(--jsal-radius); border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink); font: 600 13px/1.2 var(--jsal-font); cursor: pointer; }
+.bagtab .bi { flex: none; width: 28px; height: 28px; overflow: hidden; border-radius: var(--jsal-radius-sm); }
+.bagtab em { margin-left: auto; font-size: 12px; font-style: normal; font-variant-numeric: tabular-nums; color: var(--jsal-muted); }
+.bagtab[aria-selected="true"] { border-color: var(--jsal-selected-ring); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); }
+.mail .pack-credit { margin: calc(var(--jsal-space-8) * -1) var(--jsal-space-2) 0; font-size: 12px; color: var(--jsal-muted); }
 @media (pointer: coarse) { .bagtab { min-height: 44px; } .slots.pouch { grid-template-columns: repeat(5, minmax(0, 1fr)); } }   /* trophies at finger size */
 @media (max-width: 420px) { .bagtab { gap: var(--jsal-space-8); padding-right: var(--jsal-space-8); } .bagtab .bi { width: 24px; height: 24px; } }
 @media (prefers-reduced-motion: reduce) { .cast.go .cast-fill { animation-duration: var(--jsal-settle); } .slot { transition: none; } .slot:hover, .slot:focus-visible, .slot.on { transform: none; } .slot.new::before, .float { animation: none; } .slot.shine::before { display: none; } }
@@ -257,15 +274,10 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 @media (max-width: 520px) {
   .jsal-top nav a[href="/"] { display: none; }
   .grid { gap: var(--jsal-space-12); }
-  .roles { margin: 0 0 var(--jsal-space-12); }
-  .roles span + span::before { margin: 0 var(--jsal-space-8); }
   .intro h1 { font-size: 40px; line-height: 1.05; }
-  .intro p { margin: var(--jsal-space-16) 0 var(--jsal-space-8); font-size: 17px; line-height: 1.55; }
+  .intro > div > p { margin: var(--jsal-space-16) 0 var(--jsal-space-8); font-size: 17px; line-height: 1.55; }
   .tile { padding: var(--jsal-space-20); }
   .tile h2 { font-size: 24px; }
-  .ui { padding: var(--jsal-space-20); }
-  .now-playing { gap: var(--jsal-space-12); min-height: 300px; }
-  .now-playing .big { font-size: 24px; }
   footer { margin-top: var(--jsal-space-32); }
 }
 /* The narrowest phones: Achievements alone, as Email beside it would wrap the bar (Email is in the Backpack too) */
@@ -273,38 +285,248 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .jsal-top nav a[href^="mailto"] { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } a.tile:hover { transform: none; } }
+/* My character, laid out as the game's own character sheet, tidied: a title bar; the slots down both sides of the
+   middle with the weapons under it; and where the game shows attributes, the journal's totals, the professions and
+   the hunter's pet. A slot's tile and its item's name wear the item's quality colour, and the small label says the
+   quality in words too. Until the addon has saved what is worn, the slots are there without items. */
+.sheet { grid-column: 1 / 13; padding: 0; background: var(--plain); }
+.sheet-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--jsal-space-12) var(--jsal-space-24); padding: var(--jsal-space-20) var(--jsal-space-32); border-bottom: 1px solid var(--plain-line); }
+.sheet-who { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--jsal-space-4) var(--jsal-space-16); }
+.sheet h2 { margin: 0; font: 800 40px/1 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; }
+.sheet h3 { margin: 0 0 var(--jsal-space-8); color: var(--jsal-accent); font: 700 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
+.who-line { font: 600 17px/1.3 "Outfit", "Segoe UI", system-ui, sans-serif; }
+.who-line span { margin-left: var(--jsal-space-8); color: var(--jsal-muted); font: 400 14px/1.3 var(--jsal-font); }
+.seen { display: inline-flex; align-items: center; gap: var(--jsal-space-8); margin: 0; color: var(--jsal-muted); font-size: 15px; }
+.seen::before { content: ""; width: 8px; height: 8px; background: var(--jsal-fill); rotate: 45deg; }
+.sheet-body { display: grid; grid-template-columns: minmax(0, 1fr) 300px; }
+.doll { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 240px) minmax(0, 1fr); gap: var(--jsal-space-20) var(--jsal-space-24); padding: var(--jsal-space-24) var(--jsal-space-32) var(--jsal-space-32); }
+.side { display: grid; gap: var(--jsal-space-8); align-content: start; }
+.gear { position: relative; display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: var(--jsal-space-12); align-items: center; min-height: 60px; border-radius: var(--jsal-radius-lg); }
+/* an item's icon is Blizzard's own, shown at its own 56 pixels inside the frame; a slot without one shows a diamond */
+.gear-ico { display: grid; place-items: center; overflow: hidden; width: 60px; height: 60px; border: 2px solid var(--q, var(--plain-line)); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
+.gear-ico img { display: block; }
+/* Her gear goes on slot by slot the first time the sheet is seen: each icon settles in from a little smaller, one
+   after another down the slots, in under a second. The icons are there without scripts or with reduced motion. */
+.doll.equip .gear-ico img { animation: equip var(--jsal-settle) var(--jsal-ease-out) both; animation-delay: calc(var(--i, 0) * 35ms); }   /* style: allow (/play/'s effects: the gear going on) */
+@keyframes equip { from { opacity: 0; scale: 0.6; } }
+.gear[data-q] .gear-ico:empty::before { content: ""; width: 14px; height: 14px; background: var(--q); rotate: 45deg; opacity: 0.7; }
+.gear small { display: block; color: var(--jsal-muted); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+.gear b { display: block; overflow-wrap: anywhere; color: var(--q, var(--jsal-ink)); font: 600 14px/1.3 var(--jsal-font); }
+.gear:not([data-q]) b { color: var(--jsal-muted); font-weight: 400; }
+.gear[data-q="uncommon"] { --q: var(--q-uncommon); } .gear[data-q="rare"] { --q: var(--q-rare); } .gear[data-q="epic"] { --q: var(--q-epic); } .gear[data-q="legendary"] { --q: var(--q-legendary); }
+.gear[data-q="common"], .gear[data-q="poor"] { --q: var(--jsal-ink-2); }
+.side.r .gear { grid-template-columns: minmax(0, 1fr) 60px; text-align: right; }
+.side.r .gear-ico { order: 2; }
+/* A worn item's tooltip, as the game shows one: pointing at the item, or tabbing to it, opens a small panel with
+   the item's name in its quality colour and its lines in the game's order. It opens past the item's own words, toward the middle of the sheet (above a
+   weapon), touching the item so the pointer can cross onto it, stays while the pointer is on it, and Esc puts it
+   away. */
+.gear[tabindex] { cursor: help; }
+.gear:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
+.worn-tip { position: absolute; left: calc(100% - 4px); top: 0; z-index: 5; display: grid; gap: var(--jsal-space-2); width: 280px; padding: var(--jsal-space-12); border: 1px solid var(--q, var(--jsal-line-hi)); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); box-shadow: var(--tip-shadow); color: var(--jsal-ink); font-size: 13px; line-height: 1.4; text-align: left; visibility: hidden; opacity: 0; transition: opacity var(--jsal-quick), visibility var(--jsal-quick); }
+.gear:hover > .worn-tip, .gear:focus-visible > .worn-tip { visibility: visible; opacity: 1; }
+.gear.shut > .worn-tip { visibility: hidden; opacity: 0; }
+.worn-tip b { margin-bottom: var(--jsal-space-2); font-size: 15px; }
+.worn-tip span { display: flex; justify-content: space-between; gap: var(--jsal-space-12); }
+.worn-tip i { color: var(--jsal-ink-2); font-style: normal; white-space: nowrap; }
+.worn-tip [data-t="gold"] { color: var(--jsal-accent); }
+.worn-tip [data-t="green"] { color: var(--q-uncommon); }
+.worn-tip [data-t="muted"] { color: var(--jsal-muted); }
+.side.r .worn-tip { right: calc(100% - 4px); left: auto; }
+.side .gear:nth-child(n + 5) .worn-tip { top: auto; bottom: 0; }
+.weapons .worn-tip { top: auto; bottom: 100%; left: 0; }
+@media (prefers-reduced-motion: reduce) { .worn-tip { transition: none; } }
+/* the middle of the sheet: level and class, where the game stands the character */
+.emblem { display: grid; place-content: center; justify-items: center; gap: var(--jsal-space-4); border: 1px solid var(--plain-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); text-align: center; }
+.emblem b { font: 800 72px/1 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.03em; }   /* style: allow (the character's level, the sheet's centrepiece) */
+.emblem span { font: 600 20px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; }
+.emblem small { color: var(--jsal-muted); font-size: 13px; }
+/* with a picture of the character, the picture fills the middle and the level and class sit on its foot, in the
+   dark theme's colours whatever the page's, over a shade so they read on it */
+.emblem[data-pic] { position: relative; overflow: hidden; isolation: isolate; align-content: end; min-height: 420px; padding: var(--jsal-space-16); color: var(--jsal-ink); }
+.emblem[data-pic="photo"] img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 8%; }
+/* Blizzard's own render of the character is a wide, clear picture with her small in its middle: it is drawn large
+   and placed so she fills the frame (the file itself is as served). She stands on the game's dark stage in both
+   themes, lit from behind, with the level and class under her feet */
+.emblem[data-pic="render"] { border-color: var(--stage-line); background: radial-gradient(60% 45% at 50% 42%, var(--stage-light), var(--stage) 70%, var(--stage-deep)); color: var(--stage-ink); }
+.emblem[data-pic="render"] img { position: absolute; left: var(--px, -122%); top: var(--py, -34%); z-index: -1; width: var(--pw, 360%); max-width: none; height: auto; }
+.emblem[data-pic="photo"]::after { content: ""; position: absolute; inset: 45% 0 0; z-index: -1; background: linear-gradient(to top, rgb(17 19 24 / 0.92), rgb(17 19 24 / 0)); }   /* style: allow (a shade over the picture's foot, for the words on it) */
+.emblem[data-pic] b { font-size: 46px; }
+.weapons { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--jsal-space-24); padding-top: var(--jsal-space-20); border-top: 1px solid var(--plain-line); }
+.sheet-stats { display: grid; gap: var(--jsal-space-24); align-content: start; padding: var(--jsal-space-24) var(--jsal-space-32); border-left: 1px solid var(--plain-line); background: var(--jsal-surface); }
+.stat { display: flex; justify-content: space-between; gap: var(--jsal-space-12); padding: var(--jsal-space-4) 0; border-top: 1px solid var(--jsal-line); font-size: 14px; }
+.stat:first-of-type { border-top: 0; }
+/* the attributes run in two columns, as the game's own sheet sets them */
+[data-attrs] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--jsal-space-20); }
+[data-attrs] .stat:nth-child(2) { border-top: 0; }
+.jr h3[data-next] { margin-top: var(--jsal-space-24); }
+.stat span:last-child { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* The game's icons, drawn a little larger than their box so the dark frame each one is drawn with falls outside it.
+   An icon takes the shape of what holds it: rounded in a rounded tile, square in a plain row. */
+.ico { display: block; flex: none; overflow: hidden; width: 24px; height: 24px; }
+.ico img { display: block; width: 100%; height: 100%; scale: 1.14; }
+.ico[data-pal] img { scale: 1; image-rendering: pixelated; }   /* a pal is pixel art, drawn whole and crisp */
+.named { display: inline-flex; align-items: center; gap: var(--jsal-space-8); min-width: 0; }
+.tid { position: relative; }
+.tid .ico { position: absolute; top: var(--jsal-space-20); right: var(--jsal-space-20); width: 48px; height: 48px; border-radius: var(--jsal-radius-lg); box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 55%, transparent), var(--ico-shadow); }   /* a thin ring in the tile's own ink, like a slot in the game */
+.prof { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--jsal-space-2) var(--jsal-space-12); font-size: 14px; }
+.prof i { grid-column: 1 / -1; height: 6px; margin-bottom: var(--jsal-space-8); border-radius: var(--jsal-radius-sm); background: linear-gradient(to right, var(--jsal-fill) var(--at), var(--jsal-line-hi) var(--at)); }
+.fresh { padding: var(--jsal-space-12) var(--jsal-space-32); border-top: 1px solid var(--plain-line); color: var(--jsal-muted); font-size: 13px; }
+
+/* The journey so far: the journal as a spread of tiles. Six tidbits (a total, what it counts, and a line worked out
+   from it) in tints, then the time at each level as bars, the latest entries and the places most time went. The
+   numbers count up the first time they are scrolled to, and a tidbit tips a little under the pointer. */
+.jr { grid-column: 1 / 13; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--jsal-space-16); padding: 0; }
+.jr-head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--jsal-space-12) var(--jsal-space-24); padding-top: var(--jsal-space-16); }
+.jr h2 { margin: 0; font: 700 30px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; }
+.jr-head p { margin: var(--jsal-space-4) 0 0; color: var(--jsal-muted); }
+/* the journey's source, beside its heading: the addon's mark, its name and where to get it, in the moss of the UI */
+.ui { display: inline-flex; align-items: center; gap: var(--jsal-space-12); padding: var(--jsal-space-8) var(--jsal-space-16) var(--jsal-space-8) var(--jsal-space-8); border-radius: var(--jsal-radius-lg); background: var(--green); color: var(--green-ink); font-size: 14px; line-height: 1.3; text-decoration: none; transition: background var(--jsal-quick) ease; }
+.ui .jsal-mark { width: 40px; height: 40px; margin: 0; vertical-align: 0; }
+.ui b { display: block; font-weight: 600; }
+.ui small { display: block; color: var(--green-muted); font-size: 13px; }
+.ui > span:not(.ui-go) { flex: 1; min-width: 0; }
+.ui-go { display: inline-flex; align-items: center; gap: var(--jsal-space-4); margin-left: var(--jsal-space-8); color: var(--green-acc); font-weight: 600; white-space: nowrap; }
+.ui-go svg { width: 16px; height: 16px; transition: translate var(--jsal-quick) ease; }
+.ui:hover { background: var(--green-hover); }
+.ui:hover .ui-go svg { translate: 3px 0; }
+@media (prefers-reduced-motion: reduce) { .ui, .ui-go svg { transition: none; } }
+.jr h3 { margin: 0 0 var(--jsal-space-12); font: 700 17px/1.3 var(--jsal-font); }
+.tid, .jr-box { padding: var(--jsal-space-24); border-radius: var(--jsal-radius-tile); background: var(--plain); }
+.tid { grid-column: span 4; display: flex; flex-direction: column; justify-content: flex-end; min-height: 168px; transition: transform var(--jsal-settle) var(--jsal-ease-out); }
+.tid:nth-child(2) { grid-column: span 5; } .tid:nth-child(3) { grid-column: span 4; } .tid:nth-child(4) { grid-column: span 3; }
+.tid:hover { transform: translateY(-4px) rotate(var(--tip, -0.6deg)); }
+.tid:nth-child(odd) { --tip: 0.6deg; }
+.tid b { font: 800 46px/1 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.tid:nth-child(2) b { font-size: 72px; letter-spacing: -0.03em; }   /* style: allow (the first tidbit's number, the spread's largest) */
+.tid span { margin-top: var(--jsal-space-4); font: 600 17px/1.3 "Outfit", "Segoe UI", system-ui, sans-serif; }
+.tid small { margin-top: var(--jsal-space-8); font-size: 14px; line-height: 1.4; opacity: 0.85; }
+.tid[data-tone="lilac"] { background: var(--jr-lilac); color: var(--jr-lilac-ink); }
+.tid[data-tone="honey"] { background: var(--jr-honey); color: var(--jr-honey-ink); }
+.tid[data-tone="berry"] { background: var(--jr-berry); color: var(--jr-berry-ink); }
+.tid[data-tone="teal"] { background: var(--jr-teal); color: var(--jr-teal-ink); }
+.jr-road { grid-column: span 7; } .jr-late { grid-column: span 5; grid-row: span 2; } .jr-zones { grid-column: span 7; }
+/* a bar per level, as tall as the time spent there; the level in hand in gold */
+.bars { display: flex; align-items: flex-end; gap: var(--jsal-space-2); height: 120px; border-bottom: 1px solid var(--jsal-line-hi); }
+.bars i { flex: 1; min-height: 2px; border-radius: var(--jsal-radius-sm) var(--jsal-radius-sm) 0 0; background: var(--jsal-muted); }
+.bars i:last-child { background: var(--jsal-fill); }
+.axis { display: flex; justify-content: space-between; margin-top: var(--jsal-space-4); color: var(--jsal-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.note { margin-top: var(--jsal-space-8) !important; color: var(--jsal-muted); font-size: 13px; }
+.feed { margin: 0; padding: 0; list-style: none; }
+.feed li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--jsal-space-12); padding: var(--jsal-space-8) 0; border-top: 1px solid var(--jsal-line); }
+.feed li:first-child { padding-top: 0; border-top: 0; }
+.feed time, .zone span:last-child, .prof span:nth-child(3n + 2) { color: var(--jsal-muted); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.zone { display: grid; grid-template-columns: minmax(0, 9fr) minmax(0, 10fr) 36px; gap: var(--jsal-space-12); align-items: center; padding: var(--jsal-space-4) 0; font-size: 14px; }
+.zone span:last-child { text-align: right; }
+.zone i { height: 8px; border-radius: var(--jsal-radius-sm); background: var(--jsal-muted); }
+/* the place itself behind the list, as the WoW Forever tile is: the picture in full, shaded on the left where the
+   names are, and light words over it whatever the page's theme */
+.jr-zones[data-art] { position: relative; overflow: hidden; isolation: isolate; background: var(--stage-deep); color: var(--stage-ink); }
+.zone-art { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+.jr-zones[data-art]::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to right, color-mix(in srgb, var(--stage-deep) 86%, transparent) 30%, color-mix(in srgb, var(--stage-deep) 30%, transparent)); }
+.jr-zones[data-art] .zone span:last-child { color: color-mix(in srgb, var(--stage-ink) 80%, transparent); }
+.jr-zones[data-art] .zone i { background: color-mix(in srgb, var(--stage-ink) 80%, transparent); }
+@media (prefers-reduced-motion: reduce) { .tid { transition: none; } .tid:hover { transform: none; } }
+@media (max-width: 1099px) {
+  .sheet-body { grid-template-columns: minmax(0, 1fr); }
+  .sheet-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--plain-line); border-left: 0; }
+}
+@media (max-width: 899px) {
+  .tid, .tid:nth-child(n) { grid-column: span 6; }
+  .jr-road, .jr-late, .jr-zones { grid-column: 1 / -1; grid-row: auto; }
+  .sheet-stats { grid-template-columns: minmax(0, 1fr); }
+}
+/* Phones: level and class across the top, then the two columns of slots, both reading left to right */
+@media (max-width: 699px) {
+  .sheet-bar, .sheet-stats, .fresh { padding-inline: var(--jsal-space-20); }
+  .sheet h2 { font-size: 30px; }
+  /* on a phone the sheet is the game's own character window: the icons down both sides of the character and the
+     weapons in a row under her. An item's name is in its tooltip, which a tap opens beside the icon. */
+  .doll { container-type: inline-size; grid-template-columns: 60px minmax(0, 1fr) 60px; gap: var(--jsal-space-12); padding: var(--jsal-space-20); }
+  .doll .gear, .side.r .gear { grid-template-columns: 60px; }
+  .doll .gear > span:not([class]) { position: absolute; overflow: hidden; width: 1px; height: 1px; clip-path: inset(50%); white-space: nowrap; }
+  .emblem { padding: var(--jsal-space-12); }
+  .emblem b, .emblem[data-pic] b { font-size: 40px; }
+  .emblem[data-pic] { min-height: 0; }
+  /* she is sized by the frame's height here, as the frame is as tall as seven icons whatever the phone's width */
+  .emblem[data-pic="render"] img { top: -24%; left: 50%; width: auto; height: 107%; translate: -48.6% 0; }
+  .side .gear .worn-tip { top: 0; bottom: auto; left: calc(60px + var(--jsal-space-8)); width: calc(100cqi - 60px - var(--jsal-space-8)); max-width: 280px; }   /* style: allow (beside the 60px icon) */
+  .side.r .gear .worn-tip { right: calc(60px + var(--jsal-space-8)); left: auto; }   /* style: allow (beside the 60px icon) */
+  .side .gear:nth-child(n + 5) .worn-tip { top: auto; bottom: 0; }
+  .weapons { position: relative; grid-template-columns: repeat(3, 60px); justify-content: center; padding-top: var(--jsal-space-16); }
+  .weapons .gear { position: static; }
+  .weapons .gear .worn-tip { inset: auto 0 100% 0; width: auto; }
+  .jr { gap: var(--jsal-space-12); }
+  .tid, .jr-box { padding: var(--jsal-space-20); }
+  .tid { min-height: 136px; }
+  .tid b, .tid:nth-child(2) b { font-size: 40px; }
+  /* two tidbits a row leave no room beside the number, so the icon sits above it */
+  .tid .ico { position: static; width: 40px; height: 40px; margin-bottom: auto; }
+  .tid .ico + b { margin-top: var(--jsal-space-12); }
+  .bars { height: 88px; gap: 1px; }
+}
 /* This page's intro runs across the grid */
-.intro { grid-column: 1 / 13; max-width: 640px; padding-top: 0; }
+.intro { padding-top: 0; }
 </style>
 <div class="wrap">
   <TopBar><nav aria-label="Sections"><a href="/" data-jsal-nav>Tools</a><a href="#ach-h">Achievements</a><a href="mailto:dev@jsal.io">Email</a></nav></TopBar>
 
   <main class="grid">
     <section class="intro">
-      <div class="roles"><span>Off the clock</span></div>
-      <h1>Mostly <em>Warcraft</em>.</h1>
-      <p>Warcraft, my game UI, a backpack of ways to say hi, and the achievements hidden around the site.</p>
+      <div>
+        <h1>Mostly <em>Warcraft</em>.</h1>
+        <p>What I'm playing: my character from Blizzard's armory, the journey from my own addon.</p>
+      </div>
+      <p class="seen">Last seen in {C.lastZone} · level {C.level} · {date(C.lastSeen)}</p>
     </section>
-    <a class="tile ui" href="/jsal-ui/" data-jsal-nav aria-labelledby="ui-h">
-      <div>
-        <p class="label">for WoW Forever</p>
-        <h2 id="ui-h">jsal.ui</h2>
-        <p class="desc">My free addon: your character's journal, layer swaps, crafters and chess with your guild, daily games and planners.</p>
+    <section class="tile sheet" aria-labelledby="char-h">
+      <div class="sheet-bar">
+        <div class="sheet-who"><h2 id="char-h">{C.name}</h2><p class="who-line">Level {C.level} {C.race} {C.class}<span>{C.guild && `<${C.guild}> · `}WoW Forever{C.itemLevel && ` · item level ${C.itemLevel}`}</span></p></div>
       </div>
-      <span class="peek" aria-hidden="true"><img src={v("/img/jsal-ui/journal.webp")} width="760" height="692" alt="" loading="lazy" decoding="async"></span>
-    </a>
-    <section class="tile now-playing" aria-label="Currently">
-      <!-- It covers a tall box, so it's drawn about 800px wide whatever the screen: sizes says that,
-           and 2x screens still get the 1920px original. Well below the first screen, so it loads late. -->
-      <img class="art" src="/img/wow-forever.webp" srcset="/img/wow-forever-1200.webp 1200w, /img/wow-forever.webp 1920w" sizes="800px" width="1920" height="800" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" loading="lazy" decoding="async">
-      <div>
-        <p class="label">currently</p>
-        <p class="big">Playing WoW Forever</p>
+      <div class="sheet-body">
+        <div class="doll">
+          <div class="side">{LEFT.map(([key, label]) => <div class="gear" data-q={worn(key)?.quality} tabindex={worn(key) ? "0" : undefined} aria-describedby={worn(key) ? `tip-${key}` : undefined}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span>{worn(key) && <span class="worn-tip" role="tooltip" id={`tip-${key}`}><b>{worn(key).name}</b>{(worn(key).tip?.length ? worn(key).tip : [{ t: `${label}, ${worn(key).quality}`, tone: "muted" }]).map((line) => <span data-t={line.tone}>{line.t}{line.r && <i>{line.r}</i>}</span>)}</span>}</div>)}</div>
+          <div class={C.portraitKind === "photo" ? "emblem jsal-dark" : "emblem"} data-pic={C.portrait ? C.portraitKind : undefined}>{C.portrait && <img src={v(C.portrait)} width={C.portraitSize[0]} height={C.portraitSize[1]} alt={`${C.name}, my ${C.class.toLowerCase()}, in what she wears now`} decoding="async">}<b>{C.level}</b><span>{C.class}</span>{!C.portrait && <small>WoW Forever</small>}</div>
+          <div class="side r">{RIGHT.map(([key, label]) => <div class="gear" data-q={worn(key)?.quality} tabindex={worn(key) ? "0" : undefined} aria-describedby={worn(key) ? `tip-${key}` : undefined}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span>{worn(key) && <span class="worn-tip" role="tooltip" id={`tip-${key}`}><b>{worn(key).name}</b>{(worn(key).tip?.length ? worn(key).tip : [{ t: `${label}, ${worn(key).quality}`, tone: "muted" }]).map((line) => <span data-t={line.tone}>{line.t}{line.r && <i>{line.r}</i>}</span>)}</span>}</div>)}</div>
+          <div class="weapons">{WEAPONS.map(([key, label]) => <div class="gear" data-q={worn(key)?.quality} tabindex={worn(key) ? "0" : undefined} aria-describedby={worn(key) ? `tip-${key}` : undefined}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span>{worn(key) && <span class="worn-tip" role="tooltip" id={`tip-${key}`}><b>{worn(key).name}</b>{(worn(key).tip?.length ? worn(key).tip : [{ t: `${label}, ${worn(key).quality}`, tone: "muted" }]).map((line) => <span data-t={line.tone}>{line.t}{line.r && <i>{line.r}</i>}</span>)}</span>}</div>)}</div>
+        </div>
+        <div class="sheet-stats">
+          {C.attributes && <div><h3>Attributes</h3><div data-attrs>{C.attributes.map(([what, much]) => <div class="stat"><span>{what}</span><span>{typeof much === "number" ? n(much) : much}</span></div>)}</div></div>}
+          {C.talents?.length > 0 && <div><h3>Talents</h3>{C.talents.map(([tree, points]) => <div class="stat"><span class="named">{ICONS[tree] && <picture class="ico"><img src={`/img/wow/${ICONS[tree]}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{tree}</span><span>{points} points</span></div>)}</div>}
+          <div><h3>Professions</h3><div class="prof">{C.professions.map(([name, skill, cap]) => <Fragment><span class="named">{ICONS[name] && <picture class="ico"><img src={`/img/wow/${ICONS[name]}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{name}</span><span>{skill} / {cap}</span><i style={`--at:${Math.round(skill / cap * 100)}%`}></i></Fragment>)}</div></div>
+          {C.pet && <div><h3>Companion</h3><div class="stat"><span class="named">{ICONS[C.pet.family] && <picture class="ico"><img src={`/img/wow/${ICONS[C.pet.family]}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{C.pet.name}, a {C.pet.family.toLowerCase()}</span><span>Level {C.pet.level}</span></div></div>}
+        </div>
       </div>
-      <div class="row"><span class="credit">Art © Blizzard Entertainment</span></div>
+      <p class="fresh">{C.gear ? `From jsal.ui${C.attributes ? " and my armory page" : ""}, as it stood on ${date(C.updated)}.` : `From jsal.ui, as it stood on ${date(C.updated)}. What I'm wearing shows here after my next login.`}{` ${C.portrait ? "Character and game icons" : "Game icons"} © Blizzard Entertainment.`}</p>
+    </section>
+    <section class="jr" aria-labelledby="jr-h">
+      <div class="jr-head">
+        <div><h2 id="jr-h">The journey so far</h2><p>Written down by jsal.ui's Journal as I play.</p></div>
+        <a class="ui" href="/jsal-ui/" data-jsal-nav><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg><span><b>jsal.ui</b><small>My free WoW Forever addon</small></span><span class="ui-go">See it<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      </div>
+      {TIDBITS.map(([much, what, line, tone, pic]) => <div class="tid" data-tone={tone}><picture class="ico"><img src={`/img/wow/${pic}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture><b data-n={much}>{n(much)}</b><span>{what}</span><small>{line}</small></div>)}
+      <div class="jr-box jr-road">
+        <h3>The road so far</h3>
+        <div class="bars" role="img" aria-label={`Time spent at each level, 1 to ${C.level}. The longest was level ${longestAt}, at ${hm(longest)}.`}>
+          {C.levelMinutes.map((m) => <i style={`height:${Math.max(2, Math.round(m / longest * 100))}%`}></i>)}
+        </div>
+        <div class="axis" aria-hidden="true"><span>Level 1</span><span>Level {C.level}</span></div>
+        <p class="note">Time spent at each level. Level {longestAt} took the longest: {hm(longest)}.</p>
+      </div>
+      <div class="jr-box jr-late">
+        <h3>Lately</h3>
+        <ul class="feed">{C.events.map((e) => <li><span class="named">{feedIcon(e) && <picture class="ico" data-pal={e.pal ? "" : undefined}><img src={feedIcon(e)} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{e.text}</span><time datetime={e.date}>{date(e.date)}</time></li>)}</ul>
+        <h3 data-next>Most used spells</h3>
+        {C.spells.map(([spell, times]) => <div class="stat"><span class="named">{ICONS[spell] && <picture class="ico"><img src={`/img/wow/${ICONS[spell]}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{spell}</span><span>{n(times)} times</span></div>)}
+      </div>
+      <div class="jr-box jr-zones" data-art={zoneArt ? "" : undefined}>
+        {zoneArt && <img class="zone-art" src={v(zoneArt)} width="980" height="300" alt="" loading="lazy" decoding="async">}
+        <h3>Where the time went</h3>
+        {C.zones.map(([zone, hours]) => <div class="zone"><span>{zone}</span><i style={`width:${Math.round(hours / zoneMax * 100)}%`}></i><span>{hours} h</span></div>)}
+      </div>
     </section>
     <section class="tile mail pack" aria-labelledby="hi-h">
-      <div class="pack-h"><span class="portrait"><img src="/img/wow/inv_misc_bag_08.jpg" width="56" height="56" alt=""></span><div><p class="label">say hi</p><h2 id="hi-h">Backpack</h2></div></div>
+      <div class="pack-h"><span class="portrait"><img src="/img/wow/inv_misc_bag_08.jpg" width="56" height="56" alt=""></span><h2 id="hi-h">Backpack</h2></div>
       <p class="desc">Questions, tool ideas, SEO or WoW. Inspect an item to see what it does.</p>
       <div class="bag">
         <div class="slots" id="bag-pack" role="tabpanel" aria-labelledby="tab-pack">
@@ -546,14 +768,64 @@ function drawAchievements() {
     const xs = A.list.filter((a) => where(a) === k);
     if (!xs.length) return '';
     const g = xs.filter((a) => got[a.id]).length;
+    const next = xs.find((a) => !got[a.id]);
+    const say = (s) => s.charAt(0).toLowerCase() + s.slice(1);
+    const nextLine = !next ? 'All earned.' : next.secret ? 'Find them somewhere on the site.' : `Next: <b>${next.name}</b>, ${say(next.todo)}`;
     return `<div class="ach-grp"><h3>${img ? `<img src="${img}" alt="" width="20" height="20">` : `<span class="lk">${line(LOCK, 13)}</span>`}${name}<span class="n">${g}/${xs.length}<span class="sr-only"> earned</span></span></h3><ul>${xs.map((a) => {
       const on = !!got[a.id], hidden = a.secret && !on;
-      return `<li class="${on ? '' : 'locked'}"><span class="medal">${line(hidden ? LOCK : a.icon, 18)}</span><span><b>${hidden ? 'Secret' : a.name}</b><small>${on ? a.done : hidden ? 'Find it somewhere on the site' : a.todo}</small></span><span class="sr-only">${on ? ' (unlocked)' : ' (locked)'}</span></li>`;
-    }).join('')}</ul></div>`;
+      const tr = TROPHIES[a.id], pic = hidden || !tr ? 'inv_misc_questionmark' : tr.icon;
+      const mq = on && tr ? ` style="--mq: ${tr.q === 'common' ? 'var(--jsal-line-hi)' : `var(--q-${tr.q})`}"` : '';
+      const said = hidden ? 'Secret, not found yet' : on ? `${a.name}, earned: ${a.done}` : `${a.name}, not yet: ${a.todo}`;
+      return `<li class="${on ? '' : 'locked'}" title="${said}"><span class="medal"${mq}><img src="/img/wow/${pic}.jpg" width="56" height="56" alt="" loading="lazy" decoding="async"></span><span class="sr-only">${said}</span></li>`;
+    }).join('')}</ul><p class="ach-next">${nextLine}</p></div>`;
   }).join('');
 }
 addEventListener('DOMContentLoaded', drawAchievements);
 addEventListener('jsal-achievement', drawAchievements);
 addEventListener('pageshow', drawAchievements);   // back from a tool: show what was unlocked there
+</script>
+<script is:inline>
+// The journey's numbers count up, once, the first time each is scrolled to. With reduced motion, or without
+// scripts, they simply read as they are.
+(() => {
+  if (!matchMedia('(prefers-reduced-motion: no-preference)').matches || !('IntersectionObserver' in window)) return;
+  const seen = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    seen.unobserve(e.target);
+    const el = e.target, to = +el.dataset.n, from = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - from) / 900);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - t, 3))).toLocaleString('en-GB');
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }), { threshold: 0.6 });
+  document.querySelectorAll('.tid b[data-n]').forEach((el) => seen.observe(el));
+})();
+</script>
+<script is:inline>
+// Her gear goes on, slot by slot, the first time the sheet comes into view (and only once it is really shown, as the
+// page can be loaded ahead of a visit).
+(() => {
+  const doll = document.querySelector('.doll');
+  if (!doll || !matchMedia('(prefers-reduced-motion: no-preference)').matches || !('IntersectionObserver' in window)) return;
+  [...doll.querySelectorAll('.gear-ico img')].forEach((img, i) => img.style.setProperty('--i', String(i)));
+  const go = () => {
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); doll.classList.add('equip'); } }, { threshold: 0.3 });
+    io.observe(doll);
+  };
+  if (document.prerendering) document.addEventListener('prerenderingchange', go, { once: true }); else go();
+})();
+</script>
+<script is:inline>
+// Esc puts an open tooltip away, whether it was opened by the pointer or the keyboard; it can open again once the
+// pointer or the focus has left its item.
+(() => {
+  const items = [...document.querySelectorAll('.gear[tabindex]')];
+  items.forEach((item) => ['pointerleave', 'blur'].forEach((gone) => item.addEventListener(gone, () => item.classList.remove('shut'))));
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') items.filter((item) => item.matches(':hover, :focus-visible')).forEach((item) => item.classList.add('shut'));
+  });
+})();
 </script>
 </Page>

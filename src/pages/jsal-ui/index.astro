@@ -1,9 +1,9 @@
 ---
-// jsal.ui, John's free WoW Forever addon: what it does, where to get it and how to install it. A product page
-// after EllesmereUI's site (John, 18 Nov 2026: "make it look and feel more like ellesmereui.com", mockup D of two)
-// in jsal.io's own type and gold: a dark stage of the game (one of John's screenshots, blurred and darkened so no
-// chat or names can be read) with the words and the Home window on it; three numbers; five parts as big rows that
-// swap sides, the rest as cards; the latest release; the Discord; the small helpers and Install. The parts, their
+// jsal.ui, John's free WoW Forever addon: what it does, where to get it and how to install it. The page is laid
+// out like the addon's own dashboard (John, 20 Nov 2026, his pick of the "pick one" mockups): a list of its parts
+// down the left (Home, then Plan, Craft and Play), and the chosen part's window on the stage beside it, in the
+// addon's own font (Outfit) and the site's colours. Each part says whether it's for leveling or useful at any
+// level. Under it: what it is in a sentence, the latest release, the Discord, the small helpers and Install. The parts, their
 // words and windows are in src/lib/jsal-ui.mjs. The version line and the Latest release card read
 // src/data/jsal-ui-release.json, which .github/workflows/jsal-ui-version.yml keeps on jsal.ui's latest release
 // hourly. The addon's code and releases are on GitHub (superjsal/jsal-ui). First shipped at /jsal.ui/ and moved
@@ -11,7 +11,7 @@
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
 import { v } from "../../lib/v.mjs";
-import { HOME, GROUPS, LITTLE } from "../../lib/jsal-ui.mjs";
+import { HOME_PART, GROUPS, LITTLE } from "../../lib/jsal-ui.mjs";
 import RELEASE from "../../data/jsal-ui-release.json";
 const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
 const ALL_RELEASES = "https://github.com/superjsal/jsal-ui/releases";
@@ -21,44 +21,49 @@ const CURSEFORGE = "https://www.curseforge.com/wow/addons/jsal-ui";
 const WAGO = "https://addons.wago.io/addons/jsal-ui";
 // jsal.ui's Discord server, for bug reports, ideas and help: an invite that never expires.
 const DISCORD = "https://discord.gg/BfUKeCjNeZ";
-// The five parts shown large, and the rest as cards; each keeps its group's name over it
-const PARTS = Object.fromEntries(GROUPS.flatMap((g) => g.parts.map((p) => [p.key, { ...p, group: g.name }])));
-const BIG = ["training", "gear", "professions", "journal", "pals"].map((k) => PARTS[k]);
-const REST = ["build", "dungeons", "crafts", "profit", "games", "guild"].map((k) => PARTS[k]);
-const win = (s) => `win${s.w < 600 ? " narrow" : ""}${s.menu ? " menu" : ""}`;
+// The list: Home on its own, then each group's parts under the group's name
+const LIST = [{ name: null, parts: [HOME_PART] }, ...GROUPS];
+const ALL = LIST.flatMap((g) => g.parts);
+// On a phone the list and the stages are laid out as one: a group's name, then each row with its stage under it
+const ORDER = {};
+LIST.reduce((k, g) => { if (g.name) ORDER[`g:${g.name}`] = k++; g.parts.forEach((p) => { ORDER[p.key] = k; k += 2; }); return k; }, 0);
+// A part whose picture is narrow sits beside its words; a wide window sits under them (the pals have a wide live pen)
+const side = (p) => !p.clip && !p.family && p.shot.w < 600;
+// The pen scenes a pal can live in, from the addon's own art (site/img/jsal-ui/pals/): each by day and by night
+const SCENES = ["meadow", "coast", "desert", "darkwood", "jungle", "savanna", "snow", "swamp"].map((s) => [s[0].toUpperCase() + s.slice(1), v(`/img/jsal-ui/pals/scene-${s}.png`), v(`/img/jsal-ui/pals/scene-${s}-night.png`)]);
 const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-let row = 0;
 ---
 <Page
   title="jsal.ui: a free WoW Forever addon | jsal.io"
-  description="jsal.ui is a free WoW Forever addon that plans your road to 60: training, talents, gear, dungeons and professions in one dashboard, plus a journal, guild crafting orders and daily games."
+  description="jsal.ui is a free WoW Forever addon: your character in one dashboard. Training, talents, gear, dungeons and professions, plus a journal, guild crafting orders and daily games."
   path="/jsal-ui/"
-  ogDescription="A free WoW Forever addon: your road to 60, planned. Training, talents, gear, dungeons and professions in one dashboard, with a journal and daily games for your guild."
+  ogImage="jsal-ui"
+  ogImageAlt="Your WoW Forever character, in one dashboard: jsal.ui's Home window, with the character, the trainer visit and the plans"
+  ogDescription="A free WoW Forever addon: your character in one dashboard. Training, talents, gear, dungeons and professions, with a journal and daily games for your guild."
 >
 <style is:inline slot="head">
-/* The stage keeps the game's own dark in both themes, so its words keep the dark theme's colours; the shadows
-   under each window from the game */
+/* A window from the game keeps the addon's own dark in both themes; its shadow is softer on the light page */
 :root {
-  --stage-ink: #ece6d6; --stage-ink-2: #d6cfbd; --stage-gold: #e3b04b; --stage-base: #111318; --stage-edge: #3d424e;
   --win-fill: #191c23;
   --win-shadow: 0 24px 60px rgb(0 0 0 / 0.16), 0 2px 8px rgb(0 0 0 / 0.08);
-  --stage-shadow: 0 30px 80px rgb(0 0 0 / 0.6);
-  /* How far down the top bar reaches (shell.css: its padding above one 36px row), so the stage can start behind it */
-  --bar-h: calc(40px - (36px - 18px * 1.65) / 2 + 36px);
+  --f: "Outfit", "Segoe UI", system-ui, -apple-system, sans-serif;
+  /* the cards' fill, as on Off the clock */
+  --plain: #e6e8ec;
 }
-@media (max-width: 520px) { :root { --bar-h: calc(var(--jsal-space-12) + 36px); } }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --win-shadow: 0 24px 60px rgb(0 0 0 / 0.55); }
+  :root:not([data-theme="light"]) { --win-shadow: 0 24px 60px rgb(0 0 0 / 0.55); --plain: #1c1f27; }
 }
-:root[data-theme="dark"] { --win-shadow: 0 24px 60px rgb(0 0 0 / 0.55); }
+:root[data-theme="dark"] { --win-shadow: 0 24px 60px rgb(0 0 0 / 0.55); --plain: #1c1f27; }
 
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
-.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) 0 max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
-.wrap.end { padding-bottom: var(--jsal-page-end); }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) var(--jsal-page-end) max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
 h1, h2 { text-wrap: balance; }
 p { text-wrap: pretty; }
-main a:not(.jsal-btn) { color: var(--jsal-accent); text-underline-offset: 2px; }
+/* Two fonts: Outfit (--f) for names, headings and buttons; Inter for everything that is read */
+.get .jsal-btn, .band .jsal-btn, .little dt { font-family: var(--f); }
+main a:not(.jsal-btn, .slot) { color: var(--jsal-accent); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; border-radius: var(--jsal-radius); }
 code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 
 /* Top bar: the shared one (/shell.css), with section links, as on the home page */
@@ -72,73 +77,119 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* The narrowest phones keep the bar on one row: Off the clock goes (the logo menu has it), Install stays */
 @media (max-width: 339px) { .jsal-top nav a[href="/play/"] { display: none; } }
 
-.eyebrow { margin: 0; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 
-/* The stage: the game behind, blurred and darkened, from the very top of the page, so the top bar sits on it; the
-   bar and the stage both take the dark theme's colours in either theme (.jsal-dark), so the buttons read on the
-   game too. The words and the Home window sit sharp on top. */
-.topwrap { position: relative; z-index: 2; color: var(--jsal-ink); }
-.stage { position: relative; margin-top: calc(var(--bar-h) * -1); padding: calc(var(--bar-h) + var(--jsal-space-48)) 0 var(--jsal-space-64); background: var(--stage-base) var(--stage-bg) center 30% / cover; color: var(--stage-ink); }
-.stage::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0.38) 45%, rgb(0 0 0 / 0.62) 100%); }
-.stage > .wrap { position: relative; }
-.stage-head { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: var(--jsal-space-48); align-items: start; }
-/* The description starts level with the headline's first line: past the eyebrow and its gap */
-.stage-head > div + div { padding-top: var(--jsal-space-32); }
-.stage .eyebrow { color: var(--stage-gold); }
-.stage h1 { margin: var(--jsal-space-12) 0 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
-.stage h1 em { display: block; font-weight: 600; color: var(--stage-gold); }
-.lead { margin: 0; font-size: 17px; color: var(--stage-ink-2); }
-.actions { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin-top: var(--jsal-space-24); }
-.meta { margin: var(--jsal-space-12) 0 0; font-size: 13px; color: var(--stage-ink-2); }
-.stage .meta a { color: var(--stage-ink); }
-.homewin { margin: var(--jsal-space-48) auto 0; max-width: 1040px; }
-.homewin img { display: block; width: 100%; height: auto; border: 1px solid var(--stage-edge); border-radius: var(--jsal-radius-xl); box-shadow: var(--stage-shadow); }
+/* Pick a part: the list on the left is the addon's own menu and never moves; the stage beside it is the chosen
+   part, with its window from the game */
+/* The page's promise leads, at the size of every page's title, with what jsal.ui is and how to get it beside it;
+   under it the list and the stage */
+/* The title with the download beside it, in one row, so the list and the stage start high on the first screen */
+.hello { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--jsal-space-24) var(--jsal-space-32); margin-top: var(--jsal-page-top); }
+.hello > div { flex: 0 1 28em; }
+.hello h1 { flex: 0 1 auto; max-width: 13.5em; margin: 0; font: 700 46px/1.05 var(--f); letter-spacing: -0.02em; }
+.hello h1 em { font-style: normal; color: var(--jsal-accent); }
+/* Under the stage: how it came about, then what it is */
+.lede { max-width: 46em; margin: var(--jsal-space-48) 0 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.55; }
+.lede + .sum { margin-top: var(--jsal-space-12); }
+.pick { display: grid; grid-template-columns: 272px minmax(0, 1fr); margin-top: var(--jsal-space-32); }
+.get { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--jsal-space-12); }
+.jsal-btn.dl { min-height: 44px; padding: 0 var(--jsal-space-20); font: 700 15px/1 var(--f); }
+.meta { flex: 1 1 100%; margin: 0; color: var(--jsal-muted); font-size: 13px; line-height: 1.45; text-align: right; }
+/* Below 1280px the download goes under the title, from the left */
+@media (max-width: 1279px) { .get { justify-content: flex-start; } .meta { text-align: left; } }
+.slots { margin-top: var(--jsal-space-8); }
+.grp { margin: var(--jsal-space-16) 0 var(--jsal-space-4); color: var(--jsal-muted); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
+.slot { display: flex; align-items: center; justify-content: space-between; gap: var(--jsal-space-8); position: relative; padding: var(--jsal-space-4) var(--jsal-space-20) var(--jsal-space-4) var(--jsal-space-12); border-radius: var(--jsal-radius-lg) 0 0 var(--jsal-radius-lg); color: inherit; text-decoration: none; transition: background-color var(--jsal-quick); }
+.slot:hover { background: var(--jsal-sunk); }
+.slot b { font: 600 15px/1.6 var(--f); }
+.slot i { color: var(--jsal-muted); font: 600 12px/1.5 var(--jsal-font); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+/* The chosen part's row takes the stage's fill and runs into it as one piece, and the logo's gold gem marks it */
+.slot[aria-selected="true"] { background: var(--jsal-sunk); }   /* style: allow (the chosen part's row is the same piece as its stage, so it wears the stage's fill) */
+.slot[aria-selected="true"]::before { content: ""; position: absolute; left: -16px; top: 50%; width: 10px; height: 10px; background: var(--jsal-fill); translate: 0 -50%; rotate: 45deg; }   /* style: allow (the logo's gem as a marker beside the row, not a selected fill) */
 
-/* Three numbers under the stage */
-.numbers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: var(--jsal-space-40) 0 0; border-bottom: 1px solid var(--jsal-line); }
-.numbers div { padding: 0 var(--jsal-space-24) var(--jsal-space-32); }
-.numbers div:first-child { padding-left: 0; }
-.numbers div + div { border-left: 1px solid var(--jsal-line); }
-.numbers dt { font: 700 30px/1.1 "Lora", Georgia, serif; }
-.numbers dd { margin: var(--jsal-space-4) 0 0; color: var(--jsal-muted); }
+/* A stage: the part's name very large, what it does, when it's useful, and its window. Without scripts every
+   part's stage shows, one under the other. */
+.stages { display: grid; gap: var(--jsal-space-24); min-width: 0; }
+/* every stage reaches at least the foot of the list, so the chosen row always joins it, even the last */
+.stage { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--jsal-space-24) var(--jsal-space-32); align-items: start; align-content: start; padding: var(--jsal-space-32); border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--jsal-sunk); }
+.ui-js .stage:not(.on) { display: none; }
+/* Picking a part: the new stage's parts arrive in order from the way the list moved: its name, its words, then
+   its window. The first stage is simply there when the page opens. */
+@keyframes arrive { from { opacity: 0; translate: 0 calc(var(--dir, 1) * var(--far, 20px)); } }
+/* The gem travels: one gold gem slides down the list to the chosen row, turning as it goes, overshoots a little
+   and lands with a ring, so the eye is led to the new spot. From 1280px, where the list is a column. */
+.gem { display: none; position: absolute; left: -19px; top: 0; z-index: 1; width: 12px; height: 12px; background: var(--jsal-fill); translate: 0 var(--y, 0); rotate: var(--r, 45deg); pointer-events: none; transition: translate 0.55s cubic-bezier(0.34, 1.45, 0.64, 1), rotate 0.55s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem's trip between rows: a spring that overshoots and settles) */
+@keyframes land { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--jsal-fill) 70%, transparent); } to { box-shadow: 0 0 0 14px color-mix(in srgb, var(--jsal-fill) 0%, transparent); } }
+.gem.land { animation: land 0.7s 0.3s ease-out; }   /* style: allow (the ring as the gem lands, after its trip) */
+@media (min-width: 1280px) {
+  .slots { position: relative; }
+  .ui-js .gem { display: block; }
+  .ui-js .slot[aria-selected="true"]::before { display: none; }
+}
+/* A first visit: the gem leans toward the next row and back, twice, to show that the list is the control */
+@keyframes peek { 50% { translate: 0 calc(var(--y, 0px) + 22px); } }
+.gem.peek { animation: peek 1.3s ease-in-out 2; }   /* style: allow (a one-time nudge: a slow lean, there and back) */
+@keyframes gem { from { scale: 0; rotate: -45deg; } }
+.live .stage.on :is(.head, .say, .facts, .win) { animation: arrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }   /* style: allow (a choreographed arrival: each part follows the one before) */
+.live .stage.on .head { --far: 32px; }
+.live .stage.on .say { --d: 0.05s; }
+.live .stage.on .facts { --d: 0.1s; }
+.live .stage.on .win { --d: 0.12s; --far: 56px; }
+.slot[aria-selected="true"]::before { animation: gem 0.4s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem landing on the chosen row) */
+.head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--jsal-space-12); }
+.stage h2 { margin: 0; font: 800 clamp(36px, 8.5cqi, 72px)/0.95 var(--f); letter-spacing: -0.03em; }   /* style: allow (the stage's name: the page's one very large line) */
+.lv { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-sm); background: var(--jsal-surface); color: var(--jsal-ink-2); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
+.lead { margin: 0; font: 600 20px/1.3 var(--f); }
+.lead + p { margin: var(--jsal-space-8) 0 0; color: var(--jsal-ink-2); }
+.facts { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; line-height: 1.4; }
+.facts li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--jsal-space-12); }
+.facts svg { width: 20px; height: 20px; color: var(--jsal-accent); }
+/* A narrow window sits beside its words; a wide one runs across the stage under them */
+.stage.side { grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); }
+.stage.side { grid-template-rows: auto 1fr; }
+.stage.side .say { display: flex; flex-direction: column; gap: var(--jsal-space-24); align-self: stretch; }
+/* One pal's life in the addon's own pixel art, standing on the stage's floor: egg, then each form it grows into */
+.family { margin: auto 0 0; padding-top: var(--jsal-space-24); }
+.family ol { display: flex; align-items: flex-end; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; }
+.family li { position: relative; flex: 1 1 0; display: grid; justify-items: center; gap: var(--jsal-space-4); min-width: 0; color: var(--jsal-ink-2); font-size: 13px; font-weight: 600; text-align: center; }
+.family img { max-width: 100%; height: auto; image-rendering: pixelated; }
+.family li + li::before { content: ""; position: absolute; left: calc(var(--jsal-space-8) * -1); bottom: 44px; width: 8px; height: 8px; border: solid var(--jsal-muted); border-width: 2px 2px 0 0; rotate: 45deg; translate: -50% 0; }
+/* With scripts the strip is played: one pal in a small window from the game (dark in both themes, as the light it
+   grows in is pale), a button that hatches the egg and then grows it, as Grow does in its pen, and the four names
+   as steps under it */
+/* The pal grows in its own pen, one of the addon's scenes: by day in the light theme, by night in the dark one */
+.win.pen canvas { display: block; width: 100%; max-width: 880px; height: auto; aspect-ratio: 220 / 100; margin-inline: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); image-rendering: pixelated; }
+.pal { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); }
+/* with scripts the pen shows each form and the line under the buttons names it, so the row of names isn't needed */
+.play ol { display: none; }
+.family.play figcaption { margin-top: var(--jsal-space-12); padding-top: 0; border-top: 0; }
+@media (max-width: 520px) {
+  /* the pen comes straight after the words, then the buttons, sharing a row */
+  .stage:has(.family) .say { display: contents; }
+  .stage:has(.family) .say > div { order: 1; }
+  .stage:has(.family) .win.pen { order: 2; }
+  .stage:has(.family) .family { order: 3; }
+  .pal .jsal-btn { flex: 1; justify-content: center; }
+}
+.family figcaption { margin-top: var(--jsal-space-12); padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line-hi); color: var(--jsal-muted); font-size: 13px; }
+.stage.side .win { grid-column: 2; }
+.stage:not(.side) .win { grid-column: 1 / -1; }
 
 /* A window from the game: straight, framed and lifted. A small one (the pals) keeps its own size, so it never blurs. */
 .win { position: relative; margin: 0; }
-.win :is(img, video) { display: block; width: 100%; height: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); box-shadow: var(--win-shadow); }
-.win.narrow img { max-width: var(--w); margin-inline: auto; }
+.win :is(img, video) { display: block; width: 100%; max-width: var(--w); height: auto; margin-inline: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
 /* A clip plays in place of a still while it's on screen, and keeps a Pause button (in the dark theme's colours, on
    the game) in its corner, so nothing moves without a way to stop it */
 .clip-ctl { position: absolute; right: var(--jsal-space-12); bottom: var(--jsal-space-12); z-index: 1; }
 
-/* A big part: its words beside its window, swapping sides each row */
-.part { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--jsal-space-48); align-items: center; padding: var(--jsal-space-48) 0; }
-.part + .part { border-top: 1px solid var(--jsal-line); }
-.part.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); }
-.part.flip .txt { order: 2; }
-.label { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-muted); }
-.part h2 { margin: var(--jsal-space-8) 0 0; font: 700 30px/1.15 "Lora", Georgia, serif; letter-spacing: -0.01em; }
-.part .txt > p:not(.label) { margin: var(--jsal-space-12) 0 0; font-size: 17px; color: var(--jsal-ink-2); }
-.part ul { list-style: none; margin: var(--jsal-space-16) 0 0; padding: 0; }
-.part li { position: relative; padding-left: var(--jsal-space-20); font-weight: 500; }
-.part li + li { margin-top: var(--jsal-space-4); }
-.part li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 8px; height: 8px; border-radius: 50%; background: var(--jsal-fill); }
-
-/* The rest: cards, each ending in its window's top corner */
-.rest { margin-top: var(--jsal-space-24); padding-top: var(--jsal-space-48); border-top: 1px solid var(--jsal-line); }
-.rest > h2, .band h2:not(.eyebrow), .little h2, .install h2 { margin: 0; font: 700 24px/1.2 "Lora", Georgia, serif; }
-.rest > p { margin: var(--jsal-space-8) 0 var(--jsal-space-24); color: var(--jsal-ink-2); }
-.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--jsal-space-20); }
-.card { display: flex; flex-direction: column; overflow: hidden; padding: var(--jsal-space-20) var(--jsal-space-20) 0; border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
-.card h3 { margin: var(--jsal-space-4) 0 0; font: 700 17px/1.35 var(--jsal-font); }
-.card > p:not(.label) { margin: var(--jsal-space-4) 0 var(--jsal-space-20); color: var(--jsal-ink-2); }
-.card .crop { position: relative; overflow: hidden; flex: none; height: 210px; margin: auto calc(var(--jsal-space-20) * -1) 0; border-top: 1px solid var(--jsal-line-hi); background: var(--win-fill); }
-/* Every crop starts at the page's own content, under the title bar and past the dashboard's menu (--cx, --cy) */
-.card .crop :is(img, video) { position: absolute; left: 0; top: 0; width: 640px; max-width: none; height: auto; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
+/* What it is, in a sentence under the stage */
+.sum { max-width: 46em; margin: var(--jsal-space-48) 0 0; font-size: 17px; line-height: 1.55; color: var(--jsal-ink-2); }
+.sum b { color: var(--jsal-ink); font-weight: 600; }
+.band h2, .little h2, .install h2 { margin: 0; font: 700 24px/1.2 var(--f); letter-spacing: -0.01em; }
 
 /* The latest release, and the Discord */
-.band { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--jsal-space-48); margin-top: var(--jsal-space-64); padding: var(--jsal-space-32); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
-.ver { display: flex; align-items: baseline; gap: var(--jsal-space-12); margin: var(--jsal-space-8) 0 0; }
-.ver b { font: 700 30px/1.1 "Lora", Georgia, serif; }
+.band { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--jsal-space-48); margin-top: var(--jsal-space-64); padding: var(--jsal-space-32); border-radius: var(--jsal-radius-tile); background: var(--plain); }
+.ver { display: flex; align-items: baseline; gap: var(--jsal-space-12); margin: 0; }
+.ver b { font: 700 30px/1.1 var(--f); }
 .tag { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); color: var(--jsal-on-fill); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.06em; text-transform: uppercase; }
 .when { margin: var(--jsal-space-4) 0 0; color: var(--jsal-muted); }
 .band ul { margin: 0; padding-left: 1.2em; }
@@ -156,9 +207,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .little dd { margin: 0; color: var(--jsal-ink-2); }
 
 /* Install: a card with the steps, and the one question people ask beside them */
-.install { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--jsal-space-48); padding: var(--jsal-space-32); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+.install { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--jsal-space-48); padding: var(--jsal-space-32); border-radius: var(--jsal-radius-tile); background: var(--plain); }
 .install h2 { margin-bottom: var(--jsal-space-12); }
-.install h3 { margin: 0 0 var(--jsal-space-4); font: 700 17px/1.4 var(--jsal-font); }
+.install h3 { margin: 0 0 var(--jsal-space-4); font: 700 17px/1.4 var(--f); }
 .install p, .install li { color: var(--jsal-ink-2); }
 .install code { overflow-wrap: anywhere; }   /* the AddOns folder's long path breaks on the narrowest phones */
 .install ol { margin: 0 0 var(--jsal-flow); padding-left: 1.3em; }
@@ -173,107 +224,137 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .rv { opacity: 0; transform: translateY(var(--jsal-space-24)); }
 .rv.in { opacity: 1; transform: none; transition: opacity 0.6s var(--jsal-ease-out) var(--d, 0s), transform 0.6s var(--jsal-ease-out) var(--d, 0s); }   /* style: allow (a scroll reveal: slower than a state change, so it reads as arriving) */
 @media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; } }
+/* The tour: the chosen row's gold line fills while its turn lasts; it rests while the pointer or the keyboard is on
+   the list or the stage, or the list is off screen */
+.slot::after { content: ""; position: absolute; left: var(--jsal-space-12); right: var(--jsal-space-12); bottom: var(--jsal-space-2); height: 2px; border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); transform: scaleX(0); transform-origin: left; }
+.pick.tour .slot[aria-selected="true"]::after { animation: turn 5s linear forwards; }   /* style: allow (a part's turn in the tour) */
+.pick.tour:is(:hover, :focus-within, .away) .slot[aria-selected="true"]::after { animation-play-state: paused; }
+@keyframes turn { to { transform: scaleX(1); } }
+.tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
+.pick.tour .tour-btn, .pick.rested .tour-btn { display: inline-flex; }
+@media (max-width: 699px) { .pick.tour .tour-btn, .pick.rested .tour-btn, .slot::after { display: none; } }
 @media print { .rv { opacity: 1; transform: none; } }
 
-/* Under 900px: one column; each part's words over its window, two cards a row */
-@media (max-width: 899px) {
-  .stage-head, .part, .part.flip, .install, .band { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
-  .stage-head > div + div { padding-top: 0; }
-  .part.flip .txt { order: 0; }
-  .part { padding: var(--jsal-space-40) 0; }
-  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .little dl { grid-template-columns: minmax(0, 1fr); }
+/* A small laptop or a tablet: the headline and Download, then the list as rows of parts, then the stage */
+@media (max-width: 1279px) {
+  .pick { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
+  .stage { border-radius: var(--jsal-radius-tile); }
+  /* here the gem sits inside the row, before its name */
+  .slot[aria-selected="true"]::before { position: static; flex: none; translate: none; }
+  .slot { justify-content: flex-start; }
+  .slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--jsal-space-4); }
+  .grp { display: none; }
+  .slot { padding: var(--jsal-space-8) var(--jsal-space-12); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); }
+  .slot i { display: none; }
 }
-/* Upright phones: a whole window would be too small to read, so each shows its top corner at a readable size,
-   cut off by its frame, past the dashboard's menu and title bar */
+@media (max-width: 899px) {
+  .install, .band { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
+  .little dl { grid-template-columns: minmax(0, 1fr); }
+  .stage, .stage.side { grid-template-columns: minmax(0, 1fr); }
+  .stage.side .win { grid-column: 1; }
+}
+/* Upright phones: the parts as a list under their groups' names, each row with its name and when it's useful, and
+   the chosen part open under its own row (its words and its window; the head and the ticked points wait for a wider
+   screen). Tapping another row opens that one. A whole window would be too small to read, so each shows its top
+   corner at a readable size, cut off by its frame, past the dashboard's menu and title bar. */
 @media (max-width: 599px) {
-  .stage { padding: calc(var(--bar-h) + var(--jsal-space-32)) 0 var(--jsal-space-40); }
-  .homewin, .win:not(.narrow) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
-  .homewin { border-color: var(--stage-edge); }
-  .homewin img, .win:not(.narrow) :is(img, video) { width: var(--pw, 760px); max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
-  .numbers { grid-template-columns: minmax(0, 1fr); border: 0; }
-  .numbers div { display: flex; align-items: baseline; gap: var(--jsal-space-12); padding: var(--jsal-space-12) 0; border-bottom: 1px solid var(--jsal-line); }
-  .numbers div + div { border-left: 0; }
-  .numbers dd { margin: 0; }
-  .cards, .band.discord { grid-template-columns: minmax(0, 1fr); }
+  .pick { gap: 0; }
+  .rail, .slots, .stages { display: contents; }
+  .grp, .slot, .stage { order: var(--o); }
+  .grp { display: block; margin: var(--jsal-space-20) 0 var(--jsal-space-4); }
+  .slot { justify-content: space-between; min-height: 48px; margin-top: var(--jsal-space-4); padding: var(--jsal-space-8) var(--jsal-space-12); border: 0; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+  .slot i { display: inline; }
+  .slot[aria-selected="true"] { border-radius: var(--jsal-radius-xl) var(--jsal-radius-xl) 0 0; background: var(--jsal-sunk); }   /* style: allow (the row and its open stage are one piece, so it wears the stage's fill) */
+  .slot[aria-selected="true"]::before { display: none; }
+  .tour-btn { order: 99; }
+  .stage { gap: var(--jsal-space-16); padding: var(--jsal-space-4) var(--jsal-space-16) var(--jsal-space-16); border-radius: 0 0 var(--jsal-radius-xl) var(--jsal-radius-xl); }
+  .ui-js .stage :is(.head, .facts) { display: none; }
+  .stage.side .say { gap: var(--jsal-space-16); }
+  .family { padding-top: 0; }
+  .win:not(.pen) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
+  .win.home { aspect-ratio: 4 / 5; }   /* taller, so Home's plans show under the trainer visit */
+  .win:not(.pen) :is(img, video) { width: var(--pw, 760px); max-width: none; margin: 0; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
+  /* one card of three rows, each number in its own column so the words line up */
+  .band.discord { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 520px) {
-  .stage h1 { font-size: 40px; }
-  .part h2 { font-size: 24px; }
+  .hello h1 { font-size: 40px; }
   .install, .band { padding: var(--jsal-space-20); }
 }
+@media (prefers-reduced-motion: reduce) {
+  .slot { transition: none; }
+  .live .stage.on :is(.head, .say, .facts, .win), .slot[aria-selected="true"]::before, .gem.land, .gem.peek { animation: none; }
+  .gem { transition: none; }
+}
 </style>
-<div class="wrap topwrap jsal-dark">
+<div class="wrap">
   <TopBar><nav aria-label="Sections"><a href="/play/" data-jsal-nav>Off the clock</a><a href="#install">Install</a></nav></TopBar>
-</div>
 <main>
-  <section class="stage jsal-dark" style={`--stage-bg: url(${v("/img/jsal-ui/ui/stage.webp")})`} aria-labelledby="top-h">
-    <div class="wrap">
-      <div class="stage-head">
-        <div>
-          <p class="eyebrow">jsal.ui · free for WoW Forever</p>
-          <h1 id="top-h">Your road to 60, <em>planned.</em></h1>
-          <div class="actions">
-            <a class="jsal-btn primary" href={RELEASES}>Download jsal.ui</a>
-            <a class="jsal-btn" href="#install">How to install</a>
-          </div>
-        </div>
-        <div>
-          <p class="lead">Training, talents, gear, dungeons and professions in one dashboard, with a journal of your adventure and daily games for your guild.</p>
-          <p class="meta">Version {RELEASE.version} · free, with its code <a href={REPO}>on GitHub</a> · also on <a href={CURSEFORGE}>CurseForge</a> and <a href={WAGO}>Wago</a></p>
-        </div>
+  <!-- Pick a part: each row of the list is a link to its part's stage below; with scripts the rows become tabs and
+       one stage shows at a time -->
+  <header class="hello">
+    <h1>Your WoW Forever character, <em>in one dashboard.</em></h1>
+    <div>
+      <div class="get">
+        <a class="jsal-btn primary dl" href={RELEASES}>Download jsal.ui</a>
+        <a class="jsal-btn" href="#install">How to install</a>
+        <p class="meta">Version {RELEASE.version} · free, with its code <a href={REPO}>on GitHub</a> · also on <a href={CURSEFORGE}>CurseForge</a> and <a href={WAGO}>Wago</a></p>
       </div>
-      <figure class="homewin" style={`--cx: ${HOME.cx}; --cy: ${HOME.cy}`}><img src={v(HOME.src)} width={HOME.w} height={HOME.h} alt={HOME.alt} decoding="async"></figure>
     </div>
-  </section>
-  <div class="wrap end">
-    <dl class="numbers">
-      <div><dt>36</dt><dd>parts, each with its own switch</dd></div>
-      <div><dt>35</dt><dd>dungeons and raids, every boss's loot</dd></div>
-      <div><dt>100%</dt><dd>free, with no subscription</dd></div>
-    </dl>
-    {BIG.map((p) => (
-      <article class={`part${row++ % 2 ? " flip" : ""}`} aria-labelledby={`${p.key}-h`}>
-        <div class="txt">
-          <p class="label">{p.group} · {p.label}</p>
-          <h2 id={`${p.key}-h`}>{p.name}</h2>
-          <p>{p.line}</p>
-          <ul>{p.points.map((x) => <li>{x}</li>)}</ul>
-        </div>
-        {p.clip ? (
-          <figure class="win clip" style={`--w: ${p.clip.w}px; --pw: ${p.clip.pw}px; --cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
-            <video muted loop playsinline preload="none" poster={v(p.clip.poster)} width={p.clip.w} height={p.clip.h} aria-label={p.clip.alt}><source src={v(p.clip.src)} type="video/mp4"></video>
-            <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
-          </figure>
-        ) : (
-          <figure class={win(p.shot)} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></figure>
-        )}
-      </article>
-    ))}
-    <section class="rest" aria-labelledby="rest-h">
-      <h2 id="rest-h">And there's more in the dashboard</h2>
-      <p>Each one a page of its own, a click away from Home.</p>
-      <div class="cards">
-        {REST.map((p) => (
-          <article class="card" aria-labelledby={`${p.key}-h`}>
-            <p class="label">{p.group}</p>
-            <h3 id={`${p.key}-h`}>{p.label}: {p.name.charAt(0).toLowerCase() + p.name.slice(1)}</h3>
-            <p>{p.line}</p>
-            {p.clip ? (
-              <div class="crop clip" style={`--cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
-                <video muted loop playsinline preload="none" poster={v(p.clip.poster)} width={p.clip.w} height={p.clip.h} aria-label={p.clip.alt}><source src={v(p.clip.src)} type="video/mp4"></video>
-                <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
-              </div>
-            ) : (
-              <div class="crop" style={`--cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading="lazy" decoding="async"></div>
-            )}
-          </article>
+  </header>
+  <div class="pick">
+    <script is:inline>document.documentElement.classList.add('ui-js');</script>
+    <div class="rail">
+      <div class="slots" aria-label="jsal.ui's parts">
+        {LIST.map((g) => (
+          <Fragment>
+            {g.name && <p class="grp" aria-hidden="true" style={`--o: ${ORDER[`g:${g.name}`]}`}>{g.name}</p>}
+            {g.parts.map((p) => <a class="slot" style={`--o: ${ORDER[p.key]}`} href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><b>{p.label}</b><i>{p.when === "any" ? "Any level" : "1 to 60"}</i></a>)}
+          </Fragment>
         ))}
       </div>
-    </section>
+      <button class="jsal-btn small tour-btn" type="button" aria-pressed="false">Pause the tour</button>
+    </div>
+    <div class="stages">
+      {ALL.map((p) => (
+        <section class={`stage${side(p) ? " side" : ""}${p.key === "home" ? " on" : ""}`} style={`--o: ${ORDER[p.key] + 1}`} id={p.key} aria-labelledby={`${p.key}-h`}>
+          <div class="head">
+            <h2 id={`${p.key}-h`}>{p.label}</h2>
+            <span class="lv">{p.when === "any" ? "Useful at any level" : "For leveling, 1 to 60"}</span>
+          </div>
+          <div class="say">
+            <div>
+              <p class="lead">{p.name}</p>
+              <p>{p.line}</p>
+            </div>
+            {side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}</ul>}
+            {p.family && (
+              <figure class="family" data-scenes={JSON.stringify(SCENES)} data-hatch={v(`/img/jsal-ui/pals/${p.family.hatch}.png`)} data-grow={v(`/img/jsal-ui/pals/${p.family.grow}.png`)} data-forms={p.family.forms.slice(2).map(([file]) => v(`/img/jsal-ui/pals/${file}.png`)).join(" ")}>
+                <ol>{p.family.forms.map(([file, name, px]) => <li><img src={v(`/img/jsal-ui/pals/${file}.png`)} alt="" width={px * 2} height={px * 2} loading="lazy" decoding="async"><span>{name}</span></li>)}</ol>
+                <figcaption aria-live="polite">{p.family.say}</figcaption>
+              </figure>
+            )}
+          </div>
+          {!side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}</ul>}
+          {p.family ? (
+            <figure class="win pen" aria-label="The pal's pen"></figure>
+          ) : p.clip ? (
+            <figure class="win clip" style={`--w: ${p.clip.w}px; --pw: ${p.clip.pw}px; --cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
+              <video muted loop playsinline preload="none" poster={v(p.clip.poster)} width={p.clip.w} height={p.clip.h} aria-label={p.clip.alt}><source src={v(p.clip.src)} type="video/mp4"></video>
+              <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
+            </figure>
+          ) : (
+            <figure class={`win${p.key === "home" ? " home" : ""}`} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading={p.key === "home" ? "eager" : "lazy"} decoding="async"></figure>
+          )}
+        </section>
+      ))}
+    </div>
+  </div>
+    <p class="lede">I made jsal.ui to smooth out leveling, and it keeps going after 60. It plans your trainer visits and talents on the way up, then your gear, dungeon runs, professions and guild crafting at any level, with a journal, daily games for your guild and a pet to look after.</p>
+    <p class="sum"><b>36 parts</b>, each with its own switch, in three groups: Plan, Craft and Play. <b>Free</b>, with no subscription.</p>
     <section class="band" aria-labelledby="release-h">
       <div>
-        <h2 id="release-h" class="eyebrow">Latest release</h2>
+        <h2 id="release-h" class="sr-only">Latest release</h2>
         <p class="ver"><b>{RELEASE.version}</b><span class="tag">Latest</span></p>
         <p class="when">{released}</p>
       </div>
@@ -287,7 +368,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         <h2 id="discord-h">Join the jsal.ui Discord</h2>
         <p>Bug reports, ideas and help, and the first word on what's coming.</p>
       </div>
-      <a class="jsal-btn" href={DISCORD}>Join the Discord</a>
+      <a class="jsal-btn primary" href={DISCORD}>Join the Discord</a>
     </section>
     <section class="little" aria-labelledby="little-h">
       <h2 id="little-h">And the little things</h2>
@@ -310,13 +391,218 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
       </div>
     </section>
     <p class="credit">Screenshots of World of Warcraft © Blizzard Entertainment. The pixel art of Jsal's Pals is jsal.ui's own.</p>
-  </div>
 </main>
+</div>
 <script is:inline>
-// The scroll reveal: blocks below the fold wait, then rise into place once a sixth of them is in view. Within a
-// part, the window follows its words; along a row of numbers or cards, each follows the one before.
+// The list becomes tabs: a row shows its part's stage in place, and the arrow keys move along the list. The address
+// keeps the choice (#pick-gear, which names no element, so opening the page on a part doesn't scroll down to it).
+(() => {
+  const list = document.querySelector('.slots'), tabs = [...list.querySelectorAll('.slot')], stages = [...document.querySelectorAll('.stage')];
+  list.setAttribute('role', 'tablist');
+  const wide = matchMedia('(min-width: 1280px)');
+  const orient = () => list.setAttribute('aria-orientation', wide.matches ? 'vertical' : 'horizontal');
+  orient(); wide.addEventListener('change', orient);
+  stages.forEach((s, i) => { s.setAttribute('role', 'tabpanel'); s.setAttribute('aria-labelledby', tabs[i].id); });
+  let cur = 0, rest = 0, live = false;
+  const box = document.querySelector('.stages');
+  // One gem for the whole list: it slides to the chosen row, half a turn each trip, and lands with a ring
+  const gem = list.appendChild(Object.assign(document.createElement('i'), { className: 'gem' }));
+  gem.setAttribute('aria-hidden', 'true');
+  let turns = 0;
+  const place = (i, moved) => {
+    gem.style.setProperty('--y', `${tabs[i].offsetTop + tabs[i].offsetHeight / 2 - 6}px`);
+    if (!moved) return;
+    gem.style.setProperty('--r', `${45 + 180 * ++turns}deg`);
+    gem.classList.remove('land'); void gem.offsetWidth; gem.classList.add('land');
+  };
+  addEventListener('resize', () => place(cur));
+  const pick = (i, focus) => {
+    // after the first, a pick says which way the list moved, so the new stage's parts arrive from there
+    if (live && i !== cur) { box.style.setProperty('--dir', i < cur ? -1 : 1); box.classList.add('live'); }
+    place(i, live && i !== cur);
+    cur = i;
+    tabs.forEach((t, j) => { t.setAttribute('aria-selected', i === j ? 'true' : 'false'); t.tabIndex = i === j ? 0 : -1; });
+    stages.forEach((s, j) => s.classList.toggle('on', i === j));
+    if (focus) tabs[i].focus();
+    // on a phone the list is a dock that slides sideways: bring the chosen part into it
+    if (list.scrollWidth > list.clientWidth) list.scrollLeft = tabs[i].offsetLeft - 20;
+  };
+  tabs.forEach((t, i) => {
+    t.setAttribute('role', 'tab'); t.setAttribute('aria-controls', stages[i].id);
+    t.addEventListener('click', (e) => { e.preventDefault(); pick(i); history.replaceState(history.state, '', i ? `#pick-${stages[i].id}` : location.pathname + location.search); });
+    t.addEventListener('keydown', (e) => {
+      const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      if (step) { e.preventDefault(); pick((i + step + tabs.length) % tabs.length, true); }
+      if (e.key === ' ') { e.preventDefault(); pick(i); }
+    });
+  });
+  // The mouse wheel over the list steps through it, one part a notch; past either end the page scrolls as usual
+  list.addEventListener('wheel', (e) => {
+    const to = cur + Math.sign(e.deltaY);
+    if (e.ctrlKey || Math.abs(e.deltaY) <= Math.abs(e.deltaX) || to < 0 || to >= tabs.length) return;
+    e.preventDefault();
+    if (e.timeStamp < rest) return;   // a trackpad sends a stream of small moves: one step, then a short rest
+    rest = e.timeStamp + 220;
+    tabs[to].click();
+  }, { passive: false });
+  const at = stages.findIndex((s) => `#pick-${s.id}` === location.hash);
+  pick(at < 0 ? 0 : at);
+  live = true;
+  // A first visit, on a wide screen, with motion welcome and nothing picked yet: the gem leans toward the next row
+  try {
+    if (wide.matches && matchMedia('(prefers-reduced-motion: no-preference)').matches && !localStorage.getItem('jsal-pick-hint')) {
+      setTimeout(() => {
+        if (box.classList.contains('live')) return;
+        localStorage.setItem('jsal-pick-hint', '1');
+        gem.classList.add('peek');
+        gem.addEventListener('animationend', () => gem.classList.remove('peek'), { once: true });
+      }, 1500);
+    }
+  } catch (e) {}
+  // The tour: on a screen wide enough for the list beside or above the stage, with motion welcome, the parts take
+  // turns by themselves, once round, back to where it started. A part picked by hand ends it; Pause rests it.
+  const pickEl = document.querySelector('.pick'), btn = document.querySelector('.tour-btn');
+  if (matchMedia('(min-width: 700px)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    let steps = 0;
+    const end = () => { pickEl.classList.remove('tour', 'rested'); };
+    const start = () => {
+      pickEl.classList.add('tour');
+      list.addEventListener('animationend', (e) => {
+        if (!pickEl.classList.contains('tour') || e.animationName !== 'turn') return;
+        const next = (cur + 1) % tabs.length;
+        if (++steps >= tabs.length) end();
+        pick(next);
+      });
+      ['click', 'keydown', 'wheel'].forEach((type) => list.addEventListener(type, (e) => { if (e.isTrusted) end(); }, { capture: true }));
+      btn.addEventListener('click', () => {
+        const resting = pickEl.classList.toggle('rested');
+        pickEl.classList.toggle('tour', !resting);
+        btn.setAttribute('aria-pressed', String(resting));
+        btn.textContent = resting ? 'Play the tour' : 'Pause the tour';
+      });
+      const away = new IntersectionObserver(([e]) => pickEl.classList.toggle('away', !e.isIntersecting), { threshold: 0.4 });
+      away.observe(pickEl);
+    };
+    if (document.prerendering) document.addEventListener('prerenderingchange', start, { once: true }); else start();
+  }
+})();
+// The Pals stage: one pal's life, played with the addon's own pictures. A press hatches the egg, the next two
+// grow it (gold motes gather into a ball of light, it changes underneath, the ball bursts), timed as the addon
+// times them. The game steps from picture to picture; here each one melts into the next, the ball of light swells
+// and breathes instead of flickering, and the pal lands with a small hop, so it reads as one smooth move. Nothing
+// plays by itself; with reduced motion a press simply shows the next form.
+(() => {
+  const fig = document.querySelector('.family');
+  if (!fig) return;
+  const names = [...fig.querySelectorAll('li')], say = fig.querySelector('figcaption');
+  const cv = document.createElement('canvas');
+  // the scene in the art's pixels (on a phone, its middle, so the pal shows larger); where the pal stands; its size
+  const W = matchMedia('(max-width: 599px)').matches ? 150 : 220, H = 100, X = (220 - W) / 2, CX = W / 2, CY = 60, S = 0.75;
+  const btn = Object.assign(document.createElement('button'), { type: 'button', className: 'jsal-btn primary' });
+  const box = Object.assign(document.createElement('div'), { className: 'pal' });
+  cv.setAttribute('role', 'img');
+  const scene = Object.assign(document.createElement('button'), { type: 'button', className: 'jsal-btn' });
+  box.append(btn, scene); fig.prepend(box); fig.classList.add('play');
+  const pen = fig.closest('.stage').querySelector('.win');
+  if (pen) pen.append(cv); else box.prepend(cv);
+  cv.width = W; cv.height = H; cv.style.aspectRatio = `${W} / ${H}`;
+  const ctx = cv.getContext('2d');
+  const load = (src) => Object.assign(new Image(), { src });
+  const SCENES = JSON.parse(fig.dataset.scenes), pics = {};
+  let place = 0;
+  const night = () => document.documentElement.dataset.theme === 'dark' || (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+  const backdrop = () => {
+    const src = SCENES[place][night() ? 2 : 1];
+    if (!pics[src]) { pics[src] = load(src); pics[src].addEventListener('load', () => draw()); }
+    return pics[src];
+  };
+  const hatch = load(fig.dataset.hatch), light = load(fig.dataset.grow), bodies = [null, null, ...fig.dataset.forms.split(' ').map(load)];
+  const SAY = ['A Toadstool egg.', 'It hatched: a Capling.', 'It grew into a Lanternshell.', 'Fully grown: a Bloomsage.'];
+  const calm = matchMedia('(prefers-reduced-motion: reduce)');
+  // frame and cell may sit between two pictures (3.7 is most of the way from the fourth to the fifth); lift and
+  // size move the pal itself (a hop, a landing), swell sizes the ball of light
+  let at = 0, busy = false, frame = 0, cell = -1, lift = 0, size = 1, swell = 1;
+  // a picture holds for the first half of its time, then melts into the next
+  const melt = (x) => { const t = Math.max(0, (x % 1) * 2 - 1); return t * t * (3 - 2 * t); };
+  const hatchAt = (n, a) => { ctx.globalAlpha = a; ctx.drawImage(hatch, n * 96, 0, 96, 96, -48, -48, 96, 96); };
+  const lightAt = (n, a) => { ctx.globalAlpha = a; ctx.drawImage(light, (n % 8) * 128, (n >> 3) * 128, 128, 128, -64, -64, 128, 128); };
+  const draw = () => {
+    ctx.imageSmoothingEnabled = false;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const bg = backdrop();
+    if (bg.naturalWidth) ctx.drawImage(bg, X, 0, W, H, 0, 0, W, H);
+    ctx.setTransform(size * S, 0, 0, size * S, CX, CY - lift);
+    if (at < 2) {
+      const n = Math.min(9, Math.floor(frame)), t = n < 9 ? melt(frame) : 0;
+      hatchAt(n, 1 - t); if (t) hatchAt(n + 1, t);
+    } else if (bodies[at].naturalWidth) {
+      ctx.globalAlpha = 1;
+      ctx.drawImage(bodies[at], -bodies[at].naturalWidth / 2, -bodies[at].naturalHeight / 2);
+    }
+    if (cell >= 0) {
+      ctx.setTransform(swell * S, 0, 0, swell * S, CX, CY);
+      const n = Math.min(15, Math.floor(cell)), t = n < 15 ? melt(cell) : 0;
+      lightAt(n, 1 - t); if (t) lightAt(n + 1, t);
+    }
+    ctx.globalAlpha = 1;
+  };
+  // a soft landing: past the mark, back to it
+  const settle = (x) => { const t = Math.min(1, Math.max(0, x)) - 1; return 1 + 2.7 * t * t * t + 1.7 * t * t; };
+  const show = () => {
+    names.forEach((n, i) => (i === at ? n.setAttribute('aria-current', 'step') : n.removeAttribute('aria-current')));
+    btn.textContent = ['Hatch the egg', 'Grow', 'Grow', 'Start again'][at];
+    btn.disabled = false;
+    cv.setAttribute('aria-label', SAY[at]);
+    say.textContent = SAY[at];
+    draw();
+  };
+  const run = (length, step, done) => {
+    busy = true; btn.disabled = true;
+    const from = performance.now();
+    const tick = (now) => {
+      const clock = (now - from) / 1000;
+      step(Math.min(clock, length)); draw();
+      if (clock < length) requestAnimationFrame(tick);
+      else { busy = false; done(); show(); }
+    };
+    requestAnimationFrame(tick);
+  };
+  btn.addEventListener('click', () => {
+    if (busy) return;
+    if (at === 3) { at = 0; frame = 0; show(); return; }
+    const next = at + 1;
+    if (calm.matches) { at = next; frame = 9; show(); return; }
+    if (at === 0) {
+      btn.textContent = 'Hatching…';
+      // out of the shell by 1.8 seconds, then a small hop
+      run(2.3, (c) => {
+        frame = Math.min(9, c / 0.2);
+        lift = c > 1.8 ? 7 * Math.sin(Math.PI * Math.min(1, (c - 1.8) / 0.45)) : 0;
+      }, () => { at = 1; frame = 9; lift = 0; });
+    } else {
+      btn.textContent = 'Growing…';
+      run(3.2, (c) => {
+        // the ball gathers, holds while it breathes (the game flickers between two pictures here), then bursts
+        cell = c < 1.4 ? c / 0.2 : c < 2 ? 7 : Math.min(15, 8 + (c - 2) / 0.12);
+        swell = c >= 1.4 && c < 2 ? 1 + 0.045 * Math.sin((c - 1.4) / 0.3 * 2 * Math.PI) : 1;
+        if (c >= 1.7) at = next;   // it's the new form once the light has closed over it
+        size = c >= 2 ? 0.82 + 0.18 * settle((c - 2) / 0.6) : 1;   // and it lands as the light clears
+      }, () => { cell = -1; at = next; size = 1; swell = 1; });
+    }
+  });
+  [hatch, light, ...bodies.slice(2)].forEach((img) => img.addEventListener('load', draw));
+  // a press moves the pal to the next scene; the theme switch turns day to night and back
+  const named = () => { scene.textContent = `Scene: ${SCENES[place][0]}`; scene.setAttribute('aria-label', `Change the scene, now ${SCENES[place][0]}`); };
+  scene.addEventListener('click', () => { place = (place + 1) % SCENES.length; named(); draw(); });
+  named();
+  new MutationObserver(() => draw()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
+  show();
+})();
+// The scroll reveal: blocks below the fold wait, then rise into place once a sixth of them is in view.
 if (matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window) {
-  const groups = [['.numbers > div', 0.08], ['.part .txt', 0], ['.part .win', 0.12], ['.rest > h2, .rest > p', 0], ['.card', 0.08], ['.band', 0], ['.little', 0], ['.install', 0]];
+  const groups = [['.lede', 0], ['.sum', 0], ['.band', 0], ['.little', 0], ['.install', 0]];
   const io = new IntersectionObserver((es) => es.forEach((e) => {
     if (!e.isIntersecting) return;
     e.target.classList.add('in');
@@ -325,8 +611,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && 'Intersecti
   for (const [sel, step] of groups) {
     document.querySelectorAll(sel).forEach((el, i) => {
       if (el.getBoundingClientRect().top < innerHeight) return;   // already on screen: shown as it is
-      const cols = sel === '.card' ? (getComputedStyle(el.parentElement).gridTemplateColumns.split(' ').length) : 3;
-      if (step) el.style.setProperty('--d', `${(sel === '.part .win' ? 1 : i % cols) * step}s`);
+      if (step) el.style.setProperty('--d', `${(i % 3) * step}s`);
       el.classList.add('rv');
       io.observe(el);
     });

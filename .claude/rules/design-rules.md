@@ -18,28 +18,31 @@ is for people working on the site, not visitors; `/design-system/` shows the sam
 
 ## Type
 
-Three fonts, all self-hosted with `@font-face` in `shell.css`.
+Three fonts, all self-hosted with `@font-face` in `shell.css`. Lora, the serif the headings used to be set in, is
+gone from the site (John, 20 Nov 2026: "let's fix it", once the home page and the jsal.ui page were in Outfit and
+the tools' Lora headings no longer matched them). Don't bring a serif back for headings.
 
 | Font | Used for |
 |---|---|
-| **Lora** (serif) | Every H1 and H2 on the public pages: page titles (`.jsal-title`), heroes, section headings, home tile names, "About …" headings, the platform pages' headline and sections, Privacy, the changelog's dates. |
-| **Inter** (`--jsal-font`) | Everything else: body text, buttons, fields, top-bar links, H3s and smaller subheadings ("How to use it", quiz questions, platform names in lists, the platform pages' question headings), and small interface labels under 16px ("Checks", "Output size", "Export"). |
-| **JetBrains Mono** | The small uppercase labels above headings (gold on the site's own pages: `.roles`, Privacy's date line, "Changelog"; muted on the tools: the CMS Picker's `.byline`), code, and keyboard keys. |
+| **Outfit** (the jsal.ui addon's own font) | Every H1 and H2 on the public pages: page titles (`.jsal-title`), section headings, "About …" headings, the platform pages' headline and sections, Privacy, the changelog's dates, and the names and buttons on the home page and the jsal.ui page. Also the line a tool leads with: the CMS Picker's quiz question, its verdict line and each result card's name, and the heading on a tool's empty page ("Paste your content"). |
+| **Inter** (`--jsal-font`) | Everything that is read: body text, buttons, fields, top-bar links, H3s and smaller subheadings ("How to use it", platform names in lists, the platform pages' question headings), and small interface labels under 16px ("Checks", "Output size", "Export"). Outfit is weak at 13 to 15px, so it never sets reading text. |
+| **JetBrains Mono** | The small uppercase labels above headings (gold on the site's own pages: Privacy's date line, "Changelog"; muted on the tools: the CMS Picker's `.byline`), code, and keyboard keys. |
 
-- A title's **gold word** is Lora italic 600 (`.hl`, or `em` on the home page and `/play/`): Clean *Paste*,
-  CMS *Picker*, one *job*, Mostly *Warcraft*, Your *privacy*.
-- **Exception, kept on purpose:** on the platform pages the gold word is "SEO" ("WordPress *SEO*: what you can
-  change, and where"). Lora's italic capitals barely lean, so it reads as a lighter word rather than an
-  obvious italic. It stays because "SEO" is the page's key word.
-- **Every page title is one size:** Lora 700, 46px, line height 1.05, −0.02em, and 40px at 520px and under (home,
+- A title's **gold word** is the same Outfit 700, upright, in gold (`.hl`, or `em`): Clean *Paste*, CMS *Picker*,
+  one *job*, Mostly *Warcraft*, Your *privacy*. Outfit has no italic, so the word is marked by colour alone; on the
+  platform pages the gold word is "SEO".
+- **The one very large line** is a stage's name on the home page and the jsal.ui page: Outfit 800, up to 72px,
+  shrinking with the stage to 36px (`style: allow`). Their headlines lead the page above it at the page-title
+  size.
+- **Every other page title is one size:** Outfit 700, 46px, line height 1.05, −0.02em, and 40px at 520px and under (
   Off the clock, Privacy, Changelog, 404, `/design-system/`). The longer titles of the CMS Picker and its platform
   pages also stop at 46px but shrink with the screen to 30px. A short page's empty space beside its title stays
   empty, the reading column's margin, unless something useful belongs there (the 404's links sit beside its
   title on wide screens).
 - Content inside a tool (the visitor's own post in Clean Paste's editor) and the team Playbook's screens keep
   Inter.
-- **Check:** `browser-check.mjs` fails on any visible H1 or H2 of 16px or more that isn't Lora. A new heading
-  style needs Lora, or should be a real H3.
+- **Check:** `browser-check.mjs` fails on any visible H1 or H2 of 16px or more that isn't Outfit. A new heading
+  style needs Outfit, or should be a real H3.
 
 ## Sizes and spacing
 
@@ -51,10 +54,10 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   | 13px | Secondary text: hints, chips, footers |
   | 14px | Controls and boxed tips: buttons, top-bar links, answer tiles, notes and warnings, the tools' "for" line |
   | 15px | Reading text in the tools |
-  | 17px | Leads and H3s (Inter 600/700): "How to use it", quiz questions, result card names |
-  | 20px | The tool title in the top bar (17px at 420px and under), the platform cards' names |
-  | 24px | Section headings: every H2, the CMS Picker's verdict line, the changelog's dates |
-  | 30px | Home tile names and big callouts (Off the clock's line over the art, 24px on phones) |
+  | 17px | Leads and H3s (Inter 600/700): "How to use it", a panel's heading |
+  | 20px | The tool title in the top bar (17px at 420px and under), the platform cards' names, a platform guide's "at a glance" heading |
+  | 24px | Section headings: every H2, a result card's name, the changelog's dates |
+  | 30px | Home tile names and big callouts, 24px on phones: Off the clock's line over the art, the CMS Picker's quiz question and verdict line, a tool's empty-page heading |
   | 40 / 46px | Page titles (above); the long titles' clamp runs from 30px |
 
   Body and H3 are two pixels and a weight apart, so a subheading reads as one at a glance. **Exceptions**, each
@@ -72,8 +75,8 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
 - **Spacing roles** sit on top of the scale and say what a space is for: `--jsal-gutter` (a page's side margin),
   `--jsal-page-end` (below a page's last section), `--jsal-flow` (after a paragraph or list in reading text), and
   the paddings inside a tag (`--jsal-pad-tag`), a bordered pill (`--jsal-pad-pill`), a boxed note or message
-  (`--jsal-pad-note`), a table cell (`--jsal-pad-cell`), a card (`--jsal-pad-card`) and a quiz panel
-  (`--jsal-pad-panel`). A new thing of one of these kinds uses its role, so all of them change together; anything
+  (`--jsal-pad-note`), a table cell (`--jsal-pad-cell`), a card (`--jsal-pad-card`) and a result card or panel that
+  sits on the page (`--jsal-pad-panel`, 24px). A new thing of one of these kinds uses its role, so all of them change together; anything
   else takes the scale directly. Two roles can share a value (a note and a cell are both 8px 12px) and still change
   apart.
 - No named text-size tokens: the type scale above is the set.
@@ -84,12 +87,25 @@ Three fonts, all self-hosted with `@font-face` in `shell.css`.
   least 4.5:1; icons and other graphics people need to see at least 3:1. Light-mode gold text is
   `--jsal-accent` (#7e5a00); `--jsal-fill` (#e3b04b) is for fills and for text on images. The home tiles' own
   tint tokens stay in the home page (`src/pages/index.astro`), where they're used.
+- **Light mode is a cool grey page with white surfaces** (`--jsal-bg` #f3f4f6, `--jsal-surface` #ffffff; John,
+  19 Nov 2026, the redesign's "Series colours", his pick of four mockups). The parchment it replaced is gone:
+  don't bring warm creams back. **The dark theme's colours are fixed** (John, the same day): a change to the look
+  leaves them as they are.
+- **Each tool wears its home tile's colour on its own page**, so the home page and the tools read as one family:
+  the soft tint behind the part that asks for something, and the deep shade for that part's heading. The CMS
+  Picker's quiz, verdict band and platform-guide title are lilac; Redirect Import's empty page is berry; the
+  Image Resizer's settings column is teal, on a full window only (below 900px it stays plain, as the settings and
+  the preview sit 8px apart). Each tool defines its own `--tool-*` tokens in its own stylesheet (`--tool-tint`,
+  `--tool-soft`, `--tool-ink`, `--tool-line`, and `--tool-on` for a box that sits on the tint); in the dark
+  theme they fall back to the plain surfaces. **Clean Paste's honey stays on its icon's tile:** behind a whole
+  panel it sat too close to the gold button. **The top bar stays neutral and the same on every page:** a bar in
+  each tool's colour was mocked up and turned down (John, 19 Nov 2026).
 - **Gold is the site's accent: loud, and spent only where it matters.** Selected states, the main action, the
-  one insight line, brand touches (".io", each title's gold word, the home page name and role line, eyebrow
+  step in hand, brand touches (".io", each title's gold word, the home page name and role line, eyebrow
   labels on the site's own pages, achievements) and the site's own text links (About sections, footers, notes).
   Never hover. Focus is the focus ring, not a gold fill. **On the tools the small labels are muted**, so gold
-  stays for what you act on: the CMS Picker's "Updated" line is muted, and its section labels keep only the
-  number in gold ("**01** · Find your fit").
+  stays for what you act on: the CMS Picker's "Updated" line is muted. What sets a result apart (the CMS Picker's
+  "Why Wix first") is a box in the tool's tint, not a gold bar: a bar down one side of a box isn't used anywhere.
 - **The answer ramp**, for tags that say how well a platform does something: green = built in or automatic,
   blue = with an add-on or indirectly, terracotta = needs code, red = not possible. It reads as one scale
   wherever it appears, so a single tag's colour isn't a warning or information on its own.
@@ -118,15 +134,16 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   two gold lines. Where an outside line would be cut off (the CMS Picker's table cells, tabs inside a strip, the Image
   Resizer's canvas), the same 2px line sits just inside the edge instead.
 
-- **Corners by size of thing:** 4px small controls and chips inside a control, 6px buttons and fields, 8px cards,
-  12px a tool's main panel (the quiz box, Clean Paste's editor, the Image Resizer's canvas), icon tiles and the
-  achievement pop-up, 999px pills and round buttons, 22px the home and Off the clock tiles (18px at 520px and
+- **Corners by size of thing:** 4px small controls and chips inside a control, 6px buttons and fields, 8px cards
+  and boxes inside a panel, 12px a tool's main panel and anything that sits on the page as its own piece (the quiz
+  box, the verdict band, a result card, a platform guide's title band and answers table, a tool's empty page,
+  Clean Paste's editor, the Image Resizer's canvas), icon tiles and the achievement pop-up, 999px pills and round buttons, 22px the home and Off the clock tiles (18px at 520px and
   under, set on the token). Each step is larger than what sits inside it. **Check:** `check.py` fails any corner
   that isn't a token (or 0, 50%, `inherit`); the home tiles' miniature pictures and the backpack drawing carry
   `style: allow`.
 
 - **A dark island** (`.jsal-dark` in `shell.css`): an element and everything in it in the dark theme's colours,
-  whatever the page's theme, for something that sits on a dark picture (the jsal.ui page's top bar and stage). It
+  whatever the page's theme, for something that sits on a dark picture (the Pause button on a jsal.ui clip). It
   uses the dark theme's own tokens, not copies, and works out its selected, hover and focus colours from them.
   Use it only on a dark picture; everywhere else the visitor's theme rules.
 
@@ -172,45 +189,68 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   fills the first screen.
 - **Tools fill the first screen;** the About section sits below the fold, reached by the top bar's About link.
   On phones the empty work box stretches to the bottom of the screen until there's content.
+- **A tool's empty page says what to do and what the tool does** (Clean Paste, Redirect Import; John, 19 Nov
+  2026): one panel across the full width, its heading in Lora, one main way in as the gold button ("Paste from
+  clipboard", "Choose a file") with the others as links, and a short ticked list of what the tool does, in plain
+  text and never in boxes, so nothing looks clickable that isn't. Every line in the list is something the tool
+  really does. Clean Paste's Checks column is kept for screen readers only until something is pasted. Once there's
+  content, each tool's working layout is as it was.
+- **The Image Resizer's layout doesn't move** (John, 19 Nov 2026: his coworkers use it every day, often docked in
+  a side panel about 500px wide). A change to its look is proved by recording every element's position and size
+  before and after, at 1440 × 900, 500 × 1330 and 390 × 844, empty and with an image loaded.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
-- **Home page:** tools only, as a bento grid of tiles; every new home page tool or section is a bento box, and the
-  home page is always bento boxes. **The work tools never become bento grids** (the CMS Picker and its platform
-  pages, Clean Paste, the Image Resizer, Redirect Import, the Playbook, Privacy, Changelog): they keep an open layout,
-  and may use a card in the tiles' style (corners, padding, a tint) where it helps. **The gaming side may** (John,
-  7 Nov 2026): `/play/`'s tiles. The grid, the tiles, their pictures, watermarks,
-  breakouts and order are in `.claude/rules/home-page.md`, which loads with the home page's files.
-- **The jsal.ui page** (`/jsal-ui/`) is a product page, no longer a bento, modelled on ellesmereui.com's layout
-  but in jsal.io's own type and gold (John, 18 Nov 2026: "a bit more professional", then "look and feel more like
-  ellesmereui.com", mockup D). From the top: a full-width dark **stage** (one of John's game screenshots, blurred
-  and darkened so no chat or names can be read; the same in both themes) that runs up behind the top bar (John:
-  the bar on its own strip above it looked wrong; mockup A of two), so the bar sits on the game. The bar keeps its
-  markup and place; on this page it and the stage are `.jsal-dark` islands, in the dark theme's colours in either
-  theme. The stage starts `--bar-h` above itself, mirroring the bar's height in `shell.css`: change both together.
-  Below 340px the bar drops Off the clock (the logo menu has it) to stay one row. On the stage: the eyebrow, headline and buttons on
-  the left, the description level with the headline's first line on the right, and the Home window sharp below;
-  three **numbers** (36 parts, 35 dungeons and raids, 100% free; change them by hand when the addon's data does);
-  five parts as big rows with a gold-dot list beside a straight, framed window, swapping sides; the other six as
-  cards ending in their window's top corner; a **Latest release** card and a **Discord** band; the little things;
-  Install. No tints, no tilts. Big part names are Lora 30px (a callout), 24px at 520px and under. Every crop of a
-  window (the cards, and every window on phones) starts at the page's own content: under the title bar and past
-  the dashboard's menu, by each picture's measured offsets (`cx`, `cy` in `jsal-ui.mjs`), so they all begin alike.
-  **Scrolling down** (John, 18 Nov 2026: "subtle animations"), each block that starts below the fold rises 24px and
-  fades in once a sixth of it shows (0.6s, eased out, `style: allow`); a part's window follows its words by 0.12s,
-  numbers and cards follow one another along their row by 0.08s. Nothing on the first screen waits, nothing plays
-  twice, and with reduced motion (or no script) everything simply shows.
-  **Clips** (John, 19 Nov 2026, option A: the hero stays the Home still): five parts (Gear, Professions, Journal,
-  and the Dungeon guide and Guild Crafts cards) show a short clip instead of a still: muted MP4s in
-  `site/img/jsal-ui/ui/clips/`, each with its first frame as the still. They're drawn from the same sim pages as
-  the store GIFs, never converted from a GIF (John: GIF-made video lost "the smoothness"): a steady 30 frames a
-  second in full colour, 13-frame fades, by `private\jsal-ui\sim\make_clips.py` (beside `make_gif.py`). A clip downloads and plays only
-  while a third of its frame is on screen, stops when it leaves, and keeps a `.jsal-btn.small` Pause/Play button
-  (a `.jsal-dark` island) in its corner, since clips run longer than 5 seconds; a pause holds until Play, and with
-  reduced motion nothing starts by itself. Each clip's crop origin is set by eye in `jsal-ui.mjs`, as they're framed
-  differently. The road and tour clips aren't used: the road is too thin for a row, and the tour would blur stretched
-  across the hero. The parts and windows
-  are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store cards are (the game
-  trimmed off, the version hidden, guildmates' names made up). The version line and the release card read
-  `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest release.
+- **Home page:** tools only, as a "pick one" screen (John, 20 Nov 2026): the list of jobs on the left, the chosen
+  tool's stage beside it. A new tool is a new row in the list with its own stage and tint. **The work tools keep
+  an open layout** (the CMS Picker and its platform pages, Clean Paste, the Image Resizer, Redirect Import, the
+  Playbook, Privacy, Changelog), and may use a card with the tile corners where it helps. `/play/` keeps its tiles
+  (John, 7 Nov 2026). The list, the stages, their pictures and how the page works without scripts are in
+  `.claude/rules/home-page.md`, which loads with the home page's files.
+- **The jsal.ui page** (`/jsal-ui/`) is laid out like the addon's own dashboard, the same "pick one" screen as the
+  home page (John, 20 Nov 2026: "both pages"), in Outfit and the site's own colours in each theme; the dark stage
+  over a blurred game screenshot, modelled on ellesmereui.com, is gone, and so are its big rows and cards. The top
+  bar is the shared one, in the page's theme. From the top:
+  - **The headline leads** ("Your WoW Forever character, *in one dashboard.*": it has to read as useful after 60,
+    not only for leveling), with John's own line on what jsal.ui is, Download, How to install and the version line
+    beside it.
+  - **The list** (272px, from 1280px) is the addon's menu: Home, and Plan, Craft and Play with their parts. Every row carries "Any level" or "1 to 60"
+    (`when` in `src/lib/jsal-ui.mjs`; only the Training and Build planners end at 60). Below 1280px the parts are
+    four to a row above the stage; on upright phones (under 600px) they're a list under their groups' names, each
+    row with its name and when it's useful, and the chosen part opens under its own row with its words and its window
+    (John, 21 Nov 2026, "same treatment" as the home page's list; it replaced a dock at the foot of the screen).
+  - **Jsal's Pals has a live pen in place of a screenshot** (John, 21 Nov 2026: "the different pen scenes to replace
+    the long box so it fits better like the rest of the addon's boxes"): the pal hatches and grows in one of the
+    addon's eight pen scenes, wide across the stage like the other windows, drawn from its art in
+    `site/img/jsal-ui/pals/scene-<scene>.png` and `scene-<scene>-night.png` (day in the light theme, night in the
+    dark), with a Scene
+    button beside Hatch/Grow that moves it to the next one.
+  - **The stage** (the page's sunk fill, the tile corners): the part's name very large, a tag saying when it's
+    useful, its headline and line, three ticked points, and its window whole, straight and framed. A narrow window
+    (the pals) sits beside the words. Five parts show a clip in place of a still.
+  - Every stage is in the page, one under the other, and each row is a link to its stage; with scripts the rows
+    are tabs and one stage shows. The address keeps the choice as `#pick-gear`.
+  - Then three **numbers** (36 parts, 3 groups: Plan, Craft and Play, 100% free; change the first by hand when the
+    addon's parts do). The numbers count only what the addon owns (John, 20 Nov 2026): never dungeons, loot or
+    anything else from Forever's data, which is new and still changing; never how often it updates; never "1
+    dashboard" (some pages open outside it) or "0 other addons" (an EllesmereUI profile import is planned). Then a
+    **Latest release** card, a **Discord** band, the little things and Install.
+  - **On upright phones** a whole window would be too small to read, so each shows its top corner at a readable
+    size, cut off by its frame: past the dashboard's menu and title bar, by each picture's measured offsets (`cx`,
+    `cy` in `jsal-ui.mjs`), so they all begin alike.
+  - **Scrolling down** (John, 18 Nov 2026: "subtle animations"), each block below the stage that starts under the
+    fold rises 24px and fades in once a sixth of it shows (0.6s, eased out, `style: allow`); the numbers follow one
+    another by 0.08s. Nothing on the first screen waits, nothing plays twice, and with reduced motion (or no
+    script) everything simply shows.
+  - **Clips** (John, 19 Nov 2026): Gear, Professions, Journal, the Dungeon guide and Guild Crafts show a short
+    clip: muted MP4s in `site/img/jsal-ui/ui/clips/`, each with its first frame as the still. They're drawn from
+    the same sim pages as the store GIFs, never converted from a GIF (John: GIF-made video lost "the smoothness"):
+    a steady 30 frames a second in full colour, 13-frame fades, by `private\jsal-ui\sim\make_clips.py`. A clip
+    downloads and plays only while a third of its frame is on screen, stops when it leaves (or its stage is put
+    away), and keeps a `.jsal-btn.small` Pause/Play button (a `.jsal-dark` island) in its corner, since clips run
+    longer than 5 seconds; a pause holds until Play, and with reduced motion nothing starts by itself.
+  The parts and windows are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store
+  cards are (the game trimmed off, the version hidden, guildmates' names made up). The version line and the release
+  card read `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest
+  release.
 - **The CMS Picker** has its own layout and control rules (quiz first, the quiz's tick and checklist questions,
   changing an answer, result cards, the must-have divider, "varies", the comparison on phones) in
   `.claude/rules/cms-picker-design.md`, which loads with the CMS Picker's files.
@@ -228,7 +268,14 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.
 - **The home page's pictures move only when asked** (pointing at or focusing a tile; once on touch screens); what
   each one plays is in `.claude/rules/home-page.md`.
-- Nothing moves on its own for more than 5 seconds (WCAG 2.2.2): the home pictures' one play on touch screens takes
+- **The tour** (John, 21 Nov 2026: "animations that play automatically instead of using our mouse"): on the home page
+  and the jsal.ui page, from 700px wide with motion welcome, the list's items take turns by themselves, once round
+  and back to the first (6 seconds a tool on the home page, 5 a part on the jsal.ui page), a gold line filling under
+  the chosen row as its turn runs out. It rests while the pointer or the keyboard is on the list or the stage, or the
+  list is off screen; it ends for good once a row is clicked, keyed or scrolled; and a Pause the tour button under
+  the list stops and restarts it (WCAG 2.2.2: anything that moves on its own for more than 5 seconds can be paused).
+  Not on phones, where the list opens in place, and not with reduced motion.
+- Anything else that moves on its own stops within 5 seconds: the home pictures' one play on touch screens takes
   under 3 seconds.
 
 ## Feedback

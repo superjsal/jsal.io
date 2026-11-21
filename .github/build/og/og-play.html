@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- Link-preview images for the home page, Off the clock and the jsal.ui page (1200 × 628), in those pages' own look:
+     the page's title in Outfit with its gold words, and a picture from the page. Rendered to PNG by make-og.ps1:
+     og-play.html?p=home | play | jsal-ui  → site/og/<p>.png -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@600;700;800&display=block">
+<style>
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1200px; height: 628px; overflow: hidden; }
+body { position: relative; display: grid; grid-template-columns: 1fr 470px; align-items: center; gap: 56px; padding: 64px 72px; background: #111318; color: #ece6d6; font-family: Inter, "Segoe UI", sans-serif; }
+.mark { position: absolute; top: 56px; left: 72px; font: 700 30px Outfit, sans-serif; letter-spacing: -0.01em; }
+.mark i { color: #e3b04b; font-style: normal; }
+h1 { font: 700 66px/1.02 Outfit, sans-serif; letter-spacing: -0.025em; text-wrap: balance; }
+h1.small { font-size: 56px; }
+h1 em { font-style: normal; color: #e3b04b; }
+p { margin-top: 24px; max-width: 18em; color: #9aa0aa; font-size: 26px; line-height: 1.4; }
+/* home: the four tools as the page lists them, the CMS Picker chosen */
+.list { display: grid; gap: 10px; }
+.row { display: grid; grid-template-columns: 56px 1fr; gap: 16px; align-items: center; padding: 14px 18px; border-radius: 16px; background: #1c1f27; }
+.row img { width: 56px; height: 56px; border-radius: 12px; }
+.row b { display: block; font: 700 24px Outfit, sans-serif; }
+.row small { color: #9aa0aa; font-size: 17px; }
+.row.on { background: #2c2140; color: #e3d4ff; }
+.row.on small { color: inherit; opacity: 0.85; }
+/* Off the clock: the character on the game's dark stage, as the sheet shows her */
+.hero { position: relative; overflow: hidden; display: grid; align-content: end; justify-items: center; height: 500px; padding: 20px; border-radius: 22px; background: radial-gradient(60% 45% at 50% 42%, #3a3f4c, #1c1f27 70%, #14171c); }
+.hero img { position: absolute; left: -50%; top: -32%; width: 200%; max-width: none; }
+.credit { position: absolute; right: 72px; bottom: 30px; color: #9aa0aa; font-size: 14px; }
+/* the jsal.ui page: the dashboard's Home window */
+.shot { height: 500px; overflow: hidden; border: 1px solid #3d424e; border-radius: 18px; background: #191c23; box-shadow: 0 24px 60px rgb(0 0 0 / 0.35); }
+.shot img { display: block; width: 760px; margin: -6px 0 0 -8px; }
+</style>
+</head>
+<body>
+<div class="mark">jsal<i>.</i>io</div>
+<div><h1 id="title"></h1><p id="sub"></p></div>
+<div id="visual"></div>
+<script>
+const p = new URLSearchParams(location.search).get('p') || 'home';
+const img = (path) => `../../../site/img/${path}`;
+const TOOLS = [['cms-picker', 'CMS Picker', 'Choose a website platform'], ['image-resizer', 'Image Resizer', 'Resize images to exact sizes'], ['clean-paste', 'Clean Paste', 'Clean up a pasted post'], ['redirect-import', 'Redirect Import', 'Keep old links working']];
+const pages = {
+  home: { title: 'Small tools that do <em>one job</em> well.', sub: 'Free, in your browser, by John Salvador.',
+    visual: `<div class="list">${TOOLS.map(([icon, name, job], i) => `<div class="row${i ? '' : ' on'}"><img src="${img(`icons/${icon}.svg`)}" alt=""><span><b>${name}</b><small>${job}</small></span></div>`).join('')}</div>` },
+  // Blizzard's render of the character, as the page shows it, credited
+  play: { title: 'Mostly <em>Warcraft</em>.', sub: 'My WoW Forever character, and the journey my own addon keeps.',
+    visual: `<div class="hero"><img src="${img('play/vizdenia-render.png')}" alt=""></div><span class="credit">Character © Blizzard Entertainment</span>` },
+  'jsal-ui': { title: 'Your WoW Forever character, <em>in one dashboard.</em>', small: true, sub: 'jsal.ui, a free addon for WoW Forever.',
+    visual: `<div class="shot"><img src="${img('jsal-ui/ui/home.webp')}" alt=""></div>` },
+};
+const d = pages[p];
+const h1 = document.getElementById('title');
+h1.innerHTML = d.title;
+if (d.small) h1.className = 'small';
+document.getElementById('sub').textContent = d.sub;
+document.getElementById('visual').innerHTML = d.visual;
+</script>
+</body>
+</html>

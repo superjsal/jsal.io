@@ -75,9 +75,15 @@ import { v, importmap } from "../../lib/v.mjs";
         <div class="paste-icon"><span class="ico" data-icon="clipboard" data-size="20"></span></div>
         <p class="paste-title">Paste your content</p>
         <p class="paste-sub">Copy from Word, Google Docs, a web page, HTML code or plain text, then press <kbd class="mod-key">Ctrl</kbd> + <kbd>V</kbd> anywhere on this page.</p>
-        <p class="paste-links"><button class="jsal-btn link" id="pasteBtn" hidden>Paste from clipboard</button><span aria-hidden="true" id="pasteSep" hidden>·</span><button class="jsal-btn link" id="blankBtn">Start with a blank page</button><span aria-hidden="true">·</span><button class="jsal-btn link" id="sampleBtn">Try an example</button><span aria-hidden="true" id="undoSep" hidden>·</span><button class="jsal-btn link" id="undoClearBtn" hidden>Undo clear</button></p>
+        <p class="paste-go"><button class="jsal-btn primary" id="pasteBtn" hidden>Paste from clipboard</button></p>
+        <p class="paste-links"><button class="jsal-btn link" id="blankBtn">Start with a blank page</button><span aria-hidden="true">·</span><button class="jsal-btn link" id="sampleBtn">Try an example</button><span aria-hidden="true" id="undoSep" hidden>·</span><button class="jsal-btn link" id="undoClearBtn" hidden>Undo clear</button></p>
         <p class="paste-note" id="pasteNote" aria-live="polite"></p>
         <p class="paste-privacy">Everything stays in your browser. Nothing is uploaded.</p>
+        <!-- What a paste gets checked for, so the empty page says why it's worth pasting -->
+        <div class="paste-does">
+          <p>It checks your post for</p>
+          <ul><li>Stray H1s</li><li>Bold lines that should be headings</li><li>Draft and “click here” links</li></ul>
+        </div>
       </div>
 
       <div class="pane pane-out" data-needs-content>

@@ -2,6 +2,34 @@
 import Page from "../layouts/Page.astro";
 import TopBar from "../components/TopBar.astro";
 import Updates from "../components/Updates.astro";
+import { v } from "../lib/v.mjs";
+// Where each control sits in each picture, and how many states each tool was taken in (written by home-shots.mjs)
+import SPOTS from "../data/home-spots.json";
+
+// The four tools, in the order of the list. Each stage shows one or two pictures of the tool at work (taken from
+// the tool itself with its example loaded, in each theme, by .github/build/home-shots.mjs): [piece, width, height].
+// The pictures work: a control in one (a size, the Text | HTML switch, a filter) shows the tool as it looks with
+// that control pressed, and an answer in the quiz's picture starts the quiz with it.
+const TOOLS = [
+  { id: "cms", name: "CMS Picker", job: "Choose a website platform", icon: "cms-picker", href: "/cms-picker/", cta: "Start the quiz",
+    line: "Answer eight questions and see which of 14 website platforms fits you, and what each one lets you change for SEO.",
+    facts: ["14 platforms, each checked against its own documentation", "SEO and AI search settings, platform by platform", "No sign-up, and no client lists behind the ranking"],
+    pics: [["quiz", 840, 381]] },
+  { id: "ir", name: "Image Resizer", job: "Resize images to exact sizes", icon: "image-resizer", href: "/image-resizer/", cta: "Open the resizer",
+    line: "Drop in one image or a whole batch, set the size, move the crop and save. Nothing is uploaded.",
+    facts: ["Exact pixel sizes, with a crop you can move", "JPG, PNG or WebP, one at a time or as a ZIP", "Works on your computer: nothing is uploaded"],
+    pics: [["work", 451, 524], ["sizes", 348, 73]] },
+  { id: "cp", name: "Clean Paste", job: "Clean up a pasted post", icon: "clean-paste", href: "/formatter/", cta: "Paste a post",
+    line: "Paste from Word or Google Docs and get clean HTML, with the problems found before the post goes live.",
+    facts: ["Finds stray H1s, bold lines meant as headings and draft links", "Copies as formatted text, HTML or WordPress blocks", "Stays in your browser"],
+    pics: [["work", 509, 619], ["checks", 299, 227]] },
+  { id: "ri", name: "Redirect Import", job: "Keep old links working", icon: "redirect-import", href: "/redirects/", cta: "Choose a file",
+    line: "Turn a sheet of old and new addresses into the redirect file Shopify, WordPress, Wix and others import.",
+    facts: ["Every row checked: ready, needs you or left out", "The exact file each platform asks for", "A live check that each old address lands"],
+    pics: [["sheet", 495, 533], ["file", 331, 533]] },
+];
+// The CMS Picker's platforms, in its own order: [address, name]
+const PLATFORMS = [["wordpress", "WordPress"], ["shopify", "Shopify"], ["wix", "Wix"], ["squarespace", "Squarespace"], ["webflow", "Webflow"], ["framer", "Framer"], ["hubspot", "HubSpot CMS"], ["bigcommerce", "BigCommerce"], ["drupal", "Drupal"], ["duda", "Duda"], ["ghost", "Ghost"], ["sanity", "Sanity"], ["square", "Square Online"], ["substack", "Substack"]];
 ---
 <Page
   title="John Salvador: Technical SEO and Free Web Tools | jsal.io"
@@ -9,7 +37,7 @@ import Updates from "../components/Updates.astro";
   path="/"
   ogTitle="John Salvador: Technical SEO and Free Web Tools"
   ogDescription="A web developer who works in technical SEO, and free browser tools: CMS Picker, Clean Paste, an Image Resizer and Redirect Import. Nothing is uploaded."
-  ogImageAlt="jsal.io: CMS Picker and free content tools by John Salvador"
+  ogImageAlt="jsal.io: small tools that do one job well, with the CMS Picker, Image Resizer, Clean Paste and Redirect Import listed"
   cover
 >
 <script is:inline slot="head" type="application/ld+json">
@@ -23,42 +51,38 @@ import Updates from "../components/Updates.astro";
 }
 </script>
 <style is:inline slot="head">
-/* Tile colours: each tool keeps its own tint with a deep shade of it for the words; Updates and Say hi are plain.
-   The pieces of each tool laid on the tiles wear the tools' own colours, so they change with the theme as the tools do;
-   in dark mode every piece has the same faint edge, and the platform keys a deeper shadow. */
+/* Each tool's own tint, with a deep shade of it for its name: the colour its stage wears here and the tool wears on
+   its own page. A picture of a tool has a soft shadow in the light theme and a faint edge in the dark one. */
 :root {
   --t-cms: #d7c6f0; --t-cms-ink: #3d2466;
   --t-cp: #f3dc9a; --t-cp-ink: #4f3a08;
   --t-ir: #c6e2dd; --t-ir-ink: #13453f;
   --t-ri: #f0d2dc; --t-ri-ink: #5c1a30;
-  --t-plain: #e8e5dd;
-  --obj-shadow: 0 18px 40px rgb(30 20 10 / 0.2), 0 2px 6px rgb(30 20 10 / 0.08);
-  --obj-edge: transparent;
-  --key-sheen: inset 0 1px 0 rgb(255 255 255 / 0.35);
-  --key-drop: 0 18px 24px rgb(30 20 40 / 0.22);
-  --key-drop-low: 0 7px 11px rgb(30 20 40 / 0.2);
-  --wm-gem: 0.35;
+  --shot-shadow: 0 24px 50px -22px rgb(20 23 28 / 0.35);
+  --shot-edge: transparent;
+  --f: "Outfit", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de; --t-plain: #1c1f27;
-    --obj-shadow: 0 18px 40px rgb(0 0 0 / 0.5); --obj-edge: var(--jsal-line-hi);
-    --key-drop: 0 18px 24px rgb(0 0 0 / 0.45); --key-drop-low: 0 7px 11px rgb(0 0 0 / 0.4);
-    --wm-gem: 0.45;   /* a little stronger, so the faint gold doesn't read as brown on the dark tints */
+    --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de;
+    --shot-shadow: 0 24px 50px -18px rgb(0 0 0 / 0.6); --shot-edge: var(--jsal-line-hi);
   }
+  :root:not([data-theme="light"]) .lt { display: none; }
+  :root:not([data-theme="light"]) .dk { display: block; }
 }
 :root[data-theme="dark"] {
-  --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de; --t-plain: #1c1f27;
-  --obj-shadow: 0 18px 40px rgb(0 0 0 / 0.5); --obj-edge: var(--jsal-line-hi);
-  --key-drop: 0 18px 24px rgb(0 0 0 / 0.45); --key-drop-low: 0 7px 11px rgb(0 0 0 / 0.4);
-  --wm-gem: 0.45;
+  --t-cms: #2c2140; --t-cms-ink: #e3d4ff; --t-cp: #30280f; --t-cp-ink: #f3dc9a; --t-ir: #132a28; --t-ir-ink: #c6e2dd; --t-ri: #321b24; --t-ri-ink: #f4d2de;
+  --shot-shadow: 0 24px 50px -18px rgb(0 0 0 / 0.6); --shot-edge: var(--jsal-line-hi);
 }
+/* Every picture is there twice, once in each theme, and the theme shows its own */
+.dk { display: none; }
+:root[data-theme="dark"] .lt { display: none; }
+:root[data-theme="dark"] .dk { display: block; }
 
 * { box-sizing: border-box; }
-body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
+body { margin: 0; color: var(--jsal-ink); font: 15px/1.5 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
-a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
-a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles keep their own rounded corners, and the outline follows them */
+a:focus-visible, .slot:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; border-radius: var(--jsal-radius); }
 /* The column: a 20px gutter each side, wider where a notch or rounded corner cuts in (phones on their side) */
 .wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) var(--jsal-page-end) max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
 
@@ -71,537 +95,388 @@ a:not(.tile):focus-visible { border-radius: var(--jsal-radius); }   /* tiles kee
   .jsal-top nav a::after { content: ""; position: absolute; inset: -4px 0; }   /* 36px drawn, 44px to tap */
 }
 
-/* Even line breaks: headings split into balanced lines, paragraphs avoid a lone last word */
 h1, h2 { text-wrap: balance; }
 p { text-wrap: pretty; }
+/* Two fonts: Outfit (--f) for names, headings and buttons; Inter for everything that is read */
 
-/* Bento grid: six columns, the wide tile swapping sides each row, and Updates across the bottom */
-.grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: minmax(440px, auto) minmax(256px, auto) minmax(276px, auto) minmax(220px, auto); gap: var(--jsal-space-32); margin-top: var(--jsal-page-top); }
-.intro { grid-column: 1 / 3; grid-row: 1; align-self: start; padding-right: var(--jsal-space-12); }
-.cms { grid-column: 3 / 7; grid-row: 1; }
-.ir { grid-column: 1 / 5; grid-row: 2; }
-.cp { grid-column: 5 / 7; grid-row: 2; }
-.hi { grid-column: 1 / 3; grid-row: 3; }
-.ri { grid-column: 3 / 7; grid-row: 3; }
-.now { grid-column: 1 / 7; grid-row: 4; }
-
-/* The intro: at the shared distance under the top bar, flush with the logo */
-.roles { display: flex; flex-wrap: wrap; margin: 0; font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-.roles span + span::before { content: "·"; content: "·" / ""; margin: 0 var(--jsal-space-8); color: var(--jsal-muted); }
-.intro h1 { margin: var(--jsal-space-12) 0 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
-.intro h1 em { font-weight: 600; color: var(--jsal-accent); }
-.intro p { margin: var(--jsal-space-16) 0 0; font-size: 17px; color: var(--jsal-ink-2); }
-.cta { display: flex; margin: var(--jsal-space-20) 0 0; }
-.cta a { display: inline-flex; align-items: center; padding: var(--jsal-space-8) var(--jsal-space-20); border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); color: var(--jsal-on-fill); box-shadow: inset 0 0 0 1px var(--jsal-fill-edge); font-size: 15px; font-weight: var(--jsal-btn-weight); text-decoration: none; transition: transform var(--jsal-quick) ease; }
-.cta a:hover { transform: translateY(-2px); }
-.cta a:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
-@media (pointer: coarse) { .cta a { min-height: 44px; } }
-
-/* Tiles: soft colour, a deep-shade serif name, and real-looking pieces of the tool laid on top. Each tile
-   clips most of its pieces (.clip); a piece may poke a little past the edge, never near another tile and never into the
-   page's side gutter, so nothing reaches past the column at any width. Every tool tile reads the same way: its name and
-   line at the top left, then the picture. */
-.tile { position: relative; display: flex; flex-direction: column; border-radius: var(--jsal-radius-tile); --pad: var(--jsal-space-24); padding: var(--pad); background: var(--bg); color: var(--ink); text-decoration: none; transition: transform var(--jsal-settle) var(--jsal-ease-out); }
-a.tile:hover, .hi:has(.hi-mail:hover) { transform: translateY(-4px) rotate(-0.4deg); }
-.tile .txt { position: relative; z-index: 2; }
-.tile h2 { margin: 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
-.tile .txt p { margin: var(--jsal-space-8) 0 0; font-size: 17px; line-height: 1.45; }
-.clip { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
-.obj { position: absolute; transform: var(--rest, none); transition: transform var(--jsal-settle) var(--jsal-ease-out); }
-a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--hover, var(--rest, none)); }
-/* The edge is an outline just inside the piece: a ring drawn as a shadow comes out uneven on a tilted piece, thin on
-   one side and heavy at the corners, and an outer one did so in Firefox */
-.paper { background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); outline: 1px solid var(--obj-edge); outline-offset: -1px; }
-.mono { font: 600 11px/1.4 "JetBrains Mono", Consolas, monospace; }   /* style: allow (the pictures are miniatures of the tools) */
-/* Each tool's app icon drawn large and faint in the tile's ink, its gem a faint gold, behind the pictures and always
-   clear of the words: a texture, never something the eye goes to before the picture */
-.wm { position: absolute; color: var(--ink); }
-.wm .s { opacity: 0.07; }
-.wm .g { fill: var(--jsal-fill); opacity: var(--wm-gem); }
-
-/* CMS Picker: one key per platform it compares, its logo in that platform's own colours with a darker edge under it,
-   in a tilted brick clear of the words above it; it keeps its distance from the tile's right edge, which is the
-   column's, so the tilted brick never reaches the gutter however wide the tile is. Playing, three needs take turns, each pressing the keys the quiz puts first for it (.fit-for names it). */
+/* Pick a job: the list of tools on the left never moves, and the stage beside it is the chosen tool, in its colour */
+/* The page's headline leads, at the size of every page's title; under it the list and the stage */
+.hello { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--jsal-space-8) var(--jsal-space-32); margin-top: var(--jsal-page-top); }
+.hello h1 { margin: 0; font: 700 46px/1.05 var(--f); letter-spacing: -0.02em; }
+.hello h1 em { font-style: normal; color: var(--jsal-accent); }
+.sub { margin: 0; color: var(--jsal-muted); }
+.pick { display: grid; grid-template-columns: 296px minmax(0, 1fr); margin-top: var(--jsal-space-24); }
+.rail { display: flex; flex-direction: column; }
+/* The list runs to the stage's edge, so the chosen row joins its stage; everything else in the rail stops short */
+.rail > :not(.slots) { margin-right: var(--jsal-space-24); }
+.rail-h { margin: var(--jsal-space-12) 0 var(--jsal-space-8); color: var(--jsal-muted); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
+.slots { display: grid; gap: var(--jsal-space-4); }
+.slot { display: grid; grid-template-columns: 44px minmax(0, 1fr) 20px; gap: var(--jsal-space-12); align-items: center; padding: var(--jsal-space-12) var(--jsal-space-20) var(--jsal-space-12) var(--jsal-space-12); border-radius: var(--jsal-radius-xl) 0 0 var(--jsal-radius-xl); text-decoration: none; transition: background-color var(--jsal-quick); }
+.slot:hover { background: var(--jsal-sunk); }
+.slot img, .more-ui img { border-radius: var(--jsal-radius-lg); }
+.slot b { display: block; font: 700 17px/1.2 var(--f); }
+.slot-t > span { display: block; margin-top: var(--jsal-space-2); color: var(--jsal-muted); font-size: 13px; line-height: 1.3; }
+.slot kbd { justify-self: center; min-width: 20px; padding: 1px 0; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-sm); color: var(--jsal-muted); font: 600 12px/1.3 var(--jsal-font); text-align: center; }
+/* The chosen tool's row wears its tint and runs into its stage as one piece, and the logo's gold gem marks it */
+.slot[aria-selected="true"] { background: var(--bg); color: var(--ink); }   /* style: allow (the chosen tool wears its own tint, as its stage does) */
+.slot[aria-selected="true"] .slot-t > span { color: inherit; }
+.slot[aria-selected="true"] kbd { border-color: currentColor; color: inherit; }   /* style: allow (the number takes the row's own ink) */
+.slot { position: relative; }
+.slot[aria-selected="true"]::before { content: ""; position: absolute; left: -16px; top: 50%; width: 10px; height: 10px; background: var(--jsal-fill); translate: 0 -50%; rotate: 45deg; }   /* style: allow (the logo's gem as a marker beside the row, not a selected fill) */
 .cms { --bg: var(--t-cms); --ink: var(--t-cms-ink); }
-.cms .txt { max-width: 290px; }
-.cms .wm { width: 420px; height: 420px; left: calc(100% - 816px); top: 80px; rotate: -10deg; }   /* a podium tilted like the keys, whole, under the words and left of the keys */
-.pcs { left: calc(100% - 482px); top: 116px; z-index: 3; display: flex; flex-direction: column; gap: var(--jsal-space-12); transform-origin: top left; --rest: rotate(-10deg); --hover: rotate(-10deg) translate(-6px, -6px); }
-.pcs > span { display: flex; gap: var(--jsal-space-12); }
-.pcs > span:nth-child(even) { margin-left: 56px; }   /* style: allow (a picture, drawn to its own measure) */
-.pc { --edge: color-mix(in srgb, var(--b) 66%, black); display: grid; place-items: center; width: 100px; height: 66px; border-radius: var(--jsal-radius-xl); background: linear-gradient(180deg, color-mix(in srgb, var(--b) 80%, white), var(--b) 60%); color: var(--c); box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); }
-.pc i { width: 30px; height: 30px; background: currentColor; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
-.pc .wide { width: 46px; }
-.pc .wix { -webkit-mask-size: 36px auto; mask-size: 36px auto; }
-.pc-light { --edge: color-mix(in srgb, var(--b) 80%, black); background: linear-gradient(180deg, var(--b), color-mix(in srgb, var(--b) 94%, black) 60%); }
-/* the need being played, in a pill under the tile's line */
-.fit-for { position: absolute; left: var(--pad); top: 106px; z-index: 4; display: grid; pointer-events: none; }
-.fit-for span { grid-area: 1 / 1; justify-self: start; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius-pill); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: var(--obj-shadow); outline: 1px solid var(--obj-edge); outline-offset: -1px; font-size: 12px; white-space: nowrap; opacity: 0; }
-.p-wordpress { --b: #ffffff; --c: #21759b; }
-.p-shopify { --b: #5e8e3e; --c: #ffffff; }
-.p-substack { --b: #ff6719; --c: #ffffff; }
-.p-wix { --b: #111111; --c: #ffffff; }
-.p-squarespace { --b: #ffffff; --c: #111111; }
-.p-webflow { --b: #146ef5; --c: #ffffff; }
-.p-framer { --b: #0a0a0a; --c: #ffffff; }
-.p-hubspot { --b: #ff7a59; --c: #ffffff; }
-.p-square { --b: #111111; --c: #ffffff; }
-.p-drupal { --b: #0678be; --c: #ffffff; }
-.p-duda { --b: #ffffff; --c: #111111; }
-.p-bigcommerce { --b: #121118; --c: #ffffff; }
-.p-sanity { --b: #f03e2f; --c: #ffffff; }
-.p-ghost { --b: #15171a; --c: #ffffff; }
-
-/* Image Resizer: the crop editor with its size buttons and a tilted list of the files it made from that one photo, the
-   row's breakout. The crop box is the picked size's shape, as large as the photo allows, so playing it takes each size
-   in turn (--ar, the width over the height, is registered so it can move smoothly) and each lands in the list. */
-@property --ar { syntax: "<number>"; inherits: true; initial-value: 1.91; }
 .ir { --bg: var(--t-ir); --ink: var(--t-ir-ink); }
-.ir .txt { max-width: 258px; }
-.ir .wm { width: 394px; height: 394px; left: -80px; top: 36px; }   /* the photo's frame lined up with the words, starting under them */
-.ed { left: 290px; top: 22px; width: 250px; padding: 12px; border-radius: 16px; --hover: translateY(-8px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
-.ed-head { display: flex; justify-content: space-between; color: var(--jsal-muted); }
-.ed-photo { position: relative; display: block; margin-top: var(--jsal-space-8); height: 140px; border-radius: var(--jsal-radius-lg); overflow: hidden; container-type: size; }
-.ed-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.crop { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: min(100cqw, 100cqh * var(--ar)); height: min(100cqh, 100cqw / var(--ar)); outline: 2px solid var(--jsal-fill); outline-offset: -2px; box-shadow: 0 0 0 999px rgb(0 0 0 / 0.42); }   /* gold, as the tool draws it */
-.crop i { position: absolute; width: 12px; height: 12px; border: 0 solid var(--jsal-fill); }
-.crop i:nth-child(1) { left: 0; top: 0; border-width: 4px 0 0 4px; }
-.crop i:nth-child(2) { right: 0; top: 0; border-width: 4px 4px 0 0; }
-.crop i:nth-child(3) { left: 0; bottom: 0; border-width: 0 0 4px 4px; }
-.crop i:nth-child(4) { right: 0; bottom: 0; border-width: 0 4px 4px 0; }
-.sizes { display: flex; gap: 4px; margin-top: 10px; }   /* style: allow (a picture, drawn to its own measure) */
-.sizes span { flex: 1; padding: 5px 0; border-radius: var(--jsal-radius); border: 1px solid var(--jsal-line); font-size: 10px; text-align: center; white-space: nowrap; }   /* style: allow (miniature: three sizes across the editor) */
-.sizes .on { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); }
-.outs { right: 20px; top: -2px; z-index: 3; width: 214px; padding: 12px 14px; border-radius: 16px; --rest: rotate(4deg); --hover: rotate(6deg) translate(4px, -4px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
-.outs-head { display: flex; justify-content: space-between; padding-bottom: var(--jsal-space-8); color: var(--jsal-muted); }
-.outs-head span { color: var(--jsal-ok); }
-.outs .row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--jsal-sunk); }   /* style: allow (a picture, drawn to its own measure) */
-/* each file's thumbnail at its own shape, in the same 44 × 30 slot */
-.th { flex: none; display: grid; place-items: center; width: 44px; height: 30px; }
-.th img { display: block; width: min(44px, 30px * var(--ar)); height: min(30px, 44px / var(--ar)); border-radius: var(--jsal-radius-sm); object-fit: cover; }
-.outs .row span { display: flex; flex-direction: column; font-size: 11px; line-height: 1.4; color: var(--jsal-muted); }   /* style: allow (miniature) */
-.outs .row b { color: var(--jsal-ink); font-weight: 800; }   /* bolder than its row's 600 would ask for 900, past the font's heaviest */
-
-/* Clean Paste: its Text | HTML switch over a short post, straight and poking past the tile's left edge so the watermark
-   shows. At rest a gold line stands just past halfway, where the text's lines end, the formatted text on its left and the HTML on its right (the switch's
-   order), so the still picture shows the same words both ways; playing, the line shows all the text, wipes it all into
-   HTML and comes back. */
 .cp { --bg: var(--t-cp); --ink: var(--t-cp-ink); }
-.cp .wm { width: 354px; height: 354px; right: -134px; top: 64px; }   /* under the words, off the right edge */
-.sheet { left: -12px; top: 118px; z-index: 1; width: 258px; padding: 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
-/* the tool's switch in miniature, across the sheet: Text over the formatted half, HTML over the code, the gold line running
-   up through it and the selected gold filling the HTML side of the line */
-.sw { position: relative; display: grid; grid-template-columns: 54% 1fr; padding: var(--jsal-space-2); border-radius: var(--jsal-radius); background: var(--jsal-sunk); }
-.sw::before { content: ""; position: absolute; left: calc(54% + 3px); right: 2px; top: 2px; bottom: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-selected-bg); box-shadow: var(--jsal-selected-ring); }
-.sw span { position: relative; padding: 2px 0; text-align: center; font: 600 11px/1.4 var(--jsal-font); color: var(--jsal-muted); }   /* style: allow (miniature) */
-.sw .h { color: var(--jsal-selected-ink); }
-/* the formatted text lies over its HTML, the same three lines, wiped away up to the line */
-.views { position: relative; display: grid; }
-.views > * { grid-area: 1 / 1; }
-.views::after { content: ""; position: absolute; top: -36px; bottom: -4px; left: 54%; width: 2px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); }
-.tx { display: flex; flex-direction: column; background: var(--jsal-surface); color: var(--jsal-ink-2); font-size: 12px; line-height: 1.6; clip-path: inset(0 46% 0 0); }
-.tx b { color: var(--jsal-ink); font: 700 14px/1.37 "Lora", Georgia, serif; }   /* one line of the code's height */
-.tx .li::before { content: "\2022"; margin-right: var(--jsal-space-8); color: var(--jsal-muted); }
-.sheet code { color: var(--jsal-muted); font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
-.sheet code i { font-style: normal; color: var(--jsal-info); }
-.sheet .ln { display: block; }
-
-/* Say hi: a draft to the site's address, tilted and poking out at the tile's top-right corner (the row's breakout). The heading's
-   link covers the whole tile, so the GitHub link sits above it. */
-.hi { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
-.hi-mail { text-decoration: none; }
-.hi .txt { position: static; margin-top: 130px; }   /* style: allow (room for the draft) static: the link's cover below spans the whole tile; the margin keeps the words under the draft */
-.hi-mail::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: var(--jsal-radius-tile); }
-.hi-mail:focus-visible { outline: none; }
-.hi:has(.hi-mail:focus-visible) { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
-.hi .txt a:not(.hi-mail) { position: relative; z-index: 2; color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
-.draft { left: 40px; right: -12px; top: 2px; z-index: 3; padding: 12px 14px; border-radius: 16px; font-size: 12px; pointer-events: none; transform-origin: top right; --rest: rotate(2deg); --hover: rotate(2deg) translateY(-6px); }   /* a click on the draft reaches the email link under it; style: allow (a miniature) */
-.draft > span { display: flex; gap: 10px; padding: 4px 0; border-top: 1px solid var(--jsal-sunk); }   /* style: allow (a picture, drawn to its own measure) */
-.draft > span:first-child { justify-content: space-between; align-items: center; padding: 0 0 var(--jsal-space-4); border: 0; font-size: 13px; font-weight: 700; }
-.draft > span:first-child i { font-style: normal; font-weight: 400; color: var(--jsal-muted); }
-.draft em { width: 52px; font-style: normal; color: var(--jsal-muted); }
-.draft .body { padding-top: var(--jsal-space-8); }
-.draft .body i { overflow: hidden; font-style: normal; color: var(--jsal-ink-2); white-space: nowrap; text-overflow: ellipsis; }
-
-/* Redirect Import: the tool's sheet of old and new addresses, each row with its check, and the file it writes for the
-   platform, poking out of the tile's bottom edge towards Updates; both straight. The sheet's last row shows only on
-   phones, where the file is left out. */
 .ri { --bg: var(--t-ri); --ink: var(--t-ri-ink); }
-.ri .txt { max-width: 258px; }
-.ri .wm { width: 360px; height: 360px; left: -60px; top: 64px; }   /* the window under the words, its arrow pointing at the sheet */
-.rs { left: 290px; top: 10px; z-index: 2; width: 300px; padding: 10px 14px 8px; border-radius: 16px; display: flex; flex-direction: column; font-size: 12px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
-.rs-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: var(--jsal-space-8); font-size: 13px; }
-.rs-head .mono, .rs .n, .rs .out-cell { color: var(--jsal-muted); }
-.rs-row { display: grid; grid-template-columns: 12px 18px 1fr 1.2fr; gap: var(--jsal-space-8); align-items: center; padding: 3px 0; border-top: 1px solid var(--jsal-sunk); }
-.rs-row .mono { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 500; }
-.rs .bad-cell { color: var(--jsal-bad); }
-.rs .last { display: none; }
-.rs-note { margin: -2px 0 4px 46px; color: var(--jsal-bad); font-size: 11px; }   /* style: allow (miniature) */
-/* each row's check, as the tool marks it: ready, needs you, or left out on purpose */
-.dot { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; font-style: normal; font-size: 11px; font-weight: 700; line-height: 1; }   /* style: allow (miniature) */
-.dot.ok { background: var(--jsal-ok-soft); color: var(--jsal-ok); }
-.dot.bad { background: var(--jsal-bad-soft); color: var(--jsal-bad); }
-.dot.out { background: var(--jsal-sunk); color: var(--jsal-muted); }
-.rf { right: 22px; bottom: -10px; z-index: 3; width: 252px; padding: 10px 14px 12px; border-radius: 16px; display: flex; flex-direction: column; gap: 6px; --hover: translateY(-6px); }   /* style: allow (a miniature of the tool, drawn to its own scale) */
-.rf-head { display: flex; justify-content: space-between; color: var(--jsal-muted); }
-.rf-head span { color: var(--jsal-ok); }
-.rf code { font: 12px/1.6 "JetBrains Mono", Consolas, monospace; white-space: nowrap; }
-.rf .ln { display: block; overflow: hidden; text-overflow: ellipsis; }
-.rf .mute { color: var(--jsal-muted); }
+.more-ui { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: var(--jsal-space-12); align-items: center; margin-top: auto; padding: var(--jsal-space-12); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-xl); text-decoration: none; transition: border-color var(--jsal-quick); }
+.more-ui:hover { border-color: var(--jsal-hover-line); }
+.more-ui b { display: block; font: 700 15px/1.2 var(--f); }
+.more-ui span span { display: block; margin-top: var(--jsal-space-2); color: var(--jsal-muted); font-size: 13px; line-height: 1.3; }
 
-/* Updates: the newest change in each of the three most recently changed parts, as a plain list, newest first (the
-   rows aren't links, so they don't look like cards), and a faint stack of notes as its watermark */
-.now { --bg: var(--t-plain); --ink: var(--jsal-ink); justify-content: flex-end; }
-.now .txt { max-width: 260px; }
-.now .txt a { color: var(--jsal-accent); font-weight: 600; text-underline-offset: 2px; }
-.now .wm { width: 300px; height: 300px; left: calc(50% - 202px); top: -48px; }   /* a stack of notes, the gem on the newest, whole, in the open middle between the words and the list */
-.upd { position: absolute; right: var(--pad); top: 16px; width: min(404px, calc(100% - 340px)); display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
-.upd li { position: relative; padding: var(--jsal-space-8) 0 var(--jsal-space-8) var(--jsal-space-40); border-top: 1px solid var(--jsal-line); }
-.upd li:first-child { border-top: 0; }
-.upd-name { display: block; padding-right: var(--jsal-space-48); font-size: 13px; font-weight: 700; }
-.upd-ico { position: absolute; left: 0; top: 50%; translate: 0 -50%; border-radius: var(--jsal-radius); }
-.upd time { position: absolute; right: 0; top: 9px; color: var(--jsal-muted); font-size: 12px; }
-.upd-line { display: block; margin-top: 1px; font: 600 17px/1.3 "Lora", Georgia, serif; }
+/* A stage: the tool's name very large, what it does and its button on the left, the tool at work on the right,
+   running off the stage's edge. Without scripts all four stages show, one under the other. */
+.stages { display: grid; gap: var(--jsal-space-24); min-width: 0; }
+/* clip, not hidden: a hidden box still scrolls to a focused control at its cut edge, which slid the whole stage */
+.stage { position: relative; container-type: inline-size; overflow: hidden; overflow: clip; display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); grid-template-rows: auto 1fr auto; column-gap: var(--jsal-space-32); align-content: start; min-height: 600px; padding: var(--jsal-space-40) var(--jsal-space-40) 0; border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--bg); }
+.home-js .stage:not(.on) { display: none; }
+/* Picking a tool: the stage's colour turns to the new tool's (the colour sits behind the stages, so it can), and
+   the new stage's parts arrive in order from the way the list moved: its name, its words, then its pictures. The
+   first stage is simply there when the page opens. */
+.home-js .stages { border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--bg, var(--t-cms)); }
+.home-js .stages.live { transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the stage's colour turning: slower than a state change, so it reads as one move with the parts arriving) */
+.home-js .stage { background: none; }
+@keyframes arrive { from { opacity: 0; translate: 0 calc(var(--dir, 1) * var(--far, 20px)); } }
+/* The gem travels: one gold gem slides down the list to the chosen row, turning as it goes, overshoots a little
+   and lands with a ring, so the eye is led to the new spot. From 1280px, where the list is a column. */
+.gem { display: none; position: absolute; left: -19px; top: 0; z-index: 1; width: 12px; height: 12px; background: var(--jsal-fill); translate: 0 var(--y, 0); rotate: var(--r, 45deg); pointer-events: none; transition: translate 0.55s cubic-bezier(0.34, 1.45, 0.64, 1), rotate 0.55s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem's trip between rows: a spring that overshoots and settles) */
+@keyframes land { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--jsal-fill) 70%, transparent); } to { box-shadow: 0 0 0 14px color-mix(in srgb, var(--jsal-fill) 0%, transparent); } }
+.gem.land { animation: land 0.7s 0.3s ease-out; }   /* style: allow (the ring as the gem lands, after its trip) */
+@media (min-width: 1280px) {
+  .slots { position: relative; }
+  .home-js .gem { display: block; }
+  .home-js .slot[aria-selected="true"]::before { display: none; }
+}
+/* A first visit: the gem leans toward the next row and back, twice, to show that the list is the control */
+@keyframes peek { 50% { translate: 0 calc(var(--y, 0px) + 22px); } }
+.gem.peek { animation: peek 1.3s ease-in-out 2; }   /* style: allow (a one-time nudge: a slow lean, there and back) */
+@keyframes gem { from { scale: 0; rotate: -45deg; } }
+.live .stage.on :is(h2, .say > *, .shot, .keys) { animation: arrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }   /* style: allow (a choreographed arrival: each part follows the one before) */
+.live .stage.on h2 { --far: 36px; }
+.live .stage.on .say > p { --d: 0.05s; }
+.live .stage.on .go { --d: 0.1s; }
+.live .stage.on .facts { --d: 0.15s; }
+.live .stage.on .a { --d: 0.1s; --far: 56px; }
+.live .stage.on .b { --d: 0.2s; --far: 72px; }
+.live .stage.on .keys { --d: 0.25s; }
+.slot[aria-selected="true"]::before { animation: gem 0.4s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem landing on the chosen row) */
+.stage h2 { grid-column: 1 / -1; margin: 0; color: var(--ink); font: 800 clamp(36px, 9cqi, 72px)/0.95 var(--f); letter-spacing: -0.03em; white-space: nowrap; }   /* style: allow (the stage's name: the page's one very large line) */
+.say { padding: var(--jsal-space-24) 0 var(--jsal-space-40); }
+.say p { margin: 0; font: 500 20px/1.4 var(--jsal-font); }
+.jsal-btn.go { min-height: 48px; margin-top: var(--jsal-space-24); padding: 0 var(--jsal-space-24); gap: var(--jsal-space-8); font: 700 17px/1 var(--f); }
+.go svg { width: 18px; height: 18px; }
+.facts { display: grid; gap: var(--jsal-space-12); margin: var(--jsal-space-32) 0 0; padding: 0; list-style: none; line-height: 1.4; }
+.facts li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--jsal-space-12); }
+.facts svg { width: 20px; height: 20px; color: var(--ink); }
+.pic { position: relative; min-height: 420px; margin-top: var(--jsal-space-24); }
+.shot { position: absolute; left: var(--x, 0); top: var(--y, 0); overflow: hidden; width: var(--w); border-radius: var(--jsal-radius-xl); box-shadow: var(--shot-shadow); outline: 1px solid var(--shot-edge); font-size: 0; line-height: 0; }
+.shot img { width: 100%; height: auto; }
+/* The pictures work. A picture taken in several states holds them all, one over the other, and a control in the
+   picture (an unseen button laid exactly over the drawn one) fades its state in. */
+.st { position: absolute; inset: 0; opacity: 0; transition: opacity var(--jsal-settle); }
+.st.on { opacity: 1; }
+.spot { position: absolute; padding: 0; border: 0; border-radius: var(--jsal-radius); background: none; cursor: pointer; }
+.spot:hover { box-shadow: inset 0 0 0 2px var(--jsal-hover-line); }
+.spot:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: -2px; }
+.cms .a { --w: 700px; }
+.cms .pic { min-height: 340px; }
+.ir .a { --x: 80px; --w: 390px; }
+.ir .b { --y: 190px; --w: 280px; }
+.cp .a { --x: 24px; --w: 420px; }   /* far enough left that its Text | HTML switch is inside the stage */
+.cp .b { --y: 230px; --w: 240px; }
+.ri .a { --w: 370px; }
+.ri .b { --x: 292px; --y: 112px; --w: 250px; }
+/* The CMS Picker's stage ends in a key per platform, each opening that platform's guide */
+.keys { grid-column: 1 / -1; padding-bottom: var(--jsal-space-32); }
+.keys p { margin: 0 0 var(--jsal-space-8); font-size: 14px; }
+.keys ul { display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; }
+.keys a { display: grid; place-items: center; height: 48px; border-radius: var(--jsal-radius-xl); background: color-mix(in srgb, var(--ink) 12%, transparent); transition: background-color var(--jsal-quick); }
+.keys a:hover { background: color-mix(in srgb, var(--ink) 22%, transparent); }
+.keys i { width: 24px; height: 24px; background: var(--ink); -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
+/* A narrow stage stacks: the words, then the picture, then the keys in two rows */
+@container (max-width: 700px) {
+  .say, .pic { grid-column: 1 / -1; }
+  .say { padding-bottom: 0; }
+  .pic { min-height: 320px; }
+  .b { visibility: hidden; }
+  .ir .a, .cp .a { --x: 0px; }
+  .keys { padding: var(--jsal-space-24) 0 var(--jsal-space-32); }
+  .keys ul { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .cms .a { --w: 560px; }
+  .cms .pic { min-height: 262px; }
+}
 
-footer { margin-top: var(--jsal-space-32); padding-top: var(--jsal-space-8); border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--jsal-space-12); font-size: 13px; color: var(--jsal-muted); }
+/* Under the stage: what changed lately, and how to say hi */
+.more { display: grid; grid-template-columns: 272px minmax(0, 1fr) minmax(0, 1fr); gap: var(--jsal-space-24); margin-top: var(--jsal-space-64); }
+.more h2 { margin: 0; font: 700 24px/1.2 var(--f); letter-spacing: -0.01em; }
+.more h2 + p { margin: var(--jsal-space-8) 0 0; color: var(--jsal-muted); }
+.more a { color: var(--jsal-accent); text-underline-offset: 3px; }
+.upd { margin: 0; padding: 0; list-style: none; }
+.upd li { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: var(--jsal-space-2) var(--jsal-space-12); align-items: center; padding: var(--jsal-space-12) 0; border-top: 1px solid var(--jsal-line); }
+.upd li:first-child { padding-top: 0; border-top: 0; }
+.upd-name { display: contents; color: var(--jsal-muted); font-size: 13px; }
+.upd-ico { grid-row: 1 / 3; border-radius: var(--jsal-radius); }
+.upd time { color: var(--jsal-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.upd-line { grid-column: 2 / 4; font: 600 17px/1.3 var(--f); }
+.hi p { margin: 0; font: 500 20px/1.4 var(--jsal-font); }
+.hi .mail { display: inline-block; margin-top: var(--jsal-space-12); font: 700 24px/1.2 var(--f); }
+
+footer { margin-top: var(--jsal-space-48); padding-top: var(--jsal-space-8); border-top: 1px solid var(--jsal-line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--jsal-space-12); font-size: 13px; color: var(--jsal-muted); }
 footer nav { display: flex; gap: var(--jsal-space-4); }
 footer a, footer .foot-btn { padding: var(--jsal-space-8); color: var(--jsal-accent); text-decoration: underline; text-underline-offset: 2px; }   /* the site's own links: gold, as in every Made by line */
 footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; }   /* reopens the analytics choice (/nav.js) */
-/* The platform guides: a full-width row of plain links in the footer's muted ink, so they don't compete with the tiles */
+/* The platform guides: a quiet row of links above the footer's own line */
 .fg { flex: 1 0 100%; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--jsal-space-12); padding-bottom: var(--jsal-space-8); }
-.fg span { margin-right: var(--jsal-space-4); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+.fg span { margin-right: var(--jsal-space-4); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
 footer .fg a { padding: var(--jsal-space-4) 0; color: var(--jsal-muted); text-decoration: none; }
 footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @media (pointer: coarse) {
   footer a, footer .foot-btn { min-height: 44px; display: inline-flex; align-items: center; }
-  .hi .txt a:not(.hi-mail)::after, .now .txt a::after { content: ""; position: absolute; inset: -13px -4px; }
 }
 
-/* Narrower desktops and phones on their side: the intro on its own row, the CMS Picker, the Image Resizer, Redirect
-   Import and Updates full width, and Clean Paste beside Say hi */
+/* A small laptop or a tablet: the list runs across the top as four tabs, the stage under it */
 @media (max-width: 1279px) {
-  .now .wm { width: 200px; height: 200px; left: -8px; top: -24px; }   /* no open middle here: above the words, in line with them */
-  .grid { grid-template-rows: none; }
-  .intro { grid-column: 1 / -1; grid-row: auto; padding-right: 0; }
-  .intro p { max-width: 34em; }
-  .cms, .ir, .ri, .now { grid-column: 1 / -1; grid-row: auto; }
-  .cms { min-height: 440px; }
-  .ir, .cp { min-height: 256px; }
-  .ri { min-height: 276px; }   /* room for the sheet's four rows above the file */
-  .hi { min-height: 292px; }   /* the draft clear of the words under it */
-  .now { min-height: 272px; }
-  .cp { grid-column: 1 / 4; grid-row: auto; }
-  .hi { grid-column: 4 / 7; grid-row: auto; }
-  .sheet { left: var(--pad); }   /* the column's edge: in line with the words instead of poking into the gutter */
-  .draft { right: 0; }
+  .pick { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
+  .rail > :not(.slots) { margin-right: 0; }
+  .rail-h, .slot kbd, .slot[aria-selected="true"]::before { display: none; }
+  .stage, .home-js .stages { border-radius: var(--jsal-radius-tile); }
+  .slots { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: var(--jsal-space-24); }
+  .slot { grid-template-columns: 44px minmax(0, 1fr); padding: var(--jsal-space-12); border-radius: var(--jsal-radius-xl); }
+  .more-ui { order: 3; margin-top: var(--jsal-space-24); }
+  .rail { display: contents; }
+  .stages { order: 2; }
+  .more { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .more > div:first-child { grid-column: 1 / -1; }
 }
-/* Narrower desktops: the CMS Picker's tile is wider than its keys need, so its podium moves out from under them into
-   the open space under the words */
-@media (min-width: 861px) and (max-width: 1279px) {
-  .cms .wm { width: 460px; height: 460px; left: -40px; top: 60px; }
+/* An upright phone: the four tools as a list, each with its name and its job, and the chosen one open under its own
+   row (its words and its button; the facts and the picture wait for a wider screen). Tapping another row opens that
+   one instead. The list and the stages are laid out together, each stage under its row. */
+@media (max-width: 699px) {
+  .pick { gap: 0; }
+  .slots, .stages, .home-js .stages { display: contents; }
+  .slot:nth-child(1) { order: 1; } .stage:nth-child(1) { order: 2; }
+  .slot:nth-child(2) { order: 3; } .stage:nth-child(2) { order: 4; }
+  .slot:nth-child(3) { order: 5; } .stage:nth-child(3) { order: 6; }
+  .slot:nth-child(4) { order: 7; } .stage:nth-child(4) { order: 8; }
+  .more-ui { order: 9; margin-top: var(--jsal-space-24); }
+  .slot { grid-template-columns: 40px minmax(0, 1fr); margin-top: var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+  .slot img { width: 40px; height: 40px; }
+  .slot[aria-selected="true"] { border-radius: var(--jsal-radius-xl) var(--jsal-radius-xl) 0 0; }
+  .home-js .stage { min-height: 0; padding: var(--jsal-space-4) var(--jsal-space-20) var(--jsal-space-20); border-radius: 0 0 var(--jsal-radius-xl) var(--jsal-radius-xl); background: var(--bg); }
+  .home-js .stage :is(h2, .facts, .pic, .keys) { display: none; }
+  .home-js .say { padding-top: 0; }
+  .say p { font-size: 15px; }
+  .stage { min-height: 0; padding: var(--jsal-space-24) var(--jsal-space-20) 0; }
+  .more { grid-template-columns: minmax(0, 1fr); margin-top: var(--jsal-space-48); gap: var(--jsal-space-32); }
 }
-/* Phones on their side: a shorter CMS Picker, its brick smaller, anchored to the right and filling the tile (its top
-   keys poking out, beside the words), its watermark under the words */
-@media (min-width: 600px) and (max-width: 860px) {
-  .cms { min-height: 300px; }
-  .cms .txt { max-width: 250px; }
-  .pcs { left: auto; right: 358px; top: 46px; translate: 100% 0; --rest: rotate(-10deg) scale(0.74); --hover: rotate(-10deg) scale(0.74) translate(-6px, -6px); }
-  .cms .wm { width: 240px; height: 240px; left: -20px; top: 112px; rotate: none; }   /* upright and whole, under the words */
-  .fit-for { top: 130px; }   /* under the line's two lines */
-}
-/* The narrowest of those: a smaller brick inside the tile, narrower words, and room for Say hi's three lines */
-@media (min-width: 600px) and (max-width: 699px) {
-  .cms .txt { max-width: 220px; }
-  .pcs { right: 290px; top: 36px; --rest: rotate(-10deg) scale(0.6); --hover: rotate(-10deg) scale(0.6) translate(-6px, -6px); }
-  .cp, .hi { min-height: 304px; }
-  .sheet { top: 140px; transform-origin: top left; --rest: scale(0.86); --hover: scale(0.86) translateY(-6px); }
-  .ri .txt { max-width: 236px; }   /* the name on one line, clear of the sheet */
-  .tile.ri { min-height: 224px; }   /* the smaller sheet needs less */
-  .ri .rs { left: auto; right: var(--pad); width: 300px; transform-origin: top right; --rest: scale(0.8); --hover: scale(0.8) translateY(-6px); }   /* the whole sheet, smaller, rather than its cells cut short */   /* the words take a second line here, so the sheet starts lower, and the tile is narrower than the sheet */
-}
-/* Too narrow for the output list beside the editor, the file beside the sheet, or the updates beside the words: the
-   list and the file go and the editor and sheet grow into their room, and the updates run across the tile under the words */
-@media (min-width: 600px) and (max-width: 759px) {
-  .ir { min-height: 272px; }   /* the taller editor */
-  .ed { left: 290px; right: var(--pad); width: auto; min-width: 250px; }
-  .ed-photo { height: 160px; }
-  .rf { display: none; }
-  .ri { min-height: 256px; }   /* no file under the sheet here */
-  .rs { right: var(--pad); width: auto; }
-}
-/* Clean Paste's line takes two lines here too */
-@media (min-width: 700px) and (max-width: 799px) {
-  .sheet { top: 140px; }
-}
-@media (max-width: 759px) {
-  .outs { display: none; }
-  .now .wm { display: none; }   /* the notes fill the top of the tile here */
-  .now { height: auto; }
-  .now .clip { position: static; overflow: visible; }
-  .upd { position: static; width: auto; margin: var(--jsal-space-8) 0 calc(var(--jsal-space-8) * -1); }   /* under the words; the last row's padding is the tile's */
-}
-/* One column (phones upright): each tile only as tall as its piece and words, each piece poking a little out of its
-   tile as on desktop; no watermarks */
-@media (max-width: 599px) {
-  .grid > * { grid-column: 1 / -1 !important; }
-  .hi { order: 1; }   /* one tile per row: Say hi after every tool, then Updates */
-  .now { order: 2; }
-  .wm { display: none; }
-  .cms, .ir, .cp, .hi, .ri { min-height: 0; }
-  .tile.cms { padding-bottom: 262px; }   /* style: allow (room for the brick under the words) */
-  .pcs { left: 14px; top: 146px; --rest: rotate(-10deg) scale(0.6); --hover: var(--rest); }
-  .fit-for { left: 20px; top: auto; bottom: -12px; }   /* no room under the line here, so it pokes out of the tile's foot, clear of the heading */
-  /* the editor and the sheet follow their words: the editor at the tile's full width, inside it, and the sheet
-     centred, a negative margin taking back the room its scaling frees */
-  .ir .clip { position: static; order: 1; overflow: visible; }
-  .ed { position: relative; display: block; left: auto; top: auto; width: auto; margin: 18px 0 0; --rest: none; --hover: translateY(-6px); }   /* style: allow (a picture, drawn to its own measure) */
-  .ed-photo { height: 170px; }
-  .sheet { position: relative; left: auto; top: auto; margin: 26px auto -12px; width: min(258px, 100%); transform-origin: top center; --rest: rotate(-2deg) scale(0.9); --hover: rotate(-2deg) scale(0.9) translateY(-6px); }   /* style: allow (a picture, drawn to its own measure) */
-  /* Redirect Import's sheet under its words, inside the tile, with all four rows; no file */
-  .rs { position: relative; left: auto; top: auto; margin: 22px auto -8px; width: min(300px, 100%); }   /* style: allow (a picture, drawn to its own measure) */
-  .rs .last { display: grid; }
-  .rf { display: none; }
-  .hi .txt { margin-top: 136px; }   /* style: allow (room for the draft) */
-  .draft { left: 20px; right: 20px; width: auto; max-width: 340px; margin: 0 auto; transform-origin: top center; --rest: rotate(2deg) scale(0.9); --hover: rotate(2deg) scale(0.9) translateY(-6px); }
-  .intro p { font-size: 17px; }
-}
-#updates, #hi-h { scroll-margin-top: 16px; }
-/* The narrowest phones: a smaller brick, so it fits across the tile and the page never scrolls sideways */
-@media (max-width: 374px) {
-  .pcs { left: calc(50% - 130px); top: 170px; --rest: rotate(-10deg) scale(0.54); }   /* centred (275px across, its box starting 8px left of its corner) and under the line's two lines */
-  .tile.cms { padding-bottom: 262px; }   /* style: allow (room for the brick) */
-}
-/* The narrowest phones: the sheet takes the tile's padding too, its addresses smaller, so every one shows whole */
-@media (max-width: 389px) {
-  .rs { width: calc(100% + 20px); margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px; }   /* style: allow (a picture, drawn to its own measure) */
-  .rs-row { grid-template-columns: 12px 18px 1fr 1fr; gap: var(--jsal-space-8); }
-  .rs-row .mono { font-size: 10px; }   /* style: allow (miniature) */
-}
-/* Phones: a smaller title and tiles, and one spacing step for the grid */
-@media (max-width: 520px) {
-  .grid { gap: var(--jsal-space-32); }
-  .roles span + span::before { margin: 0 var(--jsal-space-8); }
-  .intro h1 { font-size: 40px; }
-  .tile { --pad: var(--jsal-space-20); }
-  footer { margin-top: var(--jsal-space-32); }
-}
-/* Pointing at a tile (or focusing it) plays what its tool does three times; on touch screens once, the
-   first time the tile comes into view (the script below sets .play). The CMS Picker's keys show what fits three needs
-   in turn (one, picked at random, on touch screens), the crop box takes each size's shape in turn, the formatted text wipes into its HTML, the email types itself and the
-   redirect sheet's rows are checked into their file. */
-@media (prefers-reduced-motion: no-preference) {
-  /* each need lights the keys the real quiz ranks first for it: a small shop, a paid newsletter, a startup that wants
-     to design every detail; --fit-start skips ahead to one of them (2.7s each) */
-  .cms:is(:hover, :focus-visible, .play) :is(.pc, .fit-for span) { animation: var(--k, fit-0) 8.1s ease-in-out var(--fit-start, 0s) both; }   /* style: allow (the home pictures play) */
-  :is(.p-shopify, .p-bigcommerce, .p-square) { --k: fit-1; }
-  :is(.p-ghost, .p-substack, .p-squarespace) { --k: fit-2; }
-  :is(.p-framer, .p-webflow, .p-wix) { --k: fit-3; }
-  .fit-for span:nth-child(1) { --k: fit-for-1; }
-  .fit-for span:nth-child(2) { --k: fit-for-2; }
-  .fit-for span:nth-child(3) { --k: fit-for-3; }
-  /* each piece has its own keyframes rather than a delay, so every loop starts them all together; they stop on their
-     third loop just before the rows fade (2.88 = the 88% keyframe), so they rest as shown */
-  .ir:is(:hover, :focus-visible, .play) :is(.crop, .sizes span, .outs .row, .outs-head span) { animation: var(--k) 3.6s ease-in-out 2.88 both; }   /* style: allow (the home pictures play) */
-  .crop { --k: ir-ar; }
-  .sizes span:nth-child(1) { --k: ir-s1; }
-  .sizes span:nth-child(2) { --k: ir-s2; }
-  .sizes span:nth-child(3) { --k: ir-s3; }
-  .outs .row:nth-child(2) { --k: ir-r1; }
-  .outs .row:nth-child(3) { --k: ir-r2; }
-  .outs .row:nth-child(4) { --k: ir-r3; }
-  .outs-head span { --k: ir-pill; }
-  .cp:is(:hover, :focus-visible, .play) :is(.tx, .sw span), .cp:is(:hover, :focus-visible, .play) .views::after, .cp:is(:hover, :focus-visible, .play) .sw::before { animation: var(--k) 3.4s ease-in-out 3 both; }   /* style: allow (the home pictures play) */
-  .tx { --k: cp-tx; }
-  .views::after { --k: cp-line; }
-  .sw::before { --k: cp-thumb; }
-  .sw .t { --k: cp-t; }
-  .sw .h { --k: cp-h; }
-  .hi:is(.play, :has(.hi-mail:is(:hover, :focus-visible))) .draft .body i { animation: hi-type 3.6s steps(41, end) 2.9 both; }   /* style: allow (the home pictures play) */
-  .ri:is(:hover, :focus-visible, .play) :is(.rs .dot, .rs-note, .rf .ln:not(.mute)) { animation: var(--k) 3s ease-out 2.9 both; }   /* style: allow (the home pictures play) */
-  .rs-row:nth-of-type(2) .dot { --k: ri-d1; }
-  .rs-row:nth-of-type(3) .dot { --k: ri-d2; }
-  .rs-row:nth-of-type(4) .dot { --k: ri-d3; }
-  .rs-row:nth-of-type(5) .dot { --k: ri-d4; }
-  .rs-row:nth-of-type(7) .dot { --k: ri-d5; }
-  .rs-note { --k: ri-note; }
-  .rf .ln:nth-child(2) { --k: ri-f1; }
-  .rf .ln:nth-child(3) { --k: ri-f2; }
-  .rf .ln:nth-child(4) { --k: ri-f3; }
-}
-/* CMS Picker: three needs of 2.3s, a 0.4s pause after each with every key back up */
-@keyframes fit-0 { 0% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 3%, 26% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 29%, 33% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 36%, 59% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 62%, 66% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 69%, 92% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 95%, 100% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } }
-@keyframes fit-1 { 0% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 3%, 26% { opacity: 1; filter: none; translate: 0 7px; box-shadow: var(--key-sheen), 0 3px 0 var(--edge), var(--key-drop-low), 0 0 0 3px var(--jsal-fill); } 29%, 33% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 36%, 59% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 62%, 66% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 69%, 92% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 95%, 100% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } }
-@keyframes fit-2 { 0% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 3%, 26% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 29%, 33% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 36%, 59% { opacity: 1; filter: none; translate: 0 7px; box-shadow: var(--key-sheen), 0 3px 0 var(--edge), var(--key-drop-low), 0 0 0 3px var(--jsal-fill); } 62%, 66% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 69%, 92% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 95%, 100% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } }
-@keyframes fit-3 { 0% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 3%, 26% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 29%, 33% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 36%, 59% { opacity: 0.25; filter: saturate(0.2); translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 62%, 66% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } 69%, 92% { opacity: 1; filter: none; translate: 0 7px; box-shadow: var(--key-sheen), 0 3px 0 var(--edge), var(--key-drop-low), 0 0 0 3px var(--jsal-fill); } 95%, 100% { opacity: 1; filter: none; translate: 0 0; box-shadow: var(--key-sheen), 0 10px 0 var(--edge), var(--key-drop); } }
-@keyframes fit-for-1 { 0%, 0% { opacity: 0; translate: 0 6px; } 3%, 26% { opacity: 1; translate: 0 0; } 29%, 100% { opacity: 0; translate: 0 0; } }
-@keyframes fit-for-2 { 0%, 33% { opacity: 0; translate: 0 6px; } 36%, 59% { opacity: 1; translate: 0 0; } 62%, 100% { opacity: 0; translate: 0 0; } }
-@keyframes fit-for-3 { 0%, 66% { opacity: 0; translate: 0 6px; } 69%, 92% { opacity: 1; translate: 0 0; } 95%, 100% { opacity: 0; translate: 0 0; } }
-/* Image Resizer: wide, square, then 640 × 420, each size's button picked as the box takes its shape and its file landing
-   in the list; back to wide by 78%, before the one play on touch screens stops */
-@keyframes ir-ar { 0%, 18% { --ar: 1.91; } 28%, 44% { --ar: 1; } 54%, 68% { --ar: 1.524; } 78%, 100% { --ar: 1.91; } }
-@keyframes ir-s1 { 0%, 20%, 76%, 100% { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); } 26%, 70% { border-color: var(--jsal-line); background: transparent; color: var(--jsal-ink); } }
-@keyframes ir-s2 { 0%, 20%, 50%, 100% { border-color: var(--jsal-line); background: transparent; color: var(--jsal-ink); } 26%, 44% { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); } }
-@keyframes ir-s3 { 0%, 46%, 76%, 100% { border-color: var(--jsal-line); background: transparent; color: var(--jsal-ink); } 52%, 70% { border-color: var(--jsal-fill); background: var(--jsal-accent-soft); color: var(--jsal-accent); } }
-@keyframes ir-r1 { 0%, 3% { opacity: 0; translate: -8px 0; } 12%, 88% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
-@keyframes ir-r2 { 0%, 30% { opacity: 0; translate: -8px 0; } 39%, 88% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
-@keyframes ir-r3 { 0%, 56% { opacity: 0; translate: -8px 0; } 65%, 88% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
-@keyframes ir-pill { 0%, 68% { opacity: 0; } 74%, 88% { opacity: 1; } 100% { opacity: 0; } }
-/* Clean Paste, from the rest and back to it by 84% (where the one play on touch screens stops): the line moves
-   right to show all the text (Text picked), sweeps left wiping it all into HTML (HTML picked), then returns to rest; it
-   hides at the edges, and the switch's gold follows it */
-@keyframes cp-tx { 0% { clip-path: inset(0 46% 0 0); } 14%, 30% { clip-path: inset(0); } 56%, 70% { clip-path: inset(0 100% 0 0); } 84%, 100% { clip-path: inset(0 46% 0 0); } }
-@keyframes cp-line { 0% { left: 54%; opacity: 1; } 13% { left: 100%; opacity: 1; } 15%, 29% { left: 100%; opacity: 0; } 31% { left: 100%; opacity: 1; } 56% { left: 0; opacity: 1; } 58%, 69% { left: 0; opacity: 0; } 71% { left: 0; opacity: 1; } 84%, 100% { left: 54%; opacity: 1; } }
-@keyframes cp-thumb { 0% { left: calc(54% + 3px); } 13%, 31% { left: calc(100% + 3px); } 56%, 71% { left: 3px; } 84%, 100% { left: calc(54% + 3px); } }
-@keyframes cp-t { 0% { color: var(--jsal-muted); } 10%, 31% { color: var(--jsal-selected-ink); } 40%, 100% { color: var(--jsal-muted); } }
-@keyframes cp-h { 0% { color: var(--jsal-selected-ink); } 10%, 31% { color: var(--jsal-muted); } 40%, 100% { color: var(--jsal-selected-ink); } }
-@keyframes hi-type { 0% { clip-path: inset(0 100% 0 0); } 55%, 90% { clip-path: inset(0 0 0 0); opacity: 1; } 100% { clip-path: inset(0 0 0 0); opacity: 0; } }
-/* Redirect Import: the rows are checked one at a time and each ready row's line lands in the file just after (the full
-   address with the site's own domain left off); the row with a space gets its "!" and note and adds nothing, and the row left out its dash.
-   All held to 97%, past where the one play on touch screens stops, then cleared for the next loop */
-@keyframes ri-d1 { 0%, 4% { scale: 0; } 10% { scale: 1.25; } 14%, 97% { scale: 1; } 100% { scale: 0; } }
-@keyframes ri-f1 { 0%, 12% { opacity: 0; translate: -10px 0; } 20%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
-@keyframes ri-d2 { 0%, 22% { scale: 0; } 28% { scale: 1.25; } 32%, 97% { scale: 1; } 100% { scale: 0; } }
-@keyframes ri-f2 { 0%, 30% { opacity: 0; translate: -10px 0; } 38%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
-@keyframes ri-d3 { 0%, 40% { scale: 0; } 46% { scale: 1.25; } 50%, 97% { scale: 1; } 100% { scale: 0; } }
-@keyframes ri-f3 { 0%, 48% { opacity: 0; translate: -10px 0; } 56%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
-@keyframes ri-d4 { 0%, 58% { scale: 0; } 64% { scale: 1.25; } 68%, 97% { scale: 1; } 100% { scale: 0; } }
-@keyframes ri-note { 0%, 66% { opacity: 0; translate: 0 -4px; } 72%, 97% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
-@keyframes ri-d5 { 0%, 74% { scale: 0; } 80% { scale: 1.25; } 84%, 97% { scale: 1; } 100% { scale: 0; } }
+@media (max-width: 520px) { .hello h1 { font-size: 40px; } }
+/* The tour: the chosen row's gold line fills while its turn lasts; it rests while the pointer or the keyboard is on
+   the list or the stage, or the list is off screen */
+.slot::after { content: ""; position: absolute; left: var(--jsal-space-12); right: var(--jsal-space-12); bottom: var(--jsal-space-4); height: 2px; border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); transform: scaleX(0); transform-origin: left; }
+.pick.tour .slot[aria-selected="true"]::after { animation: turn 6s linear forwards; }   /* style: allow (a tool's turn in the tour) */
+.pick.tour:is(:hover, :focus-within, .away) .slot[aria-selected="true"]::after { animation-play-state: paused; }
+@keyframes turn { to { transform: scaleX(1); } }
+.tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
+.pick.tour .tour-btn, .pick.rested .tour-btn { display: inline-flex; }
+@media (max-width: 699px) { .pick.tour .tour-btn, .pick.rested .tour-btn, .slot::after { display: none; } }
 @media (prefers-reduced-motion: reduce) {
-  .tile, .obj, .cta a { transition: none; }
-  a.tile:hover, .hi:has(.hi-mail:hover), .cta a:hover { transform: none; }
-  a.tile:hover .obj, .hi:has(.hi-mail:hover) .obj { transform: var(--rest, none); }
+  .slot, .more-ui, .keys a, .home-js .stages.live, .st { transition: none; }
+  .live .stage.on :is(h2, .say > *, .shot, .keys), .slot[aria-selected="true"]::before, .gem.land, .gem.peek { animation: none; }
+  .gem { transition: none; }
 }
 </style>
 <div class="wrap">
   <TopBar><nav aria-label="Sections"><a href="#updates">Updates</a><a href="mailto:dev@jsal.io">Email</a></nav></TopBar>
 
-  <main class="grid">
-    <section class="intro">
-      <div class="roles"><span>John Salvador</span><span>Technical SEO</span></div>
-      <h1>Small tools that do <em>one job</em> well.</h1>
-      <p>Start with the CMS Picker: answer a few questions to see which website platform fits you, and what it lets you change for SEO.</p>
-      <div class="cta"><a href="/cms-picker/">Find your CMS</a></div>
-    </section>
+  <!-- Pick a job: each row of the list is a link to its tool's stage below; with scripts the rows become tabs and
+       one stage shows at a time. The stage's button (data-app) opens the tool. -->
+  <main>
+  <header class="hello">
+    <h1>Small tools that do <em>one job</em> well.</h1>
+    <p class="sub">Free, in your browser, by John Salvador.</p>
+  </header>
+  <div class="pick">
+    <script is:inline>document.documentElement.classList.add('home-js');</script>
+    <div class="rail">
+      <p class="rail-h" id="jobs-h">Pick a job</p>
+      <div class="slots" aria-labelledby="jobs-h">
+        {TOOLS.map((t, i) => (
+          <a class={`slot ${t.id}`} href={`#${t.id}`} id={`tab-${t.id}`} aria-selected={i === 0 ? "true" : "false"}><img src={`/img/icons/${t.icon}.svg`} alt="" width="44" height="44"><span class="slot-t"><b>{t.name}</b><span>{t.job}</span></span><kbd aria-hidden="true">{i + 1}</kbd></a>
+        ))}
+      </div>
+      <button class="jsal-btn small tour-btn" type="button" aria-pressed="false">Pause the tour</button>
+      <a class="more-ui" href="/play/"><img src="/img/icons/off-the-clock.svg" alt="" width="44" height="44"><span><b>Off the clock</b><span>My WoW Forever character and addon</span></span></a>
+    </div>
 
-    <!-- App tiles (data-app marks the ones that open a tool): the pictures are decoration, hidden from screen readers -->
-    <a class="tile cms" href="/cms-picker/" data-app>
-      <div class="clip" aria-hidden="true">
-        <svg class="wm" viewBox="0 0 32 32" width="280" height="280"><path class="s" d="M9.21 23.35Q7.95 23.35 7.95 22.09L7.95 17.96Q7.95 16.7 9.21 16.7L11.59 16.7Q12.85 16.7 12.85 15.44L12.85 14.46Q12.85 13.2 14.11 13.2L17.89 13.2Q19.15 13.2 19.15 14.46L19.15 17.89Q19.15 19.15 20.41 19.15L22.79 19.15Q24.05 19.15 24.05 20.41L24.05 22.09Q24.05 23.35 22.79 23.35zM12.85 16.7v6.65M19.15 19.15v4.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M16 6.9l2.1 2.1-2.1 2.1-2.1-2.1z"/></svg>
-      </div>
-      <span class="obj pcs" aria-hidden="true">
-        <span><span class="pc pc-light p-wordpress"><i style="--logo: url(/cms-picker/logos/wordpress.svg)"></i></span><span class="pc p-wix"><i class="wide wix" style="--logo: url(/cms-picker/logos/wix.svg)"></i></span><span class="pc p-substack"><i style="--logo: url(/cms-picker/logos/substack.svg)"></i></span><span class="pc p-shopify"><i style="--logo: url(/cms-picker/logos/shopify.svg)"></i></span></span>
-        <span><span class="pc pc-light p-squarespace"><i style="--logo: url(/cms-picker/logos/squarespace.svg)"></i></span><span class="pc p-webflow"><i style="--logo: url(/cms-picker/logos/webflow.svg)"></i></span><span class="pc p-framer"><i style="--logo: url(/cms-picker/logos/framer.svg)"></i></span></span>
-        <span><span class="pc p-hubspot"><i style="--logo: url(/cms-picker/logos/hubspot.svg)"></i></span><span class="pc p-square"><i style="--logo: url(/cms-picker/logos/square.svg)"></i></span><span class="pc p-drupal"><i style="--logo: url(/cms-picker/logos/drupal.svg)"></i></span><span class="pc pc-light p-duda"><i class="wide" style="--logo: url(/cms-picker/logos/duda.svg)"></i></span></span>
-        <span><span class="pc p-bigcommerce"><i style="--logo: url(/cms-picker/logos/bigcommerce.svg)"></i></span><span class="pc p-sanity"><i style="--logo: url(/cms-picker/logos/sanity.svg)"></i></span><span class="pc p-ghost"><i style="--logo: url(/cms-picker/logos/ghost.svg)"></i></span></span>
-      </span>
-      <span class="fit-for mono" aria-hidden="true"><span>For selling online</span><span>For a paid newsletter</span><span>For designing every detail</span></span>
-      <div class="txt">
-        <h2>CMS Picker</h2>
-        <p>Find your CMS, or compare all 14.</p>
-      </div>
-    </a>
-
-    <a class="tile ir" href="/image-resizer/" data-app>
-      <div class="clip" aria-hidden="true">
-        <svg class="wm" viewBox="0 0 32 32" width="180" height="180"><path class="s" d="M8.65 10.4h14.7v11.9h-14.7zM8.65 19.5l4.55-4.55 3.5 3.5 2.1-2.1 4.55 4.55" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M20.2 11.73l1.61 1.61-1.61 1.61-1.61-1.61z"/></svg>
-        <span class="obj paper ed">
-          <span class="ed-head mono">mugs.jpg<span>6720 × 4480</span></span>
-          <span class="ed-photo"><img src="/img/home/mugs.webp" alt="" width="392" height="268"><span class="crop"><i></i><i></i><i></i><i></i></span></span>
-          <span class="sizes mono"><span class="on">1200 × 628</span><span>1080 × 1080</span><span>640 × 420</span></span>
-        </span>
-      </div>
-      <span class="obj paper outs mono" aria-hidden="true">
-        <span class="outs-head">Output<span>96% smaller</span></span>
-        <span class="row"><span class="th" style="--ar: 1.91"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>1200 × 628</b>WebP · 182 KB</span></span>
-        <span class="row"><span class="th" style="--ar: 1"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>1080 × 1080</b>WebP · 236 KB</span></span>
-        <span class="row"><span class="th" style="--ar: 1.524"><img src="/img/home/mugs.webp" alt="" width="392" height="268"></span><span><b>640 × 420</b>WebP · 58 KB</span></span>
-      </span>
-      <div class="txt">
-        <h2>Image Resizer</h2>
-        <p>Exact sizes, nothing uploaded.</p>
-      </div>
-    </a>
-
-    <a class="tile cp" href="/formatter/" data-app>
-      <div class="txt">
-        <h2>Clean Paste</h2>
-        <p>Word or Google Docs to clean HTML.</p>
-      </div>
-      <div class="clip" aria-hidden="true">
-        <svg class="wm" viewBox="0 0 32 32" width="170" height="170"><path class="s" d="M12.85 9.7H10.4v13.3h11.2V9.7h-2.45M13.2 15.3h5.6M13.2 19.15h3.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M16 7.25l2.1 2.1-2.1 2.1-2.1-2.1z"/></svg>
-      </div>
-      <span class="obj paper sheet" aria-hidden="true"><span class="sw"><span class="t">Text</span><span class="h">HTML</span></span><span class="views"><span class="tx"><b>Raid night</b><span>Bring flasks and food.</span><span class="li">Leeroy stays put</span></span><code><span class="ln"><i>&lt;h2&gt;</i>Raid night<i>&lt;/h2&gt;</i></span><span class="ln"><i>&lt;p&gt;</i>Bring flasks and food.<i>&lt;/p&gt;</i></span><span class="ln"><i>&lt;ul&gt;&lt;li&gt;</i>Leeroy stays put<i>&lt;/li&gt;</i></span></code></span></span>
-    </a>
-
-    <!-- Say hi: the heading's link (email) covers the tile; the draft above it is decoration -->
-    <section class="tile hi" aria-labelledby="hi-h">
-      <span class="obj paper draft" aria-hidden="true">
-        <span>New message<i>×</i></span>
-        <span><em>To</em><b>dev@jsal.io</b></span>
-        <span><em>Subject</em>A question about the tools</span>
-        <span class="body"><i>Hi John, I was trying the CMS Picker and…</i></span>
-      </span>
-      <div class="txt">
-        <h2 id="hi-h"><a class="hi-mail" href="mailto:dev@jsal.io">Say hi<span class="sr-only"> by email</span></a></h2>
-        <p>Questions, tool ideas or SEO talk. Also on <a href="https://github.com/superjsal">GitHub</a>.</p>
-      </div>
-    </section>
-
-    <a class="tile ri" href="/redirects/" data-app>
-      <div class="txt">
-        <h2>Redirect Import</h2>
-        <p>Old and new addresses to a redirect file.</p>
-      </div>
-      <div class="clip" aria-hidden="true">
-        <svg class="wm" viewBox="0 0 32 32" width="180" height="180"><g class="s"><path d="M9.35 8.65H22.65a2.45 2.45 0 0 1 2.45 2.45V20.9a2.45 2.45 0 0 1-2.45 2.45H9.35a2.45 2.45 0 0 1-2.45-2.45V11.1a2.45 2.45 0 0 1 2.45-2.45zM10.75 20.55V18.94C10.75 16.28 12.15 14.95 14.6 14.95H15.3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.36 14.95L15.16 11.87V18.03z" fill="currentColor" stroke="currentColor" stroke-width="1.45" stroke-linejoin="round"/></g><path class="g" d="M21.67 13.27l1.68 1.68-1.68 1.68-1.68-1.68z"/></svg>
-      </div>
-      <span class="obj paper rs" aria-hidden="true">
-        <span class="rs-head"><b>Your sheet</b><span class="mono">5 rows</span></span>
-        <span class="rs-row"><span class="n mono">2</span><i class="dot ok">✓</i><span class="mono">/about-us/</span><span class="mono">/pages/about</span></span>
-        <span class="rs-row"><span class="n mono">3</span><i class="dot ok">✓</i><span class="mono">/blog/sale</span><span class="mono">/blogs/news/sale</span></span>
-        <span class="rs-row"><span class="n mono">4</span><i class="dot ok">✓</i><span class="mono">mysite.com/faq</span><span class="mono">/pages/faq</span></span>
-        <span class="rs-row"><span class="n mono">5</span><i class="dot bad">!</i><span class="mono bad-cell">/our team</span><span class="mono">/pages/team</span></span>
-        <span class="rs-note">Has a space: /our team</span>
-        <span class="rs-row last"><span class="n mono">6</span><i class="dot out">–</i><span class="mono">/old-promo</span><span class="mono out-cell">Left out</span></span>
-      </span>
-      <span class="obj paper rf" aria-hidden="true"><span class="mono rf-head">shopify-redirects.csv<span>3 ready</span></span><code><span class="ln mute">Redirect from,Redirect to</span><span class="ln">/about-us,/pages/about</span><span class="ln">/blog/sale,/blogs/news/sale</span><span class="ln">/faq,/pages/faq</span></code></span>
-    </a>
-
-    <!-- Site updates: the newest change in each of the three most recently changed parts of the site -->
-    <section id="updates" class="tile now" aria-labelledby="updates-h">
-      <div class="txt">
-        <h2 id="updates-h">Updates</h2>
-        <p>What changed on the site, newest first. <a href="/changelog/">Full changelog <span aria-hidden="true">→</span></a></p>
-      </div>
-      <div class="clip">
-      <svg class="wm" viewBox="0 0 32 32" width="260" height="260" aria-hidden="true"><path class="s" d="M10.5 11V9.5a2.5 2.5 0 0 1 2.5-2.5h11.5a2.5 2.5 0 0 1 2.5 2.5V21a2.5 2.5 0 0 1-2.5 2.5h-1.5M8 11h12.5a2.5 2.5 0 0 1 2.5 2.5v10.5a2.5 2.5 0 0 1-2.5 2.5H8a2.5 2.5 0 0 1-2.5-2.5V13.5A2.5 2.5 0 0 1 8 11zM9.5 18h10M9.5 22h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="g" d="M10.6 12.7l1.8 1.8-1.8 1.8-1.8-1.8z"/></svg>
-      <Updates />
-      </div>
-    </section>
+    <div class="stages">
+      {TOOLS.map((t, i) => (
+        <section class={`stage ${t.id}${i === 0 ? " on" : ""}`} id={t.id} aria-labelledby={`h-${t.id}`}>
+          <h2 id={`h-${t.id}`}>{t.name}</h2>
+          <div class="say">
+            <p>{t.line}</p>
+            <a class="jsal-btn primary go" href={t.href} data-app>{t.cta}<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h12M10 4l5 5-5 5"/></svg></a>
+            <ul class="facts">
+              {t.facts.map((f) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{f}</span></li>)}
+            </ul>
+          </div>
+          <div class="pic">
+            {t.pics.map(([piece, w, h], n) => (
+              <span class={`shot ${n ? "b" : "a"}`}>
+                {Array.from({ length: SPOTS[t.id].vary.includes(piece) ? SPOTS[t.id].states : 1 }, (_, k) => ["light", "dark"].map((theme) => (
+                  <img class={`${theme === "light" ? "lt" : "dk"}${k ? " st" : ""}`} data-state={k || undefined} src={v(`/img/home/${t.id}-${piece}${k ? `-s${k}` : ""}-${theme}.webp`)} alt="" width={w} height={h} loading={i === 0 && !k ? "eager" : "lazy"} decoding="async">
+                )))}
+                {SPOTS[t.id].spots.filter((sp) => sp.piece === piece).map((sp) => sp.href
+                  ? <a class="spot" href={sp.href} data-app aria-label={sp.label} title={sp.label} style={`left:${sp.x}%;top:${sp.y}%;width:${sp.w}%;height:${sp.h}%`}></a>
+                  : <button type="button" class="spot" data-state={sp.state} aria-pressed={sp.state === 0 ? "true" : "false"} aria-label={sp.label} title={sp.label} style={`left:${sp.x}%;top:${sp.y}%;width:${sp.w}%;height:${sp.h}%`}></button>)}
+              </span>
+            ))}
+          </div>
+          {t.id === "cms" && (
+            <nav class="keys" aria-label="Platform guides, as logos">
+              <p>Or read one platform’s guide</p>
+              <ul>{PLATFORMS.map(([id, name]) => <li><a href={`/cms-picker/${id}/`} aria-label={name} title={name}><i style={`--logo: url(/cms-picker/logos/${id}.svg)`}></i></a></li>)}</ul>
+            </nav>
+          )}
+        </section>
+      ))}
+    </div>
+  </div>
   </main>
+
+  <!-- Site updates (the newest change in each of the three most recently changed parts of the site) and email -->
+  <section class="more" id="updates" aria-labelledby="updates-h">
+    <div>
+      <h2 id="updates-h">Updates</h2>
+      <p>What changed, newest first. <a href="/changelog/">Full changelog</a></p>
+    </div>
+    <Updates />
+    <div class="hi">
+      <p>Questions, tool ideas or SEO talk are all welcome. Also on <a href="https://github.com/superjsal">GitHub</a>.</p>
+      <a class="mail" href="mailto:dev@jsal.io">dev@jsal.io</a>
+    </div>
+  </section>
 
   <footer>
     <!-- Platform guides: the CMS Picker's page per platform, in its order, as a quiet row of links -->
-    <nav class="fg" aria-label="Platform guides"><span aria-hidden="true">Platform guides</span><a href="/cms-picker/wordpress/">WordPress</a><a href="/cms-picker/shopify/">Shopify</a><a href="/cms-picker/wix/">Wix</a><a href="/cms-picker/squarespace/">Squarespace</a><a href="/cms-picker/webflow/">Webflow</a><a href="/cms-picker/framer/">Framer</a><a href="/cms-picker/hubspot/">HubSpot CMS</a><a href="/cms-picker/bigcommerce/">BigCommerce</a><a href="/cms-picker/drupal/">Drupal</a><a href="/cms-picker/duda/">Duda</a><a href="/cms-picker/ghost/">Ghost</a><a href="/cms-picker/sanity/">Sanity</a><a href="/cms-picker/square/">Square Online</a><a href="/cms-picker/substack/">Substack</a></nav>
+    <nav class="fg" aria-label="Platform guides"><span aria-hidden="true">Platform guides</span>{PLATFORMS.map(([id, name]) => <a href={`/cms-picker/${id}/`}>{name}</a>)}</nav>
     <span><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>© <span id="y">2026</span> John Salvador</span>
     <nav aria-label="Elsewhere"><a href="/play/">Off the clock</a><a href="/privacy/">Privacy</a><button type="button" class="foot-btn" data-jsal-consent>Analytics</button></nav>
   </footer>
 </div>
 <script is:inline>
 document.getElementById('y').textContent = new Date().getFullYear();
-// Touch screens have no hover: each tile's picture plays once, the first time half the tile is in the middle of the
-// screen (not while the tile above is still being read), and stops before the loop would fade, so it rests as it started
-if (matchMedia('(hover: none)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window) {
-  const seen = new IntersectionObserver((entries) => entries.forEach((e) => {
-    if (!e.isIntersecting) return;
-    seen.unobserve(e.target);
-    // the CMS Picker plays one of its three needs, picked at random, so no platform is always the one shown
-    const cms = e.target.classList.contains('cms');
-    if (cms) e.target.style.setProperty('--fit-start', `${-2.7 * Math.floor(Math.random() * 3)}s`);
-    e.target.classList.add('play');
-    setTimeout(() => e.target.classList.remove('play'), cms ? 2600 : 2900);
-  }), { rootMargin: '-20% 0px -20% 0px', threshold: 0.5 });
-  document.querySelectorAll('.cms, .ir, .cp, .hi, .ri').forEach((tile) => seen.observe(tile));
-}
+// The pictures work: a control in a picture shows the tool as it looks with that control pressed
+document.querySelectorAll('.stage').forEach((stage) => {
+  const spots = [...stage.querySelectorAll('button.spot')];
+  spots.forEach((spot) => spot.addEventListener('click', () => {
+    stage.querySelectorAll('.st').forEach((img) => img.classList.toggle('on', img.dataset.state === spot.dataset.state));
+    spots.forEach((other) => other.setAttribute('aria-pressed', other === spot ? 'true' : 'false'));
+  }));
+});
+// The list becomes tabs: a row shows its tool's stage in place (arrow keys move along the list, and 1 to 4 pick a
+// tool from anywhere on the page). The address keeps the choice (#pick-ir), so a link can open the page on any tool.
+(() => {
+  const list = document.querySelector('.slots'), tabs = [...list.children], stages = [...document.querySelectorAll('.stage')];
+  list.setAttribute('role', 'tablist');
+  const wide = matchMedia('(min-width: 1280px)');
+  const orient = () => list.setAttribute('aria-orientation', wide.matches ? 'vertical' : 'horizontal');
+  orient(); wide.addEventListener('change', orient);
+  stages.forEach((s, i) => { s.setAttribute('role', 'tabpanel'); s.setAttribute('aria-labelledby', tabs[i].id); });
+  let cur = 0, rest = 0, live = false;
+  const box = document.querySelector('.stages');
+  // One gem for the whole list: it slides to the chosen row, half a turn each trip, and lands with a ring
+  const gem = list.appendChild(Object.assign(document.createElement('i'), { className: 'gem' }));
+  gem.setAttribute('aria-hidden', 'true');
+  let turns = 0;
+  const place = (i, moved) => {
+    gem.style.setProperty('--y', `${tabs[i].offsetTop + tabs[i].offsetHeight / 2 - 6}px`);
+    if (!moved) return;
+    gem.style.setProperty('--r', `${45 + 180 * ++turns}deg`);
+    gem.classList.remove('land'); void gem.offsetWidth; gem.classList.add('land');
+  };
+  addEventListener('resize', () => place(cur));
+  const pick = (i, focus) => {
+    // after the first, a pick says which way the list moved, so the new stage's parts arrive from there
+    if (live && i !== cur) { box.style.setProperty('--dir', i < cur ? -1 : 1); box.classList.add('live'); }
+    box.style.setProperty('--bg', `var(--t-${stages[i].id})`);
+    place(i, live && i !== cur);
+    cur = i;
+    tabs.forEach((t, j) => { t.setAttribute('aria-selected', i === j ? 'true' : 'false'); t.tabIndex = i === j ? 0 : -1; });
+    stages.forEach((s, j) => s.classList.toggle('on', i === j));
+    if (focus) tabs[i].focus();
+  };
+  tabs.forEach((t, i) => {
+    t.setAttribute('role', 'tab'); t.setAttribute('aria-controls', stages[i].id);
+    t.addEventListener('click', (e) => { e.preventDefault(); pick(i); history.replaceState(history.state, '', i ? `#pick-${stages[i].id}` : location.pathname + location.search); });
+    t.addEventListener('keydown', (e) => {
+      const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      if (step) { e.preventDefault(); pick((i + step + tabs.length) % tabs.length, true); }
+      if (e.key === ' ') { e.preventDefault(); pick(i); }
+    });
+  });
+  // The mouse wheel over the list steps through it, one tool a notch; past either end the page scrolls as usual
+  list.addEventListener('wheel', (e) => {
+    const to = cur + Math.sign(e.deltaY);
+    if (e.ctrlKey || Math.abs(e.deltaY) <= Math.abs(e.deltaX) || to < 0 || to >= tabs.length) return;
+    e.preventDefault();
+    if (e.timeStamp < rest) return;   // a trackpad sends a stream of small moves: one step, then a short rest
+    rest = e.timeStamp + 220;
+    tabs[to].click();
+  }, { passive: false });
+  // #pick-<tool> names no element, so opening the page on a tool doesn't scroll down to its stage
+  const at = stages.findIndex((s) => `#pick-${s.id}` === location.hash);
+  pick(at < 0 ? 0 : at);
+  live = true;
+  // A first visit, on a wide screen, with motion welcome and nothing picked yet: the gem leans toward the next row
+  try {
+    if (wide.matches && matchMedia('(prefers-reduced-motion: no-preference)').matches && !localStorage.getItem('jsal-pick-hint')) {
+      setTimeout(() => {
+        if (box.classList.contains('live')) return;
+        localStorage.setItem('jsal-pick-hint', '1');
+        gem.classList.add('peek');
+        gem.addEventListener('animationend', () => gem.classList.remove('peek'), { once: true });
+      }, 1500);
+    }
+  } catch (e) {}
+  addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey || e.target.closest('input, textarea, select, [contenteditable]')) return;
+    const n = '1234'.indexOf(e.key);
+    if (e.key.length === 1 && n >= 0) pick(n, true);
+  });
+  // The tour: on a screen wide enough for the list beside or above the stage, with motion welcome, the tools take
+  // turns by themselves, once round, back to where it started. A tool picked by hand ends it; Pause rests it.
+  const pickEl = document.querySelector('.pick'), btn = document.querySelector('.tour-btn');
+  if (matchMedia('(min-width: 700px)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    let steps = 0;
+    const end = () => { pickEl.classList.remove('tour', 'rested'); };
+    const start = () => {
+      pickEl.classList.add('tour');
+      list.addEventListener('animationend', (e) => {
+        if (!pickEl.classList.contains('tour') || e.animationName !== 'turn') return;
+        const next = (cur + 1) % tabs.length;
+        if (++steps >= tabs.length) end();
+        pick(next);
+      });
+      ['click', 'keydown', 'wheel'].forEach((type) => list.addEventListener(type, (e) => { if (e.isTrusted) end(); }, { capture: true }));
+      btn.addEventListener('click', () => {
+        const resting = pickEl.classList.toggle('rested');
+        pickEl.classList.toggle('tour', !resting);
+        btn.setAttribute('aria-pressed', String(resting));
+        btn.textContent = resting ? 'Play the tour' : 'Pause the tour';
+      });
+      const away = new IntersectionObserver(([e]) => pickEl.classList.toggle('away', !e.isIntersecting), { threshold: 0.4 });
+      away.observe(pickEl);
+    };
+    if (document.prerendering) document.addEventListener('prerenderingchange', start, { once: true }); else start();
+  }
+})();
 </script>
 </Page>

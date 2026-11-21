@@ -45,13 +45,15 @@ const LD = `
 
     <!-- Hero: the question and one line; the quiz under it is where the page starts -->
     <section class="hero" id="top" aria-labelledby="hero-h">
-      <p class="byline">Updated <span id="asof"><Fragment set:html={pre.asof} /></span></p>
       <h2 class="hero-title" id="hero-h">Which website platform fits you?</h2>
-      <p class="lede"><span class="n-plats"><Fragment set:html={pre.count} /></span> website builders and CMSs compared on what matters: how easy they are, who looks after them, selling online, leaving later, and getting found on Google and AI search.</p>
+      <div class="hero-say">
+        <p class="lede"><span class="n-plats"><Fragment set:html={pre.count} /></span> website builders and CMSs compared on what matters: how easy they are, who looks after them, selling online, leaving later, and getting found on Google and AI search.</p>
+        <p class="byline">Updated <span id="asof"><Fragment set:html={pre.asof} /></span></p>
+      </div>
     </section>
 
     <section class="block" id="quiz" aria-labelledby="quiz-h">
-      <h2 id="quiz-h"><span class="num"><span class="num-d">01</span> · Find your fit<span class="sr-only">:&nbsp;</span></span>A few questions, then your best matches</h2>
+      <h2 id="quiz-h" class="sr-only">Find your fit: a few questions, then your best matches</h2>
       <div class="qz" id="qz"></div>
     </section>
 
@@ -71,7 +73,7 @@ const LD = `
     </section>
 
     <section class="block panel" id="seo" aria-labelledby="seo-h" hidden="until-found">
-      <h2 id="seo-h"><span class="num"><span class="num-d">02</span> · Compare platforms<span class="sr-only">:&nbsp;</span></span>What can each one do?</h2>
+      <h2 id="seo-h"><span class="num">Compare platforms<span class="sr-only">:&nbsp;</span></span>What can each one do?</h2>
       <div class="plats-head"><span class="plats-label">Compare</span><span class="plats-count" id="plats-count"></span><span class="plats-acts" id="plats-acts"></span></div>
       <div class="plats" id="plats" role="group" aria-label="Platforms to compare"></div>
       <div class="keyrow">

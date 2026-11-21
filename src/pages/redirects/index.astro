@@ -57,7 +57,8 @@ import { v, importmap } from "../../lib/v.mjs";
         <svg class="drop-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h11M11 3l4 4-4 4M20 17H9M13 13l-4 4 4 4"/></svg>
         <p class="drop-title">Paste or drop your redirects</p>
         <p class="drop-sub" data-touch="Copy the old and new address columns from Excel or Google Sheets and tap Paste, or choose a CSV or Excel file.">Copy the old and new address columns from Excel or Google Sheets and press <kbd class="mod-key">Ctrl</kbd> + <kbd>V</kbd> anywhere on this page, or drop a CSV or Excel file here.</p>
-        <p class="drop-links"><button type="button" class="jsal-btn link" id="pasteBtn" hidden>Paste</button><span aria-hidden="true" id="pasteSep" hidden>·</span><button type="button" class="jsal-btn link" id="pickFile">Choose a file</button><span aria-hidden="true">·</span><button type="button" class="jsal-btn link" id="blankSheet">Start with an empty sheet</button><span aria-hidden="true">·</span><button type="button" class="jsal-btn link" id="exampleBtn">Try an example</button><span aria-hidden="true" id="undoSep" hidden>·</span><button type="button" class="jsal-btn link" id="undoClear" hidden>Undo clear</button></p>
+        <p class="drop-go"><button type="button" class="jsal-btn primary" id="pickFile">Choose a file</button><button type="button" class="jsal-btn" id="pasteBtn" hidden>Paste</button></p>
+        <p class="drop-links"><button type="button" class="jsal-btn link" id="blankSheet">Start with an empty sheet</button><span aria-hidden="true">·</span><button type="button" class="jsal-btn link" id="exampleBtn">Try an example</button><span aria-hidden="true" id="undoSep" hidden>·</span><button type="button" class="jsal-btn link" id="undoClear" hidden>Undo clear</button></p>
         <p class="jsal-error" id="dropError" role="alert" hidden></p>
         <div class="drop-desk" id="dropDesk" hidden>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
@@ -65,6 +66,11 @@ import { v, importmap } from "../../lib/v.mjs";
           <p><button type="button" class="jsal-btn link" id="shareBtn">Send this page to my computer</button></p>
         </div>
         <p class="drop-privacy">Your sheet stays in your browser. Nothing is uploaded.</p>
+        <!-- What happens to a sheet, so the empty page says why it's worth adding one -->
+        <div class="drop-does">
+          <p>It does this for you</p>
+          <ul><li>Removes the domain where the platform takes paths</li><li>Flags spaces, long dashes and loops</li><li>Writes each platform’s own import file</li></ul>
+        </div>
         <input type="file" id="fileInput" accept=".csv,.tsv,.txt,.xlsx,text/csv,text/tab-separated-values,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
       </div>
 

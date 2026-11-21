@@ -1,0 +1,159 @@
+{
+ "ir": {
+  "vary": [
+   "work",
+   "sizes"
+  ],
+  "states": 3,
+  "spots": [
+   {
+    "piece": "sizes",
+    "state": 0,
+    "label": "Show the crop at 1200 × 628",
+    "x": 1.29,
+    "y": 5.67,
+    "w": 31.8,
+    "h": 86.3
+   },
+   {
+    "piece": "sizes",
+    "state": 1,
+    "label": "Show the crop at 640 × 420",
+    "x": 33.95,
+    "y": 5.67,
+    "w": 31.8,
+    "h": 86.3
+   },
+   {
+    "piece": "sizes",
+    "state": 2,
+    "label": "Show the image at its own size",
+    "x": 66.62,
+    "y": 5.67,
+    "w": 31.8,
+    "h": 86.3
+   }
+  ]
+ },
+ "cp": {
+  "vary": [
+   "work"
+  ],
+  "states": 2,
+  "spots": [
+   {
+    "piece": "work",
+    "state": 0,
+    "label": "Show the post as text",
+    "x": 74.79,
+    "y": 1.96,
+    "w": 10.06,
+    "h": 3.92
+   },
+   {
+    "piece": "work",
+    "state": 1,
+    "label": "Show the post as HTML",
+    "x": 85.24,
+    "y": 1.96,
+    "w": 12.11,
+    "h": 3.92
+   }
+  ]
+ },
+ "ri": {
+  "vary": [
+   "sheet"
+  ],
+  "states": 5,
+  "spots": [
+   {
+    "piece": "sheet",
+    "state": 0,
+    "label": "Show every row",
+    "x": 3.33,
+    "y": 7.72,
+    "w": 12.2,
+    "h": 4.55
+   },
+   {
+    "piece": "sheet",
+    "state": 1,
+    "label": "Show the rows that are ready",
+    "x": 15.94,
+    "y": 7.72,
+    "w": 15.19,
+    "h": 4.55
+   },
+   {
+    "piece": "sheet",
+    "state": 2,
+    "label": "Show the rows to check",
+    "x": 31.53,
+    "y": 7.72,
+    "w": 15.34,
+    "h": 4.55
+   },
+   {
+    "piece": "sheet",
+    "state": 3,
+    "label": "Show the rows that need you",
+    "x": 47.28,
+    "y": 7.72,
+    "w": 20.76,
+    "h": 4.55
+   },
+   {
+    "piece": "sheet",
+    "state": 4,
+    "label": "Show the rows left out",
+    "x": 68.44,
+    "y": 7.72,
+    "w": 16.9,
+    "h": 4.55
+   }
+  ]
+ },
+ "cms": {
+  "vary": [],
+  "states": 1,
+  "spots": [
+   {
+    "piece": "quiz",
+    "href": "/cms-picker/#quiz?v=6&what=site",
+    "label": "Start the quiz with: A site for my business or work",
+    "x": 4.76,
+    "y": 46.43,
+    "w": 44.76,
+    "h": 20.47
+   },
+   {
+    "piece": "quiz",
+    "href": "/cms-picker/#quiz?v=6&what=store",
+    "label": "Start the quiz with: An online store",
+    "x": 50.48,
+    "y": 46.43,
+    "w": 44.76,
+    "h": 20.47
+   },
+   {
+    "piece": "quiz",
+    "href": "/cms-picker/#quiz?v=6&what=content",
+    "label": "Start the quiz with: A blog, newsletter or publication",
+    "x": 4.76,
+    "y": 69,
+    "w": 44.76,
+    "h": 20.47
+   },
+   {
+    "piece": "quiz",
+    "href": "/cms-picker/#quiz?v=6&what=custom",
+    "label": "Start the quiz with: Something custom",
+    "x": 50.48,
+    "y": 69,
+    "w": 44.76,
+    "h": 20.47
+   }
+  ]
+ }
+}

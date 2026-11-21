@@ -12,8 +12,13 @@ function Shot($url, $out, $w, $h) {
   Write-Output "$out  $((Get-Item $out).Length) bytes"
 }
 
-foreach ($p in "home", "image-resizer", "formatter", "redirects", "cms-picker", "play") {
+foreach ($p in "image-resizer", "formatter", "redirects", "cms-picker") {
   Shot "$($tpl)?p=$p" (Join-Path $site "og\$p.png") 1200 628
+}
+# The home page, Off the clock and the jsal.ui page in their own look (og-play.html)
+$tpl2 = "file:///" + ((Join-Path $here "og-play.html") -replace '\\', '/')
+foreach ($p in "home", "play", "jsal-ui") {
+  Shot "$($tpl2)?p=$p" (Join-Path $site "og\$p.png") 1200 628
 }
 $icon = "file:///" + ((Join-Path $here "icon.html") -replace '\\', '/')
 Shot $icon (Join-Path $site "apple-touch-icon.png") 180 180

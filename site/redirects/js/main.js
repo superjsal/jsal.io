@@ -155,7 +155,7 @@ async function readFile(file) {
 
 // Phones have no Ctrl+V, and nothing on the empty page to hold for a Paste menu, so they get a Paste button that
 // reads what was copied (the browser may ask first); where it can't, a cell of an empty sheet takes the paste instead
-if (matchMedia("(pointer: coarse)").matches) $("pasteBtn").hidden = $("pasteSep").hidden = $("dropDesk").hidden = false;
+if (matchMedia("(pointer: coarse)").matches) $("pasteBtn").hidden = $("dropDesk").hidden = false;
 $("pasteBtn").addEventListener("click", async () => {
   let text = "";
   try { text = await navigator.clipboard.readText(); }
