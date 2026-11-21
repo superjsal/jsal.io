@@ -269,8 +269,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 /* An upright phone: the four tools as a list, each with its name and its job, and the chosen one open under its own
    row (its words and its button; the facts and the picture wait for a wider screen). Tapping another row opens that
    one instead. The list and the stages are laid out together, each stage under its row. */
-/* and a phone held sideways (a short screen), as there the stage is taller than the screen */
-@media (max-width: 699px), (max-height: 500px) and (orientation: landscape) {
+@media (max-width: 699px) {
   .pick { gap: 0; }
   .slots, .stages, .home-js .stages { display: contents; }
   .slot:nth-child(1) { order: 1; } .stage:nth-child(1) { order: 2; }
@@ -293,12 +292,25 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .stage { min-height: 0; padding: var(--jsal-space-24) var(--jsal-space-20) 0; }
   .more { grid-template-columns: minmax(0, 1fr); margin-top: var(--jsal-space-48); gap: var(--jsal-space-32); }
 }
-/* A phone held sideways: the picture beside the tool's line and button, as at the row's full width it'd be twice the
-   screen's height */
-@media (max-height: 500px) and (orientation: landscape) and (min-width: 600px) {
-  .home-js .stage { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); column-gap: var(--jsal-space-20); align-items: start; }
-  .home-js .stage .say { grid-column: 1; grid-row: 1 / span 2; }
-  .home-js .stage .pic { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; }
+/* A phone held sideways (a short screen): the four tools down the left, compact, and the chosen tool beside them,
+   its line and button with its picture at work, so a tap on the left changes the right with no scrolling */
+@media (max-height: 500px) and (orientation: landscape) and (min-width: 700px) {
+  .pick { grid-template-columns: 230px minmax(0, 1fr); gap: var(--jsal-space-16); }
+  .rail { display: flex; flex-direction: column; gap: var(--jsal-space-8); }
+  .slots { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-4); margin-top: 0; }
+  .slot { grid-template-columns: 32px minmax(0, 1fr); gap: var(--jsal-space-8); padding: var(--jsal-space-4) var(--jsal-space-8); }
+  .slot img { width: 32px; height: 32px; }
+  .slot b { font-size: 15px; }
+  .slot-t > span { font-size: 12px; }
+  .more-ui { order: 0; margin-top: var(--jsal-space-4); padding: var(--jsal-space-8); }
+  .more-ui img { width: 32px; height: 32px; }
+  .stage { min-height: 0; padding: var(--jsal-space-20); grid-template-columns: minmax(0, 1fr) 200px; column-gap: var(--jsal-space-20); align-items: start; }
+  .stage :is(h2, .facts, .keys) { display: none; }
+  .say { grid-column: 1; grid-row: 1; padding-top: 0; }
+  .say p { font-size: 15px; }
+  .pic { grid-column: 2; grid-row: 1; min-height: 0; margin: 0; }
+  .pic .shot.a { position: relative; left: 0; top: 0; width: 100%; }
+  .pic .shot.b { display: none; }
 }
 @media (max-width: 520px) { .hello h1 { font-size: 40px; } }
 /* The tour: the chosen row's gold line fills while its turn lasts; it rests while the pointer or the keyboard is on
@@ -309,7 +321,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes turn { to { transform: scaleX(1); } }
 .tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
 .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn { display: inline-flex; }
-@media (max-width: 699px), (max-height: 500px) and (orientation: landscape) { .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn, .slot::after { display: none; } }
+@media (max-width: 699px) { .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn, .slot::after { display: none; } }
 @media (prefers-reduced-motion: reduce) {
   .slot, .more-ui, .keys a, .home-js .stages.live, .st { transition: none; }
   .live .stage.on :is(h2, .say > *, .shot, .keys), .slot[aria-selected="true"]::before, .gem.land, .gem.peek { animation: none; }
@@ -419,7 +431,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
   };
   addEventListener('resize', () => place(cur));
   // one height for every tool: the tallest, measured at this width (not on a phone, where the tools are a list)
-  const roomy = matchMedia('(min-width: 700px) and (not ((max-height: 500px) and (orientation: landscape)))');
+  const roomy = matchMedia('(min-width: 700px)');
   const fit = () => {
     box.style.minHeight = '';
     if (!roomy.matches) return;
@@ -503,7 +515,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
   };
   // where the list opens in place (a phone, or one held sideways), a tapped row is brought to the top of the screen
   // with its tool open under it
-  const listed = matchMedia('(max-width: 699px), (max-height: 500px) and (orientation: landscape)');
+  const listed = matchMedia('(max-width: 699px)');
   const bringUp = (i) => {
     if (!listed.matches) return;
     requestAnimationFrame(() => tabs[i].scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }));
@@ -550,7 +562,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
   // turns by themselves, round and round. A tool picked by hand ends it; Pause rests it; once it has ended, Play
   // the tour starts it again from the tool that's showing.
   const pickEl = document.querySelector('.pick'), btn = document.querySelector('.tour-btn');
-  if (matchMedia('(min-width: 700px) and (not ((max-height: 500px) and (orientation: landscape)))').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+  if (matchMedia('(min-width: 700px)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
     const say = (label, pressed) => { btn.textContent = label; btn.setAttribute('aria-pressed', String(pressed)); };
     const end = () => { pickEl.classList.remove('tour', 'rested'); pickEl.classList.add('toured'); say('Play the tour', false); };
     const start = () => {

@@ -29,7 +29,11 @@ home page work.
   of tabs, then the stage. On upright phones (under 700px) the four tools are a list, each row with its name and
   its job, and the chosen tool opens under its own row in its tint, with its line, its button and its whole picture
   at work scaled to the row (John, 21 Nov 2026, B of three, as without it the list "doesnt show what the tools do";
-  on a phone held sideways the picture sits beside the words); its facts wait for a wider screen; tapping another row opens that one (John, 21 Nov 2026, my pick A of three: it
+  its facts wait for a wider screen). A phone held sideways (landscape, under 500px tall, 700px wide or more) gets
+  the list beside the tool instead (John, 21 Nov 2026, A of two after asking impeccable): the four tools down the
+  left, compact, and the chosen one beside them with its line, button and picture, the whole area about 334px tall,
+  so a tap changes the tool with no scrolling; the tour runs there, the pointer demo doesn't (the Image Resizer's
+  sizes piece isn't shown); tapping another row opens that one (John, 21 Nov 2026, my pick A of three: it
   replaced a dock at the foot of the screen, where only the chosen tool could be read). The list and the stages are
   laid out together with `display: contents` and `order`. Off the clock is a quieter row under the list; it goes to `/play/`, the page that carries
   that name (John, 21 Nov 2026), which links on to jsal.ui.
