@@ -214,8 +214,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     beside it.
   - **The list** (272px, from 1280px) is the addon's menu: Home, and Plan, Craft and Play with their parts. Every row carries "Any level" or "1 to 60"
     (`when` in `src/lib/jsal-ui.mjs`; only the Training and Build planners end at 60). Below 1280px the parts are
-    four to a row above the stage; on upright phones they're a dock that slides sideways and sticks to the foot of
-    the screen while the stage is in view.
+    four to a row above the stage; on upright phones (under 600px) they're a list under their groups' names, each
+    row with its name and when it's useful, and the chosen part opens under its own row with its words and its window
+    (John, 21 Nov 2026, "same treatment" as the home page's list; it replaced a dock at the foot of the screen).
   - **The stage** (the page's sunk fill, the tile corners): the part's name very large, a tag saying when it's
     useful, its headline and line, three ticked points, and its window whole, straight and framed. A narrow window
     (the pals) sits beside the words. Five parts show a clip in place of a still.

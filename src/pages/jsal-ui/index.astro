@@ -24,6 +24,9 @@ const DISCORD = "https://discord.gg/BfUKeCjNeZ";
 // The list: Home on its own, then each group's parts under the group's name
 const LIST = [{ name: null, parts: [HOME_PART] }, ...GROUPS];
 const ALL = LIST.flatMap((g) => g.parts);
+// On a phone the list and the stages are laid out as one: a group's name, then each row with its stage under it
+const ORDER = {};
+LIST.reduce((k, g) => { if (g.name) ORDER[`g:${g.name}`] = k++; g.parts.forEach((p) => { ORDER[p.key] = k; k += 2; }); return k; }, 0);
 // A part whose picture is narrow (the pals) sits beside its words; a wide window sits under them
 const side = (p) => !p.clip && p.shot.w < 600;
 const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
@@ -240,16 +243,24 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .stage, .stage.side { grid-template-columns: minmax(0, 1fr); }
   .stage.side .win { grid-column: 1; }
 }
-/* Upright phones: the list becomes a dock that slides sideways and stays at the foot of the screen while the stage
-   is in view. A whole window would be too small to read, so each shows its top corner at a readable size, cut off
-   by its frame, past the dashboard's menu and title bar */
+/* Upright phones: the parts as a list under their groups' names, each row with its name and when it's useful, and
+   the chosen part open under its own row (its words and its window; the head and the ticked points wait for a wider
+   screen). Tapping another row opens that one. A whole window would be too small to read, so each shows its top
+   corner at a readable size, cut off by its frame, past the dashboard's menu and title bar. */
 @media (max-width: 599px) {
-  .pick { gap: var(--jsal-space-16); }
-  .rail { display: contents; }
-  .stages { order: 1; }
-  .slots { order: 2; position: sticky; bottom: 0; z-index: 2; display: flex; gap: var(--jsal-space-4); overflow-x: auto; margin: 0 calc(var(--jsal-gutter) * -1); padding: var(--jsal-space-8) var(--jsal-gutter) max(var(--jsal-space-8), env(safe-area-inset-bottom, 0px)); background: var(--jsal-bg); border-top: 1px solid var(--jsal-line); }
-  .slot { flex: none; min-height: 44px; }
-  .stage { padding: var(--jsal-space-20); }
+  .pick { gap: 0; }
+  .rail, .slots, .stages { display: contents; }
+  .grp, .slot, .stage { order: var(--o); }
+  .grp { display: block; margin: var(--jsal-space-20) 0 var(--jsal-space-4); }
+  .slot { justify-content: space-between; min-height: 48px; margin-top: var(--jsal-space-4); padding: var(--jsal-space-8) var(--jsal-space-12); border: 0; border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+  .slot i { display: inline; }
+  .slot[aria-selected="true"] { border-radius: var(--jsal-radius-xl) var(--jsal-radius-xl) 0 0; background: var(--jsal-sunk); }   /* style: allow (the row and its open stage are one piece, so it wears the stage's fill) */
+  .slot[aria-selected="true"]::before { display: none; }
+  .tour-btn { order: 99; }
+  .stage { gap: var(--jsal-space-16); padding: var(--jsal-space-4) var(--jsal-space-16) var(--jsal-space-16); border-radius: 0 0 var(--jsal-radius-xl) var(--jsal-radius-xl); }
+  .ui-js .stage :is(.head, .facts) { display: none; }
+  .stage.side .say { gap: var(--jsal-space-16); }
+  .family { padding-top: 0; }
   .win:not(.narrow) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
   .win.home { aspect-ratio: 4 / 5; }   /* taller, so Home's plans show under the trainer visit */
   .win:not(.narrow) :is(img, video) { width: var(--pw, 760px); max-width: none; margin: 0; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
@@ -288,8 +299,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
       <div class="slots" aria-label="jsal.ui's parts">
         {LIST.map((g) => (
           <Fragment>
-            {g.name && <p class="grp" aria-hidden="true">{g.name}</p>}
-            {g.parts.map((p) => <a class="slot" href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><b>{p.label}</b><i>{p.when === "any" ? "Any level" : "1 to 60"}</i></a>)}
+            {g.name && <p class="grp" aria-hidden="true" style={`--o: ${ORDER[`g:${g.name}`]}`}>{g.name}</p>}
+            {g.parts.map((p) => <a class="slot" style={`--o: ${ORDER[p.key]}`} href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><b>{p.label}</b><i>{p.when === "any" ? "Any level" : "1 to 60"}</i></a>)}
           </Fragment>
         ))}
       </div>
@@ -297,7 +308,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     </div>
     <div class="stages">
       {ALL.map((p) => (
-        <section class={`stage${side(p) ? " side" : ""}${p.key === "home" ? " on" : ""}`} id={p.key} aria-labelledby={`${p.key}-h`}>
+        <section class={`stage${side(p) ? " side" : ""}${p.key === "home" ? " on" : ""}`} style={`--o: ${ORDER[p.key] + 1}`} id={p.key} aria-labelledby={`${p.key}-h`}>
           <div class="head">
             <h2 id={`${p.key}-h`}>{p.label}</h2>
             <span class="lv">{p.when === "any" ? "Useful at any level" : "For leveling, 1 to 60"}</span>
