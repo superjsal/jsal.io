@@ -8,12 +8,12 @@
  "lastZone": "Badlands",
  "lastSeen": "2026-11-20",
  "stats": {
-  "hours": 129,
-  "foes": 5025,
-  "quests": 579,
+  "hours": 130,
+  "foes": 5038,
+  "quests": 580,
   "deaths": 34,
-  "miles": 999,
-  "jumps": 23387
+  "miles": 1000,
+  "jumps": 23425
  },
  "levelMinutes": [
   26,
@@ -58,7 +58,7 @@
   232,
   660,
   767,
-  264
+  272
  ],
  "events": [
   {
@@ -134,20 +134,20 @@
  "pet": {
   "name": "Chicago",
   "family": "Cat",
-  "level": 42
+  "level": 43
  },
  "spells": [
   [
    "Arcane Shot",
-   4744
+   4760
   ],
   [
    "Hunter's Mark",
-   3621
+   3634
   ],
   [
    "Serpent Sting",
-   1123
+   1125
   ]
  ],
  "gear": {
@@ -174,7 +174,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 49 / 50"
+     "t": "Durability 47 / 50"
     }
    ]
   },
@@ -288,7 +288,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 98 / 100"
+     "t": "Durability 97 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -410,7 +410,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 73 / 75"
+     "t": "Durability 71 / 75"
     }
    ]
   },
@@ -437,7 +437,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 34 / 35"
+     "t": "Durability 33 / 35"
     },
     {
      "t": "Requires Level 15"
@@ -504,10 +504,6 @@
     },
     {
      "t": "Trinket"
-    },
-    {
-     "t": "Use: Reach into the bag and hope for the best. (10 |4Min:Min; Cooldown)",
-     "tone": "green"
     },
     {
      "t": "\"Not every potion is meant for consumption.\"",
@@ -579,7 +575,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 73 / 75"
+     "t": "Durability 72 / 75"
     },
     {
      "t": "Requires Level 43"
@@ -587,6 +583,11 @@
    ]
   }
  },
- "portrait": "/img/play/vizdenia.webp",
- "gearDate": "2026-11-20"
+ "gearDate": "2026-11-20",
+ "portrait": "/img/play/vizdenia-render.png",
+ "portraitKind": "render",
+ "portraitSize": [
+  1600,
+  1200
+ ]
 }

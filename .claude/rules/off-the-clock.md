@@ -43,12 +43,26 @@ paths:
     "Wearing" block, each name in its quality's colour with the quality in words beside it. The block is styled by
     attributes (`data-worn`, `data-q`), not classes, as it is absent until the addon has saved gear and the checks
     fail a class that no page uses.
-  - **Blizzard's API can't supply a character** (tested with John's API client, 20 Nov 2026). Forever's game data
-    answers under undocumented `forever` namespaces (`static-forever-us` gave 9 classes), but Forever has no realms
-    in the API (the realm list is 404, realm search returns none), so a profile has no address: every guess at
-    `profile-forever-us` was 404. Rerun `private\blizzard-test2.py` if Blizzard adds it; the secret is John's, set
-    in his own terminal, never in chat or a file. So there is no automatic portrait: it would be a screenshot he
-    picks.
+  - **The portrait is Blizzard's own render of the character** (John, 20 Nov 2026: "Yes, official render"), the
+    picture its armory shows of her in what she wears now: a public address by realm and character number
+    (`RENDERS` in the exporter; hers is realm 251, read from her armory page,
+    `worldofwarcraft.blizzard.com/en-us/forever/us/armory/character/vizdenia-trueshot`). The exporter fetches it on
+    every run, as it changes with the gear, and saves it as served (a 1600 x 1200 PNG with her small in the
+    middle); CSS draws it large and places it so she fills the frame, with the level and class under her feet. A
+    screenshot at `site/img/play/<name>.webp` is the fallback when there is no render.
+  - **What is worn, and each item's tooltip, come from John's own small addon,** `jsalGear` (in `private\jsal-gear`,
+    linked into the game's AddOns; saved as `jsalGearDB.equipped`, per character, in `jsalGear.lua` beside the
+    journal's file). It was first built into jsal.ui and taken out again (John, 20 Nov 2026: "keep it mine only"),
+    so no other player's game saves gear. The exporter reads that file and falls back to the journal's file only
+    until the addon has saved. A tooltip is the game's own lines with their colours (green, the game's yellow,
+    grey); a crafted item's "Made by" line is never published, as it names another player. Blizzard's page for an
+    item is the fallback tooltip, and half of them answer 404.
+  - **Blizzard's API** has Forever's game data under undocumented `forever` namespaces (`static-forever-us`: items,
+    icons), which is where the item icons come from. Its character profile was tested on 20 Nov 2026 with the wrong
+    realm (91, the game's folder; the armory files her under 251) and found nothing: the armory shows item levels,
+    health, mana, attributes, crit, talents and Skinning, so the profile API very likely answers with the right
+    realm. Not retested; none of that is on the page. The secret is John's, set in his own terminal, never in chat
+    or a file.
   - Numbers here are the character's own play, so the jsal.ui page's rule against counting Forever's game data
     doesn't apply to them.
 

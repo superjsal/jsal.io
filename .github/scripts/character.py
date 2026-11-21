@@ -20,6 +20,10 @@ from pathlib import Path
 
 NAME = sys.argv[1] if len(sys.argv) > 1 else 'Vizdenia'
 CLASS = sys.argv[2] if len(sys.argv) > 2 else 'Hunter'   # the journal doesn't record the class
+# Blizzard's own picture of a character in what it wears now, as its armory shows it: a public address, by the
+# character's realm and number there (read from the character's armory page). Fetched on every run, as it changes
+# with the gear, and saved exactly as served.
+RENDERS = {'Vizdenia': 'https://render.worldofwarcraft.com/forever-us/character/251/27529979-main-raw.png'}
 ROOT = Path(__file__).resolve().parents[2]
 SAVED = r'C:\Program Files (x86)\World of Warcraft\_forever_\WTF\Account\*\*\*\SavedVariables\jsalUI.lua'
 # The journal's kinds of entry that are about the character alone
@@ -76,7 +80,11 @@ levels = {int(k): v for k, v in journal['levels'].items()}
 minutes = [round(levels[k]['seconds'] / 60) for k in sorted(levels)]
 events = [journal['events'][k] for k in sorted(journal['events']) if journal['events'][k].get('k') in KINDS]
 last = events[-1]
-worn = db.get('equipped') or {}
+# What is worn is saved by John's own small addon (jsalGearDB, in jsalGear.lua beside the journal's file), in the
+# shape jsal.ui first saved it in; the journal's file is read for it only until that addon has saved.
+gear_file = Path(path).with_name('jsalGear.lua')
+own_gear = parse(gear_file.read_text(encoding='utf-8')).get('jsalGearDB', {}).get('equipped') if gear_file.exists() else None
+worn = own_gear or db.get('equipped') or {}
 
 
 API = 'https://us.api.blizzard.com/data/wow'
@@ -245,10 +253,32 @@ out = {
     'spells': [[spell, n] for spell, n in sorted(journal.get('spells', {}).items(), key=lambda s: -s[1])[:3]],
     # each slot that holds something, by the addon's name for the slot; absent until the addon has saved it
     'gear': {slot: {'name': items[slot]['name'], 'quality': QUALITY.get(items[slot].get('quality'), 'common'), 'icon': icons.get(items[slot].get('id')), 'tip': tips.get(items[slot].get('id'))} for slot in SLOTS if slot in items} or None,
-    # a picture of the character, when John has put one at site/img/play/<name>.webp
-    'portrait': f'/img/play/{NAME.lower()}.webp' if (ROOT / 'site' / 'img' / 'play' / f'{NAME.lower()}.webp').exists() else None,
+    # a picture of the character: Blizzard's own render when there is one, else a screenshot John has put at
+    # site/img/play/<name>.webp
     'gearDate': day(worn['at']) if items and worn.get('at') else None,
 }
+def portrait():
+    play = ROOT / 'site' / 'img' / 'play'
+    render, shot = play / f'{NAME.lower()}-render.png', play / f'{NAME.lower()}.webp'
+    url = RENDERS.get(NAME)
+    if url and re.fullmatch(r'https://render\.worldofwarcraft\.com/[a-z\-]+/character/\d+/\d+-main-raw\.png', url):
+        picture = ask(url)
+        if picture and picture[:8] == b'\x89PNG\r\n\x1a\n':
+            if not render.exists() or render.read_bytes() != picture:
+                play.mkdir(parents=True, exist_ok=True)
+                render.write_bytes(picture)
+                print(f'Portrait: saved Blizzard\'s render of {NAME}.')
+        elif not render.exists():
+            print(f'Portrait: Blizzard\'s render of {NAME} could not be fetched ({why[0] or "not a picture"}).')
+    if render.exists():
+        size = [int.from_bytes(render.read_bytes()[16:20], 'big'), int.from_bytes(render.read_bytes()[20:24], 'big')]
+        return {'portrait': f'/img/play/{render.name}', 'portraitKind': 'render', 'portraitSize': size}
+    if shot.exists():
+        return {'portrait': f'/img/play/{shot.name}', 'portraitKind': 'photo', 'portraitSize': [621, 1095]}
+    return {'portrait': None}
+
+
+out.update(portrait())
 bare = [g['name'] for g in (out['gear'] or {}).values() if not g.get('tip')]
 if bare: print(f"Tooltips: {len(bare)} worn item(s) have none yet ({', '.join(bare[:4])}{'…' if len(bare) > 4 else ''}). The addon saves them as you play: log in, then log out, and run this again.")
 target = ROOT / 'src' / 'data' / 'character.json'

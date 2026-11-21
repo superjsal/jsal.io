@@ -364,8 +364,12 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 /* with a picture of the character, the picture fills the middle and the level and class sit on its foot, in the
    dark theme's colours whatever the page's, over a shade so they read on it */
 .emblem[data-pic] { position: relative; overflow: hidden; isolation: isolate; align-content: end; min-height: 420px; padding: var(--jsal-space-16); color: var(--jsal-ink); }
-.emblem[data-pic] img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 8%; }
-.emblem[data-pic]::after { content: ""; position: absolute; inset: 45% 0 0; z-index: -1; background: linear-gradient(to top, rgb(17 19 24 / 0.92), rgb(17 19 24 / 0)); }   /* style: allow (a shade over the picture's foot, for the words on it) */
+.emblem[data-pic="photo"] img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 8%; }
+/* Blizzard's own render of the character is a wide, clear picture with her small in its middle: it is drawn large
+   and placed so she fills the frame (the file itself is as served), and the level and class sit under her feet in
+   the page's own colours */
+.emblem[data-pic="render"] img { position: absolute; left: var(--px, -122%); top: var(--py, -34%); z-index: -1; width: var(--pw, 360%); max-width: none; height: auto; }
+.emblem[data-pic="photo"]::after { content: ""; position: absolute; inset: 45% 0 0; z-index: -1; background: linear-gradient(to top, rgb(17 19 24 / 0.92), rgb(17 19 24 / 0)); }   /* style: allow (a shade over the picture's foot, for the words on it) */
 .emblem[data-pic] b { font-size: 46px; }
 .weapons { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--jsal-space-24); padding-top: var(--jsal-space-20); border-top: 1px solid var(--plain-line); }
 .sheet-stats { display: grid; gap: var(--jsal-space-24); align-content: start; padding: var(--jsal-space-24) var(--jsal-space-32); border-left: 1px solid var(--plain-line); background: var(--jsal-surface); }
@@ -429,6 +433,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .emblem { grid-column: 1 / -1; order: -1; grid-auto-flow: column; align-items: baseline; gap: var(--jsal-space-12); padding: var(--jsal-space-12); }
   .emblem b { font-size: 40px; }
   .emblem[data-pic] { grid-auto-flow: row; align-items: end; min-height: 0; margin-bottom: var(--jsal-space-8); aspect-ratio: 1 / 1; }
+  .emblem[data-pic="render"] { aspect-ratio: 3 / 4; --pw: 228%; --px: -59%; --py: -32%; }
   .side.r .gear { grid-template-columns: 60px minmax(0, 1fr); text-align: left; }
   /* a tooltip opens under its item, the width of the column */
   .doll .gear .worn-tip { inset: calc(100% + var(--jsal-space-4)) 0 auto 0; width: auto; }
@@ -460,7 +465,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       <div class="sheet-body">
         <div class="doll">
           <div class="side">{LEFT.map(([key, label]) => <div class="gear" data-q={worn(key)?.quality} tabindex={worn(key) ? "0" : undefined} aria-describedby={worn(key) ? `tip-${key}` : undefined}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span>{worn(key) && <span class="worn-tip" role="tooltip" id={`tip-${key}`}><b>{worn(key).name}</b>{(worn(key).tip?.length ? worn(key).tip : [{ t: `${label}, ${worn(key).quality}`, tone: "muted" }]).map((line) => <span data-t={line.tone}>{line.t}{line.r && <i>{line.r}</i>}</span>)}</span>}</div>)}</div>
-          <div class={C.portrait ? "emblem jsal-dark" : "emblem"} data-pic={C.portrait ? "" : undefined}>{C.portrait && <img src={v(C.portrait)} width="621" height="1095" alt={`${C.name}, my ${C.class.toLowerCase()}, as she stands in the game`} decoding="async">}<b>{C.level}</b><span>{C.class}</span>{!C.portrait && <small>WoW Forever</small>}</div>
+          <div class={C.portraitKind === "photo" ? "emblem jsal-dark" : "emblem"} data-pic={C.portrait ? C.portraitKind : undefined}>{C.portrait && <img src={v(C.portrait)} width={C.portraitSize[0]} height={C.portraitSize[1]} alt={`${C.name}, my ${C.class.toLowerCase()}, in what she wears now`} decoding="async">}<b>{C.level}</b><span>{C.class}</span>{!C.portrait && <small>WoW Forever</small>}</div>
           <div class="side r">{RIGHT.map(([key, label]) => <div class="gear" data-q={worn(key)?.quality} tabindex={worn(key) ? "0" : undefined} aria-describedby={worn(key) ? `tip-${key}` : undefined}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span>{worn(key) && <span class="worn-tip" role="tooltip" id={`tip-${key}`}><b>{worn(key).name}</b>{(worn(key).tip?.length ? worn(key).tip : [{ t: `${label}, ${worn(key).quality}`, tone: "muted" }]).map((line) => <span data-t={line.tone}>{line.t}{line.r && <i>{line.r}</i>}</span>)}</span>}</div>)}</div>
           <div class="weapons">{WEAPONS.map(([key, label]) => <div class="gear" data-q={worn(key)?.quality} tabindex={worn(key) ? "0" : undefined} aria-describedby={worn(key) ? `tip-${key}` : undefined}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span>{worn(key) && <span class="worn-tip" role="tooltip" id={`tip-${key}`}><b>{worn(key).name}</b>{(worn(key).tip?.length ? worn(key).tip : [{ t: `${label}, ${worn(key).quality}`, tone: "muted" }]).map((line) => <span data-t={line.tone}>{line.t}{line.r && <i>{line.r}</i>}</span>)}</span>}</div>)}</div>
         </div>
