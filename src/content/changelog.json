@@ -1,4 +1,7 @@
 [
+  {"date": "2026-11-21", "tag": "Site", "short": "A new look, and easier on phones", "text": "A new look across the site: pick a tool on the home page to see it at work, and on phones every tool is listed by name."},
+  {"date": "2026-11-21", "tag": "Off the clock", "short": "My WoW character, on Off the clock", "text": "[Off the clock](/play/) opens with my WoW Forever character: what she wears with the game's tooltips, her talents and professions, and the journey my addon keeps."},
+  {"date": "2026-11-21", "tag": "Off the clock", "text": "On the [jsal.ui](/jsal-ui/) page you can hatch and grow a pal in its pen, in eight scenes, by day or by night with the theme."},
   {"date": "2026-11-19", "tag": "Off the clock", "short": "jsal.ui's page, now in motion", "text": "The [jsal.ui](/jsal-ui/) page shows five parts of the addon in use: short clips that play as you scroll, each with a Pause button."},
   {"date": "2026-11-18", "tag": "Off the clock", "short": "A new look for the jsal.ui page", "text": "The [jsal.ui](/jsal-ui/) page has a new look: the addon's redesigned windows over the game, a card for the latest release, and its Discord."},
   {"date": "2026-11-18", "tag": "Off the clock", "short": "jsal.ui has a Discord server", "text": "[jsal.ui](/jsal-ui/) has a [Discord server](https://discord.gg/BfUKeCjNeZ) for bug reports, ideas and help."},
