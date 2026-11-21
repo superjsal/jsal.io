@@ -160,7 +160,12 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .play li { justify-items: start; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--jsal-surface); text-align: left; }
   .play li + li::before { display: none; }
   .play li[aria-current] { background: var(--jsal-selected-bg); box-shadow: inset 0 0 0 1px var(--jsal-selected-ring); }
-  /* the two buttons share a row, the width of the steps under them */
+  /* the pen comes straight after the words, then the buttons (sharing a row) and the steps */
+  .stage:has(.family) .say { display: contents; }
+  .stage:has(.family) .say > div { order: 1; }
+  .stage:has(.family) .win.pen { order: 2; }
+  .stage:has(.family) .family { order: 3; }
+  .pal { margin-bottom: var(--jsal-space-12); }
   .pal .jsal-btn { flex: 1; justify-content: center; }
 }
 .family figcaption { margin-top: var(--jsal-space-12); padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line-hi); color: var(--jsal-muted); font-size: 13px; }
@@ -489,8 +494,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const fig = document.querySelector('.family');
   if (!fig) return;
   const names = [...fig.querySelectorAll('li')], say = fig.querySelector('figcaption');
-  const cv = Object.assign(document.createElement('canvas'), { width: 220, height: 100 });
-  const W = 220, H = 100, CX = 110, CY = 60, S = 0.75;   // the scene in the art's pixels; where the pal stands; its size
+  const cv = document.createElement('canvas');
+  // the scene in the art's pixels (on a phone, its middle, so the pal shows larger); where the pal stands; its size
+  const W = matchMedia('(max-width: 599px)').matches ? 150 : 220, H = 100, X = (220 - W) / 2, CX = W / 2, CY = 60, S = 0.75;
   const btn = Object.assign(document.createElement('button'), { type: 'button', className: 'jsal-btn primary' });
   const box = Object.assign(document.createElement('div'), { className: 'pal' });
   cv.setAttribute('role', 'img');
@@ -498,6 +504,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   box.append(btn, scene); fig.prepend(box); fig.classList.add('play');
   const pen = fig.closest('.stage').querySelector('.win');
   if (pen) pen.append(cv); else box.prepend(cv);
+  cv.width = W; cv.height = H; cv.style.aspectRatio = `${W} / ${H}`;
   const ctx = cv.getContext('2d');
   const load = (src) => Object.assign(new Image(), { src });
   const SCENES = JSON.parse(fig.dataset.scenes), pics = {};
@@ -523,7 +530,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, W, H);
     const bg = backdrop();
-    if (bg.naturalWidth) ctx.drawImage(bg, 0, 0, W, H, 0, 0, W, H);
+    if (bg.naturalWidth) ctx.drawImage(bg, X, 0, W, H, 0, 0, W, H);
     ctx.setTransform(size * S, 0, 0, size * S, CX, CY - lift);
     if (at < 2) {
       const n = Math.min(9, Math.floor(frame)), t = n < 9 ? melt(frame) : 0;
