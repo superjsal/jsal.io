@@ -227,7 +227,22 @@
     }, { timeout: 2000 });
     if (document.readyState === 'complete') fetchIt(); else addEventListener('load', fetchIt, { once: true });
   }
-  const askConsent = () => { if (europe && !saved()) consentCard(); loadGA(); };
+  // Cloudflare Web Analytics: a count of page views with no cookies and nothing kept about the visitor, so it needs
+  // no consent and also counts people whose browsers block Google's script. Live site only, fetched once idle.
+  let countLoaded = false;
+  function loadCount() {
+    if (countLoaded || !live) return;
+    countLoaded = true;
+    const fetchIt = () => (window.requestIdleCallback || setTimeout)(() => {
+      const s = document.createElement('script');
+      s.type = 'module';
+      s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+      s.dataset.cfBeacon = '{"token": "5836fa63c774464a947712ac467d55ce"}';
+      document.head.append(s);
+    }, { timeout: 2000 });
+    if (document.readyState === 'complete') fetchIt(); else addEventListener('load', fetchIt, { once: true });
+  }
+  const askConsent = () => { if (europe && !saved()) consentCard(); loadGA(); loadCount(); };
   const whenReady = (fn) => (document.body ? fn() : addEventListener('DOMContentLoaded', fn, { once: true }));
   if (document.prerendering) document.addEventListener('prerenderingchange', () => whenReady(askConsent), { once: true });
   else whenReady(askConsent);

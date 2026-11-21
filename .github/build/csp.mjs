@@ -35,7 +35,7 @@ export function inlineHashes(dir) {
 }
 
 function policy(hashes, unsafeEval = false) {
-  const script = ["'self'", ...hashes, 'https://www.googletagmanager.com', 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/'];
+  const script = ["'self'", ...hashes, 'https://www.googletagmanager.com', 'https://static.cloudflareinsights.com', 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/'];
   if (unsafeEval) script.push("'unsafe-eval'");
   return [
     "default-src 'self'",
@@ -43,7 +43,7 @@ function policy(hashes, unsafeEval = false) {
     "style-src 'self' 'unsafe-inline'",
     `img-src 'self' data: blob: ${GA} https://${SUPABASE} https://cdn.discordapp.com`,
     "font-src 'self'",
-    `connect-src 'self' ${GA} https://${SUPABASE} wss://${SUPABASE}`,
+    `connect-src 'self' ${GA} https://cloudflareinsights.com https://${SUPABASE} wss://${SUPABASE}`,
     "worker-src 'self' blob:",
     "frame-src 'none'",
     "object-src 'none'",
