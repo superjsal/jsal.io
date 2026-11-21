@@ -27,7 +27,8 @@ home page work.
   between pages.
 - **Layout:** from 1280px, the list (272px) beside the stage. Below that the headline, then the four tools as a row
   of tabs, then the stage. On upright phones (under 700px) the tools are a dock that sticks to the foot of the
-  screen while the stage is in view. Off the clock (the jsal.ui page) is a quieter row under the list.
+  screen while the stage is in view. Off the clock is a quieter row under the list; it goes to `/play/`, the page that carries
+  that name (John, 21 Nov 2026), which links on to jsal.ui.
 - **A stage wears its tool's tint** (`--t-cms`, `--t-ir`, `--t-cp`, `--t-ri`, defined in the page, light and dark)
   with the name in the tint's deep shade; the chosen row in the list wears the same tint, and the logo's gold gem
   marks it in place of its number. Each tint is also the colour its tool wears on its own page (design-rules.md,
