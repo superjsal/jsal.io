@@ -24,15 +24,13 @@ interface Props {
   cover?: boolean;
   // JetBrains Mono is preloaded where it shows above the fold
   mono?: boolean;
-  // Outfit (jsal.ui's own font) is preloaded on the pages set in it: the home page and the jsal.ui page
-  outfit?: boolean;
   // Google Analytics (with its Consent Mode defaults); off on the team Playbook
   analytics?: boolean;
   bodyAttrs?: Record<string, string | boolean>;
 }
 const {
   title, description, path, robots, ogType = "website", ogTitle = title, ogDescription, ogImage = "home", ogImageAlt,
-  icon = "/favicon.svg", cover = false, mono = true, outfit = false, analytics = true, bodyAttrs = {},
+  icon = "/favicon.svg", cover = false, mono = true, analytics = true, bodyAttrs = {},
 } = Astro.props;
 const url = path && new URL(path, "https://jsal.io").href;
 // A comment inside a {…} block is dropped from the output, so this one is written as raw HTML
@@ -86,10 +84,8 @@ const GTAG_NOTE = `<!-- Google tag (gtag.js): the queue and Consent Mode default
 </Fragment>
 )}
 <link rel="preload" href="/fonts/inter-135e8381.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/lora-95d9beaa.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/lora-italic-8cc91657.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/outfit-6567b335.woff2" as="font" type="font/woff2" crossorigin>
 {mono && <link rel="preload" href="/fonts/jetbrains-mono-1a711438.woff2" as="font" type="font/woff2" crossorigin>}
-{outfit && <link rel="preload" href="/fonts/outfit-6567b335.woff2" as="font" type="font/woff2" crossorigin>}
 <script is:inline>try { var t = localStorage.getItem("jsal-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Colours and top bar: shared styles in /shell.css -->
 <link rel="stylesheet" href={v("/shell.css")}>

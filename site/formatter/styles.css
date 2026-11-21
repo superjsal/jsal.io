@@ -141,7 +141,7 @@ button.check:hover .check-show, button.check:focus-visible .check-show { color: 
 .paste-zone:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }   /* focused: ready to paste */
 /* The tool's own honey on the icon's tile only: behind the whole panel it sat too close to the gold button */
 .paste-icon { width: 56px; height: 56px; border-radius: var(--jsal-radius-xl); display: grid; place-items: center; background: var(--jsal-accent-soft); color: var(--jsal-accent); margin-bottom: var(--jsal-space-8); }
-.paste-title { color: var(--tool-ink); font: 700 30px/1.15 "Lora", Georgia, serif; letter-spacing: -0.015em; }
+.paste-title { color: var(--tool-ink); font: 700 30px/1.15 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.015em; }
 @media (max-width: 720px) { .paste-title { font-size: 24px; } }
 /* The one main way in, as the gold button; it's only there where the browser can read the clipboard */
 .paste-go { margin-top: var(--jsal-space-8); }

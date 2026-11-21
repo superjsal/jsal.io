@@ -18,33 +18,31 @@ is for people working on the site, not visitors; `/design-system/` shows the sam
 
 ## Type
 
-Four fonts, all self-hosted with `@font-face` in `shell.css`. **Outfit** is the jsal.ui addon's own font and sets two
-pages only, the home page and the jsal.ui page (John, 20 Nov 2026): their names, headings and buttons, with Inter
-for everything that is read. The tools and every other page keep the three below.
+Three fonts, all self-hosted with `@font-face` in `shell.css`. Lora, the serif the headings used to be set in, is
+gone from the site (John, 20 Nov 2026: "let's fix it", once the home page and the jsal.ui page were in Outfit and
+the tools' Lora headings no longer matched them). Don't bring a serif back for headings.
 
 | Font | Used for |
 |---|---|
-| **Lora** (serif) | Every H1 and H2 on the public pages: page titles (`.jsal-title`), heroes, section headings, home tile names, "About …" headings, the platform pages' headline and sections, Privacy, the changelog's dates. Also the line a tool leads with: the CMS Picker's quiz question, its verdict line and each result card's name, and the heading on a tool's empty page ("Paste your content"). |
-| **Inter** (`--jsal-font`) | Everything else: body text, buttons, fields, top-bar links, H3s and smaller subheadings ("How to use it", platform names in lists, the platform pages' question headings), and small interface labels under 16px ("Checks", "Output size", "Export"). |
-| **JetBrains Mono** | The small uppercase labels above headings (gold on the site's own pages: `.roles`, Privacy's date line, "Changelog"; muted on the tools: the CMS Picker's `.byline`), code, and keyboard keys. |
+| **Outfit** (the jsal.ui addon's own font) | Every H1 and H2 on the public pages: page titles (`.jsal-title`), section headings, "About …" headings, the platform pages' headline and sections, Privacy, the changelog's dates, and the names and buttons on the home page and the jsal.ui page. Also the line a tool leads with: the CMS Picker's quiz question, its verdict line and each result card's name, and the heading on a tool's empty page ("Paste your content"). |
+| **Inter** (`--jsal-font`) | Everything that is read: body text, buttons, fields, top-bar links, H3s and smaller subheadings ("How to use it", platform names in lists, the platform pages' question headings), and small interface labels under 16px ("Checks", "Output size", "Export"). Outfit is weak at 13 to 15px, so it never sets reading text. |
+| **JetBrains Mono** | The small uppercase labels above headings (gold on the site's own pages: Privacy's date line, "Changelog"; muted on the tools: the CMS Picker's `.byline`), code, and keyboard keys. |
 
-- A title's **gold word** is Lora italic 600 (`.hl`, or `em` on the home page and `/play/`): Clean *Paste*,
-  CMS *Picker*, one *job*, Mostly *Warcraft*, Your *privacy*.
-- **Exception, kept on purpose:** on the platform pages the gold word is "SEO" ("WordPress *SEO*: what you can
-  change, and where"). Lora's italic capitals barely lean, so it reads as a lighter word rather than an
-  obvious italic. It stays because "SEO" is the page's key word.
+- A title's **gold word** is the same Outfit 700, upright, in gold (`.hl`, or `em`): Clean *Paste*, CMS *Picker*,
+  one *job*, Mostly *Warcraft*, Your *privacy*. Outfit has no italic, so the word is marked by colour alone; on the
+  platform pages the gold word is "SEO".
 - **The one very large line** is a stage's name on the home page and the jsal.ui page: Outfit 800, up to 96px on
   the home page and 88px on the jsal.ui page, shrinking with the stage to 40px (`style: allow`). Their headlines
   sit in the list beside it at 30px.
-- **Every other page title is one size:** Lora 700, 46px, line height 1.05, −0.02em, and 40px at 520px and under (
+- **Every other page title is one size:** Outfit 700, 46px, line height 1.05, −0.02em, and 40px at 520px and under (
   Off the clock, Privacy, Changelog, 404, `/design-system/`). The longer titles of the CMS Picker and its platform
   pages also stop at 46px but shrink with the screen to 30px. A short page's empty space beside its title stays
   empty, the reading column's margin, unless something useful belongs there (the 404's links sit beside its
   title on wide screens).
 - Content inside a tool (the visitor's own post in Clean Paste's editor) and the team Playbook's screens keep
   Inter.
-- **Check:** `browser-check.mjs` fails on any visible H1 or H2 of 16px or more that isn't Lora (or Outfit, for the
-  two pages set in it). A new heading style needs Lora, or should be a real H3.
+- **Check:** `browser-check.mjs` fails on any visible H1 or H2 of 16px or more that isn't Outfit. A new heading
+  style needs Outfit, or should be a real H3.
 
 ## Sizes and spacing
 

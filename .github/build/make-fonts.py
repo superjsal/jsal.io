@@ -19,10 +19,8 @@ REFS = [SHELL, ROOT / 'src' / 'layouts' / 'Page.astro']
 # Weight ranges kept (check.py allows 400 to 800); None keeps the file's own range.
 WEIGHTS = {
     'inter': (400, 800),
-    'lora': None,
-    'lora-italic': None,
     'jetbrains-mono': None,
-    'outfit': (400, 800),   # jsal.ui's own font, on the home page and the jsal.ui page
+    'outfit': (400, 800),   # jsal.ui's own font: every page's names and headings
 }
 # Browsers' default features (kern, liga, calt, ccmp, locl, mark…) plus tnum, which font-variant-numeric:
 # tabular-nums asks for. Nothing on the site sets font-feature-settings.

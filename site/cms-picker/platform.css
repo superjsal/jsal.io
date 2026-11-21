@@ -12,15 +12,15 @@
 .pp-crumbs { margin: 0; color: var(--jsal-ink-2); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
 .pp-crumbs a { display: inline-block; padding: var(--jsal-space-4) 0; margin: calc(var(--jsal-space-4) * -1) 0; color: var(--tool-ink); text-underline-offset: 3px; }   /* a 24px target that takes no more of the line, so the title stays put */
 /* Headings in the home page's serif, like the page titles and the CMS Picker's own headings; the gold word italic */
-.pp-title { margin: var(--jsal-space-12) 0 var(--jsal-space-8); color: var(--tool-ink); font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the CMS Picker's heading size */
+.pp-title { margin: var(--jsal-space-12) 0 var(--jsal-space-8); color: var(--tool-ink); font-family: "Outfit", "Segoe UI", system-ui, sans-serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the CMS Picker's heading size */
 /* The platform's logo on a small tile before its name */
 .pp-mark { display: inline-grid; place-items: center; width: 1em; height: 1em; margin-right: var(--jsal-space-12); border-radius: var(--jsal-radius-xl); background: var(--tool-on); vertical-align: -0.12em; }
 .pp-mark .logo { width: 62%; height: 62%; }
-.pp-title-sub { display: block; margin-top: var(--jsal-space-8); color: var(--tool-ink); font: 500 clamp(20px, 2.6vw, 24px)/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }   /* the heading's second line */
-.pp-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
+.pp-title-sub { display: block; margin-top: var(--jsal-space-8); color: var(--tool-ink); font: 500 clamp(20px, 2.6vw, 24px)/1.25 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; }   /* the heading's second line */
+.pp-title .hl { font-style: normal; font-weight: 700; color: var(--jsal-accent); }
 .pp-lede { max-width: 680px; margin: 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.55; }
 .pp-meta { margin: var(--jsal-space-8) 0 0; color: var(--jsal-ink-2); font-size: 13px; }
-.pp-h { margin: var(--jsal-space-40) 0 var(--jsal-space-8); font-family: "Lora", Georgia, serif; font-size: 24px; letter-spacing: -0.01em; }
+.pp-h { margin: var(--jsal-space-40) 0 var(--jsal-space-8); font-family: "Outfit", "Segoe UI", system-ui, sans-serif; font-size: 24px; letter-spacing: -0.01em; }
 .pp-h3 { margin: var(--jsal-space-24) 0 var(--jsal-space-8); font-size: 17px; }
 .pp-sub { margin: 0 0 var(--jsal-space-16); color: var(--jsal-muted); font-size: 14px; }
 
@@ -48,7 +48,7 @@
 /* The short profile: a card of facts beside the title, a label and its value to a row */
 .pp-glance { padding: var(--jsal-space-20) var(--jsal-space-24); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
 @media (max-width: 899px) { .pp-glance { margin-top: var(--jsal-space-40); } }
-.pp-glance-h { margin-bottom: var(--jsal-space-4); color: var(--jsal-ink); font: 700 20px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.pp-glance-h { margin-bottom: var(--jsal-space-4); color: var(--jsal-ink); font: 700 20px/1.25 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; }
 .pp-facts { display: grid; margin: 0; }
 .pp-facts div { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: baseline; gap: var(--jsal-space-12); padding: var(--jsal-space-8) 0; border-top: 1px solid var(--jsal-line); }
 .pp-facts div:first-child { border-top: 0; }

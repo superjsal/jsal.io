@@ -76,7 +76,7 @@ a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) a.tile::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 65%); }
 }
-.tile h2 { margin: var(--jsal-space-2) 0 0; font: 700 30px/1.1 "Lora", Georgia, serif; }
+.tile h2 { margin: var(--jsal-space-2) 0 0; font: 700 30px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; }
 .tile p { margin: 0; }
 
 /* Even line breaks: headings split into balanced lines, paragraphs avoid a lone last word */
@@ -88,8 +88,8 @@ p, li { text-wrap: pretty; }
 .intro { grid-column: 1 / 6; padding: var(--jsal-space-32) 0 0; }
 .roles { display: flex; flex-wrap: wrap; margin: 0 0 var(--jsal-space-20); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
 .roles span + span::before { content: "·"; content: "·" / ""; margin: 0 var(--jsal-space-8); color: var(--jsal-muted); }
-.intro h1 { margin: 0; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }   /* every page title's size, as on the home page */
-.intro h1 em { font-weight: 600; color: var(--jsal-accent); }
+.intro h1 { margin: 0; font: 700 46px/1.05 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; }   /* every page title's size, as on the home page */
+.intro h1 em { font-style: normal; font-weight: 700; color: var(--jsal-accent); }
 .intro p { margin: var(--jsal-space-32) 0 0; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
 
 /* Currently: WoW Forever art behind the text, scaled down but otherwise unaltered as Blizzard's fan-site policy
@@ -104,7 +104,7 @@ p, li { text-wrap: pretty; }
 .now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }   /* style: allow (WoW tile: shade over the art for the text) */
 .now-playing .label { margin-bottom: var(--jsal-space-8); }
 .now-playing .label { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
-.now-playing .big { font: 700 30px/1.08 "Lora", Georgia, serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
+.now-playing .big { font: 700 30px/1.08 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
 .now-playing .row { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-12); }   /* the credit, bottom right */
 .now-playing .credit { font-size: 12px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .desc { margin-top: var(--jsal-space-4) !important; font-size: 15px; }
@@ -129,7 +129,7 @@ p, li { text-wrap: pretty; }
 }
 
 .now { grid-column: 1 / 13; background: var(--plain); }
-.now h2 { margin: 0 0 var(--jsal-space-8); font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
+.now h2 { margin: 0 0 var(--jsal-space-8); font: 700 24px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; color: var(--jsal-accent); }
 .now h3 { display: flex; align-items: baseline; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-8); font-size: 17px; font-weight: 600; color: var(--jsal-accent); }   /* gold like the app links; Site isn't a link, so no underline */
 .now h3 time { font-size: 14px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .now ul { margin: 0; padding: 0; list-style: none; }
@@ -141,7 +141,7 @@ p, li { text-wrap: pretty; }
    where each is earned, in columns as wide as fit) */
 .ach { grid-column: 1 / 13; background: var(--plain); }
 .ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--jsal-space-12); }
-.ach h2 { margin: 0; font: italic 600 24px/1.2 "Lora", Georgia, serif; color: var(--jsal-accent); }
+.ach h2 { margin: 0; font: 700 24px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; color: var(--jsal-accent); }
 .ach-count { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .ach-bar { height: 6px; margin: var(--jsal-space-12) 0 var(--jsal-space-20); border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
 .ach-bar i { display: block; height: 100%; background: var(--jsal-fill); border-radius: inherit; transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }   /* a transform, so filling it doesn't re-lay-out the page; style: allow (the achievements bar filling) */
@@ -183,7 +183,7 @@ p, li { text-wrap: pretty; }
 .mail.pack .label { color: var(--pk-label); }
 .mail.pack .desc { color: var(--pk-text); margin-top: var(--jsal-space-12) !important; }
 .pack-h { display: flex; align-items: center; gap: 14px; padding: 6px 12px 6px 0; border-radius: 30px 8px 8px 30px; background: linear-gradient(var(--lt-hi), var(--lt-low)); box-shadow: inset 0 0 0 1px var(--lt-edge), inset 0 1px 0 var(--lt-shine), 0 2px 4px rgb(0 0 0 / 0.5); }   /* style: allow (part of the backpack drawing) */
-.pack-h h2 { margin: 0; font: 700 24px/1.1 "Lora", Georgia, serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black), 0 0 10px rgb(0 0 0 / 0.6); }
+.pack-h h2 { margin: 0; font: 700 24px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black), 0 0 10px rgb(0 0 0 / 0.6); }
 .portrait { flex: none; width: 64px; height: 64px; margin: -8px 0 -8px -6px; border-radius: 50%; overflow: hidden; border: 4px solid var(--st-rim); box-shadow: 0 0 0 2px var(--st-dark), 0 4px 10px rgb(0 0 0 / 0.7); }   /* style: allow (part of the bag drawing, as drawn) */
 .portrait img, .slot img, .bagtab img { display: block; width: 100%; height: 100%; }
 .bag { position: relative; display: grid; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-well); box-shadow: inset 0 0 0 2px var(--st-dark), inset 0 0 0 3px var(--pk-well-rim), inset 0 2px 12px rgb(0 0 0 / 0.9); }   /* style: allow (part of the backpack drawing) */

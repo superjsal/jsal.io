@@ -34,13 +34,13 @@ body {
 
 /* The title, then one line on what's compared and when it was last checked: beside the title where there's room */
 .hero { display: grid; gap: var(--jsal-space-16) var(--jsal-space-40); margin: var(--jsal-page-top) 0 var(--jsal-space-24); }
-@media (min-width: 1100px) {
+@media (min-width: 1280px) {
   .hero { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
   .hero-title { white-space: nowrap; }
   .hero .lede { font-size: 15px; line-height: 1.5; }
 }
 .byline { margin-top: var(--jsal-space-8); color: var(--jsal-muted); font-size: 13px; }
-.hero-title { color: var(--jsal-ink); font-family: "Lora", Georgia, serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the home page's serif, like the page title */
+.hero-title { color: var(--jsal-ink); font-family: "Outfit", "Segoe UI", system-ui, sans-serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the site's heading font, at the page title's size */
 .lede { max-width: 520px; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.6; }
 
 /* Under the quiz: the cards and the table, each behind a button (app.js opens them) */
@@ -328,7 +328,7 @@ body {
 /* Each section opens on a thin rule with its number, matching 01 · 02 · 03 in the hero */
 .block { margin-bottom: var(--jsal-space-32); padding-top: var(--jsal-space-20); border-top: 1px solid var(--jsal-line-hi); scroll-margin-top: 16px; }
 .block h2 .num { display: block; margin-bottom: var(--jsal-space-8); color: var(--jsal-muted); font-family: var(--jsal-font); font-size: 13px; font-weight: 700; letter-spacing: 0; }   /* the small label stays in Inter */
-.block h2 { margin-bottom: var(--jsal-space-12); color: var(--jsal-ink); font-family: "Lora", Georgia, serif; font-size: 24px; line-height: 1.25; letter-spacing: -0.01em; }
+.block h2 { margin-bottom: var(--jsal-space-12); color: var(--jsal-ink); font-family: "Outfit", "Segoe UI", system-ui, sans-serif; font-size: 24px; line-height: 1.25; letter-spacing: -0.01em; }
 /* "What are you building?" narrows the cards; each is short, in larger text than the grid, since this is what people read */
 .types { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin-bottom: var(--jsal-space-8); }
 .types .chip { padding: var(--jsal-space-8) var(--jsal-space-12); font-size: 15px; }
@@ -415,7 +415,7 @@ body {
   .qz-path-l { display: none; }
   .qz-path .on .qz-path-l { display: block; position: absolute; left: 0; bottom: 0; }
 }
-.qz h3 { color: var(--tool-ink); font: 700 30px/1.15 "Lora", Georgia, serif; letter-spacing: -0.015em; outline: none; }
+.qz h3 { color: var(--tool-ink); font: 700 30px/1.15 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.015em; outline: none; }
 @container (max-width: 759px) { .qz h3 { font-size: 24px; } }
 .qz-hint { margin: var(--jsal-space-8) 0 var(--jsal-space-20); color: var(--jsal-ink-2); font-size: 15px; }
 .qz-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: var(--jsal-space-8); }
@@ -533,7 +533,7 @@ body {
 .qz-card.top { border-color: var(--tool-line); box-shadow: inset 0 0 0 1px var(--tool-line); }   /* the green tag says which wins; gold stays for interaction */
 .qz-head { display: flex; align-items: center; gap: var(--jsal-space-12); }
 .qz-card .logo { flex: none; width: 34px; height: 34px; }
-.qz-card h4 { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-12); color: var(--jsal-ink); font: 700 24px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.qz-card h4 { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-12); color: var(--jsal-ink); font: 700 24px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; }
 .fitp { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font: 700 12px/1.5 var(--jsal-font); letter-spacing: 0; }
 .fitp.low { background: var(--jsal-line); color: var(--jsal-ink-2); }   /* the closest, not a fit: neutral, not green */
 /* Before the matches that lack a must-have the first has built in: a label with a rule above, like a group heading */
@@ -592,7 +592,7 @@ body {
 .qz-verdict { display: grid; justify-items: start; gap: var(--jsal-space-12); padding: var(--jsal-space-32) var(--jsal-space-40); border-radius: var(--jsal-radius-xl); background: var(--tool-tint); }
 .qz-verdict-eye { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--tool-on); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
 .qz-verdict-eye.close { color: var(--jsal-ink-2); }
-.qz-verdict-line { max-width: 30ch; color: var(--tool-ink); font: 700 30px/1.2 "Lora", Georgia, serif; letter-spacing: -0.015em; text-wrap: balance; }
+.qz-verdict-line { max-width: 30ch; color: var(--tool-ink); font: 700 30px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.015em; text-wrap: balance; }
 .qz-verdict .qz-nav { margin-top: var(--jsal-space-8); }
 @media (max-width: 720px) {
   .qz-verdict { padding: var(--jsal-space-24) var(--jsal-space-20); }

@@ -12,7 +12,7 @@ import { v } from "../../lib/v.mjs";
 >
 <style is:inline slot="head">
 /* Layout: one reading column (the site's --jsal-col), sections numbered 01–09 because the brief orders them
-   that way, each opened by a mono eyebrow and a Lora heading, like every other page here. */
+   that way, each opened by a mono eyebrow and a Outfit heading, like every other page here. */
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
@@ -25,13 +25,13 @@ a { color: inherit; }
 /* Hero */
 .hero { padding: var(--jsal-space-64) 0 var(--jsal-space-40); border-bottom: 1px solid var(--jsal-line); }
 .eyebrow { margin: 0 0 var(--jsal-space-12); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jsal-accent); }
-.hero h1 { margin: 0; max-width: 14em; font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; text-wrap: balance; }
+.hero h1 { margin: 0; max-width: 14em; font: 700 46px/1.05 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; text-wrap: balance; }
 @media (max-width: 520px) { .hero h1 { font-size: 40px; } }
-.hero h1 em { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
+.hero h1 em { font-style: normal; font-weight: 700; color: var(--jsal-accent); }
 .hero .lede { margin: var(--jsal-space-24) 0 0; max-width: 36em; font-size: 17px; line-height: 1.6; color: var(--jsal-ink-2); text-wrap: pretty; }
 .facts { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8) var(--jsal-space-32); margin: var(--jsal-space-32) 0 0; padding: 0; list-style: none; }
 .facts li { display: grid; gap: var(--jsal-space-2); }
-.facts b { font: 700 24px/1.1 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.facts b { font: 700 24px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; }
 .facts span { font-size: 13px; color: var(--jsal-muted); }
 .toc { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8) var(--jsal-space-20); margin: var(--jsal-space-32) 0 0; padding: 0; list-style: none; font-size: 13px; }
 .toc a { color: var(--jsal-muted); text-decoration: none; }
@@ -41,7 +41,7 @@ a { color: inherit; }
 /* Sections */
 .sec { padding: var(--jsal-space-64) 0 var(--jsal-space-8); scroll-margin-top: 16px; }
 .sec + .sec { border-top: 1px solid var(--jsal-line); }
-.sec h2 { margin: 0 0 var(--jsal-space-8); font: 700 30px/1.15 "Lora", Georgia, serif; letter-spacing: -0.02em; text-wrap: balance; }
+.sec h2 { margin: 0 0 var(--jsal-space-8); font: 700 30px/1.15 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; text-wrap: balance; }
 .sec .intro { margin: 0 0 var(--jsal-space-32); max-width: 42em; font-size: 17px; line-height: 1.6; color: var(--jsal-ink-2); text-wrap: pretty; }
 .sec h3 { margin: var(--jsal-space-40) 0 var(--jsal-space-12); font-size: 17px; font-weight: 600; color: var(--jsal-ink); }
 .sec h3:first-of-type { margin-top: 0; }
@@ -60,14 +60,14 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 /* Principle cards (02) */
 .principles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--jsal-space-12); margin: 0; padding: 0; list-style: none; }
 .principles li { display: flex; flex-direction: column; padding: var(--jsal-space-20) var(--jsal-space-20) var(--jsal-space-16); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); }
-.principles b { display: block; margin-bottom: var(--jsal-space-8); font: 700 17px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.principles b { display: block; margin-bottom: var(--jsal-space-8); font: 700 17px/1.25 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; }
 .principles span { display: block; font-size: 14px; line-height: 1.5; color: var(--jsal-ink-2); }
 .principles small { display: block; margin-top: auto; padding-top: var(--jsal-space-8); font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--jsal-muted); }
 
 /* Colour (03): the swatch board shows both themes at once, so it carries literal values on purpose */
 .themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--jsal-space-16); }
 .theme { padding: var(--jsal-space-20); border-radius: var(--jsal-radius-lg); border: 1px solid var(--t-line); background: var(--t-bg); color: var(--t-ink); }
-.theme h3 { margin: 0 0 var(--jsal-space-12); font: 700 17px/1.2 "Lora", Georgia, serif; color: inherit; }
+.theme h3 { margin: 0 0 var(--jsal-space-12); font: 700 17px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; color: inherit; }
 .theme h3 small { display: block; margin-top: 3px; font: 500 12px/1.4 "JetBrains Mono", Consolas, monospace; color: var(--t-muted); letter-spacing: 0.04em; text-transform: uppercase; }
 .theme.light { --t-bg: #f3f4f6; --t-surface: #ffffff; --t-sunk: #e6e8ec; --t-ink: #14171c; --t-ink2: #3a404a; --t-muted: #5d6470; --t-line: #d9dde3; --t-linehi: #b4bac4; --t-accent: #7e5a00; --t-accentsoft: #f6e9c8; --t-fill: #e3b04b; --t-ok: #296d36; --t-oksoft: #dfeedb; --t-warn: #9a4a1c; --t-warnsoft: #f5e0d0; --t-bad: #b32d2a; --t-badsoft: #f7dcd9; --t-info: #2f5db5; --t-infosoft: #dfe6f5; --t-onfill: #14171c; --t-ring: rgba(126, 90, 0, 0.4); --t-markedge: transparent; color-scheme: light; }   /* style: allow (swatch board: the light theme's real values, from shell.css) */
 .theme.dark { --t-bg: #111318; --t-surface: #191c23; --t-sunk: #22262f; --t-ink: #ece6d6; --t-ink2: #cfc8b6; --t-muted: #9a9688; --t-line: #2a2e38; --t-linehi: #3d424e; --t-accent: #e3b04b; --t-accentsoft: #2c2618; --t-fill: #e3b04b; --t-ok: #7fbf7a; --t-oksoft: #1c2a1d; --t-warn: #d9773f; --t-warnsoft: #34231b; --t-bad: #ffb3bb; --t-badsoft: #3a1b22; --t-info: #8fb1ff; --t-infosoft: #1d2540; --t-onfill: #16130c; --t-ring: rgba(227, 176, 75, 0.35); --t-markedge: #6b7180; color-scheme: dark; }   /* style: allow (swatch board: the dark theme's real values, from shell.css) */
@@ -97,10 +97,10 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .spec { display: grid; gap: var(--jsal-space-24); }
 .spec > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-8); padding-bottom: var(--jsal-space-24); border-bottom: 1px solid var(--jsal-line); }
 .spec .who { font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--jsal-muted); }
-.t-h1 { font: 700 46px/1.05 "Lora", Georgia, serif; letter-spacing: -0.02em; }
-.t-h1 em { font-weight: 600; color: var(--jsal-accent); }
-.t-tile { font: 700 30px/1.1 "Lora", Georgia, serif; }
-.t-h2 { font: 700 24px/1.25 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.t-h1 { font: 700 46px/1.05 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; }
+.t-h1 em { font-style: normal; font-weight: 700; color: var(--jsal-accent); }
+.t-tile { font: 700 30px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; }
+.t-h2 { font: 700 24px/1.25 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; }
 .t-h3 { font: 600 17px/1.4 var(--jsal-font); }
 .t-body { font: 15px/1.6 var(--jsal-font); color: var(--jsal-ink-2); max-width: 40em; }
 .t-lede { font: 17px/1.6 var(--jsal-font); color: var(--jsal-ink-2); max-width: 36em; }
@@ -212,7 +212,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .chk.warn .ico { color: var(--jsal-warn); background: var(--jsal-warn-soft); }
 .chk .show { margin-left: auto; align-self: center; font-size: 12px; font-weight: 600; color: var(--jsal-muted); }
 .card { padding: var(--jsal-space-16) var(--jsal-space-20); border: 1px solid var(--jsal-line); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); max-width: 420px; }
-.card h3 { margin: 0 0 var(--jsal-space-4); font: 700 17px/1.2 "Lora", Georgia, serif; }
+.card h3 { margin: 0 0 var(--jsal-space-4); font: 700 17px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; }
 .card p { margin: 0; font-size: 14px; color: var(--jsal-ink-2); }
 .card .foot { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); align-items: center; margin-top: var(--jsal-space-12); }
 .card .cseo { margin-left: auto; color: var(--jsal-accent); font-size: 14px; font-weight: 600; text-underline-offset: 2px; }
@@ -234,7 +234,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .verdict { display: grid; justify-items: start; gap: var(--jsal-space-12); padding: var(--jsal-space-24) var(--jsal-space-32); border-radius: var(--jsal-radius-xl); background: var(--ds-tint); }
 .verdict .eye { margin: 0; padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--ds-on); color: var(--jsal-ok); font-size: 12px; font-weight: 700; }
 .verdict.close .eye { color: var(--jsal-ink-2); }
-.verdict .line { margin: 0; max-width: 30ch; color: var(--ds-ink); font: 700 30px/1.2 "Lora", Georgia, serif; letter-spacing: -0.015em; text-wrap: balance; }
+.verdict .line { margin: 0; max-width: 30ch; color: var(--ds-ink); font: 700 30px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.015em; text-wrap: balance; }
 .verdict .acts { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); }
 /* Your answers: small tiles in a row, a short name over each answer, ticked extras on a line beneath (cms-picker .qz-ans) */
 .ans { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); }
@@ -245,7 +245,7 @@ kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-
 .ans-also { display: flex; align-items: center; gap: var(--jsal-space-8); font-size: 14px; font-weight: 500; }
 .ans-also i { display: grid; place-items: center; width: 16px; height: 16px; border-radius: var(--jsal-radius-sm); background: var(--jsal-fill); color: var(--jsal-on-fill); }
 /* A match that lacks a must-have the first has built in, under a divider; its pill neutral (cms-picker .qz-div, .fitp) */
-.match { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-12); font: 700 24px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; }
+.match { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-4) var(--jsal-space-12); font: 700 24px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; }
 .fitp { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-pill); background: var(--jsal-ok-soft); color: var(--jsal-ok); font: 700 12px/1.5 var(--jsal-font); letter-spacing: 0; }
 .fitp.low { background: var(--jsal-line); color: var(--jsal-ink-2); }
 .div { max-width: 36em; padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
@@ -313,7 +313,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
 
   <section class="sec" id="brand">
     <p class="eyebrow">01 · Brand overview</p>
-    <h2>A web developer's <em style="font-style:italic;font-weight:600;color:var(--jsal-accent)">workbench</em>, open to anyone.</h2>
+    <h2>A web developer's <em style="font-style:normal;font-weight:700;color:var(--jsal-accent)">workbench</em>, open to anyone.</h2>
     <p class="intro">jsal.io is John Salvador's personal site: a web developer working in technical SEO, publishing the small browser tools he builds for the jobs around a website. Nothing is uploaded, nothing is sold, and the tools do one job each.</p>
     <h3>Identity</h3>
     <p>The name is always written <b>jsal.io</b>, with the <span style="color:var(--jsal-accent);font-weight:700">.io</span> in gold, or <b>John Salvador</b> in full. Never the four letters on their own as a name: a well-known YouTuber uses them. The logo is a lowercase j on a slate tile, its dot a gold gem: the tab icon and the home-screen icon. In the top bar the name stands on its own, in Inter at 700, 18px, tracked slightly tight (−0.02em), with two drawn touches: the j has round ends, the one soft letter (friends say the letter J, then Sal), and the full stop is cut as the gem. On the first page of a visit the name unfolds from the logo: the j's stem rises, its dot pinches off and knocks the gem along to the full stop, and "io" slides out of the landed gem. On the 404 the gem falls from the i and hops along the letter tops to land as the full stop.</p>
@@ -331,7 +331,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
     <h3>Personality</h3>
     <p>Plain-spoken and exact: the copy says what a thing does and who it's for, in words a client would use ("Keep old links working when pages move", not "301 redirect management"). A little playful at the edges: a gamer's touches that never get in the way of the work, such as achievements for using the tools, a game-inventory "Backpack" for contact details, a Warcraft lore sample post in Clean Paste, the home tiles' pictures (Clean Paste's is a raid night note) and the 404's hopping gem.</p>
     <h3>Visual direction</h3>
-    <p>The palette is named in the code as "the home page's Azeroth one": parchment and gold in light mode; dark slate, gold and arcane blue in dark. Serif headings (Lora) over a humanist sans (Inter), with a monospace (JetBrains Mono) for the small labels that sit above headings, gold on the site's own pages and muted on the tools, where gold is kept for what you act on. The result reads as editorial rather than as a SaaS dashboard, which is deliberate: the tools are presented, not marketed.</p>
+    <p>The palette is named in the code as "the home page's Azeroth one": parchment and gold in light mode; dark slate, gold and arcane blue in dark. Serif headings (Outfit) over a humanist sans (Inter), with a monospace (JetBrains Mono) for the small labels that sit above headings, gold on the site's own pages and muted on the tools, where gold is kept for what you act on. The result reads as editorial rather than as a SaaS dashboard, which is deliberate: the tools are presented, not marketed.</p>
     <h3>Audience</h3>
     <p>Writers and editors pasting into a CMS (Clean Paste); anyone resizing images for a site (Image Resizer); people choosing a website platform and the agencies advising them (CMS Picker); anyone moving a site to a new platform, and the SEOs and developers doing the move (Redirect Import); and John's own team, through a sign-in-only Platform Playbook that follows the same rules.</p>
   </section>
@@ -465,11 +465,11 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
   <section class="sec" id="type">
     <p class="eyebrow">04 · Typography</p>
     <h2>A serif that speaks, a sans that works, a mono that labels.</h2>
-    <p class="intro">Three families, all self-hosted as Latin-subset variable fonts with <code>font-display: swap</code>, so nothing blocks the first paint. Lora carries every H1 and H2 on the public pages; Inter carries everything else, down to the smallest interface label; JetBrains Mono is reserved for the small uppercase labels above headings (gold on the site's own pages, muted on the tools), code and keyboard keys. A pre-push check fails any visible H1 or H2 of 16px or more that isn't Lora.</p>
+    <p class="intro">Three families, all self-hosted as Latin-subset variable fonts with <code>font-display: swap</code>, so nothing blocks the first paint. Outfit carries every H1 and H2 on the public pages; Inter carries everything else, down to the smallest interface label; JetBrains Mono is reserved for the small uppercase labels above headings (gold on the site's own pages, muted on the tools), code and keyboard keys. A pre-push check fails any visible H1 or H2 of 16px or more that isn't Outfit.</p>
     <div class="spec">
-      <div><span class="who">Lora 700 · page title · 46px / 1.05 · −0.02em</span><div class="t-h1">Small tools that do <em>one job</em> well.</div><span class="t-small">The gold word is Lora italic 600, the site's one typographic flourish. Clean <em style="color:var(--jsal-accent)">Paste</em>, CMS <em style="color:var(--jsal-accent)">Picker</em>, Your <em style="color:var(--jsal-accent)">privacy</em>.</span></div>
-      <div><span class="who">Lora 700 · tile name · 30px / 1.1</span><div class="t-tile">Image Resizer</div></div>
-      <div><span class="who">Lora 700 · section heading · 24px / 1.25 · −0.01em</span><div class="t-h2">What can each one do?</div></div>
+      <div><span class="who">Outfit 700 · page title · 46px / 1.05 · −0.02em</span><div class="t-h1">Small tools that do <em>one job</em> well.</div><span class="t-small">The gold word is the same Outfit 700, in gold. Clean <em style="color:var(--jsal-accent)">Paste</em>, CMS <em style="color:var(--jsal-accent)">Picker</em>, Your <em style="color:var(--jsal-accent)">privacy</em>.</span></div>
+      <div><span class="who">Outfit 700 · tile name · 30px / 1.1</span><div class="t-tile">Image Resizer</div></div>
+      <div><span class="who">Outfit 700 · section heading · 24px / 1.25 · −0.01em</span><div class="t-h2">What can each one do?</div></div>
       <div><span class="who">Inter 600 · H3 and subheadings · 17px</span><div class="t-h3">How to use it</div></div>
       <div><span class="who">Inter 400 · lede · 17px / 1.6</span><div class="t-lede">Start with the CMS Picker: answer a few questions to see which website platform fits you, and what it lets you change for SEO.</div></div>
       <div><span class="who">Inter 400 · body · 15px / 1.6 · ink-2</span><div class="t-body">It turns content copied from Word, Google Docs or a web page into clean, minimal HTML, keeping the real structure: headings, lists, links, tables, bold and italic.</div></div>
@@ -482,18 +482,18 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
       <span style="font:500 20px var(--jsal-font)">Inter 500<small>secondary buttons, mono labels</small></span>
       <span style="font:600 20px var(--jsal-font)">Inter 600<small>buttons, chips, H3s</small></span>
       <span style="font:700 20px var(--jsal-font)">Inter 700<small>wordmark, tags</small></span>
-      <span style="font:700 20px 'Lora',Georgia,serif">Lora 700<small>H1, H2</small></span>
-      <span style="font:italic 600 20px 'Lora',Georgia,serif;color:var(--jsal-accent)">Lora italic 600<small>the gold word</small></span>
+      <span style="font:700 20px 'Outfit','Segoe UI',sans-serif">Outfit 700<small>H1, H2</small></span>
+      <span style="font:700 20px 'Outfit','Segoe UI',sans-serif;color:var(--jsal-accent)">Outfit 700<small>the gold word, in gold</small></span>
     </div>
     <h3>The scale, as the pages set it</h3>
     <div class="table-wrap" tabindex="0" role="region" aria-label="The type scale"><table class="scale">
       <thead><tr><th>Role</th><th>Size</th><th>Face, weight</th><th>Where</th></tr></thead>
       <tbody>
-        <tr><td>Page title</td><td>46px (40px on phones)</td><td>Lora 700, −0.02em</td><td>Home, Off the clock, Privacy, Changelog, 404, this page</td></tr>
-        <tr><td>Long page title</td><td>clamp(30px, 4.6vw, 46px)</td><td>Lora 700, −0.02em</td><td>The CMS Picker's heading and /cms-picker/&lt;platform&gt;/, which shrink further on phones</td></tr>
-        <tr><td>Tile name, big callout</td><td>30px (24px callout on phones)</td><td>Lora 700, in the tile's deep shade</td><td>Home tiles, the line over Off the clock's art, a quiz question, the verdict line, a tool's empty-page heading</td></tr>
-        <tr><td>Section heading</td><td>24px</td><td>Lora 700 (italic 600 for Currently, Achievements)</td><td>Every H2, a result card's name, the changelog's dates</td></tr>
-        <tr><td>Tool title in the top bar</td><td>20px (17px on phones)</td><td>Lora 700, gold word italic, after the tool's 22px icon</td><td>.jsal-title; the platform cards' names</td></tr>
+        <tr><td>Page title</td><td>46px (40px on phones)</td><td>Outfit 700, −0.02em</td><td>Home, Off the clock, Privacy, Changelog, 404, this page</td></tr>
+        <tr><td>Long page title</td><td>clamp(30px, 4.6vw, 46px)</td><td>Outfit 700, −0.02em</td><td>The CMS Picker's heading and /cms-picker/&lt;platform&gt;/, which shrink further on phones</td></tr>
+        <tr><td>Tile name, big callout</td><td>30px (24px callout on phones)</td><td>Outfit 700, in the tile's deep shade</td><td>Home tiles, the line over Off the clock's art, a quiz question, the verdict line, a tool's empty-page heading</td></tr>
+        <tr><td>Section heading</td><td>24px</td><td>Outfit 700 (in gold for Currently, Achievements)</td><td>Every H2, a result card's name, the changelog's dates</td></tr>
+        <tr><td>Tool title in the top bar</td><td>20px (17px on phones)</td><td>Outfit 700, gold word italic, after the tool's 22px icon</td><td>.jsal-title; the platform cards' names</td></tr>
         <tr><td>Lede, H3</td><td>17px</td><td>Inter 400 for ledes, 600 or 700 for H3s</td><td>Under titles; How to use it, a panel's heading</td></tr>
         <tr><td>Body</td><td>15px / 1.6</td><td>Inter 400</td><td>Everywhere</td></tr>
         <tr><td>Controls, boxed tips</td><td>14px</td><td>Inter 600 (controls) or 400</td><td>Buttons, top-bar links, answer tiles, notes</td></tr>
@@ -678,7 +678,7 @@ footer.end a { color: var(--jsal-accent); text-underline-offset: 2px; }
         <div class="ref-row"><span>A lead</span><div><div class="verdict"><p class="eye">A clear lead</p><p class="line">Wix is ahead of Squarespace for what you need.</p><div class="acts"><a class="jsal-btn primary" href="/cms-picker/">Compare these side by side</a></div></div></div></div>
         <div class="ref-row"><span>A close call</span><div><div class="verdict close"><p class="eye">A close call</p><p class="line">Squarespace is slightly ahead of Wix for your answers, and either would work.</p></div></div></div>
         <dl class="ref-rules">
-          <div><dt>Use it for</dt><dd>The first thing read in a result: how sure in the small tag, how far ahead in Lora, then the result's actions. The band is always the tool's tint; the tag is green for a lead or a winner.</dd></div>
+          <div><dt>Use it for</dt><dd>The first thing read in a result: how sure in the small tag, how far ahead in Outfit, then the result's actions. The band is always the tool's tint; the tag is green for a lead or a winner.</dd></div>
           <div class="no"><dt>Not for</dt><dd>A green tag on a close call: it stays neutral, so green always means one is ahead.</dd></div>
         </dl>
       </article>

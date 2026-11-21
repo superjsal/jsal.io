@@ -4,8 +4,6 @@
 /* Fonts are hosted here (Latin subset of Google's variable files, SIL Open Font Licence, trimmed to the weights and
    features the pages use) so nothing blocks the first paint. Pages preload the ones they show above the fold. */
 @font-face { font-family: "Inter"; font-style: normal; font-weight: 400 800; font-display: swap; src: url(/fonts/inter-135e8381.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Lora"; font-style: normal; font-weight: 400 700; font-display: swap; src: url(/fonts/lora-95d9beaa.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Lora"; font-style: italic; font-weight: 400 700; font-display: swap; src: url(/fonts/lora-italic-8cc91657.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: "Outfit"; font-style: normal; font-weight: 400 800; font-display: swap; src: url(/fonts/outfit-6567b335.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: swap; src: url(/fonts/jetbrains-mono-1a711438.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
@@ -355,8 +353,8 @@ html.jsal-intro [data-jsal-nav] .jsal-io { opacity: 0; }
 html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 [data-jsal-nav].jsal-unfolding .jsal-caret { transition: none; }
 /* Page titles in the home page's serif, the gold word in italic (as "one job" on the home page) */
-.jsal-title { margin: 0; font: 700 20px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
-.jsal-title .hl { font-style: italic; font-weight: 600; color: var(--jsal-accent); }
+.jsal-title { margin: 0; font: 700 20px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-title .hl { font-style: normal; font-weight: 700; color: var(--jsal-accent); }
 /* The tool's own icon before its name, as in the logo menu */
 .jsal-title-ico { display: inline-block; width: 22px; height: 22px; margin-right: var(--jsal-space-8); vertical-align: -4px; }
 @media (max-width: 429px) { .jsal-title-ico { display: none; } }
@@ -403,7 +401,7 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
   font: 15px/1.65 var(--jsal-font); color: var(--jsal-ink-2);
 }
 .jsal-about > * { max-width: 580px; }   /* about 70 characters a line, the comfortable reading length */
-.jsal-about h2 { margin: 0 0 var(--jsal-space-8); font: 700 24px/1.2 "Lora", Georgia, serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
+.jsal-about h2 { margin: 0 0 var(--jsal-space-8); font: 700 24px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; color: var(--jsal-ink); }
 .jsal-about h3 { margin: var(--jsal-space-32) 0 var(--jsal-space-8); font-size: 17px; color: var(--jsal-ink); }
 .jsal-about p { margin: 0 0 var(--jsal-flow); }
 .jsal-about ul, .jsal-about ol { margin: 0 0 var(--jsal-flow); padding-left: 1.3em; }

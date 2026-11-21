@@ -13,8 +13,8 @@ CMS Picker work.
 
 - **The CMS Picker is quiz first:** the platform cards and the comparison table open on request. The quiz follows
   the title directly, with no heading or rule of its own between them (John's pick B of three mockups, 19 Nov 2026):
-  the title on one line with its description and "Updated" date beside it where there's room, then the quiz panel
-  on the tool's lilac tint, the question in Lora. The quiz box
+  the title on one line with its description and "Updated" date beside it from 1280px (below that the column is too narrow for both, and they stack), then the quiz panel
+  on the tool's lilac tint, the question in Outfit. The quiz box
   reserves its first question's height (`.qz` min-height per layout of its four answers) so the rows under it don't
   move at load or between questions; after any change to the answers' wording or layout, measure the first question's
   natural height at 540, 760, 1024 and 1280px and match it (337px from 1280, 381px below, 361px from 759, 509px
@@ -27,7 +27,7 @@ CMS Picker work.
   for when a platform counts as out.
 - **The result isn't one box** (John's pick R1 of two, 19 Nov 2026): each part sits on the page as its own piece.
   A band in the lilac tint leads with how sure (a small tag: green for a lead or a winner, neutral for a close
-  call), how close in a Lora line, and the result's three actions, so Compare is on the first screen; a plain
+  call), how close in an Outfit line, and the result's three actions, so Compare is on the first screen; a plain
   Compare button repeats at the end. The answers are small tiles in a row. The matches sit side by side where the
   panel is 900px or wider (`.qz-row`), each card's five parts (name, summary, facts, reasons, notes) sharing the
   row's lines so a fact reads straight across; one column below that. Facts are rows, the label on the left and

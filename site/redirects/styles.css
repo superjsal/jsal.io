@@ -48,7 +48,7 @@ code, .mono, .file, .cell, .txt, .head-in { font-family: "JetBrains Mono", ui-mo
 .drop:focus-visible { outline: none; box-shadow: var(--jsal-focus-ring); }
 .drop.over { background: var(--jsal-selected-bg); box-shadow: inset 0 0 0 2px var(--jsal-gold-line); }
 .drop-ico { padding: var(--jsal-space-12); width: 56px; height: 56px; border-radius: var(--jsal-radius-xl); background: var(--tool-on); color: var(--tool-ink); }
-.drop-title { margin: var(--jsal-space-8) 0 0; color: var(--tool-ink); font: 700 30px/1.15 "Lora", Georgia, serif; letter-spacing: -0.015em; }
+.drop-title { margin: var(--jsal-space-8) 0 0; color: var(--tool-ink); font: 700 30px/1.15 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.015em; }
 @media (max-width: 720px) { .drop-title { font-size: 24px; } }
 /* The main way in as the gold button; Paste joins it on touch screens, where there's no Ctrl+V */
 .drop-go { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--jsal-space-8); margin: var(--jsal-space-12) 0 0; }
