@@ -178,17 +178,29 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
    as steps under it */
 /* The pal grows in its own pen, one of the addon's scenes: by day in the light theme, by night in the dark one */
 .win.pen canvas { display: block; width: 100%; max-width: 880px; height: auto; aspect-ratio: 220 / 100; margin-inline: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); image-rendering: pixelated; }
-.pal { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); }
+/* the pen's controls sit on it, bottom left: icon buttons (each named for screen readers and on hover) and the line
+   saying what just happened, on a dark glass the same in both themes, as they sit on the picture */
+.win.pen { position: relative; }
+.pal { position: absolute; left: var(--jsal-space-16); bottom: var(--jsal-space-16); right: var(--jsal-space-16); display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8); pointer-events: none; }
+.pal > * { pointer-events: auto; }
+.pal .icon-btn { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgb(255 255 255 / 0.2); border-radius: var(--jsal-radius-lg); background: rgb(17 19 24 / 0.72); color: #ece6d6; cursor: pointer; backdrop-filter: blur(6px); transition: background var(--jsal-quick) ease; }   /* style: allow (controls on the pen's picture, the same in both themes) */
+.pal .icon-btn:hover { background: rgb(17 19 24 / 0.9); }   /* style: allow (on the picture) */
+.pal .icon-btn.go { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
+.pal .icon-btn:disabled { opacity: 0.6; cursor: default; }
+.pal .icon-btn:focus-visible { outline: 2px solid var(--jsal-fill); outline-offset: 2px; }
+.pal .icon-btn svg { width: 20px; height: 20px; }
+.pal figcaption.on-pen { margin: 0 0 0 var(--jsal-space-4); padding: var(--jsal-space-4) var(--jsal-space-12); border: 0; border-radius: var(--jsal-radius); background: rgb(17 19 24 / 0.72); color: #ece6d6; font-size: 13px; }   /* style: allow (on the picture) */
 /* with scripts the pen shows each form and the line under the buttons names it, so the row of names isn't needed */
 .play ol { display: none; }
 .family.play figcaption { margin-top: var(--jsal-space-12); padding-top: 0; border-top: 0; }
 @media (max-width: 520px) {
-  /* the pen comes straight after the words, then the buttons, sharing a row */
+  /* the pen comes straight after the words, its controls just under it so they never cover the pal */
+  .pal { position: static; margin-top: var(--jsal-space-12); }
+  .pal figcaption.on-pen { margin: 0; padding: 0; background: none; color: var(--jsal-muted); }
   .stage:has(.family) .say { display: contents; }
   .stage:has(.family) .say > div { order: 1; }
   .stage:has(.family) .win.pen { order: 2; }
   .stage:has(.family) .family { order: 3; }
-  .pal .jsal-btn { flex: 1; justify-content: center; }
 }
 .family figcaption { margin-top: var(--jsal-space-12); padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line-hi); color: var(--jsal-muted); font-size: 13px; }
 .stage.side .win { grid-column: 2; }
@@ -538,13 +550,25 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const cv = document.createElement('canvas');
   // the scene in the art's pixels (on a phone, its middle, so the pal shows larger); where the pal stands; its size
   const W = matchMedia('(max-width: 599px)').matches ? 150 : 220, H = 100, X = (220 - W) / 2, CX = W / 2, CY = 60, S = 0.75;
-  const btn = Object.assign(document.createElement('button'), { type: 'button', className: 'jsal-btn primary' });
+  const btn = Object.assign(document.createElement('button'), { type: 'button', className: 'icon-btn go' });
   const box = Object.assign(document.createElement('div'), { className: 'pal' });
   cv.setAttribute('role', 'img');
-  const scene = Object.assign(document.createElement('button'), { type: 'button', className: 'jsal-btn' });
-  box.append(btn, scene); fig.prepend(box); fig.classList.add('play');
+  const scene = Object.assign(document.createElement('button'), { type: 'button', className: 'icon-btn' });
+  // the buttons' icons, drawn as plain lines in the button's ink
+  const ICON = {
+    egg: '<path d="M10 3c3 0 5 4.5 5 8a5 5 0 0 1-10 0c0-3.5 2-8 5-8z"/>',
+    grow: '<path d="M10 17v-6"/><path d="M10 11c0-3 2-5 5-5 0 3-2 5-5 5z"/><path d="M10 13c0-2.5-1.8-4-4.5-4 0 2.5 1.8 4 4.5 4z"/>',
+    again: '<path d="M4 10a6 6 0 1 0 2-4.5"/><path d="M4 3v3.5h3.5"/>',
+    scene: '<rect x="3" y="4" width="14" height="12" rx="2"/><path d="M3 13l4-4 3 3 2-2 5 5"/><circle cx="13.5" cy="7.5" r="1.2"/>',
+  };
+  const face = (b, icon, name) => {
+    b.innerHTML = `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[icon]}</svg>`;
+    b.setAttribute('aria-label', name); b.title = name;
+  };
+  box.append(btn, scene); fig.classList.add('play');
   const pen = fig.closest('.stage').querySelector('.win');
-  if (pen) pen.append(cv); else box.prepend(cv);
+  if (pen) pen.append(cv, box); else fig.prepend(cv, box);
+  say.classList.add('on-pen'); box.append(say);
   cv.width = W; cv.height = H; cv.style.aspectRatio = `${W} / ${H}`;
   const ctx = cv.getContext('2d');
   const load = (src) => Object.assign(new Image(), { src });
@@ -591,7 +615,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const settle = (x) => { const t = Math.min(1, Math.max(0, x)) - 1; return 1 + 2.7 * t * t * t + 1.7 * t * t; };
   const show = () => {
     names.forEach((n, i) => (i === at ? n.setAttribute('aria-current', 'step') : n.removeAttribute('aria-current')));
-    btn.textContent = ['Hatch the egg', 'Grow', 'Grow', 'Start again'][at];
+    face(btn, ['egg', 'grow', 'grow', 'again'][at], ['Hatch the egg', 'Grow', 'Grow', 'Start again'][at]);
     btn.disabled = false;
     cv.setAttribute('aria-label', SAY[at]);
     say.textContent = SAY[at];
@@ -614,14 +638,14 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     const next = at + 1;
     if (calm.matches) { at = next; frame = 9; show(); return; }
     if (at === 0) {
-      btn.textContent = 'Hatching…';
+      btn.setAttribute('aria-label', 'Hatching…'); btn.title = 'Hatching…';
       // out of the shell by 1.8 seconds, then a small hop
       run(2.3, (c) => {
         frame = Math.min(9, c / 0.2);
         lift = c > 1.8 ? 7 * Math.sin(Math.PI * Math.min(1, (c - 1.8) / 0.45)) : 0;
       }, () => { at = 1; frame = 9; lift = 0; });
     } else {
-      btn.textContent = 'Growing…';
+      btn.setAttribute('aria-label', 'Growing…'); btn.title = 'Growing…';
       run(3.2, (c) => {
         // the ball gathers, holds while it breathes (the game flickers between two pictures here), then bursts
         cell = c < 1.4 ? c / 0.2 : c < 2 ? 7 : Math.min(15, 8 + (c - 2) / 0.12);
@@ -633,7 +657,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   });
   [hatch, light, ...bodies.slice(2)].forEach((img) => img.addEventListener('load', draw));
   // a press moves the pal to the next scene; the theme switch turns day to night and back
-  const named = () => { scene.textContent = `Scene: ${SCENES[place][0]}`; scene.setAttribute('aria-label', `Change the scene, now ${SCENES[place][0]}`); };
+  const named = () => face(scene, 'scene', `Change the scene (now ${SCENES[place][0]})`);
   scene.addEventListener('click', () => { place = (place + 1) % SCENES.length; named(); draw(); });
   named();
   new MutationObserver(() => draw()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
