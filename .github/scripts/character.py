@@ -12,7 +12,8 @@
 # Blizzard's game data (the Forever namespace) which icon each worn item has and saves any it doesn't have yet to
 # site/img/wow/, exactly as Blizzard serves it (56 x 56 JPG, never altered: see off-the-clock.md). Which icon an
 # item has is remembered in src/data/item-icons.json, so a run without the secret keeps the icons already known.
-# With the same keys it fetches each worn item's own page once, for the tooltip the page shows on a worn item.
+# Tooltips: the addon saves each worn item's tooltip as the game shows it, and those are used. For an item it
+# hasn't saved one for, Blizzard's page for the item is used when it has one (fetched once, with the same keys).
 import base64, glob, json, os, re, sys, urllib.error, urllib.request
 from datetime import datetime
 from pathlib import Path
@@ -176,6 +177,31 @@ def tip(item):
     return out
 
 
+def tone(colour):
+    """What a line's colour in the game means on the page: the game's green (a bonus, an Equip line), its yellow
+    (item level, a set's name), or its grey; white and anything else is plain text."""
+    if not colour or not re.fullmatch(r'[0-9a-f]{6}', colour): return None
+    r, g, b = (int(colour[i:i + 2], 16) for i in (0, 2, 4))
+    if g > 160 and r < 140 and b < 140: return 'green'
+    if r > 200 and g > 150 and b < 100: return 'gold'
+    if max(r, g, b) - min(r, g, b) < 24 and r < 200: return 'muted'
+    return None
+
+
+def game_tip(lines):
+    """A tooltip the addon saved from the game itself (jsalUICharDB.equipped.items[n].tip: each line's left and right
+    words with their colours), as the page's lines. This is the worn item exactly, enchants and all."""
+    out = []
+    for n in sorted(lines):
+        line = lines[n]
+        left, right = (line.get('left') or '').strip(), (line.get('right') or '').strip()
+        if not (left or right): continue
+        # a crafted item names the player who made it: never published
+        if re.search(r'\bMade by\b', left + ' ' + right): continue
+        out.append({k: v for k, v in (('t', left or right), ('tone', tone(line.get('leftColor') if left else line.get('rightColor'))), ('r', right if left else None)) if v})
+    return out
+
+
 def tips_for(ids):
     """{item id: tooltip lines}. Blizzard's page for each worn item is fetched once, when the keys are set, and kept
     as it came in private/blizzard-items/ (never committed); the lines are worked out from those copies on every
@@ -192,8 +218,6 @@ def tips_for(ids):
             else: print(f'Items: Blizzard gave nothing for item {item} ({why[0]}).')
         if copy.exists(): known[str(item)] = tip(json.loads(copy.read_text(encoding='utf-8')))
         elif str(item) not in known: waiting += 1
-    if waiting and auth(): print(f'Items: {waiting} worn item(s) have no tooltip: Blizzard has no page for them. They show their name and slot.')
-    elif waiting: print(f'Items: {waiting} worn item(s) have no tooltip yet. Set the two Blizzard keys in this terminal and run again to fetch them.')
     table('item-tips.json', known)
     return {i: known[str(i)] for i in ids if known.get(str(i))}
 
@@ -201,6 +225,9 @@ def tips_for(ids):
 items = {i['slot']: i for i in (worn.get('items') or {}).values() if i.get('name')}
 worn_ids = [i['id'] for i in items.values() if i.get('id')]
 icons, tips = icons_for(worn_ids), tips_for(worn_ids)
+# the game's own tooltip for a worn item, when the addon has saved one, is used before Blizzard's page for the item
+own = {i['id']: game_tip(i['tip']) for i in items.values() if i.get('id') and isinstance(i.get('tip'), dict)}
+tips = {**tips, **{k: v for k, v in own.items() if v}}
 
 out = {
     'name': NAME, 'class': CLASS, 'level': max(levels), 'guild': journal.get('guild') or None,
@@ -220,6 +247,8 @@ out = {
     'portrait': f'/img/play/{NAME.lower()}.webp' if (ROOT / 'site' / 'img' / 'play' / f'{NAME.lower()}.webp').exists() else None,
     'gearDate': day(worn['at']) if items and worn.get('at') else None,
 }
+bare = [g['name'] for g in (out['gear'] or {}).values() if not g.get('tip')]
+if bare: print(f"Tooltips: {len(bare)} worn item(s) have none yet ({', '.join(bare[:4])}{'…' if len(bare) > 4 else ''}). The addon saves them as you play: log in, then log out, and run this again.")
 target = ROOT / 'src' / 'data' / 'character.json'
 target.write_text(json.dumps(out, indent=1, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
 print(f"{target.relative_to(ROOT)}: {out['name']}, level {out['level']} {out['class']}, {out['stats']['hours']} hours, last seen in {out['lastZone']} on {out['lastSeen']}")
