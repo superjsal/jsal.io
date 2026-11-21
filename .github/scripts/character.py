@@ -103,7 +103,7 @@ def icons_for(ids):
             media = json.loads(ask(f'https://us.api.blizzard.com/data/wow/media/item/{item}?namespace=static-forever-us', {'Authorization': f'Bearer {token}'}) or b'{}')
             url = next((a.get('value') for a in media.get('assets', []) if a.get('key') == 'icon'), None)
             # only Blizzard's own icon server, at the size the page shows
-            if not url or not re.fullmatch(r'https://render\.worldofwarcraft\.com/[a-z]+/icons/56/[a-z0-9_\-]+\.jpg', url):
+            if not url or not re.fullmatch(r'https://render\.worldofwarcraft\.com/[a-z\-]+/icons/56/[a-z0-9_\-]+\.jpg', url):
                 if not said: said.append('answered with ' + (json.dumps(media)[:400] if media else 'nothing'))
                 if len(said) == 1:
                     # the item itself, to see where its picture is meant to be

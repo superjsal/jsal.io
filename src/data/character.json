@@ -154,77 +154,77 @@
   "head": {
    "name": "Wild Headdress",
    "quality": "uncommon",
-   "icon": null
+   "icon": "132514.jpg"
   },
   "neck": {
    "name": "Replica Crescent Necklace",
    "quality": "uncommon",
-   "icon": null
+   "icon": "133298.jpg"
   },
   "shoulder": {
    "name": "Unstable Crystalline Shoulderpads",
    "quality": "rare",
-   "icon": null
+   "icon": "135038.jpg"
   },
   "back": {
    "name": "Explorer's League Dustcover",
    "quality": "rare",
-   "icon": null
+   "icon": "133773.jpg"
   },
   "chest": {
    "name": "Garb of Fallen Felbark",
    "quality": "rare",
-   "icon": null
+   "icon": "135013.jpg"
   },
   "wrist": {
    "name": "Fur-Lined Bracers",
    "quality": "uncommon",
-   "icon": null
+   "icon": "132607.jpg"
   },
   "hands": {
    "name": "Hawkeye's Gloves",
    "quality": "uncommon",
-   "icon": null
+   "icon": "132955.jpg"
   },
   "waist": {
    "name": "Thorn Protecting Girdle",
    "quality": "uncommon",
-   "icon": null
+   "icon": "132501.jpg"
   },
   "legs": {
    "name": "Triprunner Dungarees",
    "quality": "rare",
-   "icon": null
+   "icon": "134588.jpg"
   },
   "feet": {
    "name": "Agile Boots",
    "quality": "uncommon",
-   "icon": null
+   "icon": "132539.jpg"
   },
   "finger1": {
    "name": "Ring of Ruin",
    "quality": "uncommon",
-   "icon": null
+   "icon": "133350.jpg"
   },
   "finger2": {
    "name": "Seal of Wrynn",
    "quality": "rare",
-   "icon": null
+   "icon": "133347.jpg"
   },
   "trinket1": {
    "name": "Satchel of Potions",
    "quality": "uncommon",
-   "icon": null
+   "icon": "133633.jpg"
   },
   "mainhand": {
    "name": "Felbough Arm",
    "quality": "rare",
-   "icon": null
+   "icon": "135131.jpg"
   },
   "ranged": {
    "name": "Skull Splitting Crossbow",
    "quality": "rare",
-   "icon": null
+   "icon": "135533.jpg"
   }
  },
  "portrait": "/img/play/vizdenia.webp",
