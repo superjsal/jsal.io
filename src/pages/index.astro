@@ -269,7 +269,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 /* An upright phone: the four tools as a list, each with its name and its job, and the chosen one open under its own
    row (its words and its button; the facts and the picture wait for a wider screen). Tapping another row opens that
    one instead. The list and the stages are laid out together, each stage under its row. */
-@media (max-width: 699px) {
+/* and a phone held sideways (a short screen), as there the stage is taller than the screen */
+@media (max-width: 699px), (max-height: 500px) and (orientation: landscape) {
   .pick { gap: 0; }
   .slots, .stages, .home-js .stages { display: contents; }
   .slot:nth-child(1) { order: 1; } .stage:nth-child(1) { order: 2; }
@@ -282,6 +283,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .slot[aria-selected="true"] { border-radius: var(--jsal-radius-xl) var(--jsal-radius-xl) 0 0; }
   .home-js .stage { min-height: 0; padding: var(--jsal-space-4) var(--jsal-space-20) var(--jsal-space-20); border-radius: 0 0 var(--jsal-radius-xl) var(--jsal-radius-xl); background: var(--bg); }
   .home-js .stage :is(h2, .facts, .pic, .keys) { display: none; }
+  .home-js .stage { grid-template-columns: minmax(0, 1fr); }
   .home-js .say { padding-top: 0; }
   .say p { font-size: 15px; }
   .stage { min-height: 0; padding: var(--jsal-space-24) var(--jsal-space-20) 0; }
@@ -296,7 +298,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 @keyframes turn { to { transform: scaleX(1); } }
 .tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
 .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn { display: inline-flex; }
-@media (max-width: 699px) { .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn, .slot::after { display: none; } }
+@media (max-width: 699px), (max-height: 500px) and (orientation: landscape) { .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn, .slot::after { display: none; } }
 @media (prefers-reduced-motion: reduce) {
   .slot, .more-ui, .keys a, .home-js .stages.live, .st { transition: none; }
   .live .stage.on :is(h2, .say > *, .shot, .keys), .slot[aria-selected="true"]::before, .gem.land, .gem.peek { animation: none; }
@@ -404,7 +406,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
   };
   addEventListener('resize', () => place(cur));
   // one height for every tool: the tallest, measured at this width (not on a phone, where the tools are a list)
-  const roomy = matchMedia('(min-width: 700px)');
+  const roomy = matchMedia('(min-width: 700px) and (not ((max-height: 500px) and (orientation: landscape)))');
   const fit = () => {
     box.style.minHeight = '';
     if (!roomy.matches) return;
@@ -423,7 +425,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
   // a step is a state to press, 'over N' to rest the pointer on the quiz's answer N first, or 'then N' for a state
   // that follows by itself (the quiz moving on to its next question, a moment after a pick shows chosen)
   const STEPS = { cms: ['over 1', 'over 3', 'over 2', 1, 'then 2'], ir: [1, 2, 0], cp: [1, 0], ri: [1, 3, 4, 0] };
-  const calm = matchMedia('(prefers-reduced-motion: reduce)'), demoRoom = matchMedia('(min-width: 700px)');
+  const calm = matchMedia('(prefers-reduced-motion: reduce)'), demoRoom = matchMedia('(min-width: 700px) and (not ((max-height: 500px) and (orientation: landscape)))');
   let run = 0;
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   const demo = async (stage) => {
@@ -528,7 +530,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
   // turns by themselves, round and round. A tool picked by hand ends it; Pause rests it; once it has ended, Play
   // the tour starts it again from the tool that's showing.
   const pickEl = document.querySelector('.pick'), btn = document.querySelector('.tour-btn');
-  if (matchMedia('(min-width: 700px)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+  if (matchMedia('(min-width: 700px) and (not ((max-height: 500px) and (orientation: landscape)))').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
     const say = (label, pressed) => { btn.textContent = label; btn.setAttribute('aria-pressed', String(pressed)); };
     const end = () => { pickEl.classList.remove('tour', 'rested'); pickEl.classList.add('toured'); say('Play the tour', false); };
     const start = () => {

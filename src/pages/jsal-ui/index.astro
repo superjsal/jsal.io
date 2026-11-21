@@ -193,7 +193,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* with scripts the pen shows each form and the line under the buttons names it, so the row of names isn't needed */
 .play ol { display: none; }
 .family.play figcaption { margin-top: var(--jsal-space-12); padding-top: 0; border-top: 0; }
-@media (max-width: 520px) {
+@media (max-width: 520px), (max-height: 500px) and (orientation: landscape) {
   /* the pen comes straight after the words, its controls just under it so they never cover the pal */
   .pal { position: static; margin-top: var(--jsal-space-12); }
   .stage:has(.family) .say { display: contents; }
@@ -260,7 +260,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 @keyframes turn { to { transform: scaleX(1); } }
 .tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
 .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn { display: inline-flex; }
-@media (max-width: 699px) { .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn, .slot::after { display: none; } }
+@media (max-width: 699px), (max-height: 500px) and (orientation: landscape) { .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn, .slot::after { display: none; } }
 @media print { .rv { opacity: 1; transform: none; } }
 
 /* A small laptop or a tablet: the headline and Download, then the list as rows of parts, then the stage */
@@ -285,7 +285,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
    the chosen part open under its own row (its words and its window; the head and the ticked points wait for a wider
    screen). Tapping another row opens that one. A whole window would be too small to read, so each shows its top
    corner at a readable size, cut off by its frame, past the dashboard's menu and title bar. */
-@media (max-width: 599px) {
+/* and a phone held sideways (a short screen), as there the stage is taller than the screen */
+@media (max-width: 599px), (max-height: 500px) and (orientation: landscape) {
   .pick { gap: 0; }
   .rail, .slots, .stages { display: contents; }
   .grp, .slot, .stage { order: var(--o); }
@@ -454,7 +455,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   };
   addEventListener('resize', () => place(cur));
   // one height for every part: the tallest, measured at this width (not on a phone, where the parts are a list)
-  const roomy = matchMedia('(min-width: 600px)');
+  const roomy = matchMedia('(min-width: 600px) and (not ((max-height: 500px) and (orientation: landscape)))');
   const fit = () => {
     box.style.minHeight = '';
     if (!roomy.matches) return;
@@ -514,7 +515,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   // turns by themselves, round and round. A part picked by hand ends it; Pause rests it; once it has ended, Play
   // the tour starts it again from the part that's showing.
   const pickEl = document.querySelector('.pick'), btn = document.querySelector('.tour-btn');
-  if (matchMedia('(min-width: 700px)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+  if (matchMedia('(min-width: 700px) and (not ((max-height: 500px) and (orientation: landscape)))').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
     const say = (label, pressed) => { btn.textContent = label; btn.setAttribute('aria-pressed', String(pressed)); };
     const end = () => { pickEl.classList.remove('tour', 'rested'); pickEl.classList.add('toured'); say('Play the tour', false); };
     const start = () => {
