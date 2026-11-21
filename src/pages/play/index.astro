@@ -41,18 +41,22 @@ const NUMBERS = [[`${n(C.stats.hours)} hours`, `played, since ${date(C.since)}`]
   --green: #e2ebdc; --green-ink: #14171c; --green-muted: #3a404a; --green-acc: #3f6b3a;
   --plain: #e6e8ec; --plain-line: #b4bac4;
   --peek-shadow: 0 12px 28px rgb(20 23 28 / 0.2), 0 2px 6px rgb(20 23 28 / 0.1);
+  /* an item's name in the colour of its quality, as the game shows it, darkened to read on a light page */
+  --q-uncommon: #1a6a2c; --q-rare: #1d4fae; --q-epic: #6a35b5; --q-legendary: #9a4a00;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
     --plain: #1c1f27; --plain-line: #3d424e;
     --peek-shadow: 0 12px 28px rgb(0 0 0 / 0.5);
+    --q-uncommon: #7fd68a; --q-rare: #8fb1ff; --q-epic: #c9a8ff; --q-legendary: #ffb066;
   }
 }
 :root[data-theme="dark"] {
   --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
   --plain: #1c1f27; --plain-line: #3d424e;
   --peek-shadow: 0 12px 28px rgb(0 0 0 / 0.5);
+  --q-uncommon: #7fd68a; --q-rare: #8fb1ff; --q-epic: #c9a8ff; --q-legendary: #ffb066;
 }
 
 * { box-sizing: border-box; }
@@ -316,16 +320,27 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .char-cards p { color: var(--jsal-ink-2); font-size: 14px; }
 .prof { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--jsal-space-2) var(--jsal-space-12); font-size: 14px; }
 .prof i { grid-column: 1 / -1; height: 6px; margin-bottom: var(--jsal-space-8); border-radius: var(--jsal-radius-sm); background: linear-gradient(to right, var(--jsal-fill) var(--at), var(--jsal-line-hi) var(--at)); }
+/* What's worn, shown once the addon has saved it (attributes, not classes, as the block is absent until then): a row a slot, in three columns; the item's name wears its quality's colour and says it in words too */
+[data-worn] { grid-column: 1 / -1; }
+[data-worn] ul { columns: 3; column-gap: var(--jsal-space-32); margin: 0; padding: 0; list-style: none; }
+[data-worn] li { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: var(--jsal-space-8); padding: var(--jsal-space-4) 0; break-inside: avoid; font-size: 14px; }
+[data-worn] li > span:first-child { color: var(--jsal-muted); }
+[data-worn] small { margin-left: var(--jsal-space-4); color: var(--jsal-muted); font-size: 12px; font-weight: 400; }
+[data-q="uncommon"] b { color: var(--q-uncommon); } [data-q="rare"] b { color: var(--q-rare); } [data-q="epic"] b { color: var(--q-epic); } [data-q="legendary"] b { color: var(--q-legendary); }
+[data-q="poor"] b { color: var(--jsal-muted); }
+[data-worn] b { font-weight: 600; }
 .fresh { grid-column: 1 / -1; color: var(--jsal-muted); font-size: 13px; }
 @media (max-width: 899px) {
   .char { grid-template-columns: minmax(0, 1fr); padding: var(--jsal-space-24); }
   .char-cards { grid-template-columns: minmax(0, 1fr); }
+  [data-worn] ul { columns: 2; }
 }
 @media (max-width: 520px) {
   .char { padding: var(--jsal-space-20); }
   .nums { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .nums dt { font-size: 24px; }
   .bars { height: 88px; gap: 1px; }
+  [data-worn] ul { columns: 1; }
 }
 /* This page's intro runs across the grid */
 .intro { grid-column: 1 / 13; max-width: 640px; padding-top: 0; }
@@ -369,6 +384,12 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
         <div><h3>Most used</h3><p>{C.spells.map(([spell, times]) => `${spell}, ${n(times)} times`).join(". ")}.</p></div>
         <div><h3>Professions</h3><div class="prof">{C.professions.map(([name, skill, cap]) => <Fragment><span>{name}</span><span>{skill} / {cap}</span><i style={`--at:${Math.round(skill / cap * 100)}%`}></i></Fragment>)}</div></div>
       </div>
+      {C.gear && (
+        <div data-worn>
+          <h3>Wearing</h3>
+          <ul>{C.gear.map((g) => <li data-q={g.quality}><span>{g.slot}</span><span><b>{g.name}</b>{g.quality !== "common" && <small>{g.quality}</small>}</span></li>)}</ul>
+        </div>
+      )}
       <p class="fresh">From my journal in jsal.ui, as it stood on {date(C.updated)}.</p>
     </section>
     <a class="tile ui" href="/jsal-ui/" data-jsal-nav aria-labelledby="ui-h">

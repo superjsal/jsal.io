@@ -5,15 +5,15 @@
  "guild": "retail too hard",
  "since": "2026-11-08",
  "updated": "2026-11-20",
- "lastZone": "Desolace",
+ "lastZone": "Ironforge",
  "lastSeen": "2026-11-20",
  "stats": {
   "hours": 128,
   "foes": 4964,
-  "quests": 571,
+  "quests": 573,
   "deaths": 34,
-  "miles": 985,
-  "jumps": 23143
+  "miles": 989,
+  "jumps": 23208
  },
  "levelMinutes": [
   26,
@@ -58,9 +58,14 @@
   232,
   660,
   767,
-  165
+  185
  ],
  "events": [
+  {
+   "kind": "loot",
+   "text": "New blue: Skull Splitting Crossbow",
+   "date": "2026-11-20"
+  },
   {
    "kind": "pet",
    "text": "Bolt found a glass marble in Desolace",
@@ -85,11 +90,6 @@
    "kind": "pet",
    "text": "Bolt found an acorn in Desolace",
    "date": "2026-11-20"
-  },
-  {
-   "kind": "pet",
-   "text": "Bolt the Stormcub hatched",
-   "date": "2026-11-20"
   }
  ],
  "zones": [
@@ -110,7 +110,7 @@
    7
   ],
   [
-   "Teldrassil",
+   "Ironforge",
    7
   ]
  ],
@@ -149,5 +149,7 @@
    "Serpent Sting",
    1112
   ]
- ]
+ ],
+ "gear": null,
+ "gearDate": null
 }

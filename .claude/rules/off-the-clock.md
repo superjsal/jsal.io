@@ -20,10 +20,18 @@ paths:
   - **Only a fixed list leaves the PC** (the `out` table in the script): never guildmates' names (the journal's
     "guild" entries are skipped), chat, gold or the account's name. The guild's own name is shown; John can drop it.
     The class isn't in the journal, so it's an argument.
-  - **Blizzard's API** (asked for gear and a character portrait) isn't connected. Its documentation lists namespaces
-    for retail, Classic Era, Mists Classic and Burning Crusade Anniversary only, none for WoW Forever (checked
-    20 Nov 2026), so it may not serve Forever characters at all. Testing needs an API client John creates at
-    develop.battle.net; its secret goes in Cloudflare as a Worker secret, set by him, never in chat or a file.
+  - **Gear comes from the addon too.** jsal.ui saves what the character wears as `jsalUICharDB.equipped`
+    (`{ at, items = { { slot, id, name, quality } } }`, replaced whole at each save; in the addon from its commit
+    8003e69, 20 Nov 2026). The exporter turns it into `gear` (slot, name, quality in words) and the page shows a
+    "Wearing" block, each name in its quality's colour with the quality in words beside it. The block is styled by
+    attributes (`data-worn`, `data-q`), not classes, as it is absent until the addon has saved gear and the checks
+    fail a class that no page uses.
+  - **Blizzard's API can't supply a character** (tested with John's API client, 20 Nov 2026). Forever's game data
+    answers under undocumented `forever` namespaces (`static-forever-us` gave 9 classes), but Forever has no realms
+    in the API (the realm list is 404, realm search returns none), so a profile has no address: every guess at
+    `profile-forever-us` was 404. Rerun `private\blizzard-test2.py` if Blizzard adds it; the secret is John's, set
+    in his own terminal, never in chat or a file. So there is no automatic portrait: it would be a screenshot he
+    picks.
   - Numbers here are the character's own play, so the jsal.ui page's rule against counting Forever's game data
     doesn't apply to them.
 
