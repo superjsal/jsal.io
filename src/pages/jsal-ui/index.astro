@@ -157,7 +157,10 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .play li { justify-items: start; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--jsal-surface); text-align: left; }
   .play li + li::before { display: none; }
   .play li[aria-current] { background: var(--jsal-selected-bg); box-shadow: inset 0 0 0 1px var(--jsal-selected-ring); }
-  .pal canvas { width: 100%; max-width: 256px; height: auto; aspect-ratio: 1; }
+  /* the pal's window, its button and its steps share one width, the window square and as wide as the stage allows */
+  .pal { display: grid; gap: var(--jsal-space-12); }
+  .pal canvas { width: 100%; height: auto; aspect-ratio: 1; }
+  .pal .jsal-btn { width: 100%; justify-content: center; }
 }
 .family figcaption { margin-top: var(--jsal-space-12); padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line-hi); color: var(--jsal-muted); font-size: 13px; }
 .stage.side .win { grid-column: 2; }
