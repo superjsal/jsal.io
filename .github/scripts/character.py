@@ -7,7 +7,12 @@
 # item name and quality, once the addon has saved it: jsalUICharDB.equipped). Never guildmates' names (the
 # journal's "guild" entries are left out), chat, gold or the account's name. Nothing else in the file is read into
 # the site, and the path it was found at is never written down.
-import glob, json, re, sys
+#
+# Item icons: with BLIZZARD_CLIENT_ID and BLIZZARD_CLIENT_SECRET set in the terminal it runs in, it also asks
+# Blizzard's game data (the Forever namespace) which icon each worn item has and saves any it doesn't have yet to
+# site/img/wow/, exactly as Blizzard serves it (56 x 56 JPG, never altered: see off-the-clock.md). Which icon an
+# item has is remembered in src/data/item-icons.json, so a run without the secret keeps the icons already known.
+import base64, glob, json, os, re, sys, urllib.error, urllib.request
 from datetime import datetime
 from pathlib import Path
 
@@ -70,7 +75,48 @@ minutes = [round(levels[k]['seconds'] / 60) for k in sorted(levels)]
 events = [journal['events'][k] for k in sorted(journal['events']) if journal['events'][k].get('k') in KINDS]
 last = events[-1]
 worn = db.get('equipped') or {}
+
+
+def icons_for(ids):
+    """{item id: icon file name} for the items whose icon is known, fetching the unknown ones when the keys are set."""
+    cache_path = ROOT / 'src' / 'data' / 'item-icons.json'
+    known = json.loads(cache_path.read_text(encoding='utf-8')) if cache_path.exists() else {}
+    missing = [i for i in ids if str(i) not in known]
+    client, secret = os.environ.get('BLIZZARD_CLIENT_ID'), os.environ.get('BLIZZARD_CLIENT_SECRET')
+    if missing and client and secret:
+        def ask(url, headers, data=None):
+            try:
+                with urllib.request.urlopen(urllib.request.Request(url, headers=headers, data=data), timeout=20) as r:
+                    return r.read()
+            except (urllib.error.URLError, TimeoutError):
+                return None
+        basic = base64.b64encode(f'{client}:{secret}'.encode()).decode()
+        token = json.loads(ask('https://oauth.battle.net/token', {'Authorization': f'Basic {basic}'}, b'grant_type=client_credentials') or b'{}').get('access_token')
+        if not token:
+            print('Icons: sign-in to Blizzard failed, so no new icons this run.')
+        for item in missing if token else []:
+            media = json.loads(ask(f'https://us.api.blizzard.com/data/wow/media/item/{item}?namespace=static-forever-us', {'Authorization': f'Bearer {token}'}) or b'{}')
+            url = next((a.get('value') for a in media.get('assets', []) if a.get('key') == 'icon'), None)
+            # only Blizzard's own icon server, at the size the page shows
+            if not url or not re.fullmatch(r'https://render\.worldofwarcraft\.com/[a-z]+/icons/56/[a-z0-9_\-]+\.jpg', url):
+                print(f'Icons: none found for item {item}.')
+                continue
+            name = url.rsplit('/', 1)[1]
+            target = ROOT / 'site' / 'img' / 'wow' / name
+            if not target.exists():
+                picture = ask(url, {})
+                if not picture: continue
+                target.write_bytes(picture)
+                print(f'Icons: saved {name}.')
+            known[str(item)] = name
+        cache_path.write_text(json.dumps(dict(sorted(known.items(), key=lambda kv: int(kv[0]))), indent=1) + '\n', encoding='utf-8', newline='\n')
+    elif missing:
+        print(f'Icons: {len(missing)} worn item(s) have no icon yet. Set BLIZZARD_CLIENT_ID and BLIZZARD_CLIENT_SECRET in this terminal and run again to fetch them.')
+    return {i: known[str(i)] for i in ids if str(i) in known and (ROOT / 'site' / 'img' / 'wow' / known[str(i)]).exists()}
+
+
 items = {i['slot']: i for i in (worn.get('items') or {}).values() if i.get('name')}
+icons = icons_for([i['id'] for i in items.values() if i.get('id')])
 
 out = {
     'name': NAME, 'class': CLASS, 'level': max(levels), 'guild': journal.get('guild') or None,
@@ -85,7 +131,7 @@ out = {
     'pet': {k: db['pet'][k] for k in ('name', 'family', 'level')} if db.get('pet', {}).get('name') else None,
     'spells': [[spell, n] for spell, n in sorted(journal.get('spells', {}).items(), key=lambda s: -s[1])[:3]],
     # each slot that holds something, by the addon's name for the slot; absent until the addon has saved it
-    'gear': {slot: {'name': items[slot]['name'], 'quality': QUALITY.get(items[slot].get('quality'), 'common')} for slot in SLOTS if slot in items} or None,
+    'gear': {slot: {'name': items[slot]['name'], 'quality': QUALITY.get(items[slot].get('quality'), 'common'), 'icon': icons.get(items[slot].get('id'))} for slot in SLOTS if slot in items} or None,
     'gearDate': day(worn['at']) if items and worn.get('at') else None,
 }
 target = ROOT / 'src' / 'data' / 'character.json'

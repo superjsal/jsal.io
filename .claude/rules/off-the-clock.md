@@ -18,9 +18,18 @@ paths:
     card"): a title bar; the slots down both sides of the middle with the weapons under it; the journal's totals,
     professions and the hunter's pet where the game shows attributes. The middle holds the level and class, as
     there is no portrait (a screenshot John picks would go there). Slot tiles wear the item's quality colour and
-    have no item icons: Blizzard's icons need John's word before any is downloaded. A second card, Journal, holds
-    the time at each level, where the time went, the latest entries and the most-used spells. The gear columns are
-    `.side`, not `.slots`, which is the Backpack's.
+    hold the item's own icon (John, 20 Nov 2026: "Real item icons"): the exporter asks Blizzard's Forever game data
+    which icon each worn item has and saves new ones to `site/img/wow/` as served, when `BLIZZARD_CLIENT_ID` and
+    `BLIZZARD_CLIENT_SECRET` are set in the terminal John runs it in; `src/data/item-icons.json` remembers which
+    icon an item has. A slot with no icon yet shows a diamond in the quality's colour. The icon is shown at its own
+    56 pixels and the sheet carries "Item icons © Blizzard Entertainment" whenever one is shown. The gear columns
+    are `.side`, not `.slots`, which is the Backpack's.
+  - **Under it, "The journey so far"** (John: "I also like the misc stats... as fun tidbits of my journey", "should
+    be more of a fun layout"): six tidbit tiles in tints, each a total, what it counts and a line worked out from
+    the journal itself (days played, jumps an hour, time between deaths, marathons walked, foes for each death,
+    quests a level), so the lines stay true as the numbers move; then the time at each level, the latest entries
+    and where the time went. The numbers count up once when scrolled to, and a tidbit tips under the pointer; with
+    reduced motion neither happens. A new tidbit's line must be arithmetic on the journal, never a guess.
   - **Where the data comes from:** `python -I .github/scripts/character.py [name] [class]` reads the journal jsal.ui
     keeps in the game's SavedVariables on John's PC and writes that file. The game only writes its file at logout
     or a reload, and the site only changes when the new JSON is committed, so the page is as fresh as the last run;

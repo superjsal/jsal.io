@@ -11,8 +11,19 @@ const date = (iso) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-GB", {
 const hm = (m) => (m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`);
 const longest = Math.max(...C.levelMinutes), longestAt = C.levelMinutes.indexOf(longest) + 1;
 const zoneMax = Math.max(...C.zones.map(([, h]) => h));
-const STATS = [["Played", `${n(C.stats.hours)} hours`], ["Foes defeated", n(C.stats.foes)], ["Quests done", n(C.stats.quests)], ["Deaths", n(C.stats.deaths)],
-  ["Travelled", `${n(C.stats.miles)} miles`], ["Jumps", n(C.stats.jumps)]];
+// Tidbits of the journey: each total with a line worked out from the journal itself, so it stays true as the
+// numbers move. [the number, what it counts, the line, the tile's colour]
+const S = C.stats;
+const TIDBITS = [
+  [S.hours, "hours played", `That's ${Math.floor(S.hours / 24)} days and ${S.hours % 24} hours, since ${date(C.since)}.`, "lilac"],
+  [S.jumps, "jumps", `About ${n(Math.round(S.jumps / S.hours))} an hour. Not one of them needed.`, "honey"],
+  [S.deaths, "deaths", `One every ${hm(Math.round(S.hours * 60 / S.deaths))}, on average.`, "berry"],
+  [S.miles, "miles travelled", `${n(Math.round(S.miles / 26.2))} marathons, give or take.`, "teal"],
+  [S.foes, "foes defeated", `${n(Math.round(S.foes / S.deaths))} for every time one got me.`, "plain"],
+  [S.quests, "quests done", `About ${Math.round(S.quests / C.level)} a level.`, "plain"],
+];
+const worn = (key) => C.gear?.[key];
+const hasIcons = Object.values(C.gear ?? {}).some((g) => g.icon);
 // The character sheet's slots, laid out as the game lays them out: down both sides of the middle, weapons under it
 const LEFT = [["head", "Head"], ["neck", "Neck"], ["shoulder", "Shoulders"], ["back", "Back"], ["chest", "Chest"], ["wrist", "Wrists"], ["hands", "Hands"]];
 const RIGHT = [["waist", "Waist"], ["legs", "Legs"], ["feet", "Feet"], ["finger1", "Ring"], ["finger2", "Ring"], ["trinket1", "Trinket"], ["trinket2", "Trinket"]];
@@ -45,6 +56,8 @@ const WEAPONS = [["mainhand", "Main hand"], ["offhand", "Off hand"], ["ranged", 
   --green: #e2ebdc; --green-ink: #14171c; --green-muted: #3a404a; --green-acc: #3f6b3a;
   --plain: #e6e8ec; --plain-line: #b4bac4;
   --peek-shadow: 0 12px 28px rgb(20 23 28 / 0.2), 0 2px 6px rgb(20 23 28 / 0.1);
+  /* the journey's tiles: four tints with a deep shade of each for their words, as the home page's stages have */
+  --jr-lilac: #d7c6f0; --jr-lilac-ink: #3d2466; --jr-honey: #f3dc9a; --jr-honey-ink: #4f3a08; --jr-berry: #f0d2dc; --jr-berry-ink: #5c1a30; --jr-teal: #c6e2dd; --jr-teal-ink: #13453f;
   /* an item's name in the colour of its quality, as the game shows it, darkened to read on a light page */
   --q-uncommon: #1a6a2c; --q-rare: #1d4fae; --q-epic: #6a35b5; --q-legendary: #9a4a00;
 }
@@ -54,6 +67,7 @@ const WEAPONS = [["mainhand", "Main hand"], ["offhand", "Off hand"], ["ranged", 
     --plain: #1c1f27; --plain-line: #3d424e;
     --peek-shadow: 0 12px 28px rgb(0 0 0 / 0.5);
     --q-uncommon: #7fd68a; --q-rare: #8fb1ff; --q-epic: #c9a8ff; --q-legendary: #ffb066;
+    --jr-lilac: #2c2140; --jr-lilac-ink: #e3d4ff; --jr-honey: #30280f; --jr-honey-ink: #f3dc9a; --jr-berry: #321b24; --jr-berry-ink: #f4d2de; --jr-teal: #132a28; --jr-teal-ink: #c6e2dd;
   }
 }
 :root[data-theme="dark"] {
@@ -61,6 +75,7 @@ const WEAPONS = [["mainhand", "Main hand"], ["offhand", "Off hand"], ["ranged", 
   --plain: #1c1f27; --plain-line: #3d424e;
   --peek-shadow: 0 12px 28px rgb(0 0 0 / 0.5);
   --q-uncommon: #7fd68a; --q-rare: #8fb1ff; --q-epic: #c9a8ff; --q-legendary: #ffb066;
+  --jr-lilac: #2c2140; --jr-lilac-ink: #e3d4ff; --jr-honey: #30280f; --jr-honey-ink: #f3dc9a; --jr-berry: #321b24; --jr-berry-ink: #f4d2de; --jr-teal: #132a28; --jr-teal-ink: #c6e2dd;
 }
 
 * { box-sizing: border-box; }
@@ -308,15 +323,17 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .sheet-body { display: grid; grid-template-columns: minmax(0, 1fr) 300px; }
 .doll { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 240px) minmax(0, 1fr); gap: var(--jsal-space-20) var(--jsal-space-24); padding: var(--jsal-space-24) var(--jsal-space-32) var(--jsal-space-32); }
 .side { display: grid; gap: var(--jsal-space-8); align-content: start; }
-.gear { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: var(--jsal-space-12); align-items: center; min-height: 52px; }
-.gear-ico { display: grid; place-items: center; width: 48px; height: 48px; border: 2px solid var(--q, var(--plain-line)); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
-.gear[data-q] .gear-ico::before { content: ""; width: 14px; height: 14px; background: var(--q); rotate: 45deg; opacity: 0.7; }
+.gear { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: var(--jsal-space-12); align-items: center; min-height: 60px; }
+/* an item's icon is Blizzard's own, shown at its own 56 pixels inside the frame; a slot without one shows a diamond */
+.gear-ico { display: grid; place-items: center; overflow: hidden; width: 60px; height: 60px; border: 2px solid var(--q, var(--plain-line)); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
+.gear-ico img { display: block; }
+.gear[data-q] .gear-ico:empty::before { content: ""; width: 14px; height: 14px; background: var(--q); rotate: 45deg; opacity: 0.7; }
 .gear small { display: block; color: var(--jsal-muted); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
 .gear b { display: block; color: var(--q, var(--jsal-ink)); font: 600 14px/1.3 var(--jsal-font); }
 .gear:not([data-q]) b { color: var(--jsal-muted); font-weight: 400; }
 .gear[data-q="uncommon"] { --q: var(--q-uncommon); } .gear[data-q="rare"] { --q: var(--q-rare); } .gear[data-q="epic"] { --q: var(--q-epic); } .gear[data-q="legendary"] { --q: var(--q-legendary); }
 .gear[data-q="common"], .gear[data-q="poor"] { --q: var(--jsal-ink-2); }
-.side.r .gear { grid-template-columns: minmax(0, 1fr) 48px; text-align: right; }
+.side.r .gear { grid-template-columns: minmax(0, 1fr) 60px; text-align: right; }
 .side.r .gear-ico { order: 2; }
 /* the middle of the sheet: level and class, where the game stands the character */
 .emblem { display: grid; place-content: center; justify-items: center; gap: var(--jsal-space-4); border: 1px solid var(--plain-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); text-align: center; }
@@ -332,13 +349,28 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .prof i { grid-column: 1 / -1; height: 6px; margin-bottom: var(--jsal-space-8); border-radius: var(--jsal-radius-sm); background: linear-gradient(to right, var(--jsal-fill) var(--at), var(--jsal-line-hi) var(--at)); }
 .fresh { padding: var(--jsal-space-12) var(--jsal-space-32); border-top: 1px solid var(--plain-line); color: var(--jsal-muted); font-size: 13px; }
 
-/* The journal: the time at each level as bars and the places most time went, beside the latest entries and the
-   spells most used. All of it written down by the addon as the character is played. */
-.jr { grid-column: 1 / 13; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--jsal-space-24) var(--jsal-space-48); padding: var(--jsal-space-32); background: var(--plain); }
-.jr-head { grid-column: 1 / -1; }
-.jr-head p { margin-top: var(--jsal-space-4); color: var(--jsal-muted); }
+/* The journey so far: the journal as a spread of tiles. Six tidbits (a total, what it counts, and a line worked out
+   from it) in tints, then the time at each level as bars, the latest entries and the places most time went. The
+   numbers count up the first time they are scrolled to, and a tidbit tips a little under the pointer. */
+.jr { grid-column: 1 / 13; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--jsal-space-16); padding: 0; }
+.jr-head { grid-column: 1 / -1; padding-top: var(--jsal-space-16); }
+.jr h2 { margin: 0; font: 700 30px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; }
+.jr-head p { margin: var(--jsal-space-4) 0 0; color: var(--jsal-muted); }
 .jr h3 { margin: 0 0 var(--jsal-space-12); font: 700 17px/1.3 var(--jsal-font); }
-.jr-col { display: grid; gap: var(--jsal-space-32); align-content: start; }
+.tid, .jr-box { padding: var(--jsal-space-24); border-radius: var(--jsal-radius-tile); background: var(--plain); }
+.tid { grid-column: span 4; display: flex; flex-direction: column; justify-content: flex-end; min-height: 168px; transition: transform var(--jsal-settle) var(--jsal-ease-out); }
+.tid:nth-child(2) { grid-column: span 5; } .tid:nth-child(3) { grid-column: span 4; } .tid:nth-child(4) { grid-column: span 3; }
+.tid:hover { transform: translateY(-4px) rotate(var(--tip, -0.6deg)); }
+.tid:nth-child(odd) { --tip: 0.6deg; }
+.tid b { font: 800 46px/1 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.tid:nth-child(2) b { font-size: 72px; letter-spacing: -0.03em; }   /* style: allow (the first tidbit's number, the spread's largest) */
+.tid span { margin-top: var(--jsal-space-4); font: 600 17px/1.3 "Outfit", "Segoe UI", system-ui, sans-serif; }
+.tid small { margin-top: var(--jsal-space-8); font-size: 14px; line-height: 1.4; opacity: 0.85; }
+.tid[data-tone="lilac"] { background: var(--jr-lilac); color: var(--jr-lilac-ink); }
+.tid[data-tone="honey"] { background: var(--jr-honey); color: var(--jr-honey-ink); }
+.tid[data-tone="berry"] { background: var(--jr-berry); color: var(--jr-berry-ink); }
+.tid[data-tone="teal"] { background: var(--jr-teal); color: var(--jr-teal-ink); }
+.jr-road { grid-column: span 7; } .jr-late { grid-column: span 5; grid-row: span 2; } .jr-zones { grid-column: span 7; }
 /* a bar per level, as tall as the time spent there; the level in hand in gold */
 .bars { display: flex; align-items: flex-end; gap: var(--jsal-space-2); height: 120px; border-bottom: 1px solid var(--jsal-line-hi); }
 .bars i { flex: 1; min-height: 2px; border-radius: var(--jsal-radius-sm) var(--jsal-radius-sm) 0 0; background: var(--jsal-muted); }
@@ -352,13 +384,14 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .zone { display: grid; grid-template-columns: minmax(0, 9fr) minmax(0, 10fr) 36px; gap: var(--jsal-space-12); align-items: center; padding: var(--jsal-space-4) 0; font-size: 14px; }
 .zone span:last-child { text-align: right; }
 .zone i { height: 8px; border-radius: var(--jsal-radius-sm); background: var(--jsal-muted); }
-.used { color: var(--jsal-ink-2); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .tid { transition: none; } .tid:hover { transform: none; } }
 @media (max-width: 1099px) {
   .sheet-body { grid-template-columns: minmax(0, 1fr); }
   .sheet-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--plain-line); border-left: 0; }
 }
 @media (max-width: 899px) {
-  .jr { grid-template-columns: minmax(0, 1fr); padding: var(--jsal-space-24); }
+  .tid, .tid:nth-child(n) { grid-column: span 6; }
+  .jr-road, .jr-late, .jr-zones { grid-column: 1 / -1; grid-row: auto; }
   .sheet-stats { grid-template-columns: minmax(0, 1fr); }
 }
 /* Phones: level and class across the top, then the two columns of slots, both reading left to right */
@@ -370,10 +403,11 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .emblem b { font-size: 40px; }
   .side.r .gear { grid-template-columns: 48px minmax(0, 1fr); text-align: left; }
   .side.r .gear-ico { order: 0; }
-  .gear, .side.r .gear { grid-template-columns: 40px minmax(0, 1fr); gap: var(--jsal-space-8); }
-  .gear-ico { width: 40px; height: 40px; }
   .weapons { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-8); }
-  .jr { padding: var(--jsal-space-20); }
+  .jr { gap: var(--jsal-space-12); }
+  .tid, .jr-box { padding: var(--jsal-space-20); }
+  .tid { min-height: 136px; }
+  .tid b, .tid:nth-child(2) b { font-size: 40px; }
   .bars { height: 88px; gap: 1px; }
 }
 /* This page's intro runs across the grid */
@@ -395,44 +429,37 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
       <div class="sheet-body">
         <div class="doll">
-          <div class="side">{LEFT.map(([key, label]) => <div class="gear" data-q={C.gear?.[key]?.quality}><span class="gear-ico"></span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span></div>)}</div>
+          <div class="side">{LEFT.map(([key, label]) => <div class="gear" data-q={C.gear?.[key]?.quality}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span></div>)}</div>
           <div class="emblem"><b>{C.level}</b><span>{C.class}</span><small>WoW Forever</small></div>
-          <div class="side r">{RIGHT.map(([key, label]) => <div class="gear" data-q={C.gear?.[key]?.quality}><span class="gear-ico"></span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span></div>)}</div>
-          <div class="weapons">{WEAPONS.map(([key, label]) => <div class="gear" data-q={C.gear?.[key]?.quality}><span class="gear-ico"></span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span></div>)}</div>
+          <div class="side r">{RIGHT.map(([key, label]) => <div class="gear" data-q={C.gear?.[key]?.quality}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span></div>)}</div>
+          <div class="weapons">{WEAPONS.map(([key, label]) => <div class="gear" data-q={C.gear?.[key]?.quality}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span></div>)}</div>
         </div>
         <div class="sheet-stats">
-          <div><h3>Journal</h3>{STATS.map(([what, much]) => <div class="stat"><span>{what}</span><span>{much}</span></div>)}</div>
+          <div><h3>Most used</h3>{C.spells.map(([spell, times]) => <div class="stat"><span>{spell}</span><span>{n(times)} times</span></div>)}</div>
           <div><h3>Professions</h3><div class="prof">{C.professions.map(([name, skill, cap]) => <Fragment><span>{name}</span><span>{skill} / {cap}</span><i style={`--at:${Math.round(skill / cap * 100)}%`}></i></Fragment>)}</div></div>
           {C.pet && <div><h3>Companion</h3><div class="stat"><span>{C.pet.name}, a {C.pet.family.toLowerCase()}</span><span>Level {C.pet.level}</span></div></div>}
         </div>
       </div>
-      <p class="fresh">{C.gear ? `From jsal.ui, as it stood on ${date(C.updated)}.` : `From jsal.ui, as it stood on ${date(C.updated)}. What I'm wearing shows here after my next login.`}</p>
+      <p class="fresh">{C.gear ? `From jsal.ui, as it stood on ${date(C.updated)}.` : `From jsal.ui, as it stood on ${date(C.updated)}. What I'm wearing shows here after my next login.`}{hasIcons && " Item icons © Blizzard Entertainment."}</p>
     </section>
-    <section class="tile jr" aria-labelledby="jr-h">
-      <div class="jr-head"><h2 id="jr-h">Journal</h2><p>What jsal.ui has written down since {date(C.since)}.</p></div>
-      <div class="jr-col">
-        <div>
-          <h3>The road so far</h3>
-          <div class="bars" role="img" aria-label={`Time spent at each level, 1 to ${C.level}. The longest was level ${longestAt}, at ${hm(longest)}.`}>
-            {C.levelMinutes.map((m) => <i style={`height:${Math.max(2, Math.round(m / longest * 100))}%`}></i>)}
-          </div>
-          <div class="axis" aria-hidden="true"><span>Level 1</span><span>Level {C.level}</span></div>
-          <p class="note">Time spent at each level. Level {longestAt} took the longest: {hm(longest)}.</p>
+    <section class="jr" aria-labelledby="jr-h">
+      <div class="jr-head"><h2 id="jr-h">The journey so far</h2><p>Written down by jsal.ui's Journal as I play.</p></div>
+      {TIDBITS.map(([much, what, line, tone]) => <div class="tid" data-tone={tone}><b data-n={much}>{n(much)}</b><span>{what}</span><small>{line}</small></div>)}
+      <div class="jr-box jr-road">
+        <h3>The road so far</h3>
+        <div class="bars" role="img" aria-label={`Time spent at each level, 1 to ${C.level}. The longest was level ${longestAt}, at ${hm(longest)}.`}>
+          {C.levelMinutes.map((m) => <i style={`height:${Math.max(2, Math.round(m / longest * 100))}%`}></i>)}
         </div>
-        <div>
-          <h3>Where the time went</h3>
-          {C.zones.map(([zone, hours]) => <div class="zone"><span>{zone}</span><i style={`width:${Math.round(hours / zoneMax * 100)}%`}></i><span>{hours} h</span></div>)}
-        </div>
+        <div class="axis" aria-hidden="true"><span>Level 1</span><span>Level {C.level}</span></div>
+        <p class="note">Time spent at each level. Level {longestAt} took the longest: {hm(longest)}.</p>
       </div>
-      <div class="jr-col">
-        <div>
-          <h3>Lately</h3>
-          <ul class="feed">{C.events.map((e) => <li><span>{e.text}</span><time datetime={e.date}>{date(e.date)}</time></li>)}</ul>
-        </div>
-        <div>
-          <h3>Most used</h3>
-          <p class="used">{C.spells.map(([spell, times]) => `${spell}, ${n(times)} times`).join(". ")}.</p>
-        </div>
+      <div class="jr-box jr-late">
+        <h3>Lately</h3>
+        <ul class="feed">{C.events.map((e) => <li><span>{e.text}</span><time datetime={e.date}>{date(e.date)}</time></li>)}</ul>
+      </div>
+      <div class="jr-box jr-zones">
+        <h3>Where the time went</h3>
+        {C.zones.map(([zone, hours]) => <div class="zone"><span>{zone}</span><i style={`width:${Math.round(hours / zoneMax * 100)}%`}></i><span>{hours} h</span></div>)}
       </div>
     </section>
     <a class="tile ui" href="/jsal-ui/" data-jsal-nav aria-labelledby="ui-h">
@@ -705,5 +732,24 @@ function drawAchievements() {
 addEventListener('DOMContentLoaded', drawAchievements);
 addEventListener('jsal-achievement', drawAchievements);
 addEventListener('pageshow', drawAchievements);   // back from a tool: show what was unlocked there
+</script>
+<script is:inline>
+// The journey's numbers count up, once, the first time each is scrolled to. With reduced motion, or without
+// scripts, they simply read as they are.
+(() => {
+  if (!matchMedia('(prefers-reduced-motion: no-preference)').matches || !('IntersectionObserver' in window)) return;
+  const seen = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    seen.unobserve(e.target);
+    const el = e.target, to = +el.dataset.n, from = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - from) / 900);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - t, 3))).toLocaleString('en-GB');
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }), { threshold: 0.6 });
+  document.querySelectorAll('.tid b[data-n]').forEach((el) => seen.observe(el));
+})();
 </script>
 </Page>
