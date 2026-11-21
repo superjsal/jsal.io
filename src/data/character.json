@@ -9,11 +9,11 @@
  "lastSeen": "2026-11-20",
  "stats": {
   "hours": 130,
-  "foes": 5038,
-  "quests": 580,
+  "foes": 5104,
+  "quests": 584,
   "deaths": 34,
-  "miles": 1000,
-  "jumps": 23425
+  "miles": 1005,
+  "jumps": 23533
  },
  "levelMinutes": [
   26,
@@ -58,38 +58,44 @@
   232,
   660,
   767,
-  272
+  325
  ],
  "events": [
   {
    "kind": "pet",
    "text": "Bolt found a blue feather in Badlands",
-   "date": "2026-11-20"
+   "date": "2026-11-20",
+   "pal": "stormcub"
   },
   {
    "kind": "loot",
    "text": "New blue: Skull Splitting Crossbow",
-   "date": "2026-11-20"
+   "date": "2026-11-20",
+   "pal": null
   },
   {
    "kind": "pet",
    "text": "Bolt found a glass marble in Desolace",
-   "date": "2026-11-20"
+   "date": "2026-11-20",
+   "pal": "stormcub"
   },
   {
    "kind": "death",
    "text": "Died in Feralas",
-   "date": "2026-11-20"
+   "date": "2026-11-20",
+   "pal": null
   },
   {
    "kind": "death",
    "text": "Died in Shen'dralas",
-   "date": "2026-11-20"
+   "date": "2026-11-20",
+   "pal": null
   },
   {
    "kind": "death",
    "text": "Died in Desolace",
-   "date": "2026-11-20"
+   "date": "2026-11-20",
+   "pal": null
   }
  ],
  "zones": [
@@ -144,15 +150,15 @@
  "spells": [
   [
    "Arcane Shot",
-   4760
+   4831
   ],
   [
    "Hunter's Mark",
-   3634
+   3702
   ],
   [
-   "Serpent Sting",
-   1125
+   "Summon Hawk",
+   1137
   ]
  ],
  "gear": {
@@ -183,7 +189,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 47 / 50"
+     "t": "Durability 45 / 50"
     }
    ]
   },
@@ -313,7 +319,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 97 / 100"
+     "t": "Durability 98 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -346,7 +352,7 @@
      "t": "+5 Spirit"
     },
     {
-     "t": "Durability 30 / 30"
+     "t": "Durability 29 / 30"
     }
    ]
   },
@@ -414,7 +420,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 32 / 35"
+     "t": "Durability 33 / 35"
     }
    ]
   },
@@ -451,7 +457,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 71 / 75"
+     "t": "Durability 74 / 75"
     }
    ]
   },
@@ -606,7 +612,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 99 / 100"
+     "t": "Durability 100 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -644,7 +650,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 72 / 75"
+     "t": "Durability 73 / 75"
     },
     {
      "t": "Requires Level 43"
@@ -696,7 +702,7 @@
   ],
   [
    "Crit",
-   "7.2%"
+   "7.3%"
   ],
   [
    "Dodge",
@@ -752,7 +758,7 @@
    ],
    [
     "Crit",
-    "7.2%"
+    "7.3%"
    ],
    [
     "Dodge",

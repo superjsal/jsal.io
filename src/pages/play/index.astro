@@ -12,6 +12,14 @@ const date = (iso) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-GB", {
 const hm = (m) => (m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`);
 const longest = Math.max(...C.levelMinutes), longestAt = C.levelMinutes.indexOf(longest) + 1;
 const zoneMax = Math.max(...C.zones.map(([, h]) => h));
+// Lately's entries by kind; a profession's entry takes that profession's icon, and a jsal's Pals find shows the
+// pal's own pixel art from the addon
+const KIND_ICONS = { level: "spell_holy_surgeoflight", death: "inv_misc_bone_humanskull_01", boss: "inv_misc_head_dragon_01", kill: "ability_dualwield", loot: "inv_misc_bag_10" };
+const feedIcon = (e) => {
+  if (e.pal) return `/img/jsal-ui/pals/${e.pal}.png`;
+  const name = e.kind === "prof" ? ICONS[Object.keys(ICONS).find((k) => e.text.includes(k))] : KIND_ICONS[e.kind];
+  return name && `/img/wow/${name}.jpg`;
+};
 // A picture of the place most time went, from John's own screenshots there, when there is one
 const ZONE_ART = { Wetlands: "/img/play/zone-wetlands.webp" };
 const zoneArt = ZONE_ART[C.zones[0]?.[0]];
@@ -126,7 +134,7 @@ a.tile:hover { transform: translateY(-4px) rotate(-0.4deg); }
 .tile p { margin: 0; }
 
 /* Even line breaks: headings split into balanced lines, paragraphs avoid a lone last word */
-h1, h2, .big { text-wrap: balance; }
+h1, h2 { text-wrap: balance; }
 p, li { text-wrap: pretty; }
 
 /* Top padding lines the small line up with the picture's top edge in the CMS Picker tile beside it
@@ -138,21 +146,6 @@ p, li { text-wrap: pretty; }
 .intro h1 em { font-style: normal; font-weight: 700; color: var(--jsal-accent); }
 .intro p { margin: var(--jsal-space-32) 0 0; max-width: 30em; font-size: 17px; color: var(--jsal-muted); }
 
-/* Currently: WoW Forever art behind the text, scaled down but otherwise unaltered as Blizzard's fan-site policy
-   requires (the darkening is a separate layer on top, and the copyright notice stays on the
-   card). Same light text in both themes, since it sits on the picture. */
-.now-playing { grid-column: 1 / 9; position: relative; overflow: hidden; isolation: isolate; background: #1b2a1f; color: #f5efe2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 380px; }   /* style: allow (WoW tile: dark green under the art) */
-/* Text over the sky at the top, so the dwarf and bear show in the lower half. The art is 2.4:1 and the
-   card is taller than that, so it fills the height and object-position picks the slice with the dwarf
-   and bear. It's drawn 18% taller than the card with the extra above it (sky), which lifts them clear
-   of the credit row at the bottom. The file itself is untouched. */
-.now-playing .art { position: absolute; top: -18%; left: 0; z-index: -2; width: 100%; height: 118%; object-fit: cover; object-position: 12% 50%; }
-.now-playing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgb(17 19 24 / 0.82), rgb(17 19 24 / 0.55) 32%, rgb(17 19 24 / 0) 55%, rgb(17 19 24 / 0) 75%, rgb(17 19 24 / 0.6)); }   /* style: allow (WoW tile: shade over the art for the text) */
-.now-playing .label { margin-bottom: var(--jsal-space-8); }
-.now-playing .label { color: var(--jsal-fill); }   /* bright gold in both themes: it sits on the art */
-.now-playing .big { font: 700 30px/1.08 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.01em; text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
-.now-playing .row { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: var(--jsal-space-8) var(--jsal-space-12); }   /* the credit, bottom right */
-.now-playing .credit { font-size: 12px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .desc { margin-top: var(--jsal-space-4) !important; font-size: 15px; }
 
 
@@ -167,63 +160,60 @@ p, li { text-wrap: pretty; }
 
 /* Achievements (/nav.js unlocks them and keeps them in this browser; the script below lists them, grouped by
    where each is earned, in columns as wide as fit) */
-.ach { grid-column: 1 / 13; background: var(--plain); }
+.ach { grid-column: 1 / 9; background: var(--plain); }
 .ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--jsal-space-12); }
 .ach h2 { margin: 0; font: 700 24px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; color: var(--jsal-accent); }
 .ach-count { color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
 .ach-bar { height: 6px; margin: var(--jsal-space-12) 0 var(--jsal-space-20); border-radius: var(--jsal-radius-pill); background: var(--plain-line); overflow: hidden; }
 .ach-bar i { display: block; height: 100%; background: var(--jsal-fill); border-radius: inherit; transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }   /* a transform, so filling it doesn't re-lay-out the page; style: allow (the achievements bar filling) */
-.ach-groups { columns: 3 280px; column-gap: var(--jsal-space-24); }
-.ach-grp { break-inside: avoid; padding-bottom: var(--jsal-space-20); }
-.ach-grp h3 { display: flex; align-items: center; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-8); font-size: 14px; font-weight: 600; }
+/* One small card per tool: its trophies in a row (earned ones in their quality's ring, the rest greyed), and the next
+   one to earn spelled out under them. Each trophy's name is its tooltip and is read out to screen readers. */
+.ach-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--jsal-space-12); }
+.ach-grp { padding: var(--jsal-space-16); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); }
+.ach-grp h3 { display: flex; align-items: center; gap: var(--jsal-space-8); margin: 0 0 var(--jsal-space-12); font-size: 14px; font-weight: 600; }
 .ach-grp h3 img, .ach-grp h3 .lk { flex: none; width: 20px; height: 20px; border-radius: var(--jsal-radius-sm); }
 .ach-grp h3 .lk { display: grid; place-items: center; background: var(--jsal-tool-home); color: var(--jsal-fill); }
 .ach-grp h3 .n { margin-left: auto; font-size: 13px; font-weight: 400; color: var(--jsal-muted); font-variant-numeric: tabular-nums; }
-.ach-grp ul { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; }
-.ach-grp li { display: flex; align-items: center; gap: var(--jsal-space-8); padding: var(--jsal-space-8) var(--jsal-space-8) var(--jsal-space-8) var(--jsal-space-8); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); font-size: 14px; line-height: 1.3; }
-.ach-grp .medal { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--jsal-fill); color: var(--jsal-on-fill); }
-.ach-grp b { display: block; font-weight: 600; }
-.ach-grp small { display: block; font-size: 13px; color: var(--jsal-muted); }
-.ach-grp li.locked { background: transparent; box-shadow: inset 0 0 0 1px var(--plain-line); }
-.ach-grp li.locked b { color: var(--jsal-muted); }
-.ach-grp li.locked .medal { background: none; color: var(--jsal-muted); box-shadow: inset 0 0 0 1px var(--plain-line); }
+.ach-grp ul { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; }
+.ach-grp .medal { display: block; width: 36px; height: 36px; overflow: hidden; border-radius: var(--jsal-radius); box-shadow: 0 0 0 2px var(--mq, var(--jsal-line-hi)); }
+.ach-grp .medal img { display: block; width: 100%; height: 100%; scale: 1.14; }
+.ach-grp li.locked .medal { box-shadow: 0 0 0 1px var(--plain-line); }
+.ach-grp li.locked .medal img { filter: grayscale(1); opacity: 0.45; }
+.ach .ach-next { margin: var(--jsal-space-12) 0 0; font-size: 13px; line-height: 1.45; color: var(--jsal-muted); }
+.ach-next b { font-weight: 600; color: var(--jsal-ink); }
 @media (prefers-reduced-motion: reduce) { .ach-bar i { transition: none; } }
 
-/* Say hi (the backpack): the socials as gear in a bag window drawn after the original game's, with a stone frame,
-   a round portrait and a leather title bar. It keeps its look in both themes, like the WoW Forever tile. The items
-   are Blizzard's own icons, shown as Blizzard serves them; hover, focus or tap one for its tooltip. */
-.mail { grid-column: 9 / 13; display: flex; flex-direction: column; gap: var(--jsal-space-4); }
+/* Say hi (the backpack): the socials as gear in a bag, in the same plain tile as the character sheet. The items are
+   Blizzard's own icons, shown as Blizzard serves them, in the game's quality colours; hover, focus or tap one for its
+   tooltip. */
+.mail { grid-column: 9 / 13; display: flex; flex-direction: column; gap: var(--jsal-space-16); }
+/* the bag comes first in the page, so the list fills the space beside it */
+.grid { grid-auto-flow: row dense; }
 .mail.pack {
   --q-legendary: #ff8000; --q-epic: #a335ee; --q-rare: #0070dd; --q-uncommon: #1eff00; --q-common: #ffffff;
   --cast-hi: #ffd84a; --cast-lo: #b8820f;
-  --st-hi: #57534b; --st-mid: #3a3732; --st-low: #2a2825; --st-bevel: #77726a; --st-dark: #1c1b19; --st-inner: #4a4640; --st-rim: #8a857a;
-  --lt-hi: #6a4422; --lt-low: #3e2610; --lt-edge: #1a0e04; --lt-shine: rgb(255 210 150 / 0.2);
-  --pk-ink: #f1e4c9; --pk-title: #ffd100; --pk-title-edge: #3a2a00; --pk-text: #e6dcc6; --pk-label: #e0c890; --pk-muted: #b8b0a0;
-  --pk-well: #0c0c0b; --pk-well-rim: #5a564e; --pk-empty-hi: #34322f; --pk-empty-low: #141412; --pk-empty-line: #4a4640;
+  --pk-title: #ffd100;
   --new-ring: rgb(255 240 180 / 0.9); --new-glow: rgb(255 220 120 / 0.55); --shine: rgb(255 200 120 / 0.6);
   --b-email: #b8820f; --b-discord: #5865f2; --b-battlenet: #4381c3; --b-steam: #1b2838; --b-github: #24292f; --b-logo: #fff;
   --pk-black: #000; --tip-bg: rgb(8 10 16 / 0.96); --tip-name: #fff; --tip-line: #5a6b8a; --tip-ink: #e8e8e8; --tip-muted: #8a8f9c; --tip-use: #1eff00; --tip-flavor: #ffd100; --tip-error: #ff2020;
-  --pk-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  position: relative; isolation: isolate; padding-top: 20px; border-radius: 40px 12px 12px; color: var(--pk-ink);   /* style: allow (the backpack's drawn shape) */
-  background: var(--pk-grain), linear-gradient(160deg, var(--st-hi), var(--st-mid) 50%, var(--st-low));
-  box-shadow: inset 0 0 0 1px var(--pk-black), inset 0 0 0 4px var(--st-bevel), inset 0 0 0 5px var(--st-dark), inset 0 0 0 7px var(--st-inner), 0 12px 28px -14px rgb(0 0 0 / 0.7);
+  position: relative; isolation: isolate; background: var(--plain); color: var(--jsal-ink);
 }
-.mail.pack .label { color: var(--pk-label); }
-.mail.pack .desc { color: var(--pk-text); margin-top: var(--jsal-space-12) !important; }
-.pack-h { display: flex; align-items: center; gap: 14px; padding: 6px 12px 6px 0; border-radius: 30px 8px 8px 30px; background: linear-gradient(var(--lt-hi), var(--lt-low)); box-shadow: inset 0 0 0 1px var(--lt-edge), inset 0 1px 0 var(--lt-shine), 0 2px 4px rgb(0 0 0 / 0.5); }   /* style: allow (part of the backpack drawing) */
-.pack-h h2 { margin: 0; font: 700 24px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; color: var(--pk-title); text-shadow: 0 1px 0 var(--pk-black), 0 0 10px rgb(0 0 0 / 0.6); }
-.portrait { flex: none; width: 64px; height: 64px; margin: -8px 0 -8px -6px; border-radius: 50%; overflow: hidden; border: 4px solid var(--st-rim); box-shadow: 0 0 0 2px var(--st-dark), 0 4px 10px rgb(0 0 0 / 0.7); }   /* style: allow (part of the bag drawing, as drawn) */
+.mail.pack .desc { margin: 0 !important; line-height: 1.55; }
+.pack-h { display: flex; align-items: center; gap: var(--jsal-space-12); }
+.pack-h h2 { margin: 0; font: 700 24px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; }
+.portrait { flex: none; width: 48px; height: 48px; overflow: hidden; border-radius: var(--jsal-radius-lg); box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 55%, transparent), var(--ico-shadow); }
+.portrait img, .slot > img, .bagtab .bi img { scale: 1.14; }
 .portrait img, .slot img, .bagtab img { display: block; width: 100%; height: 100%; }
-.bag { position: relative; display: grid; margin-top: 14px; padding: 10px; border-radius: 10px; background: var(--pk-well); box-shadow: inset 0 0 0 2px var(--st-dark), inset 0 0 0 3px var(--pk-well-rim), inset 0 2px 12px rgb(0 0 0 / 0.9); }   /* style: allow (part of the backpack drawing) */
+.bag { position: relative; display: grid; }
 /* Both bags share one cell, so switching between them never changes the tile's height */
 .slots { grid-area: 1 / 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: center; gap: var(--jsal-space-8); }
 .slots.pouch { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--jsal-space-8); }
 .slots[inert] { visibility: hidden; }
-.slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: var(--jsal-radius); border: 2px solid var(--q); background: var(--pk-black); box-shadow: 0 0 0 1px var(--pk-black), 0 0 12px -3px var(--q); cursor: pointer; font: inherit; transition: transform var(--jsal-quick) ease, box-shadow var(--jsal-quick) ease, filter var(--jsal-quick) ease; }
+.slot { position: relative; aspect-ratio: 1; display: block; padding: 0; overflow: hidden; border-radius: var(--jsal-radius-lg); border: 2px solid var(--q); background: var(--pk-black); box-shadow: var(--ico-shadow); cursor: pointer; font: inherit; transition: transform var(--jsal-quick) ease, box-shadow var(--jsal-quick) ease, filter var(--jsal-quick) ease; }
 /* A soft bevel over the icon, as the game draws its slots */
-.slot::after { content: ""; position: absolute; inset: 0; border-radius: var(--jsal-radius-sm); pointer-events: none; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 0 6px rgb(0 0 0 / 0.55); background: linear-gradient(to bottom, rgb(255 255 255 / 0.08), transparent 40%); }
-.slot:hover, .slot:focus-visible, .slot.on { transform: translateY(-2px) scale(1.04); filter: brightness(1.15) saturate(1.1); box-shadow: 0 0 0 1px var(--pk-black), 0 0 20px -1px var(--q); outline: none; z-index: 1; }
-.slot.empty { border: 1px solid var(--pk-black); background: radial-gradient(circle at 50% 35%, var(--pk-empty-hi), var(--pk-empty-low)); box-shadow: inset 0 0 0 1px var(--pk-empty-line), inset 0 4px 8px rgb(0 0 0 / 0.85); cursor: default; }
+.slot::after { content: ""; position: absolute; inset: 0; border-radius: var(--jsal-radius); pointer-events: none; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 0 6px rgb(0 0 0 / 0.55); background: linear-gradient(to bottom, rgb(255 255 255 / 0.08), transparent 40%); }
+.slot:hover, .slot:focus-visible, .slot.on { transform: translateY(-2px) scale(1.04); filter: brightness(1.15) saturate(1.1); box-shadow: 0 0 16px -2px var(--q); outline: none; z-index: 1; }
+.slot.empty { border: 1px dashed var(--plain-line); background: transparent; box-shadow: none; cursor: default; }
 .slot.empty::after { display: none; }
 /* A social's logo in the corner of its icon, so it's known at a glance */
 .badge { position: absolute; z-index: 2; right: 3px; bottom: 3px; width: 20px; height: 20px; padding: 3px; border-radius: 50%; background: var(--b); box-shadow: 0 0 0 1.5px var(--pk-black), 0 1px 3px rgb(0 0 0 / 0.7); }
@@ -256,13 +246,12 @@ p, li { text-wrap: pretty; }
 .cast-name { position: relative; display: block; font: 600 12px/20px var(--jsal-font); text-align: center; color: var(--tip-name); text-shadow: 0 1px 2px var(--pk-black); }
 @keyframes cast { to { width: 100%; } }
 /* The bag bar switches between the backpack and the trophies, as the game's bag buttons do */
-.bagbar { display: flex; gap: var(--jsal-space-8); margin-top: var(--jsal-space-8); }
-.bagtab { flex: 1; display: flex; align-items: center; gap: var(--jsal-space-8); min-width: 0; min-height: 40px; padding: var(--jsal-space-4) var(--jsal-space-8) var(--jsal-space-4) var(--jsal-space-4); border-radius: var(--jsal-radius); border: 1px solid var(--pk-well-rim); background: var(--st-dark); color: var(--pk-text); font: 600 13px/1.2 var(--jsal-font); cursor: pointer; }
-.bagtab .bi { flex: none; width: 28px; height: 28px; overflow: hidden; border-radius: var(--jsal-radius); box-shadow: 0 0 0 1px var(--pk-black); }
-.bagtab em { margin-left: auto; font: 600 12px "JetBrains Mono", Consolas, monospace; font-style: normal; color: var(--pk-label); }
-.bagtab[aria-selected="true"] { border-color: var(--pk-title); box-shadow: 0 0 0 1px var(--pk-title-edge), 0 0 10px -2px var(--pk-title); color: var(--tip-name); }   /* style: allow (the bag's own game look, the same in both themes) */
-.bagtab:focus-visible { outline: 2px solid var(--pk-title); outline-offset: 2px; }
-.pack-credit { margin: var(--jsal-space-8) var(--jsal-space-2) 0; font-size: 12px; color: var(--pk-muted); }
+.bagbar { display: flex; gap: var(--jsal-space-8); }
+.bagtab { flex: 1; display: flex; align-items: center; gap: var(--jsal-space-8); min-width: 0; min-height: 40px; padding: var(--jsal-space-4) var(--jsal-space-8) var(--jsal-space-4) var(--jsal-space-4); border-radius: var(--jsal-radius); border: 1px solid var(--jsal-line); background: var(--jsal-surface); color: var(--jsal-ink); font: 600 13px/1.2 var(--jsal-font); cursor: pointer; }
+.bagtab .bi { flex: none; width: 28px; height: 28px; overflow: hidden; border-radius: var(--jsal-radius-sm); }
+.bagtab em { margin-left: auto; font-size: 12px; font-style: normal; font-variant-numeric: tabular-nums; color: var(--jsal-muted); }
+.bagtab[aria-selected="true"] { border-color: var(--jsal-selected-ring); background: var(--jsal-selected-bg); color: var(--jsal-selected-ink); }
+.mail .pack-credit { margin: calc(var(--jsal-space-8) * -1) var(--jsal-space-2) 0; font-size: 12px; color: var(--jsal-muted); }
 @media (pointer: coarse) { .bagtab { min-height: 44px; } .slots.pouch { grid-template-columns: repeat(5, minmax(0, 1fr)); } }   /* trophies at finger size */
 @media (max-width: 420px) { .bagtab { gap: var(--jsal-space-8); padding-right: var(--jsal-space-8); } .bagtab .bi { width: 24px; height: 24px; } }
 @media (prefers-reduced-motion: reduce) { .cast.go .cast-fill { animation-duration: var(--jsal-settle); } .slot { transition: none; } .slot:hover, .slot:focus-visible, .slot.on { transform: none; } .slot.new::before, .float { animation: none; } .slot.shine::before { display: none; } }
@@ -291,8 +280,6 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .intro p { margin: var(--jsal-space-16) 0 var(--jsal-space-8); font-size: 17px; line-height: 1.55; }
   .tile { padding: var(--jsal-space-20); }
   .tile h2 { font-size: 24px; }
-  .now-playing { gap: var(--jsal-space-12); min-height: 300px; }
-  .now-playing .big { font-size: 24px; }
   footer { margin-top: var(--jsal-space-32); }
 }
 /* The narrowest phones: Achievements alone, as Email beside it would wrap the bar (Email is in the Backpack too) */
@@ -376,6 +363,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
    An icon takes the shape of what holds it: rounded in a rounded tile, square in a plain row. */
 .ico { display: block; flex: none; overflow: hidden; width: 24px; height: 24px; }
 .ico img { display: block; width: 100%; height: 100%; scale: 1.14; }
+.ico[data-pal] img { scale: 1; image-rendering: pixelated; }   /* a pal is pixel art, drawn whole and crisp */
 .named { display: inline-flex; align-items: center; gap: var(--jsal-space-8); min-width: 0; }
 .tid { position: relative; }
 .tid .ico { position: absolute; top: var(--jsal-space-20); right: var(--jsal-space-20); width: 48px; height: 48px; border-radius: var(--jsal-radius-lg); box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 55%, transparent), var(--ico-shadow); }   /* a thin ring in the tile's own ink, like a slot in the game */
@@ -423,7 +411,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .axis { display: flex; justify-content: space-between; margin-top: var(--jsal-space-4); color: var(--jsal-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 .note { margin-top: var(--jsal-space-8) !important; color: var(--jsal-muted); font-size: 13px; }
 .feed { margin: 0; padding: 0; list-style: none; }
-.feed li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--jsal-space-12); padding: var(--jsal-space-8) 0; border-top: 1px solid var(--jsal-line); }
+.feed li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--jsal-space-12); padding: var(--jsal-space-8) 0; border-top: 1px solid var(--jsal-line); }
 .feed li:first-child { padding-top: 0; border-top: 0; }
 .feed time, .zone span:last-child, .prof span:nth-child(3n + 2) { color: var(--jsal-muted); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .zone { display: grid; grid-template-columns: minmax(0, 9fr) minmax(0, 10fr) 36px; gap: var(--jsal-space-12); align-items: center; padding: var(--jsal-space-4) 0; font-size: 14px; }
@@ -524,7 +512,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
       <div class="jr-box jr-late">
         <h3>Lately</h3>
-        <ul class="feed">{C.events.map((e) => <li><span>{e.text}</span><time datetime={e.date}>{date(e.date)}</time></li>)}</ul>
+        <ul class="feed">{C.events.map((e) => <li><span class="named">{feedIcon(e) && <picture class="ico" data-pal={e.pal ? "" : undefined}><img src={feedIcon(e)} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{e.text}</span><time datetime={e.date}>{date(e.date)}</time></li>)}</ul>
         <h3 data-next>Most used spells</h3>
         {C.spells.map(([spell, times]) => <div class="stat"><span class="named">{ICONS[spell] && <picture class="ico"><img src={`/img/wow/${ICONS[spell]}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{spell}</span><span>{n(times)} times</span></div>)}
       </div>
@@ -534,18 +522,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
         {C.zones.map(([zone, hours]) => <div class="zone"><span>{zone}</span><i style={`width:${Math.round(hours / zoneMax * 100)}%`}></i><span>{hours} h</span></div>)}
       </div>
     </section>
-    <section class="tile now-playing" aria-label="Currently">
-      <!-- It covers a tall box, so it's drawn about 800px wide whatever the screen: sizes says that,
-           and 2x screens still get the 1920px original. Well below the first screen, so it loads late. -->
-      <img class="art" src="/img/wow-forever.webp" srcset="/img/wow-forever-1200.webp 1200w, /img/wow-forever.webp 1920w" sizes="800px" width="1920" height="800" alt="A dwarf and a bear look out over a green valley in World of Warcraft Forever" loading="lazy" decoding="async">
-      <div>
-        <p class="label">currently</p>
-        <p class="big">Playing WoW Forever</p>
-      </div>
-      <div class="row"><span class="credit">Art © Blizzard Entertainment</span></div>
-    </section>
     <section class="tile mail pack" aria-labelledby="hi-h">
-      <div class="pack-h"><span class="portrait"><img src="/img/wow/inv_misc_bag_08.jpg" width="56" height="56" alt=""></span><div><p class="label">say hi</p><h2 id="hi-h">Backpack</h2></div></div>
+      <div class="pack-h"><span class="portrait"><img src="/img/wow/inv_misc_bag_08.jpg" width="56" height="56" alt=""></span><h2 id="hi-h">Backpack</h2></div>
       <p class="desc">Questions, tool ideas, SEO or WoW. Inspect an item to see what it does.</p>
       <div class="bag">
         <div class="slots" id="bag-pack" role="tabpanel" aria-labelledby="tab-pack">
@@ -787,10 +765,16 @@ function drawAchievements() {
     const xs = A.list.filter((a) => where(a) === k);
     if (!xs.length) return '';
     const g = xs.filter((a) => got[a.id]).length;
+    const next = xs.find((a) => !got[a.id]);
+    const say = (s) => s.charAt(0).toLowerCase() + s.slice(1);
+    const nextLine = !next ? 'All earned.' : next.secret ? 'Find them somewhere on the site.' : `Next: <b>${next.name}</b>, ${say(next.todo)}`;
     return `<div class="ach-grp"><h3>${img ? `<img src="${img}" alt="" width="20" height="20">` : `<span class="lk">${line(LOCK, 13)}</span>`}${name}<span class="n">${g}/${xs.length}<span class="sr-only"> earned</span></span></h3><ul>${xs.map((a) => {
       const on = !!got[a.id], hidden = a.secret && !on;
-      return `<li class="${on ? '' : 'locked'}"><span class="medal">${line(hidden ? LOCK : a.icon, 18)}</span><span><b>${hidden ? 'Secret' : a.name}</b><small>${on ? a.done : hidden ? 'Find it somewhere on the site' : a.todo}</small></span><span class="sr-only">${on ? ' (unlocked)' : ' (locked)'}</span></li>`;
-    }).join('')}</ul></div>`;
+      const tr = TROPHIES[a.id], pic = hidden || !tr ? 'inv_misc_questionmark' : tr.icon;
+      const mq = on && tr ? ` style="--mq: ${tr.q === 'common' ? 'var(--jsal-line-hi)' : `var(--q-${tr.q})`}"` : '';
+      const said = hidden ? 'Secret, not found yet' : on ? `${a.name}, earned: ${a.done}` : `${a.name}, not yet: ${a.todo}`;
+      return `<li class="${on ? '' : 'locked'}" title="${said}"><span class="medal"${mq}><img src="/img/wow/${pic}.jpg" width="56" height="56" alt="" loading="lazy" decoding="async"></span><span class="sr-only">${said}</span></li>`;
+    }).join('')}</ul><p class="ach-next">${nextLine}</p></div>`;
   }).join('');
 }
 addEventListener('DOMContentLoaded', drawAchievements);

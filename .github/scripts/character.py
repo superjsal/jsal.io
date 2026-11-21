@@ -27,6 +27,8 @@ RENDERS = {'Vizdenia': 'https://render.worldofwarcraft.com/forever-us/character/
 ARMORY = {'Vizdenia': 'https://worldofwarcraft.blizzard.com/en-us/forever/us/armory/character/vizdenia-trueshot'}
 ROOT = Path(__file__).resolve().parents[2]
 SAVED = r'C:\Program Files (x86)\World of Warcraft\_forever_\WTF\Account\*\*\*\SavedVariables\jsalUI.lua'
+# jsal's Pals' pixel art, in the addon's source on John's PC: a pal's journal entries show its species' picture
+PAL_ART = Path(r'C:\Users\JSAL\Desktop\jsal-ui\jsalUI\Media\Pet')
 # The journal's kinds of entry that are about the character alone
 KINDS = {'level', 'death', 'boss', 'kill', 'loot', 'prof', 'pet'}
 # The slots the page shows, by the armory's names for them, and the page's; a shirt and a tabard aren't gear
@@ -215,6 +217,28 @@ def portrait():
     return {'portrait': None}
 
 
+def pals():
+    """{pal's name: species} from the journal's hatch entries ("Bolt the Stormcub hatched")."""
+    found = {}
+    for e in journal['events'].values():
+        m = re.fullmatch(r"(\S+) the ([A-Za-z' ]+) hatched", e.get('s') or '')
+        if m: found[m.group(1)] = re.sub(r'[^a-z]', '', m.group(2).lower())
+    return found
+
+
+def pal_of(text):
+    """The species of the pal a journal entry is about, copying its pixel art from the addon's source to
+    site/img/jsal-ui/pals/ (as it is) the first time it is shown, or None."""
+    species = next((s for n, s in PAL.items() if text.startswith(n + ' ')), None)
+    if not species: return None
+    art, target = PAL_ART / f'{species}.png', ROOT / 'site' / 'img' / 'jsal-ui' / 'pals' / f'{species}.png'
+    if not target.exists() and art.exists():
+        target.write_bytes(art.read_bytes())
+        print(f'Pals: saved {species}.png.')
+    return species if target.exists() else None
+
+
+PAL = pals()
 fresh = armory()
 seen = fresh or before.get('armory')
 out = {
@@ -224,7 +248,7 @@ out = {
     'stats': {'hours': round(stats['seconds'] / 3600), 'foes': stats['foes'], 'quests': stats['quests'], 'deaths': stats['deaths'],
               'miles': round(stats['yards'] / 1760), 'jumps': stats['jumps']},
     'levelMinutes': minutes,
-    'events': [{'kind': e['k'], 'text': e['s'] if e['k'] != 'death' or not e.get('z') else f"Died in {e['z']}", 'date': day(e['t'])} for e in reversed(events[-6:])],
+    'events': [{'kind': e['k'], 'text': e['s'] if e['k'] != 'death' or not e.get('z') else f"Died in {e['z']}", 'date': day(e['t']), 'pal': pal_of(e.get('s') or '') if e['k'] == 'pet' else None} for e in reversed(events[-6:])],
     'zones': [[zone, round(seconds / 3600)] for zone, seconds in sorted(journal['zones'].items(), key=lambda z: -z[1])[:5]],
     'professions': sorted(([PROFESSIONS.get(int(k), f'Profession {k}'), p['skill'], p['cap']] for k, p in db.get('professions', {}).items()), key=lambda p: -p[1]),
     'pet': {k: db['pet'][k] for k in ('name', 'family', 'level')} if db.get('pet', {}).get('name') else None,

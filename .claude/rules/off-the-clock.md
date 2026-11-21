@@ -89,6 +89,17 @@ paths:
   - Numbers here are the character's own play, so the jsal.ui page's rule against counting Forever's game data
     doesn't apply to them.
 
-- **WoW Forever art** (on `/play/` and its share image `og/play.png`; `site\img\wow-forever.webp`, Blizzard's 3840×1600 original scaled to 1920×800, plus `wow-forever-1200.webp` at 1200×500 for 1x desktop screens via `srcset`) is Blizzard's, used under their fan-site policy: it may be scaled down and saved as WebP, but never crop, retouch or otherwise alter the picture (fade and frame it with CSS only), keep the "Art © Blizzard Entertainment" credit, and remove it if the site ever becomes commercial.
+- **WoW Forever art** (on the share image `og/play.png` only: the "Currently playing" tile left `/play/`, John, 21 Nov 2026, "Currently playing can probably go"; `site\img\wow-forever.webp`, Blizzard's 3840×1600 original scaled to 1920×800, plus `wow-forever-1200.webp` at 1200×500 for 1x desktop screens via `srcset`) is Blizzard's, used under their fan-site policy: it may be scaled down and saved as WebP, but never crop, retouch or otherwise alter the picture (fade and frame it with CSS only), keep the "Art © Blizzard Entertainment" credit, and remove it if the site ever becomes commercial.
 - **Item icons** in the Backpack (`site\img\wow\*.jpg`: the socials, the Lantern, the Pocket Watch, the Hearthstone, the bag icons and each achievement's trophy) are Blizzard's WoW icons, used under the same terms: Blizzard's Legal FAQ allows its images on non-commercial web pages if notices stay and the files aren't altered, and Blizzard can withdraw that. Each is saved exactly as `https://render.worldofwarcraft.com/us/icons/56/<name>.jpg` serves it (56×56 JPG, never resized, cropped, recoloured or converted; CSS may frame or round it), named after Blizzard's icon, and nothing links to Blizzard's server. Keep the "Item icons © Blizzard Entertainment" line under the bag. The socials' logos are separate badges drawn over the icon, not edits to it. Find candidates by name (inv_letter_*, inv_misc_bag_*, inv_misc_coin_*…) on that server and ask John before downloading new ones.
 - **The Backpack** holds mostly John's socials (he'll add more; keep a few slots free), plus the Lantern (theme), the Pocket Watch (changelog) and the Hearthstone. Don't fill it with site links. Trophies go in the second bag, from `TROPHIES`. New items glow until inspected: add a new item's id to `NEW` so returning visitors notice it.
+- **The Backpack and Achievements share a row** (John, 21 Nov 2026: "update everything else to match"): the list
+  on the left, the Backpack beside it (first on phones). The Backpack is the sheet's plain tile now, not the drawn
+  stone-and-leather bag: the bag's icon ringed like the tidbits', slots rounded with the game's quality colours,
+  tabs in the selected gold, its parts spaced by the tile's gap. Its game tooltip, badges, cast bar and effects are
+  unchanged. Achievements are one small card per tool (John's pick C of two, "less space"): its trophies from
+  `TROPHIES` in a row, ringed in the trophy's quality once earned and greyed until then (a secret shows the question
+  mark), each named in its tooltip and to screen readers, and the next one to earn spelled out under them. Lately's
+  entries carry a small square icon for their kind (`KIND_ICONS`; a profession's entry takes that profession's
+  icon). A find by one of jsal's Pals (Bolt the Stormcub) shows that pal's own pixel art: the exporter learns each
+  pal's species from the journal's hatch entries and copies its picture from the addon's source
+  (`jsalUI\Media\Pet\<species>.png`) to `site/img/jsal-ui/pals/` the first time one of its finds is shown.
