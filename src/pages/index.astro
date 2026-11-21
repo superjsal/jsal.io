@@ -545,7 +545,8 @@ document.getElementById('y').textContent = new Date().getFullYear();
         pickEl.classList.toggle('tour', !resting);
         say(resting ? 'Play the tour' : 'Pause the tour', resting);
       });
-      const away = new IntersectionObserver(([e]) => pickEl.classList.toggle('away', !e.isIntersecting), { threshold: 0.4 });
+      // a sixth in view counts: on a phone held sideways the list and stage are far taller than the screen
+      const away = new IntersectionObserver(([e]) => pickEl.classList.toggle('away', !e.isIntersecting), { threshold: 0.15 });
       away.observe(pickEl);
     };
     if (document.prerendering) document.addEventListener('prerenderingchange', start, { once: true }); else start();
