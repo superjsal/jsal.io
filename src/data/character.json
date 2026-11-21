@@ -13,7 +13,7 @@
   "quests": 573,
   "deaths": 34,
   "miles": 991,
-  "jumps": 23208
+  "jumps": 23232
  },
  "levelMinutes": [
   26,
@@ -58,7 +58,7 @@
   232,
   660,
   767,
-  217
+  218
  ],
  "events": [
   {
@@ -150,6 +150,83 @@
    1112
   ]
  ],
- "gear": null,
- "gearDate": null
+ "gear": {
+  "head": {
+   "name": "Wild Headdress",
+   "quality": "uncommon",
+   "icon": null
+  },
+  "neck": {
+   "name": "Replica Crescent Necklace",
+   "quality": "uncommon",
+   "icon": null
+  },
+  "shoulder": {
+   "name": "Unstable Crystalline Shoulderpads",
+   "quality": "rare",
+   "icon": null
+  },
+  "back": {
+   "name": "Explorer's League Dustcover",
+   "quality": "rare",
+   "icon": null
+  },
+  "chest": {
+   "name": "Garb of Fallen Felbark",
+   "quality": "rare",
+   "icon": null
+  },
+  "wrist": {
+   "name": "Fur-Lined Bracers",
+   "quality": "uncommon",
+   "icon": null
+  },
+  "hands": {
+   "name": "Hawkeye's Gloves",
+   "quality": "uncommon",
+   "icon": null
+  },
+  "waist": {
+   "name": "Thorn Protecting Girdle",
+   "quality": "uncommon",
+   "icon": null
+  },
+  "legs": {
+   "name": "Triprunner Dungarees",
+   "quality": "rare",
+   "icon": null
+  },
+  "feet": {
+   "name": "Agile Boots",
+   "quality": "uncommon",
+   "icon": null
+  },
+  "finger1": {
+   "name": "Ring of Ruin",
+   "quality": "uncommon",
+   "icon": null
+  },
+  "finger2": {
+   "name": "Seal of Wrynn",
+   "quality": "rare",
+   "icon": null
+  },
+  "trinket1": {
+   "name": "Satchel of Potions",
+   "quality": "uncommon",
+   "icon": null
+  },
+  "mainhand": {
+   "name": "Felbough Arm",
+   "quality": "rare",
+   "icon": null
+  },
+  "ranged": {
+   "name": "Skull Splitting Crossbow",
+   "quality": "rare",
+   "icon": null
+  }
+ },
+ "portrait": "/img/play/vizdenia.webp",
+ "gearDate": "2026-11-20"
 }

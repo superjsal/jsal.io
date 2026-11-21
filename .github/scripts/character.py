@@ -84,10 +84,15 @@ def icons_for(ids):
     missing = [i for i in ids if str(i) not in known]
     client, secret = os.environ.get('BLIZZARD_CLIENT_ID'), os.environ.get('BLIZZARD_CLIENT_SECRET')
     if missing and client and secret:
+        said = []   # what Blizzard answered for the first item with no icon, printed once, to see why
+
         def ask(url, headers, data=None):
             try:
                 with urllib.request.urlopen(urllib.request.Request(url, headers=headers, data=data), timeout=20) as r:
                     return r.read()
+            except urllib.error.HTTPError as e:
+                if 'media/item' in url and not said: said.append(f'HTTP {e.code}')
+                return None
             except (urllib.error.URLError, TimeoutError):
                 return None
         basic = base64.b64encode(f'{client}:{secret}'.encode()).decode()
@@ -99,6 +104,12 @@ def icons_for(ids):
             url = next((a.get('value') for a in media.get('assets', []) if a.get('key') == 'icon'), None)
             # only Blizzard's own icon server, at the size the page shows
             if not url or not re.fullmatch(r'https://render\.worldofwarcraft\.com/[a-z]+/icons/56/[a-z0-9_\-]+\.jpg', url):
+                if not said: said.append('answered with ' + (json.dumps(media)[:400] if media else 'nothing'))
+                if len(said) == 1:
+                    # the item itself, to see where its picture is meant to be
+                    about = json.loads(ask(f'https://us.api.blizzard.com/data/wow/item/{item}?namespace=static-forever-us&locale=en_US', {'Authorization': f'Bearer {token}'}) or b'{}')
+                    said.append(f"item {item}: media asked: {said[0]}; the item says: name {about.get('name')!r}, media {json.dumps(about.get('media'))[:300]}, keys {sorted(about)[:14]}")
+                    print('Icons, for diagnosis: ' + said[1])
                 print(f'Icons: none found for item {item}.')
                 continue
             name = url.rsplit('/', 1)[1]
@@ -132,6 +143,8 @@ out = {
     'spells': [[spell, n] for spell, n in sorted(journal.get('spells', {}).items(), key=lambda s: -s[1])[:3]],
     # each slot that holds something, by the addon's name for the slot; absent until the addon has saved it
     'gear': {slot: {'name': items[slot]['name'], 'quality': QUALITY.get(items[slot].get('quality'), 'common'), 'icon': icons.get(items[slot].get('id'))} for slot in SLOTS if slot in items} or None,
+    # a picture of the character, when John has put one at site/img/play/<name>.webp
+    'portrait': f'/img/play/{NAME.lower()}.webp' if (ROOT / 'site' / 'img' / 'play' / f'{NAME.lower()}.webp').exists() else None,
     'gearDate': day(worn['at']) if items and worn.get('at') else None,
 }
 target = ROOT / 'src' / 'data' / 'character.json'
