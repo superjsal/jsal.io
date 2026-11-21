@@ -3,7 +3,7 @@
 // out like the addon's own dashboard (John, 20 Nov 2026, his pick of the "pick one" mockups): a list of its parts
 // down the left (Home, then Plan, Craft and Play), and the chosen part's window on the stage beside it, in the
 // addon's own font (Outfit) and the site's colours. Each part says whether it's for leveling or useful at any
-// level. Under it: what it is in a sentence, the latest release, the Discord, the small helpers and Install. The parts, their
+// level. Under it: why I made it and what it is, the latest release, the Discord, the small helpers and Install. The parts, their
 // words and windows are in src/lib/jsal-ui.mjs. The version line and the Latest release card read
 // src/data/jsal-ui-release.json, which .github/workflows/jsal-ui-version.yml keeps on jsal.ui's latest release
 // hourly. The addon's code and releases are on GitHub (superjsal/jsal-ui). First shipped at /jsal.ui/ and moved
@@ -87,9 +87,19 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .hello > div { flex: 0 1 28em; }
 .hello h1 { flex: 0 1 auto; max-width: 13.5em; margin: 0; font: 700 46px/1.05 var(--f); letter-spacing: -0.02em; }
 .hello h1 em { font-style: normal; color: var(--jsal-accent); }
-/* Under the stage: how it came about, then what it is */
-.lede { max-width: 46em; margin: var(--jsal-space-48) 0 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.55; }
-.lede + .sum { margin-top: var(--jsal-space-12); }
+/* Under the stage, a card: why I made it, beside the logo, and what it is in three facts, each with its icon */
+.about { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--jsal-space-40); align-items: center; margin-top: var(--jsal-space-48); padding: var(--jsal-space-32); border-radius: var(--jsal-radius-tile); background: var(--plain); }
+.why { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: var(--jsal-space-20); align-items: start; }
+.why .jsal-mark { width: 56px; height: 56px; margin: 0; vertical-align: 0; }
+.about h2 { margin: 0 0 var(--jsal-space-8); font: 700 24px/1.2 var(--f); letter-spacing: -0.01em; }
+.why p { margin: 0; color: var(--jsal-ink-2); font-size: 16px; line-height: 1.6; }
+.kit { display: grid; gap: var(--jsal-space-12); margin: 0; padding: 0; list-style: none; }
+.kit li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: var(--jsal-space-12); align-items: center; }
+.kit .i { display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-accent); }
+.kit b { display: block; font: 700 20px/1.1 var(--f); }
+.kit small { color: var(--jsal-muted); font-size: 14px; }
+@media (max-width: 899px) { .about { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); } }
+@media (max-width: 520px) { .about { padding: var(--jsal-space-20); } .why { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-12); } .why .jsal-mark { width: 44px; height: 44px; } }
 .pick { display: grid; grid-template-columns: 272px minmax(0, 1fr); margin-top: var(--jsal-space-32); }
 .get { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--jsal-space-12); }
 .jsal-btn.dl { min-height: 44px; padding: 0 var(--jsal-space-20); font: 700 15px/1 var(--f); }
@@ -191,9 +201,6 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
    the game) in its corner, so nothing moves without a way to stop it */
 .clip-ctl { position: absolute; right: var(--jsal-space-12); bottom: var(--jsal-space-12); z-index: 1; }
 
-/* What it is, in a sentence under the stage */
-.sum { max-width: 46em; margin: var(--jsal-space-48) 0 0; font-size: 17px; line-height: 1.55; color: var(--jsal-ink-2); }
-.sum b { color: var(--jsal-ink); font-weight: 600; }
 .band h2, .little h2, .install h2 { margin: 0; font: 700 24px/1.2 var(--f); letter-spacing: -0.01em; }
 
 /* The latest release, and the Discord */
@@ -360,8 +367,17 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
       ))}
     </div>
   </div>
-    <p class="lede">I made jsal.ui to smooth out leveling, and it keeps going after 60. It plans your trainer visits and talents on the way up, then your gear, dungeon runs, professions and guild crafting at any level, with a journal, daily games for your guild and a pet to look after.</p>
-    <p class="sum"><b>36 parts</b>, each with its own switch, in three groups: Plan, Craft and Play. <b>Free</b>, with no subscription.</p>
+    <section class="about" aria-labelledby="about-h">
+      <div class="why">
+        <svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>
+        <div><h2 id="about-h">Why I made it</h2><p>I made jsal.ui to smooth out leveling, and it keeps going after 60. It plans your trainer visits and talents on the way up, then your gear, dungeon runs, professions and guild crafting at any level, with a journal, daily games for your guild and a pet to look after.</p></div>
+      </div>
+      <ul class="kit">
+        <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></svg></span><span><b>36 parts</b><small>each with its own switch</small></span></li>
+        <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h12M4 10h12M4 14h8"/></svg></span><span><b>3 groups</b><small>Plan, Craft and Play</small></span></li>
+        <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3l2 4.5 5 .7-3.6 3.4.9 4.9L10 14.2 5.7 16.5l.9-4.9L3 8.2l5-.7z"/></svg></span><span><b>Free</b><small>no subscription, code on GitHub</small></span></li>
+      </ul>
+    </section>
     <section class="band" aria-labelledby="release-h">
       <div>
         <h2 id="release-h" class="sr-only">Latest release</h2>
@@ -626,7 +642,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 })();
 // The scroll reveal: blocks below the fold wait, then rise into place once a sixth of them is in view.
 if (matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window) {
-  const groups = [['.lede', 0], ['.sum', 0], ['.band', 0], ['.little', 0], ['.install', 0]];
+  const groups = [['.about', 0], ['.band', 0], ['.little', 0], ['.install', 0]];
   const io = new IntersectionObserver((es) => es.forEach((e) => {
     if (!e.isIntersecting) return;
     e.target.classList.add('in');
