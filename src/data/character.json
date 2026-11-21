@@ -179,7 +179,7 @@
      "t": "+11 Intellect"
     },
     {
-     "t": "Equip: Increases damage and healing done by magical spells and effects by up to 12.",
+     "t": "Equip: +12 Spell Power.",
      "tone": "green"
     },
     {
@@ -240,7 +240,7 @@
      "t": "+6 Stamina"
     },
     {
-     "t": "Equip: Restores 2 Mana per 5 sec.",
+     "t": "Equip: +2 Mana Regeneration per 5 sec.",
      "tone": "green"
     },
     {
@@ -410,7 +410,7 @@
      "tone": "green"
     },
     {
-     "t": "Equip: +9 Attack Power against Elementals.",
+     "t": "Equip: +9 Attack Power Vs Elementals.",
      "tone": "green"
     },
     {
@@ -563,6 +563,10 @@
      "t": "Trinket"
     },
     {
+     "t": "Use: Reach into the bag and hope for the best. (10 Min Cooldown)",
+     "tone": "green"
+    },
+    {
      "t": "\"Not every potion is meant for consumption.\"",
      "tone": "gold"
     }
@@ -598,7 +602,7 @@
      "t": "+9 Nature Resistance"
     },
     {
-     "t": "Equip: Improves your chance to hit by 1.0%.",
+     "t": "Equip: +10 Hit.",
      "tone": "green"
     },
     {
@@ -648,7 +652,7 @@
    ]
   }
  },
- "gearDate": "2026-11-20",
+ "gearDate": "2026-11-21",
  "portrait": "/img/play/vizdenia-render.png",
  "portraitKind": "render",
  "portraitSize": [
@@ -787,24 +791,6 @@
     300
    ]
   ],
-  "itemLevels": {
-   "271716": 33,
-   "273038": 34,
-   "4788": 20,
-   "14594": 37,
-   "270067": 39,
-   "270053": 35,
-   "280766": 33,
-   "9624": 37,
-   "281290": 26,
-   "13039": 48,
-   "2933": 31,
-   "148": 1,
-   "273047": 33,
-   "279836": 36,
-   "273037": 34,
-   "274931": 38
-  },
   "render": "https://render.worldofwarcraft.com/forever-us/character/251/27529979-main-raw.png"
  }
 }

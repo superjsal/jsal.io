@@ -11,17 +11,19 @@ paths:
 - **The page leads with John's character** (John, 20 Nov 2026: "is there something I can connect so I can see my
   current char", then "my addon" and Blizzard's API together). The panel under the headline is read from
   `src/data/character.json`: who and where, six totals, the time at each level as bars, the latest journal entries,
-  the places most time went, the hunter's pet, most-used spells and professions. The jsal.ui tile under it says the
-  journal is the addon's, so the page is a live demo of it.
+  the places most time went, the hunter's pet, most-used spells and professions. A small moss link beside "The
+  journey so far" (`.ui`: the logo, "jsal.ui", "My free WoW Forever addon", "See it") names the journey's source;
+  it replaced a full-width jsal.ui card, whose "wrote all of this" stopped being true once the sheet came from the
+  armory (John, 21 Nov 2026, "card B" of two mockups). Her render stands on the game's dark stage (`--stage*`) in
+  both themes (John, "Portrait 1" of three).
   - **It is laid out as the game's character sheet, tidied** (John, 20 Nov 2026: "more like a modernized character
     sheet like you see in game", then "looks great" of the mockup, and "add parts of the journal in a different
     card"): a title bar; the slots down both sides of the middle with the weapons under it; the journal's totals,
     professions and the hunter's pet where the game shows attributes. The middle holds the level and class, as
     there is no portrait (a screenshot John picks would go there). Slot tiles wear the item's quality colour and
-    hold the item's own icon (John, 20 Nov 2026: "Real item icons"): the exporter asks Blizzard's Forever game data
-    which icon each worn item has and saves new ones to `site/img/wow/` as served, when `BLIZZARD_CLIENT_ID` and
-    `BLIZZARD_CLIENT_SECRET` are set in the terminal John runs it in; `src/data/item-icons.json` remembers which
-    icon an item has. A slot with no icon yet shows a diamond in the quality's colour. The icon is shown at its own
+    hold the item's own icon (John, 20 Nov 2026: "Real item icons"): the armory page gives each worn item's icon
+    address, and the exporter saves new ones to `site/img/wow/` as served. A slot with no icon shows a diamond in
+    the quality's colour. The icon is shown at its own
     56 pixels and the sheet carries "Item icons © Blizzard Entertainment" whenever one is shown. The gear columns
     are `.side`, not `.slots`, which is the Backpack's.
   - **On phones (under 700px) the sheet is the game's character window** (John, 20 Nov 2026: "Build A", of two
@@ -42,12 +44,11 @@ paths:
   - **Only a fixed list leaves the PC** (the `out` table in the script): never guildmates' names (the journal's
     "guild" entries are skipped), chat, gold or the account's name. The guild's own name is shown; John can drop it.
     The class isn't in the journal, so it's an argument.
-  - **Gear comes from the addon too.** jsal.ui saves what the character wears as `jsalUICharDB.equipped`
-    (`{ at, items = { { slot, id, name, quality } } }`, replaced whole at each save; in the addon from its commit
-    8003e69, 20 Nov 2026). The exporter turns it into `gear` (slot, name, quality in words) and the page shows a
-    "Wearing" block, each name in its quality's colour with the quality in words beside it. The block is styled by
-    attributes (`data-worn`, `data-q`), not classes, as it is absent until the addon has saved gear and the checks
-    fail a class that no page uses.
+  - **Two sources, split by what each knows** (John, 21 Nov 2026: "blizzard ... for character portrait and
+    equipment, then fun stats from" jsal.ui, and the armory page over his own gear addon as the simpler of the two):
+    Blizzard's armory page gives the portrait, what is worn with each item's tooltip and icon, race, item level,
+    attributes, talents and professions; the jsal.ui journal gives everything about her play (totals, the journey,
+    places, the pet, spells). The armory has no quest, death or play-time counts, so the journal stays.
   - **The portrait is Blizzard's own render of the character** (John, 20 Nov 2026: "Yes, official render"), the
     picture its armory shows of her in what she wears now: a public address by realm and character number
     (`RENDERS` in the exporter; hers is realm 251, read from her armory page,
@@ -55,25 +56,22 @@ paths:
     every run, as it changes with the gear, and saves it as served (a 1600 x 1200 PNG with her small in the
     middle); CSS draws it large and places it so she fills the frame, with the level and class under her feet. A
     screenshot at `site/img/play/<name>.webp` is the fallback when there is no render.
-  - **What is worn, and each item's tooltip, come from John's own small addon,** `jsalGear` (in `private\jsal-gear`,
-    linked into the game's AddOns; saved as `jsalGearDB.equipped`, per character, in `jsalGear.lua` beside the
-    journal's file). It was first built into jsal.ui and taken out again (John, 20 Nov 2026: "keep it mine only"),
-    so no other player's game saves gear. The exporter reads that file and falls back to the journal's file only
-    until the addon has saved. A tooltip is the game's own lines with their colours (green, the game's yellow,
-    grey); a crafted item's "Made by" line is never published, as it names another player. Blizzard's page for an
-    item is the fallback tooltip, and half of them answer 404.
-  - **Blizzard's API** has Forever's game data under undocumented `forever` namespaces (`static-forever-us`: items,
-    icons), which is where the item icons come from. It has no Forever characters: the profile API answered 404
-    for realm 91 (the game's folder) and for 251 (the armory's), under every name tried (20 Nov 2026). The secret
-    is John's, set in his own terminal, never in chat or a file.
-  - **Race, item level, attributes, talents and professions come from her armory page** (`ARMORY` in the
-    exporter), which carries the character as data in its own source (`characterProfileInitialState`). The
-    exporter reads that one public page once a run, needs no key, and keeps what it said last time (`armory` in
-    the JSON) when the page can't be read or changes shape. It also gives each worn item's level, added as the
-    tooltip's first line, and the render's address. The sheet shows Attributes (two columns, short labels so
-    none wraps: "Attack", "Crit"), Talents, Professions and Companion; the most used spells sit under "Lately"
-    in the journey. The armory lags the game by its own refresh, so its numbers can be a little behind the
-    journal's.
+  - **Her armory page** (`ARMORY` in the exporter) carries the character as data in its own source
+    (`characterProfileInitialState`), in the shape of Blizzard's profile API, gear included with every stat. The
+    exporter reads that one public page once a run, needs no key, and keeps what it gave last time (`armory` and
+    `gear` in the JSON) when the page can't be read or changes shape. Each tooltip is built from it the way the game
+    lays one out: item level, "Soulbound" (a worn item is bound), slot and kind, armour or damage, the base stats
+    and resistances in white (strength, agility, stamina, intellect, spirit), every other bonus as a green "Equip:"
+    line, enchants and Use effects in green, durability, requirements; no sell price. Some bonuses read in the
+    armory's words, not the game's ("+12 Spell Power", "+10 Hit"). A "Made by" line is never published, as it names
+    another player. The sheet shows Attributes (two columns, short labels so none wraps: "Attack", "Crit"),
+    Talents, Professions and Companion; the most used spells sit under "Lately" in the journey. The armory lags the
+    game by its own refresh, so the gear and numbers can be a little behind the journal's.
+  - **Blizzard's public API has no Forever characters.** It has Forever's game data (`static-forever-us`), but the
+    profile and realm lookups answer 404 under `profile-forever-us` and `dynamic-forever-us` for every realm
+    (91, 251, "normal") and name form tried (20 and 21 Nov 2026); Blizzard's own armory reads characters from a
+    private partner API. Fan armories (armorywowforever.com) read Blizzard's armory pages too. John's `jsalGear`
+    addon (`private\jsal-gear`), which saved gear and the game's own tooltips, is no longer read.
   - Numbers here are the character's own play, so the jsal.ui page's rule against counting Forever's game data
     doesn't apply to them.
 

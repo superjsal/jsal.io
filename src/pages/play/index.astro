@@ -2,9 +2,10 @@
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
 import { v } from "../../lib/v.mjs";
-// John's character, from the journal the jsal.ui addon keeps as he plays: .github/scripts/character.py reads the
-// game's saved file on his PC and writes this (totals, the time at each level, the latest entries, places,
-// professions). The page is as fresh as the last time that ran.
+// John's character: .github/scripts/character.py reads the journal the jsal.ui addon keeps in the game's saved file
+// on his PC (totals, the time at each level, the latest entries, places) and his Blizzard armory page (gear with
+// tooltips and icons, the render, race, attributes, talents, professions), and writes this. The page is as fresh as
+// the last time that ran.
 import C from "../../data/character.json";
 const n = (x) => x.toLocaleString("en-GB");
 const date = (iso) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
@@ -31,7 +32,7 @@ const WEAPONS = [["mainhand", "Main hand"], ["offhand", "Off hand"], ["ranged", 
 ---
 <Page
   title="Mostly Warcraft: Off the Clock | jsal.io"
-  description="Off the clock with John Salvador: my WoW Forever character, kept up to date by my own addon, the game UI I play with, a backpack of ways to say hi, and the achievements hidden around jsal.io."
+  description="Off the clock with John Salvador: my WoW Forever character and the journey my own addon keeps, the game UI I play with, a backpack of ways to say hi, and the achievements hidden around jsal.io."
   path="/play/"
   ogTitle="Mostly Warcraft: Off the Clock"
   ogDescription="WoW Forever, the game UI I play with, a backpack of ways to say hi, and the achievements hidden around jsal.io."
@@ -53,9 +54,10 @@ const WEAPONS = [["mainhand", "Main hand"], ["offhand", "Off hand"], ["ranged", 
 <style is:inline slot="head">
 /* Tile colours: moss for the WoW UI, toned close to the page; the other tiles are plain, a neutral fill with no border */
 :root {
-  --green: #e2ebdc; --green-ink: #14171c; --green-muted: #3a404a; --green-acc: #3f6b3a;
+  --green: #e2ebdc; --green-hover: #d6e3ce; --green-ink: #14171c; --green-muted: #3a404a; --green-acc: #3f6b3a;
+  /* the portrait's stage: the game's dark character window, the same in both themes, lit behind her */
+  --stage-light: #3a3f4c; --stage: #1c1f27; --stage-deep: #14171c; --stage-line: #2a2e38; --stage-ink: #ece6d6;
   --plain: #e6e8ec; --plain-line: #b4bac4;
-  --peek-shadow: 0 12px 28px rgb(20 23 28 / 0.2), 0 2px 6px rgb(20 23 28 / 0.1);
   --tip-shadow: 0 14px 32px rgb(20 23 28 / 0.28);
   /* the journey's tiles: four tints with a deep shade of each for their words, as the home page's stages have */
   --jr-lilac: #d7c6f0; --jr-lilac-ink: #3d2466; --jr-honey: #f3dc9a; --jr-honey-ink: #4f3a08; --jr-berry: #f0d2dc; --jr-berry-ink: #5c1a30; --jr-teal: #c6e2dd; --jr-teal-ink: #13453f;
@@ -64,17 +66,15 @@ const WEAPONS = [["mainhand", "Main hand"], ["offhand", "Off hand"], ["ranged", 
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
+    --green: #19221b; --green-hover: #212d23; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
     --plain: #1c1f27; --plain-line: #3d424e;
-    --peek-shadow: 0 12px 28px rgb(0 0 0 / 0.5);
     --q-uncommon: #7fd68a; --q-rare: #8fb1ff; --q-epic: #c9a8ff; --q-legendary: #ffb066;
     --jr-lilac: #2c2140; --jr-lilac-ink: #e3d4ff; --jr-honey: #30280f; --jr-honey-ink: #f3dc9a; --jr-berry: #321b24; --jr-berry-ink: #f4d2de; --jr-teal: #132a28; --jr-teal-ink: #c6e2dd;
   }
 }
 :root[data-theme="dark"] {
-  --green: #19221b; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
+  --green: #19221b; --green-hover: #212d23; --green-ink: #ece6d6; --green-muted: #c4bfb2; --green-acc: #7fbf7a;
   --plain: #1c1f27; --plain-line: #3d424e;
-  --peek-shadow: 0 12px 28px rgb(0 0 0 / 0.5);
   --q-uncommon: #7fd68a; --q-rare: #8fb1ff; --q-epic: #c9a8ff; --q-legendary: #ffb066;
   --jr-lilac: #2c2140; --jr-lilac-ink: #e3d4ff; --jr-honey: #30280f; --jr-honey-ink: #f3dc9a; --jr-berry: #321b24; --jr-berry-ink: #f4d2de; --jr-teal: #132a28; --jr-teal-ink: #c6e2dd;
 }
@@ -144,25 +144,6 @@ p, li { text-wrap: pretty; }
 .now-playing .credit { font-size: 12px; color: rgb(245 239 226 / 0.75); }   /* style: allow (WoW tile: credit over the art) */
 .desc { margin-top: var(--jsal-space-4) !important; font-size: 15px; }
 
-/* The UI tile: its words a step smaller than the live tools, and a peek at the addon on the right, the top of
-   the Journal tilted and cut off by the tile's bottom edge. The peek takes no height of its own (height 0,
-   stretched to the row), so the words set the tile's size. */
-.ui { padding: var(--jsal-space-24) var(--jsal-space-24); }
-.ui h2 { font-size: 24px; }
-.ui { grid-column: 1 / 13; background: var(--green); color: var(--green-ink); }
-.ui .label { color: var(--green-acc); }
-.ui .desc { color: var(--green-muted); margin-top: var(--jsal-space-8) !important; }
-.ui { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 320px); gap: var(--jsal-space-24); overflow: hidden; min-height: 168px; }
-.ui > div { align-self: center; }
-.ui-go { margin-top: var(--jsal-space-16); }   /* the tile is the link; this says where it goes */
-.ui .peek { height: 0; min-height: 100%; }
-.ui .peek img { display: block; width: 100%; height: auto; margin-top: var(--jsal-space-8); border-radius: var(--jsal-radius-lg); box-shadow: var(--peek-shadow); transform: rotate(-2deg); }
-/* Phones: the peek goes under the words, a short slice of it */
-@media (max-width: 699px) {
-  .ui { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-8); padding-bottom: 0 !important; }
-  .ui .peek { height: 128px; min-height: 0; }
-  .ui .peek img { width: min(100%, 320px); margin-left: auto; }
-}
 
 .now { grid-column: 1 / 13; background: var(--plain); }
 .now h2 { margin: 0 0 var(--jsal-space-8); font: 700 24px/1.2 "Outfit", "Segoe UI", system-ui, sans-serif; color: var(--jsal-accent); }
@@ -299,7 +280,6 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .intro p { margin: var(--jsal-space-16) 0 var(--jsal-space-8); font-size: 17px; line-height: 1.55; }
   .tile { padding: var(--jsal-space-20); }
   .tile h2 { font-size: 24px; }
-  .ui { padding: var(--jsal-space-20); }
   .now-playing { gap: var(--jsal-space-12); min-height: 300px; }
   .now-playing .big { font-size: 24px; }
   footer { margin-top: var(--jsal-space-32); }
@@ -366,8 +346,9 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .emblem[data-pic] { position: relative; overflow: hidden; isolation: isolate; align-content: end; min-height: 420px; padding: var(--jsal-space-16); color: var(--jsal-ink); }
 .emblem[data-pic="photo"] img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 8%; }
 /* Blizzard's own render of the character is a wide, clear picture with her small in its middle: it is drawn large
-   and placed so she fills the frame (the file itself is as served), and the level and class sit under her feet in
-   the page's own colours */
+   and placed so she fills the frame (the file itself is as served). She stands on the game's dark stage in both
+   themes, lit from behind, with the level and class under her feet */
+.emblem[data-pic="render"] { border-color: var(--stage-line); background: radial-gradient(60% 45% at 50% 42%, var(--stage-light), var(--stage) 70%, var(--stage-deep)); color: var(--stage-ink); }
 .emblem[data-pic="render"] img { position: absolute; left: var(--px, -122%); top: var(--py, -34%); z-index: -1; width: var(--pw, 360%); max-width: none; height: auto; }
 .emblem[data-pic="photo"]::after { content: ""; position: absolute; inset: 45% 0 0; z-index: -1; background: linear-gradient(to top, rgb(17 19 24 / 0.92), rgb(17 19 24 / 0)); }   /* style: allow (a shade over the picture's foot, for the words on it) */
 .emblem[data-pic] b { font-size: 46px; }
@@ -388,9 +369,20 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
    from it) in tints, then the time at each level as bars, the latest entries and the places most time went. The
    numbers count up the first time they are scrolled to, and a tidbit tips a little under the pointer. */
 .jr { grid-column: 1 / 13; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--jsal-space-16); padding: 0; }
-.jr-head { grid-column: 1 / -1; padding-top: var(--jsal-space-16); }
+.jr-head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--jsal-space-12) var(--jsal-space-24); padding-top: var(--jsal-space-16); }
 .jr h2 { margin: 0; font: 700 30px/1.1 "Outfit", "Segoe UI", system-ui, sans-serif; }
 .jr-head p { margin: var(--jsal-space-4) 0 0; color: var(--jsal-muted); }
+/* the journey's source, beside its heading: the addon's mark, its name and where to get it, in the moss of the UI */
+.ui { display: inline-flex; align-items: center; gap: var(--jsal-space-12); padding: var(--jsal-space-8) var(--jsal-space-16) var(--jsal-space-8) var(--jsal-space-8); border-radius: var(--jsal-radius-lg); background: var(--green); color: var(--green-ink); font-size: 14px; line-height: 1.3; text-decoration: none; transition: background var(--jsal-quick) ease; }
+.ui .jsal-mark { width: 40px; height: 40px; margin: 0; vertical-align: 0; }
+.ui b { display: block; font-weight: 600; }
+.ui small { display: block; color: var(--green-muted); font-size: 13px; }
+.ui > span:not(.ui-go) { flex: 1; min-width: 0; }
+.ui-go { display: inline-flex; align-items: center; gap: var(--jsal-space-4); margin-left: var(--jsal-space-8); color: var(--green-acc); font-weight: 600; white-space: nowrap; }
+.ui-go svg { width: 16px; height: 16px; transition: translate var(--jsal-quick) ease; }
+.ui:hover { background: var(--green-hover); }
+.ui:hover .ui-go svg { translate: 3px 0; }
+@media (prefers-reduced-motion: reduce) { .ui, .ui-go svg { transition: none; } }
 .jr h3 { margin: 0 0 var(--jsal-space-12); font: 700 17px/1.3 var(--jsal-font); }
 .tid, .jr-box { padding: var(--jsal-space-24); border-radius: var(--jsal-radius-tile); background: var(--plain); }
 .tid { grid-column: span 4; display: flex; flex-direction: column; justify-content: flex-end; min-height: 168px; transition: transform var(--jsal-settle) var(--jsal-ease-out); }
@@ -465,7 +457,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     <section class="intro">
       <div class="roles"><span>Off the clock</span></div>
       <h1>Mostly <em>Warcraft</em>.</h1>
-      <p>What I'm playing, written down by my own addon as I play.</p>
+      <p>What I'm playing: my character from Blizzard's armory, the journey from my own addon.</p>
     </section>
     <section class="tile sheet" aria-labelledby="char-h">
       <div class="sheet-bar">
@@ -489,7 +481,10 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       <p class="fresh">{C.gear ? `From jsal.ui${C.attributes ? " and my armory page" : ""}, as it stood on ${date(C.updated)}.` : `From jsal.ui, as it stood on ${date(C.updated)}. What I'm wearing shows here after my next login.`}{(hasIcons || C.portrait) && ` ${[C.portrait && "Character", hasIcons && "item icons"].filter(Boolean).join(" and ")} © Blizzard Entertainment.`}</p>
     </section>
     <section class="jr" aria-labelledby="jr-h">
-      <div class="jr-head"><h2 id="jr-h">The journey so far</h2><p>Written down by jsal.ui's Journal as I play.</p></div>
+      <div class="jr-head">
+        <div><h2 id="jr-h">The journey so far</h2><p>Written down by jsal.ui's Journal as I play.</p></div>
+        <a class="ui" href="/jsal-ui/" data-jsal-nav><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg><span><b>jsal.ui</b><small>My free WoW Forever addon</small></span><span class="ui-go">See it<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      </div>
       {TIDBITS.map(([much, what, line, tone]) => <div class="tid" data-tone={tone}><b data-n={much}>{n(much)}</b><span>{what}</span><small>{line}</small></div>)}
       <div class="jr-box jr-road">
         <h3>The road so far</h3>
@@ -510,15 +505,6 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
         {C.zones.map(([zone, hours]) => <div class="zone"><span>{zone}</span><i style={`width:${Math.round(hours / zoneMax * 100)}%`}></i><span>{hours} h</span></div>)}
       </div>
     </section>
-    <a class="tile ui" href="/jsal-ui/" data-jsal-nav aria-labelledby="ui-h">
-      <div>
-        <p class="label">taken straight from my UI</p>
-        <h2 id="ui-h">jsal.ui wrote all of this</h2>
-        <p class="desc">The sheet and the journey above are what my free WoW Forever addon keeps for every character as you play. Yours would look the same in game.</p>
-        <span class="jsal-btn primary ui-go">See jsal.ui</span>
-      </div>
-      <span class="peek" aria-hidden="true"><img src={v("/img/jsal-ui/journal.webp")} width="760" height="692" alt="" loading="lazy" decoding="async"></span>
-    </a>
     <section class="tile now-playing" aria-label="Currently">
       <!-- It covers a tall box, so it's drawn about 800px wide whatever the screen: sizes says that,
            and 2x screens still get the 1920px original. Well below the first screen, so it loads late. -->
