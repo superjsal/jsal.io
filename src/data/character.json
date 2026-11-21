@@ -1,0 +1,153 @@
+{
+ "name": "Vizdenia",
+ "class": "Hunter",
+ "level": 43,
+ "guild": "retail too hard",
+ "since": "2026-11-08",
+ "updated": "2026-11-20",
+ "lastZone": "Desolace",
+ "lastSeen": "2026-11-20",
+ "stats": {
+  "hours": 128,
+  "foes": 4964,
+  "quests": 571,
+  "deaths": 34,
+  "miles": 985,
+  "jumps": 23143
+ },
+ "levelMinutes": [
+  26,
+  11,
+  10,
+  63,
+  28,
+  29,
+  48,
+  53,
+  50,
+  46,
+  41,
+  67,
+  42,
+  65,
+  145,
+  183,
+  167,
+  137,
+  73,
+  62,
+  117,
+  86,
+  99,
+  95,
+  182,
+  399,
+  72,
+  180,
+  121,
+  574,
+  229,
+  180,
+  156,
+  306,
+  318,
+  327,
+  279,
+  494,
+  280,
+  232,
+  660,
+  767,
+  165
+ ],
+ "events": [
+  {
+   "kind": "pet",
+   "text": "Bolt found a glass marble in Desolace",
+   "date": "2026-11-20"
+  },
+  {
+   "kind": "death",
+   "text": "Died in Feralas",
+   "date": "2026-11-20"
+  },
+  {
+   "kind": "death",
+   "text": "Died in Shen'dralas",
+   "date": "2026-11-20"
+  },
+  {
+   "kind": "death",
+   "text": "Died in Desolace",
+   "date": "2026-11-20"
+  },
+  {
+   "kind": "pet",
+   "text": "Bolt found an acorn in Desolace",
+   "date": "2026-11-20"
+  },
+  {
+   "kind": "pet",
+   "text": "Bolt the Stormcub hatched",
+   "date": "2026-11-20"
+  }
+ ],
+ "zones": [
+  [
+   "Wetlands",
+   15
+  ],
+  [
+   "Stormwind City",
+   10
+  ],
+  [
+   "Riverglades",
+   7
+  ],
+  [
+   "Stranglethorn Vale",
+   7
+  ],
+  [
+   "Teldrassil",
+   7
+  ]
+ ],
+ "professions": [
+  [
+   "First Aid",
+   232,
+   300
+  ],
+  [
+   "Leatherworking",
+   158,
+   225
+  ],
+  [
+   "Cooking",
+   32,
+   75
+  ]
+ ],
+ "pet": {
+  "name": "Chicago",
+  "family": "Cat",
+  "level": 42
+ },
+ "spells": [
+  [
+   "Arcane Shot",
+   4695
+  ],
+  [
+   "Hunter's Mark",
+   3561
+  ],
+  [
+   "Serpent Sting",
+   1112
+  ]
+ ]
+}
