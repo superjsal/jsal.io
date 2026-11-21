@@ -183,13 +183,18 @@ p { text-wrap: pretty; }
 .pic { position: relative; min-height: 420px; margin-top: var(--jsal-space-24); }
 .shot { position: absolute; left: var(--x, 0); top: var(--y, 0); overflow: hidden; width: var(--w); border-radius: var(--jsal-radius-xl); box-shadow: var(--shot-shadow); outline: 1px solid var(--shot-edge); font-size: 0; line-height: 0; }
 .shot img { width: 100%; height: auto; }
-/* The pictures work. A picture taken in several states holds them all, one over the other, and a control in the
-   picture (an unseen button laid exactly over the drawn one) fades its state in. */
+/* The pictures play. A picture taken in several states holds them all, one over the other; a pointer glides to a
+   control in the picture (an unseen mark laid exactly over the drawn one), presses it, and its state fades in. */
 .st { position: absolute; inset: 0; opacity: 0; transition: opacity var(--jsal-settle); }
 .st.on { opacity: 1; }
-.spot { position: absolute; padding: 0; border: 0; border-radius: var(--jsal-radius); background: none; cursor: pointer; }
-.spot:hover { box-shadow: inset 0 0 0 2px var(--jsal-hover-line); }
-.spot:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: -2px; }
+.spot { position: absolute; pointer-events: none; }
+.cursor { position: absolute; left: 0; top: 0; z-index: 2; width: 26px; height: 26px; pointer-events: none; opacity: 0; translate: var(--cx, 50%) var(--cy, 50%); transition: translate 0.55s cubic-bezier(0.45, 0, 0.2, 1), opacity var(--jsal-quick) ease; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.45)); }   /* style: allow (the home pictures' pointer gliding to a control) */
+.cursor.on { opacity: 1; }
+.cursor svg { display: block; width: 100%; height: 100%; transition: scale 0.12s ease; transform-origin: 3px 2px; }   /* style: allow (the press) */
+.cursor.down svg { scale: 0.86; }
+.cursor::after { content: ""; position: absolute; left: -9px; top: -10px; width: 24px; height: 24px; border: 2px solid var(--jsal-fill); border-radius: 50%; opacity: 0; scale: 0.4; }
+.cursor.down::after { animation: press 0.45s ease-out; }   /* style: allow (the ring of a press) */
+@keyframes press { 0% { opacity: 1; scale: 0.4; } 100% { opacity: 0; scale: 1.4; } }
 .cms .a { --w: 700px; }
 .cms .pic { min-height: 340px; }
 .ir .a { --x: 80px; --w: 390px; }
@@ -337,9 +342,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
                 {Array.from({ length: SPOTS[t.id].vary.includes(piece) ? SPOTS[t.id].states : 1 }, (_, k) => ["light", "dark"].map((theme) => (
                   <img class={`${theme === "light" ? "lt" : "dk"}${k ? " st" : ""}`} data-state={k || undefined} src={v(`/img/home/${t.id}-${piece}${k ? `-s${k}` : ""}-${theme}.webp`)} alt="" width={w} height={h} loading={i === 0 && !k ? "eager" : "lazy"} decoding="async">
                 )))}
-                {SPOTS[t.id].spots.filter((sp) => sp.piece === piece).map((sp) => sp.href
-                  ? <a class="spot" href={sp.href} data-app aria-label={sp.label} title={sp.label} style={`left:${sp.x}%;top:${sp.y}%;width:${sp.w}%;height:${sp.h}%`}></a>
-                  : <button type="button" class="spot" data-state={sp.state} aria-pressed={sp.state === 0 ? "true" : "false"} aria-label={sp.label} title={sp.label} style={`left:${sp.x}%;top:${sp.y}%;width:${sp.w}%;height:${sp.h}%`}></button>)}
+                {SPOTS[t.id].spots.filter((sp) => sp.piece === piece).map((sp) => <span class="spot" aria-hidden="true" data-state={sp.state ?? undefined} style={`left:${sp.x}%;top:${sp.y}%;width:${sp.w}%;height:${sp.h}%`}></span>)}
               </span>
             ))}
           </div>
@@ -377,14 +380,6 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 </div>
 <script is:inline>
 document.getElementById('y').textContent = new Date().getFullYear();
-// The pictures work: a control in a picture shows the tool as it looks with that control pressed
-document.querySelectorAll('.stage').forEach((stage) => {
-  const spots = [...stage.querySelectorAll('button.spot')];
-  spots.forEach((spot) => spot.addEventListener('click', () => {
-    stage.querySelectorAll('.st').forEach((img) => img.classList.toggle('on', img.dataset.state === spot.dataset.state));
-    spots.forEach((other) => other.setAttribute('aria-pressed', other === spot ? 'true' : 'false'));
-  }));
-});
 // The list becomes tabs: a row shows its tool's stage in place (arrow keys move along the list, and 1 to 4 pick a
 // tool from anywhere on the page). The address keeps the choice (#pick-ir), so a link can open the page on any tool.
 (() => {
@@ -421,6 +416,54 @@ document.querySelectorAll('.stage').forEach((stage) => {
   addEventListener('resize', refit);
   addEventListener('load', refit);
   document.fonts?.ready.then(refit);
+  // The demo: when a tool's stage shows (on a screen wide enough for its pictures, with motion welcome), a pointer
+  // glides to each control in its picture in turn and presses it, and the picture shows that state; it ends back on
+  // the first, in about five seconds, inside the tour's turn. Pause stops it; a new tool starts its own.
+  const STEPS = { cms: [0, 1, 2, 3], ir: [1, 2, 0], cp: [1, 0], ri: [1, 3, 4, 0] };
+  const calm = matchMedia('(prefers-reduced-motion: reduce)'), demoRoom = matchMedia('(min-width: 700px)');
+  let run = 0;
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const demo = async (stage) => {
+    const mine = ++run;
+    const pic = stage.querySelector('.pic'), steps = STEPS[stage.id];
+    if (!pic || !steps || calm.matches || !demoRoom.matches) return;
+    const marks = [...pic.querySelectorAll('.spot')];
+    let cursor = pic.querySelector('.cursor');
+    if (!cursor) {
+      cursor = Object.assign(document.createElement('i'), { className: 'cursor' });
+      cursor.setAttribute('aria-hidden', 'true');
+      cursor.innerHTML = '<svg viewBox="0 0 26 26"><path d="M3 2l17 10-7.5 1.6L9 21z" fill="#fff" stroke="#14171c" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+      pic.append(cursor);
+    }
+    const show = (state) => pic.querySelectorAll('.st').forEach((img) => img.classList.toggle('on', img.dataset.state === String(state)));
+    const goTo = (mark) => {
+      const p = pic.getBoundingClientRect(), r = mark.getBoundingClientRect();
+      cursor.style.setProperty('--cx', `${r.left - p.left + r.width / 2 - 3}px`);
+      cursor.style.setProperty('--cy', `${r.top - p.top + r.height / 2 - 2}px`);
+    };
+    const stopped = () => mine !== run || !stage.classList.contains('on') || document.querySelector('.pick').classList.contains('rested');
+    show(0);
+    cursor.style.transition = 'none'; goTo(marks[0] || pic); void cursor.offsetWidth; cursor.style.transition = '';
+    await wait(700);
+    if (stopped()) return;
+    cursor.classList.add('on');
+    for (const n of steps) {
+      const mark = stage.id === 'cms' ? marks[n] : marks.find((m) => m.dataset.state === String(n));
+      if (!mark) continue;
+      goTo(mark);
+      await wait(600);
+      if (stopped()) break;
+      cursor.classList.add('down');
+      if (stage.id !== 'cms') show(n);
+      await wait(180);
+      cursor.classList.remove('down');
+      await wait(450);
+      if (stopped()) break;
+    }
+    cursor.classList.remove('on', 'down');
+    if (mine !== run) return;
+    show(0);
+  };
   const pick = (i, focus) => {
     // after the first, a pick says which way the list moved, so the new stage's parts arrive from there
     if (live && i !== cur) { box.style.setProperty('--dir', i < cur ? -1 : 1); box.classList.add('live'); }
@@ -430,6 +473,7 @@ document.querySelectorAll('.stage').forEach((stage) => {
     tabs.forEach((t, j) => { t.setAttribute('aria-selected', i === j ? 'true' : 'false'); t.tabIndex = i === j ? 0 : -1; });
     stages.forEach((s, j) => s.classList.toggle('on', i === j));
     if (focus) tabs[i].focus();
+    if (document.prerendering) document.addEventListener('prerenderingchange', () => demo(stages[cur]), { once: true }); else demo(stages[i]);
   };
   tabs.forEach((t, i) => {
     t.setAttribute('role', 'tab'); t.setAttribute('aria-controls', stages[i].id);

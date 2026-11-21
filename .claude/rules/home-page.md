@@ -39,15 +39,19 @@ home page work.
 - **The headline leads the page** (John, 20 Nov 2026, "all 4" of my suggestions): "Small tools that do *one job*
   well." across the top at every page title's size (46px, 40px on phones), with the "Free, in your browser" line
   at its end; the list and the stage sit under it. It used to sit in the list at 30px, quieter than a tool's name.
-- **The pictures are the real tools, and they work**, each with its example loaded, in the light and the dark
-  theme, cut to one or two pieces. A control in a picture shows the tool as it looks with that control pressed: a
-  size reshapes the Image Resizer's crop, Text | HTML turns Clean Paste's post into its code, a filter narrows
-  Redirect Import's sheet, and an answer in the quiz's picture opens the quiz with that answer given
-  (`#quiz?v=6&what=…`; raise the `v` in `home-shots.mjs` when the quiz's link version changes). Each tool is taken
-  once per state, and an unseen button sits exactly over each drawn control (`src/data/home-spots.json`, shares of
-  the picture): `node .github/build/home-shots.mjs` against the served build writes the pictures and that file. Run
-  it again when a tool's look changes, and look at each picture afterwards: the cuts are fixed rectangles. Every
-  control in a picture must do something; none is left dead. The second piece overlaps the first; both run off the
+- **The pictures are the real tools, and they play a demo** (John, 21 Nov 2026: "play an animation over being
+  interactive", his pick of a pointer pressing each control over a plain cross-fade), each with its example loaded,
+  in the light and the dark theme, cut to one or two pieces. Each time a tool's stage shows, from 700px wide with
+  motion welcome, a pointer glides to each control in its picture in turn (`STEPS` in the page's script), presses it
+  with a gold ring, and the picture shows that state: a size reshapes the Image Resizer's crop, Text | HTML turns
+  Clean Paste's post into its code, a filter narrows Redirect Import's sheet; in the quiz's picture it presses each
+  answer. It ends back on the first state in about five seconds, inside the tour's turn; Pause, or another tool,
+  stops it; with reduced motion nothing plays. The pictures aren't clickable: the stage's gold button is the way in.
+  Each tool is taken once per state, and an unseen mark sits exactly over each drawn control
+  (`src/data/home-spots.json`, shares of the picture), which the pointer goes to:
+  `node .github/build/home-shots.mjs` against the served build writes the pictures and that file (its quiz links,
+  `#quiz?v=6&what=…`, are no longer used). Run it again when a tool's look changes, and look at each picture
+  afterwards: the cuts are fixed rectangles. The second piece overlaps the first; both run off the
   stage's edge, which is `overflow: clip` (a hidden box scrolled to a focused control and slid the stage).
 - **A first visit gets one nudge:** on a wide screen, with nothing picked after a second and a half, the gem leans
   toward the next row and back, twice, once per browser (`jsal-pick-hint`). Never with reduced motion.

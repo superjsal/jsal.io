@@ -266,8 +266,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
 - **Page transitions are one slide everywhere** (`shell.css`): the old page drifts up and fades, the new one
   rises in, Back runs it downwards, and the top bar cross-fades in place. Only `shell.css` names
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.
-- **The home page's pictures move only when asked** (pointing at or focusing a tile; once on touch screens); what
-  each one plays is in `.claude/rules/home-page.md`.
+- **The home page's pictures play a short demo** each time a tool's stage shows (John, 21 Nov 2026: "play an
+  animation over being interactive", a pointer that presses each control): about five seconds, once, inside the
+  tour's turn; what each one plays is in `.claude/rules/home-page.md`.
 - **The tour** (John, 21 Nov 2026: "animations that play automatically instead of using our mouse"): on the home page
   and the jsal.ui page, from 700px wide with motion welcome, the list's items take turns by themselves, round and
   round (John, "loop it") (6 seconds a tool on the home page, 5 a part on the jsal.ui page), a gold line filling under
