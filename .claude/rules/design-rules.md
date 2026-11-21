@@ -217,6 +217,12 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     four to a row above the stage; on upright phones (under 600px) they're a list under their groups' names, each
     row with its name and when it's useful, and the chosen part opens under its own row with its words and its window
     (John, 21 Nov 2026, "same treatment" as the home page's list; it replaced a dock at the foot of the screen).
+  - **Jsal's Pals has a live pen in place of a screenshot** (John, 21 Nov 2026: "the different pen scenes to replace
+    the long box so it fits better like the rest of the addon's boxes"): the pal hatches and grows in one of the
+    addon's eight pen scenes, wide across the stage like the other windows, drawn from its art in
+    `site/img/jsal-ui/pals/scene-<scene>.png` and `scene-<scene>-night.png` (day in the light theme, night in the
+    dark), with a Scene
+    button beside Hatch/Grow that moves it to the next one.
   - **The stage** (the page's sunk fill, the tile corners): the part's name very large, a tag saying when it's
     useful, its headline and line, three ticked points, and its window whole, straight and framed. A narrow window
     (the pals) sits beside the words. Five parts show a clip in place of a still.

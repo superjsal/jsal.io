@@ -27,8 +27,10 @@ const ALL = LIST.flatMap((g) => g.parts);
 // On a phone the list and the stages are laid out as one: a group's name, then each row with its stage under it
 const ORDER = {};
 LIST.reduce((k, g) => { if (g.name) ORDER[`g:${g.name}`] = k++; g.parts.forEach((p) => { ORDER[p.key] = k; k += 2; }); return k; }, 0);
-// A part whose picture is narrow (the pals) sits beside its words; a wide window sits under them
-const side = (p) => !p.clip && p.shot.w < 600;
+// A part whose picture is narrow sits beside its words; a wide window sits under them (the pals have a wide live pen)
+const side = (p) => !p.clip && !p.family && p.shot.w < 600;
+// The pen scenes a pal can live in, from the addon's own art (site/img/jsal-ui/pals/): each by day and by night
+const SCENES = ["meadow", "coast", "desert", "darkwood", "jungle", "savanna", "snow", "swamp"].map((s) => [s[0].toUpperCase() + s.slice(1), v(`/img/jsal-ui/pals/scene-${s}.png`), v(`/img/jsal-ui/pals/scene-${s}-night.png`)]);
 const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 ---
 <Page
@@ -133,7 +135,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .facts { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; line-height: 1.4; }
 .facts li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--jsal-space-12); }
 .facts svg { width: 20px; height: 20px; color: var(--jsal-accent); }
-/* A narrow window (the pals) sits beside its words; a wide one runs across the stage under them */
+/* A narrow window sits beside its words; a wide one runs across the stage under them */
 .stage.side { grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); }
 .stage.side { grid-template-rows: auto 1fr; }
 .stage.side .say { display: flex; flex-direction: column; gap: var(--jsal-space-24); align-self: stretch; }
@@ -146,8 +148,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* With scripts the strip is played: one pal in a small window from the game (dark in both themes, as the light it
    grows in is pale), a button that hatches the egg and then grows it, as Grow does in its pen, and the four names
    as steps under it */
-.pal { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--jsal-space-16); margin-bottom: var(--jsal-space-16); }
-.pal canvas { flex: none; width: 256px; height: 256px; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); image-rendering: pixelated; }
+/* The pal grows in its own pen, one of the addon's scenes: by day in the light theme, by night in the dark one */
+.win.pen canvas { display: block; width: 100%; max-width: 880px; height: auto; aspect-ratio: 220 / 100; margin-inline: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); image-rendering: pixelated; }
+.pal { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); }
 .play ol img { display: none; }
 .play li + li::before { bottom: 6px; }
 .play li[aria-current] { color: var(--jsal-selected-ink); }
@@ -157,10 +160,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .play li { justify-items: start; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--jsal-surface); text-align: left; }
   .play li + li::before { display: none; }
   .play li[aria-current] { background: var(--jsal-selected-bg); box-shadow: inset 0 0 0 1px var(--jsal-selected-ring); }
-  /* the pal's window, its button and its steps share one width, the window square and as wide as the stage allows */
-  .pal { display: grid; gap: var(--jsal-space-12); }
-  .pal canvas { width: 100%; height: auto; aspect-ratio: 1; }
-  .pal .jsal-btn { width: 100%; justify-content: center; }
+  /* the two buttons share a row, the width of the steps under them */
+  .pal .jsal-btn { flex: 1; justify-content: center; }
 }
 .family figcaption { margin-top: var(--jsal-space-12); padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line-hi); color: var(--jsal-muted); font-size: 13px; }
 .stage.side .win { grid-column: 2; }
@@ -264,9 +265,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .ui-js .stage :is(.head, .facts) { display: none; }
   .stage.side .say { gap: var(--jsal-space-16); }
   .family { padding-top: 0; }
-  .win:not(.narrow) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
+  .win:not(.pen) { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
   .win.home { aspect-ratio: 4 / 5; }   /* taller, so Home's plans show under the trainer visit */
-  .win:not(.narrow) :is(img, video) { width: var(--pw, 760px); max-width: none; margin: 0; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
+  .win:not(.pen) :is(img, video) { width: var(--pw, 760px); max-width: none; margin: 0; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
   /* one card of three rows, each number in its own column so the words line up */
   .band.discord { grid-template-columns: minmax(0, 1fr); }
 }
@@ -323,20 +324,22 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
             </div>
             {side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}</ul>}
             {p.family && (
-              <figure class="family" data-hatch={v(`/img/jsal-ui/pals/${p.family.hatch}.png`)} data-grow={v(`/img/jsal-ui/pals/${p.family.grow}.png`)} data-forms={p.family.forms.slice(2).map(([file]) => v(`/img/jsal-ui/pals/${file}.png`)).join(" ")}>
+              <figure class="family" data-scenes={JSON.stringify(SCENES)} data-hatch={v(`/img/jsal-ui/pals/${p.family.hatch}.png`)} data-grow={v(`/img/jsal-ui/pals/${p.family.grow}.png`)} data-forms={p.family.forms.slice(2).map(([file]) => v(`/img/jsal-ui/pals/${file}.png`)).join(" ")}>
                 <ol>{p.family.forms.map(([file, name, px]) => <li><img src={v(`/img/jsal-ui/pals/${file}.png`)} alt="" width={px * 2} height={px * 2} loading="lazy" decoding="async"><span>{name}</span></li>)}</ol>
                 <figcaption aria-live="polite">{p.family.say}</figcaption>
               </figure>
             )}
           </div>
           {!side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}</ul>}
-          {p.clip ? (
+          {p.family ? (
+            <figure class="win pen" aria-label="The pal's pen"></figure>
+          ) : p.clip ? (
             <figure class="win clip" style={`--w: ${p.clip.w}px; --pw: ${p.clip.pw}px; --cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
               <video muted loop playsinline preload="none" poster={v(p.clip.poster)} width={p.clip.w} height={p.clip.h} aria-label={p.clip.alt}><source src={v(p.clip.src)} type="video/mp4"></video>
               <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
             </figure>
           ) : (
-            <figure class={`win${p.shot.w < 600 ? " narrow" : ""}${p.key === "home" ? " home" : ""}`} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading={p.key === "home" ? "eager" : "lazy"} decoding="async"></figure>
+            <figure class={`win${p.key === "home" ? " home" : ""}`} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading={p.key === "home" ? "eager" : "lazy"} decoding="async"></figure>
           )}
         </section>
       ))}
@@ -486,13 +489,25 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const fig = document.querySelector('.family');
   if (!fig) return;
   const names = [...fig.querySelectorAll('li')], say = fig.querySelector('figcaption');
-  const cv = Object.assign(document.createElement('canvas'), { width: 128, height: 128 });
+  const cv = Object.assign(document.createElement('canvas'), { width: 220, height: 100 });
+  const W = 220, H = 100, CX = 110, CY = 60, S = 0.75;   // the scene in the art's pixels; where the pal stands; its size
   const btn = Object.assign(document.createElement('button'), { type: 'button', className: 'jsal-btn primary' });
   const box = Object.assign(document.createElement('div'), { className: 'pal' });
   cv.setAttribute('role', 'img');
-  box.append(cv, btn); fig.prepend(box); fig.classList.add('play');
+  const scene = Object.assign(document.createElement('button'), { type: 'button', className: 'jsal-btn' });
+  box.append(btn, scene); fig.prepend(box); fig.classList.add('play');
+  const pen = fig.closest('.stage').querySelector('.win');
+  if (pen) pen.append(cv); else box.prepend(cv);
   const ctx = cv.getContext('2d');
   const load = (src) => Object.assign(new Image(), { src });
+  const SCENES = JSON.parse(fig.dataset.scenes), pics = {};
+  let place = 0;
+  const night = () => document.documentElement.dataset.theme === 'dark' || (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+  const backdrop = () => {
+    const src = SCENES[place][night() ? 2 : 1];
+    if (!pics[src]) { pics[src] = load(src); pics[src].addEventListener('load', () => draw()); }
+    return pics[src];
+  };
   const hatch = load(fig.dataset.hatch), light = load(fig.dataset.grow), bodies = [null, null, ...fig.dataset.forms.split(' ').map(load)];
   const SAY = ['A Toadstool egg.', 'It hatched: a Capling.', 'It grew into a Lanternshell.', 'Fully grown: a Bloomsage.'];
   const calm = matchMedia('(prefers-reduced-motion: reduce)');
@@ -506,8 +521,10 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const draw = () => {
     ctx.imageSmoothingEnabled = false;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, 128, 128);
-    ctx.setTransform(size, 0, 0, size, 64, 64 - lift);
+    ctx.clearRect(0, 0, W, H);
+    const bg = backdrop();
+    if (bg.naturalWidth) ctx.drawImage(bg, 0, 0, W, H, 0, 0, W, H);
+    ctx.setTransform(size * S, 0, 0, size * S, CX, CY - lift);
     if (at < 2) {
       const n = Math.min(9, Math.floor(frame)), t = n < 9 ? melt(frame) : 0;
       hatchAt(n, 1 - t); if (t) hatchAt(n + 1, t);
@@ -516,7 +533,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
       ctx.drawImage(bodies[at], -bodies[at].naturalWidth / 2, -bodies[at].naturalHeight / 2);
     }
     if (cell >= 0) {
-      ctx.setTransform(swell, 0, 0, swell, 64, 64);
+      ctx.setTransform(swell * S, 0, 0, swell * S, CX, CY);
       const n = Math.min(15, Math.floor(cell)), t = n < 15 ? melt(cell) : 0;
       lightAt(n, 1 - t); if (t) lightAt(n + 1, t);
     }
@@ -567,6 +584,12 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     }
   });
   [hatch, light, ...bodies.slice(2)].forEach((img) => img.addEventListener('load', draw));
+  // a press moves the pal to the next scene; the theme switch turns day to night and back
+  const named = () => { scene.textContent = `Scene: ${SCENES[place][0]}`; scene.setAttribute('aria-label', `Change the scene, now ${SCENES[place][0]}`); };
+  scene.addEventListener('click', () => { place = (place + 1) % SCENES.length; named(); draw(); });
+  named();
+  new MutationObserver(() => draw()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
   show();
 })();
 // The scroll reveal: blocks below the fold wait, then rise into place once a sixth of them is in view.
