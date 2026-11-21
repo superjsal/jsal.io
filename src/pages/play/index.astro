@@ -153,6 +153,7 @@ p, li { text-wrap: pretty; }
 .ui .desc { color: var(--green-muted); margin-top: var(--jsal-space-8) !important; }
 .ui { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 320px); gap: var(--jsal-space-24); overflow: hidden; min-height: 168px; }
 .ui > div { align-self: center; }
+.ui-go { margin-top: var(--jsal-space-16); }   /* the tile is the link; this says where it goes */
 .ui .peek { height: 0; min-height: 100%; }
 .ui .peek img { display: block; width: 100%; height: auto; margin-top: var(--jsal-space-8); border-radius: var(--jsal-radius-lg); box-shadow: var(--peek-shadow); transform: rotate(-2deg); }
 /* Phones: the peek goes under the words, a short slice of it */
@@ -464,9 +465,10 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
     </section>
     <a class="tile ui" href="/jsal-ui/" data-jsal-nav aria-labelledby="ui-h">
       <div>
-        <p class="label">all of this comes from</p>
-        <h2 id="ui-h">jsal.ui</h2>
-        <p class="desc">My free WoW Forever addon keeps this journal for every character. It also plans your training, gear, dungeons and professions, and gives you a pal of your own.</p>
+        <p class="label">taken straight from my UI</p>
+        <h2 id="ui-h">jsal.ui wrote all of this</h2>
+        <p class="desc">The sheet and the journey above are what my free WoW Forever addon keeps for every character as you play. Yours would look the same in game.</p>
+        <span class="jsal-btn primary ui-go">See jsal.ui</span>
       </div>
       <span class="peek" aria-hidden="true"><img src={v("/img/jsal-ui/journal.webp")} width="760" height="692" alt="" loading="lazy" decoding="async"></span>
     </a>

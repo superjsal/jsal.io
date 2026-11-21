@@ -8,11 +8,11 @@
  "lastZone": "Ironforge",
  "lastSeen": "2026-11-20",
  "stats": {
-  "hours": 128,
+  "hours": 129,
   "foes": 4964,
   "quests": 573,
   "deaths": 34,
-  "miles": 989,
+  "miles": 991,
   "jumps": 23208
  },
  "levelMinutes": [
@@ -58,7 +58,7 @@
   232,
   660,
   767,
-  185
+  217
  ],
  "events": [
   {
