@@ -16,15 +16,22 @@ const zoneMax = Math.max(...C.zones.map(([, h]) => h));
 // numbers move. [the number, what it counts, the line, the tile's colour]
 const S = C.stats;
 const TIDBITS = [
-  [S.hours, "hours played", `That's ${Math.floor(S.hours / 24)} days and ${S.hours % 24} hours, since ${date(C.since)}.`, "lilac"],
-  [S.jumps, "jumps", `About ${n(Math.round(S.jumps / S.hours))} an hour. Not one of them needed.`, "honey"],
-  [S.deaths, "deaths", `One every ${hm(Math.round(S.hours * 60 / S.deaths))}, on average.`, "berry"],
-  [S.miles, "miles travelled", `${n(Math.round(S.miles / 26.2))} marathons, give or take.`, "teal"],
-  [S.foes, "foes defeated", `${n(Math.round(S.foes / S.deaths))} for every time one got me.`, "plain"],
-  [S.quests, "quests done", `About ${Math.round(S.quests / C.level)} a level.`, "plain"],
+  [S.hours, "hours played", `That's ${Math.floor(S.hours / 24)} days and ${S.hours % 24} hours, since ${date(C.since)}.`, "lilac", "inv_misc_pocketwatch_02"],
+  [S.jumps, "jumps", `About ${n(Math.round(S.jumps / S.hours))} an hour. Not one of them needed.`, "honey", "ability_hunter_aspectofthemonkey"],
+  [S.deaths, "deaths", `One every ${hm(Math.round(S.hours * 60 / S.deaths))}, on average.`, "berry", "inv_misc_bone_humanskull_01"],
+  [S.miles, "miles travelled", `${n(Math.round(S.miles / 26.2))} marathons, give or take.`, "teal", "ability_rogue_sprint"],
+  [S.foes, "foes defeated", `${n(Math.round(S.foes / S.deaths))} for every time one got me.`, "plain", "ability_dualwield"],
+  [S.quests, "quests done", `About ${Math.round(S.quests / C.level)} a level.`, "plain", "inv_misc_note_01"],
 ];
+// The game's own icon for each spell, talent tree, profession and pet family the page may name (Blizzard's file
+// names, saved in /img/wow/ as served); a name with no icon here is shown without one
+const ICONS = {
+  "Arcane Shot": "ability_impalingbolt", "Hunter's Mark": "ability_hunter_snipershot", "Serpent Sting": "ability_hunter_quickshot",
+  "Beast Mastery": "ability_hunter_beasttaming", "Marksmanship": "ability_marksmanship",
+  "Skinning": "ui_profession_skinning", "First Aid": "spell_holy_sealofsacrifice", "Leatherworking": "ui_profession_leatherworking", "Cooking": "ui_profession_cooking",
+  "Cat": "ability_hunter_pet_cat",
+};
 const worn = (key) => C.gear?.[key];
-const hasIcons = Object.values(C.gear ?? {}).some((g) => g.icon);
 // The character sheet's slots, laid out as the game lays them out: down both sides of the middle, weapons under it
 const LEFT = [["head", "Head"], ["neck", "Neck"], ["shoulder", "Shoulders"], ["back", "Back"], ["chest", "Chest"], ["wrist", "Wrists"], ["hands", "Hands"]];
 const RIGHT = [["waist", "Waist"], ["legs", "Legs"], ["feet", "Feet"], ["finger1", "Ring"], ["finger2", "Ring"], ["trinket1", "Trinket"], ["trinket2", "Trinket"]];
@@ -59,6 +66,7 @@ const WEAPONS = [["mainhand", "Main hand"], ["offhand", "Off hand"], ["ranged", 
   --stage-light: #3a3f4c; --stage: #1c1f27; --stage-deep: #14171c; --stage-line: #2a2e38; --stage-ink: #ece6d6;
   --plain: #e6e8ec; --plain-line: #b4bac4;
   --tip-shadow: 0 14px 32px rgb(20 23 28 / 0.28);
+  --ico-shadow: 0 4px 10px rgb(20 23 28 / 0.25);
   /* the journey's tiles: four tints with a deep shade of each for their words, as the home page's stages have */
   --jr-lilac: #d7c6f0; --jr-lilac-ink: #3d2466; --jr-honey: #f3dc9a; --jr-honey-ink: #4f3a08; --jr-berry: #f0d2dc; --jr-berry-ink: #5c1a30; --jr-teal: #c6e2dd; --jr-teal-ink: #13453f;
   /* an item's name in the colour of its quality, as the game shows it, darkened to read on a light page */
@@ -361,6 +369,13 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 [data-attrs] .stat:nth-child(2) { border-top: 0; }
 .jr h3[data-next] { margin-top: var(--jsal-space-24); }
 .stat span:last-child { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* The game's icons, drawn a little larger than their box so the dark frame each one is drawn with falls outside it.
+   An icon takes the shape of what holds it: rounded in a rounded tile, square in a plain row. */
+.ico { display: block; flex: none; overflow: hidden; width: 24px; height: 24px; }
+.ico img { display: block; width: 100%; height: 100%; scale: 1.14; }
+.named { display: inline-flex; align-items: center; gap: var(--jsal-space-8); min-width: 0; }
+.tid { position: relative; }
+.tid .ico { position: absolute; top: var(--jsal-space-20); right: var(--jsal-space-20); width: 48px; height: 48px; border-radius: var(--jsal-radius-lg); box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 55%, transparent), var(--ico-shadow); }   /* a thin ring in the tile's own ink, like a slot in the game */
 .prof { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--jsal-space-2) var(--jsal-space-12); font-size: 14px; }
 .prof i { grid-column: 1 / -1; height: 6px; margin-bottom: var(--jsal-space-8); border-radius: var(--jsal-radius-sm); background: linear-gradient(to right, var(--jsal-fill) var(--at), var(--jsal-line-hi) var(--at)); }
 .fresh { padding: var(--jsal-space-12) var(--jsal-space-32); border-top: 1px solid var(--plain-line); color: var(--jsal-muted); font-size: 13px; }
@@ -445,6 +460,9 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .tid, .jr-box { padding: var(--jsal-space-20); }
   .tid { min-height: 136px; }
   .tid b, .tid:nth-child(2) b { font-size: 40px; }
+  /* two tidbits a row leave no room beside the number, so the icon sits above it */
+  .tid .ico { position: static; width: 40px; height: 40px; margin-bottom: auto; }
+  .tid .ico + b { margin-top: var(--jsal-space-12); }
   .bars { height: 88px; gap: 1px; }
 }
 /* This page's intro runs across the grid */
@@ -473,19 +491,19 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
         </div>
         <div class="sheet-stats">
           {C.attributes && <div><h3>Attributes</h3><div data-attrs>{C.attributes.map(([what, much]) => <div class="stat"><span>{what}</span><span>{typeof much === "number" ? n(much) : much}</span></div>)}</div></div>}
-          {C.talents?.length > 0 && <div><h3>Talents</h3>{C.talents.map(([tree, points]) => <div class="stat"><span>{tree}</span><span>{points} points</span></div>)}</div>}
-          <div><h3>Professions</h3><div class="prof">{C.professions.map(([name, skill, cap]) => <Fragment><span>{name}</span><span>{skill} / {cap}</span><i style={`--at:${Math.round(skill / cap * 100)}%`}></i></Fragment>)}</div></div>
-          {C.pet && <div><h3>Companion</h3><div class="stat"><span>{C.pet.name}, a {C.pet.family.toLowerCase()}</span><span>Level {C.pet.level}</span></div></div>}
+          {C.talents?.length > 0 && <div><h3>Talents</h3>{C.talents.map(([tree, points]) => <div class="stat"><span class="named">{ICONS[tree] && <picture class="ico"><img src={`/img/wow/${ICONS[tree]}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{tree}</span><span>{points} points</span></div>)}</div>}
+          <div><h3>Professions</h3><div class="prof">{C.professions.map(([name, skill, cap]) => <Fragment><span class="named">{ICONS[name] && <picture class="ico"><img src={`/img/wow/${ICONS[name]}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{name}</span><span>{skill} / {cap}</span><i style={`--at:${Math.round(skill / cap * 100)}%`}></i></Fragment>)}</div></div>
+          {C.pet && <div><h3>Companion</h3><div class="stat"><span class="named">{ICONS[C.pet.family] && <picture class="ico"><img src={`/img/wow/${ICONS[C.pet.family]}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{C.pet.name}, a {C.pet.family.toLowerCase()}</span><span>Level {C.pet.level}</span></div></div>}
         </div>
       </div>
-      <p class="fresh">{C.gear ? `From jsal.ui${C.attributes ? " and my armory page" : ""}, as it stood on ${date(C.updated)}.` : `From jsal.ui, as it stood on ${date(C.updated)}. What I'm wearing shows here after my next login.`}{(hasIcons || C.portrait) && ` ${[C.portrait && "Character", hasIcons && "item icons"].filter(Boolean).join(" and ")} © Blizzard Entertainment.`}</p>
+      <p class="fresh">{C.gear ? `From jsal.ui${C.attributes ? " and my armory page" : ""}, as it stood on ${date(C.updated)}.` : `From jsal.ui, as it stood on ${date(C.updated)}. What I'm wearing shows here after my next login.`}{` ${C.portrait ? "Character and game icons" : "Game icons"} © Blizzard Entertainment.`}</p>
     </section>
     <section class="jr" aria-labelledby="jr-h">
       <div class="jr-head">
         <div><h2 id="jr-h">The journey so far</h2><p>Written down by jsal.ui's Journal as I play.</p></div>
         <a class="ui" href="/jsal-ui/" data-jsal-nav><svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg><span><b>jsal.ui</b><small>My free WoW Forever addon</small></span><span class="ui-go">See it<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
       </div>
-      {TIDBITS.map(([much, what, line, tone]) => <div class="tid" data-tone={tone}><b data-n={much}>{n(much)}</b><span>{what}</span><small>{line}</small></div>)}
+      {TIDBITS.map(([much, what, line, tone, pic]) => <div class="tid" data-tone={tone}><picture class="ico"><img src={`/img/wow/${pic}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture><b data-n={much}>{n(much)}</b><span>{what}</span><small>{line}</small></div>)}
       <div class="jr-box jr-road">
         <h3>The road so far</h3>
         <div class="bars" role="img" aria-label={`Time spent at each level, 1 to ${C.level}. The longest was level ${longestAt}, at ${hm(longest)}.`}>
@@ -498,7 +516,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
         <h3>Lately</h3>
         <ul class="feed">{C.events.map((e) => <li><span>{e.text}</span><time datetime={e.date}>{date(e.date)}</time></li>)}</ul>
         <h3 data-next>Most used spells</h3>
-        {C.spells.map(([spell, times]) => <div class="stat"><span>{spell}</span><span>{n(times)} times</span></div>)}
+        {C.spells.map(([spell, times]) => <div class="stat"><span class="named">{ICONS[spell] && <picture class="ico"><img src={`/img/wow/${ICONS[spell]}.jpg`} width="56" height="56" alt="" loading="lazy" decoding="async"></picture>}{spell}</span><span>{n(times)} times</span></div>)}
       </div>
       <div class="jr-box jr-zones">
         <h3>Where the time went</h3>

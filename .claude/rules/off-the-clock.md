@@ -37,6 +37,13 @@ paths:
     quests a level), so the lines stay true as the numbers move; then the time at each level, the latest entries
     and where the time went. The numbers count up once when scrolled to, and a tidbit tips under the pointer; with
     reduced motion neither happens. A new tidbit's line must be arithmetic on the journal, never a guess.
+  - **Game icons** (John, 21 Nov 2026: classic over the newer achievement icons): each tidbit has one (pocket watch,
+    Aspect of the Monkey, skull, Sprint, crossed swords, quest note: the fifth item of each `TIDBITS` row), and the
+    talents, professions, pet and most-used spells have the game's own icon from `ICONS` (a name missing there shows
+    without one, so add a new spell or profession's icon there). An icon takes the shape of what holds it: rounded
+    in a rounded tile, square in a plain row ("round if the card is rounded, squared if not"). All are drawn 14%
+    larger than their box so Blizzard's dark frame falls outside it (the files stay as served), and a tidbit's has
+    a thin ring in its tile's own ink (his pick 2 of four). On phones a tidbit's icon sits above the number.
   - **Where the data comes from:** `python -I .github/scripts/character.py [name] [class]` reads the journal jsal.ui
     keeps in the game's SavedVariables on John's PC and writes that file. The game only writes its file at logout
     or a reload, and the site only changes when the new JSON is committed, so the page is as fresh as the last run;
