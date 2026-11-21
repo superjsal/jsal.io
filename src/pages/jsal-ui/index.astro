@@ -256,11 +256,11 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
    the list or the stage, or the list is off screen */
 .slot::after { content: ""; position: absolute; left: var(--jsal-space-12); right: var(--jsal-space-12); bottom: var(--jsal-space-2); height: 2px; border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); transform: scaleX(0); transform-origin: left; }
 .pick.tour .slot[aria-selected="true"]::after { animation: turn 5s linear forwards; }   /* style: allow (a part's turn in the tour) */
-.pick.tour:is(:hover, :focus-within, .away) .slot[aria-selected="true"]::after { animation-play-state: paused; }
+.pick.tour:is(:hover, .away, :has(.slots:focus-within, .stages:focus-within)) .slot[aria-selected="true"]::after { animation-play-state: paused; }
 @keyframes turn { to { transform: scaleX(1); } }
 .tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
-.pick.tour .tour-btn, .pick.rested .tour-btn { display: inline-flex; }
-@media (max-width: 699px) { .pick.tour .tour-btn, .pick.rested .tour-btn, .slot::after { display: none; } }
+.pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn { display: inline-flex; }
+@media (max-width: 699px) { .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn, .slot::after { display: none; } }
 @media print { .rv { opacity: 1; transform: none; } }
 
 /* A small laptop or a tablet: the headline and Download, then the list as rows of parts, then the stage */
@@ -511,11 +511,13 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     }
   } catch (e) {}
   // The tour: on a screen wide enough for the list beside or above the stage, with motion welcome, the parts take
-  // turns by themselves, once round, back to where it started. A part picked by hand ends it; Pause rests it.
+  // turns by themselves, once round, back to where it started. A part picked by hand ends it; Pause rests it; once it
+  // has ended, Play the tour starts it again from the part that's showing.
   const pickEl = document.querySelector('.pick'), btn = document.querySelector('.tour-btn');
   if (matchMedia('(min-width: 700px)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
     let steps = 0;
-    const end = () => { pickEl.classList.remove('tour', 'rested'); };
+    const say = (label, pressed) => { btn.textContent = label; btn.setAttribute('aria-pressed', String(pressed)); };
+    const end = () => { pickEl.classList.remove('tour', 'rested'); pickEl.classList.add('toured'); say('Play the tour', false); };
     const start = () => {
       pickEl.classList.add('tour');
       list.addEventListener('animationend', (e) => {
@@ -526,10 +528,11 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
       });
       ['click', 'keydown', 'wheel'].forEach((type) => list.addEventListener(type, (e) => { if (e.isTrusted) end(); }, { capture: true }));
       btn.addEventListener('click', () => {
+        // after it has ended: once round again, starting from what's showing
+        if (pickEl.classList.contains('toured')) { steps = 0; pickEl.classList.remove('toured'); pickEl.classList.add('tour'); say('Pause the tour', false); return; }
         const resting = pickEl.classList.toggle('rested');
         pickEl.classList.toggle('tour', !resting);
-        btn.setAttribute('aria-pressed', String(resting));
-        btn.textContent = resting ? 'Play the tour' : 'Pause the tour';
+        say(resting ? 'Play the tour' : 'Pause the tour', resting);
       });
       const away = new IntersectionObserver(([e]) => pickEl.classList.toggle('away', !e.isIntersecting), { threshold: 0.4 });
       away.observe(pickEl);
