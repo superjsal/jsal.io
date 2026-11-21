@@ -304,6 +304,8 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .live .stage.on :is(h2, .say > *, .shot, .keys), .slot[aria-selected="true"]::before, .gem.land, .gem.peek { animation: none; }
   .gem { transition: none; }
 }
+/* a row brought to the top of a phone screen keeps a little room above it */
+.slot { scroll-margin-top: var(--jsal-space-12); }
 </style>
 <div class="wrap">
   <TopBar><nav aria-label="Sections"><a href="#updates">Updates</a><a href="mailto:dev@jsal.io">Email</a></nav></TopBar>
@@ -488,9 +490,16 @@ document.getElementById('y').textContent = new Date().getFullYear();
     if (focus) tabs[i].focus();
     if (document.prerendering) document.addEventListener('prerenderingchange', () => demo(stages[cur]), { once: true }); else demo(stages[i]);
   };
+  // where the list opens in place (a phone, or one held sideways), a tapped row is brought to the top of the screen
+  // with its tool open under it
+  const listed = matchMedia('(max-width: 699px), (max-height: 500px) and (orientation: landscape)');
+  const bringUp = (i) => {
+    if (!listed.matches) return;
+    requestAnimationFrame(() => tabs[i].scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }));
+  };
   tabs.forEach((t, i) => {
     t.setAttribute('role', 'tab'); t.setAttribute('aria-controls', stages[i].id);
-    t.addEventListener('click', (e) => { e.preventDefault(); pick(i); history.replaceState(history.state, '', i ? `#pick-${stages[i].id}` : location.pathname + location.search); });
+    t.addEventListener('click', (e) => { e.preventDefault(); pick(i); bringUp(i); history.replaceState(history.state, '', i ? `#pick-${stages[i].id}` : location.pathname + location.search); });
     t.addEventListener('keydown', (e) => {
       const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
       if (step) { e.preventDefault(); pick((i + step + tabs.length) % tabs.length, true); }
