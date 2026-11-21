@@ -12,6 +12,7 @@
 # Blizzard's game data (the Forever namespace) which icon each worn item has and saves any it doesn't have yet to
 # site/img/wow/, exactly as Blizzard serves it (56 x 56 JPG, never altered: see off-the-clock.md). Which icon an
 # item has is remembered in src/data/item-icons.json, so a run without the secret keeps the icons already known.
+# With the same keys it fetches each worn item's own page once, for the tooltip the page shows on a worn item.
 import base64, glob, json, os, re, sys, urllib.error, urllib.request
 from datetime import datetime
 from pathlib import Path
@@ -77,57 +78,120 @@ last = events[-1]
 worn = db.get('equipped') or {}
 
 
+API = 'https://us.api.blizzard.com/data/wow'
+NS = 'namespace=static-forever-us&locale=en_US'
+DATA = ROOT / 'src' / 'data'
+_token = []
+
+
+def ask(url, headers=None, data=None):
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, headers=headers or {}, data=data), timeout=20) as r:
+            return r.read()
+    except (urllib.error.URLError, TimeoutError):
+        return None
+
+
+def auth():
+    """The header that signs a request to Blizzard, or None without the keys or if the sign-in fails. Asked for once."""
+    if not _token:
+        client, secret = os.environ.get('BLIZZARD_CLIENT_ID'), os.environ.get('BLIZZARD_CLIENT_SECRET')
+        token = None
+        if client and secret:
+            basic = base64.b64encode(f'{client}:{secret}'.encode()).decode()
+            token = json.loads(ask('https://oauth.battle.net/token', {'Authorization': f'Basic {basic}'}, b'grant_type=client_credentials') or b'{}').get('access_token')
+            if not token: print('Blizzard: the sign-in failed, so nothing new is fetched this run.')
+        _token.append({'Authorization': f'Bearer {token}'} if token else None)
+    return _token[0]
+
+
+def table(name, new=None):
+    """A table kept in src/data, by item id: read it, or write it back in order."""
+    path = DATA / name
+    if new is None:
+        return json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
+    path.write_text(json.dumps(dict(sorted(new.items(), key=lambda kv: int(kv[0]))), indent=1, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
+
+
 def icons_for(ids):
     """{item id: icon file name} for the items whose icon is known, fetching the unknown ones when the keys are set."""
-    cache_path = ROOT / 'src' / 'data' / 'item-icons.json'
-    known = json.loads(cache_path.read_text(encoding='utf-8')) if cache_path.exists() else {}
+    known = table('item-icons.json')
     missing = [i for i in ids if str(i) not in known]
-    client, secret = os.environ.get('BLIZZARD_CLIENT_ID'), os.environ.get('BLIZZARD_CLIENT_SECRET')
-    if missing and client and secret:
-        said = []   # what Blizzard answered for the first item with no icon, printed once, to see why
-
-        def ask(url, headers, data=None):
-            try:
-                with urllib.request.urlopen(urllib.request.Request(url, headers=headers, data=data), timeout=20) as r:
-                    return r.read()
-            except urllib.error.HTTPError as e:
-                if 'media/item' in url and not said: said.append(f'HTTP {e.code}')
-                return None
-            except (urllib.error.URLError, TimeoutError):
-                return None
-        basic = base64.b64encode(f'{client}:{secret}'.encode()).decode()
-        token = json.loads(ask('https://oauth.battle.net/token', {'Authorization': f'Basic {basic}'}, b'grant_type=client_credentials') or b'{}').get('access_token')
-        if not token:
-            print('Icons: sign-in to Blizzard failed, so no new icons this run.')
-        for item in missing if token else []:
-            media = json.loads(ask(f'https://us.api.blizzard.com/data/wow/media/item/{item}?namespace=static-forever-us', {'Authorization': f'Bearer {token}'}) or b'{}')
+    if missing and auth():
+        for item in missing:
+            media = json.loads(ask(f'{API}/media/item/{item}?{NS}', auth()) or b'{}')
             url = next((a.get('value') for a in media.get('assets', []) if a.get('key') == 'icon'), None)
             # only Blizzard's own icon server, at the size the page shows
             if not url or not re.fullmatch(r'https://render\.worldofwarcraft\.com/[a-z\-]+/icons/56/[a-z0-9_\-]+\.jpg', url):
-                if not said: said.append('answered with ' + (json.dumps(media)[:400] if media else 'nothing'))
-                if len(said) == 1:
-                    # the item itself, to see where its picture is meant to be
-                    about = json.loads(ask(f'https://us.api.blizzard.com/data/wow/item/{item}?namespace=static-forever-us&locale=en_US', {'Authorization': f'Bearer {token}'}) or b'{}')
-                    said.append(f"item {item}: media asked: {said[0]}; the item says: name {about.get('name')!r}, media {json.dumps(about.get('media'))[:300]}, keys {sorted(about)[:14]}")
-                    print('Icons, for diagnosis: ' + said[1])
                 print(f'Icons: none found for item {item}.')
                 continue
             name = url.rsplit('/', 1)[1]
             target = ROOT / 'site' / 'img' / 'wow' / name
             if not target.exists():
-                picture = ask(url, {})
+                picture = ask(url)
                 if not picture: continue
                 target.write_bytes(picture)
                 print(f'Icons: saved {name}.')
             known[str(item)] = name
-        cache_path.write_text(json.dumps(dict(sorted(known.items(), key=lambda kv: int(kv[0]))), indent=1) + '\n', encoding='utf-8', newline='\n')
+        table('item-icons.json', known)
     elif missing:
         print(f'Icons: {len(missing)} worn item(s) have no icon yet. Set BLIZZARD_CLIENT_ID and BLIZZARD_CLIENT_SECRET in this terminal and run again to fetch them.')
     return {i: known[str(i)] for i in ids if str(i) in known and (ROOT / 'site' / 'img' / 'wow' / known[str(i)]).exists()}
 
 
+def tip(item):
+    """An item's tooltip, as lines in the game's order, read from Blizzard's page for the item: [{t, tone, r}], where
+    r is the words set at the line's right end (a weapon's speed, an armour's kind)."""
+    p = item.get('preview_item') or {}
+    out = []
+    shown = lambda d: (d or {}).get('display_string') or ((d or {}).get('display') or {}).get('display_string')
+
+    def add(text, tone=None, right=None):
+        if text: out.append({k: v for k, v in (('t', str(text)), ('tone', tone), ('r', right)) if v})
+
+    add(shown(p.get('level')) or (f"Item Level {item['level']}" if item.get('level') else None), 'gold')
+    add((p.get('binding') or {}).get('name'))
+    add(p.get('unique_equipped'))
+    add((p.get('inventory_type') or {}).get('name'), None, (p.get('item_subclass') or {}).get('name'))
+    weapon = p.get('weapon') or {}
+    add(shown(weapon.get('damage')), None, shown(weapon.get('attack_speed')))
+    add(shown(weapon.get('dps')))
+    add(shown(p.get('armor')))
+    for stat in p.get('stats') or []: add(shown(stat), 'green' if stat.get('is_equip_bonus') else None)
+    for spell in p.get('spells') or []: add(spell.get('description'), 'green')
+    add(shown(p.get('durability')))
+    needs = p.get('requirements') or {}
+    for key in ('level', 'skill', 'playable_classes', 'playable_races', 'faction'): add(shown(needs.get(key)))
+    add(f'"{p["description"]}"' if p.get('description') else None, 'gold')
+    sell = (p.get('sell_price') or {}).get('display_strings') or {}
+    coins = ' '.join(f'{sell[k]}{k[0]}' for k in ('gold', 'silver', 'copper') if str(sell.get(k) or '0') != '0')
+    add(f'Sells for {coins}' if coins else None, 'muted')
+    return out
+
+
+def tips_for(ids):
+    """{item id: tooltip lines}. Blizzard's page for each worn item is fetched once, when the keys are set, and kept
+    as it came in private/blizzard-items/ (never committed); the lines are worked out from those copies on every
+    run, so a change to how they're read needs no new request. The lines themselves go in src/data/item-tips.json,
+    which is committed, so the site builds without the private copies."""
+    raw = ROOT / 'private' / 'blizzard-items'
+    raw.mkdir(parents=True, exist_ok=True)
+    known, waiting = table('item-tips.json'), 0
+    for item in ids:
+        copy = raw / f'{item}.json'
+        if not copy.exists() and auth():
+            body = ask(f'{API}/item/{item}?{NS}', auth())
+            if body: copy.write_bytes(body); print(f'Items: fetched {item}.')
+        if copy.exists(): known[str(item)] = tip(json.loads(copy.read_text(encoding='utf-8')))
+        elif str(item) not in known: waiting += 1
+    if waiting: print(f'Items: {waiting} worn item(s) have no tooltip yet. Set the two Blizzard keys in this terminal and run again to fetch them.')
+    table('item-tips.json', known)
+    return {i: known[str(i)] for i in ids if known.get(str(i))}
+
+
 items = {i['slot']: i for i in (worn.get('items') or {}).values() if i.get('name')}
-icons = icons_for([i['id'] for i in items.values() if i.get('id')])
+worn_ids = [i['id'] for i in items.values() if i.get('id')]
+icons, tips = icons_for(worn_ids), tips_for(worn_ids)
 
 out = {
     'name': NAME, 'class': CLASS, 'level': max(levels), 'guild': journal.get('guild') or None,
@@ -142,7 +206,7 @@ out = {
     'pet': {k: db['pet'][k] for k in ('name', 'family', 'level')} if db.get('pet', {}).get('name') else None,
     'spells': [[spell, n] for spell, n in sorted(journal.get('spells', {}).items(), key=lambda s: -s[1])[:3]],
     # each slot that holds something, by the addon's name for the slot; absent until the addon has saved it
-    'gear': {slot: {'name': items[slot]['name'], 'quality': QUALITY.get(items[slot].get('quality'), 'common'), 'icon': icons.get(items[slot].get('id'))} for slot in SLOTS if slot in items} or None,
+    'gear': {slot: {'name': items[slot]['name'], 'quality': QUALITY.get(items[slot].get('quality'), 'common'), 'icon': icons.get(items[slot].get('id')), 'tip': tips.get(items[slot].get('id'))} for slot in SLOTS if slot in items} or None,
     # a picture of the character, when John has put one at site/img/play/<name>.webp
     'portrait': f'/img/play/{NAME.lower()}.webp' if (ROOT / 'site' / 'img' / 'play' / f'{NAME.lower()}.webp').exists() else None,
     'gearDate': day(worn['at']) if items and worn.get('at') else None,

@@ -154,77 +154,92 @@
   "head": {
    "name": "Wild Headdress",
    "quality": "uncommon",
-   "icon": "132514.jpg"
+   "icon": "132514.jpg",
+   "tip": null
   },
   "neck": {
    "name": "Replica Crescent Necklace",
    "quality": "uncommon",
-   "icon": "133298.jpg"
+   "icon": "133298.jpg",
+   "tip": null
   },
   "shoulder": {
    "name": "Unstable Crystalline Shoulderpads",
    "quality": "rare",
-   "icon": "135038.jpg"
+   "icon": "135038.jpg",
+   "tip": null
   },
   "back": {
    "name": "Explorer's League Dustcover",
    "quality": "rare",
-   "icon": "133773.jpg"
+   "icon": "133773.jpg",
+   "tip": null
   },
   "chest": {
    "name": "Garb of Fallen Felbark",
    "quality": "rare",
-   "icon": "135013.jpg"
+   "icon": "135013.jpg",
+   "tip": null
   },
   "wrist": {
    "name": "Fur-Lined Bracers",
    "quality": "uncommon",
-   "icon": "132607.jpg"
+   "icon": "132607.jpg",
+   "tip": null
   },
   "hands": {
    "name": "Hawkeye's Gloves",
    "quality": "uncommon",
-   "icon": "132955.jpg"
+   "icon": "132955.jpg",
+   "tip": null
   },
   "waist": {
    "name": "Thorn Protecting Girdle",
    "quality": "uncommon",
-   "icon": "132501.jpg"
+   "icon": "132501.jpg",
+   "tip": null
   },
   "legs": {
    "name": "Triprunner Dungarees",
    "quality": "rare",
-   "icon": "134588.jpg"
+   "icon": "134588.jpg",
+   "tip": null
   },
   "feet": {
    "name": "Agile Boots",
    "quality": "uncommon",
-   "icon": "132539.jpg"
+   "icon": "132539.jpg",
+   "tip": null
   },
   "finger1": {
    "name": "Ring of Ruin",
    "quality": "uncommon",
-   "icon": "133350.jpg"
+   "icon": "133350.jpg",
+   "tip": null
   },
   "finger2": {
    "name": "Seal of Wrynn",
    "quality": "rare",
-   "icon": "133347.jpg"
+   "icon": "133347.jpg",
+   "tip": null
   },
   "trinket1": {
    "name": "Satchel of Potions",
    "quality": "uncommon",
-   "icon": "133633.jpg"
+   "icon": "133633.jpg",
+   "tip": null
   },
   "mainhand": {
    "name": "Felbough Arm",
    "quality": "rare",
-   "icon": "135131.jpg"
+   "icon": "135131.jpg",
+   "tip": null
   },
   "ranged": {
    "name": "Skull Splitting Crossbow",
    "quality": "rare",
-   "icon": "135533.jpg"
+   "icon": "135533.jpg",
+   "tip": null
   }
  },
  "portrait": "/img/play/vizdenia.webp",

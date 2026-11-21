@@ -56,6 +56,7 @@ const WEAPONS = [["mainhand", "Main hand"], ["offhand", "Off hand"], ["ranged", 
   --green: #e2ebdc; --green-ink: #14171c; --green-muted: #3a404a; --green-acc: #3f6b3a;
   --plain: #e6e8ec; --plain-line: #b4bac4;
   --peek-shadow: 0 12px 28px rgb(20 23 28 / 0.2), 0 2px 6px rgb(20 23 28 / 0.1);
+  --tip-shadow: 0 14px 32px rgb(20 23 28 / 0.28);
   /* the journey's tiles: four tints with a deep shade of each for their words, as the home page's stages have */
   --jr-lilac: #d7c6f0; --jr-lilac-ink: #3d2466; --jr-honey: #f3dc9a; --jr-honey-ink: #4f3a08; --jr-berry: #f0d2dc; --jr-berry-ink: #5c1a30; --jr-teal: #c6e2dd; --jr-teal-ink: #13453f;
   /* an item's name in the colour of its quality, as the game shows it, darkened to read on a light page */
@@ -312,7 +313,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
    middle with the weapons under it; and where the game shows attributes, the journal's totals, the professions and
    the hunter's pet. A slot's tile and its item's name wear the item's quality colour, and the small label says the
    quality in words too. Until the addon has saved what is worn, the slots are there without items. */
-.sheet { grid-column: 1 / 13; overflow: hidden; padding: 0; background: var(--plain); }
+.sheet { grid-column: 1 / 13; padding: 0; background: var(--plain); }
 .sheet-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--jsal-space-12) var(--jsal-space-24); padding: var(--jsal-space-20) var(--jsal-space-32); border-bottom: 1px solid var(--plain-line); }
 .sheet-who { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--jsal-space-4) var(--jsal-space-16); }
 .sheet h2 { margin: 0; font: 800 40px/1 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; }
@@ -324,7 +325,7 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .sheet-body { display: grid; grid-template-columns: minmax(0, 1fr) 300px; }
 .doll { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 240px) minmax(0, 1fr); gap: var(--jsal-space-20) var(--jsal-space-24); padding: var(--jsal-space-24) var(--jsal-space-32) var(--jsal-space-32); }
 .side { display: grid; gap: var(--jsal-space-8); align-content: start; }
-.gear { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: var(--jsal-space-12); align-items: center; min-height: 60px; }
+.gear { position: relative; display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: var(--jsal-space-12); align-items: center; min-height: 60px; border-radius: var(--jsal-radius-lg); }
 /* an item's icon is Blizzard's own, shown at its own 56 pixels inside the frame; a slot without one shows a diamond */
 .gear-ico { display: grid; place-items: center; overflow: hidden; width: 60px; height: 60px; border: 2px solid var(--q, var(--plain-line)); border-radius: var(--jsal-radius-lg); background: var(--jsal-bg); }
 .gear-ico img { display: block; }
@@ -336,6 +337,24 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .gear[data-q="common"], .gear[data-q="poor"] { --q: var(--jsal-ink-2); }
 .side.r .gear { grid-template-columns: minmax(0, 1fr) 60px; text-align: right; }
 .side.r .gear-ico { order: 2; }
+/* A worn item's tooltip, as the game shows one: pointing at the item, or tabbing to it, opens a small panel with
+   the item's name in its quality colour and its lines in the game's order. It sits beside the item (on the inner
+   side of each column, above a weapon), stays while the pointer is on it, and Esc puts it away. */
+.gear[tabindex] { cursor: help; }
+.gear:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
+.worn-tip { position: absolute; left: 72px; top: 0; z-index: 5; display: grid; gap: var(--jsal-space-2); width: 280px; padding: var(--jsal-space-12); border: 1px solid var(--q, var(--jsal-line-hi)); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); box-shadow: var(--tip-shadow); color: var(--jsal-ink); font-size: 13px; line-height: 1.4; text-align: left; visibility: hidden; opacity: 0; transition: opacity var(--jsal-quick), visibility var(--jsal-quick); }
+.gear:hover > .worn-tip, .gear:focus-visible > .worn-tip { visibility: visible; opacity: 1; }
+.gear.shut > .worn-tip { visibility: hidden; opacity: 0; }
+.worn-tip b { margin-bottom: var(--jsal-space-2); font-size: 15px; }
+.worn-tip span { display: flex; justify-content: space-between; gap: var(--jsal-space-12); }
+.worn-tip i { color: var(--jsal-ink-2); font-style: normal; white-space: nowrap; }
+.worn-tip [data-t="gold"] { color: var(--jsal-accent); }
+.worn-tip [data-t="green"] { color: var(--q-uncommon); }
+.worn-tip [data-t="muted"] { color: var(--jsal-muted); }
+.side.r .worn-tip { right: 72px; left: auto; }
+.side .gear:nth-child(n + 5) .worn-tip { top: auto; bottom: 0; }
+.weapons .worn-tip { top: auto; bottom: calc(100% + var(--jsal-space-8)); left: 0; }
+@media (prefers-reduced-motion: reduce) { .worn-tip { transition: none; } }
 /* the middle of the sheet: level and class, where the game stands the character */
 .emblem { display: grid; place-content: center; justify-items: center; gap: var(--jsal-space-4); border: 1px solid var(--plain-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); text-align: center; }
 .emblem b { font: 800 72px/1 "Outfit", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.03em; }   /* style: allow (the character's level, the sheet's centrepiece) */
@@ -410,6 +429,8 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
   .emblem b { font-size: 40px; }
   .emblem[data-pic] { grid-auto-flow: row; align-items: end; min-height: 0; margin-bottom: var(--jsal-space-8); aspect-ratio: 1 / 1; }
   .side.r .gear { grid-template-columns: 60px minmax(0, 1fr); text-align: left; }
+  /* a tooltip opens under its item, the width of the column */
+  .doll .gear .worn-tip { inset: calc(100% + var(--jsal-space-4)) 0 auto 0; width: auto; }
   .side.r .gear-ico { order: 0; }
   .weapons { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-8); }
   .jr { gap: var(--jsal-space-12); }
@@ -437,10 +458,10 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
       </div>
       <div class="sheet-body">
         <div class="doll">
-          <div class="side">{LEFT.map(([key, label]) => <div class="gear" data-q={C.gear?.[key]?.quality}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span></div>)}</div>
+          <div class="side">{LEFT.map(([key, label]) => <div class="gear" data-q={worn(key)?.quality} tabindex={worn(key) ? "0" : undefined} aria-describedby={worn(key) ? `tip-${key}` : undefined}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span>{worn(key) && <span class="worn-tip" role="tooltip" id={`tip-${key}`}><b>{worn(key).name}</b>{(worn(key).tip?.length ? worn(key).tip : [{ t: `${label}, ${worn(key).quality}`, tone: "muted" }]).map((line) => <span data-t={line.tone}>{line.t}{line.r && <i>{line.r}</i>}</span>)}</span>}</div>)}</div>
           <div class={C.portrait ? "emblem jsal-dark" : "emblem"} data-pic={C.portrait ? "" : undefined}>{C.portrait && <img src={v(C.portrait)} width="621" height="1095" alt={`${C.name}, my ${C.class.toLowerCase()}, as she stands in the game`} decoding="async">}<b>{C.level}</b><span>{C.class}</span>{!C.portrait && <small>WoW Forever</small>}</div>
-          <div class="side r">{RIGHT.map(([key, label]) => <div class="gear" data-q={C.gear?.[key]?.quality}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span></div>)}</div>
-          <div class="weapons">{WEAPONS.map(([key, label]) => <div class="gear" data-q={C.gear?.[key]?.quality}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span></div>)}</div>
+          <div class="side r">{RIGHT.map(([key, label]) => <div class="gear" data-q={worn(key)?.quality} tabindex={worn(key) ? "0" : undefined} aria-describedby={worn(key) ? `tip-${key}` : undefined}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span>{worn(key) && <span class="worn-tip" role="tooltip" id={`tip-${key}`}><b>{worn(key).name}</b>{(worn(key).tip?.length ? worn(key).tip : [{ t: `${label}, ${worn(key).quality}`, tone: "muted" }]).map((line) => <span data-t={line.tone}>{line.t}{line.r && <i>{line.r}</i>}</span>)}</span>}</div>)}</div>
+          <div class="weapons">{WEAPONS.map(([key, label]) => <div class="gear" data-q={worn(key)?.quality} tabindex={worn(key) ? "0" : undefined} aria-describedby={worn(key) ? `tip-${key}` : undefined}><span class="gear-ico">{worn(key)?.icon && <img src={`/img/wow/${worn(key).icon}`} width="56" height="56" alt="" loading="lazy" decoding="async">}</span><span><small>{label}{C.gear?.[key] && C.gear[key].quality !== "common" && ` · ${C.gear[key].quality}`}</small><b>{C.gear?.[key]?.name ?? (C.gear ? "Empty" : "")}</b></span>{worn(key) && <span class="worn-tip" role="tooltip" id={`tip-${key}`}><b>{worn(key).name}</b>{(worn(key).tip?.length ? worn(key).tip : [{ t: `${label}, ${worn(key).quality}`, tone: "muted" }]).map((line) => <span data-t={line.tone}>{line.t}{line.r && <i>{line.r}</i>}</span>)}</span>}</div>)}</div>
         </div>
         <div class="sheet-stats">
           <div><h3>Most used</h3>{C.spells.map(([spell, times]) => <div class="stat"><span>{spell}</span><span>{n(times)} times</span></div>)}</div>
@@ -759,6 +780,17 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
     requestAnimationFrame(tick);
   }), { threshold: 0.6 });
   document.querySelectorAll('.tid b[data-n]').forEach((el) => seen.observe(el));
+})();
+</script>
+<script is:inline>
+// Esc puts an open tooltip away, whether it was opened by the pointer or the keyboard; it can open again once the
+// pointer or the focus has left its item.
+(() => {
+  const items = [...document.querySelectorAll('.gear[tabindex]')];
+  items.forEach((item) => ['pointerleave', 'blur'].forEach((gone) => item.addEventListener(gone, () => item.classList.remove('shut'))));
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') items.filter((item) => item.matches(':hover, :focus-visible')).forEach((item) => item.classList.add('shut'));
+  });
 })();
 </script>
 </Page>
