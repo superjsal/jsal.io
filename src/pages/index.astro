@@ -470,25 +470,22 @@ document.querySelectorAll('.stage').forEach((stage) => {
     if (e.key.length === 1 && n >= 0) pick(n, true);
   });
   // The tour: on a screen wide enough for the list beside or above the stage, with motion welcome, the tools take
-  // turns by themselves, once round, back to where it started. A tool picked by hand ends it; Pause rests it; once it
-  // has ended, Play the tour starts it again from the tool that's showing.
+  // turns by themselves, round and round. A tool picked by hand ends it; Pause rests it; once it has ended, Play
+  // the tour starts it again from the tool that's showing.
   const pickEl = document.querySelector('.pick'), btn = document.querySelector('.tour-btn');
   if (matchMedia('(min-width: 700px)').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
-    let steps = 0;
     const say = (label, pressed) => { btn.textContent = label; btn.setAttribute('aria-pressed', String(pressed)); };
     const end = () => { pickEl.classList.remove('tour', 'rested'); pickEl.classList.add('toured'); say('Play the tour', false); };
     const start = () => {
       pickEl.classList.add('tour');
       list.addEventListener('animationend', (e) => {
         if (!pickEl.classList.contains('tour') || e.animationName !== 'turn') return;
-        const next = (cur + 1) % tabs.length;
-        if (++steps >= tabs.length) end();
-        pick(next);
+        pick((cur + 1) % tabs.length);
       });
       ['click', 'keydown', 'wheel'].forEach((type) => list.addEventListener(type, (e) => { if (e.isTrusted) end(); }, { capture: true }));
       btn.addEventListener('click', () => {
-        // after it has ended: once round again, starting from what's showing
-        if (pickEl.classList.contains('toured')) { steps = 0; pickEl.classList.remove('toured'); pickEl.classList.add('tour'); say('Pause the tour', false); return; }
+        // after it has ended: round again, starting from what's showing
+        if (pickEl.classList.contains('toured')) { pickEl.classList.remove('toured'); pickEl.classList.add('tour'); say('Pause the tour', false); return; }
         const resting = pickEl.classList.toggle('rested');
         pickEl.classList.toggle('tour', !resting);
         say(resting ? 'Play the tour' : 'Pause the tour', resting);

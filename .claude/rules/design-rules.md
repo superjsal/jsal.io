@@ -269,11 +269,11 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
 - **The home page's pictures move only when asked** (pointing at or focusing a tile; once on touch screens); what
   each one plays is in `.claude/rules/home-page.md`.
 - **The tour** (John, 21 Nov 2026: "animations that play automatically instead of using our mouse"): on the home page
-  and the jsal.ui page, from 700px wide with motion welcome, the list's items take turns by themselves, once round
-  and back to the first (6 seconds a tool on the home page, 5 a part on the jsal.ui page), a gold line filling under
+  and the jsal.ui page, from 700px wide with motion welcome, the list's items take turns by themselves, round and
+  round (John, "loop it") (6 seconds a tool on the home page, 5 a part on the jsal.ui page), a gold line filling under
   the chosen row as its turn runs out. It rests while the pointer or the keyboard is on the list or the stage, or the
-  list is off screen; it ends for good once a row is clicked, keyed or scrolled; and a Pause the tour button under
-  the list stops and restarts it (WCAG 2.2.2: anything that moves on its own for more than 5 seconds can be paused).
+  list is off screen; it ends once a row is clicked, keyed or scrolled; and a Pause the tour button under
+  the list stops and restarts it, staying as Play the tour after the tour has ended (WCAG 2.2.2: anything that moves on its own for more than 5 seconds can be paused).
   Not on phones, where the list opens in place, and not with reduced motion.
 - Anything else that moves on its own stops within 5 seconds: the home pictures' one play on touch screens takes
   under 3 seconds.

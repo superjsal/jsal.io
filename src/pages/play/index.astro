@@ -322,10 +322,12 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
    the item's name in its quality colour and its lines in the game's order. It opens past the item's own words, toward the middle of the sheet (above a
    weapon), touching the item so the pointer can cross onto it, stays while the pointer is on it, and Esc puts it
    away. */
-.gear[tabindex] { cursor: help; }
+.gear[tabindex] .gear-ico { cursor: help; }
 .gear:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
 .worn-tip { position: absolute; left: calc(100% - 4px); top: 0; z-index: 5; display: grid; gap: var(--jsal-space-2); width: 280px; padding: var(--jsal-space-12); border: 1px solid var(--q, var(--jsal-line-hi)); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); box-shadow: var(--tip-shadow); color: var(--jsal-ink); font-size: 13px; line-height: 1.4; text-align: left; visibility: hidden; opacity: 0; transition: opacity var(--jsal-quick), visibility var(--jsal-quick); }
-.gear:hover > .worn-tip, .gear:focus-visible > .worn-tip { visibility: visible; opacity: 1; }
+/* the tooltip opens over the item's icon only (not its name or the row's empty width), stays while the pointer is on
+   the tooltip itself, and opens on keyboard focus */
+.gear:has(> .gear-ico:hover) > .worn-tip, .gear > .worn-tip:hover, .gear:focus-visible > .worn-tip { visibility: visible; opacity: 1; }
 .gear.shut > .worn-tip { visibility: hidden; opacity: 0; }
 .worn-tip b { margin-bottom: var(--jsal-space-2); font-size: 15px; }
 .worn-tip span { display: flex; justify-content: space-between; gap: var(--jsal-space-12); }
@@ -830,7 +832,7 @@ addEventListener('pageshow', drawAchievements);   // back from a tool: show what
   const items = [...document.querySelectorAll('.gear[tabindex]')];
   items.forEach((item) => ['pointerleave', 'blur'].forEach((gone) => item.addEventListener(gone, () => item.classList.remove('shut'))));
   addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') items.filter((item) => item.matches(':hover, :focus-visible')).forEach((item) => item.classList.add('shut'));
+    if (e.key === 'Escape') items.filter((item) => item.matches(':has(> .gear-ico:hover), :has(> .worn-tip:hover), :focus-visible')).forEach((item) => item.classList.add('shut'));
   });
 })();
 </script>
