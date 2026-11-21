@@ -151,21 +151,15 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* The pal grows in its own pen, one of the addon's scenes: by day in the light theme, by night in the dark one */
 .win.pen canvas { display: block; width: 100%; max-width: 880px; height: auto; aspect-ratio: 220 / 100; margin-inline: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); image-rendering: pixelated; }
 .pal { display: flex; flex-wrap: wrap; gap: var(--jsal-space-8); }
-.play ol img { display: none; }
-.play li + li::before { bottom: 6px; }
-.play li[aria-current] { color: var(--jsal-selected-ink); }
-/* On a phone the four steps are too long for one row: two rows of two, each name whole, the arrows dropped */
+/* with scripts the pen shows each form and the line under the buttons names it, so the row of names isn't needed */
+.play ol { display: none; }
+.family.play figcaption { margin-top: var(--jsal-space-12); padding-top: 0; border-top: 0; }
 @media (max-width: 520px) {
-  .play ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--jsal-space-8); }
-  .play li { justify-items: start; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--jsal-surface); text-align: left; }
-  .play li + li::before { display: none; }
-  .play li[aria-current] { background: var(--jsal-selected-bg); box-shadow: inset 0 0 0 1px var(--jsal-selected-ring); }
-  /* the pen comes straight after the words, then the buttons (sharing a row) and the steps */
+  /* the pen comes straight after the words, then the buttons, sharing a row */
   .stage:has(.family) .say { display: contents; }
   .stage:has(.family) .say > div { order: 1; }
   .stage:has(.family) .win.pen { order: 2; }
   .stage:has(.family) .family { order: 3; }
-  .pal { margin-bottom: var(--jsal-space-12); }
   .pal .jsal-btn { flex: 1; justify-content: center; }
 }
 .family figcaption { margin-top: var(--jsal-space-12); padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line-hi); color: var(--jsal-muted); font-size: 13px; }
