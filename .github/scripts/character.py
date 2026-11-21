@@ -198,6 +198,8 @@ def game_tip(lines):
         if not (left or right): continue
         # a crafted item names the player who made it: never published
         if re.search(r'\bMade by\b', left + ' ' + right): continue
+        # a note about the moment it was saved, not about the item
+        if left.startswith('Cannot change equip status'): continue
         out.append({k: v for k, v in (('t', left or right), ('tone', tone(line.get('leftColor') if left else line.get('rightColor'))), ('r', right if left else None)) if v})
     return out
 

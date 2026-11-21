@@ -338,11 +338,12 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .side.r .gear { grid-template-columns: minmax(0, 1fr) 60px; text-align: right; }
 .side.r .gear-ico { order: 2; }
 /* A worn item's tooltip, as the game shows one: pointing at the item, or tabbing to it, opens a small panel with
-   the item's name in its quality colour and its lines in the game's order. It sits beside the item (on the inner
-   side of each column, above a weapon), stays while the pointer is on it, and Esc puts it away. */
+   the item's name in its quality colour and its lines in the game's order. It opens past the item's own words, toward the middle of the sheet (above a
+   weapon), touching the item so the pointer can cross onto it, stays while the pointer is on it, and Esc puts it
+   away. */
 .gear[tabindex] { cursor: help; }
 .gear:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; }
-.worn-tip { position: absolute; left: 72px; top: 0; z-index: 5; display: grid; gap: var(--jsal-space-2); width: 280px; padding: var(--jsal-space-12); border: 1px solid var(--q, var(--jsal-line-hi)); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); box-shadow: var(--tip-shadow); color: var(--jsal-ink); font-size: 13px; line-height: 1.4; text-align: left; visibility: hidden; opacity: 0; transition: opacity var(--jsal-quick), visibility var(--jsal-quick); }
+.worn-tip { position: absolute; left: calc(100% - 4px); top: 0; z-index: 5; display: grid; gap: var(--jsal-space-2); width: 280px; padding: var(--jsal-space-12); border: 1px solid var(--q, var(--jsal-line-hi)); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); box-shadow: var(--tip-shadow); color: var(--jsal-ink); font-size: 13px; line-height: 1.4; text-align: left; visibility: hidden; opacity: 0; transition: opacity var(--jsal-quick), visibility var(--jsal-quick); }
 .gear:hover > .worn-tip, .gear:focus-visible > .worn-tip { visibility: visible; opacity: 1; }
 .gear.shut > .worn-tip { visibility: hidden; opacity: 0; }
 .worn-tip b { margin-bottom: var(--jsal-space-2); font-size: 15px; }
@@ -351,9 +352,9 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 .worn-tip [data-t="gold"] { color: var(--jsal-accent); }
 .worn-tip [data-t="green"] { color: var(--q-uncommon); }
 .worn-tip [data-t="muted"] { color: var(--jsal-muted); }
-.side.r .worn-tip { right: 72px; left: auto; }
+.side.r .worn-tip { right: calc(100% - 4px); left: auto; }
 .side .gear:nth-child(n + 5) .worn-tip { top: auto; bottom: 0; }
-.weapons .worn-tip { top: auto; bottom: calc(100% + var(--jsal-space-8)); left: 0; }
+.weapons .worn-tip { top: auto; bottom: 100%; left: 0; }
 @media (prefers-reduced-motion: reduce) { .worn-tip { transition: none; } }
 /* the middle of the sheet: level and class, where the game stands the character */
 .emblem { display: grid; place-content: center; justify-items: center; gap: var(--jsal-space-4); border: 1px solid var(--plain-line); border-radius: var(--jsal-radius-xl); background: var(--jsal-surface); text-align: center; }

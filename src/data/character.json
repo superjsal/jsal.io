@@ -5,15 +5,15 @@
  "guild": "retail too hard",
  "since": "2026-11-08",
  "updated": "2026-11-20",
- "lastZone": "Ironforge",
+ "lastZone": "Badlands",
  "lastSeen": "2026-11-20",
  "stats": {
   "hours": 129,
-  "foes": 4964,
-  "quests": 573,
+  "foes": 5025,
+  "quests": 579,
   "deaths": 34,
-  "miles": 991,
-  "jumps": 23232
+  "miles": 999,
+  "jumps": 23387
  },
  "levelMinutes": [
   26,
@@ -58,9 +58,14 @@
   232,
   660,
   767,
-  218
+  264
  ],
  "events": [
+  {
+   "kind": "pet",
+   "text": "Bolt found a blue feather in Badlands",
+   "date": "2026-11-20"
+  },
   {
    "kind": "loot",
    "text": "New blue: Skull Splitting Crossbow",
@@ -84,11 +89,6 @@
   {
    "kind": "death",
    "text": "Died in Desolace",
-   "date": "2026-11-20"
-  },
-  {
-   "kind": "pet",
-   "text": "Bolt found an acorn in Desolace",
    "date": "2026-11-20"
   }
  ],
@@ -139,15 +139,15 @@
  "spells": [
   [
    "Arcane Shot",
-   4695
+   4744
   ],
   [
    "Hunter's Mark",
-   3561
+   3621
   ],
   [
    "Serpent Sting",
-   1112
+   1123
   ]
  ],
  "gear": {
@@ -157,11 +157,7 @@
    "icon": "132514.jpg",
    "tip": [
     {
-     "t": "Item Level 39",
-     "tone": "gold"
-    },
-    {
-     "t": "Binds when picked up"
+     "t": "Soulbound"
     },
     {
      "t": "Head",
@@ -174,15 +170,11 @@
      "t": "+11 Intellect"
     },
     {
-     "t": "+12 Spell Power",
+     "t": "Equip: Increases damage and healing done by magical spells and effects by up to 12.",
      "tone": "green"
     },
     {
-     "t": "Durability 50 / 50"
-    },
-    {
-     "t": "Sells for 42s 40c",
-     "tone": "muted"
+     "t": "Durability 49 / 50"
     }
    ]
   },
@@ -192,11 +184,7 @@
    "icon": "133298.jpg",
    "tip": [
     {
-     "t": "Item Level 26",
-     "tone": "gold"
-    },
-    {
-     "t": "Binds when picked up"
+     "t": "Soulbound"
     },
     {
      "t": "Neck"
@@ -205,16 +193,11 @@
      "t": "+3 Agility"
     },
     {
-     "t": "+3 Spirit",
-     "tone": "green"
+     "t": "+3 Spirit"
     },
     {
      "t": "\"A cheap imitation of a sentimental necklace. With the original returned, this gift has been given meaning of its own.\"",
      "tone": "gold"
-    },
-    {
-     "t": "Sells for 12s 73c",
-     "tone": "muted"
     }
    ]
   },
@@ -222,7 +205,34 @@
    "name": "Unstable Crystalline Shoulderpads",
    "quality": "rare",
    "icon": "135038.jpg",
-   "tip": null
+   "tip": [
+    {
+     "t": "Soulbound"
+    },
+    {
+     "t": "Shoulder",
+     "r": "Leather"
+    },
+    {
+     "t": "81 Armor"
+    },
+    {
+     "t": "+9 Agility"
+    },
+    {
+     "t": "+6 Stamina"
+    },
+    {
+     "t": "Equip: Restores 2 Mana per 5 sec.",
+     "tone": "green"
+    },
+    {
+     "t": "Durability 58 / 60"
+    },
+    {
+     "t": "Requires Level 28"
+    }
+   ]
   },
   "back": {
    "name": "Explorer's League Dustcover",
@@ -230,32 +240,22 @@
    "icon": "133773.jpg",
    "tip": [
     {
-     "t": "Item Level 33",
-     "tone": "gold"
+     "t": "Soulbound"
     },
     {
-     "t": "Binds when picked up"
-    },
-    {
-     "t": "Back",
-     "r": "Cloth"
+     "t": "Back"
     },
     {
      "t": "25 Armor"
     },
     {
-     "t": "+5 Intellect"
-    },
-    {
      "t": "+5 Agility"
     },
     {
-     "t": "+5 Spirit",
-     "tone": "green"
+     "t": "+5 Intellect"
     },
     {
-     "t": "Sells for 22s 5c",
-     "tone": "muted"
+     "t": "+5 Spirit"
     }
    ]
   },
@@ -263,31 +263,156 @@
    "name": "Garb of Fallen Felbark",
    "quality": "rare",
    "icon": "135013.jpg",
-   "tip": null
+   "tip": [
+    {
+     "t": "Soulbound"
+    },
+    {
+     "t": "Chest",
+     "r": "Leather"
+    },
+    {
+     "t": "110 Armor"
+    },
+    {
+     "t": "+9 Agility"
+    },
+    {
+     "t": "+7 Stamina"
+    },
+    {
+     "t": "+13 Intellect"
+    },
+    {
+     "t": "Enchanted: Stamina +3 and Armor +24",
+     "tone": "green"
+    },
+    {
+     "t": "Durability 98 / 100"
+    },
+    {
+     "t": "Requires Level 29"
+    }
+   ]
   },
   "wrist": {
    "name": "Fur-Lined Bracers",
    "quality": "uncommon",
    "icon": "132607.jpg",
-   "tip": null
+   "tip": [
+    {
+     "t": "Soulbound"
+    },
+    {
+     "t": "Wrist",
+     "r": "Leather"
+    },
+    {
+     "t": "47 Armor"
+    },
+    {
+     "t": "+5 Agility"
+    },
+    {
+     "t": "+5 Spirit"
+    },
+    {
+     "t": "Durability 30 / 30"
+    }
+   ]
   },
   "hands": {
    "name": "Hawkeye's Gloves",
    "quality": "uncommon",
    "icon": "132955.jpg",
-   "tip": null
+   "tip": [
+    {
+     "t": "Soulbound"
+    },
+    {
+     "t": "Hands",
+     "r": "Leather"
+    },
+    {
+     "t": "65 Armor"
+    },
+    {
+     "t": "+8 Agility"
+    },
+    {
+     "t": "+7 Stamina"
+    },
+    {
+     "t": "Durability 30 / 30"
+    },
+    {
+     "t": "Requires Level 32"
+    }
+   ]
   },
   "waist": {
    "name": "Thorn Protecting Girdle",
    "quality": "uncommon",
    "icon": "132501.jpg",
-   "tip": null
+   "tip": [
+    {
+     "t": "Soulbound"
+    },
+    {
+     "t": "Waist",
+     "r": "Mail"
+    },
+    {
+     "t": "122 Armor"
+    },
+    {
+     "t": "+8 Stamina"
+    },
+    {
+     "t": "Equip: +12 Attack Power.",
+     "tone": "green"
+    },
+    {
+     "t": "Equip: +9 Attack Power against Elementals.",
+     "tone": "green"
+    },
+    {
+     "t": "Durability 32 / 35"
+    }
+   ]
   },
   "legs": {
    "name": "Triprunner Dungarees",
    "quality": "rare",
    "icon": "134588.jpg",
-   "tip": null
+   "tip": [
+    {
+     "t": "Soulbound"
+    },
+    {
+     "t": "Legs",
+     "r": "Leather"
+    },
+    {
+     "t": "101 Armor"
+    },
+    {
+     "t": "+3 Strength"
+    },
+    {
+     "t": "+18 Agility"
+    },
+    {
+     "t": "+6 Stamina"
+    },
+    {
+     "t": "Enchanted: Stamina +3 and Armor +24",
+     "tone": "green"
+    },
+    {
+     "t": "Durability 73 / 75"
+    }
+   ]
   },
   "feet": {
    "name": "Agile Boots",
@@ -295,11 +420,7 @@
    "icon": "132539.jpg",
    "tip": [
     {
-     "t": "Item Level 20",
-     "tone": "gold"
-    },
-    {
-     "t": "Binds when equipped"
+     "t": "Soulbound"
     },
     {
      "t": "Feet",
@@ -312,14 +433,14 @@
      "t": "+5 Agility"
     },
     {
-     "t": "Durability 35 / 35"
+     "t": "Enchanted: Stamina +3 and Armor +24",
+     "tone": "green"
+    },
+    {
+     "t": "Durability 34 / 35"
     },
     {
      "t": "Requires Level 15"
-    },
-    {
-     "t": "Sells for 5s 26c",
-     "tone": "muted"
     }
    ]
   },
@@ -329,24 +450,16 @@
    "icon": "133350.jpg",
    "tip": [
     {
-     "t": "Item Level 35",
-     "tone": "gold"
-    },
-    {
-     "t": "Binds when picked up"
+     "t": "Soulbound"
     },
     {
      "t": "Finger"
     },
     {
-     "t": "+6 Agility"
-    },
-    {
      "t": "+4 Strength"
     },
     {
-     "t": "Sells for 21s 44c",
-     "tone": "muted"
+     "t": "+6 Agility"
     }
    ]
   },
@@ -356,11 +469,7 @@
    "icon": "133347.jpg",
    "tip": [
     {
-     "t": "Item Level 31",
-     "tone": "gold"
-    },
-    {
-     "t": "Binds when picked up"
+     "t": "Soulbound"
     },
     {
      "t": "Unique-Equipped"
@@ -369,24 +478,19 @@
      "t": "Finger"
     },
     {
-     "t": "+4 Intellect"
+     "t": "+3 Strength"
     },
     {
      "t": "+3 Agility"
     },
     {
-     "t": "+3 Strength"
-    },
-    {
      "t": "+4 Stamina"
     },
     {
-     "t": "+3 Spirit",
-     "tone": "green"
+     "t": "+4 Intellect"
     },
     {
-     "t": "Sells for 23s 71c",
-     "tone": "muted"
+     "t": "+3 Spirit"
     }
    ]
   },
@@ -396,26 +500,18 @@
    "icon": "133633.jpg",
    "tip": [
     {
-     "t": "Item Level 33",
-     "tone": "gold"
-    },
-    {
-     "t": "Binds when picked up"
+     "t": "Soulbound"
     },
     {
      "t": "Trinket"
     },
     {
-     "t": "Use: Reach into the bag and hope for the best. (10 Min Cooldown)",
+     "t": "Use: Reach into the bag and hope for the best. (10 |4Min:Min; Cooldown)",
      "tone": "green"
     },
     {
      "t": "\"Not every potion is meant for consumption.\"",
      "tone": "gold"
-    },
-    {
-     "t": "Sells for 24s 89c",
-     "tone": "muted"
     }
    ]
   },
@@ -423,13 +519,72 @@
    "name": "Felbough Arm",
    "quality": "rare",
    "icon": "135131.jpg",
-   "tip": null
+   "tip": [
+    {
+     "t": "Soulbound"
+    },
+    {
+     "t": "Two-Hand",
+     "r": "Polearm"
+    },
+    {
+     "t": "69 - 104 Damage",
+     "r": "Speed 3.00"
+    },
+    {
+     "t": "(28.8 damage per second)"
+    },
+    {
+     "t": "+10 Agility"
+    },
+    {
+     "t": "+9 Nature Resistance"
+    },
+    {
+     "t": "Equip: Improves your chance to hit by 1.0%.",
+     "tone": "green"
+    },
+    {
+     "t": "Durability 99 / 100"
+    },
+    {
+     "t": "Requires Level 29"
+    }
+   ]
   },
   "ranged": {
    "name": "Skull Splitting Crossbow",
    "quality": "rare",
    "icon": "135533.jpg",
-   "tip": null
+   "tip": [
+    {
+     "t": "Soulbound"
+    },
+    {
+     "t": "Ranged",
+     "r": "Crossbow"
+    },
+    {
+     "t": "52 - 79 Damage",
+     "r": "Speed 2.60"
+    },
+    {
+     "t": "(25.2 damage per second)"
+    },
+    {
+     "t": "+3 Strength"
+    },
+    {
+     "t": "Equip: +14 Attack Power.",
+     "tone": "green"
+    },
+    {
+     "t": "Durability 73 / 75"
+    },
+    {
+     "t": "Requires Level 43"
+    }
+   ]
   }
  },
  "portrait": "/img/play/vizdenia.webp",
