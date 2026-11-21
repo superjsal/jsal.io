@@ -3,9 +3,13 @@ import Page from "../layouts/Page.astro";
 import TopBar from "../components/TopBar.astro";
 import Updates from "../components/Updates.astro";
 import { v } from "../lib/v.mjs";
+// Where each control sits in each picture, and how many states each tool was taken in (written by home-shots.mjs)
+import SPOTS from "../data/home-spots.json";
 
 // The four tools, in the order of the list. Each stage shows one or two pictures of the tool at work (taken from
 // the tool itself with its example loaded, in each theme, by .github/build/home-shots.mjs): [piece, width, height].
+// The pictures work: a control in one (a size, the Text | HTML switch, a filter) shows the tool as it looks with
+// that control pressed, and an answer in the quiz's picture starts the quiz with it.
 const TOOLS = [
   { id: "cms", name: "CMS Picker", job: "Choose a website platform", icon: "cms-picker", href: "/cms-picker/", cta: "Start the quiz",
     line: "Answer eight questions and see which of 14 website platforms fits you, and what each one lets you change for SEO.",
@@ -96,14 +100,16 @@ p { text-wrap: pretty; }
 /* Two fonts: Outfit (--f) for names, headings and buttons; Inter for everything that is read */
 
 /* Pick a job: the list of tools on the left never moves, and the stage beside it is the chosen tool, in its colour */
-.pick { display: grid; grid-template-columns: 296px minmax(0, 1fr); margin-top: var(--jsal-page-top); }
-.rail { display: flex; flex-direction: column; padding: var(--jsal-space-8) 0; }
-.rail h1 { margin: 0; font: 700 30px/1.1 var(--f); letter-spacing: -0.02em; }
-.rail h1 em { font-style: normal; color: var(--jsal-accent); }
+/* The page's headline leads, at the size of every page's title; under it the list and the stage */
+.hello { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--jsal-space-8) var(--jsal-space-32); margin-top: var(--jsal-page-top); }
+.hello h1 { margin: 0; font: 700 46px/1.05 var(--f); letter-spacing: -0.02em; }
+.hello h1 em { font-style: normal; color: var(--jsal-accent); }
+.sub { margin: 0; color: var(--jsal-muted); }
+.pick { display: grid; grid-template-columns: 296px minmax(0, 1fr); margin-top: var(--jsal-space-24); }
+.rail { display: flex; flex-direction: column; }
 /* The list runs to the stage's edge, so the chosen row joins its stage; everything else in the rail stops short */
 .rail > :not(.slots) { margin-right: var(--jsal-space-24); }
-.sub { margin: var(--jsal-space-8) 0 0; color: var(--jsal-muted); }
-.rail-h { margin: var(--jsal-space-32) 0 var(--jsal-space-8); color: var(--jsal-muted); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
+.rail-h { margin: var(--jsal-space-12) 0 var(--jsal-space-8); color: var(--jsal-muted); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
 .slots { display: grid; gap: var(--jsal-space-4); }
 .slot { display: grid; grid-template-columns: 44px minmax(0, 1fr) 20px; gap: var(--jsal-space-12); align-items: center; padding: var(--jsal-space-12) var(--jsal-space-20) var(--jsal-space-12) var(--jsal-space-12); border-radius: var(--jsal-radius-xl) 0 0 var(--jsal-radius-xl); text-decoration: none; transition: background-color var(--jsal-quick); }
 .slot:hover { background: var(--jsal-sunk); }
@@ -129,7 +135,8 @@ p { text-wrap: pretty; }
 /* A stage: the tool's name very large, what it does and its button on the left, the tool at work on the right,
    running off the stage's edge. Without scripts all four stages show, one under the other. */
 .stages { display: grid; gap: var(--jsal-space-24); min-width: 0; }
-.stage { position: relative; container-type: inline-size; overflow: hidden; display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: var(--jsal-space-32); align-content: start; min-height: 664px; padding: var(--jsal-space-40) var(--jsal-space-40) 0; border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--bg); }
+/* clip, not hidden: a hidden box still scrolls to a focused control at its cut edge, which slid the whole stage */
+.stage { position: relative; container-type: inline-size; overflow: hidden; overflow: clip; display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); grid-template-rows: auto 1fr auto; column-gap: var(--jsal-space-32); align-content: start; min-height: 600px; padding: var(--jsal-space-40) var(--jsal-space-40) 0; border-radius: 0 var(--jsal-radius-tile) var(--jsal-radius-tile) 0; background: var(--bg); }
 .home-js .stage:not(.on) { display: none; }
 /* Picking a tool: the stage's colour turns to the new tool's (the colour sits behind the stages, so it can), and
    the new stage's parts arrive in order from the way the list moved: its name, its words, then its pictures. The
@@ -148,6 +155,9 @@ p { text-wrap: pretty; }
   .home-js .gem { display: block; }
   .home-js .slot[aria-selected="true"]::before { display: none; }
 }
+/* A first visit: the gem leans toward the next row and back, twice, to show that the list is the control */
+@keyframes peek { 50% { translate: 0 calc(var(--y, 0px) + 22px); } }
+.gem.peek { animation: peek 1.3s ease-in-out 2; }   /* style: allow (a one-time nudge: a slow lean, there and back) */
 @keyframes gem { from { scale: 0; rotate: -45deg; } }
 .live .stage.on :is(h2, .say > *, .shot, .keys) { animation: arrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }   /* style: allow (a choreographed arrival: each part follows the one before) */
 .live .stage.on h2 { --far: 36px; }
@@ -158,7 +168,7 @@ p { text-wrap: pretty; }
 .live .stage.on .b { --d: 0.2s; --far: 72px; }
 .live .stage.on .keys { --d: 0.25s; }
 .slot[aria-selected="true"]::before { animation: gem 0.4s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem landing on the chosen row) */
-.stage h2 { grid-column: 1 / -1; margin: 0; color: var(--ink); font: 800 clamp(40px, 11cqi, 96px)/0.95 var(--f); letter-spacing: -0.03em; white-space: nowrap; }   /* style: allow (the stage's name: the page's one very large line) */
+.stage h2 { grid-column: 1 / -1; margin: 0; color: var(--ink); font: 800 clamp(36px, 9cqi, 72px)/0.95 var(--f); letter-spacing: -0.03em; white-space: nowrap; }   /* style: allow (the stage's name: the page's one very large line) */
 .say { padding: var(--jsal-space-24) 0 var(--jsal-space-40); }
 .say p { margin: 0; font: 500 20px/1.4 var(--jsal-font); }
 .jsal-btn.go { min-height: 48px; margin-top: var(--jsal-space-24); padding: 0 var(--jsal-space-24); gap: var(--jsal-space-8); font: 700 17px/1 var(--f); }
@@ -167,18 +177,25 @@ p { text-wrap: pretty; }
 .facts li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--jsal-space-12); }
 .facts svg { width: 20px; height: 20px; color: var(--ink); }
 .pic { position: relative; min-height: 420px; margin-top: var(--jsal-space-24); }
-.shot { position: absolute; left: var(--x, 0); top: var(--y, 0); width: var(--w); max-width: none; height: auto; border-radius: var(--jsal-radius-xl); box-shadow: var(--shot-shadow); outline: 1px solid var(--shot-edge); }
-.lt.shot, .dk.shot { display: none; }
-.lt.shot { display: block; }
+.shot { position: absolute; left: var(--x, 0); top: var(--y, 0); overflow: hidden; width: var(--w); border-radius: var(--jsal-radius-xl); box-shadow: var(--shot-shadow); outline: 1px solid var(--shot-edge); font-size: 0; line-height: 0; }
+.shot img { width: 100%; height: auto; }
+/* The pictures work. A picture taken in several states holds them all, one over the other, and a control in the
+   picture (an unseen button laid exactly over the drawn one) fades its state in. */
+.st { position: absolute; inset: 0; opacity: 0; transition: opacity var(--jsal-settle); }
+.st.on { opacity: 1; }
+.spot { position: absolute; padding: 0; border: 0; border-radius: var(--jsal-radius); background: none; cursor: pointer; }
+.spot:hover { box-shadow: inset 0 0 0 2px var(--jsal-hover-line); }
+.spot:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: -2px; }
 .cms .a { --w: 700px; }
+.cms .pic { min-height: 340px; }
 .ir .a { --x: 80px; --w: 390px; }
 .ir .b { --y: 190px; --w: 280px; }
-.cp .a { --x: 72px; --w: 420px; }
+.cp .a { --x: 24px; --w: 420px; }   /* far enough left that its Text | HTML switch is inside the stage */
 .cp .b { --y: 230px; --w: 240px; }
 .ri .a { --w: 370px; }
 .ri .b { --x: 292px; --y: 112px; --w: 250px; }
 /* The CMS Picker's stage ends in a key per platform, each opening that platform's guide */
-.keys { position: absolute; left: var(--jsal-space-40); right: var(--jsal-space-40); bottom: var(--jsal-space-32); }
+.keys { grid-column: 1 / -1; padding-bottom: var(--jsal-space-32); }
 .keys p { margin: 0 0 var(--jsal-space-8); font-size: 14px; }
 .keys ul { display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; }
 .keys a { display: grid; place-items: center; height: 48px; border-radius: var(--jsal-radius-xl); background: color-mix(in srgb, var(--ink) 12%, transparent); transition: background-color var(--jsal-quick); }
@@ -191,7 +208,7 @@ p { text-wrap: pretty; }
   .pic { min-height: 320px; }
   .b { visibility: hidden; }
   .ir .a, .cp .a { --x: 0px; }
-  .keys { position: static; grid-column: 1 / -1; padding: var(--jsal-space-24) 0 var(--jsal-space-32); }
+  .keys { padding: var(--jsal-space-24) 0 var(--jsal-space-32); }
   .keys ul { grid-template-columns: repeat(7, minmax(0, 1fr)); }
   .cms .a { --w: 560px; }
   .cms .pic { min-height: 262px; }
@@ -235,7 +252,6 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .slot { grid-template-columns: 44px minmax(0, 1fr); padding: var(--jsal-space-12); border-radius: var(--jsal-radius-xl); }
   .more-ui { order: 3; margin-top: var(--jsal-space-24); }
   .rail { display: contents; }
-  .rail h1 { margin-top: var(--jsal-space-8); }
   .stages { order: 2; }
   .more { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .more > div:first-child { grid-column: 1 / -1; }
@@ -256,9 +272,10 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .keys { padding-bottom: var(--jsal-space-24); }
   .more { grid-template-columns: minmax(0, 1fr); margin-top: var(--jsal-space-48); gap: var(--jsal-space-32); }
 }
+@media (max-width: 520px) { .hello h1 { font-size: 40px; } }
 @media (prefers-reduced-motion: reduce) {
-  .slot, .more-ui, .keys a, .home-js .stages.live { transition: none; }
-  .live .stage.on :is(h2, .say > *, .shot, .keys), .slot[aria-selected="true"]::before, .gem.land { animation: none; }
+  .slot, .more-ui, .keys a, .home-js .stages.live, .st { transition: none; }
+  .live .stage.on :is(h2, .say > *, .shot, .keys), .slot[aria-selected="true"]::before, .gem.land, .gem.peek { animation: none; }
   .gem { transition: none; }
 }
 </style>
@@ -267,11 +284,14 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 
   <!-- Pick a job: each row of the list is a link to its tool's stage below; with scripts the rows become tabs and
        one stage shows at a time. The stage's button (data-app) opens the tool. -->
-  <main class="pick">
+  <main>
+  <header class="hello">
+    <h1>Small tools that do <em>one job</em> well.</h1>
+    <p class="sub">Free, in your browser, by John Salvador.</p>
+  </header>
+  <div class="pick">
     <script is:inline>document.documentElement.classList.add('home-js');</script>
     <div class="rail">
-      <h1>Small tools that do <em>one job</em> well.</h1>
-      <p class="sub">Free, in your browser, by John Salvador.</p>
       <p class="rail-h" id="jobs-h">Pick a job</p>
       <div class="slots" aria-labelledby="jobs-h">
         {TOOLS.map((t, i) => (
@@ -292,10 +312,17 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
               {t.facts.map((f) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{f}</span></li>)}
             </ul>
           </div>
-          <div class="pic" aria-hidden="true">
-            {t.pics.map(([piece, w, h], n) => ["light", "dark"].map((theme) => (
-              <img class={`shot ${n ? "b" : "a"} ${theme === "light" ? "lt" : "dk"}`} src={v(`/img/home/${t.id}-${piece}-${theme}.webp`)} alt="" width={w} height={h} loading={i === 0 ? "eager" : "lazy"} decoding="async">
-            )))}
+          <div class="pic">
+            {t.pics.map(([piece, w, h], n) => (
+              <span class={`shot ${n ? "b" : "a"}`}>
+                {Array.from({ length: SPOTS[t.id].vary.includes(piece) ? SPOTS[t.id].states : 1 }, (_, k) => ["light", "dark"].map((theme) => (
+                  <img class={`${theme === "light" ? "lt" : "dk"}${k ? " st" : ""}`} data-state={k || undefined} src={v(`/img/home/${t.id}-${piece}${k ? `-s${k}` : ""}-${theme}.webp`)} alt="" width={w} height={h} loading={i === 0 && !k ? "eager" : "lazy"} decoding="async">
+                )))}
+                {SPOTS[t.id].spots.filter((sp) => sp.piece === piece).map((sp) => sp.href
+                  ? <a class="spot" href={sp.href} data-app aria-label={sp.label} title={sp.label} style={`left:${sp.x}%;top:${sp.y}%;width:${sp.w}%;height:${sp.h}%`}></a>
+                  : <button type="button" class="spot" data-state={sp.state} aria-pressed={sp.state === 0 ? "true" : "false"} aria-label={sp.label} title={sp.label} style={`left:${sp.x}%;top:${sp.y}%;width:${sp.w}%;height:${sp.h}%`}></button>)}
+              </span>
+            ))}
           </div>
           {t.id === "cms" && (
             <nav class="keys" aria-label="Platform guides, as logos">
@@ -306,6 +333,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
         </section>
       ))}
     </div>
+  </div>
   </main>
 
   <!-- Site updates (the newest change in each of the three most recently changed parts of the site) and email -->
@@ -330,6 +358,14 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
 </div>
 <script is:inline>
 document.getElementById('y').textContent = new Date().getFullYear();
+// The pictures work: a control in a picture shows the tool as it looks with that control pressed
+document.querySelectorAll('.stage').forEach((stage) => {
+  const spots = [...stage.querySelectorAll('button.spot')];
+  spots.forEach((spot) => spot.addEventListener('click', () => {
+    stage.querySelectorAll('.st').forEach((img) => img.classList.toggle('on', img.dataset.state === spot.dataset.state));
+    spots.forEach((other) => other.setAttribute('aria-pressed', other === spot ? 'true' : 'false'));
+  }));
+});
 // The list becomes tabs: a row shows its tool's stage in place (arrow keys move along the list, and 1 to 4 pick a
 // tool from anywhere on the page). The address keeps the choice (#pick-ir), so a link can open the page on any tool.
 (() => {
@@ -384,6 +420,17 @@ document.getElementById('y').textContent = new Date().getFullYear();
   const at = stages.findIndex((s) => `#pick-${s.id}` === location.hash);
   pick(at < 0 ? 0 : at);
   live = true;
+  // A first visit, on a wide screen, with motion welcome and nothing picked yet: the gem leans toward the next row
+  try {
+    if (wide.matches && matchMedia('(prefers-reduced-motion: no-preference)').matches && !localStorage.getItem('jsal-pick-hint')) {
+      setTimeout(() => {
+        if (box.classList.contains('live')) return;
+        localStorage.setItem('jsal-pick-hint', '1');
+        gem.classList.add('peek');
+        gem.addEventListener('animationend', () => gem.classList.remove('peek'), { once: true });
+      }, 1500);
+    }
+  } catch (e) {}
   addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey || e.target.closest('input, textarea, select, [contenteditable]')) return;
     const n = '1234'.indexOf(e.key);

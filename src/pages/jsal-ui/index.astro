@@ -72,15 +72,17 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 
 /* Pick a part: the list on the left is the addon's own menu and never moves; the stage beside it is the chosen
    part, with its window from the game */
-.pick { display: grid; grid-template-columns: 272px minmax(0, 1fr); margin-top: var(--jsal-page-top); }
-/* The list runs to the stage's edge, so the chosen row joins its stage; everything else in the rail stops short */
-.rail > :not(.slots) { margin-right: var(--jsal-space-24); }
-.rail h1 { margin: 0; font: 700 30px/1.1 var(--f); letter-spacing: -0.02em; }
-.rail h1 em { font-style: normal; color: var(--jsal-accent); }
-.get { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-12); margin-top: var(--jsal-space-20); }
+/* The page's promise leads, at the size of every page's title, with what jsal.ui is and how to get it beside it;
+   under it the list and the stage */
+.hello { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: var(--jsal-space-24) var(--jsal-space-48); align-items: center; margin-top: var(--jsal-page-top); }
+.hello h1 { margin: 0; font: 700 46px/1.05 var(--f); letter-spacing: -0.02em; }
+.hello h1 em { font-style: normal; color: var(--jsal-accent); }
+.lede { margin: 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.5; }
+.pick { display: grid; grid-template-columns: 272px minmax(0, 1fr); margin-top: var(--jsal-space-32); }
+.get { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-12); margin-top: var(--jsal-space-16); }
 .jsal-btn.dl { min-height: 44px; padding: 0 var(--jsal-space-20); font: 700 15px/1 var(--f); }
 .meta { flex: 1 1 100%; margin: 0; color: var(--jsal-muted); font-size: 13px; line-height: 1.45; }
-.slots { margin-top: var(--jsal-space-24); }
+.slots { margin-top: var(--jsal-space-8); }
 .grp { margin: var(--jsal-space-16) 0 var(--jsal-space-4); color: var(--jsal-muted); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
 .slot { display: flex; align-items: center; justify-content: space-between; gap: var(--jsal-space-8); position: relative; padding: var(--jsal-space-4) var(--jsal-space-20) var(--jsal-space-4) var(--jsal-space-12); border-radius: var(--jsal-radius-lg) 0 0 var(--jsal-radius-lg); color: inherit; text-decoration: none; transition: background-color var(--jsal-quick); }
 .slot:hover { background: var(--jsal-sunk); }
@@ -109,6 +111,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .ui-js .gem { display: block; }
   .ui-js .slot[aria-selected="true"]::before { display: none; }
 }
+/* A first visit: the gem leans toward the next row and back, twice, to show that the list is the control */
+@keyframes peek { 50% { translate: 0 calc(var(--y, 0px) + 22px); } }
+.gem.peek { animation: peek 1.3s ease-in-out 2; }   /* style: allow (a one-time nudge: a slow lean, there and back) */
 @keyframes gem { from { scale: 0; rotate: -45deg; } }
 .live .stage.on :is(.head, .say, .facts, .win) { animation: arrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }   /* style: allow (a choreographed arrival: each part follows the one before) */
 .live .stage.on .head { --far: 32px; }
@@ -117,7 +122,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .live .stage.on .win { --d: 0.12s; --far: 56px; }
 .slot[aria-selected="true"]::before { animation: gem 0.4s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the gem landing on the chosen row) */
 .head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--jsal-space-12); }
-.stage h2 { margin: 0; font: 800 clamp(40px, 10cqi, 88px)/0.95 var(--f); letter-spacing: -0.03em; }   /* style: allow (the stage's name: the page's one very large line) */
+.stage h2 { margin: 0; font: 800 clamp(36px, 8.5cqi, 72px)/0.95 var(--f); letter-spacing: -0.03em; }   /* style: allow (the stage's name: the page's one very large line) */
 .lv { padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-sm); background: var(--jsal-surface); color: var(--jsal-ink-2); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.08em; text-transform: uppercase; }
 .lead { margin: 0; font: 600 20px/1.3 var(--f); }
 .lead + p { margin: var(--jsal-space-8) 0 0; color: var(--jsal-ink-2); }
@@ -205,7 +210,6 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* A small laptop or a tablet: the headline and Download, then the list as rows of parts, then the stage */
 @media (max-width: 1279px) {
   .pick { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
-  .rail > :not(.slots) { margin-right: 0; }
   .stage { border-radius: var(--jsal-radius-tile); }
   /* here the gem sits inside the row, before its name */
   .slot[aria-selected="true"]::before { position: static; flex: none; translate: none; }
@@ -216,6 +220,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .slot i { display: none; }
 }
 @media (max-width: 899px) {
+  .hello { grid-template-columns: minmax(0, 1fr); }
   .install, .band { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
   .little dl { grid-template-columns: minmax(0, 1fr); }
   .stage, .stage.side { grid-template-columns: minmax(0, 1fr); }
@@ -227,7 +232,6 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 @media (max-width: 599px) {
   .pick { gap: var(--jsal-space-16); }
   .rail { display: contents; }
-  .get { margin-top: 0; }
   .stages { order: 1; }
   .slots { order: 2; position: sticky; bottom: 0; z-index: 2; display: flex; gap: var(--jsal-space-4); overflow-x: auto; margin: 0 calc(var(--jsal-gutter) * -1); padding: var(--jsal-space-8) var(--jsal-gutter) max(var(--jsal-space-8), env(safe-area-inset-bottom, 0px)); background: var(--jsal-bg); border-top: 1px solid var(--jsal-line); }
   .slot { flex: none; min-height: 44px; }
@@ -245,11 +249,12 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .band.discord { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 520px) {
+  .hello h1 { font-size: 40px; }
   .install, .band { padding: var(--jsal-space-20); }
 }
 @media (prefers-reduced-motion: reduce) {
   .slot { transition: none; }
-  .live .stage.on :is(.head, .say, .facts, .win), .slot[aria-selected="true"]::before, .gem.land { animation: none; }
+  .live .stage.on :is(.head, .say, .facts, .win), .slot[aria-selected="true"]::before, .gem.land, .gem.peek { animation: none; }
   .gem { transition: none; }
 }
 </style>
@@ -258,15 +263,20 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 <main>
   <!-- Pick a part: each row of the list is a link to its part's stage below; with scripts the rows become tabs and
        one stage shows at a time -->
-  <div class="pick">
-    <script is:inline>document.documentElement.classList.add('ui-js');</script>
-    <div class="rail">
-      <h1>Your WoW Forever character, <em>in one dashboard.</em></h1>
+  <header class="hello">
+    <h1>Your WoW Forever character, <em>in one dashboard.</em></h1>
+    <div>
+      <p class="lede">I made jsal.ui to smooth out leveling, and it keeps going after 60. It plans your trainer visits and talents on the way up, then your gear, dungeon runs, professions and guild crafting at any level, with a journal, daily games for your guild and a pet to look after.</p>
       <div class="get">
         <a class="jsal-btn primary dl" href={RELEASES}>Download jsal.ui</a>
         <a class="jsal-btn" href="#install">How to install</a>
         <p class="meta">Version {RELEASE.version} · free, with its code <a href={REPO}>on GitHub</a> · also on <a href={CURSEFORGE}>CurseForge</a> and <a href={WAGO}>Wago</a></p>
       </div>
+    </div>
+  </header>
+  <div class="pick">
+    <script is:inline>document.documentElement.classList.add('ui-js');</script>
+    <div class="rail">
       <div class="slots" aria-label="jsal.ui's parts">
         {LIST.map((g) => (
           <Fragment>
@@ -410,6 +420,17 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const at = stages.findIndex((s) => `#pick-${s.id}` === location.hash);
   pick(at < 0 ? 0 : at);
   live = true;
+  // A first visit, on a wide screen, with motion welcome and nothing picked yet: the gem leans toward the next row
+  try {
+    if (wide.matches && matchMedia('(prefers-reduced-motion: no-preference)').matches && !localStorage.getItem('jsal-pick-hint')) {
+      setTimeout(() => {
+        if (box.classList.contains('live')) return;
+        localStorage.setItem('jsal-pick-hint', '1');
+        gem.classList.add('peek');
+        gem.addEventListener('animationend', () => gem.classList.remove('peek'), { once: true });
+      }, 1500);
+    }
+  } catch (e) {}
 })();
 // The Pals stage: one pal's life, played with the addon's own pictures. A press hatches the egg, the next two
 // grow it (gold motes gather into a ball of light, it changes underneath, the ball bursts), timed as the addon

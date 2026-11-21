@@ -32,10 +32,21 @@ home page work.
   with the name in the tint's deep shade; the chosen row in the list wears the same tint, and the logo's gold gem
   marks it in place of its number. Each tint is also the colour its tool wears on its own page (design-rules.md,
   Colour), so a change to a tint is a change to that tool's page too.
-- **The pictures are the real tools**, each with its example loaded, in the light and the dark theme, cut to one or
-  two pieces: `node .github/build/home-shots.mjs` against the served build writes them to `site/img/home/`. Run it
-  again when a tool's look changes, and look at each picture afterwards: the cuts are fixed rectangles. The second
-  piece overlaps the first; both run off the stage's edge. No hand-drawn miniatures any more.
+- **The headline leads the page** (John, 20 Nov 2026, "all 4" of my suggestions): "Small tools that do *one job*
+  well." across the top at every page title's size (46px, 40px on phones), with the "Free, in your browser" line
+  at its end; the list and the stage sit under it. It used to sit in the list at 30px, quieter than a tool's name.
+- **The pictures are the real tools, and they work**, each with its example loaded, in the light and the dark
+  theme, cut to one or two pieces. A control in a picture shows the tool as it looks with that control pressed: a
+  size reshapes the Image Resizer's crop, Text | HTML turns Clean Paste's post into its code, a filter narrows
+  Redirect Import's sheet, and an answer in the quiz's picture opens the quiz with that answer given
+  (`#quiz?v=6&what=…`; raise the `v` in `home-shots.mjs` when the quiz's link version changes). Each tool is taken
+  once per state, and an unseen button sits exactly over each drawn control (`src/data/home-spots.json`, shares of
+  the picture): `node .github/build/home-shots.mjs` against the served build writes the pictures and that file. Run
+  it again when a tool's look changes, and look at each picture afterwards: the cuts are fixed rectangles. Every
+  control in a picture must do something; none is left dead. The second piece overlaps the first; both run off the
+  stage's edge, which is `overflow: clip` (a hidden box scrolled to a focused control and slid the stage).
+- **A first visit gets one nudge:** on a wide screen, with nothing picked after a second and a half, the gem leans
+  toward the next row and back, twice, once per browser (`jsal-pick-hint`). Never with reduced motion.
 - **The CMS Picker's stage ends in a key per platform** (logos only, each a link to that platform's guide, named
   for screen readers). The footer keeps the same 14 as a quiet row of text links.
 - **How it works:** every stage is in the page, one under the other, and each row of the list is a link to its
@@ -49,7 +60,7 @@ home page work.
 - **Under the stage:** Updates (the newest change in each of the three most recently changed parts, from the
   changelog as the page builds, `src/lib/updates.mjs`; plain rows, as they aren't links) and the email line, then
   the footer.
-- **Sizes:** a stage's name is the one very large line (up to 96px, shrinking with the stage; `style: allow`). The
-  headline in the list is 30px. Everything else is on the type scale.
+- **Sizes:** a stage's name is the largest line (up to 72px, shrinking with the stage; `style: allow`), the
+  headline 46px. Everything else is on the type scale.
 - **Not checked by a person yet:** the facts in each stage's ticked list are Claude's draft from each tool's own
   page; John to confirm the wording.

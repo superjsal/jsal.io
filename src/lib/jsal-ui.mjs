@@ -1,6 +1,7 @@
 // jsal.ui's parts as the jsal.ui page shows them, in the store pages' three groups (Plan, Craft, Play), each with its
 // window from the game in the addon's current look: a WebP under site/img/jsal-ui/ui/, at the game's own size.
-// The headlines and points are the store cards' own words.
+// The headlines and points began as the store cards' own words; a few are softer here (20 Nov 2026), so nothing
+// promises "the best" or "every" about the game's own data, which is new and still changing.
 // menu: the window is the dashboard, with its menu down the left. A crop (a card, or a window on a phone) starts at
 // the page's own content, under the title bar and past the menu: the dashboard's bar is 49px tall and its menu
 // 233px wide, any other window's bar 33px. cx and cy are those as shares of the picture, for a CSS translate.
@@ -39,16 +40,16 @@ export const GROUPS = [
         shot: shot("training", 1323, 879, "The Training Planner: 18 spells ready for a level 40 hunter with their costs, the pet's training, and the road to 60 as a line of trainer visits.", true) },
       { key: "build", when: "leveling", label: "Build Planner", name: "Know where every point goes", line: "Follow a ready-made leveling build or plan your own, and see what your next point gives you.", points: ["A leveling build for every class", "Your next point, and what it does", "Share a build as a line of text"],
         shot: shot("build", 1319, 879, "The Build Planner following a Beast Mastery leveling build: the plan level by level, with the next point, Lethal Attacks, described on the right.", true) },
-      { key: "gear", when: "any", label: "Gear plan", name: "The best upgrade for every slot", line: "Ranked for your spec by WoWSims' stat weights, with where each piece comes from.", points: ["Boss, quest, vendor or crafter", "Weights you can change", "Star a piece, hear when it drops"],
+      { key: "gear", when: "any", label: "Gear plan", name: "Upgrades for every slot, ranked for your spec", line: "Ranked by WoWSims' stat weights, with where each piece comes from.", points: ["Boss, quest, vendor or crafter", "Weights you can change", "Star a piece, hear when it drops"],
         shot: shot("gear", 1238, 859, "The Gear plan: every slot with what's worn and its best upgrade near your level, and for the ranged slot a list of upgrades with the quest each comes from.") },
-      { key: "dungeons", when: "any", label: "Dungeon guide", name: "Know what drops before you go", line: "Every boss with its loot and drop chances, and what's an upgrade for you.", points: ["Bosses in the order you meet them", "Upgrades marked for your spec", "Quests to pick up on the way in"],
+      { key: "dungeons", when: "any", label: "Dungeon guide", name: "Know what drops before you go", line: "Each boss with its loot and drop chances, and what's an upgrade for you.", points: ["Bosses in the order you meet them", "Upgrades marked for your spec", "Quests to pick up on the way in"],
         shot: shot("dungeons", 998, 859, "The Dungeon guide for The Drowned City: each boss as a card with its loot, drop chances and the upgrades marked.") },
     ],
   },
   {
     key: "craft", name: "Craft", line: "Level professions for less, and craft for each other.",
     parts: [
-      { key: "professions", when: "any", label: "Professions", name: "The cheapest road to the cap", line: "Exactly what to craft and how many, using what's in your bags and bank first.", points: ["What you have against what you need", "Where to learn or buy each recipe", "One click to a shopping list"],
+      { key: "professions", when: "any", label: "Professions", name: "A cheaper road to the cap", line: "Exactly what to craft and how many, using what's in your bags and bank first.", points: ["What you have against what you need", "Where to learn or buy each recipe", "One click to a shopping list"],
         shot: shot("professions", 1319, 879, "Leatherworking's road to the cap: what to craft now, everything it takes against what's in the bags, and the steps ahead.", true) },
       { key: "crafts", when: "any", label: "Guild Crafts", name: "Craft for each other", line: "Ask the guild for a craft or an enchant. Guildmates who know the recipe hear about it.", points: ["Who makes what, and where they are", "Every order from asked to received", "Fills in the letter at the mailbox"],
         shot: shot("guild-crafts", 998, 919, "Guild Crafts: four open orders, one waiting for a crafter, two being made and one sent, each with its materials and where it stands.") },

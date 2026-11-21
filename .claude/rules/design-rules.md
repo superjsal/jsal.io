@@ -31,9 +31,9 @@ the tools' Lora headings no longer matched them). Don't bring a serif back for h
 - A title's **gold word** is the same Outfit 700, upright, in gold (`.hl`, or `em`): Clean *Paste*, CMS *Picker*,
   one *job*, Mostly *Warcraft*, Your *privacy*. Outfit has no italic, so the word is marked by colour alone; on the
   platform pages the gold word is "SEO".
-- **The one very large line** is a stage's name on the home page and the jsal.ui page: Outfit 800, up to 96px on
-  the home page and 88px on the jsal.ui page, shrinking with the stage to 40px (`style: allow`). Their headlines
-  sit in the list beside it at 30px.
+- **The one very large line** is a stage's name on the home page and the jsal.ui page: Outfit 800, up to 72px,
+  shrinking with the stage to 36px (`style: allow`). Their headlines lead the page above it at the page-title
+  size.
 - **Every other page title is one size:** Outfit 700, 46px, line height 1.05, −0.02em, and 40px at 520px and under (
   Off the clock, Privacy, Changelog, 404, `/design-system/`). The longer titles of the CMS Picker and its platform
   pages also stop at 46px but shrink with the screen to 30px. A short page's empty space beside its title stays
@@ -209,9 +209,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   home page (John, 20 Nov 2026: "both pages"), in Outfit and the site's own colours in each theme; the dark stage
   over a blurred game screenshot, modelled on ellesmereui.com, is gone, and so are its big rows and cards. The top
   bar is the shared one, in the page's theme. From the top:
-  - **The list** (248px, from 1280px): the headline ("Your WoW Forever character, *in one dashboard.*": it has to
-    read as useful after 60, not only for leveling), Download and How to install, the version line, then the
-    addon's menu: Home, and Plan, Craft and Play with their parts. Every row carries "Any level" or "1 to 60"
+  - **The headline leads** ("Your WoW Forever character, *in one dashboard.*": it has to read as useful after 60,
+    not only for leveling), with John's own line on what jsal.ui is, Download, How to install and the version line
+    beside it.
+  - **The list** (272px, from 1280px) is the addon's menu: Home, and Plan, Craft and Play with their parts. Every row carries "Any level" or "1 to 60"
     (`when` in `src/lib/jsal-ui.mjs`; only the Training and Build planners end at 60). Below 1280px the parts are
     four to a row above the stage; on upright phones they're a dock that slides sideways and sticks to the foot of
     the screen while the stage is in view.
