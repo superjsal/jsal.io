@@ -13,6 +13,14 @@ paths:
   `src/data/character.json`: who and where, six totals, the time at each level as bars, the latest journal entries,
   the places most time went, the hunter's pet, most-used spells and professions. The jsal.ui tile under it says the
   journal is the addon's, so the page is a live demo of it.
+  - **It is laid out as the game's character sheet, tidied** (John, 20 Nov 2026: "more like a modernized character
+    sheet like you see in game", then "looks great" of the mockup, and "add parts of the journal in a different
+    card"): a title bar; the slots down both sides of the middle with the weapons under it; the journal's totals,
+    professions and the hunter's pet where the game shows attributes. The middle holds the level and class, as
+    there is no portrait (a screenshot John picks would go there). Slot tiles wear the item's quality colour and
+    have no item icons: Blizzard's icons need John's word before any is downloaded. A second card, Journal, holds
+    the time at each level, where the time went, the latest entries and the most-used spells. The gear columns are
+    `.side`, not `.slots`, which is the Backpack's.
   - **Where the data comes from:** `python -I .github/scripts/character.py [name] [class]` reads the journal jsal.ui
     keeps in the game's SavedVariables on John's PC and writes that file. The game only writes its file at logout
     or a reload, and the site only changes when the new JSON is committed, so the page is as fresh as the last run;
