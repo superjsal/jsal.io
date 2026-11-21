@@ -70,21 +70,23 @@ for (const theme of ['light', 'dark']) {
       }
     }
   }
-  // The CMS Picker's quiz box, whole, at the width it has on a small laptop, as it answers: the first question, then
-  // the second once an answer to the first is picked, which the home page's pointer picks; both pictures are clipped
-  // to the first question's box.
+  // The CMS Picker's quiz box, whole, at the width it has on a small laptop, as it answers: the first question, its
+  // first answer shown chosen (as the quiz shows a pick for a moment), then the second question; the home page's
+  // pointer picks that answer. Every picture is clipped to the first question's box.
   await page.setViewportSize({ width: 900, height: 900 });
   await page.goto(base + '/cms-picker/', { waitUntil: 'networkidle' });
   const quiz = page.locator('.qz');
   const q = await quiz.boundingBox();
-  if (theme === 'light') spots.cms = { vary: ['quiz'], states: 2, spots: [] };
-  for (let i = 0; i < 2; i++) {
+  if (theme === 'light') spots.cms = { vary: ['quiz'], states: 3, spots: [] };
+  const shoot = async (i) => {
     const png = join(tmp, `cms-quiz${i ? `-s${i}` : ''}-${theme}.png`);
     await page.mouse.move(2, 2);
     await page.waitForTimeout(500);
     await page.screenshot({ path: png, clip: q });
     save(png, `cms-quiz${i ? `-s${i}` : ''}-${theme}`);
-    if (i === 1) break;
+  };
+  for (let i = 0; i < 1; i++) {
+    await shoot(0);
     const answer = page.locator('.qz .qz-opt').first();
     if (theme === 'light') {
       // every answer is marked, so the pointer can look over them before it picks the first
@@ -93,8 +95,12 @@ for (const theme of ['light', 'dark']) {
         spots.cms.spots.push({ piece: 'quiz', hover: n, ...(n ? {} : { state: i + 1 }), label: `${n ? 'Look at' : 'Pick'}: ${words.trim()}`, x: share(b.x - q.x, q.width), y: share(b.y - q.y, q.height), w: share(b.width, q.width), h: share(b.height, q.height) });
       }
     }
+    // the pick as the quiz shows it for a moment before moving on
+    await answer.evaluate((b) => b.closest('.qz').querySelectorAll('.qz-opt').forEach((o) => o.setAttribute('aria-pressed', String(o === b))));
+    await shoot(1);
     await answer.click();
     await page.waitForTimeout(900);
+    await shoot(2);
   }
   await ctx.close();
 }

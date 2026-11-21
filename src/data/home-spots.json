@@ -118,7 +118,7 @@
   "vary": [
    "quiz"
   ],
-  "states": 2,
+  "states": 3,
   "spots": [
    {
     "piece": "quiz",

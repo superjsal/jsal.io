@@ -420,8 +420,9 @@ document.getElementById('y').textContent = new Date().getFullYear();
   // The demo: when a tool's stage shows (on a screen wide enough for its pictures, with motion welcome), a pointer
   // glides to each control in its picture in turn and presses it, and the picture shows that state; it ends back on
   // the first, in about five seconds, inside the tour's turn. Pause stops it; a new tool starts its own.
-  // a step is a state to press, or 'over N' to rest the pointer on the quiz's answer N first
-  const STEPS = { cms: ['over 1', 'over 3', 'over 2', 1], ir: [1, 2, 0], cp: [1, 0], ri: [1, 3, 4, 0] };
+  // a step is a state to press, 'over N' to rest the pointer on the quiz's answer N first, or 'then N' for a state
+  // that follows by itself (the quiz moving on to its next question, a moment after a pick shows chosen)
+  const STEPS = { cms: ['over 1', 'over 3', 'over 2', 1, 'then 2'], ir: [1, 2, 0], cp: [1, 0], ri: [1, 3, 4, 0] };
   const calm = matchMedia('(prefers-reduced-motion: reduce)'), demoRoom = matchMedia('(min-width: 700px)');
   let run = 0;
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -450,6 +451,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
     if (stopped()) return;
     cursor.classList.add('on');
     for (const n of steps) {
+      if (typeof n === 'string' && n.startsWith('then ')) { await wait(250); if (stopped()) break; show(n.split(' ')[1]); continue; }
       const over = typeof n === 'string' ? n.split(' ')[1] : null;
       const mark = over !== null ? marks.find((m) => m.dataset.hover === over) : marks.find((m) => m.dataset.state === String(n));
       if (!mark) continue;
@@ -469,7 +471,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
     cursor.classList.remove('on', 'down');
     marks.forEach((m) => m.classList.remove('over'));
     // a demo that ends away from the first state (the quiz on its second question) holds there a moment first
-    if (steps[steps.length - 1] !== 0) await wait(1200);
+    if (steps[steps.length - 1] !== 0) await wait(1300);
     if (mine !== run) return;
     show(0);
   };
