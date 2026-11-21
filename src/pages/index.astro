@@ -282,12 +282,23 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .slot img { width: 40px; height: 40px; }
   .slot[aria-selected="true"] { border-radius: var(--jsal-radius-xl) var(--jsal-radius-xl) 0 0; }
   .home-js .stage { min-height: 0; padding: var(--jsal-space-4) var(--jsal-space-20) var(--jsal-space-20); border-radius: 0 0 var(--jsal-radius-xl) var(--jsal-radius-xl); background: var(--bg); }
-  .home-js .stage :is(h2, .facts, .pic, .keys) { display: none; }
+  .home-js .stage :is(h2, .facts, .keys) { display: none; }
+  /* the open tool shows its whole picture at work, scaled to the row's width, so a phone sees what it does */
+  .home-js .stage .pic { min-height: 0; margin-top: var(--jsal-space-16); }
+  .home-js .stage .pic .shot.a { position: relative; left: 0; top: 0; width: 100%; }
+  .home-js .stage .pic .shot.b { display: none; }
   .home-js .stage { grid-template-columns: minmax(0, 1fr); }
   .home-js .say { padding-top: 0; }
   .say p { font-size: 15px; }
   .stage { min-height: 0; padding: var(--jsal-space-24) var(--jsal-space-20) 0; }
   .more { grid-template-columns: minmax(0, 1fr); margin-top: var(--jsal-space-48); gap: var(--jsal-space-32); }
+}
+/* A phone held sideways: the picture beside the tool's line and button, as at the row's full width it'd be twice the
+   screen's height */
+@media (max-height: 500px) and (orientation: landscape) and (min-width: 600px) {
+  .home-js .stage { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); column-gap: var(--jsal-space-20); align-items: start; }
+  .home-js .stage .say { grid-column: 1; grid-row: 1 / span 2; }
+  .home-js .stage .pic { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; }
 }
 @media (max-width: 520px) { .hello h1 { font-size: 40px; } }
 /* The tour: the chosen row's gold line fills while its turn lasts; it rests while the pointer or the keyboard is on

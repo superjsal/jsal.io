@@ -27,8 +27,9 @@ home page work.
   between pages.
 - **Layout:** from 1280px, the list (272px) beside the stage. Below that the headline, then the four tools as a row
   of tabs, then the stage. On upright phones (under 700px) the four tools are a list, each row with its name and
-  its job, and the chosen tool opens under its own row in its tint, with its line and its button (its facts and
-  picture wait for a wider screen); tapping another row opens that one (John, 21 Nov 2026, my pick A of three: it
+  its job, and the chosen tool opens under its own row in its tint, with its line, its button and its whole picture
+  at work scaled to the row (John, 21 Nov 2026, B of three, as without it the list "doesnt show what the tools do";
+  on a phone held sideways the picture sits beside the words); its facts wait for a wider screen; tapping another row opens that one (John, 21 Nov 2026, my pick A of three: it
   replaced a dock at the foot of the screen, where only the chosen tool could be read). The list and the stages are
   laid out together with `display: contents` and `order`. Off the clock is a quieter row under the list; it goes to `/play/`, the page that carries
   that name (John, 21 Nov 2026), which links on to jsal.ui.
