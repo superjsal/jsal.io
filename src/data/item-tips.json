@@ -1,1 +1,212 @@
-{}
+{
+ "148": [
+  {
+   "t": "Item Level 1",
+   "tone": "gold"
+  },
+  {
+   "t": "Shirt"
+  },
+  {
+   "t": "Sells for 1c",
+   "tone": "muted"
+  }
+ ],
+ "2933": [
+  {
+   "t": "Item Level 31",
+   "tone": "gold"
+  },
+  {
+   "t": "Binds when picked up"
+  },
+  {
+   "t": "Unique-Equipped"
+  },
+  {
+   "t": "Finger"
+  },
+  {
+   "t": "+4 Intellect"
+  },
+  {
+   "t": "+3 Agility"
+  },
+  {
+   "t": "+3 Strength"
+  },
+  {
+   "t": "+4 Stamina"
+  },
+  {
+   "t": "+3 Spirit",
+   "tone": "green"
+  },
+  {
+   "t": "Sells for 23s 71c",
+   "tone": "muted"
+  }
+ ],
+ "4788": [
+  {
+   "t": "Item Level 20",
+   "tone": "gold"
+  },
+  {
+   "t": "Binds when equipped"
+  },
+  {
+   "t": "Feet",
+   "r": "Leather"
+  },
+  {
+   "t": "53 Armor"
+  },
+  {
+   "t": "+5 Agility"
+  },
+  {
+   "t": "Durability 35 / 35"
+  },
+  {
+   "t": "Requires Level 15"
+  },
+  {
+   "t": "Sells for 5s 26c",
+   "tone": "muted"
+  }
+ ],
+ "270053": [
+  {
+   "t": "Item Level 35",
+   "tone": "gold"
+  },
+  {
+   "t": "Binds when picked up"
+  },
+  {
+   "t": "Finger"
+  },
+  {
+   "t": "+6 Agility"
+  },
+  {
+   "t": "+4 Strength"
+  },
+  {
+   "t": "Sells for 21s 44c",
+   "tone": "muted"
+  }
+ ],
+ "270067": [
+  {
+   "t": "Item Level 39",
+   "tone": "gold"
+  },
+  {
+   "t": "Binds when picked up"
+  },
+  {
+   "t": "Head",
+   "r": "Leather"
+  },
+  {
+   "t": "88 Armor"
+  },
+  {
+   "t": "+11 Intellect"
+  },
+  {
+   "t": "+12 Spell Power",
+   "tone": "green"
+  },
+  {
+   "t": "Durability 50 / 50"
+  },
+  {
+   "t": "Sells for 42s 40c",
+   "tone": "muted"
+  }
+ ],
+ "271716": [
+  {
+   "t": "Item Level 33",
+   "tone": "gold"
+  },
+  {
+   "t": "Binds when picked up"
+  },
+  {
+   "t": "Back",
+   "r": "Cloth"
+  },
+  {
+   "t": "25 Armor"
+  },
+  {
+   "t": "+5 Intellect"
+  },
+  {
+   "t": "+5 Agility"
+  },
+  {
+   "t": "+5 Spirit",
+   "tone": "green"
+  },
+  {
+   "t": "Sells for 22s 5c",
+   "tone": "muted"
+  }
+ ],
+ "280766": [
+  {
+   "t": "Item Level 33",
+   "tone": "gold"
+  },
+  {
+   "t": "Binds when picked up"
+  },
+  {
+   "t": "Trinket"
+  },
+  {
+   "t": "Use: Reach into the bag and hope for the best. (10 Min Cooldown)",
+   "tone": "green"
+  },
+  {
+   "t": "\"Not every potion is meant for consumption.\"",
+   "tone": "gold"
+  },
+  {
+   "t": "Sells for 24s 89c",
+   "tone": "muted"
+  }
+ ],
+ "281290": [
+  {
+   "t": "Item Level 26",
+   "tone": "gold"
+  },
+  {
+   "t": "Binds when picked up"
+  },
+  {
+   "t": "Neck"
+  },
+  {
+   "t": "+3 Agility"
+  },
+  {
+   "t": "+3 Spirit",
+   "tone": "green"
+  },
+  {
+   "t": "\"A cheap imitation of a sentimental necklace. With the original returned, this gift has been given meaning of its own.\"",
+   "tone": "gold"
+  },
+  {
+   "t": "Sells for 12s 73c",
+   "tone": "muted"
+  }
+ ]
+}

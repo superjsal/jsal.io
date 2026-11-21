@@ -84,12 +84,18 @@ DATA = ROOT / 'src' / 'data'
 _token = []
 
 
+why = ['']   # why the last request came back with nothing, for the line that reports it
+
+
 def ask(url, headers=None, data=None):
     try:
         with urllib.request.urlopen(urllib.request.Request(url, headers=headers or {}, data=data), timeout=20) as r:
             return r.read()
-    except (urllib.error.URLError, TimeoutError):
-        return None
+    except urllib.error.HTTPError as e:
+        why[0] = f'HTTP {e.code}'
+    except (urllib.error.URLError, TimeoutError) as e:
+        why[0] = type(e).__name__
+    return None
 
 
 def auth():
@@ -152,7 +158,8 @@ def tip(item):
     add(shown(p.get('level')) or (f"Item Level {item['level']}" if item.get('level') else None), 'gold')
     add((p.get('binding') or {}).get('name'))
     add(p.get('unique_equipped'))
-    add((p.get('inventory_type') or {}).get('name'), None, (p.get('item_subclass') or {}).get('name'))
+    kind = (p.get('item_subclass') or {}).get('name')
+    add((p.get('inventory_type') or {}).get('name'), None, None if kind == 'Miscellaneous' else kind)   # a ring or a trinket has no kind worth saying
     weapon = p.get('weapon') or {}
     add(shown(weapon.get('damage')), None, shown(weapon.get('attack_speed')))
     add(shown(weapon.get('dps')))
@@ -182,6 +189,7 @@ def tips_for(ids):
         if not copy.exists() and auth():
             body = ask(f'{API}/item/{item}?{NS}', auth())
             if body: copy.write_bytes(body); print(f'Items: fetched {item}.')
+            else: print(f'Items: Blizzard gave nothing for item {item} ({why[0]}).')
         if copy.exists(): known[str(item)] = tip(json.loads(copy.read_text(encoding='utf-8')))
         elif str(item) not in known: waiting += 1
     if waiting: print(f'Items: {waiting} worn item(s) have no tooltip yet. Set the two Blizzard keys in this terminal and run again to fetch them.')
