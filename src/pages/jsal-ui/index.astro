@@ -181,22 +181,21 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* the pen's controls sit on it, bottom left: icon buttons (each named for screen readers and on hover) and the line
    saying what just happened, on a dark glass the same in both themes, as they sit on the picture */
 .win.pen { position: relative; }
-.pal { position: absolute; left: var(--jsal-space-16); bottom: var(--jsal-space-16); right: var(--jsal-space-16); display: flex; flex-wrap: wrap; align-items: center; gap: var(--jsal-space-8); pointer-events: none; }
-.pal > * { pointer-events: auto; }
-.pal .icon-btn { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgb(255 255 255 / 0.2); border-radius: var(--jsal-radius-lg); background: rgb(17 19 24 / 0.72); color: #ece6d6; cursor: pointer; backdrop-filter: blur(6px); transition: background var(--jsal-quick) ease; }   /* style: allow (controls on the pen's picture, the same in both themes) */
-.pal .icon-btn:hover { background: rgb(17 19 24 / 0.9); }   /* style: allow (on the picture) */
-.pal .icon-btn.go { border-color: var(--jsal-fill); background: var(--jsal-fill); color: var(--jsal-on-fill); }
-.pal .icon-btn:disabled { opacity: 0.6; cursor: default; }
-.pal .icon-btn:focus-visible { outline: 2px solid var(--jsal-fill); outline-offset: 2px; }
+.pal { position: absolute; left: var(--jsal-space-12); bottom: var(--jsal-space-12); display: inline-flex; align-items: center; gap: var(--jsal-space-4); max-width: calc(100% - var(--jsal-space-24)); padding: var(--jsal-space-4); border: 1px solid rgb(255 255 255 / 0.14); border-radius: var(--jsal-radius-lg); background: rgb(17 19 24 / 0.72); color: #ece6d6; backdrop-filter: blur(8px); }   /* style: allow (one bar of controls on the pen's picture, the same in both themes) */
+.pal .icon-btn { display: grid; place-items: center; flex: none; width: 36px; height: 36px; padding: 0; border: 0; border-radius: var(--jsal-radius); background: transparent; color: inherit; cursor: pointer; transition: background var(--jsal-quick) ease; }
+.pal .icon-btn:hover { background: rgb(255 255 255 / 0.1); }   /* style: allow (on the picture) */
+.pal .icon-btn.go { color: var(--jsal-fill); }
+.pal .icon-btn:disabled { opacity: 0.5; cursor: default; }
+.pal .icon-btn:focus-visible { outline: 2px solid var(--jsal-fill); outline-offset: 0; }
 .pal .icon-btn svg { width: 20px; height: 20px; }
-.pal figcaption.on-pen { margin: 0 0 0 var(--jsal-space-4); padding: var(--jsal-space-4) var(--jsal-space-12); border: 0; border-radius: var(--jsal-radius); background: rgb(17 19 24 / 0.72); color: #ece6d6; font-size: 13px; }   /* style: allow (on the picture) */
+.pal figcaption.on-pen { margin: 0; padding: 0 var(--jsal-space-12) 0 var(--jsal-space-8); border: 0; border-left: 1px solid rgb(255 255 255 / 0.14); color: inherit; font-size: 13px; line-height: 1.3; }   /* style: allow (on the picture) */
+@media (pointer: coarse) { .pal .icon-btn { width: 44px; height: 44px; } }
 /* with scripts the pen shows each form and the line under the buttons names it, so the row of names isn't needed */
 .play ol { display: none; }
 .family.play figcaption { margin-top: var(--jsal-space-12); padding-top: 0; border-top: 0; }
 @media (max-width: 520px) {
   /* the pen comes straight after the words, its controls just under it so they never cover the pal */
   .pal { position: static; margin-top: var(--jsal-space-12); }
-  .pal figcaption.on-pen { margin: 0; padding: 0; background: none; color: var(--jsal-muted); }
   .stage:has(.family) .say { display: contents; }
   .stage:has(.family) .say > div { order: 1; }
   .stage:has(.family) .win.pen { order: 2; }
