@@ -180,7 +180,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .win.pen canvas { display: block; width: 100%; max-width: 880px; height: auto; aspect-ratio: 220 / 100; margin-inline: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); image-rendering: pixelated; }
 /* the pen's controls sit on it, bottom left: icon buttons (each named for screen readers and on hover) and the line
    saying what just happened, on a dark glass the same in both themes, as they sit on the picture */
-.win.pen { position: relative; }
+.win.pen { position: relative; max-width: 880px; margin-inline: auto; }   /* as wide as its picture, so the controls sit in the picture's corner */
 .pal { position: absolute; left: var(--jsal-space-12); bottom: var(--jsal-space-12); display: inline-flex; align-items: center; gap: var(--jsal-space-4); max-width: calc(100% - var(--jsal-space-24)); padding: var(--jsal-space-4); border: 1px solid rgb(255 255 255 / 0.14); border-radius: var(--jsal-radius-lg); background: rgb(17 19 24 / 0.72); color: #ece6d6; backdrop-filter: blur(8px); }   /* style: allow (one bar of controls on the pen's picture, the same in both themes) */
 .pal .icon-btn { display: grid; place-items: center; flex: none; width: 36px; height: 36px; padding: 0; border: 0; border-radius: var(--jsal-radius); background: transparent; color: inherit; cursor: pointer; transition: background var(--jsal-quick) ease; }
 .pal .icon-btn:hover { background: rgb(255 255 255 / 0.1); }   /* style: allow (on the picture) */
