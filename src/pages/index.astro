@@ -187,7 +187,8 @@ p { text-wrap: pretty; }
    control in the picture (an unseen mark laid exactly over the drawn one), presses it, and its state fades in. */
 .st { position: absolute; inset: 0; opacity: 0; transition: opacity var(--jsal-settle); }
 .st.on { opacity: 1; }
-.spot { position: absolute; pointer-events: none; }
+.spot { position: absolute; pointer-events: none; border-radius: var(--jsal-radius-lg); transition: box-shadow var(--jsal-quick) ease; }
+.spot.over { box-shadow: inset 0 0 0 1px var(--jsal-hover-line); }   /* an answer under the pointer, as the quiz shows it */
 .cursor { position: absolute; left: 0; top: 0; z-index: 2; width: 26px; height: 26px; pointer-events: none; opacity: 0; translate: var(--cx, 50%) var(--cy, 50%); transition: translate 0.55s cubic-bezier(0.45, 0, 0.2, 1), opacity var(--jsal-quick) ease; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.45)); }   /* style: allow (the home pictures' pointer gliding to a control) */
 .cursor.on { opacity: 1; }
 .cursor svg { display: block; width: 100%; height: 100%; transition: scale 0.12s ease; transform-origin: 3px 2px; }   /* style: allow (the press) */
@@ -342,7 +343,7 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
                 {Array.from({ length: SPOTS[t.id].vary.includes(piece) ? SPOTS[t.id].states : 1 }, (_, k) => ["light", "dark"].map((theme) => (
                   <img class={`${theme === "light" ? "lt" : "dk"}${k ? " st" : ""}`} data-state={k || undefined} src={v(`/img/home/${t.id}-${piece}${k ? `-s${k}` : ""}-${theme}.webp`)} alt="" width={w} height={h} loading={i === 0 && !k ? "eager" : "lazy"} decoding="async">
                 )))}
-                {SPOTS[t.id].spots.filter((sp) => sp.piece === piece).map((sp) => <span class="spot" aria-hidden="true" data-state={sp.state ?? undefined} style={`left:${sp.x}%;top:${sp.y}%;width:${sp.w}%;height:${sp.h}%`}></span>)}
+                {SPOTS[t.id].spots.filter((sp) => sp.piece === piece).map((sp) => <span class="spot" aria-hidden="true" data-state={sp.state ?? undefined} data-hover={sp.hover ?? undefined} style={`left:${sp.x}%;top:${sp.y}%;width:${sp.w}%;height:${sp.h}%`}></span>)}
               </span>
             ))}
           </div>
@@ -419,7 +420,8 @@ document.getElementById('y').textContent = new Date().getFullYear();
   // The demo: when a tool's stage shows (on a screen wide enough for its pictures, with motion welcome), a pointer
   // glides to each control in its picture in turn and presses it, and the picture shows that state; it ends back on
   // the first, in about five seconds, inside the tour's turn. Pause stops it; a new tool starts its own.
-  const STEPS = { cms: [1], ir: [1, 2, 0], cp: [1, 0], ri: [1, 3, 4, 0] };
+  // a step is a state to press, or 'over N' to rest the pointer on the quiz's answer N first
+  const STEPS = { cms: ['over 1', 'over 3', 'over 2', 1], ir: [1, 2, 0], cp: [1, 0], ri: [1, 3, 4, 0] };
   const calm = matchMedia('(prefers-reduced-motion: reduce)'), demoRoom = matchMedia('(min-width: 700px)');
   let run = 0;
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -448,21 +450,26 @@ document.getElementById('y').textContent = new Date().getFullYear();
     if (stopped()) return;
     cursor.classList.add('on');
     for (const n of steps) {
-      const mark = marks.find((m) => m.dataset.state === String(n));
+      const over = typeof n === 'string' ? n.split(' ')[1] : null;
+      const mark = over !== null ? marks.find((m) => m.dataset.hover === over) : marks.find((m) => m.dataset.state === String(n));
       if (!mark) continue;
       goTo(mark);
-      await wait(600);
+      await wait(over !== null ? 450 : 600);
+      marks.forEach((m) => m.classList.toggle('over', m === mark));
       if (stopped()) break;
+      if (over !== null) { await wait(350); continue; }
       cursor.classList.add('down');
       show(n);
+      marks.forEach((m) => m.classList.remove('over'));   // the new state is a new screen
       await wait(180);
       cursor.classList.remove('down');
       await wait(450);
       if (stopped()) break;
     }
     cursor.classList.remove('on', 'down');
+    marks.forEach((m) => m.classList.remove('over'));
     // a demo that ends away from the first state (the quiz on its second question) holds there a moment first
-    if (steps[steps.length - 1] !== 0) await wait(1800);
+    if (steps[steps.length - 1] !== 0) await wait(1200);
     if (mine !== run) return;
     show(0);
   };

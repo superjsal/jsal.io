@@ -87,8 +87,11 @@ for (const theme of ['light', 'dark']) {
     if (i === 1) break;
     const answer = page.locator('.qz .qz-opt').first();
     if (theme === 'light') {
-      const b = await answer.boundingBox(), words = (await answer.locator('b, strong, span').first().textContent().catch(() => '')) || '';
-      spots.cms.spots.push({ piece: 'quiz', state: i + 1, label: `Pick: ${words.trim()}`, x: share(b.x - q.x, q.width), y: share(b.y - q.y, q.height), w: share(b.width, q.width), h: share(b.height, q.height) });
+      // every answer is marked, so the pointer can look over them before it picks the first
+      for (const [n, opt] of (await page.locator('.qz .qz-opt').all()).entries()) {
+        const b = await opt.boundingBox(), words = (await opt.locator('b, strong, span').first().textContent().catch(() => '')) || '';
+        spots.cms.spots.push({ piece: 'quiz', hover: n, ...(n ? {} : { state: i + 1 }), label: `${n ? 'Look at' : 'Pick'}: ${words.trim()}`, x: share(b.x - q.x, q.width), y: share(b.y - q.y, q.height), w: share(b.width, q.width), h: share(b.height, q.height) });
+      }
     }
     await answer.click();
     await page.waitForTimeout(900);

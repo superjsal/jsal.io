@@ -122,10 +122,38 @@
   "spots": [
    {
     "piece": "quiz",
+    "hover": 0,
     "state": 1,
     "label": "Pick: A site for my business or work",
     "x": 4.76,
     "y": 46.43,
+    "w": 44.76,
+    "h": 20.47
+   },
+   {
+    "piece": "quiz",
+    "hover": 1,
+    "label": "Look at: An online store",
+    "x": 50.48,
+    "y": 46.43,
+    "w": 44.76,
+    "h": 20.47
+   },
+   {
+    "piece": "quiz",
+    "hover": 2,
+    "label": "Look at: A blog, newsletter or publication",
+    "x": 4.76,
+    "y": 69,
+    "w": 44.76,
+    "h": 20.47
+   },
+   {
+    "piece": "quiz",
+    "hover": 3,
+    "label": "Look at: Something custom",
+    "x": 50.48,
+    "y": 69,
     "w": 44.76,
     "h": 20.47
    }
