@@ -216,7 +216,7 @@ def game_tip(lines):
     return out
 
 
-def tips_for(ids):
+def tips_for(ids, have=()):
     """{item id: tooltip lines}. Blizzard's page for each worn item is fetched once, when the keys are set, and kept
     as it came in private/blizzard-items/ (never committed); the lines are worked out from those copies on every
     run, so a change to how they're read needs no new request. The lines themselves go in src/data/item-tips.json,
@@ -226,7 +226,8 @@ def tips_for(ids):
     known, waiting = table('item-tips.json'), 0
     for item in ids:
         copy = raw / f'{item}.json'
-        if not copy.exists() and auth():
+        # an item whose tooltip the game itself gave is never asked for: Blizzard has no page for half of them
+        if not copy.exists() and item not in have and auth():
             body = ask(f'{API}/item/{item}?{NS}', auth())
             if body: copy.write_bytes(body); print(f'Items: fetched {item}.')
             else: print(f'Items: Blizzard gave nothing for item {item} ({why[0]}).')
@@ -238,9 +239,9 @@ def tips_for(ids):
 
 items = {i['slot']: i for i in (worn.get('items') or {}).values() if i.get('name')}
 worn_ids = [i['id'] for i in items.values() if i.get('id')]
-icons, tips = icons_for(worn_ids), tips_for(worn_ids)
 # the game's own tooltip for a worn item, when the addon has saved one, is used before Blizzard's page for the item
 own = {i['id']: game_tip(i['tip']) for i in items.values() if i.get('id') and isinstance(i.get('tip'), dict)}
+icons, tips = icons_for(worn_ids), tips_for(worn_ids, {k for k, v in own.items() if v})
 tips = {**tips, **{k: v for k, v in own.items() if v}}
 
 out = {
