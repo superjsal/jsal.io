@@ -433,16 +433,22 @@ footer .foot-btn { border: 0; background: none; font: inherit; cursor: pointer; 
 @media (max-width: 699px) {
   .sheet-bar, .sheet-stats, .fresh { padding-inline: var(--jsal-space-20); }
   .sheet h2 { font-size: 30px; }
-  .doll { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-8); padding: var(--jsal-space-20); }
-  .emblem { grid-column: 1 / -1; order: -1; grid-auto-flow: column; align-items: baseline; gap: var(--jsal-space-12); padding: var(--jsal-space-12); }
-  .emblem b { font-size: 40px; }
-  .emblem[data-pic] { grid-auto-flow: row; align-items: end; min-height: 0; margin-bottom: var(--jsal-space-8); aspect-ratio: 1 / 1; }
-  .emblem[data-pic="render"] { aspect-ratio: 3 / 4; --pw: 228%; --px: -59%; --py: -32%; }
-  .side.r .gear { grid-template-columns: 60px minmax(0, 1fr); text-align: left; }
-  /* a tooltip opens under its item, the width of the column */
-  .doll .gear .worn-tip { inset: calc(100% + var(--jsal-space-4)) 0 auto 0; width: auto; }
-  .side.r .gear-ico { order: 0; }
-  .weapons { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-8); }
+  /* on a phone the sheet is the game's own character window: the icons down both sides of the character and the
+     weapons in a row under her. An item's name is in its tooltip, which a tap opens beside the icon. */
+  .doll { container-type: inline-size; grid-template-columns: 60px minmax(0, 1fr) 60px; gap: var(--jsal-space-12); padding: var(--jsal-space-20); }
+  .doll .gear, .side.r .gear { grid-template-columns: 60px; }
+  .doll .gear > span:not([class]) { position: absolute; overflow: hidden; width: 1px; height: 1px; clip-path: inset(50%); white-space: nowrap; }
+  .emblem { padding: var(--jsal-space-12); }
+  .emblem b, .emblem[data-pic] b { font-size: 40px; }
+  .emblem[data-pic] { min-height: 0; }
+  /* she is sized by the frame's height here, as the frame is as tall as seven icons whatever the phone's width */
+  .emblem[data-pic="render"] img { top: -24%; left: 50%; width: auto; height: 107%; translate: -48.6% 0; }
+  .side .gear .worn-tip { top: 0; bottom: auto; left: calc(60px + var(--jsal-space-8)); width: calc(100cqi - 60px - var(--jsal-space-8)); max-width: 280px; }   /* style: allow (beside the 60px icon) */
+  .side.r .gear .worn-tip { right: calc(60px + var(--jsal-space-8)); left: auto; }   /* style: allow (beside the 60px icon) */
+  .side .gear:nth-child(n + 5) .worn-tip { top: auto; bottom: 0; }
+  .weapons { position: relative; grid-template-columns: repeat(3, 60px); justify-content: center; padding-top: var(--jsal-space-16); }
+  .weapons .gear { position: static; }
+  .weapons .gear .worn-tip { inset: auto 0 100% 0; width: auto; }
   .jr { gap: var(--jsal-space-12); }
   .tid, .jr-box { padding: var(--jsal-space-20); }
   .tid { min-height: 136px; }

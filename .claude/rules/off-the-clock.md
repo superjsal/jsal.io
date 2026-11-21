@@ -24,6 +24,11 @@ paths:
     icon an item has. A slot with no icon yet shows a diamond in the quality's colour. The icon is shown at its own
     56 pixels and the sheet carries "Item icons © Blizzard Entertainment" whenever one is shown. The gear columns
     are `.side`, not `.slots`, which is the Backpack's.
+  - **On phones (under 700px) the sheet is the game's character window** (John, 20 Nov 2026: "Build A", of two
+    mockups; stacked rows made the sheet three screens tall): the icons down both sides of her, the weapons in a
+    row under, no names. A name is in its tooltip, which a tap opens beside the icon (above the weapons), never
+    wider than the sheet. The names stay in the page for screen readers. She is sized by the frame's height
+    there, as the frame is seven icons tall at any width.
   - **Under it, "The journey so far"** (John: "I also like the misc stats... as fun tidbits of my journey", "should
     be more of a fun layout"): six tidbit tiles in tints, each a total, what it counts and a line worked out from
     the journal itself (days played, jumps an hour, time between deaths, marathons walked, foes for each death,
