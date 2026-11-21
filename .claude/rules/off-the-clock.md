@@ -54,7 +54,13 @@ paths:
   - **Where the data comes from:** `python -I .github/scripts/character.py [name] [class]` reads the journal jsal.ui
     keeps in the game's SavedVariables on John's PC and writes that file. The game only writes its file at logout
     or a reload, and the site only changes when the new JSON is committed, so the page is as fresh as the last run;
-    it says the date. Nothing runs it automatically yet.
+    it says the date. **It runs by itself** (John, 21 Nov 2026: "push to main"): the Windows task "jsal.io character
+    update" runs `private\character-auto.ps1` daily at 11 PM and 20 minutes after John logs on (catching up if the
+    PC was off). In its own worktree that follows main (`C:\Users\JSAL\jsal-io-character`), it skips while WoW is
+    open, runs the exporter, and when the character's data or pictures changed commits only those (as superjsal,
+    "Off the clock: Vizdenia as of <date>") and pushes straight to `main`, retrying once if `main` moved; each run
+    is logged to `private\character-auto.log`. `-DryRun` shows what it would commit. These are the only automatic
+    pushes to `main` besides the nightly publish, so a ship merges `origin/main` into `staging` first as usual.
   - **Only a fixed list leaves the PC** (the `out` table in the script): never guildmates' names (the journal's
     "guild" entries are skipped), chat, gold or the account's name. The guild's own name is shown; John can drop it.
     The class isn't in the journal, so it's an argument.
