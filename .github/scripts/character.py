@@ -192,7 +192,8 @@ def tips_for(ids):
             else: print(f'Items: Blizzard gave nothing for item {item} ({why[0]}).')
         if copy.exists(): known[str(item)] = tip(json.loads(copy.read_text(encoding='utf-8')))
         elif str(item) not in known: waiting += 1
-    if waiting: print(f'Items: {waiting} worn item(s) have no tooltip yet. Set the two Blizzard keys in this terminal and run again to fetch them.')
+    if waiting and auth(): print(f'Items: {waiting} worn item(s) have no tooltip: Blizzard has no page for them. They show their name and slot.')
+    elif waiting: print(f'Items: {waiting} worn item(s) have no tooltip yet. Set the two Blizzard keys in this terminal and run again to fetch them.')
     table('item-tips.json', known)
     return {i: known[str(i)] for i in ids if known.get(str(i))}
 
