@@ -75,7 +75,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
    part, with its window from the game */
 /* The page's promise leads, at the size of every page's title, with what jsal.ui is and how to get it beside it;
    under it the list and the stage */
-.hello { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: var(--jsal-space-24) var(--jsal-space-48); align-items: center; margin-top: var(--jsal-page-top); }
+.hello { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: var(--jsal-space-24) var(--jsal-space-48); align-items: start; margin-top: var(--jsal-page-top); }
 .hello h1 { margin: 0; font: 700 46px/1.05 var(--f); letter-spacing: -0.02em; }
 .hello h1 em { font-style: normal; color: var(--jsal-accent); }
 .lede { margin: 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.5; }
@@ -148,6 +148,14 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .play ol img { display: none; }
 .play li + li::before { bottom: 6px; }
 .play li[aria-current] { color: var(--jsal-selected-ink); }
+/* On a phone the four steps are too long for one row: two rows of two, each name whole, the arrows dropped */
+@media (max-width: 520px) {
+  .play ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--jsal-space-8); }
+  .play li { justify-items: start; padding: var(--jsal-space-8) var(--jsal-space-12); border-radius: var(--jsal-radius); background: var(--jsal-surface); text-align: left; }
+  .play li + li::before { display: none; }
+  .play li[aria-current] { background: var(--jsal-selected-bg); box-shadow: inset 0 0 0 1px var(--jsal-selected-ring); }
+  .pal canvas { width: 100%; max-width: 256px; height: auto; aspect-ratio: 1; }
+}
 .family figcaption { margin-top: var(--jsal-space-12); padding-top: var(--jsal-space-12); border-top: 1px solid var(--jsal-line-hi); color: var(--jsal-muted); font-size: 13px; }
 .stage.side .win { grid-column: 2; }
 .stage:not(.side) .win { grid-column: 1 / -1; }
