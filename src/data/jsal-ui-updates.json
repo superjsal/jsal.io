@@ -1,5 +1,30 @@
 [
   {
+    "version": "0.3.61",
+    "date": "2026-11-22",
+    "restart": false,
+    "changes": [
+      {"kind": "new", "part": "Professions", "text": "A Craft button on the step you’re on makes its crafts from the road’s card."},
+      {"kind": "new", "part": "Professions", "text": "A + on each step down the road puts that step alone on your shopping list."},
+      {"kind": "new", "part": "Gear plan", "text": "An item’s tooltip says how much better it is for you, under jsal.ui’s own heading."},
+      {"kind": "new", "part": "Shopping list", "text": "An × at the end of a row you added takes it off."},
+      {"kind": "better", "part": "Shopping list", "text": "A material you can make yourself is listed to make, “make 18”, with how many you have."},
+      {"kind": "better", "part": "Shopping list", "text": "Vendor prices are what that vendor charges you, and leather you hold makes the leather you’re short of."},
+      {"kind": "better", "part": "Professions", "text": "The road names a trainer who’ll teach you the step, in every profession."},
+      {"kind": "better", "part": "Gear plan", "text": "“Best for you” goes to the upgrade that adds the most, and a piece’s percent crit or hit counts."},
+      {"kind": "better", "part": "Gear plan", "text": "A unique ring or trinket is offered for one slot of the pair."},
+      {"kind": "better", "part": "Training", "text": "A weapon master lists only the weapon skills he teaches."},
+      {"kind": "better", "part": "Build Planner", "text": "A new build takes a name no other build has, and a greyed Delete says why."},
+      {"kind": "better", "part": "Dashboard", "text": "The Gear plan, Dungeon guide and Crafting profit fit a small screen."},
+      {"kind": "better", "part": "Quest tags", "text": "A RestedXP step whose new quest has no tag shows the one for the quest it has you do."},
+      {"kind": "fixed", "part": "Professions", "text": "The road goes the cheapest way at auction prices, whatever’s in your bags.", "thanks": "cloudy2k/frickin packet"},
+      {"kind": "fixed", "part": "Professions", "text": "The road’s shopping buttons no longer double what’s listed."},
+      {"kind": "fixed", "part": "Professions", "text": "The road keeps the step you’re on and lets you finish it."},
+      {"kind": "fixed", "part": "Gear plan", "text": "The source chips stay inside their column."},
+      {"kind": "fixed", "part": "Home", "text": "The New in strip’s first line fits."}
+    ]
+  },
+  {
     "version": "0.3.60",
     "date": "2026-11-21",
     "restart": false,
