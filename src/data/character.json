@@ -1,19 +1,19 @@
 {
  "name": "Vizdenia",
  "class": "Hunter",
- "level": 45,
+ "level": 46,
  "guild": "retail too hard",
  "since": "2026-11-08",
  "updated": "2026-11-22",
- "lastZone": "Stranglethorn Vale",
- "lastSeen": "2026-11-21",
+ "lastZone": "Riverglades",
+ "lastSeen": "2026-11-22",
  "stats": {
-  "hours": 145,
-  "foes": 5388,
-  "quests": 609,
-  "deaths": 36,
-  "miles": 1172,
-  "jumps": 26041
+  "hours": 149,
+  "foes": 5580,
+  "quests": 648,
+  "deaths": 37,
+  "miles": 1235,
+  "jumps": 27162
  },
  "levelMinutes": [
   26,
@@ -60,9 +60,28 @@
   767,
   682,
   279,
-  226
+  413,
+  48
  ],
  "events": [
+  {
+   "kind": "loot",
+   "text": "New blue: Dunston's Ogre Duster",
+   "date": "2026-11-22",
+   "pal": null
+  },
+  {
+   "kind": "level",
+   "text": "Reached level 46",
+   "date": "2026-11-22",
+   "pal": null
+  },
+  {
+   "kind": "death",
+   "text": "Died in Stranglethorn Vale",
+   "date": "2026-11-22",
+   "pal": null
+  },
   {
    "kind": "level",
    "text": "Reached level 45",
@@ -80,24 +99,6 @@
    "text": "Bolt found a little old key in Stranglethorn Vale",
    "date": "2026-11-21",
    "pal": "stormcub"
-  },
-  {
-   "kind": "pet",
-   "text": "Bolt found an acorn in Stranglethorn Vale",
-   "date": "2026-11-21",
-   "pal": "stormcub"
-  },
-  {
-   "kind": "death",
-   "text": "Died in Stranglethorn Vale",
-   "date": "2026-11-21",
-   "pal": null
-  },
-  {
-   "kind": "loot",
-   "text": "New blue: Purified Ring",
-   "date": "2026-11-21",
-   "pal": null
   }
  ],
  "zones": [
@@ -107,7 +108,7 @@
   ],
   [
    "Stranglethorn Vale",
-   13
+   14
   ],
   [
    "Ironforge",
@@ -119,18 +120,18 @@
   ],
   [
    "Riverglades",
-   7
+   10
   ]
  ],
  "professions": [
   [
    "Skinning",
-   261,
+   265,
    300
   ],
   [
    "First Aid",
-   232,
+   248,
    300
   ],
   [
@@ -147,20 +148,20 @@
  "pet": {
   "name": "Chicago",
   "family": "Cat",
-  "level": 44
+  "level": 45
  },
  "spells": [
   [
    "Arcane Shot",
-   5118
+   5286
   ],
   [
    "Hunter's Mark",
-   3967
+   4149
   ],
   [
    "Summon Hawk",
-   1345
+   1513
   ]
  ],
  "gear": {
@@ -190,7 +191,7 @@
      "t": "+11 Stamina"
     },
     {
-     "t": "Durability 50 / 50"
+     "t": "Durability 45 / 50"
     },
     {
      "t": "Requires Level 36"
@@ -254,7 +255,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 60 / 60"
+     "t": "Durability 55 / 60"
     },
     {
      "t": "Requires Level 28"
@@ -323,7 +324,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 100 / 100"
+     "t": "Durability 93 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -356,7 +357,7 @@
      "t": "+5 Spirit"
     },
     {
-     "t": "Durability 30 / 30"
+     "t": "Durability 24 / 30"
     }
    ]
   },
@@ -390,7 +391,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 30 / 30"
+     "t": "Durability 27 / 30"
     },
     {
      "t": "Requires Level 32"
@@ -428,7 +429,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 35 / 35"
+     "t": "Durability 33 / 35"
     }
    ]
   },
@@ -465,12 +466,12 @@
      "tone": "green"
     },
     {
-     "t": "Durability 75 / 75"
+     "t": "Durability 71 / 75"
     }
    ]
   },
   "feet": {
-   "name": "Excelsior Boots",
+   "name": "Wanderlust Boots",
    "quality": "uncommon",
    "icon": "132541.jpg",
    "tip": [
@@ -489,13 +490,13 @@
      "t": "77 Armor"
     },
     {
-     "t": "+7 Strength"
+     "t": "+5 Strength"
     },
     {
-     "t": "+9 Agility"
+     "t": "+10 Agility"
     },
     {
-     "t": "Durability 45 / 45"
+     "t": "Durability 42 / 45"
     }
    ]
   },
@@ -616,7 +617,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 100 / 100"
+     "t": "Durability 96 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -654,7 +655,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 75 / 75"
+     "t": "Durability 63 / 75"
     },
     {
      "t": "Requires Level 43"
@@ -674,43 +675,43 @@
  "attributes": [
   [
    "Health",
-   1902
+   1942
   ],
   [
    "Mana",
-   2040
+   2085
   ],
   [
    "Agility",
-   191
+   194
   ],
   [
    "Stamina",
-   124
+   125
   ],
   [
    "Strength",
-   60
+   59
   ],
   [
    "Intellect",
-   70
+   71
   ],
   [
    "Attack",
-   347
+   365
   ],
   [
    "Armor",
-   1181
+   1187
   ],
   [
    "Crit",
-   "9.3%"
+   "9.1%"
   ],
   [
    "Dodge",
-   "9.9%"
+   "9.7%"
   ]
  ],
  "talents": [
@@ -720,7 +721,7 @@
   ],
   [
    "Marksmanship",
-   5
+   6
   ]
  ],
  "armory": {
@@ -730,43 +731,43 @@
   "attributes": [
    [
     "Health",
-    1902
+    1942
    ],
    [
     "Mana",
-    2040
+    2085
    ],
    [
     "Agility",
-    191
+    194
    ],
    [
     "Stamina",
-    124
+    125
    ],
    [
     "Strength",
-    60
+    59
    ],
    [
     "Intellect",
-    70
+    71
    ],
    [
     "Attack",
-    347
+    365
    ],
    [
     "Armor",
-    1181
+    1187
    ],
    [
     "Crit",
-    "9.3%"
+    "9.1%"
    ],
    [
     "Dodge",
-    "9.9%"
+    "9.7%"
    ]
   ],
   "talents": [
@@ -776,7 +777,7 @@
    ],
    [
     "Marksmanship",
-    5
+    6
    ]
   ],
   "professions": [
@@ -787,7 +788,7 @@
    ],
    [
     "Skinning",
-    261,
+    265,
     300
    ],
    [
@@ -797,7 +798,7 @@
    ],
    [
     "First Aid",
-    232,
+    248,
     300
    ]
   ],
