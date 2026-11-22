@@ -14,7 +14,8 @@ import { v } from "../../lib/v.mjs";
 import { HOME_PART, GROUPS, LITTLE } from "../../lib/jsal-ui.mjs";
 import RELEASE from "../../data/jsal-ui-release.json";
 const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
-const ALL_RELEASES = "https://github.com/superjsal/jsal-ui/releases";
+// Every release's changes, on this site's updates page (src/pages/jsal-ui/updates.astro)
+const UPDATES = "/jsal-ui/updates/";
 const REPO = "https://github.com/superjsal/jsal-ui";
 // The same releases on the two addon stores, for their apps' one-click installs and updates.
 const CURSEFORGE = "https://www.curseforge.com/wow/addons/jsal-ui";
@@ -329,7 +330,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
       <div class="get">
         <a class="jsal-btn primary dl" href={RELEASES}>Download jsal.ui</a>
         <a class="jsal-btn" href="#install">How to install</a>
-        <p class="meta">Version {RELEASE.version} · free, with its code <a href={REPO}>on GitHub</a> · also on <a href={CURSEFORGE}>CurseForge</a> and <a href={WAGO}>Wago</a></p>
+        <p class="meta"><a href={UPDATES}>Version {RELEASE.version}</a> · free, with its code <a href={REPO}>on GitHub</a> · also on <a href={CURSEFORGE}>CurseForge</a> and <a href={WAGO}>Wago</a></p>
       </div>
     </div>
   </header>
@@ -400,7 +401,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
       </div>
       <div>
         <ul>{RELEASE.notes.map((n) => <li>{n}</li>)}</ul>
-        <p class="more"><a href={ALL_RELEASES}>Every release's notes</a></p>
+        <p class="more"><a href={UPDATES}>Every release's notes</a></p>
       </div>
     </section>
     <section class="band discord" aria-labelledby="discord-h">

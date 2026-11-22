@@ -1,0 +1,22 @@
+[
+  {
+    "version": "0.3.60",
+    "date": "2026-11-21",
+    "restart": false,
+    "changes": [
+      {"kind": "new", "part": "Build Planner", "text": "Learn your next points right on the next point’s card. It asks first, and says when they’re learned."},
+      {"kind": "new", "part": "Build Planner", "text": "The build you follow is tagged, and with dual spec each spec’s build is."},
+      {"kind": "better", "part": "Report a problem", "text": "Problem reports are listed at login, and /jsal reports clears them."},
+      {"kind": "fixed", "part": "Food reminder", "text": "Back after dying, it knows your Well Fed is gone.", "thanks": "Yari"},
+      {"kind": "fixed", "part": "Jsal’s Pals", "text": "The pal nearer the front is drawn in front."}
+    ]
+  },
+  {
+    "version": "0.3.59",
+    "date": "2026-11-20",
+    "restart": true,
+    "changes": [
+      {"kind": "out", "part": "Layers", "text": "The game no longer lets addons read your layer."}
+    ]
+  }
+]
