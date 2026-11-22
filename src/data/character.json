@@ -4,16 +4,16 @@
  "level": 45,
  "guild": "retail too hard",
  "since": "2026-11-08",
- "updated": "2026-11-21",
+ "updated": "2026-11-22",
  "lastZone": "Stranglethorn Vale",
  "lastSeen": "2026-11-21",
  "stats": {
-  "hours": 142,
+  "hours": 145,
   "foes": 5388,
   "quests": 609,
   "deaths": 36,
-  "miles": 1109,
-  "jumps": 25940
+  "miles": 1172,
+  "jumps": 26041
  },
  "levelMinutes": [
   26,
@@ -60,7 +60,7 @@
   767,
   682,
   279,
-  35
+  226
  ],
  "events": [
   {
@@ -107,15 +107,15 @@
   ],
   [
    "Stranglethorn Vale",
-   12
+   13
+  ],
+  [
+   "Ironforge",
+   11
   ],
   [
    "Stormwind City",
    11
-  ],
-  [
-   "Ironforge",
-   10
   ],
   [
    "Riverglades",
