@@ -311,6 +311,13 @@ footer .fg a:hover { color: var(--jsal-ink); text-decoration: underline; }
   .pic { grid-column: 2; grid-row: 1; min-height: 0; margin: 0; }
   .pic .shot.a { position: relative; left: 0; top: 0; width: 100%; }
   .pic .shot.b { display: none; }
+  /* the quiz is wide and short, too small to read in the side column: its line and button share a row, and the
+     whole quiz runs across the stage under them */
+  .stage.cms { grid-template-columns: minmax(0, 1fr); row-gap: var(--jsal-space-12); }
+  .stage.cms .say { grid-column: 1; display: flex; align-items: center; gap: var(--jsal-space-16); }
+  .stage.cms .say p { flex: 1; margin: 0; }
+  .stage.cms .say .go { margin: 0; flex: none; }
+  .stage.cms .pic { grid-column: 1; grid-row: 2; min-height: 0; }
 }
 @media (max-width: 520px) { .hello h1 { font-size: 40px; } }
 /* The tour: the chosen row's gold line fills while its turn lasts; it rests while the pointer or the keyboard is on

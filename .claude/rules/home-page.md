@@ -32,7 +32,9 @@ home page work.
   its facts wait for a wider screen). A phone held sideways (landscape, under 500px tall, 700px wide or more) gets
   the list beside the tool instead (John, 21 Nov 2026, A of two after asking impeccable): the four tools down the
   left, compact, and the chosen one beside them with its line, button and picture, the whole area about 334px tall,
-  so a tap changes the tool with no scrolling; the tour runs there, the pointer demo doesn't (the Image Resizer's
+  so a tap changes the tool with no scrolling; the CMS Picker's quiz, wide and short, was too small to read in the
+  200px side column, so there its line and button share a row and the whole quiz runs across the stage under them
+  (John, 21 Nov 2026, B of two after asking impeccable; zooming and cropping it left an empty box); the tour runs there, the pointer demo doesn't (the Image Resizer's
   sizes piece isn't shown); tapping another row opens that one (John, 21 Nov 2026, my pick A of three: it
   replaced a dock at the foot of the screen, where only the chosen tool could be read). The list and the stages are
   laid out together with `display: contents` and `order`. Off the clock is a quieter row under the list; it goes to `/play/`, the page that carries
