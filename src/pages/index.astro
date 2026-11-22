@@ -520,12 +520,20 @@ document.getElementById('y').textContent = new Date().getFullYear();
     if (focus) tabs[i].focus();
     if (document.prerendering) document.addEventListener('prerenderingchange', () => demo(stages[cur]), { once: true }); else demo(stages[i]);
   };
-  // where the list opens in place (a phone, or one held sideways), a tapped row is brought to the top of the screen
-  // with its tool open under it
+  // where the list opens in place (an upright phone), a tapped row is brought to the top of the screen with its tool
+  // open under it; on a phone held sideways the list and the tool beside it are brought into view whole, once, so
+  // later taps don't move the page
   const listed = matchMedia('(max-width: 699px)');
+  const sideways = matchMedia('(max-height: 500px) and (orientation: landscape) and (min-width: 700px)');
+  const area = document.querySelector('.pick');
   const bringUp = (i) => {
-    if (!listed.matches) return;
-    requestAnimationFrame(() => tabs[i].scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }));
+    const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    if (listed.matches) requestAnimationFrame(() => tabs[i].scrollIntoView({ behavior, block: 'start' }));
+    else if (sideways.matches) requestAnimationFrame(() => {
+      const r = area.getBoundingClientRect();
+      const gap = Math.max(0, Math.min(8, (innerHeight - r.height) / 2));
+      if (r.top < 0 || r.bottom > innerHeight) scrollTo({ top: scrollY + r.top - gap, behavior });
+    });
   };
   tabs.forEach((t, i) => {
     t.setAttribute('role', 'tab'); t.setAttribute('aria-controls', stages[i].id);
