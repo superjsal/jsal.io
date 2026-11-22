@@ -1,11 +1,11 @@
 {
-  "version": "0.3.60",
-  "date": "2026-11-21",
+  "version": "0.3.61",
+  "date": "2026-11-22",
   "notes": [
-    "Build Planner: Learn your next points right on the next point's card. It asks first, and says when they're learned.",
-    "Build Planner: the build you follow is tagged, and with dual spec each spec's build is.",
-    "Food reminder: back after dying takes your Well Fed. Thanks, Yari, for finding it.",
-    "Jsal's Pals: the pal nearer the front is drawn in front.",
+    "Professions: the road goes the cheapest way at auction prices, whatever's in your bags. Thanks, cloudy2k/frickin packet, for finding it.",
+    "Professions: a Craft button on the step you're on, and a + to put any step on your shopping list.",
+    "Shopping list: a material you can make yourself is listed to make, at what each vendor charges you.",
+    "Gear plan: item tooltips say how much better a piece is, and a unique ring or trinket is offered once.",
     "And a few smaller fixes."
   ]
 }
