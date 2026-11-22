@@ -33,8 +33,9 @@ function check(list) {
       const line = `${name}, change ${j + 1}`;
       for (const f of ['kind', 'part', 'text']) if (typeof c[f] !== 'string' || !c[f].trim()) throw new Error(`${where}: ${line} has no "${f}"`);
       if (!keys.includes(c.kind)) throw new Error(`${where}: ${line}'s kind "${c.kind}" isn't one of ${keys.join(', ')}`);
-      const extra = Object.keys(c).filter((f) => !['kind', 'part', 'text', 'thanks'].includes(f));
+      const extra = Object.keys(c).filter((f) => !['kind', 'part', 'title', 'text', 'thanks'].includes(f));
       if (extra.length) throw new Error(`${where}: ${line} has a field the page doesn't know: ${extra.join(', ')}`);
+      if (c.title !== undefined && (typeof c.title !== 'string' || !c.title.trim())) throw new Error(`${where}: ${line}'s title is empty`);
       if (c.thanks !== undefined && (typeof c.thanks !== 'string' || !c.thanks.trim())) throw new Error(`${where}: ${line}'s thanks is empty`);
     });
     if (i && !newer(list[i - 1].version, r.version)) throw new Error(`${where}: not newest first: ${r.version} comes after ${list[i - 1].version}`);

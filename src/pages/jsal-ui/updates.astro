@@ -97,7 +97,7 @@ h1 em { font-style: normal; color: var(--jsal-accent); }
       </div>
       <ul class="changes">
         {r.changes.map((c) => (
-        <li><span class={`k ${c.kind}`}>{c.word}</span><span class="part">{c.part}</span><span class="w">{c.text}{c.thanks && <span class="thanks">Thanks, {c.thanks}</span>}</span></li>
+        <li><span class={`k ${c.kind}`}>{c.word}</span><span class="part">{c.part}</span><span class="w">{c.title && <strong class="t">{c.title}. </strong>}{c.text}{c.thanks && <span class="thanks">Thanks, {c.thanks}</span>}</span></li>
         ))}
       </ul>
     </section>

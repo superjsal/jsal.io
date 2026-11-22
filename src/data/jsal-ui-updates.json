@@ -4,24 +4,24 @@
     "date": "2026-11-22",
     "restart": false,
     "changes": [
-      {"kind": "new", "part": "Professions", "text": "A Craft button on the step you’re on makes its crafts from the road’s card."},
-      {"kind": "new", "part": "Professions", "text": "A + on each step down the road puts that step alone on your shopping list."},
-      {"kind": "new", "part": "Gear plan", "text": "An item’s tooltip says how much better it is for you, under jsal.ui’s own heading."},
-      {"kind": "new", "part": "Shopping list", "text": "An × at the end of a row you added takes it off."},
-      {"kind": "better", "part": "Shopping list", "text": "A material you can make yourself is listed to make, “make 18”, with how many you have."},
-      {"kind": "better", "part": "Shopping list", "text": "Vendor prices are what that vendor charges you, and leather you hold makes the leather you’re short of."},
-      {"kind": "better", "part": "Professions", "text": "The road names a trainer who’ll teach you the step, in every profession."},
-      {"kind": "better", "part": "Gear plan", "text": "“Best for you” goes to the upgrade that adds the most, and a piece’s percent crit or hit counts."},
-      {"kind": "better", "part": "Gear plan", "text": "A unique ring or trinket is offered for one slot of the pair."},
-      {"kind": "better", "part": "Training", "text": "A weapon master lists only the weapon skills he teaches."},
-      {"kind": "better", "part": "Build Planner", "text": "A new build takes a name no other build has, and a greyed Delete says why."},
-      {"kind": "better", "part": "Dashboard", "text": "The Gear plan, Dungeon guide and Crafting profit fit a small screen."},
-      {"kind": "better", "part": "Quest tags", "text": "A RestedXP step whose new quest has no tag shows the one for the quest it has you do."},
-      {"kind": "fixed", "part": "Professions", "text": "The road goes the cheapest way at auction prices, whatever’s in your bags.", "thanks": "cloudy2k/frickin packet"},
-      {"kind": "fixed", "part": "Professions", "text": "The road’s shopping buttons no longer double what’s listed."},
-      {"kind": "fixed", "part": "Professions", "text": "The road keeps the step you’re on and lets you finish it."},
-      {"kind": "fixed", "part": "Gear plan", "text": "The source chips stay inside their column."},
-      {"kind": "fixed", "part": "Home", "text": "The New in strip’s first line fits."}
+      {"kind": "new", "part": "Professions", "title": "Craft from your leveling path", "text": "The current step on your profession leveling path has a Craft button. It makes that step’s items, or as many as your materials cover."},
+      {"kind": "new", "part": "Professions", "title": "Add one step to your shopping list", "text": "Each step on your profession leveling path has a + that adds just that step’s materials to your shopping list."},
+      {"kind": "new", "part": "Gear plan", "title": "See how much better an item is", "text": "An item’s tooltip now says how much of an upgrade it is over what you’re wearing, for example “+5% better than equipped”."},
+      {"kind": "new", "part": "Shopping list", "title": "Remove a row", "text": "Rows you added yourself have an × that takes them off the list."},
+      {"kind": "better", "part": "Shopping list", "text": "Materials you can craft yourself are now listed as something to make (“make 18”), with how many you already have, instead of something to buy."},
+      {"kind": "better", "part": "Shopping list", "text": "Vendor prices now match what that vendor charges you, and leather in your bags counts toward the leather you still need."},
+      {"kind": "better", "part": "Professions", "text": "When a step needs training, your leveling path names a trainer who can teach it. This works for every profession."},
+      {"kind": "better", "part": "Gear plan", "text": "The gold “best for you” mark now goes to the biggest upgrade, and items that give percent crit or hit are scored correctly."},
+      {"kind": "better", "part": "Gear plan", "text": "A unique ring or trinket is no longer suggested for both slots at once."},
+      {"kind": "better", "part": "Training", "text": "A weapon master’s page lists only the weapon skills that trainer teaches."},
+      {"kind": "better", "part": "Build Planner", "text": "A new build always gets a name of its own, and a greyed-out Delete button explains why it can’t be used."},
+      {"kind": "better", "part": "Dashboard", "text": "The Gear plan, Dungeon guide and Crafting profit windows shrink to fit smaller screens."},
+      {"kind": "better", "part": "Quest tags", "text": "On RestedXP’s guide, a step now shows a quest tag even when the quest you pick up on it has none. It uses a quest the step has you complete."},
+      {"kind": "fixed", "part": "Professions", "text": "Fixed your profession leveling path being steered by what was in your bags. With auction prices on, it now takes the cheapest route.", "thanks": "cloudy2k/frickin packet"},
+      {"kind": "fixed", "part": "Professions", "text": "Fixed the shopping buttons on your leveling path adding the same materials twice."},
+      {"kind": "fixed", "part": "Professions", "text": "Fixed your leveling path moving on before you had finished the step you were on."},
+      {"kind": "fixed", "part": "Gear plan", "text": "Fixed the labels that show where an item comes from spilling outside their column."},
+      {"kind": "fixed", "part": "Home", "text": "Fixed the first line of the “New in” strip being cut off."}
     ]
   },
   {
@@ -29,11 +29,11 @@
     "date": "2026-11-21",
     "restart": false,
     "changes": [
-      {"kind": "new", "part": "Build Planner", "text": "Learn your next points right on the next point’s card. It asks first, and says when they’re learned."},
-      {"kind": "new", "part": "Build Planner", "text": "The build you follow is tagged, and with dual spec each spec’s build is."},
-      {"kind": "better", "part": "Report a problem", "text": "Problem reports are listed at login, and /jsal reports clears them."},
-      {"kind": "fixed", "part": "Food reminder", "text": "Back after dying, it knows your Well Fed is gone.", "thanks": "Yari"},
-      {"kind": "fixed", "part": "Jsal’s Pals", "text": "The pal nearer the front is drawn in front."}
+      {"kind": "new", "part": "Build Planner", "title": "Learn talents from the Build Planner", "text": "The card for your next talent point has a Learn button. It asks before spending the point and tells you when it’s learned."},
+      {"kind": "new", "part": "Build Planner", "title": "See which build you follow", "text": "The build you’re following is tagged, and with dual spec each spec’s build is tagged too."},
+      {"kind": "better", "part": "Report a problem", "text": "Problem reports you’ve received are listed when you log in, and /jsal reports clear removes them."},
+      {"kind": "fixed", "part": "Food reminder", "text": "Fixed the food reminder not coming back after you die and lose Well Fed.", "thanks": "Yari"},
+      {"kind": "fixed", "part": "Jsal’s Pals", "text": "Fixed pals overlapping in the wrong order. The one nearer the front is now drawn in front."}
     ]
   },
   {
@@ -41,7 +41,7 @@
     "date": "2026-11-20",
     "restart": true,
     "changes": [
-      {"kind": "out", "part": "Layers", "text": "The game no longer lets addons read your layer."}
+      {"kind": "out", "part": "Layers", "text": "The Layers feature has been removed, because the game no longer lets addons read which layer you’re on."}
     ]
   }
 ]
