@@ -9,11 +9,11 @@
  "lastSeen": "2026-11-22",
  "stats": {
   "hours": 150,
-  "foes": 5689,
+  "foes": 5690,
   "quests": 658,
   "deaths": 37,
   "miles": 1239,
-  "jumps": 27285
+  "jumps": 27286
  },
  "levelMinutes": [
   26,
@@ -61,7 +61,7 @@
   682,
   279,
   413,
-  125
+  127
  ],
  "events": [
   {
@@ -153,15 +153,15 @@
  "spells": [
   [
    "Arcane Shot",
-   5354
+   5355
   ],
   [
    "Hunter's Mark",
-   4216
+   4217
   ],
   [
    "Summon Hawk",
-   1588
+   1589
   ]
  ],
  "gear": {
@@ -324,7 +324,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 89 / 100"
+     "t": "Durability 87 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -663,7 +663,7 @@
    ]
   }
  },
- "gearDate": "2026-11-22",
+ "gearDate": "2026-11-23",
  "portrait": "/img/play/vizdenia-render.png",
  "portraitKind": "render",
  "portraitSize": [
@@ -711,7 +711,7 @@
   ],
   [
    "Dodge",
-   "9.7%"
+   "9.8%"
   ]
  ],
  "talents": [
@@ -727,7 +727,7 @@
  "armory": {
   "race": "Night Elf",
   "itemLevel": 34,
-  "updated": "2026-11-22",
+  "updated": "2026-11-23",
   "attributes": [
    [
     "Health",
@@ -767,7 +767,7 @@
    ],
    [
     "Dodge",
-    "9.7%"
+    "9.8%"
    ]
   ],
   "talents": [
