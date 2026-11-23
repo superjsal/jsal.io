@@ -1,5 +1,30 @@
 [
   {
+    "version": "0.3.62",
+    "date": "2026-11-23",
+    "restart": true,
+    "changes": [
+      {"kind": "new", "part": "Endgame", "title": "A page for level 60", "text": "A new Endgame page shows your level 60 gear set and how many pieces of it you have, what to bring to a raid night and what it costs, your raid lockouts and your long profession cooldowns."},
+      {"kind": "new", "part": "Endgame", "title": "Stock up for raid night", "text": "Raid night lists the flasks, elixirs, food and other supplies for your spec, how many you still need for the nights you choose, and what they cost. Take off anything you don’t use, and one switch keeps the rest on your shopping list."},
+      {"kind": "new", "part": "Gear plan", "title": "Plan your level 60 gear", "text": "Switch on Gear goal for 60 in Settings and the Gear plan gains an At 60 view. It shows the best piece for each slot at level 60, which ones you already wear, and which dungeons to run for the rest. You can save sets of your own."},
+      {"kind": "new", "part": "Journal", "title": "Your dungeon and raid nights", "text": "At level 60 the Journal records each night in a dungeon or raid, with a By boss tab for every boss you’ve killed. It also shows each character’s raid lockouts and long cooldowns."},
+      {"kind": "new", "part": "Dungeon guide", "title": "Every dungeon in one list", "text": "The Dungeon guide now lists every dungeon and raid down the left side by level, in place of the drop-down. A row shows when you have a quest there or a piece you starred drops there."},
+      {"kind": "new", "part": "Dungeon guide", "title": "A Trash card for each dungeon", "text": "Under a dungeon’s bosses, a Trash card lists the gear that drops from its ordinary creatures, including the dungeon set bracers and belts."},
+      {"kind": "better", "part": "Dungeon guide", "text": "A boss’s card now shows its four best drops for you with how often each one drops. The rest are small pictures underneath, and pointing at one shows the item."},
+      {"kind": "better", "part": "Dungeon guide", "text": "The Dungeon guide now opens faster and uses about a third of what it did, because it only draws the bosses you can see."},
+      {"kind": "new", "part": "Quest rewards", "title": "See which quest rewards are upgrades", "text": "When a quest lets you choose a reward, each one that’s an upgrade for your spec has an arrow, and the best has a gold one."},
+      {"kind": "new", "part": "Flight bar", "title": "Flight times on the flight map", "text": "Pointing at a place on the flight map now shows how long the flight takes."},
+      {"kind": "better", "part": "Flight bar", "text": "A route you’ve flown once is now timed from your own flight, and your guildmates’ flights help time routes you haven’t flown."},
+      {"kind": "fixed", "part": "Flight bar", "text": "Fixed flights that pass through other towns showing a time up to a minute too long. A first flight on a long route can still be a few seconds out.", "thanks": "cloudy2k/frickin packet"},
+      {"kind": "better", "part": "Gear plan", "text": "When you pick a slot, its list of upgrades now starts with the best one for you, even if you can’t wear it yet."},
+      {"kind": "better", "part": "Gear plan", "text": "The Gear plan now opens faster, and its stat weights, level 60 sets and raid supplies are WoWSims’ newest."},
+      {"kind": "better", "part": "Daily games", "text": "Your guild’s results now show one row for each player, not one for each of their characters, once they’re on this version."},
+      {"kind": "better", "part": "Jsal’s Pals", "text": "Your pal on screen can now be dragged right up to each edge."},
+      {"kind": "fixed", "part": "Jsal’s Pals", "text": "Fixed a sleeping pal turning to follow your pointer."},
+      {"kind": "fixed", "part": "Dashboard", "text": "Fixed the Gear plan, Dungeon guide and Crafting profit windows opening against the top of a smaller screen. They now open in the middle."}
+    ]
+  },
+  {
     "version": "0.3.61",
     "date": "2026-11-22",
     "restart": false,
