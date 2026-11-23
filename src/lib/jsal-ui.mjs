@@ -26,7 +26,7 @@ const CLIPS = {
   crafts: clip("orders", 836, 770, 12, 40, "Guild Crafts: orders from guildmates to make, the ones you asked for, and where each one stands."),
 };
 
-export const HOME = shot("home", 1319, 806, "jsal.ui's Home for a level 40 hunter: the XP bar and what level 41 brings, a trainer visit ready now, and cards for the build, gear, professions, dungeons, the guild, today's games and the journal.", true);
+export const HOME = shot("home", 1318, 877, "jsal.ui's Home for a level 46 hunter: the XP bar and what level 47 brings, what's new in this version, a trainer visit ready now, and cards for the build, gear, professions, dungeons, the guild, today's games and the journal.", true);
 
 // Home as a part of its own, first in the jsal.ui page's list
 export const HOME_PART = { key: "home", when: "any", label: "Home", name: "Your whole character in one window", line: "What your next ding gets you, what's waiting at the trainer, and where each of your plans stands.", points: ["Opens with /jsal or the minimap button", "Every part has its own toggle in Settings", "Free, with its code on GitHub"], shot: HOME };
@@ -38,9 +38,9 @@ export const GROUPS = [
     key: "plan", name: "Plan", line: "Know what's next at every level.",
     parts: [
       { key: "training", when: "leveling", label: "Training Planner", name: "Every trainer visit, planned to 60", line: "Know before you hearth: what's ready at the trainer, what it'll cost you and where the nearest one is.", points: ["Spells, pet and weapon training", "Your road to 60, visit by visit", "A pin on the nearest trainer"],
-        shot: shot("training", 1323, 879, "The Training Planner: 18 spells ready for a level 40 hunter with their costs, the pet's training, and the road to 60 as a line of trainer visits.", true) },
+        shot: shot("training", 1317, 878, "The Training Planner: 9 spells ready for a level 46 hunter with their costs, the pet's training, and the road to 60 as a line of trainer visits.", true) },
       { key: "build", when: "leveling", label: "Build Planner", name: "Know where every point goes", line: "Follow a ready-made leveling build or theorycraft your own, and see what your next point does.", points: ["A leveling build for every class", "Your next point, and what it does", "Share a build as a line of text"],
-        shot: shot("build", 1319, 879, "The Build Planner following a Beast Mastery leveling build: the plan level by level, with the next point, Lethal Attacks, described on the right.", true) },
+        shot: shot("build", 1317, 877, "The Build Planner following a Beast Mastery leveling build: the plan level by level, with the next point, Careful Aim, described on the right.", true) },
       { key: "gear", when: "any", label: "Gear plan", name: "Upgrades for every slot, ranked for your spec", line: "Ranked with WoWSims' stat weights, with where each piece comes from. At 60 it turns into your pre-raid BiS list.", points: ["Boss, quest, vendor or crafter", "Tweak the weights if you disagree", "Star a piece, hear it when it drops"],
         shot: shot("gear", 1238, 859, "The Gear plan: every slot with what's worn and its best upgrade near your level, and for the ranged slot a list of upgrades with the quest each comes from.") },
       { key: "dungeons", when: "any", label: "Dungeon guide", name: "Know what drops before you zone in", line: "Each boss with its top drops for you and the drop chance on each, plus what falls off the trash.", points: ["Dungeons and raids down the side, by level", "Upgrades marked for your spec", "Quests to pick up before you go in"],
@@ -66,7 +66,7 @@ export const GROUPS = [
       { key: "journal", when: "any", label: "Journal", name: "A record of every level", line: "Your character's story, written as you play: levels, deaths, loot and favourite spots.", points: ["Time, gold and XP for each level", "Boss kills and raid nights at 60", "All your alts at a glance"],
         shot: shot("journal", 1319, 885, "The Journal's summary for a level 40 hunter: time at each level as a chart, then foes defeated, miles travelled, quests, deaths and the most-used spells and places.", true) },
       { key: "games", when: "any", label: "Daily games", name: "A game a day with your guild", line: "Daily Word, Icon Guess and Pal run: same for everyone, with your guild's results side by side.", points: ["Your record and streaks", "Share a result in guild chat", "A Guild Word your GM sets"],
-        shot: shot("games", 1319, 879, "Today's games: Daily Word solved in 3, Icon Guess 10 of 10 and a Pal run time, with the guild's results below.", true) },
+        shot: shot("games", 1318, 878, "Today's games: Daily Word solved in 4, Icon Guess 9 of 10 and Pal run, with a card for the Guild Word and the guild's results beside it.", true) },
       { key: "pals", when: "any", label: "Jsal's Pals", name: "A little friend that grows with you", line: "Hatch an egg, name whatever comes out and look after it. Your questing pays for its keep.", points: ["Feed it, play, tuck it in", "It grows up, twice", "It walks along your screen"],
         // One pal's life, from the addon's own pixel art (site/img/jsal-ui/pals/): [file, name, size in the art's pixels].
         // The page plays it with the addon's own pictures: the egg hatching (hatch: ten 96-pixel frames in a row) and
