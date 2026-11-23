@@ -5,15 +5,15 @@
  "guild": "retail too hard",
  "since": "2026-11-08",
  "updated": "2026-11-22",
- "lastZone": "Riverglades",
+ "lastZone": "Krol'dok Stronghold",
  "lastSeen": "2026-11-22",
  "stats": {
-  "hours": 150,
-  "foes": 5690,
-  "quests": 658,
-  "deaths": 37,
-  "miles": 1239,
-  "jumps": 27286
+  "hours": 151,
+  "foes": 5745,
+  "quests": 671,
+  "deaths": 38,
+  "miles": 1244,
+  "jumps": 27446
  },
  "levelMinutes": [
   26,
@@ -61,9 +61,33 @@
   682,
   279,
   413,
-  127
+  187
  ],
  "events": [
+  {
+   "kind": "death",
+   "text": "Died in Krol'dok Stronghold",
+   "date": "2026-11-22",
+   "pal": null
+  },
+  {
+   "kind": "boss",
+   "text": "Defeated Slavecrusher Grox in Krol'dok Stronghold",
+   "date": "2026-11-22",
+   "pal": null
+  },
+  {
+   "kind": "pet",
+   "text": "Bolt and you are closer now: Friendly. It has learned a trick: right-click it",
+   "date": "2026-11-22",
+   "pal": "stormcub"
+  },
+  {
+   "kind": "pet",
+   "text": "Bolt is ready to grow! Press Grow in its pen to watch.",
+   "date": "2026-11-22",
+   "pal": "stormcub"
+  },
   {
    "kind": "kill",
    "text": "First kill: Twilight Forgemaster (rare elite)",
@@ -74,30 +98,6 @@
    "kind": "loot",
    "text": "New blue: Dunston's Ogre Duster",
    "date": "2026-11-22",
-   "pal": null
-  },
-  {
-   "kind": "level",
-   "text": "Reached level 46",
-   "date": "2026-11-22",
-   "pal": null
-  },
-  {
-   "kind": "death",
-   "text": "Died in Stranglethorn Vale",
-   "date": "2026-11-22",
-   "pal": null
-  },
-  {
-   "kind": "level",
-   "text": "Reached level 45",
-   "date": "2026-11-21",
-   "pal": null
-  },
-  {
-   "kind": "loot",
-   "text": "New blue: Plans: Shining Mithril Helm",
-   "date": "2026-11-21",
    "pal": null
   }
  ],
@@ -112,7 +112,7 @@
   ],
   [
    "Riverglades",
-   11
+   12
   ],
   [
    "Ironforge",
@@ -153,15 +153,15 @@
  "spells": [
   [
    "Arcane Shot",
-   5355
+   5376
   ],
   [
    "Hunter's Mark",
-   4217
+   4244
   ],
   [
    "Summon Hawk",
-   1589
+   1628
   ]
  ],
  "gear": {
@@ -191,7 +191,7 @@
      "t": "+11 Stamina"
     },
     {
-     "t": "Durability 42 / 50"
+     "t": "Durability 37 / 50"
     },
     {
      "t": "Requires Level 36"
@@ -255,7 +255,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 50 / 60"
+     "t": "Durability 44 / 60"
     },
     {
      "t": "Requires Level 28"
@@ -324,7 +324,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 87 / 100"
+     "t": "Durability 74 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -357,7 +357,7 @@
      "t": "+5 Spirit"
     },
     {
-     "t": "Durability 23 / 30"
+     "t": "Durability 19 / 30"
     }
    ]
   },
@@ -391,7 +391,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 25 / 30"
+     "t": "Durability 22 / 30"
     },
     {
      "t": "Requires Level 32"
@@ -429,7 +429,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 32 / 35"
+     "t": "Durability 28 / 35"
     }
    ]
   },
@@ -466,7 +466,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 67 / 75"
+     "t": "Durability 59 / 75"
     }
    ]
   },
@@ -496,7 +496,7 @@
      "t": "+10 Agility"
     },
     {
-     "t": "Durability 40 / 45"
+     "t": "Durability 36 / 45"
     }
    ]
   },
@@ -617,7 +617,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 96 / 100"
+     "t": "Durability 86 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -655,7 +655,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 58 / 75"
+     "t": "Durability 47 / 75"
     },
     {
      "t": "Requires Level 43"
