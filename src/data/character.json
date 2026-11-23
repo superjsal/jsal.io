@@ -4,16 +4,16 @@
  "level": 46,
  "guild": "retail too hard",
  "since": "2026-11-08",
- "updated": "2026-11-22",
- "lastZone": "Krol'dok Stronghold",
- "lastSeen": "2026-11-22",
+ "updated": "2026-11-23",
+ "lastZone": "Riverglades",
+ "lastSeen": "2026-11-23",
  "stats": {
   "hours": 151,
   "foes": 5745,
   "quests": 671,
   "deaths": 38,
-  "miles": 1244,
-  "jumps": 27446
+  "miles": 1245,
+  "jumps": 27493
  },
  "levelMinutes": [
   26,
@@ -61,9 +61,15 @@
   682,
   279,
   413,
-  191
+  211
  ],
  "events": [
+  {
+   "kind": "pet",
+   "text": "Bolt has grown into a Thundermane!",
+   "date": "2026-11-23",
+   "pal": "stormcub"
+  },
   {
    "kind": "death",
    "text": "Died in Krol'dok Stronghold",
@@ -91,12 +97,6 @@
   {
    "kind": "kill",
    "text": "First kill: Twilight Forgemaster (rare elite)",
-   "date": "2026-11-22",
-   "pal": null
-  },
-  {
-   "kind": "loot",
-   "text": "New blue: Dunston's Ogre Duster",
    "date": "2026-11-22",
    "pal": null
   }
