@@ -1,19 +1,19 @@
 {
  "name": "Vizdenia",
  "class": "Hunter",
- "level": 43,
+ "level": 46,
  "guild": "retail too hard",
  "since": "2026-11-08",
- "updated": "2026-11-20",
- "lastZone": "Badlands",
- "lastSeen": "2026-11-20",
+ "updated": "2026-11-22",
+ "lastZone": "Riverglades",
+ "lastSeen": "2026-11-22",
  "stats": {
-  "hours": 130,
-  "foes": 5104,
-  "quests": 584,
-  "deaths": 34,
-  "miles": 1005,
-  "jumps": 23533
+  "hours": 150,
+  "foes": 5690,
+  "quests": 658,
+  "deaths": 37,
+  "miles": 1239,
+  "jumps": 27286
  },
  "levelMinutes": [
   26,
@@ -58,83 +58,86 @@
   232,
   660,
   767,
-  325
+  682,
+  279,
+  413,
+  127
  ],
  "events": [
   {
-   "kind": "pet",
-   "text": "Bolt found a blue feather in Badlands",
-   "date": "2026-11-20",
-   "pal": "stormcub"
+   "kind": "kill",
+   "text": "First kill: Twilight Forgemaster (rare elite)",
+   "date": "2026-11-22",
+   "pal": null
   },
   {
    "kind": "loot",
-   "text": "New blue: Skull Splitting Crossbow",
-   "date": "2026-11-20",
+   "text": "New blue: Dunston's Ogre Duster",
+   "date": "2026-11-22",
    "pal": null
   },
   {
-   "kind": "pet",
-   "text": "Bolt found a glass marble in Desolace",
-   "date": "2026-11-20",
-   "pal": "stormcub"
-  },
-  {
-   "kind": "death",
-   "text": "Died in Feralas",
-   "date": "2026-11-20",
+   "kind": "level",
+   "text": "Reached level 46",
+   "date": "2026-11-22",
    "pal": null
   },
   {
    "kind": "death",
-   "text": "Died in Shen'dralas",
-   "date": "2026-11-20",
+   "text": "Died in Stranglethorn Vale",
+   "date": "2026-11-22",
    "pal": null
   },
   {
-   "kind": "death",
-   "text": "Died in Desolace",
-   "date": "2026-11-20",
+   "kind": "level",
+   "text": "Reached level 45",
+   "date": "2026-11-21",
+   "pal": null
+  },
+  {
+   "kind": "loot",
+   "text": "New blue: Plans: Shining Mithril Helm",
+   "date": "2026-11-21",
    "pal": null
   }
  ],
  "zones": [
   [
    "Wetlands",
-   15
-  ],
-  [
-   "Stormwind City",
-   10
-  ],
-  [
-   "Riverglades",
-   7
+   16
   ],
   [
    "Stranglethorn Vale",
-   7
+   14
+  ],
+  [
+   "Riverglades",
+   11
   ],
   [
    "Ironforge",
-   7
+   11
+  ],
+  [
+   "Stormwind City",
+   11
   ]
  ],
  "professions": [
   [
    "Skinning",
-   256,
+   265,
    300
   ],
   [
    "First Aid",
-   232,
+   248,
    300
   ],
   [
    "Leatherworking",
-   158,
-   225
+   211,
+   300
   ],
   [
    "Cooking",
@@ -145,30 +148,30 @@
  "pet": {
   "name": "Chicago",
   "family": "Cat",
-  "level": 43
+  "level": 45
  },
  "spells": [
   [
    "Arcane Shot",
-   4831
+   5355
   ],
   [
    "Hunter's Mark",
-   3702
+   4217
   ],
   [
    "Summon Hawk",
-   1137
+   1589
   ]
  ],
  "gear": {
   "head": {
-   "name": "Wild Headdress",
+   "name": "Nightscape Headband",
    "quality": "uncommon",
-   "icon": "132514.jpg",
+   "icon": "132513.jpg",
    "tip": [
     {
-     "t": "Item Level 39",
+     "t": "Item Level 41",
      "tone": "gold"
     },
     {
@@ -179,17 +182,19 @@
      "r": "Leather"
     },
     {
-     "t": "88 Armor"
+     "t": "91 Armor"
     },
     {
-     "t": "+11 Intellect"
+     "t": "+12 Agility"
     },
     {
-     "t": "Equip: +12 Spell Power.",
-     "tone": "green"
+     "t": "+11 Stamina"
     },
     {
-     "t": "Durability 45 / 50"
+     "t": "Durability 42 / 50"
+    },
+    {
+     "t": "Requires Level 36"
     }
    ]
   },
@@ -250,7 +255,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 58 / 60"
+     "t": "Durability 50 / 60"
     },
     {
      "t": "Requires Level 28"
@@ -319,7 +324,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 98 / 100"
+     "t": "Durability 87 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -352,7 +357,7 @@
      "t": "+5 Spirit"
     },
     {
-     "t": "Durability 29 / 30"
+     "t": "Durability 23 / 30"
     }
    ]
   },
@@ -382,7 +387,11 @@
      "t": "+7 Stamina"
     },
     {
-     "t": "Durability 30 / 30"
+     "t": "Enchanted: Stamina +4 and Armor +32",
+     "tone": "green"
+    },
+    {
+     "t": "Durability 25 / 30"
     },
     {
      "t": "Requires Level 32"
@@ -420,7 +429,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 33 / 35"
+     "t": "Durability 32 / 35"
     }
    ]
   },
@@ -453,21 +462,21 @@
      "t": "+6 Stamina"
     },
     {
-     "t": "Enchanted: Stamina +3 and Armor +24",
+     "t": "Enchanted: Spell Power +4 and Armor +24",
      "tone": "green"
     },
     {
-     "t": "Durability 74 / 75"
+     "t": "Durability 67 / 75"
     }
    ]
   },
   "feet": {
-   "name": "Agile Boots",
+   "name": "Wanderlust Boots",
    "quality": "uncommon",
-   "icon": "132539.jpg",
+   "icon": "132541.jpg",
    "tip": [
     {
-     "t": "Item Level 20",
+     "t": "Item Level 41",
      "tone": "gold"
     },
     {
@@ -478,20 +487,16 @@
      "r": "Leather"
     },
     {
-     "t": "53 Armor"
+     "t": "77 Armor"
     },
     {
-     "t": "+5 Agility"
+     "t": "+5 Strength"
     },
     {
-     "t": "Enchanted: Stamina +3 and Armor +24",
-     "tone": "green"
+     "t": "+10 Agility"
     },
     {
-     "t": "Durability 33 / 35"
-    },
-    {
-     "t": "Requires Level 15"
+     "t": "Durability 40 / 45"
     }
    ]
   },
@@ -612,7 +617,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 100 / 100"
+     "t": "Durability 96 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -650,7 +655,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 73 / 75"
+     "t": "Durability 58 / 75"
     },
     {
      "t": "Requires Level 43"
@@ -658,7 +663,7 @@
    ]
   }
  },
- "gearDate": "2026-11-21",
+ "gearDate": "2026-11-23",
  "portrait": "/img/play/vizdenia-render.png",
  "portraitKind": "render",
  "portraitSize": [
@@ -666,47 +671,47 @@
   1200
  ],
  "race": "Night Elf",
- "itemLevel": 33,
+ "itemLevel": 34,
  "attributes": [
   [
    "Health",
-   1715
+   1942
   ],
   [
    "Mana",
-   2115
+   2085
   ],
   [
    "Agility",
-   171
+   194
   ],
   [
    "Stamina",
-   112
+   125
   ],
   [
    "Strength",
-   52
+   59
   ],
   [
    "Intellect",
-   79
+   71
   ],
   [
    "Attack",
-   315
+   365
   ],
   [
    "Armor",
-   1106
+   1187
   ],
   [
    "Crit",
-   "7.3%"
+   "9.2%"
   ],
   [
    "Dodge",
-   "9.5%"
+   "9.8%"
   ]
  ],
  "talents": [
@@ -716,53 +721,53 @@
   ],
   [
    "Marksmanship",
-   3
+   6
   ]
  ],
  "armory": {
   "race": "Night Elf",
-  "itemLevel": 33,
-  "updated": "2026-11-21",
+  "itemLevel": 34,
+  "updated": "2026-11-23",
   "attributes": [
    [
     "Health",
-    1715
+    1942
    ],
    [
     "Mana",
-    2115
+    2085
    ],
    [
     "Agility",
-    171
+    194
    ],
    [
     "Stamina",
-    112
+    125
    ],
    [
     "Strength",
-    52
+    59
    ],
    [
     "Intellect",
-    79
+    71
    ],
    [
     "Attack",
-    315
+    365
    ],
    [
     "Armor",
-    1106
+    1187
    ],
    [
     "Crit",
-    "7.3%"
+    "9.2%"
    ],
    [
     "Dodge",
-    "9.5%"
+    "9.8%"
    ]
   ],
   "talents": [
@@ -772,18 +777,18 @@
    ],
    [
     "Marksmanship",
-    3
+    6
    ]
   ],
   "professions": [
    [
     "Leatherworking",
-    158,
-    225
+    211,
+    300
    ],
    [
     "Skinning",
-    256,
+    265,
     300
    ],
    [
@@ -793,7 +798,7 @@
    ],
    [
     "First Aid",
-    232,
+    248,
     300
    ]
   ],
