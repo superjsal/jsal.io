@@ -25,6 +25,8 @@ const DISCORD = "https://discord.gg/BfUKeCjNeZ";
 // The list: Home on its own, then each group's parts under the group's name
 const LIST = [{ name: null, parts: [HOME_PART] }, ...GROUPS];
 const ALL = LIST.flatMap((g) => g.parts);
+// When a part earns its keep, as its row and its stage say it
+const WHEN = { leveling: ["1 to 60", "For leveling, 1 to 60"], sixty: ["At 60", "For level 60"], any: ["Any level", "Useful at any level"] };
 // On a phone the list and the stages are laid out as one: a group's name, then each row with its stage under it
 const ORDER = {};
 LIST.reduce((k, g) => { if (g.name) ORDER[`g:${g.name}`] = k++; g.parts.forEach((p) => { ORDER[p.key] = k; k += 2; }); return k; }, 0);
@@ -36,11 +38,11 @@ const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB
 ---
 <Page
   title="jsal.ui: a free WoW Forever addon | jsal.io"
-  description="jsal.ui is a free WoW Forever addon: your character in one dashboard. Training, talents, gear, dungeons and professions, plus a journal, guild crafting orders and daily games."
+  description="jsal.ui is a free WoW Forever addon that plans your character from level 1 to raid night: trainer visits, talents, gear, dungeons and professions in one dashboard, plus a journal, guild crafting orders and daily games."
   path="/jsal-ui/"
   ogImage="jsal-ui"
   ogImageAlt="Your WoW Forever character, in one dashboard: jsal.ui's Home window, with the character, the trainer visit and the plans"
-  ogDescription="A free WoW Forever addon: your character in one dashboard. Training, talents, gear, dungeons and professions, with a journal and daily games for your guild."
+  ogDescription="A free WoW Forever addon that plans your character from level 1 to raid night: trainer visits, talents, gear, dungeons and professions, with a journal and daily games for your guild."
 >
 <style is:inline slot="head">
 /* A window from the game keeps the addon's own dark in both themes; its shadow is softer on the light page */
@@ -325,7 +327,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   <!-- Pick a part: each row of the list is a link to its part's stage below; with scripts the rows become tabs and
        one stage shows at a time -->
   <header class="hello">
-    <h1>Your WoW Forever character, <em>in one dashboard.</em></h1>
+    <h1>From level 1 to raid night, <em>planned.</em></h1>
     <div>
       <div class="get">
         <a class="jsal-btn primary dl" href={RELEASES}>Download jsal.ui</a>
@@ -341,7 +343,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         {LIST.map((g) => (
           <Fragment>
             {g.name && <p class="grp" aria-hidden="true" style={`--o: ${ORDER[`g:${g.name}`]}`}>{g.name}</p>}
-            {g.parts.map((p) => <a class="slot" style={`--o: ${ORDER[p.key]}`} href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><b>{p.label}</b><i>{p.when === "any" ? "Any level" : "1 to 60"}</i></a>)}
+            {g.parts.map((p) => <a class="slot" style={`--o: ${ORDER[p.key]}`} href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><b>{p.label}</b><i>{WHEN[p.when][0]}</i></a>)}
           </Fragment>
         ))}
       </div>
@@ -352,7 +354,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         <section class={`stage${side(p) ? " side" : ""}${p.key === "home" ? " on" : ""}`} style={`--o: ${ORDER[p.key] + 1}`} id={p.key} aria-labelledby={`${p.key}-h`}>
           <div class="head">
             <h2 id={`${p.key}-h`}>{p.label}</h2>
-            <span class="lv">{p.when === "any" ? "Useful at any level" : "For leveling, 1 to 60"}</span>
+            <span class="lv">{WHEN[p.when][1]}</span>
           </div>
           <div class="say">
             <div>
@@ -385,10 +387,10 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     <section class="about" aria-labelledby="about-h">
       <div class="why">
         <svg class="jsal-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="jsal-mark-tile" x=".5" y=".5" width="31" height="31" rx="6.5"/><path class="jsal-mark-j" d="M20 15V20a4.5 4.5 0 0 1-9 0"/><path class="jsal-mark-gem" d="M20 5l3 3-3 3-3-3z"/></svg>
-        <div><h2 id="about-h">Why I made it</h2><p>I made jsal.ui to smooth out leveling, and it keeps going after 60. It plans your trainer visits and talents on the way up, then your gear, dungeon runs, professions and guild crafting at any level, with a journal, daily games for your guild and a pet to look after.</p></div>
+        <div><h2 id="about-h">Why I made it</h2><p>I made jsal.ui to smooth out leveling, and it keeps going after you ding 60. It plans your trainer visits and talents on the way up, then your gear, dungeon runs, consumes and raid lockouts once you're there, with professions, guild crafting, a journal, daily games and a pal to look after along the way.</p></div>
       </div>
       <ul class="kit">
-        <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></svg></span><span><b>36 parts</b><small>each with its own switch</small></span></li>
+        <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></svg></span><span><b>36 parts</b><small>each with its own toggle</small></span></li>
         <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h12M4 10h12M4 14h8"/></svg></span><span><b>3 groups</b><small>Plan, Craft and Play</small></span></li>
         <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3l2 4.5 5 .7-3.6 3.4.9 4.9L10 14.2 5.7 16.5l.9-4.9L3 8.2l5-.7z"/></svg></span><span><b>Free</b><small>no subscription, code on GitHub</small></span></li>
       </ul>
@@ -413,7 +415,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     </section>
     <section class="little" aria-labelledby="little-h">
       <h2 id="little-h">And the little things</h2>
-      <p>Smaller helpers around the game, each with its own switch in Settings.</p>
+      <p>Smaller helpers around the game, each with its own toggle in Settings.</p>
       <dl>{LITTLE.map(([t, d]) => <div><dt>{t}</dt><dd>{d}</dd></div>)}</dl>
     </section>
     <section class="install" id="install" aria-labelledby="install-h">
@@ -423,7 +425,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           <li><a href={RELEASES}>Download jsal.ui</a> and unzip it into <code>World of Warcraft\_forever_\Interface\AddOns</code>, so you have an <code>AddOns\jsalUI</code> folder. Or get it from <a href={CURSEFORGE}>CurseForge</a> or <a href={WAGO}>Wago</a>, whose apps keep it up to date.</li>
           <li>Log in, or restart the game if it was running, then type <code>/jsal</code> or click the minimap button.</li>
         </ol>
-        <p>Every part has a switch in <code>/jsal settings</code>, so turn off anything you don't want. It works on its own, or alongside <a href="https://www.curseforge.com/wow/addons/ellesmereui">EllesmereUI</a> if you use it.</p>
+        <p>Every part has a toggle in <code>/jsal settings</code>, so turn off whatever you don't want. It works on its own, and plays nicely with <a href="https://www.curseforge.com/wow/addons/ellesmereui">EllesmereUI</a> if you run it.</p>
       </div>
       <div>
         <h3>Is it really free?</h3>

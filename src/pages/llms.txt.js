@@ -28,7 +28,7 @@ export function GET() {
 
 - [Home](https://jsal.io/): Who John is and the tools.
 - [Off the clock](https://jsal.io/play/): Mostly Warcraft: what John is playing, his game UI, ways to say hi, and the site's achievements.
-- [jsal.ui](https://jsal.io/jsal-ui/): John's free WoW Forever addon that plans the road to 60: training, talents, gear, dungeons and professions in one dashboard, plus a journal, guild crafting orders and daily games. Code: https://github.com/superjsal/jsal-ui
+- [jsal.ui](https://jsal.io/jsal-ui/): John's free WoW Forever addon that plans a character from level 1 to raid night: trainer visits, talents, gear, dungeons and professions in one dashboard, plus a journal, guild crafting orders and daily games. Code: https://github.com/superjsal/jsal-ui
 - [What's new in jsal.ui](https://jsal.io/jsal-ui/updates/): Every change in each release of jsal.ui, newest first, labelled new, better, fixed or taken out, with the part of the addon it touches.
 - [Privacy](https://jsal.io/privacy/): Files never leave the browser; basic Google Analytics usage stats, only with consent in Europe.
 - Contact: dev@jsal.io
