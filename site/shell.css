@@ -433,3 +433,6 @@ html.jsal-intro [data-jsal-nav] .jsal-caret { transform: translateX(-2.66em); }
 .jsal-about code { font-family: "JetBrains Mono", Consolas, monospace; font-size: 0.86em; }
 .jsal-about kbd { font: 600 12px var(--jsal-font); padding: 1px var(--jsal-space-8); border-radius: var(--jsal-radius-sm); border: 1px solid var(--jsal-line-hi); border-bottom-width: 2px; background: var(--jsal-surface); }
 @media (prefers-reduced-motion: reduce) { .jsal-about summary::before { transition: none; } }
+/* The line back up the page's tree ("CMS PICKER › DUDA"): small mono capitals, the link underlined */
+.jsal-crumbs { margin: 0; color: var(--jsal-ink-2); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+.jsal-crumbs a { display: inline-block; padding: var(--jsal-space-4) 0; margin: calc(var(--jsal-space-4) * -1) 0; color: var(--tool-ink, var(--jsal-ink)); text-underline-offset: 3px; }   /* a 24px target that takes no more of the line, so the title stays put */

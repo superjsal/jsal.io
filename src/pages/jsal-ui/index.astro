@@ -273,13 +273,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn { display: inline-flex; }
 @media (max-width: 699px), (max-height: 500px) and (orientation: landscape) { .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn, .slot::after { display: none; } }
 @media print { .rv { opacity: 1; transform: none; } }
-/* A part with a page of its own links to it: under its ticked points, where the stage has room for it, so the
-   stage keeps its height; on a phone, where the points wait for a wider screen, under its line */
-.facts .to-page { display: block; padding-left: calc(var(--jsal-space-20) + var(--jsal-space-12)); }
-.say .to-page { display: none; }
-@media (max-width: 599px), (max-height: 500px) and (orientation: landscape) {
-  .ui-js .say .to-page { display: inline-block; margin-top: var(--jsal-space-8); }
-}
+/* A part with a page of its own links to it with a small button under its line */
+.say .to-page { display: flex; width: fit-content; margin-top: var(--jsal-space-8); }
 
 /* A small laptop or a tablet: the headline and Download, then the list as rows of parts, then the stage */
 @media (max-width: 1279px) {
@@ -375,7 +370,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
             <div>
               <p class="lead">{p.name}</p>
               <p>{p.line}</p>
-              {PAGES[p.key] && <a class="to-page" href={`/jsal-ui/${p.key}/`}>{PAGES[p.key].more} <span aria-hidden="true">›</span></a>}
+              {PAGES[p.key] && <a class="jsal-btn small to-page" href={`/jsal-ui/${p.key}/`}>{PAGES[p.key].more} <span aria-hidden="true">→</span></a>}
             </div>
             {side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}</ul>}
             {p.family && (
@@ -385,7 +380,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
               </figure>
             )}
           </div>
-          {!side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}{PAGES[p.key] && <li class="to-page"><a href={`/jsal-ui/${p.key}/`}>{PAGES[p.key].more} <span aria-hidden="true">›</span></a></li>}</ul>}
+          {!side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}</ul>}
           {p.family ? (
             <figure class="win pen" aria-label="The pal's pen"></figure>
           ) : p.film ? (

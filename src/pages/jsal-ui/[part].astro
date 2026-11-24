@@ -59,8 +59,7 @@ const MAPS = "https://sreyesmaps.com";
 <script is:inline slot="head" src={v("/jsal-ui/reveal.js")} defer></script>
 <style is:inline slot="head">
 /* The line back to the jsal.ui page and the part's chapter */
-.crumb { margin: var(--jsal-page-top) 0 0; color: var(--jsal-muted); font-size: 14px; }
-main .crumb a { color: var(--jsal-muted); }
+.crumb { margin: var(--jsal-page-top) 0 0; }
 /* The part's name and headline, what it does, and the download with when it's useful beside them */
 .hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--jsal-space-24) var(--jsal-space-48); align-items: end; margin-top: var(--jsal-space-20); }
 .hero h1 { margin: var(--jsal-space-8) 0 0; font: 700 46px/1.05 var(--f); letter-spacing: -0.02em; }
@@ -158,7 +157,7 @@ main .crumb a { color: var(--jsal-muted); }
 <div class="wrap">
   <TopBar><nav aria-label="Sections"><a href="/jsal-ui/" aria-current="true">jsal.ui</a><a href="/jsal-ui/updates/">Updates</a><a href="/jsal-ui/#install">Install</a></nav></TopBar>
 <main>
-  <p class="crumb"><a href="/jsal-ui/">jsal.ui</a> › {group.name} › {me.label}</p>
+  <nav class="crumb jsal-crumbs" aria-label="Breadcrumb"><a href="/jsal-ui/">jsal.ui</a> <span aria-hidden="true">›</span> <span aria-current="page">{me.label}</span></nav>
   <section class="hero" aria-labelledby="part-h">
     <div>
       <p class="eyebrow">{me.label}</p>

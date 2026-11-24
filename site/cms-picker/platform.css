@@ -9,8 +9,6 @@
   .pp-page > .pp-hero { grid-column: 1; grid-row: 1; }
   .pp-page > .pp-glance { grid-column: 2; grid-row: 1; }
 }
-.pp-crumbs { margin: 0; color: var(--jsal-ink-2); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
-.pp-crumbs a { display: inline-block; padding: var(--jsal-space-4) 0; margin: calc(var(--jsal-space-4) * -1) 0; color: var(--tool-ink); text-underline-offset: 3px; }   /* a 24px target that takes no more of the line, so the title stays put */
 /* Headings in the home page's serif, like the page titles and the CMS Picker's own headings; the gold word italic */
 .pp-title { margin: var(--jsal-space-12) 0 var(--jsal-space-8); color: var(--tool-ink); font-family: "Outfit", "Segoe UI", system-ui, sans-serif; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }   /* the CMS Picker's heading size */
 /* The platform's logo on a small tile before its name */
