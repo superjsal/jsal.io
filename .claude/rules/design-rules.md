@@ -24,7 +24,7 @@ the tools' Lora headings no longer matched them). Don't bring a serif back for h
 
 | Font | Used for |
 |---|---|
-| **Outfit** (the jsal.ui addon's own font) | Every H1 and H2 on the public pages: page titles (`.jsal-title`), section headings, "About …" headings, the platform pages' headline and sections, Privacy, the changelog's dates, and the names and buttons on the home page and the jsal.ui page. Also the line a tool leads with: the CMS Picker's quiz question, its verdict line and each result card's name, and the heading on a tool's empty page ("Paste your content"). |
+| **Outfit** (the jsal.ui addon's own font) | Every H1 and H2 on the public pages: page titles (`.jsal-title`), section headings, "About â€¦" headings, the platform pages' headline and sections, Privacy, the changelog's dates, and the names and buttons on the home page and the jsal.ui page. Also the line a tool leads with: the CMS Picker's quiz question, its verdict line and each result card's name, and the heading on a tool's empty page ("Paste your content"). |
 | **Inter** (`--jsal-font`) | Everything that is read: body text, buttons, fields, top-bar links, H3s and smaller subheadings ("How to use it", platform names in lists, the platform pages' question headings), and small interface labels under 16px ("Checks", "Output size", "Export"). Outfit is weak at 13 to 15px, so it never sets reading text. |
 | **JetBrains Mono** | The small uppercase labels above headings (gold on the site's own pages: Privacy's date line, "Changelog"; muted on the tools: the CMS Picker's `.byline`), code, and keyboard keys. |
 
@@ -34,7 +34,7 @@ the tools' Lora headings no longer matched them). Don't bring a serif back for h
 - **The one very large line** is a stage's name on the home page and the jsal.ui page: Outfit 800, up to 72px,
   shrinking with the stage to 36px (`style: allow`). Their headlines lead the page above it at the page-title
   size.
-- **Every other page title is one size:** Outfit 700, 46px, line height 1.05, −0.02em, and 40px at 520px and under (
+- **Every other page title is one size:** Outfit 700, 46px, line height 1.05, âˆ’0.02em, and 40px at 520px and under (
   Off the clock, Privacy, Changelog, 404, `/design-system/`). The longer titles of the CMS Picker and its platform
   pages also stop at 46px but shrink with the screen to 30px. A short page's empty space beside its title stays
   empty, the reading column's margin, unless something useful belongs there (the 404's links sit beside its
@@ -197,7 +197,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   content, each tool's working layout is as it was.
 - **The Image Resizer's layout doesn't move** (John, 19 Nov 2026: his coworkers use it every day, often docked in
   a side panel about 500px wide). A change to its look is proved by recording every element's position and size
-  before and after, at 1440 × 900, 500 × 1330 and 390 × 844, empty and with an image loaded.
+  before and after, at 1440 Ã— 900, 500 Ã— 1330 and 390 Ã— 844, empty and with an image loaded.
 - **About sections** share the content's left edge: the column, with a 20px gutter on narrow screens.
 - **Home page:** tools only, as a "pick one" screen (John, 20 Nov 2026): the list of jobs on the left, the chosen
   tool's stage beside it. A new tool is a new row in the list with its own stage and tint. **The work tools keep
@@ -211,7 +211,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   bar is the shared one, in the page's theme. From the top:
   - **The headline leads** ("Your WoW Forever character, *in one dashboard.*": it has to read as useful after 60,
     not only for leveling), with John's own line on what jsal.ui is, Download, How to install and the version line
-    beside it. The version line ends "For WoW Forever 1.60.1 · works on its own" (John, 24 Nov 2026: a compatibility
+    beside it. The version line ends "For WoW Forever 1.60.1 Â· works on its own" (John, 24 Nov 2026: a compatibility
     line by the download; the game version is the toc's Interface 16001), on the same line so the tour doesn't move
     down (one more line on a phone).
   - **The list** (272px, from 1280px) is the addon's menu: Home, and Plan, Craft and Play with their parts. Every row carries "Any level" or "1 to 60"
@@ -227,9 +227,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     button beside Hatch/Grow that moves it to the next one.
   - **The stage** (the page's sunk fill, the tile corners): the part's name very large, a tag saying when it's
     useful, its headline and line, three ticked points, and its window whole, straight and framed. A narrow window
-    (the pals) sits beside the words. Five parts show a clip in place of a still. The six big parts (Training
+    (the pals) sits beside the words. The six big parts (Training
     Planner, Build Planner, Gear plan, Dungeon guide, Endgame, Professions) end their ticked points with a plain link
-    to their own page, "More on the … ›" (`more` in `PAGES`); on upright phones, where the points wait for a wider
+    to their own page, "More on the â€¦ â€º" (`more` in `PAGES`); on upright phones, where the points wait for a wider
     screen, it sits under the line instead. It sits there because the points' column has room: every stage keeps
     the height it had (John, 24 Nov 2026: the page's layout stays as it is).
   - Every stage is in the page, one under the other, and each row is a link to its stage; with scripts the rows
@@ -254,13 +254,24 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     first screen and the tour don't take part. The script is a file of its own, `site/jsal-ui/reveal.js` (marks:
     `data-rv`, `data-rv-row`, `data-rv-cards`), so the content security policy needs no more hashes; the timings carry
     `style: allow`.
-  - **Clips** (John, 19 Nov 2026): Gear, Professions, Journal, the Dungeon guide and Guild Crafts show a short
+  - **The sim clips** (John, 19 Nov 2026), now only in the part pages' rows (Gear, Professions): a short
     clip: muted MP4s in `site/img/jsal-ui/ui/clips/`, each with its first frame as the still. They're drawn from
     the same sim pages as the store GIFs, never converted from a GIF (John: GIF-made video lost "the smoothness"):
     a steady 30 frames a second in full colour, 13-frame fades, by `private\jsal-ui\sim\make_clips.py`. A clip
-    downloads and plays only while a third of its frame is on screen, stops when it leaves (or its stage is put
-    away), shows on the part pages too, and keeps a `.jsal-btn.small` Pause/Play button (a `.jsal-dark` island) in its corner, since clips run
+    downloads and plays only while a third of its frame is on screen, stops when it leaves,
+    and keeps a `.jsal-btn.small` Pause/Play button (a `.jsal-dark` island) in its corner, since clips run
     longer than 5 seconds; a pause holds until Play, and with reduced motion nothing starts by itself.
+- **A clip for each part** (John, 24 Nov 2026: "yes, one clip per part"): a short silent clip he recorded in the
+  game (`TOUR` in `jsal-ui.mjs`: its file in `site/img/jsal-ui/clips/<key>.mp4`, its size and its seconds; a new
+  take needs its numbers changed there). In the jsal.ui page's tour, from the second turn on, a part's clip plays
+  over its still in the same box (the whole clip fitted in on the stage's fill, so the stage keeps its height),
+  loaded only when its turn comes and dropped when the turn ends; the turn lasts as long as the clip, 5 to 12
+  seconds, and the gold line fills over it. Whatever rests the tour (the pointer or the keyboard on the list or the
+  stage, Pause the tour, the list off screen) pauses it; a row clicked with the mouse doesn't count as the keyboard.
+  The pals keep their live pen. At the top of a part page the clip plays over the window while a third of it is on
+  screen, with a Pause/Play button (`site/jsal-ui/clip.js`); on a phone a clip framed like its still takes the
+  still's crop, and one framed otherwise shows whole. Below 700px on the jsal.ui page (no tour), with reduced
+  motion, when the browser asks to save data, or without scripts, the stills stay and no clip is fetched.
 - **The jsal.ui part pages** (`/jsal-ui/training/`, `/build/`, `/gear/`, `/dungeons/`, `/endgame/`,
   `/professions/`; John, 24 Nov 2026, "part pages"), one template (`src/pages/jsal-ui/[part].astro`) fed from `PAGES`
   in `jsal-ui.mjs`, with the styles in `src/components/JsalUiStyles.astro`: a line back to the jsal.ui page and the
@@ -316,7 +327,7 @@ One rule for how every tool answers an action, so "it worked" and "it didn't" lo
   a tick (`.jsal-done` in `shell.css`) and the past tense for two seconds, then gives its label back, and says the word
   to screen readers. "Copied", "Link copied", "Saved", never with "!". Only when that button goes away (a Playbook form
   closes on Save) is it said in the short message at the bottom instead.
-- **Work in progress is said on the button**, which is disabled meanwhile ("Zipping…", "Saving 2/5…").
+- **Work in progress is said on the button**, which is disabled meanwhile ("Zippingâ€¦", "Saving 2/5â€¦").
 - **An error never fades.** It's a `.jsal-error` (red "!", tinted box, `role="alert"`) next to what failed, saying what
   to do, and stays until the next try there. The Playbook's `fail()` puts it in the form, card or row of the last click;
   with nowhere to put it (a refresh on load) the bottom message stays until the next click.
@@ -324,7 +335,7 @@ One rule for how every tool answers an action, so "it worked" and "it didn't" lo
 - **An example tour** (`window.jsalTour(id, steps)` in `nav.js`, `.jsal-tour` in `shell.css`; John's pick B of
   three mockups, 5 Nov) runs only when a visitor loads a tool's example, once per tool in that browser
   (`jsal-tour-<id>`): a box beside the control it explains (right, then left, else under it), a blue ring round the
-  control, dots, Back and Next (Done on the last), × and Esc to end it. Blue, as it explains; the page stays usable
+  control, dots, Back and Next (Done on the last), Ã— and Esc to end it. Blue, as it explains; the page stays usable
   under it, nothing is dimmed. Three steps at most, each a short title and one or two sentences; a step whose
   control isn't shown at that width is passed over. Never on page load: the team uses the tools every day.
 - A final answer replaces its question in place ("Thanks, that helps make the quiz better." with a green tick).

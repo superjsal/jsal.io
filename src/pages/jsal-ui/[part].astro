@@ -56,6 +56,7 @@ const MAPS = "https://sreyesmaps.com";
 >
 <JsalUiStyles slot="head" />
 <script is:inline slot="head" src={v("/jsal-ui/reveal.js")} defer></script>
+{me.tour && <script is:inline slot="head" src={v("/jsal-ui/clip.js")} defer></script>}
 <style is:inline slot="head">
 /* The line back to the jsal.ui page and the part's chapter */
 .crumb { margin: var(--jsal-page-top) 0 0; color: var(--jsal-muted); font-size: 14px; }
@@ -143,9 +144,6 @@ main .crumb a { color: var(--jsal-muted); }
 {clipped && (
 <style is:inline slot="head">
 @media (min-width: 600px) { .win.clip video { max-width: var(--w); margin-inline: auto; } }   /* a clip never drawn larger than it was made */
-/* A clip plays while it's on screen, and keeps a Pause button (in the dark theme's colours, on the game) in its
-   corner, so nothing moves without a way to stop it */
-.clip-ctl { position: absolute; right: var(--jsal-space-12); bottom: var(--jsal-space-12); z-index: 1; }
 </style>
 )}
 {maps && (
@@ -169,8 +167,8 @@ main .crumb a { color: var(--jsal-muted); }
       <p><span class="lv">{WHEN[me.when]}</span>&nbsp; {where[0]} <code>{where[1]}</code></p>
     </div>
   </section>
-  <!-- On a phone the window shows its top corner at the game's own size -->
-  <figure class="win crop big" data-rv style={`--pw: ${me.shot.w}px; --cx: ${me.shot.cx}; --cy: ${me.shot.cy}`}><img src={v(me.shot.src)} width={me.shot.w} height={me.shot.h} alt={me.shot.alt} fetchpriority="high" decoding="async"></figure>
+  <!-- On a phone the window shows its top corner at the game's own size; with scripts, the part's clip plays over it -->
+  <figure class="win crop big" data-rv style={`--pw: ${me.shot.w}px; --cx: ${me.shot.cx}; --cy: ${me.shot.cy}; --ar: ${me.shot.w} / ${me.shot.h}`} data-clip={me.tour && v(me.tour.src)} data-w={me.tour?.w} data-h={me.tour?.h} data-name={me.label}><img src={v(me.shot.src)} width={me.shot.w} height={me.shot.h} alt={me.shot.alt} fetchpriority="high" decoding="async"></figure>
   {rows.map((r, i) => r.c ? (
     <section class={`row part-row${r.flip ? " flip" : ""}${wide(r) ? " wide" : ""}`} aria-labelledby={`row-${i}`} data-rv-row>
       <figure class="win clip crop" style={`--w: ${r.c.w}px; --pw: ${phoneW(r.c)}px; --cx: ${r.c.cx}; --cy: ${r.c.cy}`}>

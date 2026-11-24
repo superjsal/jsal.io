@@ -36,6 +36,8 @@ const side = (p) => !p.clip && !p.family && p.shot.w < 600;
 const SCENES = ["meadow", "coast", "desert", "darkwood", "jungle", "savanna", "snow", "swamp"].map((s) => [s[0].toUpperCase() + s.slice(1), v(`/img/jsal-ui/pals/scene-${s}.png`), v(`/img/jsal-ui/pals/scene-${s}-night.png`)]);
 // The scroll reveal for the blocks under the tour, a file of its own (site/jsal-ui/reveal.js), shared with the part pages
 const REVEAL = v("/jsal-ui/reveal.js");
+// A part's turn in the tour lasts as long as its clip, 5 to 12 seconds
+const turn = (c) => Math.min(12, Math.max(5, Math.round(c.s * 10) / 10));
 const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 ---
 <Page
@@ -214,9 +216,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* A window from the game: straight, framed and lifted. A small one (the pals) keeps its own size, so it never blurs. */
 .win { position: relative; margin: 0; }
 .win :is(img, video) { display: block; width: 100%; max-width: var(--w); height: auto; margin-inline: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
-/* A clip plays in place of a still while it's on screen, and keeps a Pause button (in the dark theme's colours, on
-   the game) in its corner, so nothing moves without a way to stop it */
-.clip-ctl { position: absolute; right: var(--jsal-space-12); bottom: var(--jsal-space-12); z-index: 1; }
+/* In the tour, a part's clip plays over its still in the same box: the whole clip fitted in, on the stage's own
+   fill, never stretched or cut; the frame shows the same top of it as of the still */
+.win .tour-clip { position: absolute; left: 0; top: 0; width: 100%; height: auto; aspect-ratio: var(--ar); object-fit: contain; background: var(--jsal-sunk); }
 
 .band h2, .little h2, .install h2 { margin: 0; font: 700 24px/1.2 var(--f); letter-spacing: -0.01em; }
 
@@ -266,7 +268,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* The tour: the chosen row's gold line fills while its turn lasts; it rests while the pointer or the keyboard is on
    the list or the stage, or the list is off screen */
 .slot::after { content: ""; position: absolute; left: var(--jsal-space-12); right: var(--jsal-space-12); bottom: var(--jsal-space-2); height: 2px; border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); transform: scaleX(0); transform-origin: left; }
-.pick.tour .slot[aria-selected="true"]::after { animation: turn 5s linear forwards; }   /* style: allow (a part's turn in the tour) */
+.pick.tour .slot[aria-selected="true"]::after { animation: turn var(--turn, 5s) linear forwards; }   /* style: allow (a part's turn in the tour) */
 .pick.tour:is(:hover, .away, :has(.slots:focus-within, .stages:focus-within)) .slot[aria-selected="true"]::after { animation-play-state: paused; }
 @keyframes turn { to { transform: scaleX(1); } }
 .tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
@@ -358,7 +360,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         {LIST.map((g) => (
           <Fragment>
             {g.name && <p class="grp" aria-hidden="true" style={`--o: ${ORDER[`g:${g.name}`]}`}>{g.name}</p>}
-            {g.parts.map((p) => <a class="slot" style={`--o: ${ORDER[p.key]}`} href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><b>{p.label}</b><i>{WHEN[p.when][0]}</i></a>)}
+            {g.parts.map((p) => <a class="slot" style={`--o: ${ORDER[p.key]}${p.tour ? `; --turn: ${turn(p.tour)}s` : ""}`} href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><b>{p.label}</b><i>{WHEN[p.when][0]}</i></a>)}
           </Fragment>
         ))}
       </div>
@@ -388,13 +390,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           {!side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}{PAGES[p.key] && <li class="to-page"><a href={`/jsal-ui/${p.key}/`}>{PAGES[p.key].more} <span aria-hidden="true">›</span></a></li>}</ul>}
           {p.family ? (
             <figure class="win pen" aria-label="The pal's pen"></figure>
-          ) : p.clip ? (
-            <figure class="win clip" style={`--w: ${p.clip.w}px; --pw: ${p.clip.pw}px; --cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
-              <video muted loop playsinline preload="none" poster={v(p.clip.poster)} width={p.clip.w} height={p.clip.h} aria-label={p.clip.alt}><source src={v(p.clip.src)} type="video/mp4"></video>
-              <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
-            </figure>
           ) : (
-            <figure class={`win${p.key === "home" ? " home" : ""}`} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading={p.key === "home" ? "eager" : "lazy"} decoding="async"></figure>
+            <figure class={`win${p.key === "home" ? " home" : ""}`} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}; --ar: ${p.shot.w} / ${p.shot.h}`} data-clip={p.tour && v(p.tour.src)} data-w={p.tour?.w} data-h={p.tour?.h}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading={p.key === "home" ? "eager" : "lazy"} decoding="async"></figure>
           )}
         </section>
       ))}
@@ -463,7 +460,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const orient = () => list.setAttribute('aria-orientation', wide.matches ? 'vertical' : 'horizontal');
   orient(); wide.addEventListener('change', orient);
   stages.forEach((s, i) => { s.setAttribute('role', 'tabpanel'); s.setAttribute('aria-labelledby', tabs[i].id); });
-  let cur = 0, rest = 0, live = false;
+  let cur = 0, rest = 0, live = false, onPick = null;
   const box = document.querySelector('.stages');
   // One gem for the whole list: it slides to the chosen row, half a turn each trip, and lands with a ring
   const gem = list.appendChild(Object.assign(document.createElement('i'), { className: 'gem' }));
@@ -500,6 +497,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     if (focus) tabs[i].focus();
     // on a phone the list is a dock that slides sideways: bring the chosen part into it
     if (list.scrollWidth > list.clientWidth) list.scrollLeft = tabs[i].offsetLeft - 20;
+    if (onPick) onPick();
   };
   // where the list opens in place (a phone, or one held sideways), a tapped row is brought to the top of the screen
   // with its part open under it
@@ -546,7 +544,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const pickEl = document.querySelector('.pick'), btn = document.querySelector('.tour-btn');
   if (matchMedia('(min-width: 700px) and (not ((max-height: 500px) and (orientation: landscape)))').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
     const say = (label, pressed) => { btn.textContent = label; btn.setAttribute('aria-pressed', String(pressed)); };
-    const end = () => { pickEl.classList.remove('tour', 'rested'); pickEl.classList.add('toured'); say('Play the tour', false); };
+    const end = () => { pickEl.classList.remove('tour', 'rested'); pickEl.classList.add('toured'); say('Play the tour', false); sync(); };
     const start = () => {
       pickEl.classList.add('tour');
       list.addEventListener('animationend', (e) => {
@@ -562,8 +560,44 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         say(resting ? 'Play the tour' : 'Pause the tour', resting);
       });
       // a sixth in view counts: on a phone held sideways the list and stage are far taller than the screen
-      const away = new IntersectionObserver(([e]) => pickEl.classList.toggle('away', !e.isIntersecting), { threshold: 0.15 });
+      const away = new IntersectionObserver(([e]) => { pickEl.classList.toggle('away', !e.isIntersecting); sync(); }, { threshold: 0.15 });
       away.observe(pickEl);
+      // the clips follow the tour: a new turn, the pointer or the keyboard coming or going, the Pause button
+      onPick = () => { picked = true; sync(); };
+      btn.addEventListener('click', sync);
+      ['pointerenter', 'pointerleave', 'focusin', 'focusout'].forEach((type) => pickEl.addEventListener(type, () => requestAnimationFrame(sync)));
+    };
+    // The parts' clips: when a part's turn comes (after the first, so opening the page loads no clip), its clip
+    // plays over its still, loaded then and only then; the turn's end, or the list leaving the screen, stops it and
+    // rewinds it, and whatever rests the tour (the pointer on the list or the stage, the keyboard there, Pause) pauses
+    // it; a row clicked with the mouse keeps its focus, which doesn't count. With reduced motion (the tour doesn't run), to save data, or if the clip can't load, the still stays.
+    const lean = !!(navigator.connection && navigator.connection.saveData);
+    let vid = null, picked = false;
+    const drop = () => {
+      if (!vid) return;
+      vid.pause();
+      vid.parentElement.querySelector('img').removeAttribute('aria-hidden');
+      vid.remove();
+      vid = null;
+    };
+    const sync = () => {
+      const fig = stages[cur].querySelector('figure[data-clip]');
+      if (vid && vid.parentElement !== fig) drop();
+      if (lean || !picked || !fig) return;
+      if (pickEl.classList.contains('away')) { if (vid) { vid.pause(); vid.currentTime = 0; } return; }
+      if (pickEl.classList.contains('rested') || pickEl.matches(':hover') || pickEl.querySelector(':is(.slots, .stages) :focus-visible')) { if (vid) vid.pause(); return; }
+      if (!vid) {
+        const img = fig.querySelector('img'), me = document.createElement('video');
+        Object.assign(me, { muted: true, loop: true, playsInline: true, preload: 'auto', poster: img.currentSrc || img.src, className: 'tour-clip', width: +fig.dataset.w, height: +fig.dataset.h });
+        me.setAttribute('muted', '');
+        me.setAttribute('aria-label', img.alt);
+        me.addEventListener('error', () => { if (vid === me) drop(); else me.remove(); });
+        me.src = fig.dataset.clip;
+        img.setAttribute('aria-hidden', 'true');
+        fig.append(me);
+        vid = me;
+      }
+      vid.play().catch(() => {});
     };
     if (document.prerendering) document.addEventListener('prerenderingchange', start, { once: true }); else start();
   }
@@ -694,35 +728,5 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
   show();
 })();
-// The clips: each plays while a third of its frame is on screen and stops when it leaves, downloading only then
-// (the frame, not the video, as phones show only a corner of the video). Its button says what a press does (Pause
-// or Play), and a pause holds until the visitor plays it again. With reduced motion nothing starts by itself; Play
-// still works. A page loaded ahead waits until it's shown.
-function clips() {
-  const calm = !matchMedia('(prefers-reduced-motion: no-preference)').matches;
-  const watch = 'IntersectionObserver' in window && new IntersectionObserver((es) => es.forEach((e) => {
-    const v = e.target.querySelector('video');
-    if (e.isIntersecting && !v.dataset.held) v.play().catch(() => {});
-    else if (!e.isIntersecting && !v.paused) v.pause();
-  }), { threshold: 0.33 });
-  document.querySelectorAll('.clip video').forEach((v) => {
-    const btn = v.parentElement.querySelector('.clip-ctl button');
-    const say = () => {
-      btn.textContent = v.paused ? 'Play' : 'Pause';
-      btn.setAttribute('aria-label', `${btn.textContent} the ${btn.dataset.name} clip`);
-    };
-    v.addEventListener('play', say);
-    v.addEventListener('pause', say);
-    say();
-    btn.addEventListener('click', () => {
-      if (v.paused) { delete v.dataset.held; v.play().catch(() => {}); }
-      else { v.dataset.held = '1'; v.pause(); }
-    });
-    if (calm) v.dataset.held = '1';
-    if (watch) watch.observe(v.parentElement);
-  });
-}
-if (document.prerendering) document.addEventListener('prerenderingchange', clips, { once: true });
-else clips();
 </script>
 </Page>

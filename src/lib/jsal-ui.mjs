@@ -79,6 +79,28 @@ export const GROUPS = [
 
 for (const g of GROUPS) for (const p of g.parts) if (CLIPS[p.key]) p.clip = CLIPS[p.key];
 
+// One clip a part, recorded in the game: on the jsal.ui page it plays in the tour in place of the part's still when
+// the part's turn comes (the turn lasts as long as the clip, 5 to 12 seconds), and on a part's own page in place of
+// the window at the top. An MP4 under site/img/jsal-ui/clips/, named by the part's key, and every number about it is
+// here: w and h, its size in pixels, and s, how many seconds it runs. A file replaced by a new take needs its numbers
+// changed here too. A part with no entry shows its still, as before.
+const tourClip = (key, w, h, s) => ({ src: `/img/jsal-ui/clips/${key}.mp4`, w, h, s });
+const TOUR = {
+  home: tourClip("home", 1320, 880, 4.7),
+  training: tourClip("training", 1320, 880, 8.03),
+  build: tourClip("build", 1320, 880, 8.87),
+  gear: tourClip("gear", 1402, 1070, 12.43),
+  dungeons: tourClip("dungeons", 1402, 976, 12.47),
+  endgame: tourClip("endgame", 1320, 880, 9.8),
+  professions: tourClip("professions", 1320, 880, 7.5),
+  crafts: tourClip("crafts", 1320, 1010, 8.33),
+  profit: tourClip("profit", 1320, 1006, 7.5),
+  journal: tourClip("journal", 1320, 880, 9.43),
+  games: tourClip("games", 1374, 880, 17.2),
+};
+HOME_PART.tour = TOUR.home;
+for (const g of GROUPS) for (const p of g.parts) if (TOUR[p.key]) p.tour = TOUR[p.key];
+
 // A close-up for a part page's row: one card or list cut from a window at the game's own size (a WebP under
 // site/img/jsal-ui/ui/), so its words read as they do in the game.
 const closeup = (name, w, h, alt) => ({ src: `/img/jsal-ui/ui/${name}.webp`, w, h, alt });
