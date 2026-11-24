@@ -87,6 +87,18 @@ for (const g of GROUPS) for (const p of g.parts) if (CLIPS[p.key]) p.clip = CLIP
 // site/img/jsal-ui/ui/films/; w and h are its size in pixels, s how many seconds it runs.
 const film = (name, w, h, s) => ({ src: `/img/jsal-ui/ui/films/${name}.mp4`, poster: `/img/jsal-ui/ui/films/${name}.webp`, w, h, s });
 const FILMS = {
+  home: film("home", 1320, 880, 6.6),
+  journal: film("journal", 1320, 880, 9.2),
+  training: film("training", 1320, 880, 7.4),
+  build: film("build", 1320, 880, 7.4),
+  gear: film("gear", 1240, 960, 9.2),
+  dungeons: film("dungeons", 1240, 860, 9.2),
+  endgame: film("endgame", 1320, 880, 7.4),
+  professions: film("professions", 1320, 880, 9.2),
+  profit: film("profit", 1000, 938, 9.2),
+  crafts: film("crafts", 1000, 938, 7.4),
+  games: film("games", 1320, 880, 9.2),
+  pals: film("pals", 1320, 880, 9.4),
 };
 if (FILMS.home) HOME_PART.film = FILMS.home;
 for (const g of GROUPS) for (const p of g.parts) if (FILMS[p.key]) p.film = FILMS[p.key];
