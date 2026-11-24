@@ -226,7 +226,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     dark), with a Scene
     button beside Hatch/Grow that moves it to the next one.
   - **The stage** (the page's sunk fill, the tile corners): the part's name very large, a tag saying when it's
-    useful, its headline and line, three ticked points, and its window whole, straight and framed: up to 900px tall it shows whole (John, 24 Nov
+    useful, its headline and line, three ticked points, and its window whole, straight and framed: up to 700px tall it shows whole (John, 24 Nov
     2026: "you can have that fade lower"); only a taller one is cut there and fades out at the foot, and on a screen
     under 800px tall the limit is the screen less 300px, at least 460px. Every stage is as tall as the tallest. A narrow window
     (the pals) sits beside the words. Five parts show a clip in place of a still. The six big parts (Training

@@ -131,11 +131,11 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* Every part's stage is as tall as the tallest, so what's under it stays put as the parts change (the tour, a
    click). The script measures each one, unseen, to find that height. */
 .ui-js .stages { position: relative; }
-/* and every window shows whole up to 900px tall; only a taller one is cut there, and fades out at the foot (.cut,
+/* and every window shows whole up to 700px tall; only a taller one is cut there, and fades out at the foot (.cut,
    set by the script that measures the stages). On a short screen the limit is the screen less room for the page
    around it, at least 460px, so the list and the next section stay near (a phone crops its own way, below). */
 @media (min-width: 600px) {
-  .win:not(.pen) { --cap: 900px; max-height: var(--cap); overflow: hidden; border-radius: var(--jsal-radius-xl); }
+  .win:not(.pen) { --cap: 700px; max-height: var(--cap); overflow: hidden; border-radius: var(--jsal-radius-xl); }
   .win.cut::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64px; background: linear-gradient(transparent, var(--jsal-sunk)); pointer-events: none; }
 }
 @media (min-width: 600px) and (max-height: 799px) { .win:not(.pen) { --cap: max(460px, calc(100vh - 300px)); } }
