@@ -117,6 +117,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .slot { display: flex; align-items: center; justify-content: space-between; gap: var(--jsal-space-8); position: relative; padding: var(--jsal-space-4) var(--jsal-space-20) var(--jsal-space-4) var(--jsal-space-12); border-radius: var(--jsal-radius-lg) 0 0 var(--jsal-radius-lg); color: inherit; text-decoration: none; transition: background-color var(--jsal-quick); }
 .slot:hover { background: var(--jsal-sunk); }
 .slot b { font: 600 15px/1.6 var(--f); }
+/* the part's own menu icon from the addon, before its name; decorative, as the name is beside it */
+.slot img { flex: none; width: 22px; height: 22px; border-radius: var(--jsal-radius-sm); }
+.slot b { margin-right: auto; }
 .slot i { color: var(--jsal-muted); font: 600 12px/1.5 var(--jsal-font); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
 /* The chosen part's row takes the stage's fill and runs into it as one piece, and the logo's gold gem marks it */
 .slot[aria-selected="true"] { background: var(--jsal-sunk); }   /* style: allow (the chosen part's row is the same piece as its stage, so it wears the stage's fill) */
@@ -354,7 +357,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         {LIST.map((g) => (
           <Fragment>
             {g.name && <p class="grp" aria-hidden="true" style={`--o: ${ORDER[`g:${g.name}`]}`}>{g.name}</p>}
-            {g.parts.map((p) => <a class="slot" style={`--o: ${ORDER[p.key]}`} href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><b>{p.label}</b><i>{WHEN[p.when][0]}</i></a>)}
+            {g.parts.map((p) => <a class="slot" style={`--o: ${ORDER[p.key]}`} href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><img src={v(`/img/jsal-ui/icons/${p.key}.webp`)} alt="" width="22" height="22" aria-hidden="true" decoding="async"><b>{p.label}</b><i>{WHEN[p.when][0]}</i></a>)}
           </Fragment>
         ))}
       </div>
