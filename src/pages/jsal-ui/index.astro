@@ -388,6 +388,11 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           {!side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}{PAGES[p.key] && <li class="to-page"><a href={`/jsal-ui/${p.key}/`}>{PAGES[p.key].more} <span aria-hidden="true">›</span></a></li>}</ul>}
           {p.family ? (
             <figure class="win pen" aria-label="The pal's pen"></figure>
+          ) : p.film ? (
+            <figure class={`win clip film${p.key === "home" ? " home" : ""}`} style={`--w: ${p.film.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}>
+              <video muted loop playsinline preload="none" poster={v(p.film.poster)} width={p.film.w} height={p.film.h} aria-label={p.shot.alt}><source src={v(p.film.src)} type="video/mp4"></video>
+              <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
+            </figure>
           ) : p.clip ? (
             <figure class="win clip" style={`--w: ${p.clip.w}px; --pw: ${p.clip.pw}px; --cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
               <video muted loop playsinline preload="none" poster={v(p.clip.poster)} width={p.clip.w} height={p.clip.h} aria-label={p.clip.alt}><source src={v(p.clip.src)} type="video/mp4"></video>

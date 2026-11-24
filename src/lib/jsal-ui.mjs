@@ -81,6 +81,16 @@ export const GROUPS = [
 
 for (const g of GROUPS) for (const p of g.parts) if (CLIPS[p.key]) p.clip = CLIPS[p.key];
 
+// A film is a part's still, moving: the same whole window recorded in the game, drawn in the still's own box (the
+// stage's width, top-aligned, cut by the same fade) and played like the clips above. Where a part has both, the
+// film is shown and the clip isn't. Its MP4 and its first frame as a WebP of the same name go in
+// site/img/jsal-ui/ui/films/; w and h are its size in pixels, s how many seconds it runs.
+const film = (name, w, h, s) => ({ src: `/img/jsal-ui/ui/films/${name}.mp4`, poster: `/img/jsal-ui/ui/films/${name}.webp`, w, h, s });
+const FILMS = {
+};
+if (FILMS.home) HOME_PART.film = FILMS.home;
+for (const g of GROUPS) for (const p of g.parts) if (FILMS[p.key]) p.film = FILMS[p.key];
+
 // A close-up for a part page's row: one card or list cut from a window at the game's own size (a WebP under
 // site/img/jsal-ui/ui/), so its words read as they do in the game.
 const closeup = (name, w, h, alt) => ({ src: `/img/jsal-ui/ui/${name}.webp`, w, h, alt });

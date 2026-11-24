@@ -226,7 +226,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     dark), with a Scene
     button beside Hatch/Grow that moves it to the next one.
   - **The stage** (the page's sunk fill, the tile corners): the part's name very large, a tag saying when it's
-    useful, its headline and line, three ticked points, and its window whole, straight and framed. A narrow window
+    useful, its headline and line, three ticked points, and its window whole, straight and framed. A part may have a **film** in its place (John, 24
+    Nov 2026: "Whole window, like the stills"): the same whole window recorded in the game (`FILMS` in `jsal-ui.mjs`,
+    files in `site/img/jsal-ui/ui/films/`), drawn in the still's own box and cut by the same fade, played by the clips'
+    script with their Play/Pause button; a film is shown in place of a clip, and leads its part page too. A narrow window
     (the pals) sits beside the words. Five parts show a clip in place of a still. The six big parts (Training
     Planner, Build Planner, Gear plan, Dungeon guide, Endgame, Professions) end their ticked points with a plain link
     to their own page, "More on the … ›" (`more` in `PAGES`); on upright phones, where the points wait for a wider

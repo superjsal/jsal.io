@@ -43,7 +43,7 @@ const where = page.command ? ["Opens with", `/jsal ${page.command}`] : ["In the 
 // More of jsal.ui: two parts, each to its own page or its stage on the jsal.ui page, then the jsal.ui page itself
 const next = page.next.map((key) => ({ href: PAGES[key] ? `/jsal-ui/${key}/` : `/jsal-ui/#pick-${key}`, label: ALL[key].label, line: ALL[key].name }));
 const maps = rows.some((r) => r.credit);
-const clipped = !!me.clip || rows.some((r) => r.c);
+const clipped = !!(me.film || me.clip) || rows.some((r) => r.c);
 const bare = rows.some((r) => !r.c && !r.shot);
 const MAPS = "https://sreyesmaps.com";
 ---
@@ -170,9 +170,14 @@ main .crumb a { color: var(--jsal-muted); }
       <p><span class="lv">{WHEN[me.when]}</span>&nbsp; {where[0]} <code>{where[1]}</code></p>
     </div>
   </section>
-  <!-- The part's clip where it has one, the same as on its stage on the jsal.ui page; else its window, which on a
-       phone shows its top corner at the game's own size -->
-  {me.clip ? (
+  <!-- The part's film (its window, moving) or its clip where it has one, the same as on its stage on the jsal.ui
+       page; else its window, which on a phone shows its top corner at the game's own size -->
+  {me.film ? (
+    <figure class="win clip film crop big" data-rv style={`--w: ${me.film.w}px; --pw: ${me.film.w}px; --cx: ${me.shot.cx}; --cy: ${me.shot.cy}`}>
+      <video muted loop playsinline preload="none" poster={v(me.film.poster)} width={me.film.w} height={me.film.h} aria-label={me.shot.alt}><source src={v(me.film.src)} type="video/mp4"></video>
+      <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={me.label}>Play</button></span>
+    </figure>
+  ) : me.clip ? (
     <figure class="win clip crop big" data-rv style={`--w: ${me.clip.w}px; --pw: ${me.clip.pw}px; --cx: ${me.clip.cx}; --cy: ${me.clip.cy}`}>
       <video muted loop playsinline preload="none" poster={v(me.clip.poster)} width={me.clip.w} height={me.clip.h} aria-label={me.clip.alt}><source src={v(me.clip.src)} type="video/mp4"></video>
       <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={me.label}>Play</button></span>
