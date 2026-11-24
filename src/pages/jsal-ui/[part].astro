@@ -26,8 +26,9 @@ const me = ALL[part];
 const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
 const WHEN = { leveling: "1 to 60", sixty: "At 60", any: "Any level" };
 const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-// A row's picture: a clip of the part in use (its key in GROUPS), shown as a muted video with its first frame, or a
-// close-up (shot in PAGES) at the game's own size
+// A row's picture: a close-up (shot in PAGES) at the game's own size, or a clip of a part in use (its key in GROUPS),
+// shown as a muted video with its first frame. The part's own clip, where CLIPS has one, leads the page instead of
+// its window, in the same figure and played by the same script as on the jsal.ui page.
 const clipOf = (row) => row.clip && ALL[row.clip].clip;
 // Rows with a picture take turns left and right, the first one's picture on the right
 let k = 0;
@@ -42,7 +43,7 @@ const where = page.command ? ["Opens with", `/jsal ${page.command}`] : ["In the 
 // More of jsal.ui: two parts, each to its own page or its stage on the jsal.ui page, then the jsal.ui page itself
 const next = page.next.map((key) => ({ href: PAGES[key] ? `/jsal-ui/${key}/` : `/jsal-ui/#pick-${key}`, label: ALL[key].label, line: ALL[key].name }));
 const maps = rows.some((r) => r.credit);
-const clipped = rows.some((r) => r.c);
+const clipped = !!me.clip || rows.some((r) => r.c);
 const bare = rows.some((r) => !r.c && !r.shot);
 const MAPS = "https://sreyesmaps.com";
 ---
@@ -56,7 +57,6 @@ const MAPS = "https://sreyesmaps.com";
 >
 <JsalUiStyles slot="head" />
 <script is:inline slot="head" src={v("/jsal-ui/reveal.js")} defer></script>
-{me.tour && <script is:inline slot="head" src={v("/jsal-ui/clip.js")} defer></script>}
 <style is:inline slot="head">
 /* The line back to the jsal.ui page and the part's chapter */
 .crumb { margin: var(--jsal-page-top) 0 0; color: var(--jsal-muted); font-size: 14px; }
@@ -144,6 +144,9 @@ main .crumb a { color: var(--jsal-muted); }
 {clipped && (
 <style is:inline slot="head">
 @media (min-width: 600px) { .win.clip video { max-width: var(--w); margin-inline: auto; } }   /* a clip never drawn larger than it was made */
+/* A clip plays while it's on screen, and keeps a Pause button (in the dark theme's colours, on the game) in its
+   corner, so nothing moves without a way to stop it */
+.clip-ctl { position: absolute; right: var(--jsal-space-12); bottom: var(--jsal-space-12); z-index: 1; }
 </style>
 )}
 {maps && (
@@ -167,8 +170,16 @@ main .crumb a { color: var(--jsal-muted); }
       <p><span class="lv">{WHEN[me.when]}</span>&nbsp; {where[0]} <code>{where[1]}</code></p>
     </div>
   </section>
-  <!-- On a phone the window shows its top corner at the game's own size; with scripts, the part's clip plays over it -->
-  <figure class="win crop big" data-rv style={`--pw: ${me.shot.w}px; --cx: ${me.shot.cx}; --cy: ${me.shot.cy}; --ar: ${me.shot.w} / ${me.shot.h}`} data-clip={me.tour && v(me.tour.src)} data-w={me.tour?.w} data-h={me.tour?.h} data-name={me.label}><img src={v(me.shot.src)} width={me.shot.w} height={me.shot.h} alt={me.shot.alt} fetchpriority="high" decoding="async"></figure>
+  <!-- The part's clip where it has one, the same as on its stage on the jsal.ui page; else its window, which on a
+       phone shows its top corner at the game's own size -->
+  {me.clip ? (
+    <figure class="win clip crop big" data-rv style={`--w: ${me.clip.w}px; --pw: ${me.clip.pw}px; --cx: ${me.clip.cx}; --cy: ${me.clip.cy}`}>
+      <video muted loop playsinline preload="none" poster={v(me.clip.poster)} width={me.clip.w} height={me.clip.h} aria-label={me.clip.alt}><source src={v(me.clip.src)} type="video/mp4"></video>
+      <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={me.label}>Play</button></span>
+    </figure>
+  ) : (
+    <figure class="win crop big" data-rv style={`--pw: ${me.shot.w}px; --cx: ${me.shot.cx}; --cy: ${me.shot.cy}`}><img src={v(me.shot.src)} width={me.shot.w} height={me.shot.h} alt={me.shot.alt} fetchpriority="high" decoding="async"></figure>
+  )}
   {rows.map((r, i) => r.c ? (
     <section class={`row part-row${r.flip ? " flip" : ""}${wide(r) ? " wide" : ""}`} aria-labelledby={`row-${i}`} data-rv-row>
       <figure class="win clip crop" style={`--w: ${r.c.w}px; --pw: ${phoneW(r.c)}px; --cx: ${r.c.cx}; --cy: ${r.c.cy}`}>
@@ -227,31 +238,32 @@ main .crumb a { color: var(--jsal-muted); }
 </div>
 {clipped && (
 <script is:inline>
-// The clips: each plays while a third of its frame is on screen and stops when it leaves, downloading only then.
-// Its button says what a press does (Pause or Play), and a pause holds until the visitor plays it again. With
-// reduced motion nothing starts by itself; Play still works. A page loaded ahead waits until it's shown.
+// The clips: each plays while a third of its frame is on screen and stops when it leaves, downloading only then
+// (the frame, not the video, as phones show only a corner of the video). Its button says what a press does (Pause
+// or Play), and a pause holds until the visitor plays it again. With reduced motion, or when the browser is asked to
+// save data, nothing starts by itself or downloads; Play still works. A page loaded ahead waits until it's shown.
 function clips() {
-  const calm = !matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  const calm = !matchMedia('(prefers-reduced-motion: no-preference)').matches || !!(navigator.connection && navigator.connection.saveData);
   const watch = 'IntersectionObserver' in window && new IntersectionObserver((es) => es.forEach((e) => {
-    const vid = e.target.querySelector('video');
-    if (e.isIntersecting && !vid.dataset.held) vid.play().catch(() => {});
-    else if (!e.isIntersecting && !vid.paused) vid.pause();
+    const v = e.target.querySelector('video');
+    if (e.isIntersecting && !v.dataset.held) v.play().catch(() => {});
+    else if (!e.isIntersecting && !v.paused) v.pause();
   }), { threshold: 0.33 });
-  document.querySelectorAll('.clip video').forEach((vid) => {
-    const btn = vid.parentElement.querySelector('.clip-ctl button');
+  document.querySelectorAll('.clip video').forEach((v) => {
+    const btn = v.parentElement.querySelector('.clip-ctl button');
     const say = () => {
-      btn.textContent = vid.paused ? 'Play' : 'Pause';
+      btn.textContent = v.paused ? 'Play' : 'Pause';
       btn.setAttribute('aria-label', `${btn.textContent} the ${btn.dataset.name} clip`);
     };
-    vid.addEventListener('play', say);
-    vid.addEventListener('pause', say);
+    v.addEventListener('play', say);
+    v.addEventListener('pause', say);
     say();
     btn.addEventListener('click', () => {
-      if (vid.paused) { delete vid.dataset.held; vid.play().catch(() => {}); }
-      else { vid.dataset.held = '1'; vid.pause(); }
+      if (v.paused) { delete v.dataset.held; v.play().catch(() => {}); }
+      else { v.dataset.held = '1'; v.pause(); }
     });
-    if (calm) vid.dataset.held = '1';
-    if (watch) watch.observe(vid.parentElement);
+    if (calm) v.dataset.held = '1';
+    if (watch) watch.observe(v.parentElement);
   });
 }
 if (document.prerendering) document.addEventListener('prerenderingchange', clips, { once: true });

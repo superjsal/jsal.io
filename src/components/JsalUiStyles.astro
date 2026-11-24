@@ -52,10 +52,6 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* A window from the game: straight, framed and lifted */
 .win { position: relative; margin: 0; }
 .win :is(img, video) { display: block; width: 100%; height: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
-/* The part's clip plays over its still in the same box, the whole clip fitted in; a clip keeps a Pause button (in
-   the dark theme's colours, on the game) in its corner, so nothing moves without a way to stop it */
-.win .hero-clip { position: absolute; left: 0; top: 0; width: 100%; height: auto; aspect-ratio: var(--ar); object-fit: contain; }
-.clip-ctl { position: absolute; right: var(--jsal-space-12); bottom: var(--jsal-space-12); z-index: 1; }
 /* Three things it does, each with a gold tick */
 .ticks { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; line-height: 1.4; color: var(--jsal-ink-2); }
 .ticks li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--jsal-space-12); }
@@ -76,7 +72,6 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 @media (max-width: 599px) {
   .win.crop { overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
   .win.crop :is(img, video) { width: var(--pw, 760px); max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
-  .win.crop.fit .hero-clip { width: 100%; height: 100%; aspect-ratio: auto; transform: none; }
 }
 
 /* Scrolling down, each block below the first screen rises 48px (24px on phones) and fades in once, when a sixth of

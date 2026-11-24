@@ -36,8 +36,6 @@ const side = (p) => !p.clip && !p.family && p.shot.w < 600;
 const SCENES = ["meadow", "coast", "desert", "darkwood", "jungle", "savanna", "snow", "swamp"].map((s) => [s[0].toUpperCase() + s.slice(1), v(`/img/jsal-ui/pals/scene-${s}.png`), v(`/img/jsal-ui/pals/scene-${s}-night.png`)]);
 // The scroll reveal for the blocks under the tour, a file of its own (site/jsal-ui/reveal.js), shared with the part pages
 const REVEAL = v("/jsal-ui/reveal.js");
-// A part's turn in the tour lasts as long as its clip, 5 to 12 seconds
-const turn = (c) => Math.min(12, Math.max(5, Math.round(c.s * 10) / 10));
 const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 ---
 <Page
@@ -133,12 +131,14 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* Every part's stage is as tall as the tallest, so what's under it stays put as the parts change (the tour, a
    click). The script measures each one, unseen, to find that height. */
 .ui-js .stages { position: relative; }
-/* and every window shows in one frame, its top 460px, fading out at the foot, so the parts come out about the same
-   size and the shared height leaves no part with an empty gap (a phone crops its own way, below) */
+/* and every window shows whole up to 900px tall; only a taller one is cut there, and fades out at the foot (.cut,
+   set by the script that measures the stages). On a short screen the limit is the screen less room for the page
+   around it, at least 460px, so the list and the next section stay near (a phone crops its own way, below). */
 @media (min-width: 600px) {
-  .win:not(.pen) { max-height: 460px; overflow: hidden; border-radius: var(--jsal-radius-xl); }
-  .win:not(.pen)::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64px; background: linear-gradient(transparent, var(--jsal-sunk)); pointer-events: none; }
+  .win:not(.pen) { --cap: 900px; max-height: var(--cap); overflow: hidden; border-radius: var(--jsal-radius-xl); }
+  .win.cut::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64px; background: linear-gradient(transparent, var(--jsal-sunk)); pointer-events: none; }
 }
+@media (min-width: 600px) and (max-height: 799px) { .win:not(.pen) { --cap: max(460px, calc(100vh - 300px)); } }
 .ui-js .stage.measure { display: grid; position: absolute; left: 0; right: 0; top: 0; visibility: hidden; }
 /* Picking a part: the new stage's parts arrive in order from the way the list moved: its name, its words, then
    its window. The first stage is simply there when the page opens. */
@@ -216,13 +216,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* A window from the game: straight, framed and lifted. A small one (the pals) keeps its own size, so it never blurs. */
 .win { position: relative; margin: 0; }
 .win :is(img, video) { display: block; width: 100%; max-width: var(--w); height: auto; margin-inline: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
-/* In the tour, a part's clip plays over its still in the same box: the whole clip fitted in, on the stage's own
-   fill, never stretched or cut; the frame shows the same top of it as of the still */
-.win .tour-clip { position: absolute; left: 0; top: 0; width: 100%; height: auto; aspect-ratio: var(--ar); object-fit: contain; background: var(--jsal-sunk); }
-/* A part picked by hand loops its clip, with a Pause button (in the dark theme's colours, on the game) in its
-   corner; in the tour, Pause the tour does that */
-.clip-ctl { position: absolute; right: var(--jsal-space-12); top: var(--jsal-space-12); z-index: 2; }
-.pick:not(.toured) .clip-ctl { display: none; }
+/* A clip plays in place of a still while it's on screen, and keeps a Pause button (in the dark theme's colours, on
+   the game) in its corner, so nothing moves without a way to stop it */
+.clip-ctl { position: absolute; right: var(--jsal-space-12); bottom: var(--jsal-space-12); z-index: 1; }
 
 .band h2, .little h2, .install h2 { margin: 0; font: 700 24px/1.2 var(--f); letter-spacing: -0.01em; }
 
@@ -272,8 +268,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* The tour: the chosen row's gold line fills while its turn lasts; it rests while the pointer or the keyboard is on
    the list or the stage, or the list is off screen */
 .slot::after { content: ""; position: absolute; left: var(--jsal-space-12); right: var(--jsal-space-12); bottom: var(--jsal-space-2); height: 2px; border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); transform: scaleX(0); transform-origin: left; }
-.pick.tour .slot[aria-selected="true"]::after { animation: turn var(--turn, 5s) linear forwards; }   /* style: allow (a part's turn in the tour) */
-.pick.tour:is(.away, :has(.slots:hover, .stages:hover, .slots:focus-within, .stages:focus-within)) .slot[aria-selected="true"]::after { animation-play-state: paused; }
+.pick.tour .slot[aria-selected="true"]::after { animation: turn 5s linear forwards; }   /* style: allow (a part's turn in the tour) */
+.pick.tour:is(:hover, .away, :has(.slots:focus-within, .stages:focus-within)) .slot[aria-selected="true"]::after { animation-play-state: paused; }
 @keyframes turn { to { transform: scaleX(1); } }
 .tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
 .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn { display: inline-flex; }
@@ -364,7 +360,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         {LIST.map((g) => (
           <Fragment>
             {g.name && <p class="grp" aria-hidden="true" style={`--o: ${ORDER[`g:${g.name}`]}`}>{g.name}</p>}
-            {g.parts.map((p) => <a class="slot" style={`--o: ${ORDER[p.key]}${p.tour ? `; --turn: ${turn(p.tour)}s` : ""}`} href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><b>{p.label}</b><i>{WHEN[p.when][0]}</i></a>)}
+            {g.parts.map((p) => <a class="slot" style={`--o: ${ORDER[p.key]}`} href={`#${p.key}`} id={`tab-${p.key}`} aria-selected={p.key === "home" ? "true" : "false"}><b>{p.label}</b><i>{WHEN[p.when][0]}</i></a>)}
           </Fragment>
         ))}
       </div>
@@ -394,8 +390,13 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           {!side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}{PAGES[p.key] && <li class="to-page"><a href={`/jsal-ui/${p.key}/`}>{PAGES[p.key].more} <span aria-hidden="true">›</span></a></li>}</ul>}
           {p.family ? (
             <figure class="win pen" aria-label="The pal's pen"></figure>
+          ) : p.clip ? (
+            <figure class="win clip" style={`--w: ${p.clip.w}px; --pw: ${p.clip.pw}px; --cx: ${p.clip.cx}; --cy: ${p.clip.cy}`}>
+              <video muted loop playsinline preload="none" poster={v(p.clip.poster)} width={p.clip.w} height={p.clip.h} aria-label={p.clip.alt}><source src={v(p.clip.src)} type="video/mp4"></video>
+              <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
+            </figure>
           ) : (
-            <figure class={`win${p.key === "home" ? " home" : ""}`} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}; --ar: ${p.shot.w} / ${p.shot.h}`} data-clip={p.tour && v(p.tour.src)} data-w={p.tour?.w} data-h={p.tour?.h}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading={p.key === "home" ? "eager" : "lazy"} decoding="async"></figure>
+            <figure class={`win${p.key === "home" ? " home" : ""}`} style={`--w: ${p.shot.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}><img src={v(p.shot.src)} width={p.shot.w} height={p.shot.h} alt={p.shot.alt} loading={p.key === "home" ? "eager" : "lazy"} decoding="async"></figure>
           )}
         </section>
       ))}
@@ -464,7 +465,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const orient = () => list.setAttribute('aria-orientation', wide.matches ? 'vertical' : 'horizontal');
   orient(); wide.addEventListener('change', orient);
   stages.forEach((s, i) => { s.setAttribute('role', 'tabpanel'); s.setAttribute('aria-labelledby', tabs[i].id); });
-  let cur = 0, rest = 0, live = false, onPick = null;
+  let cur = 0, rest = 0, live = false;
   const box = document.querySelector('.stages');
   // One gem for the whole list: it slides to the chosen row, half a turn each trip, and lands with a ring
   const gem = list.appendChild(Object.assign(document.createElement('i'), { className: 'gem' }));
@@ -483,7 +484,14 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     box.style.minHeight = '';
     if (!roomy.matches) return;
     let tall = 0;
-    stages.forEach((s) => { s.classList.add('measure'); tall = Math.max(tall, s.offsetHeight); s.classList.remove('measure'); });
+    stages.forEach((s) => {
+      s.classList.add('measure');
+      // a window taller than its frame is cut, and fades out at the foot
+      const f = s.querySelector('.win:not(.pen)'), m = f && f.querySelector('img, video');
+      if (m) f.classList.toggle('cut', m.offsetHeight > f.clientHeight + 1);
+      tall = Math.max(tall, s.offsetHeight);
+      s.classList.remove('measure');
+    });
     box.style.minHeight = `${Math.ceil(tall)}px`;
   };
   let soon = 0;
@@ -501,7 +509,6 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     if (focus) tabs[i].focus();
     // on a phone the list is a dock that slides sideways: bring the chosen part into it
     if (list.scrollWidth > list.clientWidth) list.scrollLeft = tabs[i].offsetLeft - 20;
-    if (onPick) onPick();
   };
   // where the list opens in place (a phone, or one held sideways), a tapped row is brought to the top of the screen
   // with its part open under it
@@ -548,7 +555,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   const pickEl = document.querySelector('.pick'), btn = document.querySelector('.tour-btn');
   if (matchMedia('(min-width: 700px) and (not ((max-height: 500px) and (orientation: landscape)))').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
     const say = (label, pressed) => { btn.textContent = label; btn.setAttribute('aria-pressed', String(pressed)); };
-    const end = () => { pickEl.classList.remove('tour', 'rested'); pickEl.classList.add('toured'); say('Play the tour', false); sync(); };
+    const end = () => { pickEl.classList.remove('tour', 'rested'); pickEl.classList.add('toured'); say('Play the tour', false); };
     const start = () => {
       pickEl.classList.add('tour');
       list.addEventListener('animationend', (e) => {
@@ -564,60 +571,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         say(resting ? 'Play the tour' : 'Pause the tour', resting);
       });
       // a sixth in view counts: on a phone held sideways the list and stage are far taller than the screen
-      const away = new IntersectionObserver(([e]) => { pickEl.classList.toggle('away', !e.isIntersecting); sync(); }, { threshold: 0.15 });
+      const away = new IntersectionObserver(([e]) => pickEl.classList.toggle('away', !e.isIntersecting), { threshold: 0.15 });
       away.observe(pickEl);
-      // the clips follow the tour: a new turn, a pick, the pointer or the keyboard coming or going, the Pause button
-      onPick = () => { picked = true; held = false; sync(); };
-      btn.addEventListener('click', sync);
-      ['pointerover', 'pointerout', 'focusin', 'focusout'].forEach((type) => pickEl.addEventListener(type, () => requestAnimationFrame(sync)));
-    };
-    // The parts' clips. When a part is shown, by its turn (after the first, so opening the page loads no clip) or by
-    // a click on its row, its clip is made and loaded then, over its still, and dropped when another part is shown,
-    // so only one is ever loaded. In the tour, whatever rests the tour (the pointer on the list or the stage, the
-    // keyboard there, Pause the tour) pauses it. A part picked by hand ends the tour: its clip loops, with a Pause
-    // button of its own. The list leaving the screen pauses and rewinds it. With reduced motion (the tour doesn't
-    // run), to save data, or if the clip can't load, the still stays.
-    const lean = !!(navigator.connection && navigator.connection.saveData);
-    let vid = null, ctl = null, picked = false, held = false;
-    const drop = () => {
-      if (!vid) return;
-      vid.pause();
-      vid.parentElement.querySelector('img').removeAttribute('aria-hidden');
-      vid.remove(); ctl.remove();
-      vid = ctl = null;
-    };
-    const named = () => {
-      const b = ctl.firstChild;
-      b.textContent = vid.paused ? 'Play' : 'Pause';
-      b.setAttribute('aria-label', `${b.textContent} the ${tabs[cur].querySelector('b').textContent} clip`);
-    };
-    const make = (fig) => {
-      const img = fig.querySelector('img'), me = document.createElement('video');
-      Object.assign(me, { muted: true, loop: true, playsInline: true, preload: 'auto', poster: img.currentSrc || img.src, className: 'tour-clip', width: +fig.dataset.w, height: +fig.dataset.h });
-      me.setAttribute('muted', '');
-      me.setAttribute('aria-label', img.alt);
-      me.addEventListener('error', () => { if (vid === me) drop(); else me.remove(); });
-      ctl = Object.assign(document.createElement('span'), { className: 'clip-ctl jsal-dark' });
-      const b = Object.assign(document.createElement('button'), { type: 'button', className: 'jsal-btn small' });
-      b.addEventListener('click', () => { held = !vid.paused; sync(); });
-      ctl.append(b);
-      me.addEventListener('play', named);
-      me.addEventListener('pause', named);
-      me.src = fig.dataset.clip;
-      img.setAttribute('aria-hidden', 'true');
-      fig.append(me, ctl);
-      vid = me;
-      named();
-    };
-    const sync = () => {
-      const fig = stages[cur].querySelector('figure[data-clip]');
-      if (vid && vid.parentElement !== fig) drop();
-      if (lean || !picked || !fig) return;
-      if (!vid) make(fig);
-      if (pickEl.classList.contains('away')) { vid.pause(); vid.currentTime = 0; return; }
-      const rests = pickEl.classList.contains('toured') ? held
-        : pickEl.classList.contains('rested') || !!pickEl.querySelector('.slots:hover, .stages:hover, :is(.slots, .stages) :focus-visible');
-      if (rests) vid.pause(); else vid.play().catch(() => {});
     };
     if (document.prerendering) document.addEventListener('prerenderingchange', start, { once: true }); else start();
   }
@@ -748,5 +703,35 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
   show();
 })();
+// The clips: each plays while a third of its frame is on screen and stops when it leaves, downloading only then
+// (the frame, not the video, as phones show only a corner of the video). Its button says what a press does (Pause
+// or Play), and a pause holds until the visitor plays it again. With reduced motion, or when the browser is asked to
+// save data, nothing starts by itself or downloads; Play still works. A page loaded ahead waits until it's shown.
+function clips() {
+  const calm = !matchMedia('(prefers-reduced-motion: no-preference)').matches || !!(navigator.connection && navigator.connection.saveData);
+  const watch = 'IntersectionObserver' in window && new IntersectionObserver((es) => es.forEach((e) => {
+    const v = e.target.querySelector('video');
+    if (e.isIntersecting && !v.dataset.held) v.play().catch(() => {});
+    else if (!e.isIntersecting && !v.paused) v.pause();
+  }), { threshold: 0.33 });
+  document.querySelectorAll('.clip video').forEach((v) => {
+    const btn = v.parentElement.querySelector('.clip-ctl button');
+    const say = () => {
+      btn.textContent = v.paused ? 'Play' : 'Pause';
+      btn.setAttribute('aria-label', `${btn.textContent} the ${btn.dataset.name} clip`);
+    };
+    v.addEventListener('play', say);
+    v.addEventListener('pause', say);
+    say();
+    btn.addEventListener('click', () => {
+      if (v.paused) { delete v.dataset.held; v.play().catch(() => {}); }
+      else { v.dataset.held = '1'; v.pause(); }
+    });
+    if (calm) v.dataset.held = '1';
+    if (watch) watch.observe(v.parentElement);
+  });
+}
+if (document.prerendering) document.addEventListener('prerenderingchange', clips, { once: true });
+else clips();
 </script>
 </Page>

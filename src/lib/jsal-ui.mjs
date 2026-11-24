@@ -16,7 +16,9 @@ const shot = (name, w, h, alt, menu = false) => {
 // fades have two to seven frames and 256 colours), its first frame as the still shown until it plays. The clips
 // are framed differently (a panel, or a window with some of the game round it), so x and y say where each one's own
 // content starts, in its pixels, for the crops. pw is how wide a phone draws it (760 unless given): smaller for a
-// narrow clip whose point is across its whole width.
+// narrow clip whose point is across its whole width. A part with a clip shows it on its stage on the jsal.ui page and,
+// if it has a page of its own, at the top of that page; adding one is a line here, its MP4 and its first frame as
+// a WebP of the same name.
 const clip = (name, w, h, x, y, alt, pw = 760) => ({ src: `/img/jsal-ui/ui/clips/${name}.mp4`, poster: `/img/jsal-ui/ui/clips/${name}.webp`, w, h, alt, pw, cx: +(x / w * 100).toFixed(2), cy: +(y / h * 100).toFixed(2) });
 const CLIPS = {
   // the filter row and each upgrade's name, source and level, all across: zoomed out so a phone shows them together
@@ -79,28 +81,6 @@ export const GROUPS = [
 
 for (const g of GROUPS) for (const p of g.parts) if (CLIPS[p.key]) p.clip = CLIPS[p.key];
 
-// One clip a part, recorded in the game: on the jsal.ui page it plays in the tour in place of the part's still when
-// the part's turn comes (the turn lasts as long as the clip, 5 to 12 seconds), and on a part's own page in place of
-// the window at the top. An MP4 under site/img/jsal-ui/clips/, named by the part's key, and every number about it is
-// here: w and h, its size in pixels, and s, how many seconds it runs. A file replaced by a new take needs its numbers
-// changed here too. A part with no entry shows its still, as before.
-const tourClip = (key, w, h, s) => ({ src: `/img/jsal-ui/clips/${key}.mp4`, w, h, s });
-const TOUR = {
-  home: tourClip("home", 1320, 880, 4.7),
-  training: tourClip("training", 1320, 880, 8.03),
-  build: tourClip("build", 1320, 880, 8.87),
-  gear: tourClip("gear", 1402, 1070, 12.43),
-  dungeons: tourClip("dungeons", 1402, 976, 12.47),
-  endgame: tourClip("endgame", 1320, 880, 9.8),
-  professions: tourClip("professions", 1320, 880, 7.5),
-  crafts: tourClip("crafts", 1320, 1010, 8.33),
-  profit: tourClip("profit", 1320, 1006, 7.5),
-  journal: tourClip("journal", 1320, 880, 9.43),
-  games: tourClip("games", 1374, 880, 17.2),
-};
-HOME_PART.tour = TOUR.home;
-for (const g of GROUPS) for (const p of g.parts) if (TOUR[p.key]) p.tour = TOUR[p.key];
-
 // A close-up for a part page's row: one card or list cut from a window at the game's own size (a WebP under
 // site/img/jsal-ui/ui/), so its words read as they do in the game.
 const closeup = (name, w, h, alt) => ({ src: `/img/jsal-ui/ui/${name}.webp`, w, h, alt });
@@ -108,8 +88,8 @@ const closeup = (name, w, h, alt) => ({ src: `/img/jsal-ui/ui/${name}.webp`, w, 
 // The six big parts each have a page of their own at /jsal-ui/<key>/ (John's pick of the landing mockups, 24 Nov
 // 2026: "A, the tour"), all from one template (src/pages/jsal-ui/[part].astro): the part's window large under its
 // headline, then a row for each thing it does, Good to know, two more parts and the download. A row shows a picture
-// where the site has one of that view (a clip from CLIPS, by its part's key, or a close-up in shot); the rest read
-// as words alone until one is drawn. Every word here is checked against the addon's own code and the store pages: nothing it doesn't do.
+// where the site has one of that view (a close-up in shot, or a clip from CLIPS by its part's key); the rest read
+// as words alone until one is drawn. A part with a clip in CLIPS shows it at the top of its page. Every word here is checked against the addon's own code and the store pages: nothing it doesn't do.
 // more: the landing row's link. command: the /jsal word that opens it, where there is one. next: two parts to read
 // about next, each linking to its own page or, for a small part, its card on the landing.
 export const PAGES = {
@@ -159,7 +139,8 @@ export const PAGES = {
     description: "jsal.ui's Gear plan for WoW Forever: upgrades for every slot ranked for your spec with WoWSims' stat weights, where each piece comes from, and your pre-raid BiS list at 60.",
     lead: "Every slot with what you're wearing and its upgrades near your level, ranked for your spec with WoWSims' stat weights, and where each piece comes from. At 60 it turns into your pre-raid BiS list.",
     rows: [
-      { label: "Near your level", name: "Where every upgrade comes from", say: "Pick a slot for its upgrades in order, each with the boss, quest, vendor or crafter it comes from. Filter the list to dungeons, quests, crafted pieces or world drops.", points: ["Boss, quest, vendor or crafter", "Filter by where it comes from", "The dungeons to run for them"], clip: "gear" },
+      { label: "Near your level", name: "Where every upgrade comes from", say: "Pick a slot for its upgrades in order, each with the boss, quest, vendor or crafter it comes from. Filter the list to dungeons, quests, crafted pieces or world drops.", points: ["Boss, quest, vendor or crafter", "Filter by where it comes from", "The dungeons to run for them"],
+        shot: closeup("gear-slots", 552, 723, "The Gear plan's slots for a level 40 hunter: what's worn in each and the best upgrade near that level, with where it comes from and what it adds.") },
       { label: "At 60", name: "Your pre-raid BiS, slot by slot", say: "At 60 the plan turns into your pre-raid list: the piece to aim for in every slot, what you're already wearing, and which dungeons to run for the rest. No switch to find, and you can look ahead to it at any level.", points: ["The piece to aim for in every slot", "What you're already wearing", "Which dungeons to run for the rest"] },
       { label: "Stars", name: "Star a piece, hear about it when it drops", say: "Star the pieces you're after, even one the plan doesn't list. A starred piece gets a gold line on its tooltip anywhere, a banner when it drops and a line in chat as you walk into its dungeon.", points: ["A gold banner when it drops", "Its star on the boss in the Dungeon guide", "It clears once you're wearing it"] },
     ],
@@ -216,7 +197,8 @@ export const PAGES = {
     description: "jsal.ui's Professions for WoW Forever: a cheaper road to your next rank, using the mats in your bags and bank first, where to learn or buy each recipe, and one click to a shopping list.",
     lead: "Exactly what to craft and how many, using the mats in your bags and bank first, where to learn or buy each recipe, and one click to turn it all into a shopping list.",
     rows: [
-      { label: "Your road", name: "What to craft now, and every step after", say: "The road to your next rank: the one thing to make now, with what it takes against what's in your bags, then each step ahead to the cap. A recipe's tooltip says where to learn it.", points: ["What you have against what you need", "Every step to the cap", "Where to learn or buy each recipe"], clip: "professions" },
+      { label: "Your road", name: "What to craft now, and every step after", say: "The road to your next rank: the one thing to make now, with what it takes against what's in your bags, then each step ahead to the cap. A recipe's tooltip says where to learn it.", points: ["What you have against what you need", "Every step to the cap", "Where to learn or buy each recipe"],
+        shot: closeup("professions-now", 513, 222, "Do this now on Leatherworking's road: Guardian Gloves three times, with the heavy leather, cured heavy hide and silken thread it takes against what's in the bags.") },
       { label: "Where you craft", name: "The road, beside the profession window", say: "The same road sits beside the game's profession window, a stop for each step and a gold stop where the next rank is trained, with the recipes still to learn on a tab of their own.", points: ["Opens with the profession window", "A gold stop at each new rank", "Recipes to learn, on their own tab"] },
       { label: "Shopping list", name: "One click to a shopping list", say: "Put the whole road on your shopping list. It counts your bags and bank first, says what's left to buy, and at a vendor who sells something on it, a button buys it.", points: ["Bags and bank counted first", "Vendor and auction prices", "A Buy button at the vendor"],
         shot: closeup("professions-list", 515, 198, "Everything Leatherworking needs to reach 225, what's in the bags against what's needed, and Add the road to my shopping list.") },
