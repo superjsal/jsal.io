@@ -35,6 +35,8 @@ let k = 0;
 const rows = page.rows.map((r) => ({ ...r, c: clipOf(r), flip: clipOf(r) || r.shot ? k++ % 2 === 0 : false }));
 // A picture wider than the usual picture column gets two thirds of the row, so its words stay at least 85% of the
 // game's size
+// A words-only row that follows another takes the other side, so a pair of them zigzags like the picture rows
+rows.forEach((r, i) => { if (!r.c && !r.shot && i > 0 && !rows[i - 1].c && !rows[i - 1].shot) r.bflip = !rows[i - 1].bflip; });
 const wide = (r) => ((r.c || r.shot)?.w || 0) > 740;
 // On a phone a clip's corner is drawn at no less than 85% of its own size
 const phoneW = (c) => Math.max(c.pw, Math.round(c.w * 0.85));
@@ -62,7 +64,7 @@ const MAPS = "https://sreyesmaps.com";
 .crumb { margin: var(--jsal-page-top) 0 0; }
 /* The part's name and headline, what it does, and the download with when it's useful beside them */
 .hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--jsal-space-24) var(--jsal-space-48); align-items: end; margin-top: var(--jsal-space-20); }
-.hero h1 { margin: var(--jsal-space-8) 0 0; font: 700 46px/1.05 var(--f); letter-spacing: -0.02em; }
+.hero h1 { margin: 0; font: 700 46px/1.05 var(--f); letter-spacing: -0.02em; }
 .hero .lead { max-width: 40em; margin: var(--jsal-space-16) 0 0; color: var(--jsal-ink-2); font-size: 17px; line-height: 1.55; }
 .side { display: grid; justify-items: end; gap: var(--jsal-space-12); }
 .side p { margin: 0; color: var(--jsal-muted); font-size: 14px; }
@@ -125,6 +127,13 @@ const MAPS = "https://sreyesmaps.com";
   .win.shot { overflow: hidden; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
   .win.shot img { width: min(var(--w), max(100%, calc(var(--w) * 0.85))); max-width: none; margin: 0; border: 0; border-radius: 0; box-shadow: none; }
 }
+/* Touch: the small links and the clip's button get a 44px tap area that takes no room */
+@media (max-width: 599px), (pointer: coarse) {
+  .crumb a, .foot a, .clip-ctl .jsal-btn { position: relative; }
+  .crumb a::after { content: ""; position: absolute; inset: -10px -8px; }
+  .foot a::after { content: ""; position: absolute; inset: -15px -8px; }
+  .clip-ctl .jsal-btn::after { content: ""; position: absolute; inset: -8px; }
+}
 @media (max-width: 520px) { .hero h1 { font-size: 40px; } }
 /* The narrowest phones keep the bar on one row: Updates goes (the jsal.ui page links it) */
 @media (max-width: 374px) { .jsal-top nav a[href="/jsal-ui/updates/"] { display: none; } }
@@ -148,6 +157,15 @@ const MAPS = "https://sreyesmaps.com";
 @media (max-width: 1279px) { .row.bare { grid-template-columns: minmax(0, 1fr); } }
 </style>
 )}
+{rows.some((r) => r.bflip) && (
+<style is:inline slot="head">
+/* A second words-only row in a row has its ticks on the left */
+@media (min-width: 1280px) {
+  .row.bare.bflip { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
+  .row.bare.bflip > .ticks { order: -1; }
+}
+</style>
+)}
 {clipped && (
 <style is:inline slot="head">
 @media (min-width: 600px) { .win.clip video { max-width: var(--w); margin-inline: auto; } }   /* a clip never drawn larger than it was made */
@@ -160,6 +178,7 @@ const MAPS = "https://sreyesmaps.com";
 <style is:inline slot="head">
 /* The maps' maker, credited under the words about them */
 .credit { margin: var(--jsal-space-12) 0 0; color: var(--jsal-muted); font-size: 13px; }
+@media (max-width: 599px), (pointer: coarse) { .credit a { position: relative; } .credit a::after { content: ""; position: absolute; inset: -15px -8px; } }
 </style>
 )}
 <div class="wrap">
@@ -168,7 +187,6 @@ const MAPS = "https://sreyesmaps.com";
   <nav class="crumb jsal-crumbs" aria-label="Breadcrumb"><a href="/jsal-ui/">jsal.ui</a> <span aria-hidden="true">›</span> <span aria-current="page">{me.label}</span></nav>
   <section class="hero" aria-labelledby="part-h">
     <div>
-      <p class="eyebrow">{me.label}</p>
       <h1 id="part-h">{me.name}</h1>
       <p class="lead">{page.lead}</p>
     </div>
@@ -217,7 +235,7 @@ const MAPS = "https://sreyesmaps.com";
       </div>
     </section>
   ) : (
-    <section class="row bare part-row" aria-labelledby={`row-${i}`} data-rv-row>
+    <section class={`row bare part-row${r.bflip ? " bflip" : ""}`} aria-labelledby={`row-${i}`} data-rv-row>
       <div class="words">
         <p class="eyebrow">{r.label}</p>
         <h2 id={`row-${i}`}>{r.name}</h2>
