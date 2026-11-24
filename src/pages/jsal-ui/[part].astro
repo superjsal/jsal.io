@@ -84,11 +84,11 @@ const MAPS = "https://sreyesmaps.com";
 .win.shot img { max-width: var(--w); }
 /* A picture narrower than its column sits toward its words: against the left edge when stacked, and beside the words
    against the column's near edge, with the words starting level with its top */
-.row .win.shot img, .row .win.clip video { margin-inline: 0 auto; }
+.row .win.shot img, .row .win.clip { margin-inline: 0 auto; }
 @media (min-width: 1280px) {
   .row { align-items: start; }
-  .row .win.shot img, .row .win.clip video { margin-inline: auto 0; }
-  .row.flip .win.shot img, .row.flip .win.clip video { margin-inline: 0 auto; }
+  .row .win.shot img, .row .win.clip { margin-inline: auto 0; }
+  .row.flip .win.shot img, .row.flip .win.clip { margin-inline: 0 auto; }
 }
 
 /* Good to know: three short facts, a card each */
@@ -168,7 +168,7 @@ const MAPS = "https://sreyesmaps.com";
 )}
 {clipped && (
 <style is:inline slot="head">
-@media (min-width: 600px) { .win.clip video { max-width: var(--w); margin-inline: auto; } }   /* a clip never drawn larger than it was made */
+@media (min-width: 600px) { .win.clip { width: min(100%, var(--w)); margin-inline: auto; } }   /* a clip's frame is the clip itself, never drawn larger than it was made, so its Pause button sits against the clip's own corner */
 /* A clip plays while it's on screen, and keeps a Pause button (in the dark theme's colours, on the game) in its
    corner, so nothing moves without a way to stop it */
 .clip-ctl { position: absolute; right: var(--jsal-space-12); bottom: var(--jsal-space-12); z-index: 1; }
