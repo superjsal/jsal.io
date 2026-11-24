@@ -266,8 +266,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   take needs its numbers changed there). In the jsal.ui page's tour, from the second turn on, a part's clip plays
   over its still in the same box (the whole clip fitted in on the stage's fill, so the stage keeps its height),
   loaded only when its turn comes and dropped when the turn ends; the turn lasts as long as the clip, 5 to 12
-  seconds, and the gold line fills over it. Whatever rests the tour (the pointer or the keyboard on the list or the
-  stage, Pause the tour, the list off screen) pauses it; a row clicked with the mouse doesn't count as the keyboard.
+  seconds, and the gold line fills over it. In the tour, whatever rests the tour (the pointer on the list or the stage, not on
+  Pause the tour; the keyboard there; Pause the tour; the list off screen) pauses it. A part picked by hand (which
+  ends the tour) loops its clip, with a Pause/Play button of its own in the clip's corner.
   The pals keep their live pen. At the top of a part page the clip plays over the window while a third of it is on
   screen, with a Pause/Play button (`site/jsal-ui/clip.js`); on a phone a clip framed like its still takes the
   still's crop, and one framed otherwise shows whole. Below 700px on the jsal.ui page (no tour), with reduced

@@ -219,6 +219,10 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* In the tour, a part's clip plays over its still in the same box: the whole clip fitted in, on the stage's own
    fill, never stretched or cut; the frame shows the same top of it as of the still */
 .win .tour-clip { position: absolute; left: 0; top: 0; width: 100%; height: auto; aspect-ratio: var(--ar); object-fit: contain; background: var(--jsal-sunk); }
+/* A part picked by hand loops its clip, with a Pause button (in the dark theme's colours, on the game) in its
+   corner; in the tour, Pause the tour does that */
+.clip-ctl { position: absolute; right: var(--jsal-space-12); top: var(--jsal-space-12); z-index: 2; }
+.pick:not(.toured) .clip-ctl { display: none; }
 
 .band h2, .little h2, .install h2 { margin: 0; font: 700 24px/1.2 var(--f); letter-spacing: -0.01em; }
 
@@ -269,7 +273,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
    the list or the stage, or the list is off screen */
 .slot::after { content: ""; position: absolute; left: var(--jsal-space-12); right: var(--jsal-space-12); bottom: var(--jsal-space-2); height: 2px; border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); transform: scaleX(0); transform-origin: left; }
 .pick.tour .slot[aria-selected="true"]::after { animation: turn var(--turn, 5s) linear forwards; }   /* style: allow (a part's turn in the tour) */
-.pick.tour:is(:hover, .away, :has(.slots:focus-within, .stages:focus-within)) .slot[aria-selected="true"]::after { animation-play-state: paused; }
+.pick.tour:is(.away, :has(.slots:hover, .stages:hover, .slots:focus-within, .stages:focus-within)) .slot[aria-selected="true"]::after { animation-play-state: paused; }
 @keyframes turn { to { transform: scaleX(1); } }
 .tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
 .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn { display: inline-flex; }
@@ -562,42 +566,58 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
       // a sixth in view counts: on a phone held sideways the list and stage are far taller than the screen
       const away = new IntersectionObserver(([e]) => { pickEl.classList.toggle('away', !e.isIntersecting); sync(); }, { threshold: 0.15 });
       away.observe(pickEl);
-      // the clips follow the tour: a new turn, the pointer or the keyboard coming or going, the Pause button
-      onPick = () => { picked = true; sync(); };
+      // the clips follow the tour: a new turn, a pick, the pointer or the keyboard coming or going, the Pause button
+      onPick = () => { picked = true; held = false; sync(); };
       btn.addEventListener('click', sync);
-      ['pointerenter', 'pointerleave', 'focusin', 'focusout'].forEach((type) => pickEl.addEventListener(type, () => requestAnimationFrame(sync)));
+      ['pointerover', 'pointerout', 'focusin', 'focusout'].forEach((type) => pickEl.addEventListener(type, () => requestAnimationFrame(sync)));
     };
-    // The parts' clips: when a part's turn comes (after the first, so opening the page loads no clip), its clip
-    // plays over its still, loaded then and only then; the turn's end, or the list leaving the screen, stops it and
-    // rewinds it, and whatever rests the tour (the pointer on the list or the stage, the keyboard there, Pause) pauses
-    // it; a row clicked with the mouse keeps its focus, which doesn't count. With reduced motion (the tour doesn't run), to save data, or if the clip can't load, the still stays.
+    // The parts' clips. When a part is shown, by its turn (after the first, so opening the page loads no clip) or by
+    // a click on its row, its clip is made and loaded then, over its still, and dropped when another part is shown,
+    // so only one is ever loaded. In the tour, whatever rests the tour (the pointer on the list or the stage, the
+    // keyboard there, Pause the tour) pauses it. A part picked by hand ends the tour: its clip loops, with a Pause
+    // button of its own. The list leaving the screen pauses and rewinds it. With reduced motion (the tour doesn't
+    // run), to save data, or if the clip can't load, the still stays.
     const lean = !!(navigator.connection && navigator.connection.saveData);
-    let vid = null, picked = false;
+    let vid = null, ctl = null, picked = false, held = false;
     const drop = () => {
       if (!vid) return;
       vid.pause();
       vid.parentElement.querySelector('img').removeAttribute('aria-hidden');
-      vid.remove();
-      vid = null;
+      vid.remove(); ctl.remove();
+      vid = ctl = null;
+    };
+    const named = () => {
+      const b = ctl.firstChild;
+      b.textContent = vid.paused ? 'Play' : 'Pause';
+      b.setAttribute('aria-label', `${b.textContent} the ${tabs[cur].querySelector('b').textContent} clip`);
+    };
+    const make = (fig) => {
+      const img = fig.querySelector('img'), me = document.createElement('video');
+      Object.assign(me, { muted: true, loop: true, playsInline: true, preload: 'auto', poster: img.currentSrc || img.src, className: 'tour-clip', width: +fig.dataset.w, height: +fig.dataset.h });
+      me.setAttribute('muted', '');
+      me.setAttribute('aria-label', img.alt);
+      me.addEventListener('error', () => { if (vid === me) drop(); else me.remove(); });
+      ctl = Object.assign(document.createElement('span'), { className: 'clip-ctl jsal-dark' });
+      const b = Object.assign(document.createElement('button'), { type: 'button', className: 'jsal-btn small' });
+      b.addEventListener('click', () => { held = !vid.paused; sync(); });
+      ctl.append(b);
+      me.addEventListener('play', named);
+      me.addEventListener('pause', named);
+      me.src = fig.dataset.clip;
+      img.setAttribute('aria-hidden', 'true');
+      fig.append(me, ctl);
+      vid = me;
+      named();
     };
     const sync = () => {
       const fig = stages[cur].querySelector('figure[data-clip]');
       if (vid && vid.parentElement !== fig) drop();
       if (lean || !picked || !fig) return;
-      if (pickEl.classList.contains('away')) { if (vid) { vid.pause(); vid.currentTime = 0; } return; }
-      if (pickEl.classList.contains('rested') || pickEl.matches(':hover') || pickEl.querySelector(':is(.slots, .stages) :focus-visible')) { if (vid) vid.pause(); return; }
-      if (!vid) {
-        const img = fig.querySelector('img'), me = document.createElement('video');
-        Object.assign(me, { muted: true, loop: true, playsInline: true, preload: 'auto', poster: img.currentSrc || img.src, className: 'tour-clip', width: +fig.dataset.w, height: +fig.dataset.h });
-        me.setAttribute('muted', '');
-        me.setAttribute('aria-label', img.alt);
-        me.addEventListener('error', () => { if (vid === me) drop(); else me.remove(); });
-        me.src = fig.dataset.clip;
-        img.setAttribute('aria-hidden', 'true');
-        fig.append(me);
-        vid = me;
-      }
-      vid.play().catch(() => {});
+      if (!vid) make(fig);
+      if (pickEl.classList.contains('away')) { vid.pause(); vid.currentTime = 0; return; }
+      const rests = pickEl.classList.contains('toured') ? held
+        : pickEl.classList.contains('rested') || !!pickEl.querySelector('.slots:hover, .stages:hover, :is(.slots, .stages) :focus-visible');
+      if (rests) vid.pause(); else vid.play().catch(() => {});
     };
     if (document.prerendering) document.addEventListener('prerenderingchange', start, { once: true }); else start();
   }
