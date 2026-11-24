@@ -2,8 +2,9 @@
 // A page for each of jsal.ui's six big parts (/jsal-ui/training/, /build/, /gear/, /dungeons/, /endgame/,
 // /professions/), from John's pick of the landing mockups (24 Nov 2026, "A, the tour"), kept beside the jsal.ui
 // page's own layout (24 Nov 2026, "part pages + strong"): the tour, one part deep. Its headline and window large,
-// then a row for each thing it does (a clip or a close-up beside it where the site has one; the words alone where it
-// doesn't yet), Good to know, two more parts and the download. Every word is in PAGES in src/lib/jsal-ui.mjs, and
+// then a section for each thing it does (from John's pick of the part-page mockups, 24 Nov 2026, "G": a clip or a
+// close-up at its own size with a one-line caption under it, the caption alone where there's no picture yet,
+// sections side by side where they fit), Good to know, two more parts and the download. Every word is in PAGES in src/lib/jsal-ui.mjs, and
 // the part's name, window and points in GROUPS beside it; the version reads src/data/jsal-ui-release.json, as the
 // jsal.ui page's does. Each page is linked from its part's stage on the jsal.ui page ("More on the ..."), and links
 // back to it from the top bar, the line over its title and More of jsal.ui. Each block below the first screen
@@ -30,14 +31,8 @@ const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB
 // shown as a muted video with its first frame. The part's own clip, where CLIPS has one, leads the page instead of
 // its window, in the same figure and played by the same script as on the jsal.ui page.
 const clipOf = (row) => row.clip && ALL[row.clip].clip;
-// Rows with a picture take turns left and right, the first one's picture on the right
-let k = 0;
-const rows = page.rows.map((r) => ({ ...r, c: clipOf(r), flip: clipOf(r) || r.shot ? k++ % 2 === 0 : false }));
-// A picture wider than the usual picture column gets two thirds of the row, so its words stay at least 85% of the
-// game's size
-// A words-only row that follows another takes the other side, so a pair of them zigzags like the picture rows
-rows.forEach((r, i) => { if (!r.c && !r.shot && i > 0 && !rows[i - 1].c && !rows[i - 1].shot) r.bflip = !rows[i - 1].bflip; });
-const wide = (r) => ((r.c || r.shot)?.w || 0) > 740;
+// Each section is as wide as its picture (--w); one with no picture yet takes the caption width the CSS gives it
+const rows = page.rows.map((r) => ({ ...r, c: clipOf(r) })).map((r) => ({ ...r, w: (r.c || r.shot)?.w }));
 // On a phone a clip's corner is drawn at no less than 85% of its own size
 const phoneW = (c) => Math.max(c.pw, Math.round(c.w * 0.85));
 // Where a part opens: its own word after /jsal, or the dashboard's menu
@@ -46,7 +41,7 @@ const where = page.command ? ["Opens with", `/jsal ${page.command}`] : ["In the 
 const next = page.next.map((key) => ({ href: PAGES[key] ? `/jsal-ui/${key}/` : `/jsal-ui/#pick-${key}`, label: ALL[key].label, line: ALL[key].name }));
 const maps = rows.some((r) => r.credit);
 const clipped = !!(me.film || me.clip) || rows.some((r) => r.c);
-const bare = rows.some((r) => !r.c && !r.shot);
+
 const MAPS = "https://sreyesmaps.com";
 ---
 <Page
@@ -71,25 +66,16 @@ const MAPS = "https://sreyesmaps.com";
 .side code { padding: var(--jsal-space-2) var(--jsal-space-8); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius); color: var(--jsal-ink); }
 .big { margin-top: var(--jsal-space-40); }
 
-/* A row for each thing the part does: its picture beside its words, or, until one is drawn, its words beside its
-   ticked points */
-.part-row { margin-top: calc(var(--jsal-space-64) + var(--jsal-space-24)); scroll-margin-top: var(--jsal-space-24); }
-.part-row h2 { margin: var(--jsal-space-8) 0 0; font: 700 30px/1.1 var(--f); letter-spacing: -0.02em; }
-/* A row's picture takes turns left and right; stacked, the picture leads */
-@media (min-width: 1280px) {
-  .row.flip { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
-  .row.flip > .win { order: 2; }
-}
+/* A section for each thing the part does: its picture at its own size with a short caption under it, exactly as wide
+   as the picture. Sections sit side by side wherever they fit, standing on one line so their captions line up; one
+   with no picture yet is its caption alone, at a typical picture's width */
+.caps { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: var(--jsal-space-64) var(--jsal-space-40); margin-top: calc(var(--jsal-space-64) + var(--jsal-space-24)); }
+.part-row { display: flex; flex-direction: column; gap: var(--jsal-space-20); flex: 0 1 var(--w, 26rem); max-width: 100%; min-width: 0; scroll-margin-top: var(--jsal-space-24); }
+.part-row .words { text-align: center; }
+.part-row h2 { margin: var(--jsal-space-4) 0 0; font: 700 20px/1.25 var(--f); letter-spacing: -0.02em; }
+.part-row .say { margin: var(--jsal-space-8) 0 0; color: var(--jsal-ink-2); font-size: 15px; }
 /* A close-up is one card or list from a window, never drawn larger than the game draws it */
-.win.shot img { max-width: var(--w); }
-/* A picture narrower than its column sits toward its words: against the left edge when stacked, and beside the words
-   against the column's near edge, with the words starting level with its top */
-.row .win.shot img, .row .win.clip { margin-inline: 0 auto; }
-@media (min-width: 1280px) {
-  .row { align-items: start; }
-  .row .win.shot img, .row .win.clip { margin-inline: auto 0; }
-  .row.flip .win.shot img, .row.flip .win.clip { margin-inline: 0 auto; }
-}
+.win.shot img { max-width: var(--w); margin-inline: auto; }
 
 /* Good to know: three short facts, a card each */
 .good { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--jsal-space-20); margin-top: calc(var(--jsal-space-64) + var(--jsal-space-32)); }
@@ -117,8 +103,7 @@ const MAPS = "https://sreyesmaps.com";
   .good, .next ul { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 599px) {
-  .part-row { margin-top: var(--jsal-space-64); }
-  .part-row h2 { font-size: 24px; }
+  .caps { gap: var(--jsal-space-48); margin-top: var(--jsal-space-64); }
   .good { margin-top: var(--jsal-space-64); }
   .band { padding: var(--jsal-space-20); }
   .band .get .jsal-btn { flex: 1 1 auto; }
@@ -139,33 +124,6 @@ const MAPS = "https://sreyesmaps.com";
 @media (max-width: 374px) { .jsal-top nav a[href="/jsal-ui/updates/"] { display: none; } }
 @media (prefers-reduced-motion: reduce) { .next a { transition: none; } }
 </style>
-{rows.some(wide) && (
-<style is:inline slot="head">
-/* A wide picture takes two thirds of its row */
-@media (min-width: 1280px) {
-  .row.wide { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
-  .row.wide.flip { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
-}
-</style>
-)}
-{bare && (
-<style is:inline slot="head">
-/* A row with no picture yet: its words beside its ticked points, in a card */
-.row.bare { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); align-items: center; }
-.row.bare .say { max-width: 64ch; margin-bottom: 0; }   /* about 70 characters a line */
-.row.bare > .ticks { padding: var(--jsal-space-24); border-radius: var(--jsal-radius-tile); background: var(--plain); }
-@media (max-width: 1279px) { .row.bare { grid-template-columns: minmax(0, 1fr); } }
-</style>
-)}
-{rows.some((r) => r.bflip) && (
-<style is:inline slot="head">
-/* A second words-only row in a row has its ticks on the left */
-@media (min-width: 1280px) {
-  .row.bare.bflip { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
-  .row.bare.bflip > .ticks { order: -1; }
-}
-</style>
-)}
 {clipped && (
 <style is:inline slot="head">
 @media (min-width: 600px) { .win.clip { width: min(100%, var(--w)); margin-inline: auto; } }   /* a clip's frame is the clip itself, never drawn larger than it was made, so its Pause button sits against the clip's own corner */
@@ -177,7 +135,7 @@ const MAPS = "https://sreyesmaps.com";
 {maps && (
 <style is:inline slot="head">
 /* The maps' maker, credited under the words about them */
-.credit { margin: var(--jsal-space-12) 0 0; color: var(--jsal-muted); font-size: 13px; }
+.credit { margin: var(--jsal-space-12) 0 0; color: var(--jsal-muted); font-size: 12px; }
 @media (max-width: 599px), (pointer: coarse) { .credit a { position: relative; } .credit a::after { content: ""; position: absolute; inset: -15px -8px; } }
 </style>
 )}
@@ -210,41 +168,26 @@ const MAPS = "https://sreyesmaps.com";
   ) : (
     <figure class="win crop big" data-rv style={`--pw: ${me.shot.w}px; --cx: ${me.shot.cx}; --cy: ${me.shot.cy}`}><img src={v(me.shot.src)} width={me.shot.w} height={me.shot.h} alt={me.shot.alt} fetchpriority="high" decoding="async"></figure>
   )}
-  {rows.map((r, i) => r.c ? (
-    <section class={`row part-row${r.flip ? " flip" : ""}${wide(r) ? " wide" : ""}`} aria-labelledby={`row-${i}`} data-rv-row>
-      <figure class="win clip crop" style={`--w: ${r.c.w}px; --pw: ${phoneW(r.c)}px; --cx: ${r.c.cx}; --cy: ${r.c.cy}`}>
-        <video muted loop playsinline preload="none" poster={v(r.c.poster)} width={r.c.w} height={r.c.h} aria-label={r.c.alt}><source src={v(r.c.src)} type="video/mp4"></video>
-        <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={r.label}>Play</button></span>
-      </figure>
-      <div class="words">
-        <p class="eyebrow">{r.label}</p>
-        <h2 id={`row-${i}`}>{r.name}</h2>
-        <p class="say">{r.say}</p>
-        <ul class="ticks">{r.points.map((x) => <li>{x}</li>)}</ul>
-      </div>
-    </section>
-  ) : r.shot ? (
-    <section class={`row part-row${r.flip ? " flip" : ""}${wide(r) ? " wide" : ""}`} aria-labelledby={`row-${i}`} data-rv-row>
-      <figure class="win shot" style={`--w: ${r.shot.w}px`}><img src={v(r.shot.src)} width={r.shot.w} height={r.shot.h} alt={r.shot.alt} loading="lazy" decoding="async"></figure>
-      <div class="words">
-        <p class="eyebrow">{r.label}</p>
-        <h2 id={`row-${i}`}>{r.name}</h2>
-        <p class="say">{r.say}</p>
-        {r.credit && <p class="credit">Maps by Santiago Reyes · Atlas de Azeroth: Forever · <a href={MAPS}>sreyesmaps.com</a></p>}
-        <ul class="ticks">{r.points.map((x) => <li>{x}</li>)}</ul>
-      </div>
-    </section>
-  ) : (
-    <section class={`row bare part-row${r.bflip ? " bflip" : ""}`} aria-labelledby={`row-${i}`} data-rv-row>
+  <div class="caps">
+  {rows.map((r, i) => (
+    <section class="part-row" aria-labelledby={`row-${i}`} style={r.w ? `--w: ${r.w}px` : undefined} {...(r.w ? { "data-rv-row": "" } : { "data-rv": "" })}>
+      {r.c ? (
+        <figure class="win clip crop" style={`--w: ${r.c.w}px; --pw: ${phoneW(r.c)}px; --cx: ${r.c.cx}; --cy: ${r.c.cy}`}>
+          <video muted loop playsinline preload="none" poster={v(r.c.poster)} width={r.c.w} height={r.c.h} aria-label={r.c.alt}><source src={v(r.c.src)} type="video/mp4"></video>
+          <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={r.label}>Play</button></span>
+        </figure>
+      ) : r.shot && (
+        <figure class="win shot" style={`--w: ${r.shot.w}px`}><img src={v(r.shot.src)} width={r.shot.w} height={r.shot.h} alt={r.shot.alt} loading="lazy" decoding="async"></figure>
+      )}
       <div class="words">
         <p class="eyebrow">{r.label}</p>
         <h2 id={`row-${i}`}>{r.name}</h2>
         <p class="say">{r.say}</p>
         {r.credit && <p class="credit">Maps by Santiago Reyes · Atlas de Azeroth: Forever · <a href={MAPS}>sreyesmaps.com</a></p>}
       </div>
-      <ul class="ticks">{r.points.map((x) => <li>{x}</li>)}</ul>
     </section>
   ))}
+  </div>
   <section class="good" aria-labelledby="good-h" data-rv-cards>
     <h2 id="good-h">Good to know</h2>
     {page.good.map(([t, d]) => <div><h3>{t}</h3><p>{d}</p></div>)}

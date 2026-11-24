@@ -52,21 +52,10 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* A window from the game: straight, framed and lifted */
 .win { position: relative; margin: 0; }
 .win :is(img, video) { display: block; width: 100%; height: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
-/* Three things it does, each with a gold tick */
-.ticks { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; line-height: 1.4; color: var(--jsal-ink-2); }
-.ticks li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--jsal-space-12); }
-.ticks li::before { content: ""; width: 18px; height: 18px; margin-top: 1px; background: var(--jsal-accent); -webkit-mask: var(--jsal-tick) center / 15px no-repeat; mask: var(--jsal-tick) center / 15px no-repeat; }
-
-/* A part's row: its window beside its words (a page whose rows take turns left and right adds .flip itself) */
-.row { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: calc(var(--jsal-space-48) + var(--jsal-space-8)); align-items: center; }
-.row .say { margin: var(--jsal-space-12) 0 var(--jsal-space-20); color: var(--jsal-ink-2); }
 
 .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--jsal-space-4) var(--jsal-space-24); margin-top: var(--jsal-space-48); padding-top: var(--jsal-space-20); border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
 .foot p { margin: 0; }
 
-@media (max-width: 1279px) {
-  .row { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
-}
 /* Upright phones: a whole window would be too small to read, so each shows its top corner at a readable size, cut
    off by its frame, past the dashboard's menu and title bar */
 @media (max-width: 599px) {
