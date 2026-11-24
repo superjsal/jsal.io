@@ -26,7 +26,7 @@ const DISCORD = "https://discord.gg/BfUKeCjNeZ";
 const LIST = [{ name: null, parts: [HOME_PART] }, ...GROUPS];
 const ALL = LIST.flatMap((g) => g.parts);
 // When a part earns its keep, as its row and its stage say it
-const WHEN = { leveling: ["1 to 60", "For leveling, 1 to 60"], sixty: ["At 60", "For level 60"], any: ["Any level", "Useful at any level"] };
+const WHEN = { leveling: ["1 to 60", "For leveling, 1 to 60"], sixty: ["At 60", "For level 60"], any: ["Any level", "Useful at any level"], fun: ["Any level", "Fun at any level"] };
 // On a phone the list and the stages are laid out as one: a group's name, then each row with its stage under it
 const ORDER = {};
 LIST.reduce((k, g) => { if (g.name) ORDER[`g:${g.name}`] = k++; g.parts.forEach((p) => { ORDER[p.key] = k; k += 2; }); return k; }, 0);

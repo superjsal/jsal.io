@@ -24,7 +24,7 @@ const group = GROUPS.find((g) => g.parts.some((p) => p.key === part));
 const ALL = Object.fromEntries(GROUPS.flatMap((g) => g.parts).map((p) => [p.key, p]));
 const me = ALL[part];
 const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
-const WHEN = { leveling: "1 to 60", sixty: "At 60", any: "Any level" };
+const WHEN = { leveling: "1 to 60", sixty: "At 60", any: "Any level", fun: "Any level" };
 const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 // A row's picture: a close-up (shot in PAGES) at the game's own size, or a clip of a part in use (its key in GROUPS),
 // shown as a muted video with its first frame. The part's own clip, where CLIPS has one, leads the page instead of
