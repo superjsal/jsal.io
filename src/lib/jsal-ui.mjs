@@ -128,9 +128,12 @@ export const PAGES = {
     rows: [
       { label: "Ready now", name: "What's ready, and what it costs", say: "Spells, pet and weapon training you can train now, and whether your gold covers it.",
         shot: closeup("training-now", 512, 331, "The Training Planner's Train now list at level 46: nine spells and pet abilities with their ranks and prices, 13 skipped, and the visit's total with the gold left after.") },
+      { label: "Nearest trainer", name: "A pin on the nearest trainer", say: "Show trainer on map pins the nearest one and counts the yards as you walk.",
+        shot: closeup("training-pin", 360, 140, "The pin jsal.ui puts on the nearest trainer in the game world: a gold diamond under a label with the trainer's name and 44 yards to go.") },
       { label: "The road to 60", name: "Every visit from here to 60", say: "What each visit costs, so the pricey visits never catch you short.",
         shot: closeup("training-road", 746, 216, "The road to 60 from level 44: trainer visits at 48, 50, 52 and 54, each with what it costs and the spells it brings.") },
-      { label: "Beside the spellbook", name: "The same plan, where you train", say: "A small panel opens beside your spellbook and at any class, pet or weapon trainer." },
+      { label: "Beside the spellbook", name: "The same plan, where you train", say: "A small panel opens beside your spellbook and at any class, pet or weapon trainer.",
+        shot: closeup("training-trainer", 406, 422, "jsal.ui's panel at a warrior trainer: two spells to train with their prices, what the next level brings, a Train all button and a way back into the planner.") },
     ],
     good: [
       ["Train from the panel", "With its switch on in Settings, the panel stands in for the trainer's own window, with a Train button on each spell."],
@@ -171,7 +174,7 @@ export const PAGES = {
       { label: "At 60", name: "Your pre-raid BiS, slot by slot", say: "At 60 the plan turns into your pre-raid list. No switch to find.",
         shot: closeup("gear-at60", 620, 723, "The Gear plan at 60 for a Survival hunter: nine slots already at WoWSims' pre-raid set, and for each of the rest the piece to aim for, where it comes from and how much better it is.") },
       { label: "Stars", name: "Star a piece, hear about it when it drops", say: "A starred piece gets a gold line on its tooltip and a banner when it drops.",
-        shot: closeup("gear-stars", 482, 230, "Lord Vyletongue's card in the Dungeon guide for Maraudon: Infernal Trickster Leggings with the Gear plan's star after its name and +9% over what's worn, then the boss's other drops with how often each one drops.") },
+        shot: closeup("gear-stars", 691, 310, "A starred chest piece's tooltip in the game: jsal.ui's gold line says it's starred in your gear plan and how much better it is than what you wear, beside the piece you have on, with its star lit in the list below.") },
     ],
     good: [
       ["Your own weights", "Change any of WoWSims' numbers for your spec, or paste a whole Pawn scale. Reset goes back to WoWSims'."],
