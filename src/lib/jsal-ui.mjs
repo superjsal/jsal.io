@@ -46,7 +46,7 @@ export const GROUPS = [
       { key: "gear", when: "any", label: "Gear plan", name: "Upgrades for every slot, ranked for your spec", line: "Ranked with WoWSims' stat weights, with where each piece comes from. At 60 it turns into your pre-raid BiS list.", points: ["Boss, quest, vendor or crafter", "Tweak the weights if you disagree", "Star a piece, hear it when it drops"],
         shot: shot("gear", 1238, 859, "The Gear plan: every slot with what's worn and its best upgrade near your level, and for the ranged slot a list of upgrades with the quest each comes from.") },
       { key: "dungeons", when: "any", label: "Dungeon guide", name: "Know what drops before you zone in", line: "Each boss with its top drops for you and the drop chance on each, plus what falls off the trash.", points: ["Dungeons and raids down the side, by level", "Upgrades marked for your spec", "Quests to pick up before you go in"],
-        shot: shot("dungeons", 1240, 860, "The Dungeon guide on Maraudon: the dungeons listed down the left by level, and each boss as a card with its drops for a hunter and how often each one drops.") },
+        shot: shot("dungeons", 1240, 860, "The Dungeon guide for Maraudon: each boss's best drops for you, then its quests, then its map with its bosses marked.") },
       { key: "endgame", when: "sixty", label: "Endgame", name: "Ready for raid night", line: "Your page for 60: how far along your pre-raid set is, which consumes to bring and what they'll cost.", points: ["Your pre-raid set, slot by slot", "Raid lockouts across your characters", "Long cooldowns like Transmute"],
         shot: shot("endgame", 1320, 880, "The Endgame page for a level 60 hunter: 9 of 16 slots at the pre-raid set, raid night's elixirs, food and potions with what they cost, raid lockouts and profession cooldowns.", true) },
     ],
@@ -68,7 +68,7 @@ export const GROUPS = [
       { key: "journal", when: "any", label: "Journal", name: "A record of every level", line: "Your character's story, written as you play: levels, deaths, loot and favourite spots.", points: ["Time, gold and XP for each level", "Boss kills and raid nights at 60", "All your alts at a glance"],
         shot: shot("journal", 1320, 880, "The Journal's story for a level 34 hunter: each day's dungeon runs, first kills, levels and loot in the order they happened, with filters and days to jump to down the left.", true) },
       { key: "games", when: "any", label: "Daily games", name: "A game a day with your guild", line: "Daily Word, Icon Guess and Pal run: same for everyone, with your guild's results side by side.", points: ["Your record and streaks", "Share a result in guild chat", "A Guild Word your GM sets"],
-        shot: shot("games", 1320, 880, "Today's games: Daily Word, Icon Guess and Pal run ready to play, with a card for the Guild Word and the guild's results beside them.", true) },
+        shot: shot("games", 1320, 880, "Daily games: today's Daily Word board, then Play on the Icon Guess card opens today's first icon.", true) },
       { key: "pals", when: "any", label: "Jsal's Pals", name: "A little friend that grows with you", line: "Hatch an egg, name whatever comes out and look after it. Your questing pays for its keep.", points: ["Feed it, play, tuck it in", "It grows up, twice", "It walks along your screen"],
         // One pal's life, from the addon's own pixel art (site/img/jsal-ui/pals/): [file, name, size in the art's pixels].
         // The page plays it with the addon's own pictures: the egg hatching (hatch: ten 96-pixel frames in a row) and
