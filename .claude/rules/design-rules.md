@@ -239,8 +239,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     anything else from Forever's data, which is new and still changing; never how often it updates; never "1
     dashboard" (some pages open outside it) or "0 other addons" (an EllesmereUI profile import is planned). Then a
     **Latest release** card, a **Discord** band, the little things and Install. Install has a primary Download
-    button (the first screen's) with CurseForge and Wago as links beside it, and says what Auctionator adds: with it,
-    Professions, the shopping list and Crafting profit take its auction house scan for prices (John, 24 Nov 2026).
+    button (the first screen's) with CurseForge and Wago as links beside it, and says what Auctionator adds: with it, and
+    while Crafting profit is on (the default), the profession leveling path, the shopping list and Crafting profit
+    price things from its auction house scan (John, 24 Nov 2026).
   - **On upright phones** a whole window would be too small to read, so each shows its top corner at a readable
     size, cut off by its frame: past the dashboard's menu and title bar, by each picture's measured offsets (`cx`,
     `cy` in `jsal-ui.mjs`), so they all begin alike.

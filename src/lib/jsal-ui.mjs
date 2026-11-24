@@ -117,11 +117,11 @@ export const PAGES = {
     lead: "Follow a ready-made leveling build for your class, or theorycraft your own and share it. A card shows your next point and what it does, and when the point comes in, Learn spends it for you.",
     rows: [
       { label: "Ready-made builds", name: "A leveling build for every class", say: "Pick a build for your class and follow it level by level, so you know where each point goes before you get it. Got dual spec? Each spec follows its own build.", points: ["A leveling build for every class", "The plan, level by level", "Each spec follows its own build"],
-        shot: closeup("build-plan", 449, 541, "A suggested Beast Mastery leveling build, level by level: each talent with its points, and at 10 to 14 Deadly Aspects marked as the next one to learn.") },
+        shot: closeup("build-plan", 449, 450, "A suggested Beast Mastery leveling build, level by level: each talent with its points, and at 10 to 14 Deadly Aspects marked as the next one to learn.") },
       { label: "Your next point", name: "See it before you spend it", say: "A card shows your next point and what it does. When the point comes in, press Learn on the card and it spends it for you, after showing each point it would spend and where it goes.", points: ["Your next point, and what it does", "Learn spends it for you", "It asks before it spends"],
         shot: closeup("build-next", 359, 165, "The Ready to learn card: Deadly Aspects, Beast Mastery rank 1 of 5, one point to spend and a Learn button.") },
       { label: "Share", name: "Theorycraft your own, then share it", say: "Make a build of your own and share it as a Wowhead talent calculator link or a short code for a guildmate. Import takes either, so a friend's build is a paste away.", points: ["A Wowhead link or a short code", "Import a guildmate's build", "Read as plain text, never run"],
-        shot: closeup("build-share", 526, 236, "Export for a Beast Mastery leveling build: its Wowhead talent calculator link and its jsal.ui code, each in a box to copy.") },
+        shot: closeup("build-share", 520, 232, "Export for a Beast Mastery leveling build: its Wowhead talent calculator link and its jsal.ui code, each in a box to copy.") },
     ],
     good: [
       ["The talent helper", "The one part that starts off. Switch it on in Settings and it names your next talent when a point comes in, and marks it in the talent window."],
@@ -200,7 +200,7 @@ export const PAGES = {
         shot: closeup("professions-list", 515, 198, "Everything Leatherworking needs to reach 225, what's in the bags against what's needed, and Add the road to my shopping list.") },
     ],
     good: [
-      ["Where prices come from", "Vendor prices come with the addon. Auction prices are Auctionator's scan if you run it, and otherwise what you've seen in your own auction house searches."],
+      ["Where prices come from", "Vendor prices come with the addon. Auction prices come from Auctionator's scan if you run it (while Crafting profit is on, as it is by default), and otherwise from your own auction house searches."],
       ["Straight to the list", "/jsal shop opens the shopping list on its own."],
       ["Its own switch", "Every part of jsal.ui starts on except the talent helper. Switch off any you don't want in Settings."],
     ],
