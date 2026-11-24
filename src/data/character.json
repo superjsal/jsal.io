@@ -663,7 +663,7 @@
    ]
   }
  },
- "gearDate": "2026-11-23",
+ "gearDate": "2026-11-24",
  "portrait": "/img/play/vizdenia-render.png",
  "portraitKind": "render",
  "portraitSize": [
@@ -727,7 +727,7 @@
  "armory": {
   "race": "Night Elf",
   "itemLevel": 34,
-  "updated": "2026-11-23",
+  "updated": "2026-11-24",
   "attributes": [
    [
     "Health",
