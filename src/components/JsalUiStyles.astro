@@ -1,0 +1,88 @@
+---
+// The styles jsal.ui's six part pages share: the page's own tokens (the same as the jsal.ui page's, which keeps its
+// own copy with its own layout), the column, the top bar's links, a window from the game, the ticked points, the
+// "when it's useful" tag, the gold "More on" link, the footer and the scroll reveal. Each page adds its own layout
+// in its own <style>. Placed in a page's head slot: <JsalUiStyles slot="head" />.
+---
+<style is:inline>
+/* A window from the game keeps the addon's own dark in both themes; its shadow is softer on the light page */
+:root {
+  --win-fill: #191c23;
+  --win-shadow: 0 24px 60px rgb(0 0 0 / 0.16), 0 2px 8px rgb(0 0 0 / 0.08);
+  --f: "Outfit", "Segoe UI", system-ui, -apple-system, sans-serif;
+  /* the cards' fill, as on Off the clock */
+  --plain: #e6e8ec;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --win-shadow: 0 24px 60px rgb(0 0 0 / 0.55); --plain: #1c1f27; }
+}
+:root[data-theme="dark"] { --win-shadow: 0 24px 60px rgb(0 0 0 / 0.55); --plain: #1c1f27; }
+
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webkit-font-smoothing: antialiased; }
+.wrap { max-width: calc(var(--jsal-col) + 40px); margin: 0 auto; padding: 0 max(var(--jsal-gutter), env(safe-area-inset-right, 0px)) var(--jsal-page-end) max(var(--jsal-gutter), env(safe-area-inset-left, 0px)); }
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+main a:not(.jsal-btn, [data-plain]) { color: var(--jsal-accent); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; border-radius: var(--jsal-radius); }
+code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
+/* Outfit for names, headings and buttons; Inter for everything that is read */
+.jsal-btn.dl { min-height: 44px; padding: 0 var(--jsal-space-20); font: 700 15px/1 var(--f); }
+
+/* Top bar: the shared one, with the page's section links */
+.jsal-top nav { display: flex; gap: var(--jsal-space-2); font-size: 14px; }
+.jsal-top nav a { padding: var(--jsal-space-8); line-height: 20px; color: var(--jsal-muted); text-decoration: none; border-radius: var(--jsal-radius); }
+.jsal-top nav a:hover, .jsal-top nav a[aria-current] { color: var(--jsal-ink); }
+@media (pointer: coarse) {
+  .jsal-top nav a { position: relative; }
+  .jsal-top nav a::after { content: ""; position: absolute; inset: -4px 0; }   /* 36px drawn, 44px to tap */
+}
+/* On phones the bar keeps one row: the first link goes (the logo menu has it) */
+@media (max-width: 420px) { .jsal-top nav a:first-child:not([aria-current]) { display: none; } }
+
+/* A gold label over a heading */
+.eyebrow { margin: 0; color: var(--jsal-accent); font: 500 12px/1.5 "JetBrains Mono", Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+/* When a part is useful */
+.lv { display: inline-block; padding: var(--jsal-pad-tag); border-radius: var(--jsal-radius-sm); background: var(--jsal-sunk); color: var(--jsal-ink-2); font: 600 12px/1.5 var(--jsal-font); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+/* A link on to more, in the addon's font with an arrow */
+.more { font: 600 15px/1.4 var(--f); text-decoration: none; }
+.more::after { content: " \203A"; }
+.more:hover { text-decoration: underline; }
+
+/* A window from the game: straight, framed and lifted */
+.win { position: relative; margin: 0; }
+.win :is(img, video) { display: block; width: 100%; height: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
+/* Three things it does, each with a gold tick */
+.ticks { display: grid; gap: var(--jsal-space-8); margin: 0; padding: 0; list-style: none; line-height: 1.4; color: var(--jsal-ink-2); }
+.ticks li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--jsal-space-12); }
+.ticks li::before { content: ""; width: 18px; height: 18px; margin-top: 1px; background: var(--jsal-accent); -webkit-mask: var(--jsal-tick) center / 15px no-repeat; mask: var(--jsal-tick) center / 15px no-repeat; }
+
+/* A part's row: its window beside its words (a page whose rows take turns left and right adds .flip itself) */
+.row { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: calc(var(--jsal-space-48) + var(--jsal-space-8)); align-items: center; }
+.row .say { margin: var(--jsal-space-12) 0 var(--jsal-space-20); color: var(--jsal-ink-2); }
+
+.foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--jsal-space-4) var(--jsal-space-24); margin-top: var(--jsal-space-48); padding-top: var(--jsal-space-20); border-top: 1px solid var(--jsal-line); color: var(--jsal-muted); font-size: 13px; }
+.foot p { margin: 0; }
+
+@media (max-width: 1279px) {
+  .row { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
+}
+/* Upright phones: a whole window would be too small to read, so each shows its top corner at a readable size, cut
+   off by its frame, past the dashboard's menu and title bar */
+@media (max-width: 599px) {
+  .win.crop { overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
+  .win.crop :is(img, video) { width: var(--pw, 760px); max-width: none; border: 0; border-radius: 0; box-shadow: none; transform: translate(calc(var(--cx) * -1%), calc(var(--cy) * -1%)); }
+}
+
+/* Scrolling down, each block below the first screen rises 48px (24px on phones) and fades in once, when a sixth of
+   it shows; a window grows from 96% as it rises, and cards in a row follow one another. Only what starts below the
+   screen waits (.rv, set by /jsal-ui/reveal.js), and only with motion welcome; printed, everything shows. */
+:root { --rv-y: 48px; }
+@media (pointer: coarse), (max-width: 699px) { :root { --rv-y: 24px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .rv { opacity: 0; transform: translateY(var(--rv-y)); }
+  .rv.rv-win:not(.in) { transform: translateY(var(--rv-y)) scale(0.96); }
+  .rv.in { opacity: 1; transform: none; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s); }   /* style: allow (the scroll reveal: slow and far, so it reads as arriving) */
+}
+@media print { .rv { opacity: 1; transform: none; } }
+</style>

@@ -79,6 +79,135 @@ export const GROUPS = [
 
 for (const g of GROUPS) for (const p of g.parts) if (CLIPS[p.key]) p.clip = CLIPS[p.key];
 
+// A close-up for a part page's row: one card or list cut from a window at the game's own size (a WebP under
+// site/img/jsal-ui/ui/), so its words read as they do in the game.
+const closeup = (name, w, h, alt) => ({ src: `/img/jsal-ui/ui/${name}.webp`, w, h, alt });
+
+// The six big parts each have a page of their own at /jsal-ui/<key>/ (John's pick of the landing mockups, 24 Nov
+// 2026: "A, the tour"), all from one template (src/pages/jsal-ui/[part].astro): the part's window large under its
+// headline, then a row for each thing it does, Good to know, two more parts and the download. A row shows a picture
+// where the site has one of that view (a clip from CLIPS, by its part's key, or a close-up in shot); the rest read
+// as words alone until one is drawn. Every word here is checked against the addon's own code and the store pages: nothing it doesn't do.
+// more: the landing row's link. command: the /jsal word that opens it, where there is one. next: two parts to read
+// about next, each linking to its own page or, for a small part, its card on the landing.
+export const PAGES = {
+  training: {
+    more: "More on the Training Planner",
+    title: "Training Planner: jsal.ui for WoW Forever",
+    description: "jsal.ui's Training Planner for WoW Forever: which spells are ready at the trainer and what they'll cost, a pin on the nearest trainer, and every trainer visit from here to 60.",
+    lead: "Know before you hearth: which spells are ready at the trainer and what they'll cost you, a pin on the nearest trainer, and every visit from here to 60 laid out on one road. Pet and weapon training too.",
+    rows: [
+      { label: "Ready now", name: "What's ready, and what it costs", say: "The spells you can train right now, each with its price and the total, and whether your gold covers it. Your pet's training and new weapon skills sit on the same page.", points: ["Spells, pet and weapon training", "Each spell's price, and the total", "A pin on the nearest trainer"],
+        shot: closeup("training-now", 512, 331, "The Training Planner's Train now list at level 46: nine spells and pet abilities with their ranks and prices, 13 skipped, and the visit's total with the gold left after.") },
+      { label: "The road to 60", name: "Every visit from here to 60", say: "Each level where something new waits at the trainer, laid out on one road with how many spells it brings and what they cost, so the pricey visits never catch you short.", points: ["Your road to 60, visit by visit", "What each visit costs", "What your next ding brings"],
+        shot: closeup("training-road", 746, 216, "The road to 60 from level 44: trainer visits at 48, 50, 52 and 54, each with what it costs and the spells it brings.") },
+      { label: "Beside the spellbook", name: "The same plan, where you train", say: "A small panel opens beside your spellbook and at any class, pet or weapon trainer: what you can train now, what it costs and what the next level brings. At a trainer it shows only what that trainer teaches.", points: ["Beside the spellbook and at trainers", "Where you trained last, with a map pin", "A way back into the planner"] },
+    ],
+    good: [
+      ["Train from the panel", "With its switch on in Settings, the panel stands in for the trainer's own window, with a Train button on each spell."],
+      ["On Home too", "Home says what your next ding brings at the trainer, and whether you can afford it."],
+      ["Its own switch", "Every part of jsal.ui starts on except the talent helper. Switch off any you don't want in Settings."],
+    ],
+    next: ["build", "gear"],
+  },
+  build: {
+    more: "More on the Build Planner",
+    title: "Build Planner: jsal.ui for WoW Forever",
+    description: "jsal.ui's Build Planner for WoW Forever: follow a ready-made leveling build for your class or theorycraft your own, see your next talent point before you spend it, and share builds with your guild.",
+    lead: "Follow a ready-made leveling build for your class, or theorycraft your own and share it. A card shows your next point and what it does, and when the point comes in, Learn spends it for you.",
+    rows: [
+      { label: "Ready-made builds", name: "A leveling build for every class", say: "Pick a build for your class and follow it level by level, so you know where each point goes before you get it. Got dual spec? Each spec follows its own build.", points: ["A leveling build for every class", "The plan, level by level", "Each spec follows its own build"],
+        shot: closeup("build-plan", 449, 541, "A suggested Beast Mastery leveling build, level by level: each talent with its points, and at 10 to 14 Deadly Aspects marked as the next one to learn.") },
+      { label: "Your next point", name: "See it before you spend it", say: "A card shows your next point and what it does. When the point comes in, press Learn on the card and it spends it for you, after showing each point it would spend and where it goes.", points: ["Your next point, and what it does", "Learn spends it for you", "It asks before it spends"],
+        shot: closeup("build-next", 359, 165, "The Ready to learn card: Deadly Aspects, Beast Mastery rank 1 of 5, one point to spend and a Learn button.") },
+      { label: "Share", name: "Theorycraft your own, then share it", say: "Make a build of your own and share it as a Wowhead talent calculator link or a short code for a guildmate. Import takes either, so a friend's build is a paste away.", points: ["A Wowhead link or a short code", "Import a guildmate's build", "Read as plain text, never run"],
+        shot: closeup("build-share", 526, 236, "Export for a Beast Mastery leveling build: its Wowhead talent calculator link and its jsal.ui code, each in a box to copy.") },
+    ],
+    good: [
+      ["The talent helper", "The one part that starts off. Switch it on in Settings and it names your next talent when a point comes in, and marks it in the talent window."],
+      ["Nothing spent by surprise", "The helper's note never spends a point. Points are spent on the Build page, with Learn, after it asks."],
+      ["On Endgame", "Endgame shows the build that goes with your pre-raid set, and before 60, how far along your leveling build you are."],
+    ],
+    next: ["training", "gear"],
+  },
+  gear: {
+    more: "More on the Gear plan",
+    command: "gear",
+    title: "Gear plan: jsal.ui for WoW Forever",
+    description: "jsal.ui's Gear plan for WoW Forever: upgrades for every slot ranked for your spec with WoWSims' stat weights, where each piece comes from, and your pre-raid BiS list at 60.",
+    lead: "Every slot with what you're wearing and its upgrades near your level, ranked for your spec with WoWSims' stat weights, and where each piece comes from. At 60 it turns into your pre-raid BiS list.",
+    rows: [
+      { label: "Near your level", name: "Where every upgrade comes from", say: "Pick a slot for its upgrades in order, each with the boss, quest, vendor or crafter it comes from. Filter the list to dungeons, quests, crafted pieces or world drops.", points: ["Boss, quest, vendor or crafter", "Filter by where it comes from", "The dungeons to run for them"], clip: "gear" },
+      { label: "At 60", name: "Your pre-raid BiS, slot by slot", say: "At 60 the plan turns into your pre-raid list: the piece to aim for in every slot, what you're already wearing, and which dungeons to run for the rest. No switch to find, and you can look ahead to it at any level.", points: ["The piece to aim for in every slot", "What you're already wearing", "Which dungeons to run for the rest"] },
+      { label: "Stars", name: "Star a piece, hear about it when it drops", say: "Star the pieces you're after, even one the plan doesn't list. A starred piece gets a gold line on its tooltip anywhere, a banner when it drops and a line in chat as you walk into its dungeon.", points: ["A gold banner when it drops", "Its star on the boss in the Dungeon guide", "It clears once you're wearing it"] },
+    ],
+    good: [
+      ["Your own weights", "Change any of WoWSims' numbers for your spec, or paste a whole Pawn scale. Reset goes back to WoWSims'."],
+      ["Quest rewards too", "An arrow on every quest reward that's an upgrade for your spec, gold on the best one."],
+      ["Its own window", "The Gear plan opens in a window of its own, with room for every slot."],
+    ],
+    next: ["dungeons", "endgame"],
+  },
+  dungeons: {
+    more: "More on the Dungeon guide",
+    command: "dungeons",
+    title: "Dungeon guide: jsal.ui for WoW Forever",
+    description: "jsal.ui's Dungeon guide for WoW Forever: every dungeon by level, each boss with its top drops for your spec and the drop chance on each, the trash loot, the quests to grab first and maps of Forever's own dungeons.",
+    lead: "Every dungeon down the side by level. Each boss with its top drops for you and the chance of each, what falls off the trash, the quests to grab first and a map of Forever's own dungeons.",
+    rows: [
+      { label: "Bosses and loot", name: "Four drops a boss, and the trash", say: "A boss card keeps to the four drops worth your time: the pieces you've starred, then upgrades for your spec, then what you're likeliest to wear. The rest of its loot is tucked underneath. Under the bosses, a Trash card lists what the ordinary creatures drop.", points: ["The drop chance on every line", "Upgrades marked with how much better they are", "A star on what's on your Gear plan"],
+        shot: closeup("dungeons-bosses", 484, 465, "Two of Maraudon's boss cards for a hunter: each boss's best drops with how often each one drops, upgrades marked with how much better they are, a starred piece, and the rest of a boss's loot as small pictures.") },
+      { label: "Quests", name: "Every quest before you zone in", say: "What to pick up before the run, chains in order, with who gives each step and where. Quests already in your log show the game's own marks.", points: ["Chains, step by step", "Who gives it, and where", "A map pin for any step"] },
+      { label: "Map", name: "Forever's own dungeons, mapped", say: "Forever's own dungeons come with Santiago Reyes's maps, used with his leave, and the bosses listed beside them with which ones have gear for you.", points: ["The map whole, floor by floor", "Bosses with gear for you, listed beside it", "Finding the bosses is up to you"], credit: true,
+        shot: closeup("dungeons-map", 634, 477, "Santiago Reyes's map of Alcaz Prison's Main Unit in the Dungeon guide's Map tab, a button for each floor above it and his credit under it.") },
+    ],
+    good: [
+      ["Its own window", "It opens in a window of its own, so a run's plan can stay up while you look at the rest."],
+      ["Follows your spec", "Upgrades are marked for your spec, as on your Gear plan, and a piece you've starred shows on its boss."],
+      ["Where the numbers come from", "Every line says how often it drops. \"About these numbers\", at the window's foot, says where they come from."],
+    ],
+    next: ["gear", "endgame"],
+  },
+  endgame: {
+    more: "More on Endgame",
+    title: "Endgame: jsal.ui for WoW Forever",
+    description: "jsal.ui's Endgame page for WoW Forever at level 60: how far along your pre-raid set is, the consumes for raid night and what they'll cost, raid lockouts across your characters and long cooldowns.",
+    lead: "Your page for 60: how far along your pre-raid set is, which consumes to bring to raid night and what they'll cost, and your raid lockouts and long cooldowns across your characters.",
+    rows: [
+      { label: "Your set", name: "How close your pre-raid set is", say: "Where your pre-raid set stands, slot by slot, with the next run that gets you closer and the build that goes with it.", points: ["Your pre-raid set, slot by slot", "The next run to make", "Your build for 60"],
+        shot: closeup("endgame-set", 346, 314, "The Your set card: 9 of 16 slots at the pre-raid set, Scholomance as the next run, and the build for 60 that goes with it.") },
+      { label: "Raid night", name: "What to bring, and what it costs", say: "WoWSims' consumes for your spec: what you're short of, how many to get and what that costs, from a vendor's price or the auction house's. Pick Simple or Max DPS, and how many nights you stock for.", points: ["Simple or Max DPS", "What it costs a night", "Kept on your shopping list"],
+        shot: closeup("endgame-night", 345, 583, "The Raid night card: Simple or Max DPS, one night of three hours, each elixir, food and potion with how many to get and what it costs, about 27 gold in all, and the switch that keeps it on the shopping list.") },
+      { label: "Raids and cooldowns", name: "Every character's lockouts", say: "Which raids each of your characters is saved to, and the long cooldowns like Transmute, so you know who's free and what's ready.", points: ["Raid lockouts across your characters", "Long cooldowns like Transmute", "Every character on one page"],
+        shot: closeup("endgame-raids", 346, 438, "The Raids and Cooldowns cards: one character saved to Molten Core at 4 of 10 with two free, and Transmute and Mooncloth ready on the characters who have them.") },
+    ],
+    good: [
+      ["Before 60 too", "Below 60 it leads with your goal for 60 and the build for it, with raid night folded to one line."],
+      ["The Journal turns too", "At 60 the Journal switches to boss kills, lockouts and raid nights."],
+      ["Its own switch", "Every part of jsal.ui starts on except the talent helper. Switch off any you don't want in Settings."],
+    ],
+    next: ["gear", "dungeons"],
+  },
+  professions: {
+    more: "More on Professions",
+    title: "Professions: jsal.ui for WoW Forever",
+    description: "jsal.ui's Professions for WoW Forever: a cheaper road to your next rank, using the mats in your bags and bank first, where to learn or buy each recipe, and one click to a shopping list.",
+    lead: "Exactly what to craft and how many, using the mats in your bags and bank first, where to learn or buy each recipe, and one click to turn it all into a shopping list.",
+    rows: [
+      { label: "Your road", name: "What to craft now, and every step after", say: "The road to your next rank: the one thing to make now, with what it takes against what's in your bags, then each step ahead to the cap. A recipe's tooltip says where to learn it.", points: ["What you have against what you need", "Every step to the cap", "Where to learn or buy each recipe"], clip: "professions" },
+      { label: "Where you craft", name: "The road, beside the profession window", say: "The same road sits beside the game's profession window, a stop for each step and a gold stop where the next rank is trained, with the recipes still to learn on a tab of their own.", points: ["Opens with the profession window", "A gold stop at each new rank", "Recipes to learn, on their own tab"] },
+      { label: "Shopping list", name: "One click to a shopping list", say: "Put the whole road on your shopping list. It counts your bags and bank first, says what's left to buy, and at a vendor who sells something on it, a button buys it.", points: ["Bags and bank counted first", "Vendor and auction prices", "A Buy button at the vendor"],
+        shot: closeup("professions-list", 515, 198, "Everything Leatherworking needs to reach 225, what's in the bags against what's needed, and Add the road to my shopping list.") },
+    ],
+    good: [
+      ["Where prices come from", "Vendor prices come with the addon. Auction prices are Auctionator's scan if you run it, and otherwise what you've seen in your own auction house searches."],
+      ["Straight to the list", "/jsal shop opens the shopping list on its own."],
+      ["Its own switch", "Every part of jsal.ui starts on except the talent helper. Switch off any you don't want in Settings."],
+    ],
+    next: ["crafts", "profit"],
+  },
+};
+
 // The small helpers, each with its own toggle in Settings
 export const LITTLE = [
   ["Quick buttons", "A small bar you can park anywhere, with a gold dot when something's waiting."],
@@ -89,4 +218,13 @@ export const LITTLE = [
   ["Bag and gear warnings", "A heads-up before your bags fill up or your gear breaks."],
   ["Quest reward upgrades", "An arrow on every quest reward that's an upgrade for your spec, gold on the best one."],
   ["Quest tags", "Next to each tracked quest: where it sits in its chain and roughly how long it takes."],
+  ["Tags on RestedXP's guide", "The same tags beside each step of RestedXP's guide, for when you keep the quest tracker hidden."],
+  ["Level-up note", "On each new level, a line in chat with your talent points and whether the trainer has new ranks."],
+  ["Bag button", "One button with your free bag space in place of the bag bar. Point at it for your cheapest items."],
+  ["Menu bar look", "The game's menu bar drawn like the quick buttons: gold icons on dark tiles."],
+  ["Food reminder", "A glowing tile while you aren't Well Fed. Point at it for the food in your bags and click one to eat."],
+  ["Hunter helpers", "A tile to feed your pet when it isn't happy, a box that shows if you're in melee, the dead zone or shooting range, and a line on a beast's tooltip when taming it would teach your pet an ability rank it doesn't have yet."],
+  ["Profession window extras", "On each recipe, the skill where it turns yellow, green and grey; beside each reagent, how many are in your bags and bank; a craft timer and a heads-up when your next rank can be trained."],
+  ["Drop log", "Counts how often the creatures you loot drop the quest items you need, so quest tags can use Forever's own drop chances. /jsal drops shows it."],
+  ["Outfit in other addons", "jsal.ui's font in the font lists of addons that share fonts, such as EllesmereUI."],
 ];

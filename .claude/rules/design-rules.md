@@ -211,7 +211,9 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   bar is the shared one, in the page's theme. From the top:
   - **The headline leads** ("Your WoW Forever character, *in one dashboard.*": it has to read as useful after 60,
     not only for leveling), with John's own line on what jsal.ui is, Download, How to install and the version line
-    beside it.
+    beside it. The version line ends "For WoW Forever 1.60.1 · works on its own" (John, 24 Nov 2026: a compatibility
+    line by the download; the game version is the toc's Interface 16001), on the same line so the tour doesn't move
+    down (one more line on a phone).
   - **The list** (272px, from 1280px) is the addon's menu: Home, and Plan, Craft and Play with their parts. Every row carries "Any level" or "1 to 60"
     (`when` in `src/lib/jsal-ui.mjs`; only the Training and Build planners end at 60). Below 1280px the parts are
     four to a row above the stage; on upright phones (under 600px) they're a list under their groups' names, each
@@ -225,28 +227,54 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     button beside Hatch/Grow that moves it to the next one.
   - **The stage** (the page's sunk fill, the tile corners): the part's name very large, a tag saying when it's
     useful, its headline and line, three ticked points, and its window whole, straight and framed. A narrow window
-    (the pals) sits beside the words. Five parts show a clip in place of a still.
+    (the pals) sits beside the words. Five parts show a clip in place of a still. The six big parts (Training
+    Planner, Build Planner, Gear plan, Dungeon guide, Endgame, Professions) end their ticked points with a plain link
+    to their own page, "More on the … ›" (`more` in `PAGES`); on upright phones, where the points wait for a wider
+    screen, it sits under the line instead. It sits there because the points' column has room: every stage keeps
+    the height it had (John, 24 Nov 2026: the page's layout stays as it is).
   - Every stage is in the page, one under the other, and each row is a link to its stage; with scripts the rows
     are tabs and one stage shows. The address keeps the choice as `#pick-gear`.
   - Then three **numbers** (36 parts, 3 groups: Plan, Craft and Play, 100% free; change the first by hand when the
     addon's parts do). The numbers count only what the addon owns (John, 20 Nov 2026): never dungeons, loot or
     anything else from Forever's data, which is new and still changing; never how often it updates; never "1
     dashboard" (some pages open outside it) or "0 other addons" (an EllesmereUI profile import is planned). Then a
-    **Latest release** card, a **Discord** band, the little things and Install.
+    **Latest release** card, a **Discord** band, the little things and Install. Install has a primary Download
+    button (the first screen's) with CurseForge and Wago as links beside it, and says what Auctionator adds: with it,
+    Professions, the shopping list and Crafting profit take its auction house scan for prices (John, 24 Nov 2026).
   - **On upright phones** a whole window would be too small to read, so each shows its top corner at a readable
     size, cut off by its frame: past the dashboard's menu and title bar, by each picture's measured offsets (`cx`,
     `cy` in `jsal-ui.mjs`), so they all begin alike.
-  - **Scrolling down** (John, 18 Nov 2026: "subtle animations"), each block below the stage that starts under the
-    fold rises 24px and fades in once a sixth of it shows (0.6s, eased out, `style: allow`); the numbers follow one
-    another by 0.08s. Nothing on the first screen waits, nothing plays twice, and with reduced motion (or no
-    script) everything simply shows.
+  - **Scrolling down** (John, 24 Nov 2026, "strong" of the motion versions he scrolled), each block under the tour
+    (and on the part pages, each block below the first screen) rises 48px and fades in over 0.8s on
+    `cubic-bezier(0.16, 1, 0.3, 1)`, once, when a sixth of it shows; a window picture grows from 96% as it rises; side
+    by side, a row's words follow its picture by 110ms, and cards in a row follow one another 110ms apart (three at
+    most). 24px on phones and coarse pointers. Only transform and opacity move; nothing replays on the way up;
+    anything on screen at load is never hidden; with reduced motion or without scripts everything simply shows. The
+    first screen and the tour don't take part. The script is a file of its own, `site/jsal-ui/reveal.js` (marks:
+    `data-rv`, `data-rv-row`, `data-rv-cards`), so the content security policy needs no more hashes; the timings carry
+    `style: allow`.
   - **Clips** (John, 19 Nov 2026): Gear, Professions, Journal, the Dungeon guide and Guild Crafts show a short
     clip: muted MP4s in `site/img/jsal-ui/ui/clips/`, each with its first frame as the still. They're drawn from
     the same sim pages as the store GIFs, never converted from a GIF (John: GIF-made video lost "the smoothness"):
     a steady 30 frames a second in full colour, 13-frame fades, by `private\jsal-ui\sim\make_clips.py`. A clip
     downloads and plays only while a third of its frame is on screen, stops when it leaves (or its stage is put
-    away), and keeps a `.jsal-btn.small` Pause/Play button (a `.jsal-dark` island) in its corner, since clips run
+    away), shows on the part pages too, and keeps a `.jsal-btn.small` Pause/Play button (a `.jsal-dark` island) in its corner, since clips run
     longer than 5 seconds; a pause holds until Play, and with reduced motion nothing starts by itself.
+- **The jsal.ui part pages** (`/jsal-ui/training/`, `/build/`, `/gear/`, `/dungeons/`, `/endgame/`,
+  `/professions/`; John, 24 Nov 2026, "part pages"), one template (`src/pages/jsal-ui/[part].astro`) fed from `PAGES`
+  in `jsal-ui.mjs`, with the styles in `src/components/JsalUiStyles.astro`: a line back to the jsal.ui page and the
+  part's group, the part's name and headline (the 46px title) with Download and when it's useful beside them, its
+  window large (on phones its top corner at the game's own size), then a row for each thing it does, Good to know,
+  More of jsal.ui and a download band. A row shows a clip or a **close-up** beside its words where the site has
+  one, and its words beside its ticked points where it doesn't (John, 24 Nov 2026: "a cropped close-up of one
+  feature works better than the whole window shrunk down"): one card or list cut from a window
+  (`closeup()` in `jsal-ui.mjs`, a WebP in `site/img/jsal-ui/ui/`), never drawn larger than the game draws it and,
+  at 1440 and on phones, at no less than 85% of it, so the addon's 13px words come out at 11px or more; a picture
+  wider than 740px takes two thirds of its row, and on a phone a wide one shows its left part in its frame. A close-up
+  is cut from the site's own window pictures or from a sim picture of the released version, never one that shows
+  what the release lacks, the sim's own faults (talent and spell icons, red question marks, "Unknown" items, coins)
+  or a real player's name. **A dungeon map is Santiago Reyes's:** his credit sits under every mention of the maps
+  and in the footer.
   The parts and windows are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store
   cards are (the game trimmed off, the version hidden, guildmates' names made up). The version line and the release
   card read `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest
@@ -262,7 +290,7 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   step) takes `--jsal-quick` (0.15s); something that moves or arrives (a tile lifting, a bar filling, a pop-up sliding
   in) takes `--jsal-settle` (0.3s). Plain `ease`, or `--jsal-ease-out` when something comes in, so it lands softly. Choreographed pieces keep their
   own timing and carry `style: allow`: the page change, the logo unfold, the 404's dropped dot, the home pictures,
-  /play/'s effects, Clean Paste's Show and the jsal.ui page's scroll reveal. **Check:** `check.py` fails any other timing, and any `--jsal-*` used without being defined.
+  /play/'s effects, Clean Paste's Show and the jsal.ui pages' scroll reveal. **Check:** `check.py` fails any other timing, and any `--jsal-*` used without being defined.
 - **Page transitions are one slide everywhere** (`shell.css`): the old page drifts up and fades, the new one
   rises in, Back runs it downwards, and the top bar cross-fades in place. Only `shell.css` names
   view transitions (`check.py`). Firefox has no cross-document transitions and navigates plainly.
