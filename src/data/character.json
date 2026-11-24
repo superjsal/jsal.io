@@ -13,7 +13,7 @@
   "quests": 671,
   "deaths": 38,
   "miles": 1245,
-  "jumps": 27508
+  "jumps": 27510
  },
  "levelMinutes": [
   26,
@@ -61,7 +61,7 @@
   682,
   279,
   413,
-  239
+  260
  ],
  "events": [
   {
@@ -112,7 +112,7 @@
   ],
   [
    "Riverglades",
-   12
+   13
   ],
   [
    "Ironforge",
