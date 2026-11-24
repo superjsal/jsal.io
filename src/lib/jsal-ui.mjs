@@ -85,7 +85,8 @@ for (const g of GROUPS) for (const p of g.parts) if (CLIPS[p.key]) p.clip = CLIP
 // stage's width, top-aligned, cut by the same fade) and played like the clips above. Where a part has both, the
 // film is shown and the clip isn't. Its MP4 and its first frame as a WebP of the same name go in
 // site/img/jsal-ui/ui/films/; w and h are its size in pixels, s how many seconds it runs.
-const film = (name, w, h, s) => ({ src: `/img/jsal-ui/ui/films/${name}.mp4`, poster: `/img/jsal-ui/ui/films/${name}.webp`, w, h, s });
+// y: where a phone's crop starts when the film's first frame is scrolled, so the crop's top falls between two rows
+const film = (name, w, h, s, y) => ({ src: `/img/jsal-ui/ui/films/${name}.mp4`, poster: `/img/jsal-ui/ui/films/${name}.webp`, w, h, s, ...(y ? { cy: +(y / h * 100).toFixed(2) } : {}) });
 const FILMS = {
   home: film("home", 1320, 880, 6.6),
   journal: film("journal", 1320, 880, 9.2),
@@ -93,7 +94,7 @@ const FILMS = {
   build: film("build", 1320, 880, 7.4),
   gear: film("gear", 1240, 960, 9.2),
   dungeons: film("dungeons", 1240, 860, 9.2),
-  endgame: film("endgame", 1320, 880, 7.4),
+  endgame: film("endgame", 1320, 880, 7.4, 116),
   professions: film("professions", 1320, 880, 9.2),
   profit: film("profit", 1000, 920, 9.2),
   crafts: film("crafts", 1000, 920, 7.4),

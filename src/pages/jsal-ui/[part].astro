@@ -79,7 +79,15 @@ const MAPS = "https://sreyesmaps.com";
   .row.flip > .win { order: 2; }
 }
 /* A close-up is one card or list from a window, never drawn larger than the game draws it */
-.win.shot img { max-width: var(--w); margin-inline: auto; }
+.win.shot img { max-width: var(--w); }
+/* A picture narrower than its column sits toward its words: against the left edge when stacked, and beside the words
+   against the column's near edge, with the words starting level with its top */
+.row .win.shot img, .row .win.clip video { margin-inline: 0 auto; }
+@media (min-width: 1280px) {
+  .row { align-items: start; }
+  .row .win.shot img, .row .win.clip video { margin-inline: auto 0; }
+  .row.flip .win.shot img, .row.flip .win.clip video { margin-inline: 0 auto; }
+}
 
 /* Good to know: three short facts, a card each */
 .good { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--jsal-space-20); margin-top: calc(var(--jsal-space-64) + var(--jsal-space-32)); }
@@ -135,7 +143,7 @@ const MAPS = "https://sreyesmaps.com";
 <style is:inline slot="head">
 /* A row with no picture yet: its words beside its ticked points, in a card */
 .row.bare { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); align-items: center; }
-.row.bare .say { margin-bottom: 0; }
+.row.bare .say { max-width: 64ch; margin-bottom: 0; }   /* about 70 characters a line */
 .row.bare > .ticks { padding: var(--jsal-space-24); border-radius: var(--jsal-radius-tile); background: var(--plain); }
 @media (max-width: 1279px) { .row.bare { grid-template-columns: minmax(0, 1fr); } }
 </style>
@@ -172,7 +180,7 @@ const MAPS = "https://sreyesmaps.com";
   <!-- The part's film (its window, moving) or its clip where it has one, the same as on its stage on the jsal.ui
        page; else its window, which on a phone shows its top corner at the game's own size -->
   {me.film ? (
-    <figure class="win clip film crop big" data-rv style={`--w: ${me.film.w}px; --pw: ${me.film.w}px; --cx: ${me.shot.cx}; --cy: ${me.shot.cy}`}>
+    <figure class="win clip film crop big" data-rv style={`--w: ${me.film.w}px; --pw: ${me.film.w}px; --cx: ${me.shot.cx}; --cy: ${me.film.cy ?? me.shot.cy}`}>
       <video muted loop playsinline preload="none" poster={v(me.film.poster)} width={me.film.w} height={me.film.h} aria-label={me.shot.alt}><source src={v(me.film.src)} type="video/mp4"></video>
       <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={me.label}>Play</button></span>
     </figure>
