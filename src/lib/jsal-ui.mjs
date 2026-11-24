@@ -40,22 +40,22 @@ export const GROUPS = [
     key: "plan", name: "Plan", line: "Know what's next at every level.",
     parts: [
       { key: "training", when: "leveling", label: "Training Planner", name: "Every trainer visit, planned to 60", line: "Know before you hearth: what's ready at the trainer, what it'll cost you and where the nearest one is.", points: ["Spells, pet and weapon training", "Your road to 60, visit by visit", "A pin on the nearest trainer"],
-        shot: shot("training", 1317, 878, "The Training Planner: 9 spells ready for a level 46 hunter with their costs, the pet's training, and the road to 60 as a line of trainer visits.", true) },
+        shot: shot("training", 1317, 878, "The Training Planner at level 46: 8 spells ready at the trainer with what they cost, the 13 skipped ones opened and closed again, the pet's training, and the road to 60 as a line of trainer visits.", true) },
       { key: "build", when: "leveling", label: "Build Planner", name: "Know where every point goes", line: "Follow a ready-made leveling build or theorycraft your own, and see what your next point does.", points: ["A leveling build for every class", "Your next point, and what it does", "Share a build as a line of text"],
-        shot: shot("build", 1320, 880, "The Build Planner following a Beast Mastery leveling build: the plan level by level, with the next point, Deadly Aspects, ready to learn on the right.", true) },
+        shot: shot("build", 1320, 880, "The Build Planner following a warrior's Prot leveling build: the plan level by level with the next point, Shield Specialization, on the right, then Edit opens the whole talent tree.", true) },
       { key: "gear", when: "any", label: "Gear plan", name: "Upgrades for every slot, ranked for your spec", line: "Ranked with WoWSims' stat weights, with where each piece comes from. At 60 it turns into your pre-raid BiS list.", points: ["Boss, quest, vendor or crafter", "Tweak the weights if you disagree", "Star a piece, hear it when it drops"],
         shot: shot("gear", 1238, 859, "The Gear plan: every slot with what's worn and its best upgrade near your level, and for the ranged slot a list of upgrades with the quest each comes from.") },
       { key: "dungeons", when: "any", label: "Dungeon guide", name: "Know what drops before you zone in", line: "Each boss with its top drops for you and the drop chance on each, plus what falls off the trash.", points: ["Dungeons and raids down the side, by level", "Upgrades marked for your spec", "Quests to pick up before you go in"],
         shot: shot("dungeons", 1240, 860, "The Dungeon guide for Maraudon: each boss's best drops for you, then its quests, then its map with its bosses marked.") },
       { key: "endgame", when: "sixty", label: "Endgame", name: "Ready for raid night", line: "Your page for 60: how far along your pre-raid set is, which consumes to bring and what they'll cost.", points: ["Your pre-raid set, slot by slot", "Raid lockouts across your characters", "Long cooldowns like Transmute"],
-        shot: shot("endgame", 1320, 880, "The Endgame page for a level 60 hunter: 9 of 16 slots at the pre-raid set, raid night's elixirs, food and potions with what they cost, raid lockouts and profession cooldowns.", true) },
+        shot: shot("endgame", 1320, 880, "The Endgame page at 60: 9 of 16 slots toward your pre-raid set with Stratholme next, raid night's consumes on Simple and then on Max DPS with how many to get and what they cost, raid lockouts across your characters, and profession cooldowns.", true) },
     ],
   },
   {
     key: "craft", name: "Craft", line: "Level professions for less, and craft for each other.",
     parts: [
       { key: "professions", when: "any", label: "Professions", name: "A cheaper road to the cap", line: "Exactly what to craft and how many, using the mats in your bags and bank first.", points: ["What you have against what you need", "Where to learn or buy each recipe", "One click to a shopping list"],
-        shot: shot("professions", 1320, 880, "Leatherworking's road to the cap: what to craft now, everything it takes against what's in the bags, and the steps ahead.", true) },
+        shot: shot("professions", 1320, 880, "Professions for Leatherworking, then First Aid, then Cooking: what to craft now, everything it takes against what's in your bags, and the road to the cap.", true) },
       { key: "crafts", when: "any", label: "Guild Crafts", name: "Craft for each other", line: "Ask the guild for a craft or an enchant, and the guildies who know the recipe hear about it.", points: ["Who makes what, and where they are", "Every order from asked to received", "Fills in the mail at the mailbox"],
         shot: shot("guild-crafts", 998, 919, "Guild Crafts: four open orders, one waiting for a crafter, two being made and one sent, each with its materials and where it stands.") },
       { key: "profit", when: "any", label: "Crafting profit", name: "Know what's worth making", line: "Every recipe your characters know, with what it costs to make against what it sells for.", points: ["Prices from Auctionator or your AH searches", "Every recipe, known or not", "Add a craft to your shopping list"],
@@ -66,7 +66,7 @@ export const GROUPS = [
     key: "play", name: "Play", line: "The fun parts, and your guild.",
     parts: [
       { key: "journal", when: "any", label: "Journal", name: "A record of every level", line: "Your character's story, written as you play: levels, deaths, loot and favourite spots.", points: ["Time, gold and XP for each level", "Boss kills and raid nights at 60", "All your alts at a glance"],
-        shot: shot("journal", 1320, 880, "The Journal's story for a level 34 hunter: each day's dungeon runs, first kills, levels and loot in the order they happened, with filters and days to jump to down the left.", true) },
+        shot: shot("journal", 1320, 880, "The Journal for a level 46 hunter: a summary with the time spent on every level and counts like foes defeated and gold earned, then the story of each day, then each ten levels' time, XP, gold, kills and deaths.", true) },
       { key: "games", when: "any", label: "Daily games", name: "A game a day with your guild", line: "Daily Word, Icon Guess and Pal run: same for everyone, with your guild's results side by side.", points: ["Your record and streaks", "Share a result in guild chat", "A Guild Word your GM sets"],
         shot: shot("games", 1320, 880, "Daily games: today's Daily Word board, then Play on the Icon Guess card opens today's first icon.", true) },
       { key: "pals", when: "any", label: "Jsal's Pals", name: "A little friend that grows with you", line: "Hatch an egg, name whatever comes out and look after it. Your questing pays for its keep.", points: ["Feed it, play, tuck it in", "It grows up, twice", "It walks along your screen"],
@@ -81,24 +81,26 @@ export const GROUPS = [
 
 for (const g of GROUPS) for (const p of g.parts) if (CLIPS[p.key]) p.clip = CLIPS[p.key];
 
-// A film is a part's still, moving: the same whole window recorded in the game, drawn in the still's own box (the
-// stage's width, top-aligned, cut by the same fade) and played like the clips above. Where a part has both, the
-// film is shown and the clip isn't. Its MP4 and its first frame as a WebP of the same name go in
+// A film is a part's still, moving: its window recorded in the game, drawn in the stage's frame (the stage's width,
+// top-aligned, held to Home's 3:2 shape and cut by the same fade) and played like the clips above. Where a part has
+// both, the film is shown and the clip isn't. Its MP4 and its first frame as a WebP of the same name go in
 // site/img/jsal-ui/ui/films/; w and h are its size in pixels, s how many seconds it runs.
-// y: where a phone's crop starts when the film's first frame is scrolled, so the crop's top falls between two rows
-const film = (name, w, h, s, y) => ({ src: `/img/jsal-ui/ui/films/${name}.mp4`, poster: `/img/jsal-ui/ui/films/${name}.webp`, w, h, s, ...(y ? { cy: +(y / h * 100).toFixed(2) } : {}) });
+// Home and the own windows (gear, dungeons, profit, crafts) are the whole window. A page of the dashboard is its page
+// alone (page): the menu down the left and the title bar are cut off, so the page's words come out larger on the
+// stage; it needs no crop offset (cx, cy 0), and a phone draws it 626px wide, the scale the whole window had there.
+const film = (name, w, h, s, page = false) => ({ src: `/img/jsal-ui/ui/films/${name}.mp4`, poster: `/img/jsal-ui/ui/films/${name}.webp`, w, h, s, ...(page ? { cx: 0, cy: 0, pw: 626 } : {}) });
 const FILMS = {
   home: film("home", 1320, 880, 6.6),
-  journal: film("journal", 1320, 880, 9.2),
-  training: film("training", 1320, 880, 7.4),
-  build: film("build", 1320, 880, 7.4),
+  journal: film("journal", 1086, 830, 9.2, true),
+  training: film("training", 1086, 830, 7.4, true),
+  build: film("build", 1086, 830, 7.4, true),
   gear: film("gear", 1240, 960, 9.2),
   dungeons: film("dungeons", 1240, 860, 9.2),
-  endgame: film("endgame", 1320, 880, 7.4, 116),
-  professions: film("professions", 1320, 880, 9.2),
+  endgame: film("endgame", 1086, 830, 7.4, true),
+  professions: film("professions", 1086, 830, 9.2, true),
   profit: film("profit", 1000, 920, 9.2),
   crafts: film("crafts", 1000, 920, 7.4),
-  games: film("games", 1320, 880, 9.2),
+  games: film("games", 1086, 830, 9.2, true),
   pals: film("pals", 1320, 880, 9.4),
 };
 if (FILMS.home) HOME_PART.film = FILMS.home;

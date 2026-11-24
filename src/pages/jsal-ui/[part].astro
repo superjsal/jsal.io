@@ -198,7 +198,7 @@ const MAPS = "https://sreyesmaps.com";
   <!-- The part's film (its window, moving) or its clip where it has one, the same as on its stage on the jsal.ui
        page; else its window, which on a phone shows its top corner at the game's own size -->
   {me.film ? (
-    <figure class="win clip film crop big" data-rv style={`--w: ${me.film.w}px; --pw: ${me.film.w}px; --cx: ${me.shot.cx}; --cy: ${me.film.cy ?? me.shot.cy}`}>
+    <figure class="win clip film crop big" data-rv style={`--w: ${me.film.w}px; --pw: ${me.film.w}px; --cx: ${me.film.cx ?? me.shot.cx}; --cy: ${me.film.cy ?? me.shot.cy}`}>
       <video muted loop playsinline preload="none" poster={v(me.film.poster)} width={me.film.w} height={me.film.h} aria-label={me.shot.alt}><source src={v(me.film.src)} type="video/mp4"></video>
       <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={me.label}>Play</button></span>
     </figure>

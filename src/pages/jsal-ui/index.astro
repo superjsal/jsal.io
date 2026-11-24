@@ -139,6 +139,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 @media (min-width: 600px) {
   .win:not(.pen) { max-height: 460px; overflow: hidden; border-radius: var(--jsal-radius-xl); }
   .win:not(.pen)::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64px; background: linear-gradient(transparent, var(--jsal-sunk)); pointer-events: none; }
+  /* every film's frame keeps Home's shape: the films come in two shapes (a whole window, a page without its menu),
+     and on a narrow stage, where the frame is under 460px tall, the shorter one would make the frame jump */
+  .win.film { width: 100%; aspect-ratio: 3 / 2; }   /* the width set, so the 460px cap cuts the frame's height, not its width */
 }
 .ui-js .stage.measure { display: grid; position: absolute; left: 0; right: 0; top: 0; visibility: hidden; }
 /* Picking a part: the new stage's parts arrive in order from the way the list moved: its name, its words, then
@@ -388,7 +391,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           {p.family ? (
             <figure class="win pen" aria-label="The pal's pen"></figure>
           ) : p.film ? (
-            <figure class={`win clip film${p.key === "home" ? " home" : ""}`} style={`--w: ${p.film.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}>
+            <figure class={`win clip film${p.key === "home" ? " home" : ""}`} style={`--w: ${p.film.w}px; ${p.film.pw ? `--pw: ${p.film.pw}px; ` : ""}--cx: ${p.film.cx ?? p.shot.cx}; --cy: ${p.film.cy ?? p.shot.cy}`}>
               <video muted loop playsinline preload="none" poster={v(p.film.poster)} width={p.film.w} height={p.film.h} data-s={p.film.s} aria-label={p.shot.alt}><source src={v(p.film.src)} type="video/mp4"></video>
               <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
             </figure>

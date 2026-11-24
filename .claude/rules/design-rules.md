@@ -227,9 +227,13 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     button beside Hatch/Grow that moves it to the next one.
   - **The stage** (the page's sunk fill, the tile corners): the part's name very large, a tag saying when it's
     useful, its headline and line, three ticked points, and its window whole, straight and framed. A part may have a **film** in its place (John, 24
-    Nov 2026: "Whole window, like the stills"): the same whole window recorded in the game (`FILMS` in `jsal-ui.mjs`,
-    files in `site/img/jsal-ui/ui/films/`), drawn in the still's own box and cut by the same fade, played by the clips'
-    script with their Play/Pause button; a film is shown in place of a clip, and leads its part page too. A narrow window
+    Nov 2026: "Whole window, like the stills"): the window recorded in the game (`FILMS` in `jsal-ui.mjs`, files in
+    `site/img/jsal-ui/ui/films/`), played by the clips' script with their Play/Pause button; a film is shown in place
+    of a clip, and leads its part page too. Home and the parts with their own window (Gear plan, Dungeon guide,
+    Crafting profit, Guild Crafts) show the whole window; a part that is a page of the dashboard (Journal, Training,
+    Build, Endgame, Professions, Games) shows its page alone, without the dashboard's menu and title bar (John, 24 Nov
+    2026: "cut it", "home is fine"), 1086 by 830, so its words come out larger. On the stage every film's frame is held
+    to Home's 3:2 and cut at 460px by the same fade, so the frame doesn't change size between the two shapes. A narrow window
     (the pals) sits beside the words. Five parts show a clip in place of a still. The six big parts (Training
     Planner, Build Planner, Gear plan, Dungeon guide, Endgame, Professions) end their ticked points with a plain link
     to their own page, "More on the … ›" (`more` in `PAGES`); on upright phones, where the points wait for a wider
