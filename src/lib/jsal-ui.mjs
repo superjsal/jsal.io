@@ -167,7 +167,7 @@ export const PAGES = {
     lead: "Every slot with what you're wearing and its upgrades near your level, ranked for your spec with WoWSims' stat weights, and where each piece comes from. At 60 it turns into your pre-raid BiS list.",
     rows: [
       { label: "Near your level", name: "Where every upgrade comes from", say: "Upgrades in order, each with the boss, quest, vendor or crafter it comes from.",
-        shot: closeup("gear-slots", 620, 723, "The Gear plan's slots for a level 40 hunter, armor, jewelry and weapons: what's worn in each, an arrow to the best upgrade near that level, where it comes from and how much better it is.") },
+        shot: closeup("gear-slots", 620, 723, "The Gear plan's slots for a level 46 Survival hunter, armor, jewelry and weapons: what's worn in each, an arrow to the best upgrade near that level, where it comes from and how much better it is.") },
       { label: "At 60", name: "Your pre-raid BiS, slot by slot", say: "At 60 the plan turns into your pre-raid list. No switch to find.",
         shot: closeup("gear-at60", 620, 723, "The Gear plan at 60 for a Survival hunter: nine slots already at WoWSims' pre-raid set, and for each of the rest the piece to aim for, where it comes from and how much better it is.") },
       { label: "Stars", name: "Star a piece, hear about it when it drops", say: "A starred piece gets a gold line on its tooltip and a banner when it drops.",
@@ -189,7 +189,8 @@ export const PAGES = {
     rows: [
       { label: "Bosses and loot", name: "Four drops a boss, and the trash", say: "A boss card keeps to the four drops worth your time. The rest is tucked underneath.",
         shot: closeup("dungeons-bosses", 484, 465, "Two of Maraudon's boss cards for a hunter: each boss's best drops with how often each one drops, upgrades marked with how much better they are, a starred piece, and the rest of a boss's loot as small pictures.") },
-      { label: "Quests", name: "Every quest before you zone in", say: "Chains in order, with who gives each step and where." },
+      { label: "Quests", name: "Every quest before you zone in", say: "Chains in order, with who gives each step and where.",
+        shot: closeup("dungeons-quests", 620, 690, "The Dungeon guide's Quests tab for Maraudon: its quests grouped by where they start, a three-step chain marked where to start, and who gives each one and where.") },
       { label: "Map", name: "Forever's own dungeons, mapped", say: "Santiago Reyes's maps, used with his leave, with the bosses that have gear for you.", credit: true,
         shot: closeup("dungeons-map", 634, 477, "Santiago Reyes's map of Alcaz Prison's Main Unit in the Dungeon guide's Map tab, a button for each floor above it and his credit under it.") },
     ],
@@ -228,7 +229,8 @@ export const PAGES = {
     rows: [
       { label: "Your road", name: "What to craft now, and every step after", say: "The one thing to make now, then each step ahead to the cap.",
         shot: closeup("professions-now", 513, 222, "Do this now on Leatherworking's road: Guardian Gloves three times, with the heavy leather, cured heavy hide and silken thread it takes against what's in the bags.") },
-      { label: "Where you craft", name: "The road, beside the profession window", say: "The same road sits beside the game's profession window, a stop for each step." },
+      { label: "Where you craft", name: "The road, beside the profession window", say: "The same road sits beside the game's profession window, a stop for each step.",
+        shot: closeup("professions-craft", 428, 660, "jsal.ui's Leatherworking road beside the profession window: what to craft now, each stop to 300 with the trainer and patterns, and a button to put it all on the shopping list.") },
       { label: "Shopping list", name: "One click to a shopping list", say: "It counts your bags and bank first, and at a vendor a button buys it.",
         shot: closeup("professions-list", 515, 198, "Everything Leatherworking needs to reach 225, what's in the bags against what's needed, and Add the road to my shopping list.") },
     ],
