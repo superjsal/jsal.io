@@ -95,8 +95,8 @@ const FILMS = {
   dungeons: film("dungeons", 1240, 860, 9.2),
   endgame: film("endgame", 1320, 880, 7.4),
   professions: film("professions", 1320, 880, 9.2),
-  profit: film("profit", 1000, 938, 9.2),
-  crafts: film("crafts", 1000, 938, 7.4),
+  profit: film("profit", 1000, 920, 9.2),
+  crafts: film("crafts", 1000, 920, 7.4),
   games: film("games", 1320, 880, 9.2),
   pals: film("pals", 1320, 880, 9.4),
 };

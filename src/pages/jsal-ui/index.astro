@@ -266,7 +266,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 /* The tour: the chosen row's gold line fills while its turn lasts; it rests while the pointer or the keyboard is on
    the list or the stage, or the list is off screen */
 .slot::after { content: ""; position: absolute; left: var(--jsal-space-12); right: var(--jsal-space-12); bottom: var(--jsal-space-2); height: 2px; border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); transform: scaleX(0); transform-origin: left; }
-.pick.tour .slot[aria-selected="true"]::after { animation: turn 5s linear forwards; }   /* style: allow (a part's turn in the tour) */
+.pick.tour .slot[aria-selected="true"]::after { animation: turn var(--turn, 5s) linear forwards; }   /* style: allow (a part's turn in the tour; a part with a film lasts as long as the film plays once) */
+.pick.tour .slot.wait::after { animation-play-state: paused; }
 .pick.tour:is(:hover, .away, :has(.slots:focus-within, .stages:focus-within)) .slot[aria-selected="true"]::after { animation-play-state: paused; }
 @keyframes turn { to { transform: scaleX(1); } }
 .tour-btn { display: none; align-self: start; margin-top: var(--jsal-space-12); }
@@ -385,7 +386,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
             <figure class="win pen" aria-label="The pal's pen"></figure>
           ) : p.film ? (
             <figure class={`win clip film${p.key === "home" ? " home" : ""}`} style={`--w: ${p.film.w}px; --cx: ${p.shot.cx}; --cy: ${p.shot.cy}`}>
-              <video muted loop playsinline preload="none" poster={v(p.film.poster)} width={p.film.w} height={p.film.h} aria-label={p.shot.alt}><source src={v(p.film.src)} type="video/mp4"></video>
+              <video muted loop playsinline preload="none" poster={v(p.film.poster)} width={p.film.w} height={p.film.h} data-s={p.film.s} aria-label={p.shot.alt}><source src={v(p.film.src)} type="video/mp4"></video>
               <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
             </figure>
           ) : p.clip ? (
@@ -547,7 +548,28 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   if (matchMedia('(min-width: 700px) and (not ((max-height: 500px) and (orientation: landscape)))').matches && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
     const say = (label, pressed) => { btn.textContent = label; btn.setAttribute('aria-pressed', String(pressed)); };
     const end = () => { pickEl.classList.remove('tour', 'rested'); pickEl.classList.add('toured'); say('Play the tour', false); };
+    // A part with a film takes as long as the film plays once, from its start, and half a second over: the line
+    // waits (and the film goes back to its start) until the film is really playing, or a slow one has had its time.
+    let undo = () => {};
+    const arrange = () => {
+      undo();
+      tabs.forEach((t) => { t.classList.remove('wait'); t.style.removeProperty('--turn'); });
+      const v = stages[cur].querySelector('.film video'), s = v ? parseFloat(v.dataset.s) : 0;
+      if (!(s > 0)) return;
+      const t = tabs[cur];
+      t.style.setProperty('--turn', `${Math.max(5, s + 0.5)}s`);
+      if (v.dataset.held) return;
+      if (v.currentTime > 0) v.currentTime = 0;
+      if (!v.paused && v.readyState > 2) return;
+      t.classList.add('wait');
+      const go = () => { undo(); t.classList.remove('wait'); };
+      const late = setTimeout(go, 12000);
+      undo = () => { clearTimeout(late); v.removeEventListener('playing', go); undo = () => {}; };
+      v.addEventListener('playing', go, { once: true });
+    };
     const start = () => {
+      arrange();
+      new MutationObserver(arrange).observe(list, { subtree: true, attributes: true, attributeFilter: ['aria-selected'] });
       pickEl.classList.add('tour');
       list.addEventListener('animationend', (e) => {
         if (!pickEl.classList.contains('tour') || e.animationName !== 'turn') return;
