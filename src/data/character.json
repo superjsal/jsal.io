@@ -4,16 +4,16 @@
  "level": 46,
  "guild": "retail too hard",
  "since": "2026-11-08",
- "updated": "2026-11-23",
+ "updated": "2026-11-24",
  "lastZone": "Riverglades",
  "lastSeen": "2026-11-23",
  "stats": {
-  "hours": 151,
+  "hours": 152,
   "foes": 5745,
   "quests": 671,
   "deaths": 38,
   "miles": 1245,
-  "jumps": 27506
+  "jumps": 27508
  },
  "levelMinutes": [
   26,
@@ -61,7 +61,7 @@
   682,
   279,
   413,
-  213
+  223
  ],
  "events": [
   {
