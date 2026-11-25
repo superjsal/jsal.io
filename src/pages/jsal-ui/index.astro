@@ -261,10 +261,12 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .cl-shot { position: relative; flex: 1 1 auto; min-height: 220px; overflow: hidden; background: var(--win-fill); --k-sw: var(--psw); --k-x: var(--px); --k-y: var(--py); }
 .cl-shot > img { position: absolute; top: 0; left: calc(-100% * var(--k-x) / var(--k-sw)); margin-top: calc(-100% * var(--k-y) / var(--k-sw)); width: calc(100% * var(--nw) / var(--k-sw)); max-width: calc(var(--nw) * 1px); height: auto; }
 .cl-center > img { left: 50%; margin-top: 0; translate: -50% 0; }
-/* a narrow window floats on a muted piece of the game world, blurred and darkened so the window leads; on a phone (and
-   in a tall tile) it sits at the top so its header shows, elsewhere in the middle */
+/* a narrow window floats in the middle of a muted piece of the game world, blurred and darkened so the window leads,
+   drawn small enough at every width that the scenery frames it; a tall one sits at the top so its header shows */
 .cl-scene { background: linear-gradient(color-mix(in srgb, var(--win-fill) 30%, transparent), color-mix(in srgb, var(--win-fill) 30%, transparent)), var(--bg) center / cover no-repeat; }
-.cl-scene > img { top: var(--jsal-space-16); border-radius: var(--jsal-radius-lg); box-shadow: var(--win-shadow); }
+.cl-scene > img { top: 50%; translate: -50% -50%; border-radius: var(--jsal-radius-lg); box-shadow: var(--win-shadow); }
+.cl-top > img { top: var(--jsal-space-16); translate: -50% 0; }
+@container closer (max-width: 619px) { .cl-scene { min-height: 320px; } }
 /* the pal in its meadow, in the addon's pixel art: by day in the light theme, by night in the dark */
 .cl-pen { background: var(--win-fill) var(--day) center bottom / cover no-repeat; image-rendering: pixelated; }
 :root[data-theme="dark"] .cl-pen { background-image: var(--night); }
@@ -274,7 +276,6 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
    in Craft the tall list keeps its two tiles beside it */
 @container closer (min-width: 620px) {
   .cl-shot { --k-sw: var(--sw); --k-x: var(--x); --k-y: var(--y); }
-  .cl-scene:not(.cl-top) > img { top: 50%; translate: -50% -50%; }
   .cl-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cl-plan .cl-bento { grid-template-areas: "big big" "s1 s2" "wide wide"; }
   .cl-craft .cl-bento { grid-template-areas: "wide s1" "wide s2" "big big"; }
