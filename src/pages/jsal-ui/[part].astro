@@ -147,6 +147,8 @@ const MAPS = "https://sreyesmaps.com";
      left part shown in its frame */
   .win.shot { overflow: hidden; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
   .win.shot img { width: min(var(--w), max(100%, calc(var(--w) * 0.85))); max-width: none; margin: 0; border: 0; border-radius: 0; box-shadow: none; }
+  /* a close-up that is a whole panel is fitted to its frame instead, so none of it is cut off */
+  .win.shot.fit img { width: min(var(--w), 100%); }
 }
 /* Touch: the small links and the clip's button get a 44px tap area that takes no room */
 @media (max-width: 599px), (pointer: coarse) {
@@ -279,7 +281,8 @@ const MAPS = "https://sreyesmaps.com";
 <style is:inline slot="head">
 /* The maps' maker, credited under the words about them */
 .credit { margin: var(--jsal-space-12) 0 0; color: var(--jsal-muted); font-size: 12px; }
-@media (max-width: 599px), (pointer: coarse) { .credit a { position: relative; } .credit a::after { content: ""; position: absolute; inset: -15px -8px; } }
+.stage-credit { margin: var(--jsal-space-16) 0 0; text-align: center; }
+@media (max-width: 599px), (pointer: coarse) { .credit a, .stage-credit a { position: relative; } .credit a::after, .stage-credit a::after { content: ""; position: absolute; inset: -15px -8px; } }
 </style>
 )}
 <div class="wrap">
@@ -357,6 +360,7 @@ const MAPS = "https://sreyesmaps.com";
           ))}
         </div>
       </div>
+      {maps && <p class="credit stage-credit">Forever's own dungeons use <a href={MAPS}>Santiago Reyes's maps</a>, with his permission. No bosses marked on those, on purpose: the new dungeons are yours to explore.</p>}
     </figure>
   )}
   <div class="caps">
@@ -368,13 +372,13 @@ const MAPS = "https://sreyesmaps.com";
           <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={r.label}>Play</button></span>
         </figure>
       ) : r.shot && (
-        <figure class="win shot" style={`--w: ${r.shot.w}px`}><img src={v(r.shot.src)} width={r.shot.w} height={r.shot.h} alt={r.shot.alt} loading="lazy" decoding="async"></figure>
+        <figure class={r.shot.fit ? "win shot fit" : "win shot"} style={`--w: ${r.shot.w}px`}><img src={v(r.shot.src)} width={r.shot.w} height={r.shot.h} alt={r.shot.alt} loading="lazy" decoding="async"></figure>
       )}
       <div class="words">
         <p class="eyebrow">{r.label}</p>
         <h2 id={`row-${i}`}>{r.name}</h2>
         <p class="say">{r.say}</p>
-        {r.credit && <p class="credit">Maps by Santiago Reyes · Atlas de Azeroth: Forever · <a href={MAPS}>sreyesmaps.com</a></p>}
+        {r.credit && <p class="credit">Forever's own dungeons use <a href={MAPS}>Santiago Reyes's maps</a>, with his permission. No bosses marked on those, on purpose: the new dungeons are yours to explore.</p>}
       </div>
     </section>
   ))}

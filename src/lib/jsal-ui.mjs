@@ -235,8 +235,8 @@ export const PAGES = {
     more: "More on the Dungeon guide",
     command: "dungeons",
     title: "Dungeon guide: jsal.ui for WoW Forever",
-    description: "jsal.ui's Dungeon guide for WoW Forever: every dungeon by level, each boss with its top drops for your spec and the drop chance on each, the trash loot, the quests to grab first and maps of Forever's own dungeons.",
-    lead: "Every dungeon down the side by level. Each boss with its top drops for you and the chance of each, what falls off the trash, the quests to grab first and a map of Forever's own dungeons.",
+    description: "jsal.ui's Dungeon guide for WoW Forever: every dungeon by level, each boss with its top drops for your spec and the drop chance on each, the trash loot, the quests to grab first, and a map of the dungeon.",
+    lead: "Every dungeon down the side by level. Each boss with its top drops for you and the chance of each, what falls off the trash, the quests to grab first, and a map of the dungeon.",
     // The stage's map is the game's own picture of Maraudon with jsal.ui's boss signs on it, not one of Santiago
     // Reyes's (his are for Forever's own dungeons, which have no picture in the game), so its words say only what
     // that picture shows; the phone section keeps his map of Alcaz Prison and his credit.
@@ -252,7 +252,7 @@ export const PAGES = {
       { label: "Quests", name: "Every quest before you zone in", say: "Chains in order, with who gives each step and where.",
         box: [250, 379, 969, 150], on: 1, side: "above-end", ticks: ["Chains, step by step", "Who gives it, and where", "A map pin for any step"],
         shot: closeup("dungeons-quests", 620, 690, "The Dungeon guide's Quests tab for Maraudon: its quests grouped by where they start, a three-step chain marked where to start, and who gives each one and where.") },
-      { label: "Map", name: "Forever's own dungeons, mapped", head: "Every boss on the map", say: "Santiago Reyes's maps, used with his leave, with the bosses that have gear for you.", credit: true,
+      { label: "Map", name: "Forever's own dungeons, mapped", head: "Every boss on the map", say: "A map of every floor, with a button for each.", credit: true,
         box: [250, 124, 626, 448], on: 2, side: "right", ticks: ["Each boss numbered, a click to its loot", "A green dot where a boss drops an upgrade", "Your starred piece's star on its boss"],
         shot: closeup("dungeons-map", 634, 477, "Santiago Reyes's map of Alcaz Prison's Main Unit in the Dungeon guide's Map tab, a button for each floor above it and his credit under it.") },
       { label: "Every dungeon", name: "Every dungeon down the side, by level", wide: true,
@@ -308,7 +308,7 @@ export const PAGES = {
         shot: closeup("professions-now", 513, 222, "Do this now on Leatherworking's road: Guardian Gloves three times, with the heavy leather, cured heavy hide and silken thread it takes against what's in the bags.") },
       { label: "Where you craft", name: "The road, beside the profession window", say: "The same road sits beside the game's profession window, a stop for each step.",
         box: [29, 580, 446, 659], on: 1, side: "above-end", ticks: ["Opens beside the profession window, so it's there while you craft", "Each step to the cap, with how many to make", "Recipes to learn, on their own tab"],
-        shot: closeup("professions-craft", 418, 650, "jsal.ui's Leatherworking road beside the profession window: what to craft now, each stop to 300 with the trainer and patterns, and a button to put it all on the shopping list.") },
+        shot: { ...closeup("professions-craft", 438, 657, "jsal.ui's Leatherworking road beside the profession window: what to craft now, each stop to 300 with the trainer and patterns, and a button to put it all on the shopping list."), fit: true } },
       { label: "Shopping list", name: "One click to a shopping list", say: "It counts your bags and bank first, and at a vendor a button buys it.",
         box: [497, 580, 386, 669], on: 2, side: "above-end", ticks: ["What's left to get, once your bags and bank are counted", "Vendor and auction prices, and the total", "A Buy button at the vendor"],
         shot: closeup("professions-list", 515, 198, "Everything Leatherworking needs to reach 225, what's in the bags against what's needed, and Add the road to my shopping list.") },
