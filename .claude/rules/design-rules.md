@@ -284,6 +284,16 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   what the release lacks, the sim's own faults (talent and spell icons, red question marks, "Unknown" items, coins)
   or a real player's name. **A dungeon map is Santiago Reyes's:** his credit sits under every mention of the maps
   and in the footer.
+  **The whole screen, on wide windows** (John, 24 Nov 2026, of the job 146 mockups: "A. tooltip", with B's dim and
+  a fuller note, "needs nice animations"; Endgame first): a page with `screen` in `PAGES` shows, from 1280px (where
+  the column is 1120px and the 1086px window fits at its own size), one still of the part's whole window in place of
+  its film and close-ups, which phones and narrower windows keep exactly. Each row gives a `box` on the still and a
+  `note` (up to three short sentences); a numbered gold dot sits on each box's corner, and pointing at a box, tabbing
+  to it or tapping it gives it a gold edge, dims the rest of the window and moves the site's tooltip under it (in
+  the window's empty floor, never over a card). The first tooltip is open on load and nothing is dimmed at rest; the
+  last one shown stays when the pointer leaves; Escape shuts it. Motion uses the two timings (the dots arrive one
+  after another, the tooltip and the dim's hole glide, edges and notes fade) and is off with reduced motion. Its
+  script is `site/jsal-ui/screen.js`.
   The parts and windows are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store
   cards are (the game trimmed off, the version hidden, guildmates' names made up). The version line and the release
   card read `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest

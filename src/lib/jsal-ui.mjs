@@ -109,6 +109,12 @@ for (const g of GROUPS) for (const p of g.parts) if (FILMS[p.key]) p.film = FILM
 // A close-up for a part page's row: one card or list cut from a window at the game's own size (a WebP under
 // site/img/jsal-ui/ui/), so its words read as they do in the game.
 const closeup = (name, w, h, alt) => ({ src: `/img/jsal-ui/ui/${name}.webp`, w, h, alt });
+// The whole screen a wide window shows in place of the film and the close-ups (John's pick of the job 146 mockups,
+// 24 Nov 2026: "A. tooltip", with B's dim): one sharp still of the part's whole window at the game's own size, w by
+// h. A page with a screen gives each row a box, [x, y, w, h] in the still's pixels round the thing it names, and a
+// note, up to three short sentences, for the tooltip that opens under that box. Phones and narrow windows keep the
+// film and the close-ups.
+const whole = (src, w, h, alt) => ({ src, w, h, alt });
 
 // The six big parts each have a page of their own at /jsal-ui/<key>/ (John's pick of the landing mockups, 24 Nov
 // 2026: "A, the tour"), all from one template (src/pages/jsal-ui/[part].astro): the part's window large under its
@@ -209,12 +215,16 @@ export const PAGES = {
     title: "Endgame: jsal.ui for WoW Forever",
     description: "jsal.ui's Endgame page for WoW Forever at level 60: how far along your pre-raid set is, the consumes for raid night and what they'll cost, raid lockouts across your characters and long cooldowns.",
     lead: "Your page for 60: how far along your pre-raid set is, which consumes to bring to raid night and what they'll cost, and your raid lockouts and long cooldowns across your characters.",
+    screen: whole("/img/jsal-ui/ui/films/endgame.webp", 1086, 830, "The Endgame page at 60: 9 of 16 slots toward your pre-raid set with Stratholme next and the build for 60, raid night's consumes on Simple with how many to get and what they cost, raid lockouts across three characters, and profession cooldowns."),
     rows: [
       { label: "Your set", name: "How close your pre-raid set is", say: "The next run that gets you closer, and the build that goes with it.",
+        box: [34, 27, 329, 300], note: "Where your pre-raid set stands, slot by slot. The next run that gets you closer, and the build for 60 that goes with it. Open Gear plan and Open Build take you to each.",
         shot: closeup("endgame-set", 346, 314, "The Your set card: 9 of 16 slots at the pre-raid set, Scholomance as the next run, and the build for 60 that goes with it.") },
       { label: "Raid night", name: "What to bring, and what it costs", say: "WoWSims' consumes for your spec: how many to get and what that costs.",
+        box: [379, 27, 328, 516], note: "WoWSims' consumes for your spec: what you're short of, and what it costs at a vendor or the auction house. Pick Simple or Max DPS, and how many nights you stock for. Switch it on and what's short stays on your shopping list.",
         shot: closeup("endgame-night", 345, 583, "The Raid night card: Simple or Max DPS, one night of three hours, each elixir, food and potion with how many to get and what it costs, about 26 gold in all, and the switch that keeps it on the shopping list.") },
       { label: "Raids and cooldowns", name: "Every character's lockouts", say: "Which raids each character is saved to, and long cooldowns like Transmute.",
+        box: [723, 27, 328, 612], note: "Which raids each of your characters is saved to, and who's still free. Long cooldowns like Transmute, and when each is ready. Every character on one page.",
         shot: closeup("endgame-raids", 346, 438, "The Raids and Cooldowns cards: one character saved to Molten Core at 4 of 10 with two free, and Transmute and Mooncloth ready on the characters who have them.") },
     ],
     good: [

@@ -41,6 +41,21 @@ const where = page.command ? ["Opens with", `/jsal ${page.command}`] : ["In the 
 const next = page.next.map((key) => ({ href: PAGES[key] ? `/jsal-ui/${key}/` : `/jsal-ui/#pick-${key}`, label: ALL[key].label, line: ALL[key].name }));
 const maps = rows.some((r) => r.credit);
 const clipped = !!(me.film || me.clip) || rows.some((r) => r.c);
+// The whole screen (page.screen, wide windows only; job 147 from John's pick of the job 146 mockups): one still of the
+// part's window, each row a numbered spot on it with its tooltip. Every row needs a box for it. A box and its
+// tooltip are placed in percentages of the still. The tooltip sits under its box, as wide as the box (320px at
+// least) and kept inside the still; the dim's hole is the box with the gold edge's 4px round it.
+const screen = page.screen && page.rows.every((r) => r.box) ? page.screen : null;
+const pc = (n, of) => `${+((n / of) * 100).toFixed(4)}%`;
+const spots = screen ? page.rows.map(({ box: [x, y, w, h] }) => {
+  const tw = Math.max(w, 320);
+  return {
+    area: `left: ${pc(x, screen.w)}; top: ${pc(y, screen.h)}; width: ${pc(w, screen.w)}; height: ${pc(h, screen.h)}`,
+    hole: `left: calc(${pc(x, screen.w)} - 4px); top: calc(${pc(y, screen.h)} - 4px); width: calc(${pc(w, screen.w)} + 8px); height: calc(${pc(h, screen.h)} + 8px)`,
+    tip: [pc(Math.min(x, screen.w - tw), screen.w), pc(y + h + 16, screen.h), `${tw}px`],
+    note: tw - 42,
+  };
+}) : [];
 
 const MAPS = "https://sreyesmaps.com";
 ---
@@ -132,6 +147,54 @@ const MAPS = "https://sreyesmaps.com";
 .clip-ctl { position: absolute; right: var(--jsal-space-12); bottom: var(--jsal-space-12); z-index: 1; }
 </style>
 )}
+{screen && (
+<style is:inline slot="head">
+/* Wide windows: one whole screen of the part, at the game's own size, in place of its film and close-ups (which
+   phones and narrower windows keep). It fits at its own size from 1280px, where the column grows to 1120px */
+@media (min-width: 1280px) { .film, .caps { display: none; } }
+@media (max-width: 1279px) { .whole { display: none; } }
+.whole { width: min(100%, var(--w)); margin-inline: auto; }
+.screen { position: relative; }
+.screen > img { display: block; width: 100%; height: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
+/* The dim: while a thing is pointed at or focused, the rest of the window darkens round a hole that follows it */
+.shade { position: absolute; inset: 0; overflow: hidden; border-radius: var(--jsal-radius-xl); pointer-events: none; }
+.hole { position: absolute; border-radius: var(--jsal-radius-lg); box-shadow: 0 0 0 2400px transparent; }
+.screen[data-pointing] .hole { box-shadow: 0 0 0 2400px rgb(0 0 0 / 0.5); }
+/* Each thing the part does: a button over it, its numbered gold dot on the top left corner, a gold edge when it's
+   the one shown */
+.area { position: absolute; margin: 0; padding: 0; border: 0; border-radius: var(--jsal-radius-lg); background: none; color: inherit; font: inherit; cursor: default; outline: none; }
+.area::before { content: ""; position: absolute; inset: calc(var(--jsal-space-4) * -1); border-radius: var(--jsal-radius-lg); box-shadow: 0 0 0 2px transparent; }
+.area[data-on]::before { box-shadow: 0 0 0 2px var(--jsal-fill), 0 0 24px rgb(227 176 75 / 0.25); }   /* style: allow (the gold's glow, on the game's dark) */
+.area:focus-visible::before { box-shadow: 0 0 0 2px var(--jsal-fill), 0 0 0 5px rgb(227 176 75 / 0.35); }   /* style: allow (focus on the game's dark: gold, then a softer gold, never the page's gap) */
+.dot { position: absolute; top: calc(var(--jsal-space-8) * -1); left: calc(var(--jsal-space-8) * -1); z-index: 2; display: grid; place-items: center; width: 24px; height: 24px; border-radius: var(--jsal-radius-pill); background: var(--jsal-fill); color: var(--jsal-on-fill); font: 700 13px/1 var(--f); box-shadow: 0 0 0 2px var(--jsal-on-fill); }
+/* The tooltip: the site's own card under the thing it describes, in the window's empty floor, never over the card;
+   one box that moves from thing to thing. Every note is in it, the hidden ones kept for screen readers */
+.tip { position: absolute; z-index: 3; padding: var(--jsal-space-16) var(--jsal-space-20); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: 0 12px 32px rgb(0 0 0 / 0.35); }
+.tip::before { content: ""; position: absolute; top: -7px; left: var(--jsal-space-24); width: 12px; height: 12px; border-top: 1px solid var(--jsal-line-hi); border-left: 1px solid var(--jsal-line-hi); background: inherit; transform: rotate(45deg); }
+@media screen and (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tip { background: var(--jsal-sunk); } }
+:root[data-theme="dark"] .tip { background: var(--jsal-sunk); }
+.tip[data-off] { visibility: hidden; opacity: 0; transform: translateY(calc(var(--jsal-space-8) * -1)); }
+.note:not([data-on]) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.note h2 { margin: var(--jsal-space-4) 0 0; font: 700 17px/1.25 var(--f); letter-spacing: -0.02em; }
+.note .say { margin: var(--jsal-space-8) 0 0; color: var(--jsal-ink-2); font-size: 14px; line-height: 1.5; }
+/* Motion, only where it's welcome: the dots arrive one after another as the page opens and the first tooltip with
+   them; the edge and the dim fade; the tooltip and the dim's hole glide from thing to thing; a tooltip that was shut
+   fades in with a short drop from its thing, and a new note fades in inside it. Without, every change is instant */
+@media (prefers-reduced-motion: no-preference) {
+  .screen[data-in] .dot { animation: dot-in var(--jsal-settle) var(--jsal-ease-out) backwards; animation-delay: calc(var(--jsal-quick) * var(--n)); }
+  @keyframes dot-in { from { opacity: 0; transform: scale(0.4); } }
+  .screen[data-in] .tip { animation: tip-in var(--jsal-settle) var(--jsal-ease-out) backwards; animation-delay: var(--jsal-quick); }
+  @keyframes tip-in { from { opacity: 0; transform: translateY(calc(var(--jsal-space-8) * -1)); } }
+  .area::before { transition: box-shadow var(--jsal-quick) ease; }
+  .hole { transition: left var(--jsal-settle) var(--jsal-ease-out), top var(--jsal-settle) var(--jsal-ease-out), width var(--jsal-settle) var(--jsal-ease-out), height var(--jsal-settle) var(--jsal-ease-out), box-shadow var(--jsal-quick) ease; }
+  .tip { transition: left var(--jsal-settle) var(--jsal-ease-out), top var(--jsal-settle) var(--jsal-ease-out), width var(--jsal-settle) var(--jsal-ease-out), height var(--jsal-settle) var(--jsal-ease-out), opacity var(--jsal-quick) ease, transform var(--jsal-settle) var(--jsal-ease-out); }
+  .tip[data-off] { transition: opacity var(--jsal-quick) ease, transform var(--jsal-quick) ease, visibility 0s linear var(--jsal-quick); }
+  .note[data-on] { animation: note-in var(--jsal-quick) ease; }
+  @keyframes note-in { from { opacity: 0; } }
+}
+</style>
+)}
+{screen && <script is:inline slot="head" src={v("/jsal-ui/screen.js")} defer></script>}
 {maps && (
 <style is:inline slot="head">
 /* The maps' maker, credited under the words about them */
@@ -167,6 +230,27 @@ const MAPS = "https://sreyesmaps.com";
     </figure>
   ) : (
     <figure class="win crop big" data-rv style={`--pw: ${me.shot.w}px; --cx: ${me.shot.cx}; --cy: ${me.shot.cy}`}><img src={v(me.shot.src)} width={me.shot.w} height={me.shot.h} alt={me.shot.alt} fetchpriority="high" decoding="async"></figure>
+  )}{screen && (
+    <figure class="whole big" data-rv style={`--w: ${screen.w}px`}>
+      <!-- On wide windows: the part's whole window, with a numbered spot on each thing it does and a tooltip under the
+           one pointed at or tabbed to (the first to begin with); the notes are all here for screen readers -->
+      <div class="screen" data-screen>
+        <img src={v(screen.src)} width={screen.w} height={screen.h} alt={screen.alt} decoding="async">
+        <div class="shade" aria-hidden="true"><span class="hole" style={spots[0].hole}></span></div>
+        {rows.map((r, i) => (
+          <button type="button" class="area" style={`${spots[i].area}; --n: ${i}`} data-tip={spots[i].tip.join(" ")} data-hole={spots[i].hole} aria-describedby={`note-${i}`} {...(i === 0 ? { "data-on": "" } : {})}><span class="dot" aria-hidden="true">{i + 1}</span><span class="sr-only">{r.label}</span></button>
+        ))}
+        <div class="tip" style={`left: ${spots[0].tip[0]}; top: ${spots[0].tip[1]}; width: ${spots[0].tip[2]}`}>
+          {rows.map((r, i) => (
+            <div class="note" id={`note-${i}`} style={`width: ${spots[i].note}px`} {...(i === 0 ? { "data-on": "" } : {})}>
+              <p class="eyebrow">{r.label}</p>
+              <h2>{r.name}</h2>
+              <p class="say">{r.note}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </figure>
   )}
   <div class="caps">
   {rows.map((r, i) => (
