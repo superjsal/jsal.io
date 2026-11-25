@@ -299,12 +299,16 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   notes fade) and is off with reduced motion. Its script is `site/jsal-ui/screen.js`.
   **A stage of pieces** (John, 24 Nov 2026, of the job 150 mockups: "B for both"; Gear and Training): where a part's
   things aren't all in one window, `stage` in `PAGES` lays its other pieces over the window's edge, as they sit over
-  each other in the game: Gear's At 60 list as a card over the right column and the star's tooltip lines off the
-  top right corner; Training's trainer label and trainer panel over the page's bottom edge. Each piece is cut from his
-  screenshot at its own pixels, just inside its own border, with nothing of the game world, chat, names or other
-  addons in it (a piece that can't avoid one is left out). Each row's `box` names its piece (`on`) and its tooltip's
-  `side` (right, left, or above-end for a full-width part); the tooltip is placed as drawn and turns to the other
-  side where it would leave the window. Each piece dims on its own, the pointed-at one round a hole. A stage wider
+  each other in the game: Gear's At 60 list as a card over the right column, and its Stars told in order over the
+  window's bottom edge (John, 24 Nov 2026: "do you have the screen where you can star something?"): a slot's upgrade
+  list with the lit star and the game's "Starred" tooltip, then the star's lines on an item's tooltip; Training's
+  trainer pin and trainer panel over the page's bottom edge. Nothing lies above the window, so the stage keeps clear
+  of the download and the line under it. Each piece is cut from his screenshot at its own pixels, just inside its own
+  border, with nothing of chat, names or other addons in it and no more of the game world than a pin drawn on it
+  needs (a piece that can't avoid one is left out). Each row's `box` names its piece (`on`, or a list of pieces for
+  one thing told in several) and its tooltip's `side` (right, left, or above-end for a full-width part); the tooltip
+  is placed as drawn and turns to the other side where it would leave the window. Boxes never overlap, since the
+  others blur under their own. Each piece dims on its own, the pointed-at ones round a hole. A stage wider
   than the column breaks out of it, at its own size wherever the window leaves 40px each side, and smaller below that
   (Gear: own size at 1440, 95% at 1280). A dot that would cover a short piece's words sits beside it, on its left.
   The parts and windows are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store

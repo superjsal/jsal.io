@@ -2,24 +2,24 @@
 // dot. Pointing at one, tabbing to it or tapping it gives it the gold edge, dims the rest of the window and opens the
 // tooltip beside it; with none pointed at or focused the picture rests, no tooltip and no dim. Escape shuts it.
 // On a single still each button's data-tip is where its tooltip goes (left, top, and which side of the thing it sits
-// on) and data-hole the dim's hole round it. On a stage of pieces each button names its piece (data-on-piece), the
-// side its tooltip opens on and its hole in that piece's dim; the tooltip is placed as drawn, since the stage may be
-// drawn smaller than the tooltip, and turns to the other side where it would leave the window. All the notes stay in
-// the page, so a screen reader has every one; the motion is in the page's styles, off with reduced motion. A page
-// loaded ahead waits until it's shown.
+// on) and data-hole the dim's hole round it. On a stage of pieces each button names its pieces (data-on-piece), the
+// side its tooltip opens on and its hole in each of those pieces' dims; the tooltip is placed as drawn, since the
+// stage may be drawn smaller than the tooltip, and turns to the other side where it would leave the window. All the
+// notes stay in the page, so a screen reader has every one; the motion is in the page's styles, off with reduced
+// motion. A page loaded ahead waits until it's shown.
 (() => {
   const start = () => document.querySelectorAll('[data-screen]').forEach((screen) => {
     const areas = [...screen.querySelectorAll('.area')];
     const tip = screen.querySelector('.tip'), notes = [...tip.children], holes = [...screen.querySelectorAll('.hole')];
-    let on = -1, timer = 0, lastPiece = -1;
+    let on = -1, timer = 0, lastPieces = [];
     // The tooltip's height follows its note, so a change of note eases rather than jumps (0 while the screen is hidden)
     const fit = () => {
       if (on < 0) return;
       const h = notes[on].offsetHeight, s = getComputedStyle(tip);
       tip.style.height = h ? `${h + parseFloat(s.paddingTop) + parseFloat(s.paddingBottom) + parseFloat(s.borderTopWidth) + parseFloat(s.borderBottomWidth)}px` : '';
     };
-    // A stage's tooltip beside its thing, measured as drawn, 16px off; each piece's hole: round the thing on its own
-    // piece (snapping there when it comes from another piece), shut on the others so they dim whole
+    // A stage's tooltip beside its thing, measured as drawn, 16px off; each piece's hole: round the thing on the pieces
+    // it lies on (snapping there when it comes from other pieces), shut on the others so they dim whole
     const place = () => {
       if (on < 0) return;
       const a = areas[on], s = screen.getBoundingClientRect(), r = a.getBoundingClientRect();
@@ -31,14 +31,15 @@
       else { left = side === 'right' ? x + r.width + G : x - G - W; top = y; }
       Object.assign(tip.style, { left: `${left}px`, top: `${top}px` });
       tip.dataset.side = side;
-      const mine = +a.dataset.onPiece;
+      const mine = a.dataset.onPiece.split(' ').map(Number), cuts = a.dataset.hole.split(' | ');
       holes.forEach((hole, k) => {
-        if (k !== mine) { hole.style.cssText = 'left: 50%; top: 50%; width: 0; height: 0'; return; }
-        if (lastPiece !== k) hole.setAttribute('data-snap', '');
-        hole.style.cssText = a.dataset.hole;
+        const j = mine.indexOf(k);
+        if (j < 0) { hole.style.cssText = 'left: 50%; top: 50%; width: 0; height: 0'; return; }
+        if (!lastPieces.includes(k)) hole.setAttribute('data-snap', '');
+        hole.style.cssText = cuts[j];
         requestAnimationFrame(() => requestAnimationFrame(() => hole.removeAttribute('data-snap')));
       });
-      lastPiece = mine;
+      lastPieces = mine;
     };
     const show = (i) => {
       clearTimeout(timer);

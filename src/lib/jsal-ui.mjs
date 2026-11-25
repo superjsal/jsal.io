@@ -118,7 +118,8 @@ const whole = (src, w, h, alt) => ({ src, w, h, alt });
 // part whose things aren't all in one window: its window, with the other pieces laid over its edge the way they sit
 // over each other in the game, each at the game's own size. w by h is the stage; a piece is one cut picture (w by h,
 // its own pixels) whose frame, 1px wider each side, has its top left corner at x, y; card gives it a deeper shadow.
-// Each row gives a box on the stage (in the stage's pixels), the piece the box lies on, and the side its tooltip
+// Each row gives a box on the stage (in the stage's pixels), the piece the box lies on (or a list of pieces, for a
+// thing told in several, like a star set in the list and then shown on the piece's tooltip), and the side its tooltip
 // opens on (right, left, or above-end: over the box, at its right end); order is the order of the numbered dots.
 const piece = (name, x, y, w, h, alt, card = false) => ({ src: `/img/jsal-ui/ui/${name}.webp`, x, y, w, h, alt, card });
 
@@ -139,7 +140,7 @@ export const PAGES = {
     lead: "Know before you hearth: which spells are ready at the trainer and what they'll cost you, a pin on the nearest trainer, and every visit from here to 60 laid out on one road. Pet and weapon training too.",
     stage: { w: 1088, h: 1138, order: [0, 2, 1, 3], pieces: [
       piece("training-whole", 0, 0, 1086, 690, "The Training Planner at level 46: 7 spells ready for 8 gold 34 silver with the nearest trainer named, the pet's training and weapon skills, and the road to 60 as a line of trainer visits."),
-      piece("training-whole-pin", 64, 676, 135, 36, "The label jsal.ui puts over the nearest trainer in the game world: the trainer's name and how many yards to go."),
+      piece("training-whole-pin", 64, 676, 131, 74, "The pin jsal.ui puts on the nearest trainer in the game world: a gold diamond under a label with the trainer's name and 54 yards to go."),
       piece("training-whole-trainer", 658, 676, 388, 460, "jsal.ui's panel at a hunter trainer: three spells to train with their prices, what level 48 brings, a Train all button and a way back into the planner.", true),
     ] },
     rows: [
@@ -147,7 +148,7 @@ export const PAGES = {
         box: [15, 23, 526, 383], on: 0, side: "right", ticks: ["Spells, pet and weapon training", "Each spell's price, and the total", "A pin on the nearest trainer"],
         shot: closeup("training-now", 512, 331, "The Training Planner's Train now list at level 46: nine spells and pet abilities with their ranks and prices, 13 skipped, and the visit's total with the gold left after.") },
       { label: "Nearest trainer", name: "A pin on the nearest trainer", say: "Show trainer on map pins the nearest one and counts the yards as you walk.",
-        box: [64, 676, 137, 38], on: 1, side: "right", ticks: ["The nearest trainer, pinned in the world", "The trainer's name over the pin", "The yards counted down as you walk"],
+        box: [64, 676, 133, 76], on: 1, side: "right", ticks: ["The nearest trainer, pinned in the world", "The trainer's name over the pin", "The yards counted down as you walk"],
         shot: closeup("training-pin", 360, 140, "The pin jsal.ui puts on the nearest trainer in the game world: a gold diamond under a label with the trainer's name and 44 yards to go.") },
       { label: "The road to 60", name: "Every visit from here to 60", say: "What each visit costs, so the pricey visits never catch you short.",
         box: [15, 464, 1044, 204], on: 0, side: "above-end", ticks: ["Your road to 60, visit by visit", "What each visit costs", "What your next ding brings"],
@@ -189,20 +190,22 @@ export const PAGES = {
     title: "Gear plan: jsal.ui for WoW Forever",
     description: "jsal.ui's Gear plan for WoW Forever: upgrades for every slot ranked for your spec with WoWSims' stat weights, where each piece comes from, and your pre-raid BiS list at 60.",
     lead: "Every slot with what you're wearing and its upgrades near your level, ranked for your spec with WoWSims' stat weights, and where each piece comes from. At 60 it turns into your pre-raid BiS list.",
-    stage: { w: 1275, h: 1032, pieces: [
-      piece("gear-whole", 0, 72, 1238, 958, "The Gear plan for a level 46 Survival hunter: 16 slots that can be better, each with what's worn, its best upgrade near that level, where it comes from and how much better it is, and the dungeons to run for them."),
-      piece("gear-whole-at60", 644, 252, 629, 739, "The Gear plan at 60 for a Survival hunter: every slot with the piece to aim for, where it comes from and how much better it is than what's worn.", true),
-      piece("gear-whole-star", 1026, 0, 247, 98, "jsal.ui's lines on a helm's tooltip in the game: 5% better than equipped, starred in your gear plan, and +10 Intellect and +5 Agility over the helm you wear."),
+    stage: { w: 1275, h: 1206, pieces: [
+      piece("gear-whole", 0, 0, 1238, 958, "The Gear plan for a level 46 Survival hunter: 16 slots that can be better, each with what's worn, its best upgrade near that level, where it comes from and how much better it is, and the dungeons to run for them."),
+      piece("gear-whole-at60", 644, 180, 629, 739, "The Gear plan at 60 for a Survival hunter: every slot with the piece to aim for, where it comes from and how much better it is than what's worn.", true),
+      piece("gear-whole-list", 400, 936, 605, 268, "The Gear plan's upgrades for the head slot: 31 of them, filters by where they come from, and a star at the end of each row, the first one lit gold.", true),
+      piece("gear-whole-starred", 964, 973, 181, 47, "The game's tooltip on the lit star: Starred, click to take the star off.", true),
+      piece("gear-whole-star", 1026, 1066, 247, 98, "jsal.ui's lines on a helm's tooltip in the game: 5% better than equipped, starred in your gear plan, and +10 Intellect and +5 Agility over the helm you wear."),
     ] },
     rows: [
       { label: "Near your level", name: "Where every upgrade comes from", say: "Upgrades in order, each with the boss, quest, vendor or crafter it comes from.",
-        box: [4, 251, 625, 735], on: 0, side: "right", ticks: ["Boss, quest, vendor or crafter", "Filter by where it comes from", "The dungeons to run for them"],
+        box: [4, 179, 625, 735], on: 0, side: "right", ticks: ["Boss, quest, vendor or crafter", "Filter by where it comes from", "The dungeons to run for them"],
         shot: closeup("gear-slots", 620, 723, "The Gear plan's slots for a level 46 Survival hunter, armor, jewelry and weapons: what's worn in each, an arrow to the best upgrade near that level, where it comes from and how much better it is.") },
       { label: "At 60", name: "Your pre-raid BiS, slot by slot", say: "At 60 the plan turns into your pre-raid list. No switch to find.",
-        box: [644, 252, 631, 741], on: 1, side: "left", ticks: ["The piece to aim for in every slot", "What you're already wearing", "Which dungeons to run for the rest"],
+        box: [644, 180, 631, 741], on: 1, side: "left", ticks: ["The piece to aim for in every slot", "What you're already wearing", "Which dungeons to run for the rest"],
         shot: closeup("gear-at60", 620, 723, "The Gear plan at 60 for a Survival hunter: nine slots already at WoWSims' pre-raid set, and for each of the rest the piece to aim for, where it comes from and how much better it is.") },
       { label: "Stars", name: "Star a piece, hear about it when it drops", say: "A starred piece gets a gold line on its tooltip and a banner when it drops.",
-        box: [1026, 0, 249, 100], on: 2, side: "left", ticks: ["A gold banner when it drops", "Its star on the boss in the Dungeon guide", "It clears once you're wearing it"],
+        box: [400, 936, 875, 270], on: [2, 3, 4], side: "left", ticks: ["Star it in the slot's list, and it stays on top", "A gold line on its tooltip, wherever it turns up", "A gold banner when it drops"],
         shot: closeup("gear-stars", 691, 310, "A starred chest piece's tooltip in the game: jsal.ui's gold line says it's starred in your gear plan and how much better it is than what you wear, beside the piece you have on, with its star lit in the list below.") },
     ],
     good: [

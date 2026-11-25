@@ -50,7 +50,7 @@ const screen = page.screen && page.rows.every((r) => r.box && r.ticks) ? page.sc
 // A stage (page.stage; job 150, John: "B for both") is the whole screen made of pieces: the part's window with its other
 // pieces laid over its edge, each at the game's own size, the whole stage breaking out of the column where it's wider
 // and drawn smaller only where the window is too narrow for it. Pieces, boxes and dots are placed in percentages of the
-// stage; the tooltip is placed as drawn, by the script, on the box's side. Each piece dims on its own: the one under
+// stage; the tooltip is placed as drawn, by the script, on the box's side. Each piece dims on its own: the ones under
 // the pointed-at box round a hole the box's size, the others whole.
 const stage = !screen && page.stage && page.rows.every((r) => r.box && r.ticks && r.side) ? page.stage : null;
 const at = ([x, y, w, h], s) => `left: ${pc(x, s.w)}; top: ${pc(y, s.h)}; width: ${pc(w, s.w)}; height: ${pc(h, s.h)}`;
@@ -58,6 +58,8 @@ const frame = (p) => [p.x, p.y, p.w + 2, p.h + 2];
 // A box's hole in its piece's dim, in percentages of the picture inside the piece's 1px frame, with the gold edge's 4px
 const holeIn = ([x, y, w, h], p) => `left: calc(${pc(x - p.x - 1, p.w)} - 4px); top: calc(${pc(y - p.y - 1, p.h)} - 4px); width: calc(${pc(w, p.w)} + 8px); height: calc(${pc(h, p.h)} + 8px)`;
 const order = stage ? (stage.order || page.rows.map((_, i) => i)) : [];
+// A box told in several pieces opens a hole in each of them, the holes in the same order as the pieces
+const ons = (r) => [].concat(r.on);
 const pc = (n, of) => `${+((n / of) * 100).toFixed(4)}%`;
 const TIP = 320, GAP = 16;
 const spots = screen ? page.rows.map(({ box: [x, y, w, h] }) => {
@@ -312,7 +314,7 @@ const MAPS = "https://sreyesmaps.com";
           </div>
         ))}
         {order.map((i, n) => (
-          <button type="button" class={page.rows[i].box[3] < 60 ? "area slim" : "area"} style={`${at(page.rows[i].box, stage)}; --n: ${n}`} data-on-piece={page.rows[i].on} data-side={page.rows[i].side} data-hole={holeIn(page.rows[i].box, stage.pieces[page.rows[i].on])} aria-describedby={`note-${i}`}><span class="dot" aria-hidden="true">{n + 1}</span><span class="sr-only">{page.rows[i].label}</span></button>
+          <button type="button" class={page.rows[i].box[3] < 60 ? "area slim" : "area"} style={`${at(page.rows[i].box, stage)}; --n: ${n}`} data-on-piece={ons(page.rows[i]).join(" ")} data-side={page.rows[i].side} data-hole={ons(page.rows[i]).map((k) => holeIn(page.rows[i].box, stage.pieces[k])).join(" | ")} aria-describedby={`note-${i}`}><span class="dot" aria-hidden="true">{n + 1}</span><span class="sr-only">{page.rows[i].label}</span></button>
         ))}
         <div class="tip" data-off data-side="right">
           {order.map((i) => (
