@@ -238,14 +238,39 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   - **No part has a page of its own** (John, 25 Nov 2026: "retire them"): players looking for an addon know the game,
     and addon sites (Polestar, EllesmereUI) tell every part on one page. The six part pages that were tried
     (24 Nov 2026) redirect to their stage here (`#pick-build`, in `site/_redirects`). Depth, if it's ever needed,
-    goes in one help page (commands, settings, where things are), not a page per part.
+    goes in one help page (commands, settings, where things are), not a page per part; the parts you'll use most are a
+    section of this page (below).
   - Every stage is in the page, one under the other, and each row is a link to its stage; with scripts the rows
     are tabs and one stage shows. The address keeps the choice as `#pick-gear`.
   - Then three **numbers** (36 parts, 3 groups: Plan, Craft and Play, 100% free; change the first by hand when the
     addon's parts do). The numbers count only what the addon owns (John, 20 Nov 2026): never dungeons, loot or
     anything else from Forever's data, which is new and still changing; never how often it updates; never "1
-    dashboard" (some pages open outside it) or "0 other addons" (an EllesmereUI profile import is planned). Then a
-    **Latest release** card, a **Discord** band, the little things and Install. Install has a primary Download
+    dashboard" (some pages open outside it) or "0 other addons" (an EllesmereUI profile import is planned). Then
+    **The parts you'll use most**, the little things, a **Latest release** card, a **Discord** band and Install.
+  - **The parts you'll use most** (heading 30px, Plan, Craft and Play 24px under it; John, 25 Nov 2026, after a run of mockups: "dynamic bento", "separate into our 3 plan, craft,
+    play"): the addon's three groups again, each a small bento under its own heading (`CLOSER` in `jsal-ui.mjs`), four
+    tiles a group in named slots: a big 2×2 window tile, a wide 2×1 tile
+    (Craft's is the tall shopping list, per John's sketch) and two word tiles (Play has one, across both cells: chess
+    is shelved, so it isn't shown). The heaviest tile alternates sides down the page (John: "alternating the big
+    card"): Plan's big tile on the right, Craft's tall list on the left, At 60's on the right, Play's on the left. **At 60**
+    (John: "plan bento right now is all about the leveling but nothing about what happens after") sits between Craft
+    and Play: the Endgame page's Your set card leads (John: "the window ... which shows where to go": how close the
+    pre-raid set is, the next run and the build), then every alt's lockouts and cooldowns, the pre-raid BiS list and
+    raid nights in the Journal; no consumables. At 60 mirrors Craft, so the lockouts card is tall enough to show its
+    Cooldowns too (John: "mentions transmutes but cuts off cooldowns"); every card in it shows whole at every width.
+    **A narrow window floats on game scenery** (John: "a background to ones that don't fill ... muted but can tell
+    its from in game"): the trainer panel, the shopping list, Your set and the lockouts each sit on a different crop
+    of John's own Arathi Highlands screenshot (`site/img/jsal-ui/scenery/`, from `private\jsal-ui\sim\backdrops\`),
+    blurred, desaturated and darkened in the file, with a 30% `--win-fill` tint over it, and drawn small enough that
+    the scenery frames them. The blur leaves no nameplate readable. The whole Endgame page isn't used: it shows a real character's name. Each window shows a side of the part the
+    tour doesn't (the panel at a trainer, a starred tooltip, the shopping list, the road to the cap) and is **drawn to
+    fit its tile, to show the feature, not to be read** (John: "it is okay if the text is not as readable"), so the 85%
+    floor of the close-ups doesn't apply here; a phone draws each closer (`psw`). A narrow window sits centred, never
+    larger than the game draws it. The pal is the baby form (the Capling) in its meadow, by day or by night with the
+    theme, from `meadow-day.png` and `meadow-night.png` (the pen scenes cut to their art). Each heading carries the
+    part's own 64px icon at 32px, with no box round it (the icons are already tiles). The layout follows the section's
+    width (a container query): four columns from 1000px, two from 620px, one below; tiles never overflow, and a word
+    tile's slack sits centred. The words are a player's, about what it does for you in the game, never a sales line. Install has a primary Download
     button (the first screen's) with CurseForge and Wago as links beside it, and says what Auctionator adds: with it, and
     while Crafting profit is on (the default), the profession leveling path, the shopping list and Crafting profit
     price things from its auction house scan (John, 24 Nov 2026).

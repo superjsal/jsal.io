@@ -103,6 +103,50 @@ const FILMS = {
 };
 for (const g of GROUPS) for (const p of g.parts) if (FILMS[p.key]) p.film = FILMS[p.key];
 
+// The parts you'll use most, under the tour: the addon's three groups again, each a small bento of the things you'll use most,
+// shown from a side the tour doesn't (John, 25 Nov 2026: Plan, Craft and Play, "dynamic", windows zoomed out "to
+// showcase the feature", not to be read). Each group's tiles fill named slots in its layout (big, wide, s1, s2): a tile
+// with a shot shows a window drawn to fit its tile, sw of the window's pixels across it from x, y (and on a phone
+// psw from px, py, closer and so more readable); x "center" sits a narrow window in the middle of its tile instead,
+// never drawn larger than the game draws it; a pen tile shows a pal in its meadow. The words are a player's: what it
+// does for you in the game, never a sales line.
+const look = (src, nw, alt, [x, y, sw], [px, py, psw]) => ({ src: `/img/jsal-ui/ui/${src}`, nw, alt, x, y, sw, px, py, psw, center: x === "center" });
+export const CLOSER = [
+  { key: "plan", name: "Plan", line: "Know what's next at every level.", tiles: [
+    { slot: "big", beside: true, icon: "training", name: "Train right at the trainer",
+      line: "A panel beside the trainer's window: what you can train, what it costs, and what your next level brings. One click trains it all.",
+      shot: { ...look("training-whole-trainer.webp", 388, "jsal.ui's panel beside a hunter trainer: three spells to train with their prices, what level 48 brings, and a Train all button.", ["center", 0, 520], ["center", 0, 420]), bg: "peaks" } },
+    { slot: "s1", icon: "build", name: "See your next talent point", line: "When a point comes in, the Ready to learn card names it. Learn spends it, after it asks." },
+    { slot: "s2", icon: "dungeons", name: "Every dungeon, boss by boss", line: "Each boss's best drops for your spec, the quests to grab first, and a map." },
+    { slot: "wide", beside: true, icon: "gear", name: "Star the gear you're after", line: "Its tooltip says so wherever it turns up, and you'll hear when it drops.",
+      shot: look("gear-stars.webp", 691, "A starred chest piece's tooltip in the game: jsal.ui's gold line says it's starred in your gear plan and how much better it is than what you wear.", [0, 0, 560], [0, 0, 460]) },
+  ] },
+  { key: "craft", name: "Craft", line: "Level professions for less, and craft for each other.", tiles: [
+    { slot: "wide", icon: "shop", name: "Shop once for the whole road", line: "It counts your bags and bank first. At a vendor, a button buys the rest.",
+      shot: { ...look("professions-whole-list.webp", 378, "jsal.ui's Shopping list: five crafts with how many of each, then what's still to get from a vendor, with prices.", ["center", 0, 500], ["center", 0, 420]), bg: "fields", top: true } },
+    { slot: "s1", icon: "profit", name: "Crafts that pay for themselves", line: "See which recipes come out ahead before you craft for the auction house." },
+    { slot: "s2", icon: "crafts", name: "Ask the guild for a craft", line: "Need an enchant or a piece you can't make? Guildies who know the recipe hear about it." },
+    { slot: "big", icon: "professions", name: "Your road to the cap", line: "Each step with what to make and how many, and where to learn or buy each recipe.",
+      shot: look("professions-whole.webp", 1086, "Leatherworking's road to 300: each step with the craft to make, how many, and whether its recipe comes from the trainer or a pattern.", [26, 344, 1040], [20, 380, 540]) },
+  ] },
+  { key: "sixty", name: "At 60", line: "It keeps going after you ding.", tiles: [
+    { slot: "big", beside: true, icon: "endgame", name: "Know where to go next",
+      line: "Your page for 60 counts how close your pre-raid set is, names the next run that gets you closer, and pairs it with the build for 60.",
+      shot: { ...look("endgame-set.webp", 346, "The Your set card: 9 of 16 slots at the pre-raid set, Scholomance as the next run with one piece for you, and the build for 60 that goes with the set.", ["center", 0, 480], ["center", 0, 520]), bg: "tree" } },
+    { slot: "s1", icon: "gear", name: "Your pre-raid BiS", line: "At 60 the Gear plan turns into your pre-raid list, slot by slot." },
+    { slot: "s2", icon: "journal", name: "Raid nights, remembered", line: "At 60 the Journal switches to boss kills and raid nights." },
+    { slot: "wide", icon: "endgame", name: "Every alt's lockouts", line: "Which raids each character is saved to, and cooldowns like Transmute and Mooncloth.",
+      shot: { ...look("endgame-raids.webp", 346, "The Raids and Cooldowns cards: one character saved to Molten Core at 4 of 10 with two free, and Transmute and Mooncloth ready on the characters who have them.", ["center", 0, 600], ["center", 0, 760]), bg: "rock" } },
+  ] },
+  { key: "play", name: "Play", line: "The fun parts, and your guild.", tiles: [
+    { slot: "big", icon: "journal", name: "Every level, remembered", line: "Hours on each level, foes defeated, deaths, flights and gold, from the day you install it. All your alts too.",
+      shot: look("films/journal.webp", 1086, "The Journal's numbers: time on every level as a chart, ten counts such as foes defeated, quests done and gold earned, and what you've used and where you've been most.", [0, 270, 1086], [26, 400, 540]) },
+    { slot: "wide", beside: true, icon: "pals", name: "A pal to raise", line: "Hatch an egg and look after what comes out. It grows up twice, and your questing pays for its keep.",
+      pen: { src: "/img/jsal-ui/pals/capling.png", alt: "A Capling, a baby pal, in the addon's pixel art, standing in its meadow pen." } },
+    { slot: "s1", icon: "games", name: "A game a day", line: "Daily Word, Icon Guess and Pal run: the same for everyone, so the whole guild can compare." },
+  ] },
+];
+
 // The small helpers, each with its own toggle in Settings
 export const LITTLE = [
   ["Quick buttons", "A small bar you can park anywhere, with a gold dot when something's waiting."],
