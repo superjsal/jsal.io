@@ -266,6 +266,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .cl-scene { background: linear-gradient(color-mix(in srgb, var(--win-fill) 30%, transparent), color-mix(in srgb, var(--win-fill) 30%, transparent)), var(--bg) center / cover no-repeat; }
 .cl-scene > img { top: 50%; translate: -50% -50%; border-radius: var(--jsal-radius-lg); box-shadow: var(--win-shadow); }
 .cl-top > img { top: var(--jsal-space-16); translate: -50% 0; }
+/* two windows on one piece of scenery: a list, and a tooltip laid over its lower corner */
+.cl-stack > .cl-stack-list { left: 8%; top: 10%; width: min(80%, 605px); height: auto; translate: none; }
+.cl-stack > .cl-stack-tip { left: auto; top: auto; right: 5%; bottom: 8%; width: min(64%, 247px); height: auto; translate: none; }
 @container closer (max-width: 619px) { .cl-scene { min-height: 320px; } }
 /* the pal in its meadow, in the addon's pixel art: by day in the light theme, by night in the dark */
 .cl-pen { background: var(--win-fill) var(--day) center bottom / cover no-repeat; image-rendering: pixelated; }
@@ -513,7 +516,13 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           <header data-rv-step><h3 id={`cl-${g.key}-h`}>{g.name}</h3><span>{g.line}</span></header>
           <div class="cl-bento">
             {g.tiles.map((t) => (
-              <article class={`cl-tile cl-${t.slot}${t.beside ? " cl-beside" : ""}${t.shot || t.pen ? "" : " cl-words-only"}`} data-rv-step>
+              <article class={`cl-tile cl-${t.slot}${t.beside ? " cl-beside" : ""}${t.shot || t.pen || t.stack ? "" : " cl-words-only"}`} data-rv-step>
+                {t.stack && (
+                  <div class="cl-shot cl-scene cl-stack" style={`--bg: url(${v(`/img/jsal-ui/scenery/${t.stack.bg}.webp`)})`}>
+                    <img class="cl-stack-list" src={v(t.stack.list.src)} width={t.stack.list.w} height={t.stack.list.h} alt={t.stack.list.alt} loading="lazy" decoding="async">
+                    <img class="cl-stack-tip" src={v(t.stack.tip.src)} width={t.stack.tip.w} height={t.stack.tip.h} alt={t.stack.tip.alt} loading="lazy" decoding="async">
+                  </div>
+                )}
                 {t.shot && (
                   <div class={`cl-shot${t.shot.center ? " cl-center" : ""}${t.shot.bg ? " cl-scene" : ""}${t.shot.top ? " cl-top" : ""}`} style={`--nw: ${t.shot.nw}; --sw: ${t.shot.sw}; --psw: ${t.shot.psw}${t.shot.center ? "" : `; --x: ${t.shot.x}; --y: ${t.shot.y}; --px: ${t.shot.px}; --py: ${t.shot.py}`}${t.shot.bg ? `; --bg: url(${v(`/img/jsal-ui/scenery/${t.shot.bg}.webp`)})` : ""}`}>
                     <img src={v(t.shot.src)} alt={t.shot.alt} loading="lazy" decoding="async">

@@ -265,11 +265,11 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     raid nights in the Journal; no consumables. At 60 mirrors Craft, so the lockouts card is tall enough to show its
     Cooldowns too (John: "mentions transmutes but cuts off cooldowns"); every card in it shows whole at every width.
     **A narrow window floats on game scenery** (John: "a background to ones that don't fill ... muted but can tell
-    its from in game"): the trainer panel, the shopping list, Your set and the lockouts each sit on a different crop
+    its from in game"): the trainer panel, the star's list and tooltip (a stack: the tooltip laid over the list's corner), the shopping list, Your set and the lockouts each sit on a different crop
     of John's own Arathi Highlands screenshot (`site/img/jsal-ui/scenery/`, from `private\jsal-ui\sim\backdrops\`),
     blurred, desaturated and darkened in the file, with a 30% `--win-fill` tint over it, and drawn small enough that
     the scenery frames them. The blur leaves no nameplate readable. The whole Endgame page isn't used: it shows a real character's name. Each window shows a side of the part the
-    tour doesn't (the panel at a trainer, a starred tooltip, the shopping list, the road to the cap) and is **drawn to
+    tour doesn't (the panel at a trainer, a slot's list with its star lit and the tooltip that says so, the shopping list, the road to the cap) and is **drawn to
     fit its tile, to show the feature, not to be read** (John: "it is okay if the text is not as readable"), so the 85%
     floor of the close-ups doesn't apply here; a phone draws each closer (`psw`). A narrow window sits centred, never
     larger than the game draws it. The pal is the baby form (the Capling) in its meadow, by day or by night with the

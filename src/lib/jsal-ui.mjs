@@ -108,7 +108,8 @@ for (const g of GROUPS) for (const p of g.parts) if (FILMS[p.key]) p.film = FILM
 // showcase the feature", not to be read). Each group's tiles fill named slots in its layout (big, wide, s1, s2): a tile
 // with a shot shows a window drawn to fit its tile, sw of the window's pixels across it from x, y (and on a phone
 // psw from px, py, closer and so more readable); x "center" sits a narrow window in the middle of its tile instead,
-// never drawn larger than the game draws it; a pen tile shows a pal in its meadow. The words are a player's: what it
+// never drawn larger than the game draws it; a stack tile lays two windows on its scenery, the second over the
+// first's corner; a pen tile shows a pal in its meadow. The words are a player's: what it
 // does for you in the game, never a sales line.
 const look = (src, nw, alt, [x, y, sw], [px, py, psw]) => ({ src: `/img/jsal-ui/ui/${src}`, nw, alt, x, y, sw, px, py, psw, center: x === "center" });
 export const CLOSER = [
@@ -119,7 +120,10 @@ export const CLOSER = [
     { slot: "s1", icon: "build", name: "See your next talent point", line: "When a point comes in, the Ready to learn card names it. Learn spends it, after it asks." },
     { slot: "s2", icon: "dungeons", name: "Every dungeon, boss by boss", line: "Each boss's best drops for your spec, the quests to grab first, and a map." },
     { slot: "wide", beside: true, icon: "gear", name: "Star the gear you're after", line: "Its tooltip says so wherever it turns up, and you'll hear when it drops.",
-      shot: look("gear-stars.webp", 691, "A starred chest piece's tooltip in the game: jsal.ui's gold line says it's starred in your gear plan and how much better it is than what you wear.", [0, 0, 560], [0, 0, 460]) },
+      // two windows on the scenery, the way a player meets the feature: the slot's list with the star lit, and the
+      // item's tooltip saying so (John, 25 Nov 2026, "B, list and tooltip")
+      stack: { bg: "ridge", list: { src: "/img/jsal-ui/ui/gear-whole-list.webp", w: 605, h: 268, alt: "The Gear plan's upgrades for the head slot: 31 of them with filters by where they come from, the best one marked best for you and its star lit gold." },
+        tip: { src: "/img/jsal-ui/ui/gear-whole-star.webp", w: 247, h: 98, alt: "jsal.ui's lines on the helm's tooltip in the game: 5% better than equipped, starred in your gear plan, and +10 Intellect and +5 Agility over the helm you wear." } } },
   ] },
   { key: "craft", name: "Craft", line: "Level professions for less, and craft for each other.", tiles: [
     { slot: "wide", icon: "shop", name: "Shop once for the whole road", line: "It counts your bags and bank first. At a vendor, a button buys the rest.",
