@@ -66,6 +66,8 @@ const ons = (r) => [].concat(r.on);
 const states = stage && stage.states;
 const tabOf = (r) => stage.pieces[ons(r)[0]].state;
 const first = states ? states[0][0] : null;
+const creditRow = stage && page.rows.find((r) => r.credit);
+const creditPiece = creditRow && states ? stage.pieces[ons(creditRow)[0]] : null;
 const nIn = (i) => states ? order.filter((j) => tabOf(page.rows[j]) === tabOf(page.rows[i])).indexOf(i) : order.indexOf(i);
 const pc = (n, of) => `${+((n / of) * 100).toFixed(4)}%`;
 const TIP = 320, GAP = 16;
@@ -200,6 +202,7 @@ const MAPS = "https://sreyesmaps.com";
 .tabs .jsal-seg { padding: var(--jsal-space-4); }
 .tabs .jsal-seg > button { min-height: 44px; padding: var(--jsal-space-8) var(--jsal-space-24); font-size: 15px; }
 .piece[data-state]:not([data-shown]) { visibility: hidden; opacity: 0; }
+.piece.credit[data-state]:not([data-shown]) { visibility: visible; }   /* a credit only fades: its words stay for a screen reader */
 @media (prefers-reduced-motion: no-preference) {
   .piece[data-state] { transition: opacity var(--jsal-settle) ease, visibility 0s; }
   .piece[data-state]:not([data-shown]) { transition: opacity var(--jsal-settle) ease, visibility 0s linear var(--jsal-settle); }
@@ -281,7 +284,7 @@ const MAPS = "https://sreyesmaps.com";
 <style is:inline slot="head">
 /* The maps' maker, credited under the words about them */
 .credit { margin: var(--jsal-space-12) 0 0; color: var(--jsal-muted); font-size: 12px; }
-.stage-credit { margin: var(--jsal-space-16) 0 0; text-align: center; }
+.stage-credit { left: 0; width: 100%; margin: 0; text-align: center; }
 @media (max-width: 599px), (pointer: coarse) { .credit a, .stage-credit a { position: relative; } .credit a::after, .stage-credit a::after { content: ""; position: absolute; inset: -15px -8px; } }
 </style>
 )}
@@ -347,6 +350,7 @@ const MAPS = "https://sreyesmaps.com";
             <div class="pic"><img src={v(p.src)} width={p.w} height={p.h} alt={p.alt} loading="lazy" decoding="async"><div class="shade" aria-hidden="true"><span class="hole"></span></div></div>
           </div>
         ))}
+        {creditPiece && <p class="piece credit stage-credit" data-state={creditPiece.state} data-shown={creditPiece.state === first ? "" : undefined} style={`top: calc(${pc(creditPiece.y + creditPiece.h + 2, stage.h)} + var(--jsal-space-12))`}>Forever's own dungeons use <a href={MAPS} tabindex={creditPiece.state === first ? undefined : -1}>Santiago Reyes's maps</a>, with his permission. No bosses marked on those, on purpose: the new dungeons are yours to explore.</p>}
         {order.map((i, n) => (
           <button type="button" class={page.rows[i].box[3] < 60 ? "area slim" : "area"} style={`${at(page.rows[i].box, stage)}; --n: ${nIn(i)}`} data-on-piece={ons(page.rows[i]).join(" ")} data-side={page.rows[i].side} data-hole={ons(page.rows[i]).map((k) => holeIn(page.rows[i].box, stage.pieces[k])).join(" | ")} data-state={states ? tabOf(page.rows[i]) : undefined} hidden={states ? tabOf(page.rows[i]) !== first : undefined} aria-describedby={`note-${i}`}><span class="dot" aria-hidden="true">{n + 1}</span><span class="sr-only">{page.rows[i].label}</span></button>
         ))}
@@ -360,7 +364,6 @@ const MAPS = "https://sreyesmaps.com";
           ))}
         </div>
       </div>
-      {maps && <p class="credit stage-credit">Forever's own dungeons use <a href={MAPS}>Santiago Reyes's maps</a>, with his permission. No bosses marked on those, on purpose: the new dungeons are yours to explore.</p>}
     </figure>
   )}
   <div class="caps">

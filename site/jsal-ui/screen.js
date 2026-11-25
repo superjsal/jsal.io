@@ -85,6 +85,7 @@
       picks.forEach((p) => p.setAttribute('aria-pressed', String(p === b)));
       screen.querySelectorAll('.piece[data-state]').forEach((p) => p.toggleAttribute('data-shown', p.dataset.state === k));
       areas.forEach((a) => { a.hidden = a.dataset.state !== k; });
+      screen.querySelectorAll('.piece[data-state] a').forEach((l) => { l.tabIndex = l.closest('.piece').dataset.state === k ? 0 : -1; });
     }));
     if (!areas.some((a) => a.dataset.tip)) addEventListener('resize', () => { if (on >= 0) place(); });
     screen.setAttribute('data-in', '');
