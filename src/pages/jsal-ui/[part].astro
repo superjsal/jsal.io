@@ -204,6 +204,13 @@ const MAPS = "https://sreyesmaps.com";
 }
 </style>
 )}
+{stage && page.rows.some((r) => r.side === "below-end") && (
+<style is:inline slot="head">
+/* A tooltip under its thing, at its right end, its pointer up at it */
+.tip[data-side="below"] { --fx: 0px; --fy: calc(var(--jsal-space-8) * -1); }
+.tip[data-side="below"]::before { top: -7px; left: auto; right: var(--jsal-space-24); transform: rotate(135deg); }
+</style>
+)}
 {stage && page.rows.some((r) => r.box[3] < 60) && (
 <style is:inline slot="head">
 /* A thing too short to carry its dot on its corner without covering its words has the dot beside it, on the left */

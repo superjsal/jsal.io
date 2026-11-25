@@ -120,7 +120,8 @@ const whole = (src, w, h, alt) => ({ src, w, h, alt });
 // its own pixels) whose frame, 1px wider each side, has its top left corner at x, y; card gives it a deeper shadow.
 // Each row gives a box on the stage (in the stage's pixels), the piece the box lies on (or a list of pieces, for a
 // thing told in several, like a star set in the list and then shown on the piece's tooltip), and the side its tooltip
-// opens on (right, left, or above-end: over the box, at its right end); order is the order of the numbered dots.
+// opens on (right, left, above-end: over the box, at its right end, or below-end: under it, at its right end); order is
+// the order of the numbered dots.
 const piece = (name, x, y, w, h, alt, card = false) => ({ src: `/img/jsal-ui/ui/${name}.webp`, x, y, w, h, alt, card });
 // A window with tabs (John's pick of the job 157 mockups, 24 Nov 2026: "Dungeons A") shows one tab at a time: states
 // names them, [key, the switch's word], each piece says which it belongs to (state), and a row's dots show with its
@@ -293,12 +294,23 @@ export const PAGES = {
     title: "Professions: jsal.ui for WoW Forever",
     description: "jsal.ui's Professions for WoW Forever: a cheaper road to your next rank, using the mats in your bags and bank first, where to learn or buy each recipe, and one click to a shopping list.",
     lead: "Exactly what to craft and how many, using the mats in your bags and bank first, where to learn or buy each recipe, and one click to turn it all into a shopping list.",
+    // The panel and the list side by side as the game drew them (a little further apart, so each dot clears the
+    // other's edge), just after the panel's "Add the road to my shopping list" was pressed, hung on the page's empty
+    // floor over its muted line about pointing at a step
+    stage: { w: 1088, h: 1249, pieces: [
+      piece("professions-whole", 0, 0, 1086, 831, "Professions for a hunter's Leatherworking at 211: Do this now, Nightscape Pants 14 times with the thick leather and silken thread it takes against what's in the bags, everything to 300 with have and need, the nearest trainer, and the road to 300 as six steps."),
+      piece("professions-whole-panel", 35, 580, 438, 657, "jsal.ui's Leatherworking panel from beside the profession window, just after the road went on the shopping list: Artisan 211, Nightscape Pants 14 times to make now, each step to 300 ticked, and the nearest trainer.", true),
+      piece("professions-whole-list", 503, 580, 378, 667, "jsal.ui's Shopping list with the Leatherworking road on it: five crafts with how many of each, then what's still to get from a vendor and from the auction house or the world, with prices, about 246 gold in all.", true),
+    ] },
     rows: [
       { label: "Your road", name: "What to craft now, and every step after", say: "The one thing to make now, then each step ahead to the cap.",
+        box: [18, 150, 1037, 416], on: 0, side: "below-end", ticks: ["What you have against what you need", "Every step to the cap", "Where to learn or buy each recipe"],
         shot: closeup("professions-now", 513, 222, "Do this now on Leatherworking's road: Guardian Gloves three times, with the heavy leather, cured heavy hide and silken thread it takes against what's in the bags.") },
       { label: "Where you craft", name: "The road, beside the profession window", say: "The same road sits beside the game's profession window, a stop for each step.",
+        box: [29, 580, 446, 659], on: 1, side: "above-end", ticks: ["Opens beside the profession window, so it's there while you craft", "Each step to the cap, with how many to make", "Recipes to learn, on their own tab"],
         shot: closeup("professions-craft", 418, 650, "jsal.ui's Leatherworking road beside the profession window: what to craft now, each stop to 300 with the trainer and patterns, and a button to put it all on the shopping list.") },
       { label: "Shopping list", name: "One click to a shopping list", say: "It counts your bags and bank first, and at a vendor a button buys it.",
+        box: [497, 580, 386, 669], on: 2, side: "above-end", ticks: ["What's left to get, once your bags and bank are counted", "Vendor and auction prices, and the total", "A Buy button at the vendor"],
         shot: closeup("professions-list", 515, 198, "Everything Leatherworking needs to reach 225, what's in the bags against what's needed, and Add the road to my shopping list.") },
     ],
     good: [

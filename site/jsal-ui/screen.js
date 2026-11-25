@@ -28,6 +28,7 @@
       if (side === 'right' && r.right + G + W > innerWidth - 8) side = 'left';
       else if (side === 'left' && r.left - G - W < 8) side = 'right';
       if (side === 'above-end') { side = 'above'; left = x + r.width - W; top = y - G - H; }
+      else if (side === 'below-end') { side = 'below'; left = x + r.width - W; top = y + r.height + G; }
       else { left = side === 'right' ? x + r.width + G : x - G - W; top = y; }
       Object.assign(tip.style, { left: `${left}px`, top: `${top}px` });
       tip.dataset.side = side;
