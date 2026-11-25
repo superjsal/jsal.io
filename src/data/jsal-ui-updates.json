@@ -1,5 +1,38 @@
 [
   {
+    "version": "0.3.63",
+    "date": "2026-11-25",
+    "restart": true,
+    "changes": [
+      {"kind": "new", "part": "Professions", "title": "Fishing, and where to fish", "text": "Fishing has its own tile on the Professions page. It shows where to fish for your skill, and the trainers who teach it."},
+      {"kind": "new", "part": "Quest rewards", "title": "A crown on the best reward", "text": "When a quest offers a choice, the reward that’s the biggest upgrade for your spec wears a gold crown."},
+      {"kind": "better", "part": "Horde", "text": "Horde characters are now sent to Horde trainers, vendors and dungeons, and are no longer offered Alliance-only patterns, mage portals or gear."},
+      {"kind": "better", "part": "Training", "text": "The nearest trainer is now one who teaches the spells you need, including trainers in starting areas and towns, not always a capital."},
+      {"kind": "better", "part": "Training", "text": "Every class trainer’s list now comes from its own page, so what each trainer teaches and charges is right."},
+      {"kind": "better", "part": "Gear plan", "text": "One spec picker at the top now sets both your stat weights and the At 60 set."},
+      {"kind": "better", "part": "Gear plan", "text": "Switching spec in the At 60 view now shows the new set at once."},
+      {"kind": "better", "part": "Gear plan", "text": "A shield’s block now counts toward your upgrade marks and gains."},
+      {"kind": "better", "part": "Gear plan", "text": "A piece that only adds stats your spec doesn’t use now says so, in a grey line on its tooltip."},
+      {"kind": "fixed", "part": "Gear plan", "text": "Fixed the At 60 list opening empty, then showing \"...\" for every piece, the first time you picked it. It now opens whole, with every piece’s name."},
+      {"kind": "fixed", "part": "Gear plan", "text": "Fixed a piece you starred sometimes giving an error, and no alert, when it dropped. Its gold banner and sound now always come."},
+      {"kind": "better", "part": "Professions", "text": "Enchanting’s leveling path now has you make each rod before the enchants that need it, and a rod you can make right away says \"now\"."},
+      {"kind": "fixed", "part": "Professions", "text": "Fixed your leveling path disappearing with one step left before the cap, and Cooking’s Artisan step now sits at 225, where its quest opens."},
+      {"kind": "better", "part": "Endgame", "text": "Raid night’s consumables now follow WoWSims Forever’s newest lists for each spec."},
+      {"kind": "better", "part": "Journal", "text": "Your level 60 card now shows the reputation you’ve picked to watch on your XP bar."},
+      {"kind": "fixed", "part": "Journal", "text": "A character deleted and made again with the same name no longer shows the old one’s Journal."},
+      {"kind": "better", "part": "Build Planner", "text": "A new character now follows its own leveling build, and rogues get a ready-made one."},
+      {"kind": "fixed", "part": "Dashboard", "text": "A page you press in a fight now opens when the fight is over, instead of not opening at all."},
+      {"kind": "fixed", "part": "Jsal’s Pals", "text": "A sleeping pal now stays where it lay down, and the pen stays dark at night when your pal comes back."},
+      {"kind": "fixed", "part": "Jsal’s Pals", "text": "Fixed your pal coming back somewhere else after going into its pen and out again. It now comes back to the spot it left."},
+      {"kind": "fixed", "part": "Dungeon guide", "text": "Three bosses that showed no loot now have theirs: Balnazzar, the Avatar of Hakkar and King Op."},
+      {"kind": "better", "part": "Dungeon guide", "text": "Pieces that can drop anywhere in a dungeon are now on its Trash card, instead of missing from the guide."},
+      {"kind": "fixed", "part": "Build Planner", "text": "Fixed the words on your next talent running over its rank dots when the talent’s name is long."},
+      {"kind": "better", "part": "Languages", "text": "Many parts now work on any client language: kill counts, Well Fed, guild drop counts, the profession side panel and more."},
+      {"kind": "better", "part": "Data", "text": "Trainer, vendor and quest data is up to date, with more sellers of water and milk and drop chances from Forever’s own players."},
+      {"kind": "new", "part": "Licence", "title": "A licence", "text": "jsal.ui’s code is now under the MIT License. Its own pictures, sounds and name stay with jsal.ui."}
+    ]
+  },
+  {
     "version": "0.3.62",
     "date": "2026-11-23",
     "restart": true,
