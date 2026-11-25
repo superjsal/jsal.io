@@ -4,7 +4,7 @@
  "level": 46,
  "guild": "retail too hard",
  "since": "2026-11-08",
- "updated": "2026-11-24",
+ "updated": "2026-11-25",
  "lastZone": "Riverglades",
  "lastSeen": "2026-11-23",
  "stats": {
@@ -12,8 +12,8 @@
   "foes": 5745,
   "quests": 671,
   "deaths": 38,
-  "miles": 1252,
-  "jumps": 27525
+  "miles": 1268,
+  "jumps": 27577
  },
  "levelMinutes": [
   26,
@@ -61,7 +61,7 @@
   682,
   279,
   413,
-  341
+  396
  ],
  "events": [
   {
@@ -116,7 +116,7 @@
   ],
   [
    "Stormwind City",
-   11
+   12
   ],
   [
    "Ironforge",
@@ -136,7 +136,7 @@
   ],
   [
    "Leatherworking",
-   211,
+   221,
    300
   ],
   [
@@ -187,7 +187,7 @@
      "t": "+11 Stamina"
     },
     {
-     "t": "Durability 37 / 50"
+     "t": "Durability 50 / 50"
     },
     {
      "t": "Requires Level 36"
@@ -243,7 +243,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 44 / 60"
+     "t": "Durability 60 / 60"
     },
     {
      "t": "Requires Level 28"
@@ -304,7 +304,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 74 / 100"
+     "t": "Durability 100 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -333,7 +333,7 @@
      "t": "+5 Spirit"
     },
     {
-     "t": "Durability 19 / 30"
+     "t": "Durability 30 / 30"
     }
    ]
   },
@@ -363,7 +363,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 22 / 30"
+     "t": "Durability 30 / 30"
     },
     {
      "t": "Requires Level 32"
@@ -397,7 +397,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 28 / 35"
+     "t": "Durability 35 / 35"
     }
    ]
   },
@@ -430,7 +430,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 59 / 75"
+     "t": "Durability 75 / 75"
     }
    ]
   },
@@ -456,7 +456,7 @@
      "t": "+10 Agility"
     },
     {
-     "t": "Durability 36 / 45"
+     "t": "Durability 45 / 45"
     }
    ]
   },
@@ -561,7 +561,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 86 / 100"
+     "t": "Durability 100 / 100"
     },
     {
      "t": "Requires Level 29"
@@ -595,7 +595,7 @@
      "tone": "green"
     },
     {
-     "t": "Durability 47 / 75"
+     "t": "Durability 75 / 75"
     },
     {
      "t": "Requires Level 43"
@@ -723,7 +723,7 @@
   "professions": [
    [
     "Leatherworking",
-    211,
+    221,
     300
    ],
    [
