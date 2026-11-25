@@ -147,23 +147,34 @@ export const CLOSER = [
   ] },
 ];
 
-// The small helpers, each with its own toggle in Settings
+// The small helpers, each with its own toggle in Settings, in groups by where you'd notice them (John, 25 Nov 2026,
+// his pick of two mockups: "1, the groups"), each told in one short line. In page order, which is also column order:
+// the three columns read Questing then crafters and hunters, Bags and vendors, Getting around then Your screen. The
+// level-up note isn't listed, and the quest tags cover RestedXP's guide too (John, the same day).
 export const LITTLE = [
-  ["Quick buttons", "A small bar you can park anywhere, with a gold dot when something's waiting."],
-  ["Unlock Mode", "Move every jsal.ui piece at once, or type in an exact spot and size."],
-  ["Flight bar", "On a flight: the route, the time left and today's games. Once you've flown a route, it's timed from your own flight."],
-  ["Waypoint label", "Where the arrow's taking you, and how far."],
-  ["Vendor run", "Repairs and sells your greys at any vendor."],
-  ["Bag and gear warnings", "A heads-up before your bags fill up or your gear breaks."],
-  ["Quest reward upgrades", "An arrow on every quest reward that's an upgrade for your spec, gold on the best one."],
-  ["Quest tags", "Next to each tracked quest: where it sits in its chain and roughly how long it takes."],
-  ["Tags on RestedXP's guide", "The same tags beside each step of RestedXP's guide, for when you keep the quest tracker hidden."],
-  ["Level-up note", "On each new level, a line in chat with your talent points and whether the trainer has new ranks."],
-  ["Bag button", "One button with your free bag space in place of the bag bar. Point at it for your cheapest items."],
-  ["Menu bar look", "The game's menu bar drawn like the quick buttons: gold icons on dark tiles."],
-  ["Food reminder", "A glowing tile while you aren't Well Fed. Point at it for the food in your bags and click one to eat."],
-  ["Hunter helpers", "A tile to feed your pet when it isn't happy, a box that shows if you're in melee, the dead zone or shooting range, and a line on a beast's tooltip when taming it would teach your pet an ability rank it doesn't have yet."],
-  ["Profession window extras", "On each recipe, the skill where it turns yellow, green and grey; beside each reagent, how many are in your bags and bank; a craft timer and a heads-up when your next rank can be trained."],
-  ["Drop log", "Counts how often the creatures you loot drop the quest items you need, so quest tags can use Forever's own drop chances. /jsal drops shows it."],
-  ["jsal.ui's font in other addons", "jsal.ui's font in the font lists of addons that share fonts, such as EllesmereUI."],
+  { name: "Questing", items: [
+    ["Quest tags", "Where each quest sits in its chain and roughly how long it takes, beside your tracker or each step of RestedXP's guide."],
+    ["Quest reward upgrades", "An arrow on rewards that are upgrades for your spec, gold on the best."],
+    ["Drop log", "Counts how often mobs drop the quest items you need. /jsal drops shows it."],
+  ] },
+  { name: "For crafters and hunters", items: [
+    ["Profession window extras", "Skill-up colours, mats in your bags and bank, and a craft timer."],
+    ["Hunter helpers", "Hunters only: pet happiness, melee and range at a glance, and new pet ranks on a beast's tooltip."],
+  ] },
+  { name: "Bags and vendors", items: [
+    ["Vendor run", "Repairs and sells your greys at any vendor."],
+    ["Bag and gear warnings", "A heads-up before your bags fill or your gear breaks."],
+    ["Bag button", "Your free bag space in one button. Point at it for your cheapest items."],
+    ["Food reminder", "A glowing tile while you aren't Well Fed. Click a food to eat it."],
+  ] },
+  { name: "Getting around", items: [
+    ["Flight bar", "Your route, the time left and today's games while you fly."],
+    ["Waypoint label", "Where the arrow's taking you, and how far."],
+    ["Quick buttons", "A small bar you can park anywhere, with a gold dot when something's waiting."],
+  ] },
+  { name: "Your screen", items: [
+    ["Unlock Mode", "Move every jsal.ui piece at once, or type an exact spot and size."],
+    ["Menu bar look", "The game's menu bar as gold icons on dark tiles."],
+    ["jsal.ui's font in other addons", "Its font in the font lists of addons like EllesmereUI."],
+  ] },
 ];

@@ -247,6 +247,11 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     anything else from Forever's data, which is new and still changing; never how often it updates; never "1
     dashboard" (some pages open outside it) or "0 other addons" (an EllesmereUI profile import is planned). Then
     **The parts you'll use most**, the little things, a **Latest release** card, a **Discord** band and Install.
+  - **The little things** (John, 25 Nov 2026, his pick of two mockups: "1, the groups"): the small helpers in five
+    groups by where you'd notice them (Questing, For crafters and hunters, Bags and vendors, Getting around, Your
+    screen; `LITTLE` in `jsal-ui.mjs`), each told in one short line, in balanced columns: three from 1000px, two from
+    620px, one below, a group never split. Each group's name is a gold 17px heading over a hairline; no boxes, so it
+    reads as a calm list under the bento. A helper for one class says so ("Hunters only:").
   - **The parts you'll use most** (heading 30px, Plan, Craft and Play 24px under it; John, 25 Nov 2026, after a run of mockups: "dynamic bento", "separate into our 3 plan, craft,
     play"): the addon's three groups again, each a small bento under its own heading (`CLOSER` in `jsal-ui.mjs`), four
     tiles a group in named slots: a big 2×2 window tile, a wide 2×1 tile

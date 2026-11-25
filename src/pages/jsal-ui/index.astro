@@ -67,7 +67,7 @@ body { margin: 0; color: var(--jsal-ink); font: 15px/1.6 var(--jsal-font); -webk
 h1, h2 { text-wrap: balance; }
 p { text-wrap: pretty; }
 /* Two fonts: Outfit (--f) for names, headings and buttons; Inter for everything that is read */
-.get .jsal-btn, .band .jsal-btn, .little dt { font-family: var(--f); }
+.get .jsal-btn, .band .jsal-btn { font-family: var(--f); }
 main a:not(.jsal-btn, .slot) { color: var(--jsal-accent); text-underline-offset: 2px; }
 a:focus-visible { outline: 2px solid var(--jsal-accent); outline-offset: 3px; border-radius: var(--jsal-radius); }
 code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
@@ -307,13 +307,19 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   .cl-beside .cl-w { flex-basis: 42%; padding: var(--jsal-space-20); }
 }
 
-/* The small helpers, two columns of name and line */
+/* The small helpers, in groups by where you'd notice them: one column on a phone, two, then three, each group whole */
 .little, .install { margin-top: var(--jsal-space-64); }
-.little > p { margin: var(--jsal-space-8) 0 var(--jsal-space-16); color: var(--jsal-ink-2); }
-.little dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--jsal-space-48); margin: 0; }
-.little dl div { padding: var(--jsal-space-12) 0; border-top: 1px solid var(--jsal-line); }
-.little dt { font-weight: 600; }
-.little dd { margin: 0; color: var(--jsal-ink-2); }
+.little { container: little / inline-size; }
+.little > p { margin: var(--jsal-space-8) 0 0; color: var(--jsal-ink-2); }
+.lt-groups { margin-top: var(--jsal-space-24); columns: 1; column-gap: var(--jsal-space-48); }
+.lt-g { break-inside: avoid; margin: 0 0 var(--jsal-space-32); }
+.lt-g h3 { margin: 0 0 var(--jsal-space-4); padding-bottom: var(--jsal-space-8); border-bottom: 1px solid var(--jsal-line); color: var(--jsal-accent); font: 600 17px/1.4 var(--jsal-font); }
+.lt-g dl { margin: 0; }
+.lt-g dl div { padding: var(--jsal-space-8) 0; }
+.lt-g dt { font-size: 15px; font-weight: 600; }
+.lt-g dd { margin: var(--jsal-space-2) 0 0; color: var(--jsal-ink-2); font-size: 14px; line-height: 1.5; }
+@container little (min-width: 620px) { .lt-groups { columns: 2; } }
+@container little (min-width: 1000px) { .lt-groups { columns: 3; } }
 
 /* Install: a card with the steps, and the one question people ask beside them */
 .install { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--jsal-space-48); padding: var(--jsal-space-32); border-radius: var(--jsal-radius-tile); background: var(--plain); }
@@ -364,7 +370,6 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 }
 @media (max-width: 899px) {
   .install, .band { grid-template-columns: minmax(0, 1fr); gap: var(--jsal-space-24); }
-  .little dl { grid-template-columns: minmax(0, 1fr); }
   .stage, .stage.side { grid-template-columns: minmax(0, 1fr); }
   .stage.side .win { grid-column: 1; }
 }
@@ -513,7 +518,11 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
     <section class="little" aria-labelledby="little-h" data-rv>
       <h2 id="little-h">And the little things</h2>
       <p>Smaller helpers around the game, each with its own toggle in Settings.</p>
-      <dl>{LITTLE.map(([t, d]) => <div><dt>{t}</dt><dd>{d}</dd></div>)}</dl>
+      <div class="lt-groups">
+        {LITTLE.map((g) => (
+          <section class="lt-g" aria-label={g.name}><h3>{g.name}</h3><dl>{g.items.map(([t, d]) => <div><dt>{t}</dt><dd>{d}</dd></div>)}</dl></section>
+        ))}
+      </div>
     </section>
     <section class="band" aria-labelledby="release-h" data-rv>
       <div>
