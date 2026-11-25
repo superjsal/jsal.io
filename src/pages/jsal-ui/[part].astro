@@ -47,6 +47,17 @@ const clipped = !!(me.film || me.clip) || rows.some((r) => r.c);
 // beside its box, level with its top: to its right where it fits inside the still, else to its left. It may lie over
 // the next box (dimmed while it's pointed at), never its own. The dim's hole is the box with the gold edge's 4px.
 const screen = page.screen && page.rows.every((r) => r.box && r.ticks) ? page.screen : null;
+// A stage (page.stage; job 150, John: "B for both") is the whole screen made of pieces: the part's window with its other
+// pieces laid over its edge, each at the game's own size, the whole stage breaking out of the column where it's wider
+// and drawn smaller only where the window is too narrow for it. Pieces, boxes and dots are placed in percentages of the
+// stage; the tooltip is placed as drawn, by the script, on the box's side. Each piece dims on its own: the one under
+// the pointed-at box round a hole the box's size, the others whole.
+const stage = !screen && page.stage && page.rows.every((r) => r.box && r.ticks && r.side) ? page.stage : null;
+const at = ([x, y, w, h], s) => `left: ${pc(x, s.w)}; top: ${pc(y, s.h)}; width: ${pc(w, s.w)}; height: ${pc(h, s.h)}`;
+const frame = (p) => [p.x, p.y, p.w + 2, p.h + 2];
+// A box's hole in its piece's dim, in percentages of the picture inside the piece's 1px frame, with the gold edge's 4px
+const holeIn = ([x, y, w, h], p) => `left: calc(${pc(x - p.x - 1, p.w)} - 4px); top: calc(${pc(y - p.y - 1, p.h)} - 4px); width: calc(${pc(w, p.w)} + 8px); height: calc(${pc(h, p.h)} + 8px)`;
+const order = stage ? (stage.order || page.rows.map((_, i) => i)) : [];
 const pc = (n, of) => `${+((n / of) * 100).toFixed(4)}%`;
 const TIP = 320, GAP = 16;
 const spots = screen ? page.rows.map(({ box: [x, y, w, h] }) => {
@@ -150,13 +161,38 @@ const MAPS = "https://sreyesmaps.com";
 )}
 {screen && (
 <style is:inline slot="head">
+.whole { width: min(100%, var(--w)); margin-inline: auto; }
+.screen > img { display: block; width: 100%; height: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
+</style>
+)}
+{stage && (
+<style is:inline slot="head">
+/* A stage wider than the column breaks out of it evenly, on whole pixels, up to 40px from each edge of the window;
+   only a window narrower than that draws it smaller */
+.whole { --bw: min(var(--w), calc(100vw - 80px)); width: var(--bw); margin-left: round(down, calc((100% - var(--bw)) / 2), 1px); }
+.screen { aspect-ratio: var(--ar); }
+/* Each piece in its own frame, its picture filling it at the game's own size; a card lies over the window with a
+   deeper shadow, and a small one has the smaller corner */
+.piece { position: absolute; }
+.pic { position: absolute; inset: 0; overflow: hidden; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
+.pic img { display: block; width: 100%; height: 100%; }
+.piece.card .pic { box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5), 0 18px 48px rgb(0 0 0 / 0.55); }   /* style: allow (a card's shadow on the game's dark, as the tooltip's) */
+.piece.small .pic { border-radius: var(--jsal-radius-lg); }
+</style>
+)}
+{stage && page.rows.some((r) => r.box[3] < 60) && (
+<style is:inline slot="head">
+/* A thing too short to carry its dot on its corner without covering its words has the dot beside it, on the left */
+.area.slim .dot { top: calc(50% - 12px); left: calc(var(--jsal-space-40) * -1); }
+</style>
+)}
+{(screen || stage) && (
+<style is:inline slot="head">
 /* Wide windows: one whole screen of the part, at the game's own size, in place of its film and close-ups (which
    phones and narrower windows keep). It fits at its own size from 1280px, where the column grows to 1120px */
 @media (min-width: 1280px) { .film, .caps { display: none; } }
 @media (max-width: 1279px) { .whole { display: none; } }
-.whole { width: min(100%, var(--w)); margin-inline: auto; }
 .screen { position: relative; }
-.screen > img { display: block; width: 100%; height: auto; border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-xl); background: var(--win-fill); box-shadow: var(--win-shadow); }
 /* The dim: while a thing is pointed at or focused, the rest of the window darkens round a hole that follows it,
    far enough that the words under the tooltip never compete with its own */
 .shade { position: absolute; inset: 0; overflow: hidden; border-radius: var(--jsal-radius-xl); pointer-events: none; }
@@ -176,13 +212,15 @@ const MAPS = "https://sreyesmaps.com";
    edge; it may lie over the next thing (dimmed meanwhile), never its own. One box that moves from thing to thing,
    with every note in it, the hidden ones kept for screen readers. A note is the thing's three points, each with the
    gold tick */
-.tip { pointer-events: none; --from: calc(var(--jsal-space-8) * -1); position: absolute; z-index: 3; width: 320px; padding: var(--jsal-space-16) var(--jsal-space-20); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: 0 0 0 1px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5); }
-.tip[data-side="left"] { --from: var(--jsal-space-8); }
+.tip { pointer-events: none; --fx: calc(var(--jsal-space-8) * -1); --fy: 0px; position: absolute; z-index: 3; width: 320px; padding: var(--jsal-space-16) var(--jsal-space-20); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: 0 0 0 1px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5); }
+.tip[data-side="left"] { --fx: var(--jsal-space-8); }
+.tip[data-side="above"] { --fx: 0px; --fy: var(--jsal-space-8); }
 .tip::before { content: ""; position: absolute; top: var(--jsal-space-20); left: -7px; width: 12px; height: 12px; border-bottom: 1px solid var(--jsal-line-hi); border-left: 1px solid var(--jsal-line-hi); background: inherit; transform: rotate(45deg); }
 .tip[data-side="left"]::before { left: auto; right: -7px; transform: rotate(-135deg); }
+.tip[data-side="above"]::before { top: auto; bottom: -7px; left: auto; right: var(--jsal-space-24); transform: rotate(-45deg); }
 @media screen and (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tip { background: var(--jsal-sunk); } }
 :root[data-theme="dark"] .tip { background: var(--jsal-sunk); }
-.tip[data-off] { visibility: hidden; opacity: 0; transform: translateX(var(--from)); }
+.tip[data-off] { visibility: hidden; opacity: 0; transform: translate(var(--fx), var(--fy)); }
 .note:not([data-on]) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .note h2 { margin: var(--jsal-space-4) 0 0; font: 700 17px/1.25 var(--f); letter-spacing: -0.02em; }
 .ticks { display: grid; gap: var(--jsal-space-8); margin: var(--jsal-space-12) 0 0; padding: 0; list-style: none; color: var(--jsal-ink-2); font-size: 14px; line-height: 1.4; }
@@ -196,6 +234,7 @@ const MAPS = "https://sreyesmaps.com";
   .area::before { transition: box-shadow var(--jsal-quick) ease; }
   .area::after { transition: -webkit-backdrop-filter var(--jsal-quick) ease, backdrop-filter var(--jsal-quick) ease; }
   .hole { transition: left var(--jsal-settle) var(--jsal-ease-out), top var(--jsal-settle) var(--jsal-ease-out), width var(--jsal-settle) var(--jsal-ease-out), height var(--jsal-settle) var(--jsal-ease-out), box-shadow var(--jsal-quick) ease; }
+  .hole[data-snap] { transition: box-shadow var(--jsal-quick) ease; }
   .tip { transition: left var(--jsal-settle) var(--jsal-ease-out), top var(--jsal-settle) var(--jsal-ease-out), height var(--jsal-settle) var(--jsal-ease-out), opacity var(--jsal-quick) ease, transform var(--jsal-settle) var(--jsal-ease-out); }
   .tip[data-off] { transition: opacity var(--jsal-quick) ease, transform var(--jsal-quick) ease, visibility 0s linear var(--jsal-quick); }
   .tip[data-snap] { transition: opacity var(--jsal-quick) ease, transform var(--jsal-settle) var(--jsal-ease-out); }
@@ -204,7 +243,7 @@ const MAPS = "https://sreyesmaps.com";
 }
 </style>
 )}
-{screen && <script is:inline slot="head" src={v("/jsal-ui/screen.js")} defer></script>}
+{(screen || stage) && <script is:inline slot="head" src={v("/jsal-ui/screen.js")} defer></script>}
 {maps && (
 <style is:inline slot="head">
 /* The maps' maker, credited under the words about them */
@@ -256,6 +295,31 @@ const MAPS = "https://sreyesmaps.com";
               <p class="eyebrow">{r.label}</p>
               <h2>{r.name}</h2>
               <ul class="ticks">{r.ticks.map((t) => <li>{t}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </figure>
+  )}{stage && (
+    <figure class="whole big" data-rv style={`--w: ${stage.w}px`}>
+      <!-- On wide windows: the part's window with its other pieces laid over its edge, a numbered spot on each thing it
+           does and a tooltip beside the one pointed at or tabbed to (none while it rests); the notes are all here for
+           screen readers -->
+      <div class="screen" data-screen style={`--ar: ${stage.w} / ${stage.h}`}>
+        {stage.pieces.map((p) => (
+          <div class={["piece", p.card && "card", p.h < 100 && "small"].filter(Boolean).join(" ")} style={at(frame(p), stage)}>
+            <div class="pic"><img src={v(p.src)} width={p.w} height={p.h} alt={p.alt} loading="lazy" decoding="async"><div class="shade" aria-hidden="true"><span class="hole"></span></div></div>
+          </div>
+        ))}
+        {order.map((i, n) => (
+          <button type="button" class={page.rows[i].box[3] < 60 ? "area slim" : "area"} style={`${at(page.rows[i].box, stage)}; --n: ${n}`} data-on-piece={page.rows[i].on} data-side={page.rows[i].side} data-hole={holeIn(page.rows[i].box, stage.pieces[page.rows[i].on])} aria-describedby={`note-${i}`}><span class="dot" aria-hidden="true">{n + 1}</span><span class="sr-only">{page.rows[i].label}</span></button>
+        ))}
+        <div class="tip" data-off data-side="right">
+          {order.map((i) => (
+            <div class="note" id={`note-${i}`}>
+              <p class="eyebrow">{page.rows[i].label}</p>
+              <h2>{page.rows[i].name}</h2>
+              <ul class="ticks">{page.rows[i].ticks.map((t) => <li>{t}</li>)}</ul>
             </div>
           ))}
         </div>

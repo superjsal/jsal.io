@@ -293,10 +293,20 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   `ticks`, its three ticked points; a numbered gold dot sits on each box's corner, above everything. Pointing at a
   box, tabbing to it or tapping it gives it a gold edge, dims the rest of the window (black at 70%) and moves the
   site's tooltip beside it, level with its top: to its right where it fits, else its left. It may lie over the
-  next box, never its own. The first tooltip is open on load and nothing is dimmed at rest; the last one shown
-  stays when the pointer leaves; Escape shuts it. Motion uses the two timings (the dots arrive one after another,
-  the tooltip and the dim's hole glide, edges and notes fade) and is off with reduced motion. Its script is
-  `site/jsal-ui/screen.js`.
+  next box, never its own. At rest nothing is open and nothing is dimmed ("the window rests"): a tooltip shows only
+  while its box is pointed at or focused, and fades after a short grace when the pointer leaves; Escape shuts it.
+  Motion uses the two timings (the dots arrive one after another, the tooltip and the dim's hole glide, edges and
+  notes fade) and is off with reduced motion. Its script is `site/jsal-ui/screen.js`.
+  **A stage of pieces** (John, 24 Nov 2026, of the job 150 mockups: "B for both"; Gear and Training): where a part's
+  things aren't all in one window, `stage` in `PAGES` lays its other pieces over the window's edge, as they sit over
+  each other in the game: Gear's At 60 list as a card over the right column and the star's tooltip lines off the
+  top right corner; Training's trainer label and trainer panel over the page's bottom edge. Each piece is cut from his
+  screenshot at its own pixels, just inside its own border, with nothing of the game world, chat, names or other
+  addons in it (a piece that can't avoid one is left out). Each row's `box` names its piece (`on`) and its tooltip's
+  `side` (right, left, or above-end for a full-width part); the tooltip is placed as drawn and turns to the other
+  side where it would leave the window. Each piece dims on its own, the pointed-at one round a hole. A stage wider
+  than the column breaks out of it, at its own size wherever the window leaves 40px each side, and smaller below that
+  (Gear: own size at 1440, 95% at 1280). A dot that would cover a short piece's words sits beside it, on its left.
   The parts and windows are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store
   cards are (the game trimmed off, the version hidden, guildmates' names made up). The version line and the release
   card read `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest

@@ -1,18 +1,44 @@
 // The whole screen on a jsal.ui part page (wide windows): a button over each thing the part does, with its numbered
 // dot. Pointing at one, tabbing to it or tapping it gives it the gold edge, dims the rest of the window and opens the
-// tooltip beside it; with none pointed at or focused the picture rests, no tooltip and no dim. Escape shuts it. Each button's data-tip is where its tooltip goes (left, top,
-// and which side of the thing it sits on) and data-hole the dim's hole round it. All the notes stay in the page, so a screen reader has every one;
-// the motion is in the page's styles, off with reduced motion. A page loaded ahead waits until it's shown.
+// tooltip beside it; with none pointed at or focused the picture rests, no tooltip and no dim. Escape shuts it.
+// On a single still each button's data-tip is where its tooltip goes (left, top, and which side of the thing it sits
+// on) and data-hole the dim's hole round it. On a stage of pieces each button names its piece (data-on-piece), the
+// side its tooltip opens on and its hole in that piece's dim; the tooltip is placed as drawn, since the stage may be
+// drawn smaller than the tooltip, and turns to the other side where it would leave the window. All the notes stay in
+// the page, so a screen reader has every one; the motion is in the page's styles, off with reduced motion. A page
+// loaded ahead waits until it's shown.
 (() => {
   const start = () => document.querySelectorAll('[data-screen]').forEach((screen) => {
     const areas = [...screen.querySelectorAll('.area')];
-    const tip = screen.querySelector('.tip'), notes = [...tip.children], hole = screen.querySelector('.hole');
-    let on = -1, timer = 0;
+    const tip = screen.querySelector('.tip'), notes = [...tip.children], holes = [...screen.querySelectorAll('.hole')];
+    let on = -1, timer = 0, lastPiece = -1;
     // The tooltip's height follows its note, so a change of note eases rather than jumps (0 while the screen is hidden)
     const fit = () => {
       if (on < 0) return;
       const h = notes[on].offsetHeight, s = getComputedStyle(tip);
       tip.style.height = h ? `${h + parseFloat(s.paddingTop) + parseFloat(s.paddingBottom) + parseFloat(s.borderTopWidth) + parseFloat(s.borderBottomWidth)}px` : '';
+    };
+    // A stage's tooltip beside its thing, measured as drawn, 16px off; each piece's hole: round the thing on its own
+    // piece (snapping there when it comes from another piece), shut on the others so they dim whole
+    const place = () => {
+      if (on < 0) return;
+      const a = areas[on], s = screen.getBoundingClientRect(), r = a.getBoundingClientRect();
+      const x = r.left - s.left, y = r.top - s.top, W = tip.offsetWidth, H = parseFloat(tip.style.height) || tip.offsetHeight, G = 16;
+      let side = a.dataset.side, left, top;
+      if (side === 'right' && r.right + G + W > innerWidth - 8) side = 'left';
+      else if (side === 'left' && r.left - G - W < 8) side = 'right';
+      if (side === 'above-end') { side = 'above'; left = x + r.width - W; top = y - G - H; }
+      else { left = side === 'right' ? x + r.width + G : x - G - W; top = y; }
+      Object.assign(tip.style, { left: `${left}px`, top: `${top}px` });
+      tip.dataset.side = side;
+      const mine = +a.dataset.onPiece;
+      holes.forEach((hole, k) => {
+        if (k !== mine) { hole.style.cssText = 'left: 50%; top: 50%; width: 0; height: 0'; return; }
+        if (lastPiece !== k) hole.setAttribute('data-snap', '');
+        hole.style.cssText = a.dataset.hole;
+        requestAnimationFrame(() => requestAnimationFrame(() => hole.removeAttribute('data-snap')));
+      });
+      lastPiece = mine;
     };
     const show = (i) => {
       clearTimeout(timer);
@@ -21,15 +47,17 @@
       areas.forEach((a, k) => a.toggleAttribute('data-on', k === i));
       notes.forEach((n, k) => n.toggleAttribute('data-on', k === i));
       if (i < 0) { tip.setAttribute('data-off', ''); screen.removeAttribute('data-pointing'); return; }
-      const [left, top, side] = areas[i].dataset.tip.split(' ');
       // Opening from rest: the tooltip appears in place and fades in, it doesn't glide from where it last was
       if (opening) tip.setAttribute('data-snap', '');
-      Object.assign(tip.style, { left, top });
-      tip.dataset.side = side;
-      hole.style.cssText = areas[i].dataset.hole;
+      if (areas[i].dataset.tip) {
+        const [left, top, side] = areas[i].dataset.tip.split(' ');
+        Object.assign(tip.style, { left, top });
+        tip.dataset.side = side;
+        holes[0].style.cssText = areas[i].dataset.hole;
+        fit();
+      } else { fit(); place(); }
       tip.removeAttribute('data-off');
       screen.setAttribute('data-pointing', '');
-      fit();
       if (opening) { void tip.offsetWidth; requestAnimationFrame(() => tip.removeAttribute('data-snap')); }
     };
     // Back to rest after a tiny grace, so moving straight from one thing to the next glides instead of shutting and reopening
@@ -44,8 +72,10 @@
     // A touch has no leaving: a tap elsewhere puts it back to rest
     document.addEventListener('pointerdown', (e) => { if (on >= 0 && e.pointerType === 'touch' && !(e.target.closest && e.target.closest('.area'))) show(-1); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && on >= 0) show(-1); });
-    // A window widened past the switch shows the screen: its tooltip takes its note's height then
-    matchMedia('(min-width: 1280px)').addEventListener('change', fit);
+    // A window widened past the switch shows the screen: its tooltip takes its note's height then; a stage's tooltip
+    // follows its thing when the window's width changes
+    matchMedia('(min-width: 1280px)').addEventListener('change', () => { fit(); if (on >= 0 && !areas[on].dataset.tip) place(); });
+    if (!areas.some((a) => a.dataset.tip)) addEventListener('resize', () => { if (on >= 0) place(); });
     screen.setAttribute('data-in', '');
   });
   if (document.prerendering) document.addEventListener('prerenderingchange', start, { once: true });
