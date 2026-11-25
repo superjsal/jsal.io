@@ -1,8 +1,8 @@
 // The whole screen on a jsal.ui part page (wide windows): a button over each thing the part does, with its numbered
 // dot. Pointing at one, tabbing to it or tapping it gives it the gold edge, dims the rest of the window and moves the
-// tooltip under it; the first one's tooltip is open from the start, and the last one shown stays open when the
+// tooltip beside it; the first one's tooltip is open from the start, and the last one shown stays open when the
 // pointer leaves (with the dim gone). Escape shuts it. Each button's data-tip is where its tooltip goes (left, top,
-// width) and data-hole the dim's hole round it. All the notes stay in the page, so a screen reader has every one;
+// and which side of the thing it sits on) and data-hole the dim's hole round it. All the notes stay in the page, so a screen reader has every one;
 // the motion is in the page's styles, off with reduced motion. A page loaded ahead waits until it's shown.
 (() => {
   const start = () => document.querySelectorAll('[data-screen]').forEach((screen) => {
@@ -21,8 +21,9 @@
       notes.forEach((n, k) => n.toggleAttribute('data-on', k === i));
       tip.toggleAttribute('data-off', i < 0);
       if (i < 0) return;
-      const [left, top, width] = areas[i].dataset.tip.split(' ');
-      Object.assign(tip.style, { left, top, width });
+      const [left, top, side] = areas[i].dataset.tip.split(' ');
+      Object.assign(tip.style, { left, top });
+      tip.dataset.side = side;
       hole.style.cssText = areas[i].dataset.hole;
       fit();
     };
