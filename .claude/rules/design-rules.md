@@ -229,16 +229,16 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     useful, its headline and line, three ticked points, and its window whole, straight and framed. A part may have a **film** in its place (John, 24
     Nov 2026: "Whole window, like the stills"): the window recorded in the game (`FILMS` in `jsal-ui.mjs`, files in
     `site/img/jsal-ui/ui/films/`), played by the clips' script with their Play/Pause button; a film is shown in place
-    of a clip, and leads its part page too. Home and the parts with their own window (Gear plan, Dungeon guide,
+    of a clip. Home and the parts with their own window (Gear plan, Dungeon guide,
     Crafting profit, Guild Crafts) show the whole window; a part that is a page of the dashboard (Journal, Training,
     Build, Endgame, Professions, Games) shows its page alone, without the dashboard's menu and title bar (John, 24 Nov
     2026: "cut it", "home is fine"), 1086 by 830, so its words come out larger. On the stage every film's frame is held
     to Home's 3:2 and cut at 460px by the same fade, so the frame doesn't change size between the two shapes. A narrow window
-    (the pals) sits beside the words. Five parts show a clip in place of a still. The six big parts (Training
-    Planner, Build Planner, Gear plan, Dungeon guide, Endgame, Professions) end their ticked points with a plain link
-    to their own page, "More on the … ›" (`more` in `PAGES`); on upright phones, where the points wait for a wider
-    screen, it sits under the line instead. It sits there because the points' column has room: every stage keeps
-    the height it had (John, 24 Nov 2026: the page's layout stays as it is).
+    (the pals) sits beside the words. Five parts show a clip in place of a still.
+  - **No part has a page of its own** (John, 25 Nov 2026: "retire them"): players looking for an addon know the game,
+    and addon sites (Polestar, EllesmereUI) tell every part on one page. The six part pages that were tried
+    (24 Nov 2026) redirect to their stage here (`#pick-build`, in `site/_redirects`). Depth, if it's ever needed,
+    goes in one help page (commands, settings, where things are), not a page per part.
   - Every stage is in the page, one under the other, and each row is a link to its stage; with scripts the rows
     are tabs and one stage shows. The address keeps the choice as `#pick-gear`.
   - Then three **numbers** (36 parts, 3 groups: Plan, Craft and Play, 100% free; change the first by hand when the
@@ -252,79 +252,23 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   - **On upright phones** a whole window would be too small to read, so each shows its top corner at a readable
     size, cut off by its frame: past the dashboard's menu and title bar, by each picture's measured offsets (`cx`,
     `cy` in `jsal-ui.mjs`), so they all begin alike.
-  - **Scrolling down** (John, 24 Nov 2026, "strong" of the motion versions he scrolled), each block under the tour
-    (and on the part pages, each block below the first screen) rises 48px and fades in over 0.8s on
-    `cubic-bezier(0.16, 1, 0.3, 1)`, once, when a sixth of it shows; a window picture grows from 96% as it rises; side
-    by side, a row's words follow its picture by 110ms, and cards in a row follow one another 110ms apart (three at
-    most). 24px on phones and coarse pointers. Only transform and opacity move; nothing replays on the way up;
+  - **Scrolling down** (John, 24 Nov 2026, "strong" of the motion versions he scrolled), each block under the tour rises 48px and fades in over 0.8s on
+    `cubic-bezier(0.16, 1, 0.3, 1)`, once, when a sixth of it shows. 24px on phones and coarse pointers. Only transform and opacity move; nothing replays on the way up;
     anything on screen at load is never hidden; with reduced motion or without scripts everything simply shows. The
-    first screen and the tour don't take part. The script is a file of its own, `site/jsal-ui/reveal.js` (marks:
-    `data-rv`, `data-rv-row`, `data-rv-cards`), so the content security policy needs no more hashes; the timings carry
+    first screen and the tour don't take part. The script is a file of its own, `site/jsal-ui/reveal.js` (mark:
+    `data-rv`), so the content security policy needs no more hashes; the timings carry
     `style: allow`.
   - **Clips** (John, 19 Nov 2026): Gear, Professions, Journal, the Dungeon guide and Guild Crafts show a short
     clip: muted MP4s in `site/img/jsal-ui/ui/clips/`, each with its first frame as the still. They're drawn from
     the same sim pages as the store GIFs, never converted from a GIF (John: GIF-made video lost "the smoothness"):
     a steady 30 frames a second in full colour, 13-frame fades, by `private\jsal-ui\sim\make_clips.py`. A clip
     downloads and plays only while a third of its frame is on screen, stops when it leaves (or its stage is put
-    away), shows on the part pages too, and keeps a `.jsal-btn.small` Pause/Play button (a `.jsal-dark` island) in its corner, since clips run
+    away), and keeps a `.jsal-btn.small` Pause/Play button (a `.jsal-dark` island) in its corner, since clips run
     longer than 5 seconds; a pause holds until Play, and with reduced motion nothing starts by itself.
-- **The jsal.ui part pages** (`/jsal-ui/training/`, `/build/`, `/gear/`, `/dungeons/`, `/endgame/`,
-  `/professions/`; John, 24 Nov 2026, "part pages"), one template (`src/pages/jsal-ui/[part].astro`) fed from `PAGES`
-  in `jsal-ui.mjs`, with the styles in `src/components/JsalUiStyles.astro`: a line back to the jsal.ui page and the
-  part's group, the part's name and headline (the 46px title) with Download and when it's useful beside them, its
-  window large (on phones its top corner at the game's own size), or its clip where `CLIPS` has one (the same
-  figure, Play/Pause button and script as its stage on the jsal.ui page; John, 24 Nov 2026), then a row for each thing it does, Good to know,
-  More of jsal.ui and a download band. A row shows a clip or a **close-up** beside its words where the site has
-  one, and its words beside its ticked points where it doesn't (John, 24 Nov 2026: "a cropped close-up of one
-  feature works better than the whole window shrunk down"): one card or list cut from a window
-  (`closeup()` in `jsal-ui.mjs`, a WebP in `site/img/jsal-ui/ui/`), never drawn larger than the game draws it and,
-  at 1440 and on phones, at no less than 85% of it, so the addon's 13px words come out at 11px or more; a picture
-  wider than 740px takes two thirds of its row, and on a phone a wide one shows its left part in its frame. A close-up
-  is cut from the site's own window pictures or from a sim picture of the released version, never one that shows
-  what the release lacks, the sim's own faults (talent and spell icons, red question marks, "Unknown" items, coins)
-  or a real player's name. **A map of one of Forever's own dungeons is Santiago Reyes's:** his credit sits under
-  every mention of his maps and in the footer. A dungeon the game has a map of (Maraudon on the Dungeon guide's
-  stage) shows the game's own picture with jsal.ui's boss signs: its words say what that picture shows and never
-  call it his.
-  **The whole screen, on wide windows** (John, 24 Nov 2026, of the job 146 mockups: "A. tooltip", with B's dim,
-  "needs nice animations"; then "bring back the 3 ticks", "tooltip over to the side", "close off" the empty
-  space and "dim a little more"; Endgame first): a page with `screen` in `PAGES` shows, from 1280px (where the
-  column is 1120px and the window fits at its own size), one still of the part's whole window in place of its film
-  and close-ups, which phones and narrower windows keep exactly. The still is cut from his own screenshot at its own
-  pixels, round the cards with equal room on all four sides (no empty floor). Each row gives a `box` on the still and
-  `ticks`, its three ticked points; a numbered gold dot sits on each box's corner, above everything. Pointing at a
-  box, tabbing to it or tapping it gives it a gold edge, dims the rest of the window (black at 70%) and moves the
-  site's tooltip beside it, level with its top: to its right where it fits, else its left. It may lie over the
-  next box, never its own. At rest nothing is open and nothing is dimmed ("the window rests"): a tooltip shows only
-  while its box is pointed at or focused, and fades after a short grace when the pointer leaves; Escape shuts it.
-  Motion uses the two timings (the dots arrive one after another, the tooltip and the dim's hole glide, edges and
-  notes fade) and is off with reduced motion. Its script is `site/jsal-ui/screen.js`.
-  **A stage of pieces** (John, 24 Nov 2026, of the job 150 mockups: "B for both"; Gear and Training): where a part's
-  things aren't all in one window, `stage` in `PAGES` lays its other pieces over the window's edge, as they sit over
-  each other in the game: Gear's At 60 list as a card over the right column, and its Stars told in order over the
-  window's bottom edge (John, 24 Nov 2026: "do you have the screen where you can star something?"): a slot's upgrade
-  list with the lit star and the game's "Starred" tooltip, then the star's lines on an item's tooltip; Training's
-  trainer pin and trainer panel over the page's bottom edge; Build's Ready to learn card in the page's empty corner
-  and its Export window hung under the window's bottom right, covering none of the plan's rows (John, 24 Nov 2026,
-  of the job 157 mockups: "Build B"); Professions' craft panel and Shopping list side by side on the page's empty
-  floor, as the game draws them just after the road goes on the list ("Professions A"). Nothing lies above the window, so the stage keeps clear of the download and
-  the line under it, except a window with tabs (Dungeons, "Dungeons A"): `states` in its stage puts the site's
-  switch (`.jsal-seg`, drawn larger: 44px, 15px words, with "Pick a tab to see it" beside it) centred over the
-  window, and each tab's picture shows with its own dots, the others fading out (`--jsal-settle`, none with reduced
-  motion). The stage keeps the tallest tab's height, so the page doesn't jump. A row marked `wide` is told on the
-  stage only (Build's plan, the Dungeon guide's list of dungeons), so phones keep their sections; `head` gives a
-  row a heading of its own on the stage where its picture there shows something else. Each piece is cut from his screenshot at its own pixels, just inside its own
-  border, with nothing of chat, names or other addons in it and no more of the game world than a pin drawn on it
-  needs (a piece that can't avoid one is left out). Each row's `box` names its piece (`on`, or a list of pieces for
-  one thing told in several) and its tooltip's `side` (right, left, or above-end or below-end for a full-width part); the tooltip
-  is placed as drawn and turns to the other side where it would leave the window. Boxes never overlap, since the
-  others blur under their own. Each piece dims on its own, the pointed-at ones round a hole. A stage wider
-  than the column breaks out of it, at its own size wherever the window leaves 40px each side, and smaller below that
-  (Gear: own size at 1440, 95% at 1280). A dot that would cover a short piece's words sits beside it, on its left.
-  The parts and windows are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store
-  cards are (the game trimmed off, the version hidden, guildmates' names made up). The version line and the release
-  card read `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest
-  release.
+  - The parts and windows are in `src/lib/jsal-ui.mjs`; new windows are cut from John's screenshots the way the store
+    cards are (the game trimmed off, the version hidden, guildmates' names made up). The version line and the release
+    card read `src/data/jsal-ui-release.json`, which the hourly jsal.ui version Action rewrites from the latest
+    release.
 - **The CMS Picker** has its own layout and control rules (quiz first, the quiz's tick and checklist questions,
   changing an answer, result cards, the must-have divider, "varies", the comparison on phones) in
   `.claude/rules/cms-picker-design.md`, which loads with the CMS Picker's files.

@@ -2,15 +2,10 @@
 // published data, so the list stays right when a platform joins or leaves.
 import fs from 'node:fs';
 import path from 'node:path';
-import { GROUPS, PAGES } from '../lib/jsal-ui.mjs';
 
 // A few words after a name the reader may not know
 const NOTE = { sanity: 'a headless CMS' };
 const named = (p) => (NOTE[p.id] ? `${p.name} (${NOTE[p.id]})` : p.name);
-const cap = (s) => s[0].toUpperCase() + s.slice(1);
-// jsal.ui's part pages, each a line: its name, then its own page description
-const PARTS = GROUPS.flatMap((g) => g.parts).filter((p) => PAGES[p.key]);
-const partLines = PARTS.map((p) => `- [jsal.ui: ${p.label}](https://jsal.io/jsal-ui/${p.key}/): ${cap(PAGES[p.key].description.replace(/^jsal\.ui's .*?for WoW Forever[^:]*: /, ''))}`).join('\n');
 const list = (names) => `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
 
 export function GET() {
@@ -34,7 +29,6 @@ export function GET() {
 - [Home](https://jsal.io/): Who John is and the tools.
 - [Off the clock](https://jsal.io/play/): Mostly Warcraft: what John is playing, his game UI, ways to say hi, and the site's achievements.
 - [jsal.ui](https://jsal.io/jsal-ui/): John's free WoW Forever addon that plans a character from level 1 to raid night: trainer visits, talents, gear, dungeons and professions in one dashboard, plus a journal, guild crafting orders and daily games. Code: https://github.com/superjsal/jsal-ui
-${partLines}
 - [What's new in jsal.ui](https://jsal.io/jsal-ui/updates/): Every change in each release of jsal.ui, newest first, labelled new, better, fixed or taken out, with the part of the addon it touches.
 - [Privacy](https://jsal.io/privacy/): Files never leave the browser; basic Google Analytics usage stats, only with consent in Europe.
 - Contact: dev@jsal.io

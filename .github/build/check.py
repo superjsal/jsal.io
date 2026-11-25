@@ -40,9 +40,6 @@ APP_FILES = {
     'ic/index.html': ['ic/styles.css', 'ic/app.js'],
     'jsal-ui/index.html': ['jsal-ui/reveal.js'],
 }
-# jsal.ui's part pages share the jsal.ui page's scroll reveal
-for _part in ['training', 'build', 'gear', 'dungeons', 'endgame', 'professions']:
-    APP_FILES[f'jsal-ui/{_part}/index.html'] = ['jsal-ui/reveal.js']
 # Class names built from data at runtime, so they never appear literally in the markup
 DYNAMIC_CLASSES = {'plugin', 'hosting', 'auto', 'code', 'check', 'no', 'yes', 'U', 'V', 'C'}
 

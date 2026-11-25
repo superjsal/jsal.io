@@ -1,3 +1,16 @@
 # Pages that moved, sent on for good to where they are now.
 /jsal.ui/ /jsal-ui/ 301
 /jsal.ui /jsal-ui/ 301
+# Each of jsal.ui's parts opens on its own stage on the jsal.ui page
+/jsal-ui/training/ /jsal-ui/#pick-training 301
+/jsal-ui/build/ /jsal-ui/#pick-build 301
+/jsal-ui/gear/ /jsal-ui/#pick-gear 301
+/jsal-ui/dungeons/ /jsal-ui/#pick-dungeons 301
+/jsal-ui/endgame/ /jsal-ui/#pick-endgame 301
+/jsal-ui/professions/ /jsal-ui/#pick-professions 301
+/jsal-ui/training /jsal-ui/#pick-training 301
+/jsal-ui/build /jsal-ui/#pick-build 301
+/jsal-ui/gear /jsal-ui/#pick-gear 301
+/jsal-ui/dungeons /jsal-ui/#pick-dungeons 301
+/jsal-ui/endgame /jsal-ui/#pick-endgame 301
+/jsal-ui/professions /jsal-ui/#pick-professions 301

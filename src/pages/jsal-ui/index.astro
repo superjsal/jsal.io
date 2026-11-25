@@ -11,7 +11,7 @@
 import Page from "../../layouts/Page.astro";
 import TopBar from "../../components/TopBar.astro";
 import { v } from "../../lib/v.mjs";
-import { HOME_PART, GROUPS, LITTLE, PAGES } from "../../lib/jsal-ui.mjs";
+import { HOME_PART, GROUPS, LITTLE } from "../../lib/jsal-ui.mjs";
 import RELEASE from "../../data/jsal-ui-release.json";
 const RELEASES = "https://github.com/superjsal/jsal-ui/releases/latest";
 // Every release's changes, on this site's updates page (src/pages/jsal-ui/updates.astro)
@@ -34,7 +34,7 @@ LIST.reduce((k, g) => { if (g.name) ORDER[`g:${g.name}`] = k++; g.parts.forEach(
 const side = (p) => !p.clip && !p.family && p.shot.w < 600;
 // The pen scenes a pal can live in, from the addon's own art (site/img/jsal-ui/pals/): each by day and by night
 const SCENES = ["meadow", "coast", "desert", "darkwood", "jungle", "savanna", "snow", "swamp"].map((s) => [s[0].toUpperCase() + s.slice(1), v(`/img/jsal-ui/pals/scene-${s}.png`), v(`/img/jsal-ui/pals/scene-${s}-night.png`)]);
-// The scroll reveal for the blocks under the tour, a file of its own (site/jsal-ui/reveal.js), shared with the part pages
+// The scroll reveal for the blocks under the tour, a file of its own (site/jsal-ui/reveal.js)
 const REVEAL = v("/jsal-ui/reveal.js");
 const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 ---
@@ -282,8 +282,6 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn { display: inline-flex; }
 @media (max-width: 699px), (max-height: 500px) and (orientation: landscape) { .pick.tour .tour-btn, .pick.rested .tour-btn, .pick.toured .tour-btn, .slot::after { display: none; } }
 @media print { .rv { opacity: 1; transform: none; } }
-/* A part with a page of its own links to it with a small button under its line */
-.say .to-page { display: flex; width: fit-content; margin-top: var(--jsal-space-8); }
 
 /* A small laptop or a tablet: the headline and Download, then the list as rows of parts, then the stage */
 @media (max-width: 1279px) {
@@ -382,7 +380,6 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
             <div>
               <p class="lead">{p.name}</p>
               <p>{p.line}</p>
-              {PAGES[p.key] && <a class="jsal-btn small to-page" href={`/jsal-ui/${p.key}/`}>{PAGES[p.key].more} <span aria-hidden="true">→</span></a>}
             </div>
             {side(p) && <ul class="facts">{p.points.map((x) => <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l3.8 3.8 8-8.6"/></svg><span>{x}</span></li>)}</ul>}
             {p.family && (
