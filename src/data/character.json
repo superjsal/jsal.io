@@ -8,12 +8,12 @@
  "lastZone": "Riverglades",
  "lastSeen": "2026-11-23",
  "stats": {
-  "hours": 152,
+  "hours": 154,
   "foes": 5745,
   "quests": 671,
   "deaths": 38,
-  "miles": 1245,
-  "jumps": 27510
+  "miles": 1252,
+  "jumps": 27525
  },
  "levelMinutes": [
   26,
@@ -61,7 +61,7 @@
   682,
   279,
   413,
-  260
+  341
  ],
  "events": [
   {
@@ -112,14 +112,14 @@
   ],
   [
    "Riverglades",
-   13
-  ],
-  [
-   "Ironforge",
-   11
+   14
   ],
   [
    "Stormwind City",
+   11
+  ],
+  [
+   "Ironforge",
    11
   ]
  ],
@@ -359,7 +359,7 @@
      "t": "+7 Stamina"
     },
     {
-     "t": "Enchanted: Stamina +4 and Armor +32",
+     "t": "Enchanted: Agility +7",
      "tone": "green"
     },
     {
@@ -603,7 +603,7 @@
    ]
   }
  },
- "gearDate": "2026-11-24",
+ "gearDate": "2026-11-25",
  "portrait": "/img/play/vizdenia-render.png",
  "portraitKind": "render",
  "portraitSize": [
@@ -615,7 +615,7 @@
  "attributes": [
   [
    "Health",
-   1942
+   1902
   ],
   [
    "Mana",
@@ -623,11 +623,11 @@
   ],
   [
    "Agility",
-   194
+   201
   ],
   [
    "Stamina",
-   125
+   121
   ],
   [
    "Strength",
@@ -639,19 +639,19 @@
   ],
   [
    "Attack",
-   365
+   372
   ],
   [
    "Armor",
-   1187
+   1169
   ],
   [
    "Crit",
-   "9.2%"
+   "9.4%"
   ],
   [
    "Dodge",
-   "9.8%"
+   "10.1%"
   ]
  ],
  "talents": [
@@ -667,11 +667,11 @@
  "armory": {
   "race": "Night Elf",
   "itemLevel": null,
-  "updated": "2026-11-24",
+  "updated": "2026-11-25",
   "attributes": [
    [
     "Health",
-    1942
+    1902
    ],
    [
     "Mana",
@@ -679,11 +679,11 @@
    ],
    [
     "Agility",
-    194
+    201
    ],
    [
     "Stamina",
-    125
+    121
    ],
    [
     "Strength",
@@ -695,19 +695,19 @@
    ],
    [
     "Attack",
-    365
+    372
    ],
    [
     "Armor",
-    1187
+    1169
    ],
    [
     "Crit",
-    "9.2%"
+    "9.4%"
    ],
    [
     "Dodge",
-    "9.8%"
+    "10.1%"
    ]
   ],
   "talents": [
