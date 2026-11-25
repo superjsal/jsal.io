@@ -391,7 +391,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
           {p.family ? (
             <figure class="win pen" aria-label="The pal's pen"></figure>
           ) : p.film ? (
-            <figure class={`win clip film${p.key === "home" ? " home" : ""}`} style={`--w: ${p.film.w}px; ${p.film.pw ? `--pw: ${p.film.pw}px; ` : ""}--cx: ${p.film.cx ?? p.shot.cx}; --cy: ${p.film.cy ?? p.shot.cy}`}>
+            <figure class="win clip film" style={`--w: ${p.film.w}px; ${p.film.pw ? `--pw: ${p.film.pw}px; ` : ""}--cx: ${p.film.cx ?? p.shot.cx}; --cy: ${p.film.cy ?? p.shot.cy}`}>
               <video muted loop playsinline preload="none" poster={v(p.film.poster)} width={p.film.w} height={p.film.h} data-s={p.film.s} aria-label={p.shot.alt}><source src={v(p.film.src)} type="video/mp4"></video>
               <span class="clip-ctl jsal-dark"><button type="button" class="jsal-btn small" data-name={p.label}>Play</button></span>
             </figure>

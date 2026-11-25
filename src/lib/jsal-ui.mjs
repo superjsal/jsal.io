@@ -28,7 +28,7 @@ const CLIPS = {
   crafts: clip("orders", 836, 770, 12, 40, "Guild Crafts: orders from guildmates to make, the ones you asked for, and where each one stands."),
 };
 
-export const HOME = shot("home", 1320, 880, "jsal.ui's Home for a level 34 hunter: the XP bar and how long to the next level, what's new in this version, a talent point and a trainer visit ready now, and cards for the build, gear, professions, dungeons, the guild, today's games and the journal.", true);
+export const HOME = { ...shot("home", 1320, 880, "jsal.ui's Home for a level 46 hunter: the XP bar and how long to the next level, what's new in this version, a trainer visit ready now, and cards for the build, gear, professions, dungeons, the guild, today's games and the journal.", true), src: "/img/jsal-ui/ui/films/home.webp" };
 
 // Home as a part of its own, first in the jsal.ui page's list
 export const HOME_PART = { key: "home", when: "any", label: "Home", name: "Your whole character in one window", line: "What your next ding gets you, what's waiting at the trainer, and where each of your plans stands.", points: ["Opens with /jsal or the minimap button", "Every part has its own toggle in Settings", "Free, with its code on GitHub"], shot: HOME };
@@ -85,12 +85,11 @@ for (const g of GROUPS) for (const p of g.parts) if (CLIPS[p.key]) p.clip = CLIP
 // top-aligned, held to Home's 3:2 shape and cut by the same fade) and played like the clips above. Where a part has
 // both, the film is shown and the clip isn't. Its MP4 and its first frame as a WebP of the same name go in
 // site/img/jsal-ui/ui/films/; w and h are its size in pixels, s how many seconds it runs.
-// Home and the own windows (gear, dungeons, profit, crafts) are the whole window. A page of the dashboard is its page
+// The own windows (gear, dungeons, profit, crafts) are the whole window. A page of the dashboard is its page
 // alone (page): the menu down the left and the title bar are cut off, so the page's words come out larger on the
 // stage; it needs no crop offset (cx, cy 0), and a phone draws it 626px wide, the scale the whole window had there.
 const film = (name, w, h, s, page = false) => ({ src: `/img/jsal-ui/ui/films/${name}.mp4`, poster: `/img/jsal-ui/ui/films/${name}.webp`, w, h, s, ...(page ? { cx: 0, cy: 0, pw: 626 } : {}) });
 const FILMS = {
-  home: film("home", 1320, 880, 6.6),
   journal: film("journal", 1086, 830, 9.2, true),
   training: film("training", 1086, 830, 7.4, true),
   build: film("build", 1086, 830, 7.4, true),
@@ -103,7 +102,6 @@ const FILMS = {
   games: film("games", 1086, 830, 9.2, true),
   pals: film("pals", 1320, 880, 9.4),
 };
-if (FILMS.home) HOME_PART.film = FILMS.home;
 for (const g of GROUPS) for (const p of g.parts) if (FILMS[p.key]) p.film = FILMS[p.key];
 
 // A close-up for a part page's row: one card or list cut from a window at the game's own size (a WebP under
