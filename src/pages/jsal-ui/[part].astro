@@ -176,7 +176,7 @@ const MAPS = "https://sreyesmaps.com";
    edge; it may lie over the next thing (dimmed meanwhile), never its own. One box that moves from thing to thing,
    with every note in it, the hidden ones kept for screen readers. A note is the thing's three points, each with the
    gold tick */
-.tip { --from: calc(var(--jsal-space-8) * -1); position: absolute; z-index: 3; width: 320px; padding: var(--jsal-space-16) var(--jsal-space-20); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: 0 0 0 1px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5); }
+.tip { pointer-events: none; --from: calc(var(--jsal-space-8) * -1); position: absolute; z-index: 3; width: 320px; padding: var(--jsal-space-16) var(--jsal-space-20); border: 1px solid var(--jsal-line-hi); border-radius: var(--jsal-radius-lg); background: var(--jsal-surface); color: var(--jsal-ink); box-shadow: 0 0 0 1px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5); }
 .tip[data-side="left"] { --from: var(--jsal-space-8); }
 .tip::before { content: ""; position: absolute; top: var(--jsal-space-20); left: -7px; width: 12px; height: 12px; border-bottom: 1px solid var(--jsal-line-hi); border-left: 1px solid var(--jsal-line-hi); background: inherit; transform: rotate(45deg); }
 .tip[data-side="left"]::before { left: auto; right: -7px; transform: rotate(-135deg); }
@@ -188,20 +188,17 @@ const MAPS = "https://sreyesmaps.com";
 .ticks { display: grid; gap: var(--jsal-space-8); margin: var(--jsal-space-12) 0 0; padding: 0; list-style: none; color: var(--jsal-ink-2); font-size: 14px; line-height: 1.4; }
 .ticks li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--jsal-space-12); }
 .ticks li::before { content: ""; width: 18px; height: 18px; background: var(--jsal-accent); -webkit-mask: var(--jsal-tick) center / 15px no-repeat; mask: var(--jsal-tick) center / 15px no-repeat; }
-/* Motion, only where it's welcome: the dots arrive one after another as the page opens and the first tooltip with
-   them; the edge, the dim and its blur fade; the tooltip and the dim's hole glide from thing to thing; a tooltip that was shut
-   fades in with a short slide out from its thing, and a new note fades in inside it. Without, every change is
+/* Motion, only where it's welcome: the dots arrive one after another as the page opens; the edge, the dim and its blur fade; the tooltip and the dim's hole glide from thing to thing; a tooltip fades in and out with a short slide out from its thing, opening in place, and a new note fades in inside it. Without, every change is
    instant */
 @media (prefers-reduced-motion: no-preference) {
   .screen[data-in] .dot { animation: dot-in var(--jsal-settle) var(--jsal-ease-out) backwards; animation-delay: calc(var(--jsal-quick) * var(--n)); }
   @keyframes dot-in { from { opacity: 0; transform: scale(0.4); } }
-  .screen[data-in] .tip { animation: tip-in var(--jsal-settle) var(--jsal-ease-out) backwards; animation-delay: var(--jsal-quick); }
-  @keyframes tip-in { from { opacity: 0; transform: translateX(var(--from)); } }
   .area::before { transition: box-shadow var(--jsal-quick) ease; }
   .area::after { transition: -webkit-backdrop-filter var(--jsal-quick) ease, backdrop-filter var(--jsal-quick) ease; }
   .hole { transition: left var(--jsal-settle) var(--jsal-ease-out), top var(--jsal-settle) var(--jsal-ease-out), width var(--jsal-settle) var(--jsal-ease-out), height var(--jsal-settle) var(--jsal-ease-out), box-shadow var(--jsal-quick) ease; }
   .tip { transition: left var(--jsal-settle) var(--jsal-ease-out), top var(--jsal-settle) var(--jsal-ease-out), height var(--jsal-settle) var(--jsal-ease-out), opacity var(--jsal-quick) ease, transform var(--jsal-settle) var(--jsal-ease-out); }
   .tip[data-off] { transition: opacity var(--jsal-quick) ease, transform var(--jsal-quick) ease, visibility 0s linear var(--jsal-quick); }
+  .tip[data-snap] { transition: opacity var(--jsal-quick) ease, transform var(--jsal-settle) var(--jsal-ease-out); }
   .note[data-on] { animation: note-in var(--jsal-quick) ease; }
   @keyframes note-in { from { opacity: 0; } }
 }
@@ -246,16 +243,16 @@ const MAPS = "https://sreyesmaps.com";
   )}{screen && (
     <figure class="whole big" data-rv style={`--w: ${screen.w}px`}>
       <!-- On wide windows: the part's whole window, with a numbered spot on each thing it does and a tooltip beside
-           the one pointed at or tabbed to (the first to begin with); the notes are all here for screen readers -->
+           the one pointed at or tabbed to (none while it rests); the notes are all here for screen readers -->
       <div class="screen" data-screen>
         <img src={v(screen.src)} width={screen.w} height={screen.h} alt={screen.alt} decoding="async">
         <div class="shade" aria-hidden="true"><span class="hole" style={spots[0].hole}></span></div>
         {rows.map((r, i) => (
-          <button type="button" class="area" style={`${spots[i].area}; --n: ${i}`} data-tip={spots[i].tip.join(" ")} data-hole={spots[i].hole} aria-describedby={`note-${i}`} {...(i === 0 ? { "data-on": "" } : {})}><span class="dot" aria-hidden="true">{i + 1}</span><span class="sr-only">{r.label}</span></button>
+          <button type="button" class="area" style={`${spots[i].area}; --n: ${i}`} data-tip={spots[i].tip.join(" ")} data-hole={spots[i].hole} aria-describedby={`note-${i}`}><span class="dot" aria-hidden="true">{i + 1}</span><span class="sr-only">{r.label}</span></button>
         ))}
-        <div class="tip" data-side={spots[0].tip[2]} style={`left: ${spots[0].tip[0]}; top: ${spots[0].tip[1]}`}>
+        <div class="tip" data-off data-side={spots[0].tip[2]} style={`left: ${spots[0].tip[0]}; top: ${spots[0].tip[1]}`}>
           {rows.map((r, i) => (
-            <div class="note" id={`note-${i}`} {...(i === 0 ? { "data-on": "" } : {})}>
+            <div class="note" id={`note-${i}`}>
               <p class="eyebrow">{r.label}</p>
               <h2>{r.name}</h2>
               <ul class="ticks">{r.ticks.map((t) => <li>{t}</li>)}</ul>
