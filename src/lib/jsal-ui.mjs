@@ -28,7 +28,7 @@ const CLIPS = {
   crafts: clip("orders", 836, 770, 12, 40, "Guild Crafts: orders from guildmates to make, the ones you asked for, and where each one stands."),
 };
 
-export const HOME = shot("home", 1320, 880, "jsal.ui's Home for a level 34 hunter: the XP bar and how long to the next level, what's new in this version, a talent point and a trainer visit ready now, and cards for the build, gear, professions, dungeons, the guild, today's games and the journal.", true);
+export const HOME = { ...shot("home", 1320, 880, "jsal.ui's Home for a level 46 hunter: the XP bar and how long to the next level, what's new in this version, a trainer visit ready now, and cards for the build, gear, professions, dungeons, the guild, today's games and the journal.", true), src: "/img/jsal-ui/ui/films/home.webp" };
 
 // Home as a part of its own, first in the jsal.ui page's list
 export const HOME_PART = { key: "home", when: "any", label: "Home", name: "Your whole character in one window", line: "What your next ding gets you, what's waiting at the trainer, and where each of your plans stands.", points: ["Opens with /jsal or the minimap button", "Every part has its own toggle in Settings", "Free, with its code on GitHub"], shot: HOME };
@@ -85,12 +85,11 @@ for (const g of GROUPS) for (const p of g.parts) if (CLIPS[p.key]) p.clip = CLIP
 // top-aligned, held to Home's 3:2 shape and cut by the same fade) and played like the clips above. Where a part has
 // both, the film is shown and the clip isn't. Its MP4 and its first frame as a WebP of the same name go in
 // site/img/jsal-ui/ui/films/; w and h are its size in pixels, s how many seconds it runs.
-// Home and the own windows (gear, dungeons, profit, crafts) are the whole window. A page of the dashboard is its page
+// The own windows (gear, dungeons, profit, crafts) are the whole window. A page of the dashboard is its page
 // alone (page): the menu down the left and the title bar are cut off, so the page's words come out larger on the
 // stage; it needs no crop offset (cx, cy 0), and a phone draws it 626px wide, the scale the whole window had there.
 const film = (name, w, h, s, page = false) => ({ src: `/img/jsal-ui/ui/films/${name}.mp4`, poster: `/img/jsal-ui/ui/films/${name}.webp`, w, h, s, ...(page ? { cx: 0, cy: 0, pw: 626 } : {}) });
 const FILMS = {
-  home: film("home", 1320, 880, 6.6),
   journal: film("journal", 1086, 830, 9.2, true),
   training: film("training", 1086, 830, 7.4, true),
   build: film("build", 1086, 830, 7.4, true),
@@ -103,7 +102,6 @@ const FILMS = {
   games: film("games", 1086, 830, 9.2, true),
   pals: film("pals", 1320, 880, 9.4),
 };
-if (FILMS.home) HOME_PART.film = FILMS.home;
 for (const g of GROUPS) for (const p of g.parts) if (FILMS[p.key]) p.film = FILMS[p.key];
 
 // A close-up for a part page's row: one card or list cut from a window at the game's own size (a WebP under
@@ -140,7 +138,7 @@ export const PAGES = {
       { label: "The road to 60", name: "Every visit from here to 60", say: "What each visit costs, so the pricey visits never catch you short.",
         shot: closeup("training-road", 746, 216, "The road to 60 from level 44: trainer visits at 48, 50, 52 and 54, each with what it costs and the spells it brings.") },
       { label: "Beside the spellbook", name: "The same plan, where you train", say: "A small panel opens beside your spellbook and at any class, pet or weapon trainer.",
-        shot: closeup("training-trainer", 406, 422, "jsal.ui's panel at a warrior trainer: two spells to train with their prices, what the next level brings, a Train all button and a way back into the planner.") },
+        shot: closeup("training-trainer", 382, 403, "jsal.ui's panel at a warrior trainer: two spells to train with their prices, what the next level brings, a Train all button and a way back into the planner.") },
     ],
     good: [
       ["Train from the panel", "With its switch on in Settings, the panel stands in for the trainer's own window, with a Train button on each spell."],
@@ -160,7 +158,7 @@ export const PAGES = {
       { label: "Your next point", name: "See it before you spend it", say: "Press Learn and it spends the point for you, after showing where it goes.",
         shot: closeup("build-next", 359, 165, "The Ready to learn card: Deadly Aspects, Beast Mastery rank 1 of 5, one point to spend and a Learn button.") },
       { label: "Share", name: "Theorycraft your own, then share it", say: "Share it as a Wowhead link or a short code. Import takes either.",
-        shot: closeup("build-share", 520, 232, "Export for a Beast Mastery leveling build: its Wowhead talent calculator link and its jsal.ui code, each in a box to copy.") },
+        shot: closeup("build-share", 512, 224, "Export for a Beast Mastery leveling build: its Wowhead talent calculator link and its jsal.ui code, each in a box to copy.") },
     ],
     good: [
       ["The talent helper", "The one part that starts off. Switch it on in Settings and it names your next talent when a point comes in, and marks it in the talent window."],
@@ -244,7 +242,7 @@ export const PAGES = {
       { label: "Your road", name: "What to craft now, and every step after", say: "The one thing to make now, then each step ahead to the cap.",
         shot: closeup("professions-now", 513, 222, "Do this now on Leatherworking's road: Guardian Gloves three times, with the heavy leather, cured heavy hide and silken thread it takes against what's in the bags.") },
       { label: "Where you craft", name: "The road, beside the profession window", say: "The same road sits beside the game's profession window, a stop for each step.",
-        shot: closeup("professions-craft", 428, 660, "jsal.ui's Leatherworking road beside the profession window: what to craft now, each stop to 300 with the trainer and patterns, and a button to put it all on the shopping list.") },
+        shot: closeup("professions-craft", 418, 650, "jsal.ui's Leatherworking road beside the profession window: what to craft now, each stop to 300 with the trainer and patterns, and a button to put it all on the shopping list.") },
       { label: "Shopping list", name: "One click to a shopping list", say: "It counts your bags and bank first, and at a vendor a button buys it.",
         shot: closeup("professions-list", 515, 198, "Everything Leatherworking needs to reach 225, what's in the bags against what's needed, and Add the road to my shopping list.") },
     ],
