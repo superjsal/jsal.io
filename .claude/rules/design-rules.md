@@ -282,8 +282,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   wider than 740px takes two thirds of its row, and on a phone a wide one shows its left part in its frame. A close-up
   is cut from the site's own window pictures or from a sim picture of the released version, never one that shows
   what the release lacks, the sim's own faults (talent and spell icons, red question marks, "Unknown" items, coins)
-  or a real player's name. **A dungeon map is Santiago Reyes's:** his credit sits under every mention of the maps
-  and in the footer.
+  or a real player's name. **A map of one of Forever's own dungeons is Santiago Reyes's:** his credit sits under
+  every mention of his maps and in the footer. A dungeon the game has a map of (Maraudon on the Dungeon guide's
+  stage) shows the game's own picture with jsal.ui's boss signs: its words say what that picture shows and never
+  call it his.
   **The whole screen, on wide windows** (John, 24 Nov 2026, of the job 146 mockups: "A. tooltip", with B's dim,
   "needs nice animations"; then "bring back the 3 ticks", "tooltip over to the side", "close off" the empty
   space and "dim a little more"; Endgame first): a page with `screen` in `PAGES` shows, from 1280px (where the
@@ -302,8 +304,15 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   each other in the game: Gear's At 60 list as a card over the right column, and its Stars told in order over the
   window's bottom edge (John, 24 Nov 2026: "do you have the screen where you can star something?"): a slot's upgrade
   list with the lit star and the game's "Starred" tooltip, then the star's lines on an item's tooltip; Training's
-  trainer pin and trainer panel over the page's bottom edge. Nothing lies above the window, so the stage keeps clear
-  of the download and the line under it. Each piece is cut from his screenshot at its own pixels, just inside its own
+  trainer pin and trainer panel over the page's bottom edge; Build's Ready to learn card in the page's empty corner
+  and its Export window hung under the window's bottom right, covering none of the plan's rows (John, 24 Nov 2026,
+  of the job 157 mockups: "Build B"). Nothing lies above the window, so the stage keeps clear of the download and
+  the line under it, except a window with tabs (Dungeons, "Dungeons A"): `states` in its stage puts the site's
+  switch (`.jsal-seg`, drawn larger: 44px, 15px words, with "Pick a tab to see it" beside it) centred over the
+  window, and each tab's picture shows with its own dots, the others fading out (`--jsal-settle`, none with reduced
+  motion). The stage keeps the tallest tab's height, so the page doesn't jump. A row marked `wide` is told on the
+  stage only (Build's plan, the Dungeon guide's list of dungeons), so phones keep their sections; `head` gives a
+  row a heading of its own on the stage where its picture there shows something else. Each piece is cut from his screenshot at its own pixels, just inside its own
   border, with nothing of chat, names or other addons in it and no more of the game world than a pin drawn on it
   needs (a piece that can't avoid one is left out). Each row's `box` names its piece (`on`, or a list of pieces for
   one thing told in several) and its tooltip's `side` (right, left, or above-end for a full-width part); the tooltip

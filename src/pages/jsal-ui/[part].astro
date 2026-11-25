@@ -31,8 +31,9 @@ const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB
 // shown as a muted video with its first frame. The part's own clip, where CLIPS has one, leads the page instead of
 // its window, in the same figure and played by the same script as on the jsal.ui page.
 const clipOf = (row) => row.clip && ALL[row.clip].clip;
-// Each section is as wide as its picture (--w); one with no picture yet takes the caption width the CSS gives it
-const rows = page.rows.map((r) => ({ ...r, c: clipOf(r) })).map((r) => ({ ...r, w: (r.c || r.shot)?.w }));
+// Each section is as wide as its picture (--w); one with no picture yet takes the caption width the CSS gives it. A
+// row told on the wide stage only (wide) has no section.
+const rows = page.rows.filter((r) => !r.wide).map((r) => ({ ...r, c: clipOf(r) })).map((r) => ({ ...r, w: (r.c || r.shot)?.w }));
 // On a phone a clip's corner is drawn at no less than 85% of its own size
 const phoneW = (c) => Math.max(c.pw, Math.round(c.w * 0.85));
 // Where a part opens: its own word after /jsal, or the dashboard's menu
@@ -60,6 +61,12 @@ const holeIn = ([x, y, w, h], p) => `left: calc(${pc(x - p.x - 1, p.w)} - 4px); 
 const order = stage ? (stage.order || page.rows.map((_, i) => i)) : [];
 // A box told in several pieces opens a hole in each of them, the holes in the same order as the pieces
 const ons = (r) => [].concat(r.on);
+// A window with tabs (stage.states): its first tab shows at first; a row's dots go with its piece's tab, and arrive
+// in their order within it
+const states = stage && stage.states;
+const tabOf = (r) => stage.pieces[ons(r)[0]].state;
+const first = states ? states[0][0] : null;
+const nIn = (i) => states ? order.filter((j) => tabOf(page.rows[j]) === tabOf(page.rows[i])).indexOf(i) : order.indexOf(i);
 const pc = (n, of) => `${+((n / of) * 100).toFixed(4)}%`;
 const TIP = 320, GAP = 16;
 const spots = screen ? page.rows.map(({ box: [x, y, w, h] }) => {
@@ -180,6 +187,21 @@ const MAPS = "https://sreyesmaps.com";
 .pic img { display: block; width: 100%; height: 100%; }
 .piece.card .pic { box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5), 0 18px 48px rgb(0 0 0 / 0.55); }   /* style: allow (a card's shadow on the game's dark, as the tooltip's) */
 .piece.small .pic { border-radius: var(--jsal-radius-lg); }
+</style>
+)}
+{states && (
+<style is:inline slot="head">
+/* A window with tabs: the switch over it, large and centred, picks which tab's picture shows (with its own dots); the
+   picture of the tab left fades out as the new one fades in */
+.tabs { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--jsal-space-12) var(--jsal-space-16); margin-bottom: var(--jsal-space-24); }
+.tabs p { margin: 0; color: var(--jsal-ink-2); font-size: 15px; }
+.tabs .jsal-seg { padding: var(--jsal-space-4); }
+.tabs .jsal-seg > button { min-height: 44px; padding: var(--jsal-space-8) var(--jsal-space-24); font-size: 15px; }
+.piece[data-state]:not([data-shown]) { visibility: hidden; opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .piece[data-state] { transition: opacity var(--jsal-settle) ease, visibility 0s; }
+  .piece[data-state]:not([data-shown]) { transition: opacity var(--jsal-settle) ease, visibility 0s linear var(--jsal-settle); }
+}
 </style>
 )}
 {stage && page.rows.some((r) => r.box[3] < 60) && (
@@ -306,21 +328,23 @@ const MAPS = "https://sreyesmaps.com";
     <figure class="whole big" data-rv style={`--w: ${stage.w}px`}>
       <!-- On wide windows: the part's window with its other pieces laid over its edge, a numbered spot on each thing it
            does and a tooltip beside the one pointed at or tabbed to (none while it rests); the notes are all here for
-           screen readers -->
+           screen readers -->{states && (
+        <div class="tabs"><p id="tabs-h">Pick a tab to see it</p><div class="jsal-seg" role="group" aria-labelledby="tabs-h">{states.map(([k, word]) => <button type="button" data-pick={k} aria-pressed={String(k === first)}>{word}</button>)}</div></div>
+      )}
       <div class="screen" data-screen style={`--ar: ${stage.w} / ${stage.h}`}>
         {stage.pieces.map((p) => (
-          <div class={["piece", p.card && "card", p.h < 100 && "small"].filter(Boolean).join(" ")} style={at(frame(p), stage)}>
+          <div class={["piece", p.card && "card", p.h < 100 && "small"].filter(Boolean).join(" ")} style={at(frame(p), stage)} data-state={p.state} data-shown={p.state === first ? "" : undefined}>
             <div class="pic"><img src={v(p.src)} width={p.w} height={p.h} alt={p.alt} loading="lazy" decoding="async"><div class="shade" aria-hidden="true"><span class="hole"></span></div></div>
           </div>
         ))}
         {order.map((i, n) => (
-          <button type="button" class={page.rows[i].box[3] < 60 ? "area slim" : "area"} style={`${at(page.rows[i].box, stage)}; --n: ${n}`} data-on-piece={ons(page.rows[i]).join(" ")} data-side={page.rows[i].side} data-hole={ons(page.rows[i]).map((k) => holeIn(page.rows[i].box, stage.pieces[k])).join(" | ")} aria-describedby={`note-${i}`}><span class="dot" aria-hidden="true">{n + 1}</span><span class="sr-only">{page.rows[i].label}</span></button>
+          <button type="button" class={page.rows[i].box[3] < 60 ? "area slim" : "area"} style={`${at(page.rows[i].box, stage)}; --n: ${nIn(i)}`} data-on-piece={ons(page.rows[i]).join(" ")} data-side={page.rows[i].side} data-hole={ons(page.rows[i]).map((k) => holeIn(page.rows[i].box, stage.pieces[k])).join(" | ")} data-state={states ? tabOf(page.rows[i]) : undefined} hidden={states ? tabOf(page.rows[i]) !== first : undefined} aria-describedby={`note-${i}`}><span class="dot" aria-hidden="true">{n + 1}</span><span class="sr-only">{page.rows[i].label}</span></button>
         ))}
         <div class="tip" data-off data-side="right">
           {order.map((i) => (
             <div class="note" id={`note-${i}`}>
               <p class="eyebrow">{page.rows[i].label}</p>
-              <h2>{page.rows[i].name}</h2>
+              <h2>{page.rows[i].head || page.rows[i].name}</h2>
               <ul class="ticks">{page.rows[i].ticks.map((t) => <li>{t}</li>)}</ul>
             </div>
           ))}

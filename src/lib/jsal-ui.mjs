@@ -122,6 +122,11 @@ const whole = (src, w, h, alt) => ({ src, w, h, alt });
 // thing told in several, like a star set in the list and then shown on the piece's tooltip), and the side its tooltip
 // opens on (right, left, or above-end: over the box, at its right end); order is the order of the numbered dots.
 const piece = (name, x, y, w, h, alt, card = false) => ({ src: `/img/jsal-ui/ui/${name}.webp`, x, y, w, h, alt, card });
+// A window with tabs (John's pick of the job 157 mockups, 24 Nov 2026: "Dungeons A") shows one tab at a time: states
+// names them, [key, the switch's word], each piece says which it belongs to (state), and a row's dots show with its
+// piece's tab. A row marked wide is told on the stage only: phones keep their sections as they are. head is a row's
+// heading on the stage where it differs from its phone section's (a picture that shows something else).
+const tab = (state, p) => ({ ...p, state });
 
 // The six big parts each have a page of their own at /jsal-ui/<key>/ (John's pick of the landing mockups, 24 Nov
 // 2026: "A, the tour"), all from one template (src/pages/jsal-ui/[part].astro): the part's window large under its
@@ -169,13 +174,23 @@ export const PAGES = {
     title: "Build Planner: jsal.ui for WoW Forever",
     description: "jsal.ui's Build Planner for WoW Forever: follow a ready-made leveling build for your class or theorycraft your own, see your next talent point before you spend it, and share builds with your guild.",
     lead: "Follow a ready-made leveling build for your class, or theorycraft your own and share it. A card shows your next point and what it does, and when the point comes in, Learn spends it for you.",
+    stage: { w: 1088, h: 1044, order: [0, 3, 1, 2], pieces: [
+      piece("build-whole", 0, 0, 1086, 831, "The Build Planner for a level 46 hunter showing SV Weave, WoWSims' Survival build for 60: the builds list with the leveling build being followed, the plan level by level, and the card for a build for 60 with its points in each tree."),
+      piece("build-next", 702, 470, 359, 165, "The Ready to learn card: Deadly Aspects, Beast Mastery rank 1 of 5, one point to spend and a Learn button.", true),
+      piece("build-share", 572, 818, 512, 224, "Export for a Beast Mastery leveling build: its Wowhead talent calculator link and its jsal.ui code, each in a box to copy.", true),
+    ] },
     rows: [
       { label: "Ready-made builds", name: "A leveling build for every class", say: "Follow it level by level. Got dual spec? Each spec follows its own build.",
+        box: [19, 101, 208, 462], on: 0, side: "right", ticks: ["Your own builds, and ready-made ones to follow", "WoWSims' builds for 60 too", "Each spec follows its own build"],
         shot: closeup("build-plan", 449, 450, "A suggested Beast Mastery leveling build, level by level: each talent with its points, and at 10 to 14 Deadly Aspects marked as the next one to learn.") },
       { label: "Your next point", name: "See it before you spend it", say: "Press Learn and it spends the point for you, after showing where it goes.",
+        box: [702, 470, 361, 167], on: 1, side: "left", ticks: ["Your next point, and what it does", "Learn spends it for you", "It asks before it spends"],
         shot: closeup("build-next", 359, 165, "The Ready to learn card: Deadly Aspects, Beast Mastery rank 1 of 5, one point to spend and a Learn button.") },
       { label: "Share", name: "Theorycraft your own, then share it", say: "Share it as a Wowhead link or a short code. Import takes either.",
+        box: [566, 818, 522, 226], on: 2, side: "left", ticks: ["A Wowhead link or a short code", "Import a guildmate's build", "Read as plain text, never run"],
         shot: closeup("build-share", 512, 224, "Export for a Beast Mastery leveling build: its Wowhead talent calculator link and its jsal.ui code, each in a box to copy.") },
+      { label: "The plan", name: "Every point, level by level", wide: true,
+        box: [239, 101, 454, 708], on: 0, side: "right", ticks: ["Each talent with the levels you take it at", "What's taken, and the next point marked", "A heading where it moves to another tree"] },
     ],
     good: [
       ["The talent helper", "The one part that starts off. Switch it on in Settings and it names your next talent when a point comes in, and marks it in the talent window."],
@@ -221,13 +236,26 @@ export const PAGES = {
     title: "Dungeon guide: jsal.ui for WoW Forever",
     description: "jsal.ui's Dungeon guide for WoW Forever: every dungeon by level, each boss with its top drops for your spec and the drop chance on each, the trash loot, the quests to grab first and maps of Forever's own dungeons.",
     lead: "Every dungeon down the side by level. Each boss with its top drops for you and the chance of each, what falls off the trash, the quests to grab first and a map of Forever's own dungeons.",
+    // The stage's map is the game's own picture of Maraudon with jsal.ui's boss signs on it, not one of Santiago
+    // Reyes's (his are for Forever's own dungeons, which have no picture in the game), so its words say only what
+    // that picture shows; the phone section keeps his map of Alcaz Prison and his credit.
+    stage: { w: 1240, h: 860, order: [0, 3, 1, 2], states: [["bosses", "Bosses and loot"], ["quests", "Quests"], ["map", "Map"]], pieces: [
+      tab("bosses", piece("dungeons-whole-bosses", 0, 0, 1238, 858, "The Dungeon guide for Maraudon, Bosses and loot: each boss's best drops for a hunter with how often each one drops, upgrades marked with how much better they are, a starred rifle, and the rest of a boss's loot as small pictures.")),
+      tab("quests", piece("dungeons-whole-quests", 0, 0, 1238, 778, "The Dungeon guide's Quests tab for Maraudon: ten quests grouped by where they start, who gives each one and where, and a three-step chain in Shen'dralas marked where to start.")),
+      tab("map", piece("dungeons-whole-map", 0, 0, 1238, 634, "The Dungeon guide's Map tab for Maraudon: the game's map of the Caverns of Maraudon with each boss numbered on it, green dots on the bosses with gear for you, and the bosses listed beside it.")),
+    ] },
     rows: [
       { label: "Bosses and loot", name: "Four drops a boss, and the trash", say: "A boss card keeps to the four drops worth your time. The rest is tucked underneath.",
+        box: [250, 124, 479, 453], on: 0, side: "right", ticks: ["The drop chance on every line", "Upgrades marked with how much better they are", "A star on what's on your Gear plan"],
         shot: closeup("dungeons-bosses", 484, 465, "Two of Maraudon's boss cards for a hunter: each boss's best drops with how often each one drops, upgrades marked with how much better they are, a starred piece, and the rest of a boss's loot as small pictures.") },
       { label: "Quests", name: "Every quest before you zone in", say: "Chains in order, with who gives each step and where.",
+        box: [250, 379, 969, 150], on: 1, side: "above-end", ticks: ["Chains, step by step", "Who gives it, and where", "A map pin for any step"],
         shot: closeup("dungeons-quests", 620, 690, "The Dungeon guide's Quests tab for Maraudon: its quests grouped by where they start, a three-step chain marked where to start, and who gives each one and where.") },
-      { label: "Map", name: "Forever's own dungeons, mapped", say: "Santiago Reyes's maps, used with his leave, with the bosses that have gear for you.", credit: true,
+      { label: "Map", name: "Forever's own dungeons, mapped", head: "Every boss on the map", say: "Santiago Reyes's maps, used with his leave, with the bosses that have gear for you.", credit: true,
+        box: [250, 124, 626, 448], on: 2, side: "right", ticks: ["Each boss numbered, a click to its loot", "A green dot where a boss drops an upgrade", "Your starred piece's star on its boss"],
         shot: closeup("dungeons-map", 634, 477, "Santiago Reyes's map of Alcaz Prison's Main Unit in the Dungeon guide's Map tab, a button for each floor above it and his credit under it.") },
+      { label: "Every dungeon", name: "Every dungeon down the side, by level", wide: true,
+        box: [9, 39, 226, 576], on: 0, side: "right", ticks: ["Grouped by level, with your level's marked", "A star where a piece you starred drops", "A ? where a quest in your log is for it"] },
     ],
     good: [
       ["Its own window", "It opens in a window of its own, so a run's plan can stay up while you look at the rest."],

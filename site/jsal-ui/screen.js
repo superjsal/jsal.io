@@ -76,6 +76,15 @@
     // A window widened past the switch shows the screen: its tooltip takes its note's height then; a stage's tooltip
     // follows its thing when the window's width changes
     matchMedia('(min-width: 1280px)').addEventListener('change', () => { fit(); if (on >= 0 && !areas[on].dataset.tip) place(); });
+    // A window with tabs: a press on the switch over it shows that tab's picture and its dots, and hides the others'
+    const picks = [...screen.parentElement.querySelectorAll('[data-pick]')];
+    picks.forEach((b) => b.addEventListener('click', () => {
+      const k = b.dataset.pick;
+      show(-1);
+      picks.forEach((p) => p.setAttribute('aria-pressed', String(p === b)));
+      screen.querySelectorAll('.piece[data-state]').forEach((p) => p.toggleAttribute('data-shown', p.dataset.state === k));
+      areas.forEach((a) => { a.hidden = a.dataset.state !== k; });
+    }));
     if (!areas.some((a) => a.dataset.tip)) addEventListener('resize', () => { if (on >= 0) place(); });
     screen.setAttribute('data-in', '');
   });
