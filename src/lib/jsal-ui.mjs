@@ -133,7 +133,7 @@ export const PAGES = {
       { label: "The road to 60", name: "Every visit from here to 60", say: "What each visit costs, so the pricey visits never catch you short.",
         shot: closeup("training-road", 746, 216, "The road to 60 from level 44: trainer visits at 48, 50, 52 and 54, each with what it costs and the spells it brings.") },
       { label: "Beside the spellbook", name: "The same plan, where you train", say: "A small panel opens beside your spellbook and at any class, pet or weapon trainer.",
-        shot: closeup("training-trainer", 406, 422, "jsal.ui's panel at a warrior trainer: two spells to train with their prices, what the next level brings, a Train all button and a way back into the planner.") },
+        shot: closeup("training-trainer", 382, 403, "jsal.ui's panel at a warrior trainer: two spells to train with their prices, what the next level brings, a Train all button and a way back into the planner.") },
     ],
     good: [
       ["Train from the panel", "With its switch on in Settings, the panel stands in for the trainer's own window, with a Train button on each spell."],
@@ -153,7 +153,7 @@ export const PAGES = {
       { label: "Your next point", name: "See it before you spend it", say: "Press Learn and it spends the point for you, after showing where it goes.",
         shot: closeup("build-next", 359, 165, "The Ready to learn card: Deadly Aspects, Beast Mastery rank 1 of 5, one point to spend and a Learn button.") },
       { label: "Share", name: "Theorycraft your own, then share it", say: "Share it as a Wowhead link or a short code. Import takes either.",
-        shot: closeup("build-share", 520, 232, "Export for a Beast Mastery leveling build: its Wowhead talent calculator link and its jsal.ui code, each in a box to copy.") },
+        shot: closeup("build-share", 512, 224, "Export for a Beast Mastery leveling build: its Wowhead talent calculator link and its jsal.ui code, each in a box to copy.") },
     ],
     good: [
       ["The talent helper", "The one part that starts off. Switch it on in Settings and it names your next talent when a point comes in, and marks it in the talent window."],
@@ -233,7 +233,7 @@ export const PAGES = {
       { label: "Your road", name: "What to craft now, and every step after", say: "The one thing to make now, then each step ahead to the cap.",
         shot: closeup("professions-now", 513, 222, "Do this now on Leatherworking's road: Guardian Gloves three times, with the heavy leather, cured heavy hide and silken thread it takes against what's in the bags.") },
       { label: "Where you craft", name: "The road, beside the profession window", say: "The same road sits beside the game's profession window, a stop for each step.",
-        shot: closeup("professions-craft", 428, 660, "jsal.ui's Leatherworking road beside the profession window: what to craft now, each stop to 300 with the trainer and patterns, and a button to put it all on the shopping list.") },
+        shot: closeup("professions-craft", 418, 650, "jsal.ui's Leatherworking road beside the profession window: what to craft now, each stop to 300 with the trainer and patterns, and a button to put it all on the shopping list.") },
       { label: "Shopping list", name: "One click to a shopping list", say: "It counts your bags and bank first, and at a vendor a button buys it.",
         shot: closeup("professions-list", 515, 198, "Everything Leatherworking needs to reach 225, what's in the bags against what's needed, and Add the road to my shopping list.") },
     ],
