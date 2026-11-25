@@ -40,11 +40,11 @@ const released = new Date(`${RELEASE.date}T12:00:00Z`).toLocaleDateString("en-GB
 ---
 <Page
   title="jsal.ui: a free WoW Forever addon | jsal.io"
-  description="jsal.ui is a free WoW Forever addon that plans your character from level 1 to raid night: trainer visits, talents, gear, dungeons and professions in one dashboard, plus a journal, guild crafting orders and daily games."
+  description="jsal.ui is a free WoW Forever addon for level 1 to 60 and after: trainer visits, talents, gear, dungeons and professions in one dashboard, plus a journal, guild crafting orders, daily games and a pal to raise."
   path="/jsal-ui/"
   ogImage="jsal-ui"
   ogImageAlt="Your WoW Forever character, in one dashboard: jsal.ui's Home window, with the character, the trainer visit and the plans"
-  ogDescription="A free WoW Forever addon that plans your character from level 1 to raid night: trainer visits, talents, gear, dungeons and professions, with a journal and daily games for your guild."
+  ogDescription="A free WoW Forever addon for level 1 to 60 and after: trainer visits, talents, gear, dungeons and professions, with a journal, daily games for your guild and a pal to raise."
 >
 <script is:inline slot="head" src={REVEAL} defer></script>
 <style is:inline slot="head">
@@ -93,6 +93,8 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .hello > div { flex: 0 1 28em; }
 .hello h1 { flex: 0 1 auto; max-width: 13.5em; margin: 0; font: 700 46px/1.05 var(--f); letter-spacing: -0.02em; }
 .hello h1 em { font-style: normal; color: var(--jsal-accent); }
+.hello > .ttl { flex: 0 1 auto; }
+.hello .sub { max-width: 28em; margin: var(--jsal-space-12) 0 0; color: var(--jsal-ink-2); font-size: 15px; line-height: 1.6; }
 /* Under the stage, a card: why I made it, beside the logo, and what it is in three facts, each with its icon */
 .about { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--jsal-space-40); align-items: center; margin-top: var(--jsal-space-48); padding: var(--jsal-space-32); border-radius: var(--jsal-radius-tile); background: var(--plain); }
 .why { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: var(--jsal-space-20); align-items: start; }
@@ -344,7 +346,10 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
   <!-- Pick a part: each row of the list is a link to its part's stage below; with scripts the rows become tabs and
        one stage shows at a time -->
   <header class="hello">
-    <h1>From level 1 to raid night, <em>planned.</em></h1>
+    <div class="ttl">
+      <h1>Level 1 to 60, <em>and every new adventure after.</em></h1>
+      <p class="sub">Trainer visits, talents, gear and professions, planned right in the game so you alt-tab less. On any alt and on either faction.</p>
+    </div>
     <div>
       <div class="get">
         <a class="jsal-btn primary dl" href={RELEASES}>Download jsal.ui</a>
@@ -413,9 +418,9 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         <div><h2 id="about-h">Why I made it</h2><p>I made jsal.ui to smooth out leveling, and it keeps going after you ding 60. It plans your trainer visits and talents on the way up, then your gear, dungeon runs, consumes and raid lockouts once you're there, with professions, guild crafting, a journal, daily games and a pal to look after along the way.</p></div>
       </div>
       <ul class="kit">
-        <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></svg></span><span><b>36 parts</b><small>each with its own toggle</small></span></li>
+        <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></svg></span><span><b>36 parts</b><small>Keep what you use, switch off the rest</small></span></li>
         <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h12M4 10h12M4 14h8"/></svg></span><span><b>3 groups</b><small>Plan, Craft and Play</small></span></li>
-        <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3l2 4.5 5 .7-3.6 3.4.9 4.9L10 14.2 5.7 16.5l.9-4.9L3 8.2l5-.7z"/></svg></span><span><b>Free</b><small>no subscription, code on GitHub</small></span></li>
+        <li><span class="i"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3l2 4.5 5 .7-3.6 3.4.9 4.9L10 14.2 5.7 16.5l.9-4.9L3 8.2l5-.7z"/></svg></span><span><b>Free</b><small>No subscription and no ads</small></span></li>
       </ul>
     </section>
     <section class="band" aria-labelledby="release-h" data-rv>
