@@ -148,10 +148,18 @@ export const CLOSER = [
 ];
 
 // The small helpers, each with its own toggle in Settings, in groups by where you'd notice them (John, 25 Nov 2026,
-// his pick of two mockups: "1, the groups"), each told in one short line. In page order, which is also column order:
-// the three columns read Questing then crafters and hunters, Bags and vendors, Getting around then Your screen. The
+// his pick of two mockups: "1, the groups"), each told in one short line. In page order, which is also column order,
+// chosen so the columns end closest together: three columns read Bags and vendors, Questing then crafters and
+// hunters, Getting around then Your screen (the 195px between the shortest and longest is the least five groups in
+// three columns allow); two columns read Bags and vendors then Questing, and the other three (90px apart). The
 // level-up note isn't listed, and the quest tags cover RestedXP's guide too (John, the same day).
 export const LITTLE = [
+  { name: "Bags and vendors", items: [
+    ["Vendor run", "Repairs and sells your greys at any vendor."],
+    ["Bag and gear warnings", "A heads-up before your bags fill or your gear breaks."],
+    ["Bag button", "Your free bag space in one button. Point at it for your cheapest items."],
+    ["Food reminder", "A glowing tile while you aren't Well Fed. Click a food to eat it."],
+  ] },
   { name: "Questing", items: [
     ["Quest tags", "Where each quest sits in its chain and roughly how long it takes, beside your tracker or each step of RestedXP's guide."],
     ["Quest reward upgrades", "An arrow on rewards that are upgrades for your spec, gold on the best."],
@@ -160,12 +168,6 @@ export const LITTLE = [
   { name: "For crafters and hunters", items: [
     ["Profession window extras", "Skill-up colours, mats in your bags and bank, and a craft timer."],
     ["Hunter helpers", "Hunters only: pet happiness, melee and range at a glance, and new pet ranks on a beast's tooltip."],
-  ] },
-  { name: "Bags and vendors", items: [
-    ["Vendor run", "Repairs and sells your greys at any vendor."],
-    ["Bag and gear warnings", "A heads-up before your bags fill or your gear breaks."],
-    ["Bag button", "Your free bag space in one button. Point at it for your cheapest items."],
-    ["Food reminder", "A glowing tile while you aren't Well Fed. Click a food to eat it."],
   ] },
   { name: "Getting around", items: [
     ["Flight bar", "Your route, the time left and today's games while you fly."],

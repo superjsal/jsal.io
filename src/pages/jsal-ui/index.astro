@@ -96,7 +96,7 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 .hello > .ttl { flex: 0 1 auto; }
 .hello .sub { max-width: 28em; margin: var(--jsal-space-12) 0 0; color: var(--jsal-ink-2); font-size: 15px; line-height: 1.6; }
 /* Under the stage, a card: why I made it, beside the logo, and what it is in three facts, each with its icon */
-.about { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--jsal-space-40); align-items: center; margin-top: var(--jsal-space-48); padding: var(--jsal-space-32); border-radius: var(--jsal-radius-tile); background: var(--plain); }
+.about { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--jsal-space-40); align-items: center; margin-top: var(--jsal-space-64); padding: var(--jsal-space-32); border-radius: var(--jsal-radius-tile); background: var(--plain); }
 .why { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: var(--jsal-space-20); align-items: start; }
 .why .jsal-mark { width: 56px; height: 56px; margin: 0; vertical-align: 0; }
 .about h2 { margin: 0 0 var(--jsal-space-8); font: 700 24px/1.2 var(--f); letter-spacing: -0.01em; }
@@ -343,6 +343,18 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
 @media (prefers-reduced-motion: no-preference) {
   .rv { opacity: 0; transform: translateY(var(--rv-y)); }
   .rv.in { opacity: 1; transform: none; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s); }   /* style: allow (the scroll reveal: slow and far, so it reads as arriving) */
+  /* a bento tile's window settles from 96% just after its tile arrives */
+  .rv .cl-shot > img { scale: 0.96; }
+  .rv.in .cl-shot > img { scale: 1; }
+  .cl-shot > img { transition: transform var(--jsal-settle) var(--jsal-ease-out), scale 1.1s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--d, 0s) + 0.12s); }   /* style: allow (the window settling with the scroll reveal) */
+}
+/* Pointing at a bento tile lifts its window a little, and the game scenery behind a framed window drifts slowly while
+   the pointer stays; nothing moves on its own, and nothing moves on a touch screen or with reduced motion */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .cl-scene::before { content: ""; position: absolute; inset: 0; background: inherit; transition: transform 2.4s cubic-bezier(0.16, 1, 0.3, 1); }   /* style: allow (the scenery's slow drift under the pointer) */
+  .cl-tile:hover .cl-scene::before { transform: scale(1.06) translateX(-2%); }
+  .cl-tile:hover .cl-scene > img { transform: translateY(calc(var(--jsal-space-8) * -0.75)); }
+  .cl-tile:hover .cl-pen > img { transform: translateY(calc(var(--jsal-space-4) * -1)); }
 }
 /* The tour: the chosen row's gold line fills while its turn lasts; it rests while the pointer or the keyboard is on
    the list or the stage, or the list is off screen */
@@ -497,11 +509,11 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
       <h2 id="closer-h" data-rv>The parts you'll use most</h2>
       <p class="cl-intro" data-rv>Whether it's your first character or your fifth alt at 60: less alt-tabbing, fewer wasted trips, and more time with your guild.</p>
       {CLOSER.map((g) => (
-        <section class={`cl-grp cl-${g.key}`} aria-labelledby={`cl-${g.key}-h`} data-rv>
-          <header><h3 id={`cl-${g.key}-h`}>{g.name}</h3><span>{g.line}</span></header>
+        <section class={`cl-grp cl-${g.key}`} aria-labelledby={`cl-${g.key}-h`} data-rv-steps>
+          <header data-rv-step><h3 id={`cl-${g.key}-h`}>{g.name}</h3><span>{g.line}</span></header>
           <div class="cl-bento">
             {g.tiles.map((t) => (
-              <article class={`cl-tile cl-${t.slot}${t.beside ? " cl-beside" : ""}${t.shot || t.pen ? "" : " cl-words-only"}`}>
+              <article class={`cl-tile cl-${t.slot}${t.beside ? " cl-beside" : ""}${t.shot || t.pen ? "" : " cl-words-only"}`} data-rv-step>
                 {t.shot && (
                   <div class={`cl-shot${t.shot.center ? " cl-center" : ""}${t.shot.bg ? " cl-scene" : ""}${t.shot.top ? " cl-top" : ""}`} style={`--nw: ${t.shot.nw}; --sw: ${t.shot.sw}; --psw: ${t.shot.psw}${t.shot.center ? "" : `; --x: ${t.shot.x}; --y: ${t.shot.y}; --px: ${t.shot.px}; --py: ${t.shot.py}`}${t.shot.bg ? `; --bg: url(${v(`/img/jsal-ui/scenery/${t.shot.bg}.webp`)})` : ""}`}>
                     <img src={v(t.shot.src)} alt={t.shot.alt} loading="lazy" decoding="async">
@@ -515,12 +527,12 @@ code { font: 500 13px "JetBrains Mono", Consolas, monospace; }
         </section>
       ))}
     </section>
-    <section class="little" aria-labelledby="little-h" data-rv>
-      <h2 id="little-h">And the little things</h2>
-      <p>Smaller helpers around the game, each with its own toggle in Settings.</p>
+    <section class="little" aria-labelledby="little-h" data-rv-steps>
+      <h2 id="little-h" data-rv-step>And the little things</h2>
+      <p data-rv-step>Smaller helpers around the game, each with its own toggle in Settings.</p>
       <div class="lt-groups">
         {LITTLE.map((g) => (
-          <section class="lt-g" aria-label={g.name}><h3>{g.name}</h3><dl>{g.items.map(([t, d]) => <div><dt>{t}</dt><dd>{d}</dd></div>)}</dl></section>
+          <section class="lt-g" aria-label={g.name} data-rv-step><h3>{g.name}</h3><dl>{g.items.map(([t, d]) => <div><dt>{t}</dt><dd>{d}</dd></div>)}</dl></section>
         ))}
       </div>
     </section>

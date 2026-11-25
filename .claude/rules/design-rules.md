@@ -248,9 +248,10 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
     dashboard" (some pages open outside it) or "0 other addons" (an EllesmereUI profile import is planned). Then
     **The parts you'll use most**, the little things, a **Latest release** card, a **Discord** band and Install.
   - **The little things** (John, 25 Nov 2026, his pick of two mockups: "1, the groups"): the small helpers in five
-    groups by where you'd notice them (Questing, For crafters and hunters, Bags and vendors, Getting around, Your
+    groups by where you'd notice them (Bags and vendors, Questing, For crafters and hunters, Getting around, Your
     screen; `LITTLE` in `jsal-ui.mjs`), each told in one short line, in balanced columns: three from 1000px, two from
-    620px, one below, a group never split. Each group's name is a gold 17px heading over a hairline; no boxes, so it
+    620px, one below, a group never split. The groups' order is the one that ends the columns closest together (the
+    reasoning is beside `LITTLE`); re-measure when a group changes. Each group's name is a gold 17px heading over a hairline; no boxes, so it
     reads as a calm list under the bento. A helper for one class says so ("Hunters only:").
   - **The parts you'll use most** (heading 30px, Plan, Craft and Play 24px under it; John, 25 Nov 2026, after a run of mockups: "dynamic bento", "separate into our 3 plan, craft,
     play"): the addon's three groups again, each a small bento under its own heading (`CLOSER` in `jsal-ui.mjs`), four
@@ -285,9 +286,14 @@ focus `--jsal-focus-ring`; button weight `--jsal-btn-weight`; spacing `--jsal-sp
   - **Scrolling down** (John, 24 Nov 2026, "strong" of the motion versions he scrolled), each block under the tour rises 48px and fades in over 0.8s on
     `cubic-bezier(0.16, 1, 0.3, 1)`, once, when a sixth of it shows. 24px on phones and coarse pointers. Only transform and opacity move; nothing replays on the way up;
     anything on screen at load is never hidden; with reduced motion or without scripts everything simply shows. The
-    first screen and the tour don't take part. The script is a file of its own, `site/jsal-ui/reveal.js` (mark:
-    `data-rv`), so the content security policy needs no more hashes; the timings carry
-    `style: allow`.
+    first screen and the tour don't take part. **In turns** (John, 25 Nov 2026, "C, with hover" of three recorded
+    options): each bento group's heading arrives, then its tiles one after another 110ms apart (three steps at most),
+    each window settling from 96% just after its tile; the little things' heading, line and groups arrive the same
+    way. **Hover**, on pointers that can hover and with motion welcome: a bento tile's framed window lifts 6px (the
+    pal 4px) over `--jsal-settle`, and the scenery behind it drifts slowly (2.4s, scale 1.06) while the pointer
+    stays; nothing moves on its own. The script is a file of its own, `site/jsal-ui/reveal.js` (marks: `data-rv`
+    for a block, `data-rv-steps` for a block whose `data-rv-step` parts arrive in turn), so the content security
+    policy needs no more hashes; the timings carry `style: allow`.
   - **Clips** (John, 19 Nov 2026): Gear, Professions, Journal, the Dungeon guide and Guild Crafts show a short
     clip: muted MP4s in `site/img/jsal-ui/ui/clips/`, each with its first frame as the still. They're drawn from
     the same sim pages as the store GIFs, never converted from a GIF (John: GIF-made video lost "the smoothness"):
