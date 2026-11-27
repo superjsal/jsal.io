@@ -8,12 +8,12 @@
  "lastZone": "Riverglades",
  "lastSeen": "2026-11-23",
  "stats": {
-  "hours": 156,
+  "hours": 159,
   "foes": 5745,
   "quests": 671,
   "deaths": 38,
-  "miles": 1270,
-  "jumps": 27596
+  "miles": 1277,
+  "jumps": 27661
  },
  "levelMinutes": [
   26,
@@ -61,7 +61,7 @@
   682,
   279,
   413,
-  500
+  658
  ],
  "events": [
   {
@@ -107,16 +107,16 @@
    16
   ],
   [
-   "Stranglethorn Vale",
-   14
-  ],
-  [
    "Riverglades",
    14
   ],
   [
    "Stormwind City",
-   13
+   14
+  ],
+  [
+   "Stranglethorn Vale",
+   14
   ],
   [
    "Ironforge",
@@ -603,7 +603,7 @@
    ]
   }
  },
- "gearDate": "2026-11-26",
+ "gearDate": "2026-11-27",
  "portrait": "/img/play/vizdenia-render.png",
  "portraitKind": "render",
  "portraitSize": [
@@ -667,7 +667,7 @@
  "armory": {
   "race": "Night Elf",
   "itemLevel": null,
-  "updated": "2026-11-26",
+  "updated": "2026-11-27",
   "attributes": [
    [
     "Health",
