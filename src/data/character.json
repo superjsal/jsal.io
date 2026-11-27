@@ -8,12 +8,12 @@
  "lastZone": "Riverglades",
  "lastSeen": "2026-11-23",
  "stats": {
-  "hours": 159,
+  "hours": 160,
   "foes": 5745,
   "quests": 671,
   "deaths": 38,
   "miles": 1277,
-  "jumps": 27662
+  "jumps": 27666
  },
  "levelMinutes": [
   26,
@@ -61,7 +61,7 @@
   682,
   279,
   413,
-  695
+  732
  ],
  "events": [
   {
