@@ -1,5 +1,117 @@
 [
   {
+    "version": "0.3.64",
+    "date": "2026-11-28",
+    "restart": true,
+    "changes": [
+      {
+        "kind": "new",
+        "part": "Home",
+        "title": "What to do right now, first",
+        "text": "Home now leads with what you can do right now, your build and the dungeon to run next. Professions, the Journal, your guild and today's games sit one click away in a side panel."
+      },
+      {
+        "kind": "new",
+        "part": "Professions",
+        "title": "Your profession leveling path",
+        "text": "A new page shows your path to the skill cap, what it costs and what it makes back. At the cap it lists the recipes you still have to find, and you can add a step's materials to your shopping list in one click."
+      },
+      {
+        "kind": "new",
+        "part": "Gear plan",
+        "title": "Biggest upgrades first",
+        "text": "The Gear plan now puts the biggest upgrades for your level at the top, with where to get each one, dungeon by dungeon."
+      },
+      {
+        "kind": "new",
+        "part": "Endgame",
+        "title": "A new look for Endgame and Crafting profit",
+        "text": "Endgame shows your goal at 60 level by level. Crafting profit groups recipes by what makes money and what loses it."
+      },
+      {
+        "kind": "new",
+        "part": "Journal",
+        "title": "Your leveling as a road",
+        "text": "The Journal draws your leveling as a road through each zone and dungeon, with their pictures. It also shows your other characters, both on the way and at 60."
+      },
+      {
+        "kind": "better",
+        "part": "Professions",
+        "text": "At a fork in the path, you now pick a way and each way shows what it costs, with Most profit and Cheapest buttons and a receipt."
+      },
+      {
+        "kind": "better",
+        "part": "Crafting profit",
+        "text": "There is a new Leveling tab with the cheapest way to level once you sell what you make."
+      },
+      {
+        "kind": "better",
+        "part": "Home",
+        "text": "The Ready now card also shows a guild order waiting on you, a better piece in your bags, and a profession rank to learn."
+      },
+      {
+        "kind": "better",
+        "part": "Training",
+        "text": "Training now has a card for each trainer, and shows the way from where you are."
+      },
+      {
+        "kind": "better",
+        "part": "Gear plan",
+        "text": "The Gear plan now offers each side its own PvP pieces and says what a piece needs. It also no longer offers pieces you can't get."
+      },
+      {
+        "kind": "better",
+        "part": "Gear plan",
+        "text": "A two-hander is now weighed against a one-hander and an off hand."
+      },
+      {
+        "kind": "better",
+        "part": "Dungeon guide",
+        "text": "The Dungeon guide lists each book once and says who drops it. It also opens in steps, so it no longer stalls the game."
+      },
+      {
+        "kind": "better",
+        "part": "Journal",
+        "text": "The Journal marks each death with a skull and names the last enemy that hit you."
+      },
+      {
+        "kind": "better",
+        "part": "Home",
+        "text": "Home now shows all of your professions, not only the first three."
+      },
+      {
+        "kind": "better",
+        "part": "Gear plan",
+        "text": "The Gear plan and Crafting profit open faster, and Crafting profit uses far less memory."
+      },
+      {
+        "kind": "fixed",
+        "part": "Professions",
+        "text": "Fixed an error that could pop up when you opened the Professions page on a step with no count."
+      },
+      {
+        "kind": "fixed",
+        "part": "Crafting profit",
+        "text": "Fixed Crafting profit sometimes opening empty when the game didn't give the realm's name."
+      },
+      {
+        "kind": "fixed",
+        "part": "Gear plan",
+        "text": "Fixed slots on the Gear plan sometimes saying \"Checking...\" for good, or going blank when you starred a piece."
+      },
+      {
+        "kind": "fixed",
+        "part": "Dashboard",
+        "text": "Fixed windows not fitting the screen after you changed your UI scale or screen size."
+      },
+      {
+        "kind": "fixed",
+        "part": "Training",
+        "text": "Fixed Training counting quest and book spells in its trainer counts."
+      }
+    ]
+  },
+  {
     "version": "0.3.63",
     "date": "2026-11-25",
     "restart": true,
