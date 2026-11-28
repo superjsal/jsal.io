@@ -8,7 +8,7 @@
  "lastZone": "Riverglades",
  "lastSeen": "2026-11-23",
  "stats": {
-  "hours": 160,
+  "hours": 161,
   "foes": 5745,
   "quests": 671,
   "deaths": 38,
@@ -61,7 +61,7 @@
   682,
   279,
   413,
-  742
+  757
  ],
  "events": [
   {
@@ -603,7 +603,7 @@
    ]
   }
  },
- "gearDate": "2026-11-27",
+ "gearDate": "2026-11-28",
  "portrait": "/img/play/vizdenia-render.png",
  "portraitKind": "render",
  "portraitSize": [
@@ -667,7 +667,7 @@
  "armory": {
   "race": "Night Elf",
   "itemLevel": null,
-  "updated": "2026-11-27",
+  "updated": "2026-11-28",
   "attributes": [
    [
     "Health",
