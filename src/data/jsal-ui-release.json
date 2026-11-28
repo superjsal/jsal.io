@@ -1,11 +1,11 @@
 {
-  "version": "0.3.63",
-  "date": "2026-11-25",
+  "version": "0.3.64",
+  "date": "2026-11-28",
   "notes": [
-    "Professions: Fishing has its own tile, with the nearest water where no fish get away from you and your nearest trainer.",
-    "Horde characters are sent to Horde trainers, vendors and dungeons, and are no longer offered Alliance-only patterns, portals or gear.",
-    "Training Planner: your nearest trainer is one who teaches the spells you need, in your starting area or town, not always a capital.",
-    "Gear plan: one spec picker at the top sets both your weights and your At 60 set.",
-    "Quest rewards: when a quest lets you choose a reward, the biggest upgrade for you wears a gold crown, in the quest window, the quest log and the map."
+    "Home: what you can do right now comes first, with your build and the dungeon to run next. Professions, the Journal, your guild and today's games sit one click away in a side panel.",
+    "Professions: a new page with your leveling path to the cap, what it costs and what it makes back, and once you're capped, the recipes still to find. Add a step's mats to your shopping list in one click.",
+    "Gear plan: the biggest upgrades for your level up top, and where to get each one, dungeon by dungeon.",
+    "Endgame and Crafting profit, laid out anew: your goal at 60 level by level, and recipes grouped by what makes money and what loses it.",
+    "Journal: your leveling as a road through each zone and dungeon, with their pictures, and your characters on the road and at 60."
   ]
 }
